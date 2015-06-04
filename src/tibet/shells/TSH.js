@@ -2105,7 +2105,7 @@ function(aRequest) {
 
     arg = this.getArgument(aRequest, 'ARG0');
 
-    tdp = TP.byOID('DeveloperPortal');
+    tdp = TP.bySystemId('DeveloperPortal');
     tdp.toggleZoomed();
     tdp.setCurrentScreenCell('screen_' + arg + '_cell');
     tdp.toggleZoomed();
@@ -3247,7 +3247,7 @@ function(aRequest) {
 
     var bootframe;
 
-    bootframe = TP.wrap(TP.byId('UIBOOT', top));
+    bootframe = TP.byId('UIBOOT', top);
     bootframe.getContentDocument().getBody().addClass('full_console');
 
     return aRequest.complete();

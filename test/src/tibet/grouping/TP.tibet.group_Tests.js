@@ -16,9 +16,19 @@ TP.tibet.group.Inst.describe('TP.tibet.group: registration',
 function() {
 
     var unloadURI,
-        loadURI;
+        loadURI,
+
+        windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = this.getDriver().get('windowContext');
+        });
 
     //  ---
 
@@ -46,27 +56,29 @@ function() {
                 var tpElem,
                     groupMembers;
 
-                tpElem = TP.byOID('noGroupItem');
+                tpElem = TP.byId('noGroupItem', windowContext);
                 test.assert.isBlank(tpElem.getGroupName());
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
-                groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('foo'));
 
-                groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('bar'));
@@ -90,22 +102,23 @@ function() {
                 var tpElem,
                     groupMembers;
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('goo');
+                tpElem = TP.byId('goo', windowContext);
                 test.assert.isBlank(tpElem.getGroupName());
 
-                tpElem = TP.byOID('baz');
+                tpElem = TP.byId('baz', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('foo', 'bar', 'baz'));
@@ -129,41 +142,44 @@ function() {
                 var tpElem,
                     groupMembers;
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('gar');
+                tpElem = TP.byId('gar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
-                tpElem = TP.byOID('gaz');
+                tpElem = TP.byId('gaz', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
-                tpElem = TP.byOID('goo');
+                tpElem = TP.byId('goo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'nestedGooGroup');
 
-                groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('foo', 'bar'));
 
-                groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('gar', 'gaz', 'nestedGooStuff'));
 
-                groupMembers = TP.byOID('nestedGooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('nestedGooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('goo'));
@@ -187,50 +203,53 @@ function() {
                 var tpElem,
                     groupMembers;
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('gar');
+                tpElem = TP.byId('gar', windowContext);
                 test.assert.isBlank(tpElem.getGroupName());
 
-                tpElem = TP.byOID('gaz');
+                tpElem = TP.byId('gaz', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
-                tpElem = TP.byOID('mar');
+                tpElem = TP.byId('mar', windowContext);
                 test.assert.isBlank(tpElem.getGroupName());
 
-                tpElem = TP.byOID('maz');
+                tpElem = TP.byId('maz', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
 
-                tpElem = TP.byOID('moofy');
+                tpElem = TP.byId('moofy', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
 
-                tpElem = TP.byOID('moogy');
+                tpElem = TP.byId('moogy', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
 
-                groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('foo', 'bar'));
 
-                groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('gaz'));
 
-                groupMembers = TP.byOID('mooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('mooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('maz', 'moofy', 'moogy'));
@@ -254,36 +273,38 @@ function() {
                 var tpElem,
                     groupMembers;
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isBlank(tpElem.getGroupName());
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isBlank(tpElem.getGroupName());
 
-                tpElem = TP.byOID('onlyThing');
+                tpElem = TP.byId('onlyThing', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
-                tpElem = TP.byOID('gar');
+                tpElem = TP.byId('gar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
-                tpElem = TP.byOID('gaz');
+                tpElem = TP.byId('gaz', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
-                tpElem = TP.byOID('baz');
+                tpElem = TP.byId('baz', windowContext);
                 test.assert.isBlank(tpElem.getGroupName());
 
-                groupMembers = TP.byOID('fooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('onlyThing'));
 
-                groupMembers = TP.byOID('gooGroup').getMembers().collect(
-                                    function(elem) {
-                                        return TP.lid(elem);
-                                    });
+                groupMembers =
+                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                                function(elem) {
+                                    return TP.lid(elem);
+                                });
                 test.assert.isEqualTo(
                         groupMembers,
                         TP.ac('gar', 'gaz'));
@@ -306,13 +327,13 @@ function() {
             function(result) {
                 var tpElem;
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('gooGroup', 'fooGroup'));
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -336,19 +357,19 @@ function() {
             function(result) {
                 var tpElem;
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('fooGroup'));
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('gooGroup', 'fooGroup'));
 
-                tpElem = TP.byOID('baz');
+                tpElem = TP.byId('baz', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -372,19 +393,19 @@ function() {
             function(result) {
                 var tpElem;
 
-                tpElem = TP.byOID('foo');
+                tpElem = TP.byId('foo', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('fooGroup'));
 
-                tpElem = TP.byOID('bar');
+                tpElem = TP.byId('bar', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
                         TP.ac('gooGroup', 'fooGroup'));
 
-                tpElem = TP.byOID('baz');
+                tpElem = TP.byId('baz', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -408,7 +429,7 @@ function() {
             function(result) {
                 var tpElem;
 
-                tpElem = TP.byOID('div1');
+                tpElem = TP.byId('div1', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -416,7 +437,7 @@ function() {
                 test.assert.isNull(tpElem.getPreviousGroupName());
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'mooGroup');
 
-                tpElem = TP.byOID('div2');
+                tpElem = TP.byId('div2', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -424,7 +445,7 @@ function() {
                 test.assert.isNull(tpElem.getPreviousGroupName());
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'mooGroup');
 
-                tpElem = TP.byOID('div3');
+                tpElem = TP.byId('div3', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -432,7 +453,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'gooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'booGroup');
 
-                tpElem = TP.byOID('div4');
+                tpElem = TP.byId('div4', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -440,7 +461,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'gooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'booGroup');
 
-                tpElem = TP.byOID('div5');
+                tpElem = TP.byId('div5', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'booGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -448,7 +469,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isNull(tpElem.getNextGroupName());
 
-                tpElem = TP.byOID('div6');
+                tpElem = TP.byId('div6', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'booGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -473,7 +494,7 @@ function() {
             function(result) {
                 var tpElem;
 
-                tpElem = TP.byOID('div1');
+                tpElem = TP.byId('div1', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -481,7 +502,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'booGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'mooGroup');
 
-                tpElem = TP.byOID('div2');
+                tpElem = TP.byId('div2', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -489,7 +510,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'booGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'mooGroup');
 
-                tpElem = TP.byOID('div3');
+                tpElem = TP.byId('div3', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -497,7 +518,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'gooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'booGroup');
 
-                tpElem = TP.byOID('div4');
+                tpElem = TP.byId('div4', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -505,7 +526,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'gooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'booGroup');
 
-                tpElem = TP.byOID('div5');
+                tpElem = TP.byId('div5', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'booGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -513,7 +534,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getPreviousGroupName(), 'mooGroup');
                 test.assert.isEqualTo(tpElem.getNextGroupName(), 'gooGroup');
 
-                tpElem = TP.byOID('div6');
+                tpElem = TP.byId('div6', windowContext);
                 test.assert.isEqualTo(tpElem.getGroupName(), 'booGroup');
                 test.assert.isEqualTo(
                         tpElem.getGroupChainNames(),
@@ -542,7 +563,7 @@ function() {
                 var parentTPElem,
                     tpElem;
 
-                parentTPElem = TP.byOID('fooStuff');
+                parentTPElem = TP.byId('fooStuff', windowContext);
 
                 parentTPElem.addRawContent('<div id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
 
@@ -552,7 +573,7 @@ function() {
 
                 test.then(
                     function() {
-                        tpElem = TP.byOID('moo');
+                        tpElem = TP.byId('moo', windowContext);
                         test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
                         test.assert.isEqualTo(
                                 tpElem.getGroupChainNames(),

@@ -3497,7 +3497,7 @@ function(aTargetElem, anEvent) {
     //  activate the shared MoveService (an instance of
     //  TP.core.MoveResponder), set it up, activate it and exit.
     if (evtTargetTPElem.willMove()) {
-        if (TP.isValid(moveResponder = TP.byOID('MoveService'))) {
+        if (TP.isValid(moveResponder = TP.bySystemId('MoveService'))) {
             //  Ask the wrapped event target element for its 'drag source'
             //  TP.core.Element. If it can't find one, then it acts as it's own.
             sourceTPElem = evtTargetTPElem.getDragSource();
@@ -3524,7 +3524,7 @@ function(aTargetElem, anEvent) {
     //  activate the shared ResizeService (an instance of
     //  TP.core.ResizeResponder), set it up, activate it and exit.
     if (evtTargetTPElem.willResize()) {
-        if (TP.isValid(resizeResponder = TP.byOID('ResizeService'))) {
+        if (TP.isValid(resizeResponder = TP.bySystemId('ResizeService'))) {
             //  Ask the wrapped event target element for its 'drag source'
             //  TPElement
             sourceTPElem = evtTargetTPElem.getDragSource();
@@ -3551,7 +3551,7 @@ function(aTargetElem, anEvent) {
     //  the drag-and-drop 'source' TPElement and proceed from there.
     if (evtTargetTPElem.willGrab() &&
         TP.isValid(sourceTPElem = evtTargetTPElem.getDNDSource())) {
-        if (TP.isValid(dndResponder = TP.byOID('DNDService'))) {
+        if (TP.isValid(dndResponder = TP.bySystemId('DNDService'))) {
             //  Send a 'TP.sig.DOMDNDInitiate' signal and make sure no one
             //  cancels it
             sig = dndResponder.signal('TP.sig.DOMDNDInitiate');
@@ -3981,7 +3981,7 @@ function() {
         return false;
     }
 
-    if (TP.notValid(dragResponder = TP.byOID('DNDService'))) {
+    if (TP.notValid(dragResponder = TP.bySystemId('DNDService'))) {
         return false;
     }
 

@@ -130,11 +130,14 @@ function() {
 
     this.it('set content - single format - simple substitutions', function(test, options) {
 
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting1.xhtml');
 
         driver = test.getDriver();
+        windowContext = driver.get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -146,7 +149,7 @@ function() {
 
                 TP.str(TP.sys.uidoc());
 
-                elem = TP.byOID('span');
+                elem = TP.byId('span', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', '5555555');
@@ -157,7 +160,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('div');
+                elem = TP.byId('div', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', '100');
@@ -168,7 +171,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('input_text');
+                elem = TP.byId('input_text', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'bill');
@@ -179,7 +182,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('textarea');
+                elem = TP.byId('textarea', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.dc());
@@ -190,7 +193,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('select_single');
+                elem = TP.byId('select_single', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'woof');
@@ -201,7 +204,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('select_single');
+                elem = TP.byId('select_single', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'gurgle');
@@ -212,7 +215,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('select_multiple');
+                elem = TP.byId('select_multiple', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.cc('red'));
@@ -223,7 +226,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('select_multiple');
+                elem = TP.byId('select_multiple', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.cc('yellow'));
@@ -237,7 +240,7 @@ function() {
                 //  NB: We go after elements that do *not* have the 'ui:display'
                 //  attribute, but because they're in a group with an element
                 //  that does, the value should still be formatted.
-                elem = TP.byOID('input_radio_2');
+                elem = TP.byId('input_radio_2', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'woof');
@@ -248,7 +251,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('input_radio_3');
+                elem = TP.byId('input_radio_3', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'gurgle');
@@ -263,7 +266,7 @@ function() {
                 //  attribute, but because they're in a group with an element
                 //  that does, the value should still be formatted.
 
-                elem = TP.byOID('input_checkbox_2');
+                elem = TP.byId('input_checkbox_2', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.cc('red'));
@@ -274,7 +277,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('input_checkbox_3');
+                elem = TP.byId('input_checkbox_3', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.cc('yellow'));
@@ -293,11 +296,14 @@ function() {
 
     this.it('set content - single format - templating', function(test, options) {
 
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting2.xhtml');
 
         driver = test.getDriver();
+        windowContext = driver.get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -307,7 +313,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('span');
+                elem = TP.byId('span', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.hc('foo', 'bar'));
@@ -318,7 +324,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('div');
+                elem = TP.byId('div', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.hc('foo', 'bar'));
@@ -329,7 +335,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('input_text');
+                elem = TP.byId('input_text', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.hc('foo', TP.hc('bar', 'baz')));
@@ -340,7 +346,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('textarea');
+                elem = TP.byId('textarea', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.ac(1, 2, 3));
@@ -359,11 +365,14 @@ function() {
 
     this.it('set content - multiple formats - simple substitutions', function(test, options) {
 
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting3.xhtml');
 
         driver = test.getDriver();
+        windowContext = driver.get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -373,7 +382,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('span');
+                elem = TP.byId('span', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'Bill');
@@ -384,7 +393,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('div');
+                elem = TP.byId('div', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', TP.ac(1, 2, 3));
@@ -403,11 +412,14 @@ function() {
 
     this.it('set content - using type for localization', function(test, options) {
 
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting4.xhtml');
 
         driver = test.getDriver();
+        windowContext = driver.get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -421,7 +433,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('span');
+                elem = TP.byId('span', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'false');
@@ -432,7 +444,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('div');
+                elem = TP.byId('div', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'Hello');
@@ -443,7 +455,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('input_text');
+                elem = TP.byId('input_text', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 1000000.42);
@@ -454,7 +466,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('textarea');
+                elem = TP.byId('textarea', windowContext);
                 test.assert.isElement(elem);
 
                 TP.core.DELocale.set('dateFormat', '%{mmmm}');
@@ -467,7 +479,7 @@ function() {
 
                 //  ---
 
-                elem = TP.byOID('select_single');
+                elem = TP.byId('select_single', windowContext);
                 test.assert.isElement(elem);
 
                 elem.set('value', 'yes');
@@ -489,7 +501,9 @@ TP.core.ElementNode.Inst.describe('TP.core.ElementNode: ui:storage attribute',
 function() {
 
     var unloadURI,
-        loadURI;
+        loadURI,
+
+        windowContext;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -562,6 +576,8 @@ function() {
 
             //  ---
 
+            windowContext = this.getDriver().get('windowContext');
+
             this.getDriver().showTestGUI();
         });
 
@@ -610,7 +626,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                textField = TP.byOID('input_text');
+                textField = TP.byId('input_text', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -629,7 +645,7 @@ function() {
 
                 //  ---
 
-                textArea = TP.byOID('textarea');
+                textArea = TP.byId('textarea', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -648,7 +664,7 @@ function() {
 
                 //  ---
 
-                selectSingle = TP.byOID('select_single');
+                selectSingle = TP.byId('select_single', windowContext);
                 optionToSelect = selectSingle.getElementArray().at(1);
 
                 test.getDriver().startSequence().
@@ -664,7 +680,7 @@ function() {
 
                 //  ---
 
-                selectMultiple = TP.byOID('select_multiple');
+                selectMultiple = TP.byId('select_multiple', windowContext);
                 optionToSelect = selectMultiple.getElementArray().at(1);
 
                 test.getDriver().startSequence().
@@ -683,7 +699,7 @@ function() {
                 //  NB: We go after elements that do *not* have the 'ui:storage'
                 //  attribute, but because they're in a group with an element
                 //  that does, the value should still be formatted.
-                inputRadio2 = TP.byOID('input_radio_2');
+                inputRadio2 = TP.byId('input_radio_2', windowContext);
                 test.assert.isElement(inputRadio2);
 
                 test.getDriver().startSequence().
@@ -699,7 +715,7 @@ function() {
 
                 //  ---
 
-                inputRadio3 = TP.byOID('input_radio_3');
+                inputRadio3 = TP.byId('input_radio_3', windowContext);
                 test.assert.isElement(inputRadio3);
 
                 test.getDriver().startSequence().
@@ -719,7 +735,7 @@ function() {
                 //  attribute, but because they're in a group with an element
                 //  that does, the value should still be formatted.
 
-                inputCheckbox2 = TP.byOID('input_checkbox_2');
+                inputCheckbox2 = TP.byId('input_checkbox_2', windowContext);
                 test.assert.isElement(inputCheckbox2);
 
                 test.getDriver().startSequence().
@@ -735,7 +751,7 @@ function() {
 
                 //  ---
 
-                inputCheckbox3 = TP.byOID('input_checkbox_3');
+                inputCheckbox3 = TP.byId('input_checkbox_3', windowContext);
                 test.assert.isElement(inputCheckbox3);
 
                 test.getDriver().startSequence().
@@ -772,7 +788,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                textField = TP.byOID('input_text');
+                textField = TP.byId('input_text', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -791,7 +807,7 @@ function() {
 
                 //  ---
 
-                textArea = TP.byOID('textarea');
+                textArea = TP.byId('textarea', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -829,7 +845,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                textField = TP.byOID('input_text');
+                textField = TP.byId('input_text', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -848,7 +864,7 @@ function() {
 
                 //  ---
 
-                textArea = TP.byOID('textarea');
+                textArea = TP.byId('textarea', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {

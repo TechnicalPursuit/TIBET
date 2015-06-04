@@ -53,12 +53,15 @@ function() {
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            TP.byId('testField').value,
+                            TP.byId('testField',
+                                    driver.get('windowContext'),
+                                    false).value,
                             'ADCE');
                     });
             });
 
-        //testField = TP.byOID('testField');
+        //testField = TP.byId('testField',
+        //                      test.getDriver().get('windowContext'));
 
         //testField.focus();
         //driver.startSequence().click(TP.cpc('#testField')).perform();

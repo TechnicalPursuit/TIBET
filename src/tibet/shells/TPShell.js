@@ -2348,7 +2348,7 @@ function(aWindow) {
     win = TP.ifInvalid(aWindow, window);
     if (!TP.isWindow(win)) {
         if (TP.isString(win)) {
-            win = TP.byOID(win);
+            win = TP.bySystemId(win);
             if (TP.notValid(win)) {
                 return this.raise('TP.sig.InvalidWindow');
             } else if (!TP.isWindow(win)) {

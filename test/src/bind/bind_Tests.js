@@ -215,8 +215,11 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind1_person'),
@@ -233,7 +236,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind1_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -242,7 +245,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -290,13 +293,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind2_person'),
@@ -313,7 +319,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind2_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -324,7 +330,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -332,7 +338,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -340,7 +346,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -348,7 +354,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -357,7 +363,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -381,7 +387,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -402,7 +408,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -420,7 +426,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -437,7 +443,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -478,13 +484,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind3_person'),
@@ -501,7 +510,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind3_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -512,7 +521,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -520,7 +529,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -528,7 +537,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -536,7 +545,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -545,7 +554,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -569,7 +578,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -590,7 +599,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -608,7 +617,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -625,7 +634,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -666,13 +675,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind4_person'),
@@ -689,7 +701,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind4_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -700,7 +712,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -708,7 +720,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -716,7 +728,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -724,7 +736,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -733,7 +745,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -757,7 +769,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -778,7 +790,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -796,7 +808,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -813,7 +825,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -854,13 +866,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind5_person'),
@@ -877,7 +892,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind5_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -888,7 +903,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -896,7 +911,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -904,7 +919,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -912,7 +927,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -921,7 +936,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -945,7 +960,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -966,7 +981,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -984,7 +999,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -1001,7 +1016,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -1042,8 +1057,11 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind6_person'),
@@ -1060,7 +1078,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind6_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -1069,7 +1087,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1117,13 +1135,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind7_person'),
@@ -1140,7 +1161,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind7_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -1151,7 +1172,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -1159,7 +1180,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -1167,7 +1188,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -1175,7 +1196,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -1184,7 +1205,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1208,7 +1229,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1229,7 +1250,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -1247,7 +1268,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -1264,7 +1285,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -1305,13 +1326,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind8_person'),
@@ -1328,7 +1352,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind8_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -1339,7 +1363,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -1347,7 +1371,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -1355,7 +1379,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -1363,7 +1387,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -1372,7 +1396,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1396,7 +1420,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1417,7 +1441,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -1435,7 +1459,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -1452,7 +1476,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -1493,13 +1517,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind9_person'),
@@ -1516,7 +1543,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind9_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -1527,7 +1554,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -1535,7 +1562,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -1543,7 +1570,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -1551,7 +1578,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -1560,7 +1587,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1584,7 +1611,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1605,7 +1632,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -1623,7 +1650,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -1640,7 +1667,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -1681,13 +1708,16 @@ function() {
 
         test.then(
             function() {
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField,
                     descriptionField,
                     genderField,
                     genderFieldOption1,
                     petRadio3,
                     colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind10_person'),
@@ -1704,7 +1734,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind10_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField').get('value'),
+                    TP.byId('lastNameField', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -1715,7 +1745,7 @@ function() {
                 //  test it too
 
                 test.assert.isEqualTo(
-                    TP.byOID('descriptionField').get('value'),
+                    TP.byId('descriptionField', windowContext).get('value'),
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
@@ -1723,7 +1753,7 @@ function() {
                     'Ms. Jones is a great lady');
 
                 test.assert.isEqualTo(
-                    TP.byOID('genderField').get('value'),
+                    TP.byId('genderField', windowContext).get('value'),
                     'f');
 
                 test.assert.isEqualTo(
@@ -1731,7 +1761,7 @@ function() {
                     'f');
 
                 test.assert.isEqualTo(
-                    TP.byOID('petRadio1').get('value'),
+                    TP.byId('petRadio1', windowContext).get('value'),
                     'cat');
 
                 test.assert.isEqualTo(
@@ -1739,7 +1769,7 @@ function() {
                     'cat');
 
                 test.assert.isEqualTo(
-                    TP.byOID('colorCheckbox1').get('value'),
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
                     TP.ac('blue'));
 
                 test.assert.isEqualTo(
@@ -1748,7 +1778,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField = TP.byOID('lastNameField');
+                lastNameField = TP.byId('lastNameField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1772,7 +1802,7 @@ function() {
                 //  firstNameField is just another text field - same logic
                 //  should work
 
-                descriptionField = TP.byOID('descriptionField');
+                descriptionField = TP.byId('descriptionField', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1793,7 +1823,7 @@ function() {
                             'She is great!');
                     });
 
-                genderField = TP.byOID('genderField');
+                genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getElementArray().at(0);
 
                 test.getDriver().startSequence().
@@ -1811,7 +1841,7 @@ function() {
                             'm');
                     });
 
-                petRadio3 = TP.byOID('petRadio3');
+                petRadio3 = TP.byId('petRadio3', windowContext);
 
                 test.getDriver().startSequence().
                     click(petRadio3).
@@ -1828,7 +1858,7 @@ function() {
                             'fish');
                     });
 
-                colorCheckbox1 = TP.byOID('colorCheckbox1');
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
                 test.getDriver().startSequence().
                     click(colorCheckbox1).
@@ -1908,9 +1938,12 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind11_person'),
@@ -1935,7 +1968,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind11_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -1943,7 +1976,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -1952,7 +1985,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField1');
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -1973,7 +2006,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField2');
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2022,9 +2055,12 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind12_person'),
@@ -2049,7 +2085,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind12_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -2057,7 +2093,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -2066,7 +2102,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField1');
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2087,7 +2123,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField2');
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2136,9 +2172,12 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind13_person'),
@@ -2163,7 +2202,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind13_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -2171,7 +2210,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -2180,7 +2219,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField1');
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2201,7 +2240,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField2');
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2250,9 +2289,12 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind14_person'),
@@ -2277,7 +2319,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind14_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -2285,7 +2327,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -2294,7 +2336,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField1');
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2315,7 +2357,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField2');
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2394,9 +2436,12 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind15_person'),
@@ -2409,7 +2454,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind15_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -2417,7 +2462,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -2426,7 +2471,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField1');
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2447,7 +2492,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField2');
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2496,11 +2541,14 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2,
                     addressStreetField11,
                     addressCityField22;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind16_person'),
@@ -2515,7 +2563,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -2523,7 +2571,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField11').get('value'),
+                    TP.byId('addressStreetField11', windowContext).get('value'),
                     '111 Main St.');
 
                 test.assert.isEqualTo(
@@ -2531,7 +2579,7 @@ function() {
                     '111 Main St.');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField12').get('value'),
+                    TP.byId('addressStreetField12', windowContext).get('value'),
                     '222 State St.');
 
                 test.assert.isEqualTo(
@@ -2541,7 +2589,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -2549,7 +2597,7 @@ function() {
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField21').get('value'),
+                    TP.byId('addressCityField21', windowContext).get('value'),
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
@@ -2557,7 +2605,7 @@ function() {
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField22').get('value'),
+                    TP.byId('addressCityField22', windowContext).get('value'),
                     'One More Town');
 
                 test.assert.isEqualTo(
@@ -2566,7 +2614,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField1');
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2587,7 +2635,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField2');
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2608,7 +2656,7 @@ function() {
                             'Weber');
                     });
 
-                addressStreetField11 = TP.byOID('addressStreetField11');
+                addressStreetField11 = TP.byId('addressStreetField11', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2629,7 +2677,7 @@ function() {
                             '555 3rd Av');
                     });
 
-                addressCityField22 = TP.byOID('addressCityField22');
+                addressCityField22 = TP.byId('addressCityField22', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2676,9 +2724,12 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind17_person'),
@@ -2691,7 +2742,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:Bind17_person').getResource();
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField0').get('value'),
+                    TP.byId('lastNameField0', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -2699,7 +2750,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -2708,7 +2759,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField0');
+                lastNameField1 = TP.byId('lastNameField0', windowContext);
 
                 lastNameField1.clearValue();
 
@@ -2731,7 +2782,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField1');
+                lastNameField2 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2778,11 +2829,14 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     lastNameField1,
                     lastNameField2,
                     addressStreetField00,
                     addressCityField11;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:Bind18_person'),
@@ -2797,7 +2851,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField0').get('value'),
+                    TP.byId('lastNameField0', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -2805,7 +2859,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField00').get('value'),
+                    TP.byId('addressStreetField00', windowContext).get('value'),
                     '111 Main St.');
 
                 test.assert.isEqualTo(
@@ -2813,7 +2867,7 @@ function() {
                     '111 Main St.');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField01').get('value'),
+                    TP.byId('addressStreetField01', windowContext).get('value'),
                     '222 State St.');
 
                 test.assert.isEqualTo(
@@ -2823,7 +2877,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -2831,7 +2885,7 @@ function() {
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField10').get('value'),
+                    TP.byId('addressCityField10', windowContext).get('value'),
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
@@ -2839,7 +2893,7 @@ function() {
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField11').get('value'),
+                    TP.byId('addressCityField11', windowContext).get('value'),
                     'One More Town');
 
                 test.assert.isEqualTo(
@@ -2848,7 +2902,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byOID('lastNameField0');
+                lastNameField1 = TP.byId('lastNameField0', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2869,7 +2923,7 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byOID('lastNameField1');
+                lastNameField2 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2890,7 +2944,7 @@ function() {
                             'Weber');
                     });
 
-                addressStreetField00 = TP.byOID('addressStreetField00');
+                addressStreetField00 = TP.byId('addressStreetField00', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2911,7 +2965,7 @@ function() {
                             '555 3rd Av');
                     });
 
-                addressCityField11 = TP.byOID('addressCityField11');
+                addressCityField11 = TP.byId('addressCityField11', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -2958,41 +3012,49 @@ function() {
         test.then(
             function() {
 
-                var repeatIndexField,
+                var windowContext,
+
+                    repeatIndexField,
                     repeatSizeField;
 
-                repeatIndexField = TP.byOID('repeatIndexField');
-                repeatSizeField = TP.byOID('repeatSizeField');
+                windowContext = test.getDriver().get('windowContext');
+
+                repeatIndexField = TP.byId('repeatIndexField', windowContext);
+                repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatIndexField').get('value'),
+                    TP.byId('repeatIndexField', windowContext).get('value'),
                     '1');
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatSizeField').get('value'),
+                    TP.byId('repeatSizeField', windowContext).get('value'),
                     '2');
 
                 //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(TP.byId('firstNameField1'));
-                test.assert.isDisplayed(TP.byId('lastNameField1'));
-                test.assert.isDisplayed(TP.byId('firstNameField2'));
-                test.assert.isDisplayed(TP.byId('lastNameField2'));
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField2', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField2', windowContext, false));
 
                 //  And have the following values
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField1').get('value'),
+                    TP.byId('firstNameField1', windowContext).get('value'),
                     'Joe');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField2').get('value'),
+                    TP.byId('firstNameField2', windowContext).get('value'),
                     'John');
 
                 //  Change the content via 'user' interaction
@@ -3013,26 +3075,30 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField3'));
-                        test.assert.isDisplayed(TP.byId('lastNameField3'));
-                        test.assert.isDisplayed(TP.byId('firstNameField4'));
-                        test.assert.isDisplayed(TP.byId('lastNameField4'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField4', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField4', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField3').get('value'),
+                            TP.byId('lastNameField3', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField3').get('value'),
+                            TP.byId('firstNameField3', windowContext).get('value'),
                             'Billy');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField4').get('value'),
+                            TP.byId('lastNameField4', windowContext).get('value'),
                             'Professional');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField4').get('value'),
+                            TP.byId('firstNameField4', windowContext).get('value'),
                             'Pamela');
                     });
 
@@ -3064,26 +3130,30 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField1'));
-                        test.assert.isDisplayed(TP.byId('lastNameField1'));
-                        test.assert.isDisplayed(TP.byId('firstNameField2'));
-                        test.assert.isDisplayed(TP.byId('lastNameField2'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField2', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField1').get('value'),
+                            TP.byId('lastNameField1', windowContext).get('value'),
                             'Jones');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField1').get('value'),
+                            TP.byId('firstNameField1', windowContext).get('value'),
                             'John');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField2').get('value'),
+                            TP.byId('lastNameField2', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField2').get('value'),
+                            TP.byId('firstNameField2', windowContext).get('value'),
                             'Billy');
                     });
 
@@ -3110,57 +3180,65 @@ function() {
         test.then(
             function() {
 
-                var repeatIndexField,
+                var windowContext,
+
+                    repeatIndexField,
                     repeatSizeField;
 
-                repeatIndexField = TP.byOID('repeatIndexField');
-                repeatSizeField = TP.byOID('repeatSizeField');
+                windowContext = test.getDriver().get('windowContext');
+
+                repeatIndexField = TP.byId('repeatIndexField', windowContext);
+                repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatIndexField').get('value'),
+                    TP.byId('repeatIndexField', windowContext).get('value'),
                     '1');
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatSizeField').get('value'),
+                    TP.byId('repeatSizeField', windowContext).get('value'),
                     '2');
 
                 //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(TP.byId('firstNameField1'));
-                test.assert.isDisplayed(TP.byId('lastNameField1'));
-                test.assert.isDisplayed(TP.byId('firstNameField2'));
-                test.assert.isDisplayed(TP.byId('lastNameField2'));
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField2', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField2', windowContext, false));
 
                 //  And have the following values
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField1').get('value'),
+                    TP.byId('firstNameField1', windowContext).get('value'),
                     'Joe');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField11').get('value'),
+                    TP.byId('addressStreetField11', windowContext).get('value'),
                     '111 Main St.');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField12').get('value'),
+                    TP.byId('addressStreetField12', windowContext).get('value'),
                     '222 State St.');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField2').get('value'),
+                    TP.byId('lastNameField2', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField2').get('value'),
+                    TP.byId('firstNameField2', windowContext).get('value'),
                     'John');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField21').get('value'),
+                    TP.byId('addressCityField21', windowContext).get('value'),
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField22').get('value'),
+                    TP.byId('addressCityField22', windowContext).get('value'),
                     'One More Town');
 
                 //  Change the content via 'user' interaction
@@ -3181,47 +3259,55 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField3'));
-                        test.assert.isDisplayed(TP.byId('lastNameField3'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField31'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField32'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField31', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField32', windowContext, false));
 
-                        test.assert.isDisplayed(TP.byId('firstNameField4'));
-                        test.assert.isDisplayed(TP.byId('lastNameField4'));
-                        test.assert.isDisplayed(TP.byId('addressCityField41'));
-                        test.assert.isDisplayed(TP.byId('addressCityField42'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField4', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField4', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressCityField41', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressCityField42', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField3').get('value'),
+                            TP.byId('lastNameField3', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField3').get('value'),
+                            TP.byId('firstNameField3', windowContext).get('value'),
                             'Billy');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField31').get('value'),
+                            TP.byId('addressStreetField31', windowContext).get('value'),
                             '#27 Ritz Ave. Apt A.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField32').get('value'),
+                            TP.byId('addressStreetField32', windowContext).get('value'),
                             '#4 Country Rd.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField4').get('value'),
+                            TP.byId('lastNameField4', windowContext).get('value'),
                             'Professional');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField4').get('value'),
+                            TP.byId('firstNameField4', windowContext).get('value'),
                             'Pamela');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField41').get('value'),
+                            TP.byId('addressCityField41', windowContext).get('value'),
                             'High Power Place');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField42').get('value'),
+                            TP.byId('addressCityField42', windowContext).get('value'),
                             'Middle Of Nowhere');
                     });
 
@@ -3253,47 +3339,55 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField1'));
-                        test.assert.isDisplayed(TP.byId('lastNameField1'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField11'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField12'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField11', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField12', windowContext, false));
 
-                        test.assert.isDisplayed(TP.byId('firstNameField2'));
-                        test.assert.isDisplayed(TP.byId('lastNameField2'));
-                        test.assert.isDisplayed(TP.byId('addressCityField21'));
-                        test.assert.isDisplayed(TP.byId('addressCityField22'));
+                        test.assert.isDisplayed(
+                                TP.byId('firstNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                                TP.byId('lastNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                                TP.byId('addressCityField21', windowContext, false));
+                        test.assert.isDisplayed(
+                                TP.byId('addressCityField22', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField1').get('value'),
+                            TP.byId('lastNameField1', windowContext).get('value'),
                             'Jones');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField1').get('value'),
+                            TP.byId('firstNameField1', windowContext).get('value'),
                             'John');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField11').get('value'),
+                            TP.byId('addressStreetField11', windowContext).get('value'),
                             '333 1st Av.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField12').get('value'),
+                            TP.byId('addressStreetField12', windowContext).get('value'),
                             '444 2nd Av.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField2').get('value'),
+                            TP.byId('lastNameField2', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField2').get('value'),
+                            TP.byId('firstNameField2', windowContext).get('value'),
                             'Billy');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField21').get('value'),
+                            TP.byId('addressCityField21', windowContext).get('value'),
                             'In Your Town');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField22').get('value'),
+                            TP.byId('addressCityField22', windowContext).get('value'),
                             'Middle Of Nowhere');
                     });
 
@@ -3320,41 +3414,49 @@ function() {
         test.then(
             function() {
 
-                var repeatIndexField,
+                var windowContext,
+
+                    repeatIndexField,
                     repeatSizeField;
 
-                repeatIndexField = TP.byOID('repeatIndexField');
-                repeatSizeField = TP.byOID('repeatSizeField');
+                windowContext = test.getDriver().get('windowContext');
+
+                repeatIndexField = TP.byId('repeatIndexField', windowContext);
+                repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatIndexField').get('value'),
+                    TP.byId('repeatIndexField', windowContext).get('value'),
                     '0');
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatSizeField').get('value'),
+                    TP.byId('repeatSizeField', windowContext).get('value'),
                     '2');
 
                 //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(TP.byId('firstNameField0'));
-                test.assert.isDisplayed(TP.byId('lastNameField0'));
-                test.assert.isDisplayed(TP.byId('firstNameField1'));
-                test.assert.isDisplayed(TP.byId('lastNameField1'));
+                test.assert.isDisplayed(
+                    TP.byId('firstNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                    TP.byId('lastNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                    TP.byId('firstNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                    TP.byId('lastNameField1', windowContext, false));
 
                 //  And have the following values
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField0').get('value'),
+                    TP.byId('lastNameField0', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField0').get('value'),
+                    TP.byId('firstNameField0', windowContext).get('value'),
                     'Joe');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField1').get('value'),
+                    TP.byId('firstNameField1', windowContext).get('value'),
                     'John');
 
                 //  Change the content via 'user' interaction
@@ -3375,26 +3477,30 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField2'));
-                        test.assert.isDisplayed(TP.byId('lastNameField2'));
-                        test.assert.isDisplayed(TP.byId('firstNameField3'));
-                        test.assert.isDisplayed(TP.byId('lastNameField3'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField3', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField2').get('value'),
+                            TP.byId('lastNameField2', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField2').get('value'),
+                            TP.byId('firstNameField2', windowContext).get('value'),
                             'Billy');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField3').get('value'),
+                            TP.byId('lastNameField3', windowContext).get('value'),
                             'Professional');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField3').get('value'),
+                            TP.byId('firstNameField3', windowContext).get('value'),
                             'Pamela');
                     });
 
@@ -3426,26 +3532,30 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField0'));
-                        test.assert.isDisplayed(TP.byId('lastNameField0'));
-                        test.assert.isDisplayed(TP.byId('firstNameField1'));
-                        test.assert.isDisplayed(TP.byId('lastNameField1'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField1', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField0').get('value'),
+                            TP.byId('lastNameField0', windowContext).get('value'),
                             'Jones');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField0').get('value'),
+                            TP.byId('firstNameField0', windowContext).get('value'),
                             'John');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField1').get('value'),
+                            TP.byId('lastNameField1', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField1').get('value'),
+                            TP.byId('firstNameField1', windowContext).get('value'),
                             'Billy');
                     });
 
@@ -3472,57 +3582,65 @@ function() {
         test.then(
             function() {
 
-                var repeatIndexField,
+                var windowContext,
+
+                    repeatIndexField,
                     repeatSizeField;
 
-                repeatIndexField = TP.byOID('repeatIndexField');
-                repeatSizeField = TP.byOID('repeatSizeField');
+                windowContext = test.getDriver().get('windowContext');
+
+                repeatIndexField = TP.byId('repeatIndexField', windowContext);
+                repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatIndexField').get('value'),
+                    TP.byId('repeatIndexField', windowContext).get('value'),
                     '0');
 
                 test.assert.isEqualTo(
-                    TP.byOID('repeatSizeField').get('value'),
+                    TP.byId('repeatSizeField', windowContext).get('value'),
                     '2');
 
                 //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(TP.byId('firstNameField0'));
-                test.assert.isDisplayed(TP.byId('lastNameField0'));
-                test.assert.isDisplayed(TP.byId('firstNameField1'));
-                test.assert.isDisplayed(TP.byId('lastNameField1'));
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField1', windowContext, false));
 
                 //  And have the following values
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField0').get('value'),
+                    TP.byId('lastNameField0', windowContext).get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField0').get('value'),
+                    TP.byId('firstNameField0', windowContext).get('value'),
                     'Joe');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField00').get('value'),
+                    TP.byId('addressStreetField00', windowContext).get('value'),
                     '111 Main St.');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressStreetField01').get('value'),
+                    TP.byId('addressStreetField01', windowContext).get('value'),
                     '222 State St.');
 
                 test.assert.isEqualTo(
-                    TP.byOID('lastNameField1').get('value'),
+                    TP.byId('lastNameField1', windowContext).get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byOID('firstNameField1').get('value'),
+                    TP.byId('firstNameField1', windowContext).get('value'),
                     'John');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField10').get('value'),
+                    TP.byId('addressCityField10', windowContext).get('value'),
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
-                    TP.byOID('addressCityField11').get('value'),
+                    TP.byId('addressCityField11', windowContext).get('value'),
                     'One More Town');
 
                 //  Change the content via 'user' interaction
@@ -3543,47 +3661,55 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField2'));
-                        test.assert.isDisplayed(TP.byId('lastNameField2'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField20'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField21'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField20', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField21', windowContext, false));
 
-                        test.assert.isDisplayed(TP.byId('firstNameField3'));
-                        test.assert.isDisplayed(TP.byId('lastNameField3'));
-                        test.assert.isDisplayed(TP.byId('addressCityField30'));
-                        test.assert.isDisplayed(TP.byId('addressCityField31'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                                TP.byId('addressCityField30', windowContext, false));
+                        test.assert.isDisplayed(
+                                TP.byId('addressCityField31', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField2').get('value'),
+                            TP.byId('lastNameField2', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField2').get('value'),
+                            TP.byId('firstNameField2', windowContext).get('value'),
                             'Billy');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField20').get('value'),
+                            TP.byId('addressStreetField20', windowContext).get('value'),
                             '#27 Ritz Ave. Apt A.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField21').get('value'),
+                            TP.byId('addressStreetField21', windowContext).get('value'),
                             '#4 Country Rd.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField3').get('value'),
+                            TP.byId('lastNameField3', windowContext).get('value'),
                             'Professional');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField3').get('value'),
+                            TP.byId('firstNameField3', windowContext).get('value'),
                             'Pamela');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField30').get('value'),
+                            TP.byId('addressCityField30', windowContext).get('value'),
                             'High Power Place');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField31').get('value'),
+                            TP.byId('addressCityField31', windowContext).get('value'),
                             'Middle Of Nowhere');
                     });
 
@@ -3615,47 +3741,55 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(TP.byId('firstNameField0'));
-                        test.assert.isDisplayed(TP.byId('lastNameField0'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField00'));
-                        test.assert.isDisplayed(TP.byId('addressStreetField01'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField00', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField01', windowContext, false));
 
-                        test.assert.isDisplayed(TP.byId('firstNameField1'));
-                        test.assert.isDisplayed(TP.byId('lastNameField1'));
-                        test.assert.isDisplayed(TP.byId('addressCityField10'));
-                        test.assert.isDisplayed(TP.byId('addressCityField11'));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressCityField10', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressCityField11', windowContext, false));
 
                         //  And have the following values
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField0').get('value'),
+                            TP.byId('lastNameField0', windowContext).get('value'),
                             'Jones');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField0').get('value'),
+                            TP.byId('firstNameField0', windowContext).get('value'),
                             'John');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField00').get('value'),
+                            TP.byId('addressStreetField00', windowContext).get('value'),
                             '333 1st Av.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressStreetField01').get('value'),
+                            TP.byId('addressStreetField01', windowContext).get('value'),
                             '444 2nd Av.');
 
                         test.assert.isEqualTo(
-                            TP.byOID('lastNameField1').get('value'),
+                            TP.byId('lastNameField1', windowContext).get('value'),
                             'Homemaker');
 
                         test.assert.isEqualTo(
-                            TP.byOID('firstNameField1').get('value'),
+                            TP.byId('firstNameField1', windowContext).get('value'),
                             'Billy');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField10').get('value'),
+                            TP.byId('addressCityField10', windowContext).get('value'),
                             'In Your Town');
 
                         test.assert.isEqualTo(
-                            TP.byOID('addressCityField11').get('value'),
+                            TP.byId('addressCityField11', windowContext).get('value'),
                             'Middle Of Nowhere');
                     });
 
@@ -3702,13 +3836,19 @@ function() {
         test.then(
             function() {
 
-                var dataRows,
+                var windowContext,
+
+                    dataRows,
                     dataCells;
 
-                dataRows = TP.byCSS('tr', TP.byId('people'));
+                windowContext = test.getDriver().get('windowContext');
+
+                dataRows = TP.byCSS(
+                            'tr', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS('td', TP.byId('people'));
+                dataCells = TP.byCSS(
+                            'td', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataCells.getSize(), 8);
 
                 test.assert.isEqualTo(
@@ -3760,13 +3900,19 @@ function() {
 
         test.then(
             function() {
-                var dataRows,
+                var windowContext,
+
+                    dataRows,
                     dataCells;
 
-                dataRows = TP.byCSS('tr', TP.byId('people'));
+                windowContext = test.getDriver().get('windowContext');
+
+                dataRows = TP.byCSS(
+                            'tr', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS('td', TP.byId('people'));
+                dataCells = TP.byCSS(
+                            'td', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataCells.getSize(), 8);
 
                 test.assert.isEqualTo(
@@ -3839,12 +3985,15 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind25_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -3898,12 +4047,16 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind26_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -3957,12 +4110,16 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind27_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4016,12 +4173,16 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind28_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4075,14 +4236,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind29_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4150,14 +4315,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind30_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4226,14 +4395,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind31_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4301,14 +4474,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind32_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4376,12 +4553,16 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind33_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4435,12 +4616,16 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind34_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4494,12 +4679,16 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind35_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4553,12 +4742,16 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField;
+
+                windowContext = test.getDriver().get('windowContext');
 
                 modelObj = TP.uc('urn:tibet:Bind36_person').getResource();
 
-                colorField = TP.byOID('colorField');
+                colorField = TP.byId('colorField', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4612,14 +4805,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind37_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4687,14 +4884,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind38_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4763,14 +4964,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind39_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4838,14 +5043,18 @@ function() {
         test.then(
             function() {
 
-                var modelObj,
+                var windowContext,
+
+                    modelObj,
                     colorField,
                     colorSpan;
 
+                windowContext = test.getDriver().get('windowContext');
+
                 modelObj = TP.uc('urn:tibet:Bind40_person').getResource();
 
-                colorField = TP.byOID('colorField');
-                colorSpan = TP.byOID('colorSpan');
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
 
                 test.assert.isEqualTo(
                     colorField.get('value'),
@@ -4934,11 +5143,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindCNAttr');
-                jsonField = TP.byOID('jsonBindCNAttr');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindCNAttr', windowContext);
+                jsonField = TP.byId('jsonBindCNAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -4947,8 +5160,8 @@ function() {
                     jsonField.getValue(),
                     'html:input');
 
-                xmlField = TP.byOID('xmlBindStdinAttr');
-                jsonField = TP.byOID('jsonBindStdinAttr');
+                xmlField = TP.byId('xmlBindStdinAttr', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -4982,11 +5195,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindAttr');
-                jsonField = TP.byOID('jsonBindAttr');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindAttr', windowContext);
+                jsonField = TP.byId('jsonBindAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -4995,8 +5212,8 @@ function() {
                     jsonField.getValue(),
                     'The canonical name: html:input');
 
-                xmlField = TP.byOID('xmlBindStdinAttr');
-                jsonField = TP.byOID('jsonBindStdinAttr');
+                xmlField = TP.byId('xmlBindStdinAttr', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5030,11 +5247,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindAttr');
-                jsonField = TP.byOID('jsonBindAttr');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindAttr', windowContext);
+                jsonField = TP.byId('jsonBindAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5043,8 +5264,8 @@ function() {
                     jsonField.getValue(),
                     'html:input');
 
-                xmlField = TP.byOID('xmlBindStdinAttr');
-                jsonField = TP.byOID('jsonBindStdinAttr');
+                xmlField = TP.byId('xmlBindStdinAttr', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5078,11 +5299,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindAttr');
-                jsonField = TP.byOID('jsonBindAttr');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindAttr', windowContext);
+                jsonField = TP.byId('jsonBindAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5091,8 +5316,8 @@ function() {
                     jsonField.getValue(),
                     'The canonical name: html:input');
 
-                xmlField = TP.byOID('xmlBindStdinAttr');
-                jsonField = TP.byOID('jsonBindStdinAttr');
+                xmlField = TP.byId('xmlBindStdinAttr', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5126,11 +5351,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindStdinAttr1');
-                jsonField = TP.byOID('jsonBindStdinAttr0');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5139,8 +5368,8 @@ function() {
                     jsonField.getValue(),
                     'SMITH');
 
-                xmlField = TP.byOID('xmlBindStdinAttr2');
-                jsonField = TP.byOID('jsonBindStdinAttr1');
+                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5149,8 +5378,8 @@ function() {
                     jsonField.getValue(),
                     'JONES');
 
-                xmlField = TP.byOID('xmlBindIndexAttr1');
-                jsonField = TP.byOID('jsonBindIndexAttr0');
+                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5159,8 +5388,8 @@ function() {
                     jsonField.getValue(),
                     '0');
 
-                xmlField = TP.byOID('xmlBindIndexAttr2');
-                jsonField = TP.byOID('jsonBindIndexAttr1');
+                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5169,8 +5398,8 @@ function() {
                     jsonField.getValue(),
                     '1');
 
-                xmlField = TP.byOID('firstNameField1');
-                jsonField = TP.byOID('lastNameField0');
+                xmlField = TP.byId('firstNameField1', windowContext);
+                jsonField = TP.byId('lastNameField0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5179,8 +5408,8 @@ function() {
                     jsonField.getValue(),
                     'Smith');
 
-                xmlField = TP.byOID('firstNameField2');
-                jsonField = TP.byOID('lastNameField1');
+                xmlField = TP.byId('firstNameField2', windowContext);
+                jsonField = TP.byId('lastNameField1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5214,11 +5443,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindStdinAttr1');
-                jsonField = TP.byOID('jsonBindStdinAttr0');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5227,8 +5460,8 @@ function() {
                     jsonField.getValue(),
                     'The last name: SMITH');
 
-                xmlField = TP.byOID('xmlBindStdinAttr2');
-                jsonField = TP.byOID('jsonBindStdinAttr1');
+                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5237,8 +5470,8 @@ function() {
                     jsonField.getValue(),
                     'The last name: JONES');
 
-                xmlField = TP.byOID('xmlBindIndexAttr1');
-                jsonField = TP.byOID('jsonBindIndexAttr0');
+                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5247,8 +5480,8 @@ function() {
                     jsonField.getValue(),
                     'The index: 0');
 
-                xmlField = TP.byOID('xmlBindIndexAttr2');
-                jsonField = TP.byOID('jsonBindIndexAttr1');
+                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5257,8 +5490,8 @@ function() {
                     jsonField.getValue(),
                     'The index: 1');
 
-                xmlField = TP.byOID('firstNameField1');
-                jsonField = TP.byOID('lastNameField0');
+                xmlField = TP.byId('firstNameField1', windowContext);
+                jsonField = TP.byId('lastNameField0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5267,8 +5500,8 @@ function() {
                     jsonField.getValue(),
                     'The last name: Smith');
 
-                xmlField = TP.byOID('firstNameField2');
-                jsonField = TP.byOID('lastNameField1');
+                xmlField = TP.byId('firstNameField2', windowContext);
+                jsonField = TP.byId('lastNameField1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5301,11 +5534,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindStdinAttr1');
-                jsonField = TP.byOID('jsonBindStdinAttr0');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5314,8 +5551,8 @@ function() {
                     jsonField.getValue(),
                     'SMITH');
 
-                xmlField = TP.byOID('xmlBindStdinAttr2');
-                jsonField = TP.byOID('jsonBindStdinAttr1');
+                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5324,8 +5561,8 @@ function() {
                     jsonField.getValue(),
                     'JONES');
 
-                xmlField = TP.byOID('xmlBindIndexAttr1');
-                jsonField = TP.byOID('jsonBindIndexAttr0');
+                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5334,8 +5571,8 @@ function() {
                     jsonField.getValue(),
                     '0');
 
-                xmlField = TP.byOID('xmlBindIndexAttr2');
-                jsonField = TP.byOID('jsonBindIndexAttr1');
+                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5344,8 +5581,8 @@ function() {
                     jsonField.getValue(),
                     '1');
 
-                xmlField = TP.byOID('firstNameField1');
-                jsonField = TP.byOID('lastNameField0');
+                xmlField = TP.byId('firstNameField1', windowContext);
+                jsonField = TP.byId('lastNameField0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5354,8 +5591,8 @@ function() {
                     jsonField.getValue(),
                     'Smith');
 
-                xmlField = TP.byOID('firstNameField2');
-                jsonField = TP.byOID('lastNameField1');
+                xmlField = TP.byId('firstNameField2', windowContext);
+                jsonField = TP.byId('lastNameField1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5389,11 +5626,15 @@ function() {
         test.then(
             function() {
 
-                var xmlField,
+                var windowContext,
+
+                    xmlField,
                     jsonField;
 
-                xmlField = TP.byOID('xmlBindStdinAttr1');
-                jsonField = TP.byOID('jsonBindStdinAttr0');
+                windowContext = test.getDriver().get('windowContext');
+
+                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5402,8 +5643,8 @@ function() {
                     jsonField.getValue(),
                     'The last name: SMITH');
 
-                xmlField = TP.byOID('xmlBindStdinAttr2');
-                jsonField = TP.byOID('jsonBindStdinAttr1');
+                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
+                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5412,8 +5653,8 @@ function() {
                     jsonField.getValue(),
                     'The last name: JONES');
 
-                xmlField = TP.byOID('xmlBindIndexAttr1');
-                jsonField = TP.byOID('jsonBindIndexAttr0');
+                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5422,8 +5663,9 @@ function() {
                     jsonField.getValue(),
                     'The index: 0');
 
-                xmlField = TP.byOID('xmlBindIndexAttr2');
-                jsonField = TP.byOID('jsonBindIndexAttr1');
+                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
+                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
+
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5432,8 +5674,8 @@ function() {
                     jsonField.getValue(),
                     'The index: 1');
 
-                xmlField = TP.byOID('firstNameField1');
-                jsonField = TP.byOID('lastNameField0');
+                xmlField = TP.byId('firstNameField1', windowContext);
+                jsonField = TP.byId('lastNameField0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5442,8 +5684,8 @@ function() {
                     jsonField.getValue(),
                     'The last name: Smith');
 
-                xmlField = TP.byOID('firstNameField2');
-                jsonField = TP.byOID('lastNameField1');
+                xmlField = TP.byId('firstNameField2', windowContext);
+                jsonField = TP.byId('lastNameField1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -5477,13 +5719,19 @@ function() {
         test.then(
             function() {
 
-                var dataRows,
+                var windowContext,
+
+                    dataRows,
                     dataCells;
 
-                dataRows = TP.byCSS('tr', TP.byId('people'));
+                windowContext = test.getDriver().get('windowContext');
+
+                dataRows = TP.byCSS(
+                            'tr', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS('td', TP.byId('people'));
+                dataCells = TP.byCSS(
+                            'td', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataCells.getSize(), 12);
 
                 test.assert.isEqualTo(
@@ -5547,13 +5795,19 @@ function() {
 
         test.then(
             function() {
-                var dataRows,
+                var windowContext,
+
+                    dataRows,
                     dataCells;
 
-                dataRows = TP.byCSS('tr', TP.byId('people'));
+                windowContext = test.getDriver().get('windowContext');
+
+                dataRows = TP.byCSS(
+                            'tr', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataRows.getSize(), 4);
 
-                dataCells = TP.byCSS('td', TP.byId('people'));
+                dataCells = TP.byCSS(
+                            'td', TP.byId('people', windowContext, false));
                 test.assert.isEqualTo(dataCells.getSize(), 12);
 
                 test.assert.isEqualTo(

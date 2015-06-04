@@ -170,13 +170,13 @@ function(aResourceID, aRequest) {
     //  resize/reposition)
     this.get('$consoleGUI').scrollOutputToEnd();
 
-    this.observe(TP.byOID('SherpaConsole', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaConsole', TP.win('UIROOT')),
                     'HiddenChange');
 
-    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidFocus');
 
-    this.observe(TP.byOID('SherpaHalo', TP.win('UIROOT')),
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
 
     return this;

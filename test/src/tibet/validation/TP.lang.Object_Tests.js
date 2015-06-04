@@ -1148,11 +1148,14 @@ function() {
     //  ---
 
     this.it('markup-level validation - simple and complex types', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation1.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -1167,7 +1170,7 @@ function() {
                 srcURI = TP.uc('urn:tibet:Validation1_person');
                 ageURI = TP.uc('urn:tibet:Validation1_person#tibet(age)');
 
-                ageField = TP.byOID('ageField');
+                ageField = TP.byId('ageField', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
@@ -1270,11 +1273,14 @@ function() {
     //  ---
 
     this.it('markup-level validation - relevancy check', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation2.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -1292,8 +1298,8 @@ function() {
                 ssnURI = TP.uc('urn:tibet:Validation2_person#tibet(SSN)');
                 citURI = TP.uc('urn:tibet:Validation2_person#tibet(uscitizen)');
 
-                ssnField = TP.byOID('SSNField');
-                citCheckbox = TP.byOID('uscitizenCheckbox');
+                ssnField = TP.byId('SSNField', windowContext);
+                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
@@ -1379,11 +1385,14 @@ function() {
     //  ---
 
     this.it('markup-level validation - group-level validation', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation3.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -1405,11 +1414,11 @@ function() {
                 ssnURI = TP.uc('urn:tibet:Validation3_person#tibet(SSN)');
                 gendURI = TP.uc('urn:tibet:Validation3_person#tibet(gender)');
 
-                ssnField = TP.byOID('SSNField');
-                gendField = TP.byOID('GenderField');
-                citCheckbox = TP.byOID('uscitizenCheckbox');
+                ssnField = TP.byId('SSNField', windowContext);
+                gendField = TP.byId('GenderField', windowContext);
+                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
 
-                empGroup = TP.byOID('EmployeeGroup');
+                empGroup = TP.byId('EmployeeGroup', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
@@ -1547,11 +1556,14 @@ function() {
     //  ---
 
     this.it('markup-level validation - nested group-level validation', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation4.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -1579,14 +1591,14 @@ function() {
                 cityURI = TP.uc('urn:tibet:Validation4_person#tibet(city)');
                 stateURI = TP.uc('urn:tibet:Validation4_person#tibet(state)');
 
-                ssnField = TP.byOID('SSNField');
-                gendField = TP.byOID('GenderField');
-                cityField = TP.byOID('CityField');
-                stateField = TP.byOID('StateField');
-                citCheckbox = TP.byOID('uscitizenCheckbox');
+                ssnField = TP.byId('SSNField', windowContext);
+                gendField = TP.byId('GenderField', windowContext);
+                cityField = TP.byId('CityField', windowContext);
+                stateField = TP.byId('StateField', windowContext);
+                citCheckbox = TP.byId('uscitizenCheckbox', windowContext);
 
-                empGroup = TP.byOID('EmployeeGroup');
-                addrGroup = TP.byOID('AddressGroup');
+                empGroup = TP.byId('EmployeeGroup', windowContext);
+                addrGroup = TP.byId('AddressGroup', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
@@ -1836,11 +1848,14 @@ function() {
     //  ---
 
     this.it('markup-level - XML content type defined in markup', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation5.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -1855,7 +1870,7 @@ function() {
                 srcURI = TP.uc('urn:tibet:Validation5_data');
                 codeNumURI = TP.uc('urn:tibet:Validation5_data#tibet(codenum)');
 
-                codeNumField = TP.byOID('CodeNumField');
+                codeNumField = TP.byId('CodeNumField', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
@@ -1941,11 +1956,14 @@ function() {
     //  ---
 
     this.it('markup-level - JSON content type defined in markup', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation6.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -1960,7 +1978,7 @@ function() {
                 srcURI = TP.uc('urn:tibet:Validation6_data');
                 codeNumURI = TP.uc('urn:tibet:Validation6_data#tibet(codenum)');
 
-                codeNumField = TP.byOID('CodeNumField');
+                codeNumField = TP.byId('CodeNumField', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
@@ -2046,11 +2064,14 @@ function() {
     //  ---
 
     this.it('markup-level - XML content type defined in markup with a schema defined type', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation7.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -2065,7 +2086,7 @@ function() {
                 srcURI = TP.uc('urn:tibet:Validation7_data');
                 codeNumURI = TP.uc('urn:tibet:Validation7_data#tibet(codenum)');
 
-                codeNumField = TP.byOID('CodeNumField');
+                codeNumField = TP.byId('CodeNumField', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.
@@ -2151,11 +2172,14 @@ function() {
     //  ---
 
     this.it('markup-level - JSON content type defined in markup with a schema defined type', function(test, options) {
-        var driver;
+        var driver,
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/tibet/validation/Validation8.xhtml');
 
         driver = test.getDriver();
+        windowContext = test.getDriver().get('windowContext');
+
         driver.setLocation(loadURI);
 
         test.then(
@@ -2170,7 +2194,7 @@ function() {
                 srcURI = TP.uc('urn:tibet:Validation8_data');
                 codeNumURI = TP.uc('urn:tibet:Validation8_data#tibet(codenum)');
 
-                codeNumField = TP.byOID('CodeNumField');
+                codeNumField = TP.byId('CodeNumField', windowContext);
 
                 //  Note that these are tested in order of firing, just for
                 //  clarity purposes.

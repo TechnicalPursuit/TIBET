@@ -4425,7 +4425,7 @@ function() {
     this.it('tibet://uicanvas/#top_background', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#top_background';
-        correctResult = TP.byId('top_background');
+        correctResult = TP.byId('top_background', test.getDriver().get('windowContext'), false);
 
         shellDriver.execShellTest(
             test,
@@ -4444,7 +4444,7 @@ function() {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#top_background';
-        correctResult = TP.byId('top_background');
+        correctResult = TP.byId('top_background', test.getDriver().get('windowContext'), false);
 
         shellDriver.execShellTest(
             test,
@@ -4463,7 +4463,7 @@ function() {
 
         //  The 'tibet://uicanvas' should be optional
         inputVal = '#top_background';
-        correctResult = TP.byId('top_background');
+        correctResult = TP.byId('top_background', test.getDriver().get('windowContext'), false);
 
         shellDriver.execShellTest(
             test,
@@ -4537,7 +4537,7 @@ function() {
     this.it('tibet://uicanvas/#element(top_background/1)', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#element(top_background/1)';
-        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
+        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
         shellDriver.execShellTest(
             test,
@@ -4555,7 +4555,7 @@ function() {
     this.it('tibet://uicanvas#element(top_background/1)', function(test, options) {
 
         inputVal = 'tibet://uicanvas#element(top_background/1)';
-        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
+        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
         shellDriver.execShellTest(
             test,
@@ -4574,7 +4574,7 @@ function() {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#element(top_background/1)';
-        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
+        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
         shellDriver.execShellTest(
             test,
@@ -4704,7 +4704,7 @@ function() {
     this.it('tibet://uicanvas/#css(#top_background > *:first-child)', function(test, options) {
 
         inputVal = 'tibet://uicanvas/#css(#top_background > *:first-child)';
-        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
+        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
         shellDriver.execShellTest(
             test,
@@ -4723,7 +4723,7 @@ function() {
 
         //  The last slash should be optional
         inputVal = 'tibet://uicanvas#css(#top_background > *:first-child)';
-        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
+        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
         shellDriver.execShellTest(
             test,
@@ -4742,7 +4742,7 @@ function() {
 
         //  The 'tibet://uicanvas/' should be optional
         inputVal = '#css(#top_background > *:first-child)';
-        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background'), 0);
+        correctResult = TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0);
 
         shellDriver.execShellTest(
             test,
@@ -4765,7 +4765,7 @@ function() {
             delete TP.$$topWindowName;
             delete TP.$$uiCanvasName;
 
-            backgroundElem = TP.byId('top_background');
+            backgroundElem = TP.byId('top_background', this.getDriver().get('windowContext'), false);
             TP.nodeDetach(backgroundElem);
         });
 });

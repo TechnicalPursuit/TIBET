@@ -309,7 +309,7 @@ function(aSignal) {
                 }
             }.bind(this));
 
-        uir.fire(TP.byOID('yak'));
+        uir.fire(TP.bySystemId('yak'));
     } else if (typ === 'unsubscribe') {
         //  response is to send back an ack
         msg = this.constructResponse();
@@ -319,7 +319,7 @@ function(aSignal) {
         TP.sig.UserOutputRequest.construct(TP.hc(
         'output',
             'You\'ve been successfully subscribed to: ' + this.get('from')
-        )).fire(TP.byOID('yak'));
+        )).fire(TP.bySystemId('yak'));
     } else if (typ === 'unsubscribed') {
         //  User's been unsubscribed or rejected for subscription.
         //  TODO: Need a flag to tell the difference.
@@ -329,7 +329,7 @@ function(aSignal) {
             'You\'ve been successfully unsubscribed ' +
             '(or your subscription request has been denied) from : ' +
                                                         this.get('from')
-        )).fire(TP.byOID('yak'));
+        )).fire(TP.bySystemId('yak'));
     }
 
     return;

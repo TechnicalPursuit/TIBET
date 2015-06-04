@@ -1608,7 +1608,7 @@ function() {
         if (TP.isEmpty(inst = payload.at('tibetTarget'))) {
             id = payload.at('elementGlobalID');
             if (TP.notEmpty(id)) {
-                if (TP.isValid(inst = TP.byOID(id))) {
+                if (TP.isValid(inst = TP.bySystemId(id))) {
                     if (TP.canInvoke(inst, 'getNativeNode')) {
                         inst = inst.getNativeNode();
                     }
@@ -1617,7 +1617,7 @@ function() {
                 inst = payload.at('target');
             }
         }
-    } else if (TP.isValid(inst = TP.byOID(this.getOrigin()))) {
+    } else if (TP.isValid(inst = TP.bySystemId(this.getOrigin()))) {
         if (TP.canInvoke(inst, 'getNativeNode')) {
             inst = inst.getNativeNode();
         }
@@ -3963,7 +3963,7 @@ function(aHandlerEntry, quiet) {
         }
     } else if (handlerID.startsWith('#')) {
         //  local document ID reference, should have been converted to a
-        //  global ID but TP.byOID() will default to TP.sys.getUICanvas()
+        //  global ID but TP.byId() will default to TP.sys.getUICanvas()
         void 0;
     }
 
@@ -4807,7 +4807,7 @@ aSigEntry, checkTarget) {
             //  Note that this allows handlers to be swapped out from
             //  under observations without affecting the signal map
             //  itself.
-            handler = TP.byOID(item.handler);
+            handler = TP.bySystemId(item.handler);
 
             //  a side effect of having objects registered under 'tibet:urn's is
             //  that the handler can't be the TIBETURN URI itself. Therefore, if
@@ -6111,7 +6111,7 @@ function(anOrigin, aSignal, aHandler) {
                 //  a string ID -- try to get handle to obj
                 /*
                 (ss)    commented out to avoid excessive overhead
-                inst = TP.byOID(anOrigin.getID());
+                inst = TP.bySystemId(anOrigin.getID());
                 if (TP.isMutable(inst)) {
                     inst.shouldSignalChange(true);
                 };
@@ -6168,7 +6168,7 @@ function(anOrigin, aSignal, aHandler) {
                 //  a string ID -- try to get handle to obj
                 /*
                 (ss)    commented out to avoid excessive overhead
-                inst = TP.byOID(anOrigin.getID());
+                inst = TP.bySystemId(anOrigin.getID());
                 if (TP.isMutable(inst)) {
                     inst.shouldSignalChange(true);
                 };
@@ -7801,7 +7801,7 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
 
     //  Make sure that we can get the Element that is registered under observer
     //  GID.
-    if (!TP.isValid(queryObserver = TP.byOID(queryObserverGID))) {
+    if (!TP.isValid(queryObserver = TP.bySystemId(queryObserverGID))) {
         //  TODO: Raise an InvalidObject here
         return this;
     }

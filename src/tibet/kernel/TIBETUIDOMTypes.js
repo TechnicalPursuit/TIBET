@@ -108,7 +108,7 @@ function(aDocument) {
     //  that stylesheet in the document. We don't want the same stylesheet
     //  placed into the document over and over for each occurrence of the
     //  same type of element node.
-    if (TP.isElement(styleElem = TP.byId(sheetID, aDocument))) {
+    if (TP.isElement(styleElem = TP.byId(sheetID, aDocument, false))) {
         return styleElem;
     }
 
@@ -1116,7 +1116,7 @@ function(focusedTPElem, moveAction) {
 
         //  If the current element has a group, then we use it.
         if (TP.notEmpty(currentGroupName = focusedTPElem.getGroupName())) {
-            currentGroup = TP.byOID(currentGroupName, win);
+            currentGroup = TP.byId(currentGroupName, win);
             currentIsInGroup = true;
         } else {
             //  Otherwise, the 'context' is the body element.
@@ -1187,7 +1187,7 @@ function(focusedTPElem, moveAction) {
                 //  may be nested, and we are interested in wrapping)
                 nextGroupName =
                         this.getNextGroupName(currentGroupName, true, true);
-                computedGroup = TP.byOID(nextGroupName, win);
+                computedGroup = TP.byId(nextGroupName, win);
             }
 
         break;
@@ -1211,7 +1211,7 @@ function(focusedTPElem, moveAction) {
                 //  (which may be nested, and we are interested in wrapping)
                 prevGroupName =
                         this.getPreviousGroupName(currentGroupName, true, true);
-                computedGroup = TP.byOID(prevGroupName, win);
+                computedGroup = TP.byId(prevGroupName, win);
             }
 
         break;
@@ -1242,9 +1242,10 @@ function(focusedTPElem, moveAction) {
                 //  not interested in it.
                 if (TP.notEmpty(nextGroupName) &&
                     !currentGroupWraps &&
-                    !TP.nodeComparePosition(this.getNativeNode(),
-                                            TP.byId(nextGroupName),
-                                            TP.FOLLOWING_NODE)) {
+                    !TP.nodeComparePosition(
+                        this.getNativeNode(),
+                        TP.byId(nextGroupName, this.getNativeDocument(), false),
+                        TP.FOLLOWING_NODE)) {
                     nextGroupName = null;
                 }
 
@@ -1283,7 +1284,7 @@ function(focusedTPElem, moveAction) {
                         usingParentGroup = true;
                     }
 
-                    computedGroup = TP.byOID(nextGroupName, win);
+                    computedGroup = TP.byId(nextGroupName, win);
                 }
             }
 
@@ -1316,8 +1317,8 @@ function(focusedTPElem, moveAction) {
                 if (TP.notEmpty(prevGroupName) &&
                     !currentGroupWraps &&
                     !TP.nodeComparePosition(this.getNativeNode(),
-                                            TP.byId(prevGroupName),
-                                            TP.PRECEDING_NODE)) {
+                    TP.byId(prevGroupName, this.getNativeDocument(), false),
+                    TP.PRECEDING_NODE)) {
                     nextGroupName = null;
                 }
 
@@ -1356,7 +1357,7 @@ function(focusedTPElem, moveAction) {
                         usingParentGroup = true;
                     }
 
-                    computedGroup = TP.byOID(prevGroupName, win);
+                    computedGroup = TP.byId(prevGroupName, win);
                 }
             }
 
@@ -1891,7 +1892,8 @@ function() {
     win = this.getNativeWindow();
 
     currentGroupName = groupName;
-    while (TP.isElement(currentGroupElem = TP.byId(currentGroupName, win))) {
+    while (TP.isElement(currentGroupElem =
+                        TP.byId(currentGroupName, win, false))) {
         allNames.push(currentGroupName);
 
         currentGroupTPElem = TP.wrap(currentGroupElem);
@@ -1978,7 +1980,7 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
     win = this.getNativeWindow();
 
-    fromGroupTPElem = TP.byOID(fromGroupName, win);
+    fromGroupTPElem = TP.byId(fromGroupName, win);
 
     //  Look for the 'parent group' name, which should be in the chain after
     //  the 'from' group name.
@@ -2011,7 +2013,7 @@ function(startGroupName, alwaysWrap, wantsNested) {
     } else {
         //  Grab the parent group's TP.core.ElementNode and its member
         //  groups.
-        parentGroupTPElem = TP.byOID(parentGroupName, win);
+        parentGroupTPElem = TP.byId(parentGroupName, win);
         memberGroupTPElems = parentGroupTPElem.getMemberGroups();
 
         //  If there is only one member group, then it is the 'from' group
@@ -2076,7 +2078,7 @@ function(aSignal, isCapturing) {
     //  reference from it. If that's valid, then use it - otherwise, move on.
     if (this.hasAttribute('tibet:handler')) {
 
-        handler = TP.byOID(this.getAttribute('tibet:handler'),
+        handler = TP.byId(this.getAttribute('tibet:handler'),
                             this.getNativeWindow());
 
         if (TP.isValid(handler)) {
@@ -2329,7 +2331,7 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
     win = this.getNativeWindow();
 
-    fromGroupTPElem = TP.byOID(fromGroupName, win);
+    fromGroupTPElem = TP.byId(fromGroupName, win);
 
     //  Look for the 'parent group' name, which should be in the chain after
     //  the 'from' group name.
@@ -2362,7 +2364,7 @@ function(startGroupName, alwaysWrap, wantsNested) {
     } else {
         //  Grab the parent group's TP.core.ElementNode and its member
         //  groups.
-        parentGroupTPElem = TP.byOID(parentGroupName, win);
+        parentGroupTPElem = TP.byId(parentGroupName, win);
         memberGroupTPElems = parentGroupTPElem.getMemberGroups();
 
         //  If there is only one member group, then it is the 'from' group

@@ -118,7 +118,7 @@ function(anElement, idValue, gradientTagName) {
     //  couldn't be found with that ID, then we create a gradient element
     //  and put it at the proper place within the SVG DOM.
     if (TP.isEmpty(gradID) ||
-        TP.notValid(gradElem = TP.byId(gradID, nativeDoc))) {
+        !TP.isElement(gradElem = TP.byId(gradID, nativeDoc, false))) {
         gradElem = TP.documentCreateElement(nativeDoc,
                                             gradientTagName,
                                             TP.w3.Xmlns.SVG);
@@ -541,7 +541,7 @@ function(anElement, idValue) {
     //  couldn't be found with that ID, then we create a pattern element
     //  and put it at the proper place within the SVG DOM.
     if (TP.isEmpty(patID) ||
-        TP.notValid(patternElem = TP.byId(patID, nativeDoc))) {
+        !TP.isElement(patternElem = TP.byId(patID, nativeDoc, false))) {
         patternElem = TP.documentCreateElement(nativeDoc,
                                                 'pattern',
                                                 TP.w3.Xmlns.SVG);

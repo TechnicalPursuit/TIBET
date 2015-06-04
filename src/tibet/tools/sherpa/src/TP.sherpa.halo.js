@@ -72,7 +72,7 @@ function() {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
-            TP.byOID('SherpaConsoleService').sendShellCommand(':edit $HALO');
+            TP.bySystemId('SherpaConsoleService').sendShellCommand(':edit $HALO');
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMDblClick');
     /* eslint-disable no-wrap-func,no-extra-parens */

@@ -73,7 +73,7 @@ function(aSignal) {
     header.setAttribute('drag:mover', true);
     header.setAttribute('drag:item', '..');
 
-    TP.byOID('tileDock', this.getNativeWindow()).addTileEntry(
+    TP.byId('tileDock', this.getNativeWindow()).addTileEntry(
                             this.getID(), 'tile 1');
 
     return this;

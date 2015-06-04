@@ -164,7 +164,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://top/').getResource(params),
-            TP.byOID('top'),
+            TP.bySystemId('top'),
             TP.sc('tibet://top/ should find the top-level Window.'));
     });
 
@@ -174,7 +174,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://top').getResource(params),
-            TP.byOID('top'),
+            TP.bySystemId('top'),
             TP.sc('tibet://top should find the top-level Window.'));
     });
 
@@ -184,7 +184,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://top/#document').getResource(params),
-            TP.byOID('top').getDocument(),
+            TP.bySystemId('top').getDocument(),
             TP.sc('tibet://top/#document should find the document of the' +
                     ' top-level Window.'));
     });
@@ -195,7 +195,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://top#document').getResource(params),
-            TP.byOID('top').getDocument(),
+            TP.bySystemId('top').getDocument(),
             TP.sc('tibet://top#document should find the document of the' +
                     ' top-level Window.'));
     });
@@ -207,7 +207,7 @@ function() {
         //  Get the <iframe> element that has an id of UIROOT
         test.assert.isIdenticalTo(
             TP.uc('tibet://top/#UIROOT').getResource(params).getNativeNode(),
-            TP.byId('UIROOT', TP.win('top')),
+            TP.byId('UIROOT', TP.win('top'), false),
             TP.sc('tibet://top/#UIROOT should find the iframe element with' +
                     ' id "UIROOT" in the top-level window\'s document.'));
     });
@@ -219,7 +219,7 @@ function() {
         //  Get the <iframe> element that has an id of UIROOT
         test.assert.isIdenticalTo(
             TP.uc('tibet://top#UIROOT').getResource(params).getNativeNode(),
-            TP.byId('UIROOT', TP.win('top')),
+            TP.byId('UIROOT', TP.win('top'), false),
             TP.sc('tibet://top/#UIROOT should find the iframe element with' +
                     ' id "UIROOT" in the top-level window\'s document.'));
     });
@@ -420,7 +420,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#top_background').getResource(params).getNativeNode(),
-            TP.byId('top_background'),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false),
             TP.sc('tibet://uicanvas/#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
     });
@@ -431,7 +431,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#top_background').getResource(params).getNativeNode(),
-            TP.byId('top_background'),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false),
             TP.sc('tibet://uicanvas#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
     });
@@ -442,7 +442,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('#top_background').getResource(params).getNativeNode(),
-            TP.byId('top_background'),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false),
             TP.sc('#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
     });
@@ -458,7 +458,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#top_background').getResource(newParams),
-            TP.byId('top_background'),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false),
             TP.sc('tibet://uicanvas/#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
     });
@@ -474,7 +474,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#top_background').getResource(newParams),
-            TP.byId('top_background'),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false),
             TP.sc('tibet://uicanvas#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
     });
@@ -490,7 +490,7 @@ function() {
 
         test.assert.isIdenticalTo(
             TP.uc('#top_background').getResource(newParams),
-            TP.byId('top_background'),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false),
             TP.sc('#top_background should find the element with' +
                     ' id "top_background" in the current UI canvas.'));
     });
@@ -583,7 +583,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(top_background/1)'
                     ).getResource(params).getNativeNode(),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas/#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
@@ -596,7 +596,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(top_background/1)'
                     ).getResource(params).getNativeNode(),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
@@ -609,7 +609,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('#element(top_background/1)'
                     ).getResource(params).getNativeNode(),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
@@ -627,7 +627,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#element(top_background/1)'
                     ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas/#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
@@ -645,7 +645,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#element(top_background/1)'
                     ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
@@ -663,7 +663,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('#element(top_background/1)'
                     ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('#element(top_background/1) should find the' +
                     ' first child of the body element in the document of the' +
                     ' current UI canvas.'));
@@ -850,7 +850,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
                     ).getResource(params).getNativeNode(),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas/#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
@@ -863,7 +863,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#css(#top_background > *:first-child)'
                     ).getResource(params).getNativeNode(),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
@@ -876,7 +876,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('#css(#top_background > *:first-child)'
                     ).getResource(params).getNativeNode(),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
@@ -894,7 +894,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas/#css(#top_background > *:first-child)'
                     ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas/#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
@@ -912,7 +912,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('tibet://uicanvas#css(#top_background > *:first-child)'
                     ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('tibet://uicanvas#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
@@ -930,7 +930,7 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('#css(#top_background > *:first-child)'
                     ).getResource(newParams),
-            TP.nodeGetChildElementAt(TP.byId('top_background'), 0),
+            TP.nodeGetChildElementAt(TP.byId('top_background', test.getDriver().get('windowContext'), false), 0),
             TP.sc('#css(#top_background > *:first-child) should' +
                     ' find any children of the element with id "top_background"' +
                     ' in the document of the current UI canvas.'));
@@ -1036,7 +1036,7 @@ function() {
             delete TP.$$topWindowName;
             delete TP.$$uiCanvasName;
 
-            backgroundElem = TP.byId('top_background');
+            backgroundElem = TP.byId('top_background', this.getDriver().get('windowContext'), false);
             TP.nodeDetach(backgroundElem);
         });
 });

@@ -117,7 +117,7 @@ function(aSignal) {
 
         patchPath = TP.objectGetSourcePath(this.get('sourceObject'));
 
-        TP.byOID('Sherpa').postPatch(patchText, patchPath);
+        TP.bySystemId('Sherpa').postPatch(patchText, patchPath);
 
         //  TODO: Only do this if the patch operation succeeded
         this.set('serverSourceObject', this.get('sourceObject'));

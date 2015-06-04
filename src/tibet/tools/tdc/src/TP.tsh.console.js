@@ -117,7 +117,7 @@ function() {
                         'triggerKey', triggerKey
                 ));
 
-            TP.byId('UIROOT', top).focus();
+            TP.byId('UIROOT', top, false).focus();
 
             //  Focus the input cell to be nice to the user :-).
             console.focusInputCell();
@@ -1292,7 +1292,7 @@ function(aSignal) {
     arr.compact();
 
     str = arr.join(':');
-    TP.htmlElementSetContent(TP.byId('status1', this.$get('vWin')),
+    TP.htmlElementSetContent(TP.byId('status1', this.$get('vWin'), false),
         str, null, false);
 
     if (TP.isTrue(this.get('open')) &&
@@ -1956,7 +1956,7 @@ function(aSignal) {
     if (TP.isWindow(canvasWin = TP.sys.getUICanvas(true))) {
         str = '' + TP.gid(canvasWin).sliceFrom('.', false, true);
 
-        TP.htmlElementSetContent(TP.byId('status2', this.$get('vWin')),
+        TP.htmlElementSetContent(TP.byId('status2', this.$get('vWin'), false),
             str, null, false);
     }
 
@@ -1965,7 +1965,7 @@ function(aSignal) {
     //  ---
 
     str = '' + TP.getLogLevel().getName() + '::' + APP.getLogLevel().getName();
-    TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin')),
+    TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin'), false),
         str, null, false);
 
     return;
@@ -2065,7 +2065,8 @@ function() {
 
     var elem;
 
-    if (TP.isElement(elem = TP.byId('tdc_cmdline_prompt', this.get('vWin')))) {
+    if (TP.isElement(
+            elem = TP.byId('tdc_cmdline_prompt', this.get('vWin'), false))) {
         return elem.innerHTML;
     }
 
@@ -2197,7 +2198,8 @@ function(aPrompt, aCSSClass) {
         promptStr = TP.ifInvalid(promptStr, this.getType().DEFAULT_PROMPT);
     }
 
-    if (TP.isElement(elem = TP.byId('tdc_cmdline_prompt', this.get('vWin')))) {
+    if (TP.isElement(
+            elem = TP.byId('tdc_cmdline_prompt', this.get('vWin'), false))) {
         TP.elementSetClass(elem, cssClass);
 
         promptStr = TP.xmlEntitiesToLiterals(promptStr);
@@ -2215,7 +2217,7 @@ function(aPrompt, aCSSClass) {
     promptRightMargin = this.getType().PROMPT_RIGHT_MARGIN;
 
     /* eslint-disable no-extra-parens */
-    TP.byId('tdc_cmdline_input', this.get('vWin')).style.left =
+    TP.byId('tdc_cmdline_input', this.get('vWin'), false).style.left =
         (contentWidth + promptRightMargin) + 'px';
     /* eslint-enable no-extra-parens */
 
@@ -2700,8 +2702,8 @@ function() {
     var uiRootElem,
         bootFrameElem;
 
-    uiRootElem = TP.byId('UIROOT', top);
-    bootFrameElem = TP.byId('UIBOOT', top);
+    uiRootElem = TP.byId('UIROOT', top, false);
+    bootFrameElem = TP.byId('UIBOOT', top, false);
 
     TP.elementHide(bootFrameElem);
     TP.elementShow(uiRootElem);
@@ -2726,8 +2728,8 @@ function() {
     var uiRootElem,
         bootFrameElem;
 
-    uiRootElem = TP.byId('UIROOT', top);
-    bootFrameElem = TP.byId('UIBOOT', top);
+    uiRootElem = TP.byId('UIROOT', top, false);
+    bootFrameElem = TP.byId('UIBOOT', top, false);
 
     TP.elementHide(uiRootElem);
     TP.elementShow(bootFrameElem);

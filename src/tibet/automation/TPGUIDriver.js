@@ -493,8 +493,8 @@ function() {
      */
 
     if (TP.sys.cfg('tibet.tdc') === true) {
-        TP.elementHide(TP.byId('UIBOOT', top));
-        TP.elementShow(TP.byId('UIROOT', top));
+        TP.elementHide(TP.byId('UIBOOT', top, false));
+        TP.elementShow(TP.byId('UIROOT', top, false));
     } else if (TP.sys.cfg('tibet.sherpa') === true) {
         //  TODO: Make the appropriate GUI window show for the Sherpa, etc.
         void 0;
@@ -516,8 +516,8 @@ function() {
      */
 
     if (TP.sys.cfg('tibet.tdc') === true) {
-        TP.elementHide(TP.byId('UIROOT', top));
-        TP.elementShow(TP.byId('UIBOOT', top));
+        TP.elementHide(TP.byId('UIROOT', top, false));
+        TP.elementShow(TP.byId('UIBOOT', top, false));
     } else if (TP.sys.cfg('tibet.sherpa') === true) {
         //  TODO: Make the appropriate log window show for the Sherpa, etc.
         void 0;

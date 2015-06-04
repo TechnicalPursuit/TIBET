@@ -268,7 +268,7 @@ function(anID, regOnly, nodeContext) {
             if (TP.notValid(win = TP.sys.getWindowById(winid))) {
                 bits = id.split('.');
                 index = 0;
-                inst = TP.byOID(bits.at(index));
+                inst = TP.bySystemId(bits.at(index));
 
                 while (TP.isValid(inst) && index < bits.getSize()) {
                     index++;

@@ -100,7 +100,8 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byOID('Data1');
+                dataTPElem = TP.byId('Data1',
+                                        this.getDriver().get('windowContext'));
                 srcURI = TP.uc('urn:tibet:Data1_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
@@ -134,7 +135,8 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byOID('Data2');
+                dataTPElem = TP.byId('Data2',
+                                        this.getDriver().get('windowContext'));
                 srcURI = TP.uc('urn:tibet:Data2_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
@@ -168,7 +170,8 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byOID('Data3');
+                dataTPElem = TP.byId('Data3',
+                                        this.getDriver().get('windowContext'));
                 srcURI = TP.uc('urn:tibet:Data3_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
@@ -202,7 +205,8 @@ function() {
                     srcURI,
                     dataResource;
 
-                dataTPElem = TP.byOID('Data4');
+                dataTPElem = TP.byId('Data4',
+                                        this.getDriver().get('windowContext'));
                 srcURI = TP.uc('urn:tibet:Data4_person');
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');

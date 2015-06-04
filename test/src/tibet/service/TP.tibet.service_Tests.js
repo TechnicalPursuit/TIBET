@@ -16,12 +16,17 @@ TP.tibet.service.Inst.describe('TP.tibet.service',
 function() {
 
     var unloadURI,
+
+        windowContext,
+
         loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     this.before(
         function() {
+
+            windowContext = this.getDriver().get('windowContext');
 
             //  ---
 
@@ -104,7 +109,7 @@ function() {
 
                 //  ---
 
-                serviceTPElem = TP.byOID('Service1');
+                serviceTPElem = TP.byId('Service1', windowContext);
 
                 //  In order to make the asynchronous behavior work here, we
                 //  create a Promise and return it from the test case method.
@@ -208,8 +213,8 @@ function() {
 
                 //  ---
 
-                searchTPElem = TP.byOID('SearchTermField');
-                serviceTPElem = TP.byOID('Service2');
+                searchTPElem = TP.byId('SearchTermField', windowContext);
+                serviceTPElem = TP.byId('Service2', windowContext);
 
                 //  ---
 
@@ -319,7 +324,7 @@ function() {
 
                 //  ---
 
-                serviceTPElem = TP.byOID('Service3');
+                serviceTPElem = TP.byId('Service3', windowContext);
 
                 //  In order to make the asynchronous behavior work here, we
                 //  create a Promise and return it from the test case method.
@@ -422,7 +427,7 @@ function() {
 
                 //  ---
 
-                serviceTPElem = TP.byOID('Service4');
+                serviceTPElem = TP.byId('Service4', windowContext);
 
                 //  In order to make the asynchronous behavior work here, we
                 //  create a Promise and return it from the test case method.
@@ -526,8 +531,8 @@ function() {
 
                 //  ---
 
-                searchTPElem = TP.byOID('SearchTermField');
-                serviceTPElem = TP.byOID('Service5');
+                searchTPElem = TP.byId('SearchTermField', windowContext);
+                serviceTPElem = TP.byId('Service5', windowContext);
 
                 //  ---
 
@@ -642,8 +647,8 @@ function() {
 
                 //  ---
 
-                searchTPElem = TP.byOID('SearchTermField');
-                serviceTPElem = TP.byOID('Service6');
+                searchTPElem = TP.byId('SearchTermField', windowContext);
+                serviceTPElem = TP.byId('Service6', windowContext);
 
                 //  ---
 
@@ -757,8 +762,8 @@ function() {
 
                 //  ---
 
-                bodyContentTPElem = TP.byOID('BodyContentField');
-                serviceTPElem = TP.byOID('Service7');
+                bodyContentTPElem = TP.byId('BodyContentField', windowContext);
+                serviceTPElem = TP.byId('Service7', windowContext);
 
                 //  ---
 
@@ -865,8 +870,8 @@ function() {
 
                 //  ---
 
-                searchTPElem = TP.byOID('SearchTermField');
-                serviceTPElem = TP.byOID('Service8');
+                searchTPElem = TP.byId('SearchTermField', windowContext);
+                serviceTPElem = TP.byId('Service8', windowContext);
 
                 //  ---
 
@@ -977,8 +982,8 @@ function() {
 
                 //  ---
 
-                searchTPElem = TP.byOID('SearchTermField');
-                serviceTPElem = TP.byOID('Service9');
+                searchTPElem = TP.byId('SearchTermField', windowContext);
+                serviceTPElem = TP.byId('Service9', windowContext);
 
                 //  ---
 
@@ -1097,7 +1102,7 @@ function() {
 
                 //  ---
 
-                serviceTPElem = TP.byOID('Service10');
+                serviceTPElem = TP.byId('Service10', windowContext);
 
                 //  ---
 
@@ -1201,7 +1206,7 @@ function() {
 
                 //  ---
 
-                serviceTPElem = TP.byOID('Service11');
+                serviceTPElem = TP.byId('Service11', windowContext);
 
                 //  ---
 
@@ -1305,7 +1310,7 @@ function() {
 
                 //  ---
 
-                serviceTPElem = TP.byOID('Service12');
+                serviceTPElem = TP.byId('Service12', windowContext);
 
                 //  ---
 

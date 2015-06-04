@@ -452,7 +452,7 @@ function(aSignal) {
 
     //  this should go off to TIBET and try to find a proper node type based
     //  on the tag name information
-    inst = TP.byOID(observer);
+    inst = TP.bySystemId(observer);
 
     return inst;
 });
@@ -10383,7 +10383,7 @@ function(aSignal) {
         }
     }
 
-    inst = TP.byOID(id);
+    inst = TP.bySystemId(id);
     if (TP.notValid(inst)) {
         return this.raise('TP.sig.InvalidHandler',
                             'Unable to construct handler instance');
@@ -11993,11 +11993,11 @@ function(aSignal, aTarget, argsOrEvent, aPolicy, isCancelable, isBubbling) {
         doc = this.getNativeDocument();
         targetElem = TP.nodeGetElementById(doc, aTarget, true);
 
-        //  fallback here is to use TP.byOID which means we can use TIBET URI
+        //  fallback here is to use TP.byId which means we can use TIBET URI
         //  references (or standard URIs for that matter) so that dispatch
         //  is "cross-document" (think iframes :))
         if (!TP.isElement(targetElem)) {
-            targetElem = TP.byOID(aTarget);
+            targetElem = TP.byId(aTarget);
 
             if (TP.canInvoke(targetElem, 'getNativeNode')) {
                 targetElem = targetElem.getNativeElement();

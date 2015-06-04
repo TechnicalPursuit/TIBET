@@ -45,12 +45,11 @@ function() {
     var toolbarElem;
 
     //  Set up the console output toolbar
-    toolbarElem = TP.wrap(TP.byId('SherpaConsoleOutputToolbar',
-                                    this.getNativeWindow()));
+    toolbarElem = TP.byId('SherpaConsoleOutputToolbar', this.getNativeWindow());
     this.observe(toolbarElem,
                     'TP.sig.DOMClick',
                     function(aSignal) {
-                        TP.byOID('SherpaConsole', this.getNativeWindow()).
+                        TP.byId('SherpaConsole', this.getNativeWindow()).
                             toggleOutputMode(
                             TP.elementGetAttribute(
                                 aSignal.getTarget().parentNode, 'mode'));
@@ -58,8 +57,8 @@ function() {
 
     toolbarElem.toggle('hidden');
 
-    toolbarElem = TP.wrap(TP.byId('SherpaConsoleCommandToolbar',
-                                    this.getNativeWindow()));
+    toolbarElem = TP.byId('SherpaConsoleCommandToolbar',
+                            this.getNativeWindow());
     toolbarElem.toggle('hidden');
 
     return this;
@@ -86,8 +85,7 @@ function(beHidden) {
         return this;
     }
 
-    drawerElement = TP.byId('south', this.getNativeWindow());
-
+    drawerElement = TP.byId('south', this.getNativeWindow(), false);
 
     if (TP.isTrue(beHidden)) {
 
@@ -97,11 +95,11 @@ function(beHidden) {
 
         TP.elementGetStyleObj(drawerElement).height = '';
 
-        toolbarElem = TP.wrap(TP.byId('SherpaConsoleOutputToolbar',
-                                        this.getNativeWindow()));
+        toolbarElem = TP.byId('SherpaConsoleOutputToolbar',
+                                        this.getNativeWindow());
         toolbarElem.toggle('hidden');
-        toolbarElem = TP.wrap(TP.byId('SherpaConsoleCommandToolbar',
-                                        this.getNativeWindow()));
+        toolbarElem = TP.byId('SherpaConsoleCommandToolbar',
+                                        this.getNativeWindow());
         toolbarElem.toggle('hidden');
 
         this.hideAllHUDDrawers();
@@ -117,11 +115,11 @@ function(beHidden) {
             //  user interaction, resizing this drawer will be immediate.
             TP.elementAddClass(drawerElement, 'no_transition');
 
-            toolbarElem = TP.wrap(TP.byId('SherpaConsoleOutputToolbar',
-                                            this.getNativeWindow()));
+            toolbarElem = TP.byId('SherpaConsoleOutputToolbar',
+                                            this.getNativeWindow());
             toolbarElem.toggle('hidden');
-            toolbarElem = TP.wrap(TP.byId('SherpaConsoleCommandToolbar',
-                                            this.getNativeWindow()));
+            toolbarElem = TP.byId('SherpaConsoleCommandToolbar',
+                                            this.getNativeWindow());
             toolbarElem.toggle('hidden');
 
         }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
@@ -154,7 +152,7 @@ function() {
             aHUDDrawer.setAttrHidden(true);
         });
 
-    TP.elementAddClass(TP.byId('center', win), 'fullscreen');
+    TP.elementAddClass(TP.byId('center', win, false), 'fullscreen');
 
     return this;
 });
@@ -181,7 +179,7 @@ function() {
             aHUDDrawer.setAttrHidden(false);
         });
 
-    TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
+    TP.elementRemoveClass(TP.byId('center', win, false), 'fullscreen');
 
     return this;
 });

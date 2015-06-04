@@ -18,7 +18,9 @@ function() {
     var loadURI,
         unloadURI,
 
-        testData;
+        testData,
+
+        windowContext;
 
     loadURI = TP.uc('~lib_tst/src/html/HTMLContent.xhtml');
 
@@ -54,7 +56,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -95,7 +97,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
 
         //  RegExp
         tpElem.set('content', testData.at('RegExp'));
@@ -130,7 +132,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
 
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
@@ -146,7 +148,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('div');
+        tpElem = TP.byId('div', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -187,7 +189,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('div');
+        tpElem = TP.byId('div', windowContext);
 
         //  RegExp
         tpElem.set('content', testData.at('RegExp'));
@@ -222,7 +224,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('div');
+        tpElem = TP.byId('div', windowContext);
 
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
@@ -238,7 +240,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_text');
+        tpElem = TP.byId('input_text', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -273,7 +275,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_text');
+        tpElem = TP.byId('input_text', windowContext);
 
         //  RegExp (won't alter content)
         tpElem.set('content', testData.at('RegExp'));
@@ -308,7 +310,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_text');
+        tpElem = TP.byId('input_text', windowContext);
 
         //  Markup String (won't alter content)
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
@@ -323,7 +325,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('textarea');
+        tpElem = TP.byId('textarea', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -364,7 +366,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('textarea');
+        tpElem = TP.byId('textarea', windowContext);
 
         //  RegExp
         tpElem.set('content', testData.at('RegExp'));
@@ -399,7 +401,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('textarea');
+        tpElem = TP.byId('textarea', windowContext);
 
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
@@ -415,7 +417,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('select_single');
+        tpElem = TP.byId('select_single', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -455,7 +457,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('select_single');
+        tpElem = TP.byId('select_single', windowContext);
 
         //  RegExp
         tpElem.set('content', testData.at('RegExp'));
@@ -495,7 +497,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('select_single');
+        tpElem = TP.byId('select_single', windowContext);
 
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
@@ -511,7 +513,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('select_multiple');
+        tpElem = TP.byId('select_multiple', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -551,7 +553,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('select_multiple');
+        tpElem = TP.byId('select_multiple', windowContext);
 
         //  RegExp
         tpElem.set('content', testData.at('RegExp'));
@@ -591,7 +593,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('select_multiple');
+        tpElem = TP.byId('select_multiple', windowContext);
 
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
         content = tpElem.get('content');
@@ -607,7 +609,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_radio_3');
+        tpElem = TP.byId('input_radio_3', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -642,7 +644,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_radio_3');
+        tpElem = TP.byId('input_radio_3', windowContext);
 
         //  RegExp (won't alter content)
         tpElem.set('content', testData.at('RegExp'));
@@ -677,7 +679,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_radio_3');
+        tpElem = TP.byId('input_radio_3', windowContext);
 
         //  Markup String (won't alter content)
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
@@ -692,7 +694,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_checkbox_3');
+        tpElem = TP.byId('input_checkbox_3', windowContext);
 
         //  undefined (won't alter content)
         tpElem.set('content', testData.at(TP.UNDEF));
@@ -727,7 +729,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_checkbox_3');
+        tpElem = TP.byId('input_checkbox_3', windowContext);
 
         //  RegExp (won't alter content)
         tpElem.set('content', testData.at('RegExp'));
@@ -762,7 +764,7 @@ function() {
         var tpElem,
             content;
 
-        tpElem = TP.byOID('input_checkbox_3');
+        tpElem = TP.byId('input_checkbox_3', windowContext);
 
         //  Markup String (won't alter content)
         tpElem.set('content', '<h6 xmlns="http://www.w3.org/1999/xhtml">Hi</h6>');
@@ -776,7 +778,9 @@ function() {
 TP.html.XMLNS.Type.describe('html: set value of standard elements',
 function() {
 
-    var testData;
+    var testData,
+
+        windowContext;
 
     this.before(function() {
         var testDataLoc,
@@ -788,6 +792,8 @@ function() {
         testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
         loadURI = TP.uc(testDataLoc);
 
+        windowContext = this.getDriver().get('windowContext');
+
         this.getDriver().setLocation(loadURI);
     });
 
@@ -798,7 +804,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
 
         //  undefined (won't alter value)
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -833,7 +839,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -868,7 +874,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -934,7 +940,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('div');
+        tpElem = TP.byId('div', windowContext);
 
         //  undefined (won't alter value)
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -969,7 +975,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('div');
+        tpElem = TP.byId('div', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -1004,7 +1010,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('div');
+        tpElem = TP.byId('div', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -1070,7 +1076,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('input_text');
+        tpElem = TP.byId('input_text', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -1105,7 +1111,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('input_text');
+        tpElem = TP.byId('input_text', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -1143,7 +1149,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('input_text');
+        tpElem = TP.byId('input_text', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -1213,7 +1219,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('textarea');
+        tpElem = TP.byId('textarea', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -1248,7 +1254,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('textarea');
+        tpElem = TP.byId('textarea', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -1286,7 +1292,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('textarea');
+        tpElem = TP.byId('textarea', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -1359,7 +1365,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('select_single');
+        tpElem = TP.byId('select_single', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -1397,7 +1403,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('select_single');
+        tpElem = TP.byId('select_single', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -1432,7 +1438,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('select_single');
+        tpElem = TP.byId('select_single', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -1495,7 +1501,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('select_multiple');
+        tpElem = TP.byId('select_multiple', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -1538,7 +1544,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('select_multiple');
+        tpElem = TP.byId('select_multiple', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -1573,7 +1579,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('select_multiple');
+        tpElem = TP.byId('select_multiple', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -1636,7 +1642,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('input_radio_3');
+        tpElem = TP.byId('input_radio_3', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -1674,7 +1680,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('input_radio_3');
+        tpElem = TP.byId('input_radio_3', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -1709,7 +1715,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('input_radio_3');
+        tpElem = TP.byId('input_radio_3', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -1772,7 +1778,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('input_checkbox_3');
+        tpElem = TP.byId('input_checkbox_3', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -1815,7 +1821,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('input_checkbox_3');
+        tpElem = TP.byId('input_checkbox_3', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -1850,7 +1856,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byOID('input_checkbox_3');
+        tpElem = TP.byId('input_checkbox_3', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -1910,6 +1916,8 @@ function() {
 TP.html.XMLNS.Type.describe('html: selection management of standard elements',
 function() {
 
+    var windowContext;
+
     this.before(function() {
         var testDataLoc,
             loadURI;
@@ -1918,6 +1926,8 @@ function() {
 
         testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
         loadURI = TP.uc(testDataLoc);
+
+        windowContext = this.getDriver().get('windowContext');
 
         this.getDriver().setLocation(loadURI);
     });
@@ -1931,7 +1941,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('select_single');
+        tpElem = TP.byId('select_single', windowContext);
 
         //  ---
 
@@ -2017,7 +2027,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('select_multiple');
+        tpElem = TP.byId('select_multiple', windowContext);
 
         getSelectedIndices = function(aTPElem) {
             var natElem,
@@ -2149,7 +2159,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('input_radio_3');
+        tpElem = TP.byId('input_radio_3', windowContext);
 
         //  ---
 
@@ -2157,72 +2167,72 @@ function() {
 
         //  (property defaults to 'value')
         tpElem.addSelection('baz');
-        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'value' property
         tpElem.addSelection('bar', 'value');
-        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
 
         //  'label' property
         tpElem.addSelection('Dog', 'label');
-        test.assert.isTrue(TP.byOID('input_radio_1').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_1', windowContext).isSelected());
 
         //  'id' property
         tpElem.addSelection('input_radio_3', 'id');
-        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'index' property
         tpElem.addSelection(1, 'index');
-        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
 
         //  ---
 
         //  removeSelection
 
         //  (property defaults to 'value')
-        TP.byId('input_radio_2').checked = true;
+        TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('baz');
-        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
 
-        TP.byId('input_radio_3').checked = true;
+        TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('baz');
-        test.assert.isFalse(TP.byOID('input_radio_3').isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'value' property
-        TP.byId('input_radio_3').checked = true;
+        TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('bar', 'value');
-        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
-        TP.byId('input_radio_2').checked = true;
+        TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('bar', 'value');
-        test.assert.isFalse(TP.byOID('input_radio_2').isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
 
         //  'label' property
-        TP.byId('input_radio_2').checked = true;
+        TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('Dog', 'label');
-        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
 
-        TP.byId('input_radio_1').checked = true;
+        TP.byId('input_radio_1', windowContext, false).checked = true;
         tpElem.removeSelection('Dog', 'label');
-        test.assert.isFalse(TP.byOID('input_radio_1').isSelected());
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
 
         //  'id' property
-        TP.byId('input_radio_2').checked = true;
+        TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('input_radio_3', 'id');
-        test.assert.isTrue(TP.byOID('input_radio_2').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
 
-        TP.byId('input_radio_3').checked = true;
+        TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('input_radio_3', 'id');
-        test.assert.isFalse(TP.byOID('input_radio_3').isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'index' property
-        TP.byId('input_radio_3').checked = true;
+        TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection(1, 'index');
-        test.assert.isTrue(TP.byOID('input_radio_3').isSelected());
+        test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
-        TP.byId('input_radio_2').checked = true;
+        TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection(1, 'index');
-        test.assert.isFalse(TP.byOID('input_radio_2').isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
     });
 
     //  ---
@@ -2235,7 +2245,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byOID('input_checkbox_3');
+        tpElem = TP.byId('input_checkbox_3', windowContext);
 
         getSelectedIndices = function(aTPElem) {
             var checkboxIndices;
@@ -2347,6 +2357,12 @@ function() {
 TP.html.XMLNS.Type.describe('html: data binding of standard elements',
 function() {
 
+    var windowContext;
+
+    this.before(function() {
+        windowContext = this.getDriver().get('windowContext');
+    });
+
     this.it('data binding to scalar values', function(test, options) {
 
         var modelObj,
@@ -2355,7 +2371,7 @@ function() {
         modelObj = TP.lang.Object.construct();
         modelObj.defineAttribute('salary');
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
 
         tpElem.defineBinding('value', modelObj, 'salary');
 
@@ -2396,7 +2412,7 @@ function() {
 
         modelObj = TP.json2js('{"record":{"salary":"10"}}');
 
-        tpElem = TP.byOID('span');
+        tpElem = TP.byId('span', windowContext);
         path = TP.apc('record.salary');
 
         tpElem.defineBinding('value', modelObj, path);

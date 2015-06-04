@@ -326,8 +326,8 @@ function() {
 
     var detailTile;
 
-    if (TP.notValid(detailTile = TP.byOID('detailTile', this.getNativeWindow()))) {
-        detailTile = TP.byOID('Sherpa').makeTile('detailTile');
+    if (TP.notValid(detailTile = TP.byId('detailTile', this.getNativeWindow()))) {
+        detailTile = TP.bySystemId('Sherpa').makeTile('detailTile');
     }
 
     if (this.hasAttribute('showresults')) {

@@ -425,6 +425,10 @@ function() {
         test.then(
             function() {
 
+                var windowContext;
+
+                windowContext = test.getDriver().get('windowContext');
+
                 //  Note that these paths on these elements aren't real - we're
                 //  not really interested in that. What we're interested in is
                 //  whether the path got computed properly. Note that the reason
@@ -433,24 +437,24 @@ function() {
                 //  needs to be processed (see the 'TP.html.img' tag type and it
                 //  'uriAttrs' attribute).
 
-                test.assert.isElement(TP.byId('area1'));
+                test.assert.isElement(TP.byId('area1', windowContext, false));
                 test.assert.isAttributeEqualTo(
-                    TP.byId('area1'),
+                    TP.byId('area1', windowContext, false),
                     'href',
                     'file:///usr/local/src/TIBET/base/lib/tibet/img/tibet_logo_369.gif');
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('area2'),
+                    TP.byId('area2', windowContext, false),
                     'href',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('area3'),
+                    TP.byId('area3', windowContext, false),
                     'href',
                     TP.uc('~tibet/base/lib/tibet/img/../tibet_logo_369.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
-                    TP.byId('area4'),
+                    TP.byId('area4', windowContext, false),
                     'href',
                     TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
             });
@@ -468,7 +472,9 @@ function() {
                 var elem,
                     tpElem;
 
-                elem = TP.byId('colorizedSpan');
+                elem = TP.byId('colorizedSpan',
+                                test.getDriver().get('windowContext'),
+                                false);
                 test.assert.isElement(elem);
 
                 tpElem = TP.wrap(elem);
@@ -583,15 +589,21 @@ function() {
                 test.then(
                     function() {
 
+                        var windowContext;
+
+                        windowContext = test.getDriver().get('windowContext');
+
                         //  Put log level back to what it was
                         TP.setLogLevel(oldLogLevel);
 
                         //  Put the debugger setting back to what it was
                         TP.sys.shouldUseDebugger(usingDebugger);
 
-                        test.assert.isElement(TP.byId('part1Success'));
+                        test.assert.isElement(
+                            TP.byId('part1Success', windowContext, false));
 
-                        test.assert.isElement(TP.byId('part10Fallback'));
+                        test.assert.isElement(
+                            TP.byId('part10Fallback', windowContext, false));
 
                         server.restore();
                         server.xhr.filters = [];
@@ -613,13 +625,19 @@ function() {
         test.then(
             function() {
 
+                var windowContext;
+
+                windowContext = test.getDriver().get('windowContext');
+
                 //  This comes from the first XInclude with a simple XPointer
                 //  expression
-                test.assert.isElement(TP.byId('partialDiv'));
+                test.assert.isElement(
+                    TP.byId('partialDiv', windowContext, false));
 
                 //  This comes from the second XInclude with a more complex
                 //  XPointer expression.
-                test.assert.isElement(TP.byId('partialParagraph'));
+                test.assert.isElement(
+                    TP.byId('partialParagraph', windowContext, false));
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

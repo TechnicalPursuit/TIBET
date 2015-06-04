@@ -6010,7 +6010,7 @@ function(aMessage, aTarget) {
         }
     } else if (TP.isNumber(aTarget)) {
         //  try to acquire the status zone with that identifier...
-        elem = TP.byId('status' + aTarget, TP.uidoc(true));
+        elem = TP.byId('status' + aTarget, TP.uidoc(true), false);
         if (TP.isElement(elem)) {
             //  Note how we pass 'null' here for the 'loaded function' and
             //  'false' to not awaken the content.
@@ -6938,7 +6938,7 @@ function(unwrapped) {
         return TP.sys.getWindowById(TP.sys.getUIRootName());
     }
 
-    return TP.byOID(TP.sys.getUIRootName());
+    return TP.bySystemId(TP.sys.getUIRootName());
 });
 
 //  ------------------------------------------------------------------------
@@ -6989,7 +6989,7 @@ function(aCanvas) {
         TP.sys.$uiCanvas = name;
         TP.sys.setcfg('tibet.uicanvas', name);
 
-        return TP.byOID(name);
+        return TP.bySystemId(name);
     } else if (TP.canInvoke(aCanvas, 'getNativeWindow')) {
         name = TP.gid(aCanvas.getNativeWindow());
         TP.sys.$uiCanvas = name;
@@ -7030,7 +7030,7 @@ function(aCanvas) {
         TP.sys.$uiRoot = name;
         TP.sys.setcfg('tibet.uiroot', name);
 
-        return TP.byOID(name);
+        return TP.bySystemId(name);
     } else {
         name = TP.gid(aCanvas);
         TP.sys.$uiRoot = name;

@@ -491,7 +491,7 @@ function() {
     if (TP.sys.cfg('boot.context') !== 'phantomjs' && hasBootToggle) {
 
         //  No hook file in the boot screen so we initialize manually.
-        bootframe = TP.wrap(TP.byId(TP.sys.cfg('boot.uiboot'), top));
+        bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
         if (TP.boot.$isValid(bootframe)) {
             TP.boot.initializeCanvas(
                 bootframe.getContentWindow().getNativeWindow());

@@ -136,7 +136,7 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
     //  use a combination of element and context to find the focal
     //  element(s) for the call
     elem = TP.isString(obj) ?
-                TP.byId(obj, TP.context(nodeContext)) :
+                TP.byId(obj, TP.context(nodeContext), false) :
                 TP.elem(obj);
 
     arglist = TP.args(arguments, 3);
@@ -213,7 +213,7 @@ function(aMethodName, elemOrId, nodeContext, varargs) {
     //  use a combination of element and context to find the focal
     //  element(s) for the call
     elem = TP.isString(obj) ?
-                TP.byId(obj, TP.context(nodeContext)) :
+                TP.byId(obj, TP.context(nodeContext), false) :
                 TP.elem(obj);
 
     arglist = TP.args(arguments, 3);
@@ -292,7 +292,7 @@ function(cssExpr, nodeContext, autoCollapse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byId',
-function(anID, nodeContext) {
+function(anID, nodeContext, shouldWrap) {
 
     /**
      * @method byId
@@ -301,6 +301,8 @@ function(anID, nodeContext) {
      * @param {String} anID The ID to search for.
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
+     * @param {Boolean} [shouldWrap=true] Whether or not the results should
+     *     wrapped into a TIBET wrapper object. The default is true.
      * @exception TP.sig.InvalidID
      * @returns {Element|Array} The element, if found, or an array when more
      *     than one ID was provided.
@@ -337,8 +339,7 @@ function(anID, nodeContext) {
     }
 
     if (TP.regex.HAS_PERIOD.test(anID)) {
-        TP.raise(TP.byId, 'TP.sig.InvalidID',
-                                        'Path-style IDs not allowed.');
+        TP.raise(TP.byId, 'TP.sig.InvalidID', 'Path-style IDs not allowed.');
         return;
     }
 
@@ -353,14 +354,23 @@ function(anID, nodeContext) {
     if (len > 1) {
         arr = TP.ac();
         for (i = 0; i < len; i++) {
-            arr.atPut(i, TP.nodeGetElementById(node, list.at(i)));
+            if (TP.isFalse(shouldWrap)) {
+                arr.atPut(i, TP.nodeGetElementById(node, list.at(i), true));
+            } else {
+                arr.atPut(i, TP.wrap(
+                                TP.nodeGetElementById(node, list.at(i), true)));
+            }
         }
 
         //  remove nulls for any IDs not found and hook contents
         return arr.compact();
     } else {
         //  NOTE we force XPath usage when not found and XML
-        return TP.nodeGetElementById(node, id, true);
+        if (TP.isFalse(shouldWrap)) {
+            return TP.nodeGetElementById(node, id, true);
+        } else {
+            return TP.wrap(TP.nodeGetElementById(node, id, true));
+        }
     }
 });
 
@@ -374,11 +384,11 @@ function(selectionFunc, nodeContext, autoCollapse) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('byOID',
+TP.definePrimitive('bySystemId',
 function(anID, nodeContext) {
 
     /**
-     * @method byOID
+     * @method bySystemId
      * @summary A convenience wrapper for the TP.sys.getObjectById() call.
      *     NOTE: unlike the other TP.by* calls this function begins its search
      *     with the TIBET object registry and proceeds to check the UI
@@ -1002,8 +1012,8 @@ function(oldElemOrId, newElemOrId, nodeContext) {
         len,
         i;
 
-    elem = TP.byId(oldElemOrId, TP.context(nodeContext));
-    newelem = TP.byId(newElemOrId, TP.context(nodeContext));
+    elem = TP.byId(oldElemOrId, TP.context(nodeContext), false);
+    newelem = TP.byId(newElemOrId, TP.context(nodeContext), false);
 
     if (TP.isArray(newelem)) {
         return TP.raise(this, 'TP.sig.InvalidParameter',
@@ -1356,7 +1366,7 @@ function(anElement, effectName, effectParams, nodeContext) {
     //  If its a String, then return an Element or an Array matching the one
     //  or more ids given in the String.
     if (TP.isString(anElement)) {
-        elems = TP.byId(anElement, TP.context(nodeContext));
+        elems = TP.byId(anElement, TP.context(nodeContext), false);
     } else {
         elems = anElement;
     }
@@ -1618,7 +1628,7 @@ function(anObject, nodeContext) {
     //  use a combination of element and context to find the focal
     //  element(s) for the call
     elem = TP.isString(anObject) ?
-                TP.byId(anObject, TP.context(nodeContext)) :
+                TP.byId(anObject, TP.context(nodeContext), false) :
                 TP.elem(anObject);
 
     if (TP.isElement(elem)) {
@@ -1820,7 +1830,7 @@ function(elemOrId, anAspect, nodeContext) {
 
     aspect = anAspect || 'value';
 
-    list = TP.byId(elemOrId, nodeContext);
+    list = TP.byId(elemOrId, nodeContext, false);
 
     if (TP.isArray(list)) {
         arr = TP.ac();
@@ -1866,7 +1876,7 @@ function(elemOrId, anAspect, aValue, nodeContext) {
 
     aspect = anAspect || 'value';
 
-    list = TP.byId(elemOrId, nodeContext);
+    list = TP.byId(elemOrId, nodeContext, false);
     if (TP.isArray(list)) {
         len = list.getSize();
         for (i = 0; i < len; i++) {

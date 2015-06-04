@@ -1441,7 +1441,7 @@ function(aNodeOrId) {
         typeName;
 
     if (TP.isString(aNodeOrId)) {
-        return TP.byOID(aNodeOrId);
+        return TP.byId(aNodeOrId);
     }
 
     //  Default the inputType to 'text' if its not present, which is what

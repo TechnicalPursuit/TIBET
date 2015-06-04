@@ -353,7 +353,7 @@ function(aNodeOrId) {
     var type;
 
     if (TP.isString(aNodeOrId)) {
-        return TP.byOID(aNodeOrId);
+        return TP.byId(aNodeOrId);
     }
 
     type = TP.ietf.Mime.get('info').at(

@@ -65,7 +65,9 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
+                var windowContext,
+
+                    bodyElem,
 
                     elem1,
                     elem2,
@@ -74,16 +76,18 @@ function() {
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 //  The window-level focus handlers in TIBET will focus the body
                 //  here.
                 TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
 
                 //  The first focused element in this file will be the <body>
                 //  Test that theory.
@@ -224,21 +228,25 @@ function() {
 
         test.then(
             function(result) {
-                var elem1,
+                var windowContext,
+
+                    elem1,
                     elem2,
                     elem3,
                     elem4,
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 //  The window-level focus handlers in TIBET will focus the body
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
 
                 if (TP.sys.isUA('IE')) {
                     //  IE won't autofocus in our test environment, even though
@@ -375,21 +383,25 @@ function() {
 
         test.then(
             function(result) {
-                var elem1,
+                var windowContext,
+
+                    elem1,
                     elem2,
                     elem3,
                     elem4,
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 //  The window-level focus handlers in TIBET will focus the body
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
 
                 if (TP.sys.isUA('IE')) {
                     //  IE won't autofocus in our test environment, even though
@@ -595,21 +607,25 @@ function() {
 
         test.then(
             function(result) {
-                var elem1,
+                var windowContext,
+
+                    elem1,
                     elem2,
                     elem3,
                     elem4,
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 //  The window-level focus handlers in TIBET will focus the body
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
 
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
@@ -822,21 +838,25 @@ function() {
 
         test.then(
             function(result) {
-                var elem1,
+                var windowContext,
+
+                    elem1,
                     elem2,
                     elem3,
                     elem4,
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 //  The window-level focus handlers in TIBET will focus the body
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
 
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
@@ -1056,7 +1076,9 @@ function() {
 
         test.then(
             function(result) {
-                var elem1,
+                var windowContext,
+
+                    elem1,
                     elem2,
                     elem3,
                     elem4,
@@ -1067,18 +1089,20 @@ function() {
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 //  The window-level focus handlers in TIBET will focus the body
                 //  here.
                 TP.sys.uiwin(true).focus();
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
-                elem5 = TP.byId('focusTestField5');
-                elem6 = TP.byId('focusTestField6');
-                elem7 = TP.byId('focusTestField7');
-                elem8 = TP.byId('focusTestField8');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem5 = TP.byId('focusTestField5', windowContext, false);
+                elem6 = TP.byId('focusTestField6', windowContext, false);
+                elem7 = TP.byId('focusTestField7', windowContext, false);
+                elem8 = TP.byId('focusTestField8', windowContext, false);
 
                 if (TP.sys.isUA('IE')) {
                     //  IE won't autofocus in our test environment, even though
@@ -1384,7 +1408,9 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
+                var windowContext,
+
+                    bodyElem,
 
                     elem1,
                     elem2,
@@ -1397,20 +1423,22 @@ function() {
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 //  The window-level focus handlers in TIBET will focus the body
                 //  here.
                 TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
 
-                elem4 = TP.byId('focusTestField4');
-                elem5 = TP.byId('focusTestField5');
-                elem6 = TP.byId('focusTestField6');
-                elem7 = TP.byId('focusTestField7');
-                elem8 = TP.byId('focusTestField8');
+                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem5 = TP.byId('focusTestField5', windowContext, false);
+                elem6 = TP.byId('focusTestField6', windowContext, false);
+                elem7 = TP.byId('focusTestField7', windowContext, false);
+                elem8 = TP.byId('focusTestField8', windowContext, false);
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
@@ -1738,7 +1766,9 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
+                var windowContext,
+
+                    bodyElem,
 
                     elem1,
                     elem2,
@@ -1751,18 +1781,20 @@ function() {
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
-                elem5 = TP.byId('focusTestField5');
-                elem6 = TP.byId('focusTestField6');
-                elem7 = TP.byId('focusTestField7');
-                elem8 = TP.byId('focusTestField8');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
+                elem5 = TP.byId('focusTestField5', windowContext, false);
+                elem6 = TP.byId('focusTestField6', windowContext, false);
+                elem7 = TP.byId('focusTestField7', windowContext, false);
+                elem8 = TP.byId('focusTestField8', windowContext, false);
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
@@ -2260,7 +2292,9 @@ function() {
 
         test.then(
             function(result) {
-                var bodyElem,
+                var windowContext,
+
+                    bodyElem,
 
                     elem1,
                     elem2,
@@ -2269,14 +2303,16 @@ function() {
 
                     focusedElem;
 
+                windowContext = driver.get('windowContext');
+
                 TP.sys.uiwin(true).focus();
 
                 bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
 
-                elem1 = TP.byId('focusTestField1');
-                elem2 = TP.byId('focusTestField2');
-                elem3 = TP.byId('focusTestField3');
-                elem4 = TP.byId('focusTestField4');
+                elem1 = TP.byId('focusTestField1', windowContext, false);
+                elem2 = TP.byId('focusTestField2', windowContext, false);
+                elem3 = TP.byId('focusTestField3', windowContext, false);
+                elem4 = TP.byId('focusTestField4', windowContext, false);
 
                 //  Due to the way the markup is written here, the tab order for
                 //  this test is:

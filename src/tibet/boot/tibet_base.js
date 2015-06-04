@@ -6963,7 +6963,7 @@ TP.boot.hideUIBoot = function() {
         elem.style.display = 'none';
     }
 
-    TP.byId('UIROOT', top).focus();
+    TP.byId('UIROOT', top, false).focus();
 };
 
 //  ----------------------------------------------------------------------------

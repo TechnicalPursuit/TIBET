@@ -63,7 +63,7 @@ function(anEntry) {
 
     srcID = this.get('sourceID');
 
-    str = '<a href="#" onclick="TP.byOID(\'' + srcID + '\').setSourceObject(';
+    str = '<a href="#" onclick="TP.byId(\'' + srcID + '\').setSourceObject(';
 
     switch (anEntry.first()) {
 

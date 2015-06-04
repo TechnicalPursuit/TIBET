@@ -225,7 +225,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
     } else {
         //  if not empty we need to know if it's an element reference so we
         //  can expand. note that the value ends up being the target of an
-        //  TP.byOID() call so it doesn't have to be a local element.
+        //  TP.byId() call so it doesn't have to be a local element.
 
         //  one thing we need to watch out for are barenames prefixed with a
         //  # to help us see that they're local IDs. If we don't respect

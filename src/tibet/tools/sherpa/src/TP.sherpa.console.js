@@ -127,7 +127,7 @@ function() {
     //  Set up the consoleOutput element by putting it in the previously
     //  used 'content' element that is currently displaying a 'busy' panel.
 
-    contentTPElem = TP.wrap(TP.byId('content', this.getNativeWindow()));
+    contentTPElem = TP.byId('content', this.getNativeWindow());
 
     consoleOutputTPElem = contentTPElem.addContent(
                         TP.xhtmlnode('<div id="SherpaConsoleOutput"/>'));
@@ -137,7 +137,7 @@ function() {
     //  the output view.
     this.setupConsoleService();
 
-    hudTPElem = TP.byOID('SherpaHUD', this.getNativeWindow());
+    hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
     this.observe(hudTPElem, 'HiddenChange');
 
     //  Use the HUD's current value to set whether we are hidden or
@@ -342,7 +342,7 @@ function(beHidden) {
             TP.core.Keyboard,
             'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
 
-        TP.wrap(TP.byId('content', this.getNativeWindow())).hide();
+        TP.byId('content', this.getNativeWindow()).hide();
 
         //  Execute the supertype's method and capture the return value *after*
         //  everything has hidden.
@@ -354,7 +354,7 @@ function(beHidden) {
         //  everything has been shown.
         retVal = this.callNextMethod();
 
-        TP.wrap(TP.byId('content', this.getNativeWindow())).show();
+        TP.byId('content', this.getNativeWindow()).show();
 
         consoleInput = this.get('consoleInput');
         consoleInput.focus();
@@ -419,7 +419,7 @@ function() {
 
     var logviewTPElem;
 
-    logviewTPElem = TP.byOID('SherpaLogView', TP.win('UIROOT.SHERPA_FRAME'));
+    logviewTPElem = TP.byId('SherpaLogView', TP.win('UIROOT.SHERPA_FRAME'));
     logviewTPElem.toggle('hidden');
 
     return this;
@@ -471,7 +471,7 @@ function(aMode) {
 
     var centerElem;
 
-    centerElem = TP.byId('center', this.getNativeWindow());
+    centerElem = TP.byId('center', this.getNativeWindow(), false);
 
     switch (aMode) {
         case 'h_split_bottom':
@@ -633,8 +633,8 @@ function(aPrompt, aCSSClass) {
 
     editor = this.get('consoleInput').$get('$editorObj');
 
-    if (!TP.isElement(
-                elem = TP.byId(TP.sys.cfg('sherpa.console_prompt'), doc))) {
+    if (!TP.isElement(elem = TP.byId(
+                        TP.sys.cfg('sherpa.console_prompt'), doc, false))) {
 
         cursorRange = consoleInput.getCursor();
 
@@ -727,7 +727,7 @@ function(aSignal) {
     if (TP.isWindow(canvasWin = TP.sys.getUICanvas(true))) {
         str = '' + TP.gid(canvasWin).sliceFrom('.', false, true);
 
-        TP.htmlElementSetContent(TP.byId('status2', this.$get('vWin')),
+        TP.htmlElementSetContent(TP.byId('status2', this.$get('vWin'), false),
             str, null, false);
     }
 
@@ -736,7 +736,7 @@ function(aSignal) {
     //  ---
 
     str = '' + TP.getLogLevel().getName() + '::' + APP.getLogLevel().getName();
-    TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin')),
+    TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin'), false),
         str, null, false);
 
     //  ---
@@ -753,7 +753,7 @@ function(aSignal) {
         arr.compact();
 
         str = arr.join(':');
-        TP.htmlElementSetContent(TP.byId('status1', this.$get('vWin')),
+        TP.htmlElementSetContent(TP.byId('status1', this.$get('vWin'), false),
             str, null, false);
     }
     */
@@ -825,7 +825,7 @@ function() {
                     (styleVals.at('borderBottomWidth') +
                      styleVals.at('paddingBottom')));
 
-    TP.elementSetHeight(TP.byId('south', this.getNativeWindow()),
+    TP.elementSetHeight(TP.byId('south', this.getNativeWindow(), false),
                         editorHeight +
                         styleVals.at('borderTopWidth') +
                         styleVals.at('borderBottomWidth') +
@@ -1100,7 +1100,7 @@ function() {
         searcherContent;
 
     if (TP.notValid(searcherTile = this.get('searcherTile'))) {
-        searcherTile = TP.byOID('Sherpa').makeTile(
+        searcherTile = TP.bySystemId('Sherpa').makeTile(
                                     'searcher_tile',
                                     this.get('consoleOutput'));
         searcherTile.setAttribute('contenttype', 'sherpa:searcher');
@@ -1373,7 +1373,7 @@ function(uniqueID, dataRecord) {
     if (TP.isEmpty(outputText) &&
         TP.isTrue(dataRecord.at('structuredOutput'))) {
 
-        resultTile = TP.byOID('Sherpa', this.get('vWin')).makeEditorTile(
+        resultTile = TP.bySystemId('Sherpa').makeEditorTile(
                                     uniqueID + '_tile',
                                     cellGroupElem);
         resultTile.setAttribute('attachedto', 'console');

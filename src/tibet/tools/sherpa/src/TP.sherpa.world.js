@@ -297,7 +297,7 @@ function(screenRowNum, screenColNum) {
     hudVertOffset = (50 + 5);
     /* eslint-enable no-extra-parens */
 
-    if (TP.isValid(hud = TP.byOID('SherpaHUD', this.getNativeWindow())) &&
+    if (TP.isValid(hud = TP.byId('SherpaHUD', this.getNativeWindow())) &&
         TP.notTrue(hud.get('hidden'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;
@@ -344,7 +344,7 @@ function() {
     translateX = 0;
     translateY = 0;
 
-    if (TP.isValid(hud = TP.byOID('SherpaHUD', this.getNativeWindow())) &&
+    if (TP.isValid(hud = TP.byId('SherpaHUD', this.getNativeWindow())) &&
         TP.notTrue(hud.get('hidden'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;

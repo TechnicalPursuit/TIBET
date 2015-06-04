@@ -31,7 +31,7 @@
 
     <ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.salary)">
         <![CDATA[
-        TP.byOID('salaryField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
+        TP.byId('salaryField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
         ]]>
     </ev:script>
 
@@ -50,7 +50,7 @@
 
     <ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.SSN)">
         <![CDATA[
-        TP.byOID('ssnField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
+        TP.byId('ssnField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
         ]]>
     </ev:script>
 
@@ -61,7 +61,7 @@
     <!-- Any aspect changing -->
     <ev:script type="text/javascript" event="TP.sig.Change" observer="urn:tibet:empObject">
         <![CDATA[
-        TP.byOID('msgField').addContent('<span xmlns="http://www.w3.org/1999/xhtml">' + triggerSignal.getTarget().getID() + ' changed: ' + triggerSignal.get('aspect') + ' to: ' + triggerSignal.getTarget().get(TP.apc(triggerSignal.get('aspect'))) + '<br/></span>');
+        TP.byId('msgField').addContent('<span xmlns="http://www.w3.org/1999/xhtml">' + triggerSignal.getTarget().getID() + ' changed: ' + triggerSignal.get('aspect') + ' to: ' + triggerSignal.getTarget().get(TP.apc(triggerSignal.get('aspect'))) + '<br/></span>');
         ]]>
     </ev:script>
 

@@ -1561,7 +1561,6 @@ function() {
     loadURI = TP.uc('~lib_tst/src/tibet/databinding/Observation1.xhtml');
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
-
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
@@ -1594,7 +1593,8 @@ function() {
                 modelObj = TP.lang.Object.construct();
                 modelObj.defineAttribute('salary');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value', modelObj, 'salary');
 
@@ -1640,7 +1640,8 @@ function() {
                 modelObj.setID('CurrentEmployee');
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value', 'CurrentEmployee', 'salary');
 
@@ -1691,7 +1692,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value', modelURI, 'salary');
 
@@ -1734,7 +1736,8 @@ function() {
                 modelObj.defineAttribute('salary');
                 modelObj.defineAttribute('salaryInRange');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value', modelObj, 'salary');
                 salaryField.defineBinding('@inrange', modelObj, 'salaryInRange');
@@ -1797,7 +1800,8 @@ function() {
                 modelObj.setID('CurrentEmployee');
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value', 'CurrentEmployee', 'salary');
                 salaryField.defineBinding('@inrange', 'CurrentEmployee', 'salaryInRange');
@@ -1864,7 +1868,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value', modelURI, 'salary');
                 salaryField.defineBinding('@inrange', modelURI, 'salaryInRange');
@@ -1922,7 +1927,8 @@ function() {
 
                 modelObj = TP.json2js('{"emp":{"salary":50000}}');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelObj,
@@ -1971,7 +1977,8 @@ function() {
                 modelObj.setID('CurrentEmployee');
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             'CurrentEmployee',
@@ -2024,7 +2031,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelURI,
@@ -2070,7 +2078,8 @@ function() {
                 modelObj = TP.json2js(
                                 '{"emp":{"salary":50000,"salaryInRange":false}}');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelObj,
@@ -2141,7 +2150,8 @@ function() {
                 modelObj.setID('CurrentEmployee');
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             'CurrentEmployee',
@@ -2216,7 +2226,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelURI,
@@ -2284,7 +2295,8 @@ function() {
                 modelObj = TP.core.JSONContent.construct(
                                 '{"emp":{"salary":50000}}');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelObj,
@@ -2334,7 +2346,8 @@ function() {
                 modelObj.setID('CurrentEmployee');
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             'CurrentEmployee',
@@ -2388,7 +2401,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelURI,
@@ -2434,7 +2448,8 @@ function() {
                 modelObj = TP.core.JSONContent.construct(
                                 '{"emp":{"salary":50000,"salaryInRange":false}}');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelObj,
@@ -2505,7 +2520,8 @@ function() {
                 modelObj.setID('CurrentEmployee');
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             'CurrentEmployee',
@@ -2580,7 +2596,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelURI,
@@ -2647,7 +2664,8 @@ function() {
 
                 modelObj = TP.tpdoc('<emp><salary>50000</salary></emp>');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelObj,
@@ -2697,7 +2715,8 @@ function() {
 
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             'CurrentEmployee',
@@ -2750,7 +2769,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelURI,
@@ -2796,7 +2816,8 @@ function() {
                 modelObj = TP.tpdoc(
                             '<emp><salary inrange="false">50000</salary></emp>');
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelObj,
@@ -2867,7 +2888,8 @@ function() {
                 modelObj.setID('CurrentEmployee');
                 TP.sys.registerObject(modelObj, null, null, true);
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             'CurrentEmployee',
@@ -2942,7 +2964,8 @@ function() {
                 //  and was assigned as the resource to the URI defined above.
                 modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
-                salaryField = TP.byOID('salaryField');
+                salaryField = TP.byId('salaryField',
+                                        test.getDriver().get('windowContext'));
 
                 salaryField.defineBinding('value',
                                             modelURI,

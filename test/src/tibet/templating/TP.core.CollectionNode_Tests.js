@@ -66,7 +66,8 @@ function() {
                 var contentElem;
 
                 //  Test for elements from the template
-                contentElem = TP.byId('hello1');
+                contentElem = TP.byId(
+                    'hello1', test.getDriver().get('windowContext'), false);
                 test.assert.isElement(contentElem);
 
                 test.assert.isEqualTo(
@@ -97,7 +98,8 @@ function() {
 
                 var contentElem;
 
-                contentElem = TP.byId('hello1');
+                contentElem = TP.byId(
+                    'hello1', test.getDriver().get('windowContext'), false);
                 test.assert.isElement(contentElem);
 
                 test.assert.isEqualTo(
@@ -127,7 +129,8 @@ function() {
                 var contentElem;
 
                 //  Test for elements from the template
-                contentElem = TP.byId('hello2');
+                contentElem = TP.byId(
+                    'hello2', driver.get('windowContext'), false);
                 test.assert.isElement(contentElem);
 
                 test.assert.isEqualTo(
@@ -158,7 +161,8 @@ function() {
 
                 var contentElem;
 
-                contentElem = TP.byId('hello2');
+                contentElem = TP.byId(
+                    'hello2', driver.get('windowContext'), false);
                 test.assert.isElement(contentElem);
 
                 test.assert.isEqualTo(
@@ -185,23 +189,27 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
                     contentElem2,
                     contentElem3;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('hello3');
+                contentElem = TP.byId('hello3', windowContext, false);
                 test.assert.isElement(contentElem);
 
-                contentElem2 = TP.byId('helloNested');
+                contentElem2 = TP.byId('helloNested', windowContext, false);
                 test.assert.isElement(contentElem2);
 
                 test.assert.isChildNodeOf(
                     contentElem,
                     contentElem2);
 
-                contentElem3 = TP.byId('hello1');
+                contentElem3 = TP.byId('hello1', windowContext, false);
                 test.assert.isElement(contentElem3);
 
                 test.assert.isEqualTo(
@@ -232,23 +240,27 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
                     contentElem2,
                     contentElem3;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('hello3');
+                contentElem = TP.byId('hello3', windowContext, false);
                 test.assert.isElement(contentElem);
 
-                contentElem2 = TP.byId('helloNested');
+                contentElem2 = TP.byId('helloNested', windowContext, false);
                 test.assert.isElement(contentElem2);
 
                 test.assert.isChildNodeOf(
                     contentElem,
                     contentElem2);
 
-                contentElem3 = TP.byId('hello1');
+                contentElem3 = TP.byId('hello1', windowContext, false);
                 test.assert.isElement(contentElem3);
 
                 test.assert.isEqualTo(
@@ -279,24 +291,28 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
                     contentElem2,
                     contentElem3;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('hello4');
+                contentElem = TP.byId('hello4', windowContext, false);
                 test.assert.isElement(contentElem);
 
-                contentElem2 = TP.byId('helloNested');
+                contentElem2 = TP.byId('helloNested', windowContext, false);
                 test.assert.isElement(contentElem2);
 
                 test.assert.isChildNodeOf(
                     contentElem,
                     contentElem2);
 
-                contentElem3 = TP.byId('hello1');
-                test.assert.isElement(contentElem3);
+                contentElem3 = TP.byId('hello1', windowContext, false);
+                test.assert.isElement(contentElem3, windowContext, false);
 
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(contentElem3).trim(),
@@ -326,23 +342,27 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
                     contentElem2,
                     contentElem3;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('hello4');
+                contentElem = TP.byId('hello4', windowContext, false);
                 test.assert.isElement(contentElem);
 
-                contentElem2 = TP.byId('helloNested');
+                contentElem2 = TP.byId('helloNested', windowContext, false);
                 test.assert.isElement(contentElem2);
 
                 test.assert.isChildNodeOf(
                     contentElem,
                     contentElem2);
 
-                contentElem3 = TP.byId('hello1');
+                contentElem3 = TP.byId('hello1', windowContext, false);
                 test.assert.isElement(contentElem3);
 
                 test.assert.isEqualTo(
@@ -411,23 +431,27 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
                     contentElem2,
                     contentElem3;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('hello5');
+                contentElem = TP.byId('hello5', windowContext, false);
                 test.assert.isElement(contentElem);
 
-                contentElem2 = TP.byId('helloNested');
+                contentElem2 = TP.byId('helloNested', windowContext, false);
                 test.assert.isElement(contentElem2);
 
                 test.assert.isChildNodeOf(
                     contentElem,
                     contentElem2);
 
-                contentElem3 = TP.byId('hello1');
+                contentElem3 = TP.byId('hello1', windowContext, false);
                 test.assert.isElement(contentElem3);
 
                 test.assert.isEqualTo(
@@ -476,23 +500,27 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
                     contentElem2,
                     contentElem3;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('hello5');
+                contentElem = TP.byId('hello5', windowContext, false);
                 test.assert.isElement(contentElem);
 
-                contentElem2 = TP.byId('helloNested');
+                contentElem2 = TP.byId('helloNested', windowContext, false);
                 test.assert.isElement(contentElem2);
 
                 test.assert.isChildNodeOf(
                     contentElem,
                     contentElem2);
 
-                contentElem3 = TP.byId('hello1');
+                contentElem3 = TP.byId('hello1', windowContext, false);
                 test.assert.isElement(contentElem3);
 
                 test.assert.isEqualTo(
@@ -579,14 +607,18 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
 
                     correctVal,
                     testVal;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('textResults');
+                contentElem = TP.byId('textResults', windowContext, false);
                 test.assert.isElement(contentElem);
 
                 //  The content of the element should be outer content of the
@@ -598,7 +630,7 @@ function() {
                     testVal,
                     correctVal);
 
-                contentElem = TP.byId('attrResults');
+                contentElem = TP.byId('attrResults', windowContext, false);
                 test.assert.isElement(contentElem);
 
                 correctVal = 'html:div';
@@ -628,14 +660,18 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
 
                     correctVal,
                     testVal;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('textResults');
+                contentElem = TP.byId('textResults', windowContext, false);
                 test.assert.isElement(contentElem);
 
                 //  The content of the element should be outer content of the
@@ -648,7 +684,7 @@ function() {
                     testVal,
                     correctVal);
 
-                contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults'));
+                contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults', windowContext, false));
                 test.assert.isElement(contentElem);
 
                 correctVal = 'TEMPLATETEST:HELLO6';
@@ -678,14 +714,18 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
 
                     correctVal,
                     testVal;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('textResults');
+                contentElem = TP.byId('textResults', windowContext, false);
                 test.assert.isElement(contentElem);
 
                 //  The content of the element should be outer content of the
@@ -741,7 +781,7 @@ function() {
 
                 //  Test the attribute substitutions
 
-                contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults'));
+                contentElem = TP.nodeGetFirstChildElement(TP.byId('attrResults', windowContext, false));
                 test.assert.isElement(contentElem);
 
                 correctVal = 'TEMPLATETEST:HELLO6';
@@ -771,14 +811,18 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
 
                     correctVal,
                     testVal;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('textResults');
+                contentElem = TP.byId('textResults', windowContext, false);
                 test.assert.isElement(contentElem);
 
                 //  The content of the element should be outer content of the
@@ -791,7 +835,7 @@ function() {
                     testVal,
                     correctVal);
 
-                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults')).first();
+                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults', windowContext, false)).first();
                 test.assert.isElement(contentElem);
 
                 correctVal = 'templatetest:hello7';
@@ -821,14 +865,18 @@ function() {
         test.then(
             function(result) {
 
-                var contentElem,
+                var windowContext,
+
+                    contentElem,
 
                     correctVal,
                     testVal;
 
+                windowContext = driver.get('windowContext');
+
                 //  Test for elements from the templates
 
-                contentElem = TP.byId('textResults');
+                contentElem = TP.byId('textResults', windowContext, false);
                 test.assert.isElement(contentElem);
 
                 //  The content of the element should be outer content of the
@@ -884,7 +932,7 @@ function() {
 
                 //  Test the attribute substitutions
 
-                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults')).first();
+                contentElem = TP.byCSS('*[nestedtemplateattr]', TP.byId('attrResults', windowContext, false)).first();
                 test.assert.isElement(contentElem);
 
                 correctVal = 'templatetest:hello7';

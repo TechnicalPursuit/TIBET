@@ -9447,7 +9447,7 @@ function(aURI, aDirection) {
     if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
         //  If we got a routeTarget above, then its a directed injection.
         if (TP.notEmpty(routeTarget)) {
-            routeTarget = TP.byOID(routeTarget);
+            routeTarget = TP.byId(routeTarget);
         }
 
         //  If we can't resolve a routeTarget, then just grab the body element

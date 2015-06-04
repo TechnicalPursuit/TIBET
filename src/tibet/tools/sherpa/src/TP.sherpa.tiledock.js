@@ -67,7 +67,7 @@ function() {
 
     items = TP.extern.d3.select(TP.unwrap(targetList)).selectAll('li').data(data);
     items.enter().append('li');
-    items.html(function(d) {return '<a href="#" onclick="TP.byOID(\'' + d.first() + '\').toggle(\'hidden\')">' + d.last() + '</a>'; });
+    items.html(function(d) {return '<a href="#" onclick="TP.byId(\'' + d.first() + '\').toggle(\'hidden\')">' + d.last() + '</a>'; });
     items.exit().remove();
 
     return this;

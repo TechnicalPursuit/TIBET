@@ -1043,7 +1043,7 @@ function(anOrigin, aHandler, aPolicy, windowContext) {
     policy = TP.ifInvalid(aPolicy, this.get('defaultPolicy'));
 
     TP.windowArmNode(context,
-                        TP.byId(anOrigin, context),
+                        TP.byId(anOrigin, context, false),
                         this.getSignalName(),
                         handler,
                         policy);
@@ -1087,7 +1087,7 @@ function(anOrigin, aHandler, windowContext) {
     handler = TP.ifInvalid(aHandler, this.get('armingHandler'));
 
     TP.windowDisarmNode(context,
-                        TP.byId(anOrigin, context),
+                        TP.byId(anOrigin, context, false),
                         this.getSignalName(),
                         handler);
 

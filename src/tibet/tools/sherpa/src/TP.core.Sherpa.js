@@ -71,7 +71,7 @@ function(aName) {
         //  take over that responsibility.
         sherpaSetupFunc.ignore(TP.core.Keyboard, toggleKey);
 
-        if (TP.isValid(sherpaInst = TP.byOID('Sherpa'))) {
+        if (TP.isValid(sherpaInst = TP.bySystemId('Sherpa'))) {
 
             //  If we didn't show the IDE when we first started, the trigger
             //  has now been fired to show it.
@@ -94,11 +94,11 @@ function(aName) {
                     //  drawer will be immediate.
                     TP.elementAddClass(drawerElement, 'no_transition');
 
-                    TP.byOID('SherpaHUD', TP.win('UIROOT')).setAttribute(
+                    TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
                                                             'hidden', false);
                     /* eslint-disable no-wrap-func,no-extra-parens */
                     (function() {
-                        TP.byOID('SherpaConsole', TP.win('UIROOT')).refresh();
+                        TP.byId('SherpaConsole', TP.win('UIROOT')).refresh();
                     }).fork(500);
                     /* eslint-enable no-wrap-func,no-extra-parens */
 
@@ -109,13 +109,14 @@ function(aName) {
                 //  First, we remove the 'fullscreen' class from the center
                 //  element. This allows the 'content' element below to properly
                 //  size it's 'busy message layer'.
-                TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
+                TP.elementRemoveClass(TP.byId('center', win, false),
+                                        'fullscreen');
 
                 //  Grab the existing 'content' element, which is now unused
                 //  since the world element moved the screens out of it, and use
                 //  it to show the 'loading' element. The console will later
                 //  reuse it for it's output.
-                contentElem = TP.byId('content', win);
+                contentElem = TP.byId('content', win, false);
 
                 TP.elementShow(contentElem);
                 TP.elementShowBusyMessage(contentElem,
@@ -161,7 +162,7 @@ function() {
 
     //  Manually 'display: none' the boot iframe. It's already
     //  'visibility:hidden', but we need to get it out of the way.
-    uiBootIFrameElem = TP.byId('UIBOOT', top);
+    uiBootIFrameElem = TP.byId('UIBOOT', top, false);
     TP.elementHide(uiBootIFrameElem);
 
     win = TP.win('UIROOT');
@@ -176,7 +177,7 @@ function() {
     //  the drawers (the HUD isn't real until we finish setup, so we do it
     //  manually here).
     if (TP.sys.cfg('boot.show_ide')) {
-        TP.elementRemoveClass(TP.byId('center', win), 'fullscreen');
+        TP.elementRemoveClass(TP.byId('center', win, false), 'fullscreen');
         TP.byCSS('.north, .south, .east, .west', win).perform(
                     function(anElem) {
                         TP.elementRemoveAttribute(
@@ -204,8 +205,8 @@ function() {
 
     //  The World was set up on initial startup - set up the rest of the
     //  components. We do set up the World to observe when the HUD shows
-    worldTPElem = TP.byOID('SherpaWorld', this.get('vWin'));
-    worldTPElem.observe(TP.byOID('SherpaHUD', this.get('vWin')),
+    worldTPElem = TP.byId('SherpaWorld', this.get('vWin'));
+    worldTPElem.observe(TP.byId('SherpaHUD', this.get('vWin')),
                         'HiddenChange');
 
     //  Set up the halo
@@ -231,7 +232,7 @@ function() {
     /*
     (function () {
 
-        var testTile = TP.byOID('Sherpa', this.get('vWin')).makeTile(
+        var testTile = TP.byId('Sherpa', this.get('vWin')).makeTile(
                                     'detailTile',
                                     TP.documentGetBody(this.get('vWin').document));
 
@@ -326,7 +327,7 @@ function() {
     //  etc.
 
     /*
-    worldTPElem = TP.byOID('SherpaWorld', this.get('vWin'));
+    worldTPElem = TP.byId('SherpaWorld', this.get('vWin'));
 
     consoleOutTPElem = worldTPElem.createSlotElement('SherpaConsoleSlot');
     */
@@ -349,7 +350,7 @@ function() {
                         TP.ietf.Mime.XHTML));
 
     haloTPElem.setup();
-    haloTPElem.observe(TP.byOID('SherpaHUD', this.get('vWin')),
+    haloTPElem.observe(TP.byId('SherpaHUD', this.get('vWin')),
                         'HiddenChange');
 
     return this;
@@ -404,7 +405,7 @@ function() {
 
     //  Append the <sherpa:world> tag into the loaded Sherpa document.
     TP.xmlElementInsertContent(
-            TP.byId('center', uiScreensWin),
+            TP.byId('center', uiScreensWin, false),
             worldElem,
             TP.AFTER_BEGIN,
             null);
@@ -448,11 +449,11 @@ function() {
     }
 
     //  Grab the <sherpa:world> tag and set it up.
-    worldTPElem = TP.byOID('SherpaWorld', uiScreensWin);
+    worldTPElem = TP.byId('SherpaWorld', uiScreensWin);
     worldTPElem.setup();
 
     //  Hide the 'content' div
-    TP.elementHide(TP.byId('content', uiScreensWin));
+    TP.elementHide(TP.byId('content', uiScreensWin, false));
 
     return this;
 });
@@ -500,7 +501,7 @@ function() {
 
     var elem;
 
-    elem = TP.byOID('SherpaHUD', this.get('vWin'));
+    elem = TP.byId('SherpaHUD', this.get('vWin'));
     if (TP.isValid(elem)) {
         elem.toggle('hidden');
     }

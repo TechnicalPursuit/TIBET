@@ -57,29 +57,36 @@ function() {
 
         test.then(
             function() {
+
+                var windowContext;
+
+                windowContext = driver.get('windowContext');
+
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
-                        click(TP.byId('fooButton')).
+                        click(TP.byId('fooButton', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'handler_specifies_control');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'handler_specifies_control');
                     },
                     function(error) {
                         test.fail(error, TP.sc('Event sequence error'));
                     });
 
                 driver.startSequence().
-                        click(TP.byId('barButton')).
+                        click(TP.byId('barButton', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'control_specifies_handler');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'control_specifies_handler');
                     },
                     function(error) {
                         test.fail(error, TP.sc('Event sequence error'));
@@ -93,10 +100,14 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooButton.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooButton.TP.sig.DOMClick');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barButton.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barButton.TP.sig.DOMClick');
                     });
 
                 //  Unload the current page by setting it to the blank
@@ -113,10 +124,14 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooButton.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooButton.TP.sig.DOMClick');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barButton.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barButton.TP.sig.DOMClick');
                     });
             },
             function(error) {
@@ -130,18 +145,24 @@ function() {
     this.it('document and element loaded', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents2.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
+        windowContext = driver.get('windowContext');
+
         test.then(
             function() {
-                test.assert.hasAttribute(TP.byId('testResults'),
-                                            'document_contentloaded_fired');
-                test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOMContentLoaded');
+                test.assert.hasAttribute(
+                    TP.byId('testResults', windowContext, false),
+                    'document_contentloaded_fired');
+                test.assert.didSignal(TP.sys.uidoc(),
+                                        'TP.sig.DOMContentLoaded');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -152,17 +173,20 @@ function() {
             function() {
                 TP.sys.uiwin(true).focus();
 
-                //  Note that since this code is being executed immediately, we have to
-                //  specify a *path* to our target element.
+                //  Note that since this code is being executed immediately, we
+                //  have to specify a *path* to our target element.
                 driver.startSequence().
-                        click(TP.byId('updateElement')).
+                        click(TP.byId('updateElement', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'element_contentloaded_fired');
-                        test.assert.didSignal(TP.byId('testDiv'), 'TP.sig.DOMContentLoaded');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'element_contentloaded_fired');
+                        test.assert.didSignal(
+                            TP.byId('testDiv', windowContext, false),
+                            'TP.sig.DOMContentLoaded');
                     });
 
                 test.then(
@@ -173,10 +197,14 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOMContentLoaded');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOMContentLoaded');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#testDiv.TP.sig.DOMContentLoaded');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#testDiv.TP.sig.DOMContentLoaded');
                     });
 
                 //  Unload the current page by setting it to the blank
@@ -193,10 +221,14 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOMContentLoaded');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOMContentLoaded');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#testDiv.TP.sig.DOMContentLoaded');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#testDiv.TP.sig.DOMContentLoaded');
                     });
             },
             function(error) {
@@ -209,12 +241,16 @@ function() {
     this.it('keypresses of various kinds', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents3.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
+
+        windowContext = driver.get('windowContext');
 
         test.then(
             function() {
@@ -226,9 +262,11 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'alphakey_fired');
-                        test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_A_Up');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'alphakey_fired');
+                        test.assert.didSignal(TP.sys.uidoc(),
+                                                'TP.sig.DOM_A_Up');
                     });
 
                 driver.startSequence().
@@ -237,9 +275,11 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'unicodekey_fired');
-                        test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_U0062_Up');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'unicodekey_fired');
+                        test.assert.didSignal(TP.sys.uidoc(),
+                                                'TP.sig.DOM_U0062_Up');
                     });
 
                 driver.startSequence().
@@ -248,9 +288,11 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'fnkey_fired');
-                        test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_F2_Up');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'fnkey_fired');
+                        test.assert.didSignal(TP.sys.uidoc(),
+                                                'TP.sig.DOM_F2_Up');
                     });
 
                 test.then(
@@ -261,13 +303,19 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_A_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_A_Up');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_U0062_Up');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_F2_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_F2_Up');
                     });
 
                 //  Unload the current page by setting it to the blank
@@ -284,13 +332,19 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_A_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_A_Up');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_U0062_Up');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_F2_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_F2_Up');
                     });
             },
             function(error) {
@@ -303,43 +357,54 @@ function() {
     this.it('multi origins and multi signals', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents4.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
+        windowContext = driver.get('windowContext');
+
         test.then(
             function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
-                        click(TP.byId('fooDiv')).
+                        click(TP.byId('fooDiv'), windowContext, false).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'multisignal_singleorigin');
-                        test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'multisignal_singleorigin');
+                        test.assert.didSignal(
+                            TP.byId('fooDiv', windowContext, false),
+                            'TP.sig.DOMClick');
 
                         //  Remove the attribute in preparation for the next
                         //  test.
-                        TP.elementRemoveAttribute(TP.byId('testResults'),
-                                                    'multisignal_singleorigin',
-                                                    true);
+                        TP.elementRemoveAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'multisignal_singleorigin',
+                            true);
                     });
 
                 driver.startSequence().
-                        doubleClick(TP.byId('fooDiv')).
+                        doubleClick(TP.byId('fooDiv', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'multisignal_singleorigin');
-                        test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMDblClick');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'multisignal_singleorigin');
+                        test.assert.didSignal(
+                            TP.byId('fooDiv', windowContext, false),
+                            'TP.sig.DOMDblClick');
                     });
 
                 test.then(
@@ -350,18 +415,25 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooDiv.TP.sig.DOMClick');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMDblClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooDiv.TP.sig.DOMDblClick');
 
-
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barDiv.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barDiv.TP.sig.DOMClick');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazDiv.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#bazDiv.TP.sig.DOMClick');
                     });
 
                 //  Unload the current page by setting it to the blank
@@ -378,18 +450,25 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooDiv.TP.sig.DOMClick');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.TP.sig.DOMDblClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooDiv.TP.sig.DOMDblClick');
 
-
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barDiv.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barDiv.TP.sig.DOMClick');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazDiv.TP.sig.DOMClick');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#bazDiv.TP.sig.DOMClick');
                     });
             },
             function(error) {
@@ -402,37 +481,47 @@ function() {
     this.it('ANY origins and ANY signals', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents5.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
+        windowContext = driver.get('windowContext');
+
         test.then(
             function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
-                        click(TP.byId('fooDiv')).
+                        click(TP.byId('fooDiv', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'anysignal_singleorigin');
-                        test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMClick');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'anysignal_singleorigin');
+                        test.assert.didSignal(
+                            TP.byId('fooDiv', windowContext, false),
+                            'TP.sig.DOMClick');
                     });
 
                 driver.startSequence().
-                        doubleClick(TP.byId('bazDiv')).
+                        doubleClick(TP.byId('bazDiv', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'singlesignal_anyorigin');
-                        test.assert.didSignal(TP.byId('bazDiv'), 'TP.sig.DOMDblClick');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'singlesignal_anyorigin');
+                        test.assert.didSignal(
+                            TP.byId('bazDiv', windowContext, false),
+                            'TP.sig.DOMDblClick');
                     });
 
                 test.then(
@@ -443,7 +532,9 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.ANY');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooDiv.ANY');
                         test.assert.contains(
                             interestMapKeys,
                             'ANY.TP.sig.DOMClick');
@@ -463,7 +554,9 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooDiv.ANY');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooDiv.ANY');
                         test.refute.contains(
                             interestMapKeys,
                             'ANY.TP.sig.DOMClick');
@@ -480,45 +573,60 @@ function() {
     this.it('stop default action, stop propagation, capturing', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents6.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
+        windowContext = driver.get('windowContext');
+
         test.then(
             function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
-                        sendKeys('ABCDE', TP.byId('fooField')).
+                        sendKeys('ABCDE',
+                                    TP.byId('fooField', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
                         //  Default was being prevented - the field shouldn't
                         //  have any content.
-                        test.refute.isEqualTo(TP.byId('fooField').value, 'ABCDE');
-                        test.assert.didSignal(TP.byId('fooDiv'), 'TP.sig.DOMKeyPress');
+                        test.refute.isEqualTo(
+                            TP.byId('fooField', windowContext, false).value,
+                            'ABCDE');
+                        test.assert.didSignal(
+                            TP.byId('fooDiv', windowContext, false),
+                            'TP.sig.DOMKeyPress');
                     });
 
                 driver.startSequence().
-                        sendKeys('A', TP.byId('barField')).
+                        sendKeys('A',
+                                    TP.byId('barField', windowContext, false)).
                         perform();
 
                 test.then(
                     function() {
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'barfield_keypress');
-                        test.refute.hasAttribute(TP.byId('testResults'),
-                                                    'barfieldwrapper_keypress');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'barfield_keypress');
+                        test.refute.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'barfieldwrapper_keypress');
 
-                        test.assert.didSignal(TP.byId('barField'), 'TP.sig.DOMKeyPress');
+                        test.assert.didSignal(
+                            TP.byId('barField', windowContext, false),
+                            'TP.sig.DOMKeyPress');
                     });
 
                 driver.startSequence().
-                        sendKeys('A', TP.byId('bazField')).
+                        sendKeys('A',
+                                TP.byId('bazField', windowContext, false)).
                         perform();
 
                 test.then(
@@ -526,27 +634,32 @@ function() {
                         var firedFirstDateVal,
                             firedSecondDateVal;
 
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'bazfield_keypress_1st');
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'bazfield_keypress_2nd');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'bazfield_keypress_1st');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'bazfield_keypress_2nd');
 
                         firedFirstDateVal = TP.dc(
-                                    TP.elementGetAttribute(
-                                        TP.byId('testResults'),
-                                        'bazfield_keypress_1st',
-                                        true));
+                            TP.elementGetAttribute(
+                                TP.byId('testResults', windowContext, false),
+                                'bazfield_keypress_1st',
+                                true));
 
                         firedSecondDateVal = TP.dc(
-                                    TP.elementGetAttribute(
-                                        TP.byId('testResults'),
-                                        'bazfield_keypress_2nd',
-                                        true));
+                            TP.elementGetAttribute(
+                                TP.byId('testResults', windowContext, false),
+                                'bazfield_keypress_2nd',
+                                true));
 
                         test.assert.isTrue(
-                            firedSecondDateVal.getTime() >= firedFirstDateVal.getTime());
+                            firedSecondDateVal.getTime() >=
+                            firedFirstDateVal.getTime());
 
-                        test.assert.didSignal(TP.byId('bazField'), 'TP.sig.DOMKeyPress');
+                        test.assert.didSignal(
+                                TP.byId('bazField', windowContext, false),
+                                'TP.sig.DOMKeyPress');
                     });
 
                 test.then(
@@ -557,16 +670,24 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooField.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooField.TP.sig.DOMKeyPress');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barField.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barField.TP.sig.DOMKeyPress');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barFieldWrapper.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barFieldWrapper.TP.sig.DOMKeyPress');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazField.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#bazField.TP.sig.DOMKeyPress');
                     });
 
                 //  Unload the current page by setting it to the blank
@@ -583,16 +704,24 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#fooField.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#fooField.TP.sig.DOMKeyPress');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barField.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barField.TP.sig.DOMKeyPress');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#barFieldWrapper.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#barFieldWrapper.TP.sig.DOMKeyPress');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#bazField.TP.sig.DOMKeyPress');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#bazField.TP.sig.DOMKeyPress');
                     });
             },
             function(error) {
@@ -605,12 +734,16 @@ function() {
     this.it('keypresses executing shell scripts', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents7.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
+
+        windowContext = driver.get('windowContext');
 
         test.then(
             function() {
@@ -625,15 +758,18 @@ function() {
 
                         var testVal;
 
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'shiftXkey_fired');
-                        testVal = TP.elementGetAttribute(
-                                        TP.byId('testResults'),
-                                        'shiftXkey_fired',
-                                        true);
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'shiftXkey_fired');
+                        testVal =
+                            TP.elementGetAttribute(
+                                TP.byId('testResults', windowContext, false),
+                                'shiftXkey_fired',
+                                true);
                         test.assert.isEqualTo(testVal, 'fired_shiftXkey');
 
-                        test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_X_Up');
+                        test.assert.didSignal(TP.sys.uidoc(),
+                                                'TP.sig.DOM_X_Up');
                     });
 
                 driver.startSequence().
@@ -645,15 +781,19 @@ function() {
 
                         var testVal;
 
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'shiftYkey_fired');
-                        testVal = TP.elementGetAttribute(
-                                        TP.byId('testResults'),
-                                        'shiftYkey_fired',
-                                        true);
-                        test.assert.matches(testVal, /.+"signame":"TP.sig.DOM_Y_Up".+/);
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'shiftYkey_fired');
+                        testVal =
+                            TP.elementGetAttribute(
+                                TP.byId('testResults', windowContext, false),
+                                'shiftYkey_fired',
+                                true);
+                        test.assert.matches(
+                            testVal, /.+"signame":"TP.sig.DOM_Y_Up".+/);
 
-                        test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_Y_Up');
+                        test.assert.didSignal(TP.sys.uidoc(),
+                                                'TP.sig.DOM_Y_Up');
                     });
 
                 driver.startSequence().
@@ -665,15 +805,18 @@ function() {
 
                         var testVal;
 
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'shiftZkey_fired');
-                        testVal = TP.elementGetAttribute(
-                                        TP.byId('testResults'),
-                                        'shiftZkey_fired',
-                                        true);
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'shiftZkey_fired');
+                        testVal =
+                            TP.elementGetAttribute(
+                                TP.byId('testResults', windowContext, false),
+                                'shiftZkey_fired',
+                                true);
                         test.assert.isEqualTo(testVal, '"TP.sig.DOMKeyUp"');
 
-                        test.assert.didSignal(TP.sys.uidoc(), 'TP.sig.DOM_Z_Up');
+                        test.assert.didSignal(TP.sys.uidoc(),
+                                                'TP.sig.DOM_Z_Up');
                     });
 
                 test.then(
@@ -684,13 +827,19 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_X_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_X_Up');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Y_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_Y_Up');
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Z_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_Z_Up');
                     });
 
                 //  Unload the current page by setting it to the blank
@@ -707,13 +856,19 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_X_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_X_Up');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Y_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_Y_Up');
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_Z_Up');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOM_Z_Up');
                     });
             },
             function(error) {
@@ -726,12 +881,16 @@ function() {
     this.it('keypress sequences', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents8.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
+
+        windowContext = driver.get('windowContext');
 
         test.then(
             function() {
@@ -752,11 +911,13 @@ function() {
                 test.then(
                     function() {
 
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'alpha_sequence_fired');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'alpha_sequence_fired');
 
-                        test.assert.didSignal(TP.sys.uidoc(),
-                                                'TP.sig.DOM_A_Up__TP.sig.DOM_S_Up');
+                        test.assert.didSignal(
+                            TP.sys.uidoc(),
+                            'TP.sig.DOM_A_Up__TP.sig.DOM_S_Up');
                     });
 
                 //  This sequence of focusing the window and then 'typing' a Tab
@@ -775,11 +936,13 @@ function() {
                 test.then(
                     function() {
 
-                        test.assert.hasAttribute(TP.byId('testResults'),
-                                                    'unicode_sequence_fired');
+                        test.assert.hasAttribute(
+                            TP.byId('testResults', windowContext, false),
+                            'unicode_sequence_fired');
 
-                        test.assert.didSignal(TP.sys.uidoc(),
-                                                'TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
+                        test.assert.didSignal(
+                            TP.sys.uidoc(),
+                            'TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
                     });
 
                 test.then(
@@ -790,7 +953,9 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
+                            TP.sys.getUICanvasPath() +
+                            loadURI.getLocation() +
+                            '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
                     });
 
                 //  Unload the current page by setting it to the blank
@@ -807,7 +972,9 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
+                            TP.sys.getUICanvasPath() +
+                            loadURI.getLocation() +
+                            '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
                     });
             },
             function(error) {
@@ -820,19 +987,23 @@ function() {
     this.it('markup-level change notification', function(test, options) {
 
         var loadURI,
-            driver;
+            driver,
+
+            windowContext;
 
         loadURI = TP.uc('~lib_tst/src/ev/XMLEvents9.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
+        windowContext = driver.get('windowContext');
+
         test.then(
             function() {
                 TP.sys.uiwin(true).focus();
 
                 driver.startSequence().
-                        click(TP.byId('setSalaryButton')).
+                        click(TP.byId('setSalaryButton', windowContext, false)).
                         perform();
 
                 test.then(
@@ -840,25 +1011,29 @@ function() {
 
                         var testVal;
 
-                        testVal = TP.uc('urn:tibet:empObject').getResource().get(
-                                                            TP.apc('person.salary'));
+                        testVal =
+                            TP.uc('urn:tibet:empObject').getResource().get(
+                                                    TP.apc('person.salary'));
 
                         test.assert.isEqualTo(testVal, 42);
 
                         test.assert.isEqualTo(
-                            TP.byOID('salaryField').get('value').asNumber(),
+                            TP.byId('salaryField', windowContext).
+                                                    get('value').asNumber(),
                             42);
 
-                        test.assert.didSignal(TP.byId('setSalaryButton'),
-                                                'TP.sig.DOMClick');
-                        test.assert.didSignal(TP.byId('msgField'),
-                                                'TP.sig.DOMContentLoaded');
                         test.assert.didSignal(
-                                TP.uc('urn:tibet:empObject#tibet(person.salary)'),
-                                'TP.sig.ValueChange');
+                            TP.byId('setSalaryButton', windowContext, false),
+                            'TP.sig.DOMClick');
                         test.assert.didSignal(
-                                TP.uc('urn:tibet:empObject'),
-                                'TP.sig.ValueChange');
+                            TP.byId('msgField', windowContext, false),
+                            'TP.sig.DOMContentLoaded');
+                        test.assert.didSignal(
+                            TP.uc('urn:tibet:empObject#tibet(person.salary)'),
+                            'TP.sig.ValueChange');
+                        test.assert.didSignal(
+                            TP.uc('urn:tibet:empObject'),
+                            'TP.sig.ValueChange');
                     });
 
                 driver.startSequence().
@@ -876,19 +1051,21 @@ function() {
                         test.assert.isEqualTo(testVal, '111-22-3333');
 
                         test.assert.isEqualTo(
-                            TP.byOID('ssnField').get('value'),
+                            TP.byId('ssnField', windowContext).get('value'),
                             '111-22-3333');
 
-                        test.assert.didSignal(TP.byId('setSSNButton'),
-                                                'TP.sig.DOMClick');
-                        test.assert.didSignal(TP.byId('msgField'),
-                                                'TP.sig.DOMContentLoaded');
                         test.assert.didSignal(
-                                TP.uc('urn:tibet:empObject#tibet(person.SSN)'),
-                                'TP.sig.ValueChange');
+                            TP.byId('setSSNButton', windowContext, false),
+                           'TP.sig.DOMClick');
                         test.assert.didSignal(
-                                TP.uc('urn:tibet:empObject'),
-                                'TP.sig.ValueChange');
+                            TP.byId('msgField', windowContext, false),
+                            'TP.sig.DOMContentLoaded');
+                        test.assert.didSignal(
+                            TP.uc('urn:tibet:empObject#tibet(person.SSN)'),
+                            'TP.sig.ValueChange');
+                        test.assert.didSignal(
+                            TP.uc('urn:tibet:empObject'),
+                            'TP.sig.ValueChange');
                     });
 
                 test.then(
@@ -899,7 +1076,9 @@ function() {
 
                         test.assert.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOMContentLoaded');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOMContentLoaded');
                         test.assert.contains(
                             interestMapKeys,
                             'urn:tibet:empObject.TP.sig.Change');
@@ -925,7 +1104,9 @@ function() {
 
                         test.refute.contains(
                             interestMapKeys,
-                            TP.sys.getUICanvasPath() + loadURI.getLocation() + '#document.TP.sig.DOMContentLoaded');
+                            TP.sys.getUICanvasPath() +
+                                loadURI.getLocation() +
+                                '#document.TP.sig.DOMContentLoaded');
                         test.refute.contains(
                             interestMapKeys,
                             'urn:tibet:empObject.TP.sig.Change');
