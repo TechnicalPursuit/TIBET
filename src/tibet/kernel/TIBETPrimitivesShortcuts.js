@@ -432,7 +432,7 @@ function(anID, nodeContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('byPath',
-function(pathExpr, nodeContext, autoCollapse) {
+function(pathExpr, nodeContext, autoCollapse, shouldWrap) {
 
     /**
      * @method byPath
@@ -442,11 +442,14 @@ function(pathExpr, nodeContext, autoCollapse) {
      * @param {Object} nodeContext A context in which to resolve the path
      *     query.
      *     Default is the current canvas.
-     * @param {Boolean} autoCollapse Whether to collapse Array results if
-     *     there's only one item in them. The default is false.
+     * @param {Boolean} [autoCollapse=false] Whether to collapse Array results
+     *     if there's only one item in them.
+     * @param {Boolean} [shouldWrap=true] Whether or not the results should
+     *     wrapped into a TIBET wrapper object.
      * @exception TP.sig.InvalidString
-     * @returns {Element|Array} The Array of matched Elements or a single
-     *     Element if single-item Arrays are being collapsed.
+     * @returns {TP.core.Element|Element|Array} The Array of matched wrapped
+     *     elements or unwrapped elements or a single wrapped or unwrapped
+     *     element if single-item Arrays are being collapsed.
      */
 
     var node;
@@ -458,7 +461,11 @@ function(pathExpr, nodeContext, autoCollapse) {
 
     node = TP.context(nodeContext);
 
-    return TP.nodeEvaluatePath(node, pathExpr, null, autoCollapse);
+    if (TP.isFalse(shouldWrap)) {
+        return TP.nodeEvaluatePath(node, pathExpr, null, autoCollapse);
+    }
+
+    return TP.wrap(TP.nodeEvaluatePath(node, pathExpr, null, autoCollapse));
 });
 
 //  ------------------------------------------------------------------------
