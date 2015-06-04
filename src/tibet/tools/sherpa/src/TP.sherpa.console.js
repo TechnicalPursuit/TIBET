@@ -1775,9 +1775,7 @@ function() {
         matcher,
 
         searchCursor,
-        lineInfo,
-        retVal,
-        marks;
+        retVal;
 
     if (TP.isValid(promptMark = this.get('currentPromptMarker'))) {
         range = promptMark.find();

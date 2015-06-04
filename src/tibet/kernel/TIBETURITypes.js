@@ -9246,7 +9246,6 @@ function(aURI, aDirection) {
         type,
         signal,
         home,
-        launch,
         config,
         route,
         routeParts,
