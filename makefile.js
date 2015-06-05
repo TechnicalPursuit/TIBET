@@ -462,8 +462,8 @@ targets.rollup_loader = function(make) {
         ('0' + date.getUTCDate()).slice(-2);
 
     helpers.template(make, {
-        source: '~lib_boot/tibet_pre_template.js',
-        target: '~lib_boot/tibet_pre.js',
+        source: '~lib_boot/tibet_loader_pre_template.js',
+        target: '~lib_boot/tibet_loader_pre.js',
         data: {version: ts}
     }).then(function() {
         return helpers.rollup(make, {
