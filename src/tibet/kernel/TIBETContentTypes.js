@@ -3222,6 +3222,33 @@ function(templateArgs) {
                 return val;
             });
 
+    xmlPath.defineMethod('$updateOpsBecomeDeleteInsertOps',
+            function(aNode, prevNode) {
+
+                var currentType,
+                    prevType;
+
+                //  If there was no previous content, then nothing to compare -
+                //  just return false.
+                if (!TP.isNode(prevNode)) {
+                    return false;
+                }
+
+                //  Grab the 'type' for both the current and previous node - if
+                //  its not the same type, then return true to turn the 'update'
+                //  into a 'delete'/'insert'.
+                currentType =
+                    TP.elementGetAttribute(aNode, 'type', true);
+                prevType =
+                    TP.elementGetAttribute(prevNode, 'type', true);
+
+                if (currentType !== prevType) {
+                    return true;
+                }
+
+                return false;
+            });
+
     //  Cache our internal XPath representation, but only if we weren't a
     //  templated path.
     if (!TP.regex.HAS_ACP.test(this.get('srcPath'))) {
@@ -5203,15 +5230,11 @@ function(aNode, prevNode) {
         }
     }
 
-    //  If we're doing a TP.UPDATE, but we're replacing a Node that had child
-    //  Element content (detected either by new element child content or by the
-    //  flag supplied to this method in the case of deleting), then we change to
-    //  registering a TP.DELETE, followed by a TP.CREATE for that.
+    //  If we're doing a TP.UPDATE, we message ourself to determine whether to
+    //  change an 'update' to a 'delete'/'create' combination. If so, then we
+    //  change to registering a TP.DELETE, followed by a TP.CREATE for that.
     if (action === TP.UPDATE &&
-           TP.isCollectionNode(aNode) &&
-           (TP.notEmpty(TP.nodeGetChildElements(aNode)) ||
-                prevContentHadElems)) {
-
+        this.$updateOpsBecomeDeleteInsertOps(aNode, prevNode)) {
         TP.core.AccessPath.registerChangedAddress(address, TP.DELETE);
         TP.core.AccessPath.registerChangedAddress(address, TP.CREATE);
     } else {
@@ -6018,6 +6041,33 @@ function() {
     //  determine the path type. Subtypes of this type can override this to
     //  specify the path type.
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('$updateOpsBecomeDeleteInsertOps',
+function(aNode, prevNode) {
+
+    /**
+     * @method $updateOpsBecomeDeleteInsertOps
+     * @summary Returns whether 'update's to the data model should instead
+     *     become 'delete'/'insert' pairs. This is dependent on the semantics of
+     *     the underlying data structure.
+     * @param {Node} aNode The current content Node.
+     * @param {Node} prevNode Any previous content that was at the place in the
+     *     data structure where aNode is now. This is used to determine what
+     *     kind of change action to compute.
+     * @returns {Boolean} Whether or not to change 'update's into
+     *     'delete'/'insert's.
+     */
+
+    //  If we're doing a TP.UPDATE, but we're replacing a Node that had child
+    //  Element content (detected either by new element child content or by
+    //  previous Element content) then we return 'true' to turn 'update's into
+    //  'delete/insert's.
+    return TP.isCollectionNode(aNode) &&
+               (TP.notEmpty(TP.nodeGetChildElements(aNode)) ||
+                    TP.notEmpty(TP.nodeGetChildElements(prevNode)));
 });
 
 //  ========================================================================
