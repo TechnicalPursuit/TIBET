@@ -1,8 +1,7 @@
 # TIBET
 
-TIBET is a seamless, <a target="_blank"
-href="http://www.technicalpursuit.com/#support">supported</a>, application-class
-<a href="https://github.com/TechnicalPursuit/TIBET/wiki">web framework</a>
+TIBET is an unparalleled
+<a href="https://github.com/TechnicalPursuit/TIBET/wiki">application-class web framework</a>
 paired with <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">immersive
 development tools</a> to help you leverage the best features of modern
