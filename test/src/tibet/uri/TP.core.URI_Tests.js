@@ -2664,7 +2664,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('observe JSON resource',
+TP.core.TIBETURN.Inst.describe('observe JSON content',
 function() {
 
     var modelObj,
@@ -2683,8 +2683,10 @@ function() {
         jsonURI7;
 
     this.before(function() {
-        modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
-        modelObj.setID('jsonData');
+
+        modelObj = TP.core.JSONContent.construct(
+                    '{"foo":["1st","2nd",{"hi":"there"}]}');
+        TP.sys.registerObject(modelObj, 'jsonData');
 
         //  Set up this path just to observe
         jsonURI1 = TP.uc('urn:tibet:jsonData');
@@ -2730,7 +2732,7 @@ function() {
 
     this.it('change along a single path', function(test, options) {
 
-        jsonURI2 = TP.uc('urn:tibet:jsonData#tibet(foo.3.bar)');
+        jsonURI2 = TP.uc('urn:tibet:jsonData#json($.foo[3].bar)');
         jsonURI2.set('shouldCreateContent', true);
 
         jsonURI2.setResource('goo', TP.hc('observeResource', true));
@@ -2749,7 +2751,7 @@ function() {
 
     this.it('change along a branching path', function(test, options) {
 
-        jsonURI3 = TP.uc('urn:tibet:jsonData#tibet(foo.3[bar,moo,too].roo)');
+        jsonURI3 = TP.uc('urn:tibet:jsonData#json($.foo[3][bar,moo,too].roo)');
         jsonURI3.set('shouldCreateContent', true);
 
         jsonURI3.setResource(TP.ac(), TP.hc('observeResource', true));
@@ -2776,10 +2778,10 @@ function() {
 
     this.it('change of an end aspect of a branching path', function(test, options) {
 
-        jsonURI4 = TP.uc('urn:tibet:jsonData#tibet(foo.3.bar.roo)');
+        jsonURI4 = TP.uc('urn:tibet:jsonData#json($.foo[3].bar.roo)');
         jsonURI4.getContent();
 
-        jsonURI5 = TP.uc('urn:tibet:jsonData#tibet(foo.3.moo.roo)');
+        jsonURI5 = TP.uc('urn:tibet:jsonData#json($.foo[3].moo.roo)');
         jsonURI5.set('shouldCreateContent', true);
 
         jsonURI5.setResource(42, TP.hc('observeResource', true));
@@ -2814,7 +2816,7 @@ function() {
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
 
-        jsonURI6 = TP.uc('urn:tibet:jsonData#tibet(foo.3)');
+        jsonURI6 = TP.uc('urn:tibet:jsonData#json($.foo[3])');
         jsonURI6.set('shouldCreateContent', true);
 
         jsonURI6.setResource('fluffy', TP.hc('observeResource', true));
@@ -2862,7 +2864,7 @@ function() {
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
 
-        jsonURI7 = TP.uc('urn:tibet:jsonData#tibet(foo.2)');
+        jsonURI7 = TP.uc('urn:tibet:jsonData#json($.foo[2])');
         jsonURI7.set('shouldCreateContent', true);
 
         jsonURI7.setResource(TP.ac(), TP.hc('observeResource', true));
@@ -2909,7 +2911,7 @@ function() {
         jsonURI1.set('shouldCreateContent', true);
 
         //  Set everything under 'foo' to a new data structure
-        jsonURI1.setResource(TP.json2js('["A","B","C","D"]'), TP.hc('observeResource', true));
+        jsonURI1.setResource(TP.core.JSONContent.construct('["A","B","C","D"]'), TP.hc('observeResource', true));
 
         //  In this case, we only get an aspect of 'value' in only the value
         //  path results, not the structure path results. The individual
@@ -2918,11 +2920,11 @@ function() {
         test.assert.contains(valuePathResults, 'value');
         this.refute.contains(structurePathResults, 'value');
 
+        //  Restore it to the old model object
         jsonURI1.setResource(modelObj, TP.hc('observeResource', true));
     });
 
     this.it('change along a single path for the new object', function(test, options) {
-
         jsonURI6.setResource('goofy', TP.hc('observeResource', true));
 
         //  The path has should *not* have the path for jsonURI7 (it's at a
