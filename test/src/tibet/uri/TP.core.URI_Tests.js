@@ -2664,6 +2664,575 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURN.Inst.describe('observe JS objects',
+function() {
+
+    var modelObj,
+        objValueObsFunction,
+        objStructureObsFunction,
+
+        valuePathResults,
+        structurePathResults,
+
+        objURI1,
+        objURI2,
+        objURI3,
+        objURI4,
+        objURI5,
+        objURI6,
+        objURI7;
+
+    this.before(function() {
+
+        //  This returns a TP.lang.Hash
+        modelObj = TP.obj2js('{"foo":["1st","2nd",{"hi":"there"}]}');
+        TP.sys.registerObject(modelObj, 'objData');
+
+        //  Set up this path just to observe
+        objURI1 = TP.uc('urn:tibet:objData');
+        objURI1.set('shouldCreateContent', true);
+
+        objURI1.setResource(modelObj, TP.hc('observeResource', true));
+
+        valuePathResults = TP.ac();
+        structurePathResults = TP.ac();
+
+        objValueObsFunction =
+                function(aSignal) {
+                    valuePathResults.push(aSignal.at('aspect'));
+                };
+
+        objValueObsFunction.observe(objURI1, 'ValueChange');
+
+        objStructureObsFunction =
+                function(aSignal) {
+                    structurePathResults.push(aSignal.at('aspect'));
+                };
+
+        objStructureObsFunction.observe(objURI1, 'StructureChange');
+    });
+
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        objValueObsFunction.ignore(objURI1, 'ValueChange');
+        objStructureObsFunction.ignore(objURI1, 'StructureChange');
+
+        objURI1.unregister();
+    });
+
+    //  ---
+
+    this.it('change along a single path', function(test, options) {
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+
+        objURI2.setResource('goo', TP.hc('observeResource', true));
+
+        //  The value path results should have the path for objURI2
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+
+        //  The structure path results should have the path for objURI2
+        test.assert.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  But *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change along a branching path', function(test, options) {
+
+        objURI3 = TP.uc('urn:tibet:objData#tibet(foo.3[bar,moo,too].roo)');
+        objURI3.set('shouldCreateContent', true);
+
+        objURI3.setResource(TP.ac(), TP.hc('observeResource', true));
+
+        //  The value path results should have the path for objURI3
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+
+        //  The structure path results should have the path for objURI3
+        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And the value path results for objURI2 (because and we replaced the
+        //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+
+        //  But not the structure path results for objURI2 (we created no new
+        //  structure there).
+        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change of an end aspect of a branching path', function(test, options) {
+
+        objURI4 = TP.uc('urn:tibet:objData#tibet(foo.3.bar.roo)');
+        objURI4.getContent();
+
+        objURI5 = TP.uc('urn:tibet:objData#tibet(foo.3.moo.roo)');
+        objURI5.set('shouldCreateContent', true);
+
+        objURI5.setResource(42, TP.hc('observeResource', true));
+
+        //  The value path results should have the path for objURI5
+        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI5
+        test.assert.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And *not* for objURI4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, objURI4.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  The value path results should have the path for objURI3
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI3
+        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And *not* for objURI2 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, objURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change of a parent aspect of a branching path', function(test, options) {
+
+        objURI6 = TP.uc('urn:tibet:objData#tibet(foo.3)');
+        objURI6.set('shouldCreateContent', true);
+
+        objURI6.setResource('fluffy', TP.hc('observeResource', true));
+
+        //  The value path results should have the path for objURI6
+        test.assert.contains(valuePathResults, objURI6.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI6 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI6.getFragmentExpr());
+
+        //  And for objURI5 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI5 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And for objURI4 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI4.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI4 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  And for objURI3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI3 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And for objURI2 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI2 as
+        //  well (structure was changed).
+        test.assert.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change of another parent aspect of a branching path', function(test, options) {
+
+        objURI7 = TP.uc('urn:tibet:objData#tibet(foo.2)');
+        objURI7.set('shouldCreateContent', true);
+
+        objURI7.setResource(TP.ac(), TP.hc('observeResource', true));
+
+        //  The value path results should have the path for objURI7
+        test.assert.contains(valuePathResults, objURI7.getFragmentExpr());
+
+        //  And the structure path results should have the path for objURI7
+        test.assert.contains(structurePathResults, objURI7.getFragmentExpr());
+
+        //  But *not* for objURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, objURI6.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI6.getFragmentExpr());
+
+        //  And *not* for objURI5 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, objURI5.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And *not* for objURI4 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, objURI4.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  And *not* for objURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, objURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And *not* for objURI2 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, objURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+    });
+
+    this.it('change model to a whole new object', function(test, options) {
+
+        objURI1.set('shouldCreateContent', true);
+
+        //  Set everything under 'foo' to a new data structure
+        objURI1.setResource(TP.obj2js('["A","B","C","D"]'), TP.hc('observeResource', true));
+
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
+        test.assert.contains(valuePathResults, 'value');
+        this.refute.contains(structurePathResults, 'value');
+
+        objURI1.setResource(modelObj, TP.hc('observeResource', true));
+    });
+
+    this.it('change along a single path for the new object', function(test, options) {
+
+        objURI6.setResource('goofy', TP.hc('observeResource', true));
+
+        //  The path has should *not* have the path for objURI7 (it's at a
+        //  similar level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, objURI7.getFragmentExpr());
+
+        //  The value path results should have the path for objURI6
+        test.assert.contains(valuePathResults, objURI6.getFragmentExpr());
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, objURI6.getFragmentExpr());
+
+        //  And for objURI5
+        test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, objURI5.getFragmentExpr());
+
+        //  And for objURI4
+        test.assert.contains(valuePathResults, objURI4.getFragmentExpr());
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+
+        //  And for objURI3
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, objURI3.getFragmentExpr());
+
+        //  And for objURI2
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+
+        //  But not for the structural path result
+        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+
+        //  And *not* for objURI1 (it's too high up in the chain)
+        this.refute.contains(valuePathResults, 'value');
+
+        //  And not for the structural path result
+        this.refute.contains(structurePathResults, 'value');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURN.Inst.describe('observe plain XML',
+function() {
+
+    var modelObj,
+        xmlValueObsFunction,
+        xmlStructureObsFunction,
+
+        valuePathResults,
+        structurePathResults,
+
+        xmlURI1,
+        xmlURI2,
+        xmlURI3,
+        xmlURI4,
+        xmlURI5,
+        xmlURI6,
+        xmlURI7,
+        xmlURI8;
+
+    this.before(function() {
+        modelObj = TP.tpdoc('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
+        TP.sys.registerObject(modelObj, 'xmlData');
+
+        xmlURI1 = TP.uc('urn:tibet:xmlData');
+        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
+
+        //  Set up this path just to observe
+        xmlURI2 = TP.uc('urn:tibet:xmlData#xpath1(/emp)');
+        xmlURI2.getResource();
+
+        valuePathResults = TP.ac();
+        structurePathResults = TP.ac();
+
+        xmlValueObsFunction =
+                function(aSignal) {
+                    valuePathResults.push(aSignal.at('aspect'));
+                };
+
+        xmlValueObsFunction.observe(xmlURI1, 'ValueChange');
+
+        xmlStructureObsFunction =
+                function(aSignal) {
+                    structurePathResults.push(aSignal.at('aspect'));
+                };
+
+        xmlStructureObsFunction.observe(xmlURI1, 'StructureChange');
+    });
+
+    //  ---
+
+    this.afterEach(function() {
+        valuePathResults.empty();
+        structurePathResults.empty();
+    });
+
+    //  ---
+
+    this.after(function() {
+        xmlValueObsFunction.ignore(xmlURI1, 'ValueChange');
+        xmlStructureObsFunction.ignore(xmlURI1, 'StructureChange');
+
+        xmlURI1.unregister();
+    });
+
+    //  ---
+
+    this.it('change along a single path', function(test, options) {
+
+        xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
+        xmlURI3.set('shouldCreateContent', true);
+
+        xmlURI3.setResource('Shattuck', TP.hc('observeResource', true));
+
+        //  The value path should have the path for xmlURI3
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
+
+        //  But not the structure path results for xmlURI3 (we created no new
+        //  structure there).
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a single attribute path', function(test, options) {
+
+        xmlURI4 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname/@valid)');
+        xmlURI4.set('shouldCreateContent', true);
+
+        xmlURI4.setResource(false, TP.hc('observeResource', true));
+
+        //  The value path should have the path for xmlURI4
+        test.assert.contains(valuePathResults, xmlURI4.getFragmentExpr());
+
+        //  But not the structure path results for xmlURI4 (we created no
+        //  new structure there).
+        this.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a single attribute path with creation', function(test, options) {
+
+        xmlURI5 = TP.uc('urn:tibet:xmlData#xpath1(/emp/age/@valid)');
+        xmlURI5.set('shouldCreateContent', true);
+
+        xmlURI5.setResource(false, TP.hc('observeResource', true));
+
+        //  The value path should have the path for xmlURI5
+        test.assert.contains(valuePathResults, xmlURI5.getFragmentExpr());
+
+        //  And the structure path results for xmlURI5 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI5.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along a branching path', function(test, options) {
+
+        xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
+        xmlURI6.set('shouldCreateContent', true);
+
+        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
+
+        //  The value path should have the path for xmlURI6
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+
+        //  And the structure path results for xmlURI6 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  But *not* for xmlURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change along another branching path', function(test, options) {
+
+        xmlURI7 = TP.uc('urn:tibet:xmlData#xpath1(/emp/ssn)');
+        xmlURI7.set('shouldCreateContent', true);
+
+        xmlURI7.setResource('555-55-5555', TP.hc('observeResource', true));
+
+        //  The value path should have the path for xmlURI7
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+
+        //  And the structure path results for xmlURI7 (we created new
+        //  structure there).
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  But *not* for xmlURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
+        //  a different branch)
+        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 (it's too high up in the chain)
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change at the top level', function(test, options) {
+
+        xmlURI2.set('shouldCreateContent', true);
+
+        //  Set everything under '/emp' to a new data structure
+        xmlURI2.setResource(TP.elem('<lname>Edney</lname>'), TP.hc('observeResource', true));
+
+        //  All paths will have changed
+
+        //  Both results should have the path for xmlURI7
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  And for xmlURI6 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And for xmlURI3 (because it's ancestor's structure changed)
+        test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And for xmlURI2 (because it's the same path as xmlURI2)
+        test.assert.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change all of the elements individually', function(test, options) {
+
+        //  Set up this path just to observe
+        xmlURI8 = TP.uc('urn:tibet:xmlData#xpath1(//*)');
+        xmlURI8.getResource();
+
+        //  But set using xmlURI6
+        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
+
+        //  Both results should have the path for xmlURI8 (it's for all
+        //  elements)
+        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
+
+        //  But *not* for xmlURI7 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  Both results should have the path for xmlURI6 (we created new
+        //  structure there).
+        test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  But *not* for xmlURI3 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 for either set of results (it's too high up
+        //  in the chain)
+        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+    });
+
+    this.it('change model to a whole new object', function(test, options) {
+
+        xmlURI1.set('shouldCreateContent', true);
+
+        //  Set everything under 'foo' to a new data structure
+        xmlURI1.setResource(TP.tpdoc('<emp><salary>10000</salary></emp>'), TP.hc('observeResource', true));
+
+        //  In this case, we only get an aspect of 'value' in only the value
+        //  path results, not the structure path results. The individual
+        //  fragment URIs will have been told of a 'structure' change to their
+        //  individual values.
+        test.assert.contains(valuePathResults, 'value');
+        this.refute.contains(structurePathResults, 'value');
+
+        xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
+    });
+});
+
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURN.Inst.describe('observe JSON content',
 function() {
 
