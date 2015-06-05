@@ -2969,7 +2969,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURN.Inst.describe('observe XML resource',
+TP.core.TIBETURN.Inst.describe('observe XML content',
 function() {
 
     var modelObj,
@@ -2989,8 +2989,9 @@ function() {
         xmlURI8;
 
     this.before(function() {
-        modelObj = TP.tpdoc('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
-        modelObj.setID('xmlData');
+        modelObj = TP.core.XMLContent.construct(
+            '<emp><lname valid="true">Edney</lname><age>47</age></emp>');
+        TP.sys.registerObject(modelObj, 'xmlData');
 
         xmlURI1 = TP.uc('urn:tibet:xmlData');
         xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
@@ -3170,7 +3171,7 @@ function() {
         test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
         test.assert.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
-        //  And for xmlURI2 (because it's the same path as xmlURI2)
+        //  And for xmlURI2 (because it's ancestor's structure changed)
         test.assert.contains(valuePathResults, xmlURI2.getFragmentExpr());
         test.assert.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
@@ -3224,7 +3225,41 @@ function() {
         test.assert.contains(valuePathResults, 'value');
         this.refute.contains(structurePathResults, 'value');
 
+        //  Restore it to the old model object
         xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
+    });
+
+    this.it('change along a single path for the new object', function(test, options) {
+        xmlURI7.setResource('111-11-1111', TP.hc('observeResource', true));
+
+        //  Both results should have the path for xmlURI8 (it's for all
+        //  elements)
+        this.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
+        this.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
+
+        //  Both results should have the path for xmlURI7
+        this.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        this.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+
+        //  But *not* for xmlURI6 for either set of results (it's at a similar
+        //  level in the chain, but on a different branch)
+        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+
+        //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
+        //  a different branch)
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+
+        //  And *not* for xmlURI2 (it's too high up in the chain)
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+
+        //  And *not* for XMLURI1 (it's too high up in the chain)
+        this.refute.contains(valuePathResults, 'value');
+
+        //  And not for the structural path result
+        this.refute.contains(structurePathResults, 'value');
     });
 });
 
