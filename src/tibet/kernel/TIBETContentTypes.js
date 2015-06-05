@@ -5144,16 +5144,16 @@ function(aPath, config) {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
-function(aNode, prevContentHadElems) {
+function(aNode, prevNode) {
 
     /**
      * @method $addChangedAddressFromNode
      * @summary Adds the supplied node's address and action to
      *     TP.core.AccessPath's 'changed address list'.
      * @param {Node} aNode The Node to extract the address and action from.
-     * @param {Boolean} prevContentHadElems Whether or not the content had child
-     *     elements that got replaced. This is used to determine what kind of
-     *     change action to compute.
+     * @param {Node} prevNode Any previous content that was at the place in the
+     *     data structure where aNode is now. This is used to determine what
+     *     kind of change action to compute.
      * @returns {TP.core.XMLPath} The receiver.
      */
 
@@ -5481,7 +5481,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         attrValue,
         value,
 
-        hadChildElems,
+        oldcontent,
 
         affectedElems,
 
@@ -5665,14 +5665,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             value = attrValue;
         }
 
+        oldcontent = TP.nodeCloneNode(content);
+
         //  Finalize the set value.
         value = this.finalizeSetValue(content, value);
-
-        //  See if we have child elements - if so, we're going to let the change
-        //  notification machinery know about it.
-        hadChildElems = TP.isCollectionNode(content) ?
-                        TP.notEmpty(TP.nodeGetChildElements(content)) :
-                        false;
 
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
@@ -5695,7 +5691,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 //  address on this element.
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, hadChildElems);
+                this.$addChangedAddressFromNode(content, oldcontent);
 
                 if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
                     affectedElems.push(ownerElem);
@@ -5769,13 +5765,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 value = attrValue;
             }
 
-            value = this.finalizeSetValue(contentnode, value);
+            oldcontent = TP.nodeCloneNode(contentnode);
 
-            //  See if we have child elements - if so, we're going to let the
-            //  change notification machinery know about it.
-            hadChildElems = TP.isCollectionNode(content) ?
-                            TP.notEmpty(TP.nodeGetChildElements(content)) :
-                            false;
+            value = this.finalizeSetValue(contentnode, value);
 
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
@@ -5799,7 +5791,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode, TP.SELF, TP.UPDATE, false);
 
                         this.$addChangedAddressFromNode(contentnode,
-                                                        hadChildElems);
+                                                        oldcontent);
 
                         if (TP.notEmpty(TP.elementGetChangeAction(
                                                         ownerElem, TP.SELF))) {
