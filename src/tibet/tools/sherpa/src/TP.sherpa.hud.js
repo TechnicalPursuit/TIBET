@@ -121,7 +121,7 @@ function(beHidden) {
                                             this.getNativeWindow());
             toolbarElem.toggle('hidden');
 
-        }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+        }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
         this.showAllHUDDrawers();
     }
