@@ -353,7 +353,8 @@ function() {
     lastCorner = this.get('lastCorner');
 
     if (TP.isElement(elem = TP.byId('haloCorner-' + lastCorner,
-            this.get('$document')))) {
+                            this.get('$document'),
+                            false))) {
         TP.elementHide(elem);
     }
 
@@ -448,13 +449,17 @@ function(aSignal) {
     lastCorner = this.get('lastCorner');
 
     if (corner !== lastCorner) {
-        if (TP.isElement(elem = TP.byId('haloCorner-' + lastCorner,
-                this.get('$document')))) {
+        if (TP.isElement(elem =
+                            TP.byId('haloCorner-' + lastCorner,
+                            this.get('$document'),
+                            false))) {
             TP.elementHide(elem);
         }
 
-        if (TP.isElement(elem = TP.byId('haloCorner-' + corner,
-                this.get('$document')))) {
+        if (TP.isElement(elem =
+                            TP.byId('haloCorner-' + corner,
+                            this.get('$document'),
+                            false))) {
             TP.elementShow(elem);
         }
     }
