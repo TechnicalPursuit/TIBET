@@ -2079,8 +2079,8 @@ function(aSignal, isCapturing) {
     //  reference from it. If that's valid, then use it - otherwise, move on.
     if (this.hasAttribute('tibet:handler')) {
 
-        handler = TP.byId(this.getAttribute('tibet:handler'),
-                            this.getNativeWindow());
+        handler = TP.bySystemId(this.getAttribute('tibet:handler'),
+                                this.getNativeWindow());
 
         if (TP.isValid(handler)) {
             return handler;
