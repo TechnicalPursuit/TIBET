@@ -8794,6 +8794,29 @@ function(aWindow, wants2DMatrix) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('windowGetLocation',
+function(aWindow, trimFile) {
+
+    /**
+     * @method windowGetLocation
+     * @summary Returns the supplied window's true location, optionally minus
+     *     any file reference. This method relies on TP.documentGetLocation. See
+     *     that function for more information.
+     * @param {Window} aWindow The window to search.
+     * @param {Boolean} trimFile True will cause any file reference to be
+     *     trimmed, returning only a directory. Default is false.
+     * @returns {String} The window's true location.
+     */
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    return TP.documentGetLocation(aWindow.document, trimFile);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('windowGetParentNames',
 function(aWindow) {
 

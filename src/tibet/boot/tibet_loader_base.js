@@ -8146,7 +8146,7 @@ TP.boot.$configurePackage = function() {
         xml,
         err;
 
-    //  First phase is about giving boot.profile precedence over boot.package.
+    //  First step is about giving boot.profile precedence over boot.package.
     profile = TP.sys.cfg('boot.profile');
     if (TP.boot.$isEmpty(profile)) {
         TP.boot.$stdout('Empty boot.profile. Checking for boot.package.',
@@ -8166,7 +8166,7 @@ TP.boot.$configurePackage = function() {
         TP.boot.$stdout('Found boot.profile. Using: ' + profile, TP.DEBUG);
     }
 
-    //  Second phase is processing any boot.profile if found to update any
+    //  Second step is processing any boot.profile if found to update any
     //  boot.package and boot.config values contained in the profile.
     if (TP.boot.$notEmpty(profile)) {
 
@@ -8421,7 +8421,7 @@ TP.boot.$$configureOverrides = function(options, activate) {
     //  If we've been here already then merge in any new values being provided.
     overrides = TP.sys.overrides;
     if (TP.boot.$isValid(overrides)) {
-        //  Two key phases here are launch() params and URL values. URL values
+        //  Two key steps here are launch() params and URL values. URL values
         //  come second (so we can honor boot.no_url_args from launch()) but do
         //  outrank launch parameters when they exist so we just map over.
         keys.forEach(function(key) {

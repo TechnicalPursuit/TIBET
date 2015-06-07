@@ -26,7 +26,7 @@
 (function(root) {
 
 //  GLOBAL - Defines where TIBET booted and where the codeframe is. We set this
-//  early so the cfg/post/hook file logic knows it's bundled with tibet_pre.js.
+//  early so the cfg/post/hook file knows it's bundled with tibet_loader_pre.js.
 window.$$TIBET = window;
 
 //  ----------------------------------------------------------------------------
