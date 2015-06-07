@@ -100,6 +100,124 @@ function(aURI, content) {
 });
 
 //  ========================================================================
+//  TP.core.Selection
+//  ========================================================================
+
+/**
+ * @type {TP.core.Selection}
+ * @summary A type, usually added as a trait, that manages selection indexes.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core.Selection');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  An Array of indexes representing the selection
+TP.core.Selection.Inst.defineAttribute('selectionIndexes');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Selection.Inst.defineMethod('addSelectionIndexes',
+function(newIndexes) {
+
+    /**
+     * @method addSelectionIndexes
+     * @summary Adds the supplied index or indexes to the selection indexes for
+     *     the receiver. Note that selection indexes are uniqued by this method,
+     *     so repeated indexes will only be represented once.
+     * @param {Number[]} newIndexes The indexes to add to the tracked selection
+     *     indexes.
+     * @returns {Number[]} An Array of numbers representing the selection
+     *     indexes.
+     */
+
+    var indexes;
+
+    indexes = this.get('selectionIndexes');
+
+    //  Add all of the indexes from the supplied Array.
+    indexes.addAll(newIndexes);
+
+    //  Unique the indexes so that we don't have more than one represented.
+    indexes.unique();
+
+    return indexes;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Selection.Inst.defineMethod('getSelectionIndex',
+function() {
+
+    /**
+     * @method getSelectionIndex
+     * @summary Return the index of the first item of the current selection.
+     * @returns {Number} The first item's index.
+     */
+
+    var indexes;
+
+    if (!TP.isArray(indexes = this.$get('selectionIndexes'))) {
+        return TP.NO_SIZE;
+    }
+
+    return indexes.first();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Selection.Inst.defineMethod('getSelectionIndexes',
+function() {
+
+    /**
+     * @method getSelectionIndexes
+     * @summary Return the indexes of the current selection.
+     * @returns {Number[]} An Array of numbers representing the selection
+     *     indexes.
+     */
+
+    var indexes;
+
+    if (!TP.isArray(indexes = this.$get('selectionIndexes'))) {
+        indexes = TP.ac();
+        this.set('selectionIndexes', indexes, false);
+    }
+
+    return indexes;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Selection.Inst.defineMethod('removeSelectionIndexes',
+function(oldIndexes) {
+
+    /**
+     * @method removeSelectionIndexes
+     * @summary Removes the supplied index or indexes from the selection indexes
+     *     for the receiver.
+     * @param {Number[]} oldIndexes The indexes to remove from the tracked
+     *     selection indexes.
+     * @returns {Number[]} An Array of numbers representing the selection
+     *     indexes.
+     */
+
+    var indexes;
+
+    indexes = this.get('selectionIndexes');
+
+    //  Remove all of the indexes from the supplied Array.
+    indexes.removeAll(oldIndexes);
+
+    return indexes;
+});
+
+//  ========================================================================
 //  TP.core.Content
 //  ========================================================================
 
@@ -639,6 +757,9 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Content.defineSubtype('core.JSONContent');
+
+//  TP.core.Content objects can hold a selection
+TP.core.Content.addTraits(TP.core.Selection);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
