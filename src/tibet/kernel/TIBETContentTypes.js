@@ -2827,63 +2827,25 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
 
-//  Our internal XPath
-TP.core.JSONPath.Inst.defineAttribute('$xmlPath');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.JSONPath.Inst.defineMethod('init',
-function(aPath, config) {
-
-    /**
-     * @method init
-     * @summary Initialize the instance.
-     * @param {String} aPath The String to build the instance from.
-     * @param {TP.core.Hash} config The configuration for this path.
-     * @returns {TP.core.SimpleTIBETPath} The receiver.
-     */
-
-    var path;
-
-    //  Make sure that any 'access path' scheme is stripped off
-    if (TP.regex.JSON_POINTER.test(aPath)) {
-        path = TP.regex.JSON_POINTER.match(aPath).at(1);
-    } else {
-        path = aPath;
-    }
-
-    this.callNextMethod(path, config);
-
-    if (TP.isKindOf(config, TP.core.Hash)) {
-        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
-    } else {
-        this.set('shouldCollapse', true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSONPath.Inst.defineMethod('asXPath',
-function(templateArgs) {
+TP.core.JSONPath.Type.defineMethod('asXPath',
+function(srcPath, templateArgs) {
 
     /**
      * @method asXPath
-     * @summary Returns an XPath representation of the receiver. This can be
-     *     used to query the special XML representation of a JavaScript object
-     *     sourced from JSON data and converted to XML. This is only used for
-     *     TIBET's JSONPath support.
+     * @summary Returns an XPath representation of the supplied source path.
+     *     This is used to query the special XML representation of a JavaScript
+     *     object sourced from JSON data and converted to XML. This is only used
+     *     for TIBET's JSONPath support.
+     * @param {String} srcPath The source JSONPath string representation to
+     *     build an XPath from.
+     * @param {Array} templateArgs An optional Array of template arguments. If
+     *     the receiver is a templated path, these values will be used to fill
+     *     in the template values and the computed XPath will *not* be cached.
      * @returns {String} An XPath representation of the receiver.
      */
 
-    var srcPath,
-        path,
+    var path,
         tokens,
 
         xmlStr,
@@ -2911,7 +2873,6 @@ function(templateArgs) {
 
         content;
 
-    srcPath = this.get('srcPath');
     path = srcPath;
 
     if (TP.regex.HAS_ACP.test(path)) {
@@ -3202,7 +3163,55 @@ function(templateArgs) {
         }
     }
 
+    //  Adjust as necessary for the 'rootObj' top-level element that will
+    //  get generated as the root-level element.
+    if (xmlStr.startsWith('/') && !xmlStr.startsWith('//')) {
+        xmlStr = '/rootObj' + xmlStr;
+    }
+
     return xmlStr;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  Our internal XPath
+TP.core.JSONPath.Inst.defineAttribute('$xmlPath');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.core.Hash} config The configuration for this path.
+     * @returns {TP.core.SimpleTIBETPath} The receiver.
+     */
+
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.JSON_POINTER.test(aPath)) {
+        path = TP.regex.JSON_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
+    this.callNextMethod(path, config);
+
+    if (TP.isKindOf(config, TP.core.Hash)) {
+        this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
+    } else {
+        this.set('shouldCollapse', true);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3545,7 +3554,9 @@ function(templateArgs) {
 
     /**
      * @method $setupXMLPath
-     * @summary
+     * @summary Sets up an XML path for the receiver that will represent it when
+     *     being executed an XML data source that is used by TP.core.JSONContent
+     *     objects when they are accessed with a JSONPath.
      * @param {Array} templateArgs An optional Array of template arguments. If
      *     the receiver is a templated path, these values will be used to fill
      *     in the template values and the computed XPath will *not* be cached.
@@ -3559,13 +3570,7 @@ function(templateArgs) {
 
         mirroredAttributes;
 
-    xPath = this.asXPath(templateArgs);
-
-    //  Adjust as necessary for the 'rootObj' top-level element that will
-    //  get generated as the root-level element.
-    if (xPath.startsWith('/') && !xPath.startsWith('//')) {
-        xPath = '/rootObj' + xPath;
-    }
+    xPath = this.getType().asXPath(this.get('srcPath'), templateArgs);
 
     xmlPath = TP.xpc(xPath);
 
