@@ -199,6 +199,36 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('changed',
+function(anAspect, anAction, aDescription) {
+
+    /**
+     * @method changed
+     * @summary Notifies observers that some aspect of the receiver has
+     *     changed. The fundamental data-driven dependency method.
+     * @description We override this method at this level to tell the underlying
+     *     data to signal a change.
+     * @param {String} anAspect The aspect of the receiver that changed. This is
+     *     usually an attribute name.
+     * @param {String} anAction The action which caused the change. This usually
+     *     'add', 'remove', etc.
+     * @param {TP.core.Hash} aDescription A hash describing details of the
+     *     change.
+     * @returns {TP.core.Content} The receiver.
+     * @fires Change
+     */
+
+    var data;
+
+    if (TP.isValid(data = this.get('data'))) {
+        data.changed(anAspect, anAction, aDescription);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('getData',
 function() {
 
