@@ -3280,6 +3280,8 @@ function(targetObj, varargs) {
             currentJSONData = TP.json2js(TP.js2json(currentJSONData), false);
         }
 
+        //  ---
+
         //  Define a local version of 'getData' to return the result of
         //  converting the entire XML data structure to a "plain" JavaScript
         //  object. Note that this is very rarely done - normally a 'slice' of
@@ -3308,6 +3310,8 @@ function(targetObj, varargs) {
                 return null;
             });
 
+        //  ---
+
         //  Define a local version of 'setData' to set the supplied JavaScript
         //  Object data as an XML representation under the covers.
         targetObj.defineMethod(
@@ -3330,6 +3334,160 @@ function(targetObj, varargs) {
 
                 return this;
             });
+
+        //  ---
+
+        //  Define a local version of 'changed' to cause the *underlying XML
+        //  data representation* to signal Change (with the JSONPath as the
+        //  aspect - yes, weird, but it works). Note the "this.$get('data')"
+        //  here to get that XML representation.
+        targetObj.defineMethod(
+            'changed',
+            function(anAspect, anAction, aDescription) {
+
+                var data;
+
+                if (TP.isValid(data = this.$get('data'))) {
+                    return data.changed(anAspect, anAction, aDescription);
+                }
+            });
+
+        //  ---
+
+        //  Define a local version of 'insertRowIntoAt' to adjust for the fact
+        //  that the indexes, etc. will be supplied using the 0-based indexes of
+        //  JSON, but it is the underlying XML data representation that needs to
+        //  be changed and, therefore, we need to adjust those indexes and use
+        //  XPaths against that representation.
+        targetObj.defineMethod('insertRowIntoAt',
+        function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+
+            var xpath,
+                targetCollection,
+
+                cloneIndex,
+
+                itemToClone,
+                newItem,
+
+                insertIndex,
+
+                insertionPath;
+
+            xpath = TP.core.JSONPath.asXPath(aCollectionURI.getFragmentExpr());
+
+            targetCollection = this.$get('data').get(xpath);
+
+            //  Clone the first row if no clone index was supplied
+            if (!TP.isNumber(cloneIndex = aCloneIndex)) {
+                cloneIndex = 0;
+            }
+
+            //  We add 1 to account for indexing differences between JSONPath
+            //  and XPath
+            cloneIndex++;
+
+            //  Get the item to clone and clone it.
+            itemToClone = targetCollection.get('./*[' + cloneIndex + ']');
+            newItem = itemToClone.clone(true);
+
+            //  Clear out all of the 'text content' - that is, all of the scalar
+            //  values in the newly cloned item. This will descend through the
+            //  new item's data structure and cleanse it all of previous values.
+            newItem.clearTextContent();
+
+            //  NB: The insertion index is computed to represent the row that
+            //  will come *after* the new row after the insertion operation is
+            //  complete (per 'insertBefore()' semantics).
+
+            if (TP.isNumber(insertIndex = anInsertIndex)) {
+
+                if (aPosition !== TP.BEFORE) {
+                    insertIndex++;
+                }
+
+                //  We add 1 to account for indexing differences between
+                //  JSONPath and XPath
+                insertIndex++;
+
+                insertionPath = './*[' + insertIndex + ']';
+
+            } else {
+
+                //  No index specified - we will be manipulating the end of
+                //  the collection.
+                if (aPosition === TP.BEFORE) {
+                    insertionPath = './*[last()]';
+                } else {
+                    targetCollection.addRawContent(newItem, null, false);
+                }
+            }
+
+            if (TP.notEmpty(insertionPath)) {
+                targetCollection.insertRawContent(
+                                    newItem, insertionPath, null, false);
+            }
+
+            return this;
+        });
+
+        //  ---
+
+        //  Define a local version of 'removeRowFromAt' to adjust for the fact
+        //  that the indexes, etc. will be supplied using the 0-based indexes of
+        //  JSON, but it is the underlying XML data representation that needs to
+        //  be changed and, therefore, we need to adjust those indexes and use
+        //  XPaths against that representation.
+        targetObj.defineMethod('removeRowFromAt',
+        function(aCollectionURI, aDeleteIndex) {
+
+            var xpath,
+                targetCollection,
+
+                deleteIndexes,
+                deletionPath,
+
+                deleteIndex,
+                i;
+
+            xpath = TP.core.JSONPath.asXPath(aCollectionURI.getFragmentExpr());
+
+            targetCollection = this.$get('data').get(xpath);
+
+            //  Compute an XPath to do the deletion.
+
+            //  If a deletion index was supplied or we have numbers in our
+            //  selection indexes, then use those as the deletion indexes.
+            if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
+
+                deleteIndexes++;
+
+                deletionPath = './*[' + deleteIndexes + ']';
+
+            } else if (TP.notEmpty(
+                            deleteIndexes = this.get('selectionIndexes'))) {
+                deletionPath = './*[';
+                for (i = 0; i < deleteIndexes.getSize(); i++) {
+                    deleteIndex = deleteIndexes.at(i) + 1;
+
+                    deletionPath += 'position = ' + deleteIndex + ' or ';
+                }
+
+                deletionPath = deletionPath.slice(0, -4) + ']';
+            } else {
+
+                //  Otherwise, just delete the last item.
+                deletionPath = './*[last()]';
+            }
+
+            //  Create an XPathPath object from the computed path and execute a
+            //  delete.
+            TP.xpc(deletionPath).execRemove(targetCollection, false);
+
+            return this;
+        });
+
+        //  ---
 
         //  Now that we've redefined setData(), push the current data back
         //  through it, causing the XML representation to be created.
