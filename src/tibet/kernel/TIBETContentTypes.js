@@ -571,6 +571,89 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('handleCreateItem',
+function(aSignal) {
+
+    /**
+     * @method handleCreateItem
+     * @summary Handles when an item is to be created and inserted into the
+     *     receiver's data.
+     * @param {TP.sig.CreateItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    //  Insert a row into that collection, using the cloning index, insertion
+    //  index and position given in the signal.
+    this.insertRowIntoAt(scopeURI,
+                            TP.nc(aSignal.at('cloneIndex')),
+                            TP.nc(aSignal.at('index')),
+                            aSignal.at('position'));
+
+    //  Signal a 'changed' from ourself so that observers reflect our new
+    //  reality.
+    this.changed(scopeURI.getFragmentExpr(), TP.INSERT);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('handleDeleteItem',
+function(aSignal) {
+
+    /**
+     * @method handleDeleteItem
+     * @summary Handles when an item is to be deleted and removed from the
+     *     receiver's data.
+     * @param {TP.sig.DeleteItem} aSignal The signal instance which triggered
+     *     this handler.
+     * @exception TP.sig.InvalidParameter,TP.sig.InvalidURI
+     */
+
+    var scope,
+        scopeURI;
+
+    //  The 'scope' should be a URI location to find the overall collection to
+    //  insert the item into. It should be either the whole collection
+    //  representing the data of the receiver or a subcollection of that data.
+    if (TP.isEmpty(scope = aSignal.at('scope'))) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    //  Make sure we can create a real URI from it.
+    if (!TP.isURI(scopeURI = TP.uc(scope))) {
+        return this.raise('TP.sig.InvalidURI');
+    }
+
+    //  Remove a row from that collection, using the deletion index in the
+    //  signal.
+    this.removeRowFromAt(scopeURI, aSignal.at('index'));
+
+    //  Signal a 'changed' from ourself so that observers reflect our new
+    //  reality.
+    this.changed(scopeURI.getFragmentExpr(), TP.DELETE);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
@@ -943,6 +1026,130 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Inst.defineMethod('insertRowIntoAt',
+function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+
+    /**
+     * @method insertRowIntoAt
+     * @summary Inserts a row of data into the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     *     add the row to.
+     * @param {Number} aCloneIndex The index of the item to clone when creating
+     *     the new item.
+     * @param {Number} anInsertIndex The index to insert the item at in the
+     *     collection. Note that this works with the supplied position to
+     *     determine whether the insertion should happen before or after.
+     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
+     *     determines the position of the insertion. If no position is supplied,
+     *     TP.AFTER is assumed.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetCollection,
+
+        cloneIndex,
+        itemToClone,
+        newItem,
+
+        insertIndex;
+
+    //  Make sure that we have an Array as our collection. If we end up with a
+    //  non-Array, we wrap it into one.
+    if (!TP.isArray(targetCollection = aCollectionURI.getResource())) {
+        targetCollection = TP.ac(targetCollection);
+    }
+
+    //  Clone the first row if no clone index was supplied
+    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
+        cloneIndex = 0;
+    }
+
+    //  Get the item to clone and clone it.
+    itemToClone = targetCollection.get(cloneIndex);
+    newItem = TP.copy(itemToClone);
+
+    //  Clear out all of the 'text content' - that is, all of the scalar values
+    //  in the newly cloned item. This will descend through the new item's data
+    //  structure and cleanse it all of previous values.
+    newItem.clearTextContent();
+
+    //  NB: The insertion index is computed to represent the row that will come
+    //  *after* the new row after the insertion operation is complete (per
+    //  'insertBefore()' semantics).
+
+    if (TP.isNumber(insertIndex = anInsertIndex)) {
+        insertIndex++;
+    } else {
+
+        //  No index specified - we will be manipulating the end of the
+        //  collection.
+        insertIndex = targetCollection.getSize();
+    }
+
+    //  TP.BEFORE was specified - subtract a position back off.
+    if (aPosition === TP.BEFORE) {
+        insertIndex--;
+    }
+
+    //  Splice it into the collection.
+    targetCollection.splice(insertIndex, 0, newItem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Inst.defineMethod('removeRowFromAt',
+function(aCollectionURI, aDeleteIndex) {
+
+    /**
+     * @method removeRowFromAt
+     * @summary Removes a row of data from the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     *     remove the row from.
+     * @param {Number} aDeleteIndex The index to remove the item from in the
+     *     collection.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetCollection,
+
+        deleteIndexes;
+
+    //  If the supplied URI really resolves to an Array, then remove the proper
+    //  row.
+    if (TP.isArray(targetCollection = aCollectionURI.getResource())) {
+
+        //  If a deletion index was supplied or we have numbers in our selection
+        //  indexes, then use those as the deletion indexes.
+        if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
+            //  empty
+        } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
+            //  empty
+        } else {
+            deleteIndexes = targetCollection.getSize() - 1;
+        }
+
+        //  If we have an Array of deletion indexes, use a TIBET convenience
+        //  method.
+        if (TP.isArray(deleteIndexes)) {
+            targetCollection.removeAtAll(deleteIndexes);
+        } else {
+            targetCollection.splice(deleteIndexes, 1);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Inst.defineMethod('shouldSignalChange',
 function(aFlag) {
 
@@ -1064,6 +1271,157 @@ function() {
     }
 
     return xmlData;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('insertRowIntoAt',
+function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
+
+    /**
+     * @method insertRowIntoAt
+     * @summary Inserts a row of data into the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     *     add the row to.
+     * @param {Number} aCloneIndex The index of the item to clone when creating
+     *     the new item.
+     * @param {Number} anInsertIndex The index to insert the item at in the
+     *     collection. Note that this works with the supplied position to
+     *     determine whether the insertion should happen before or after.
+     * @param {Constant} aPosition A value of TP.BEFORE, TP.AFTER or null. This
+     *     determines the position of the insertion. If no position is supplied,
+     *     TP.AFTER is assumed.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetCollection,
+
+        cloneIndex,
+        itemToClone,
+        newItem,
+
+        insertIndex,
+
+        insertionPath;
+
+    //  Make sure that we have a TP.core.CollectionNode
+    targetCollection = aCollectionURI.getResource(
+                                        TP.hc('resultType', TP.WRAP));
+
+    if (!TP.isKindOf(targetCollection, TP.core.CollectionNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  Clone the first row if no clone index was supplied
+    if (!TP.isNumber(cloneIndex = aCloneIndex)) {
+        //  XPath starts indexing at 1
+        cloneIndex = 1;
+    }
+
+    //  Get the item to clone and clone it.
+    itemToClone = targetCollection.get('./*[' + cloneIndex + ']');
+    newItem = itemToClone.clone(true);
+
+    //  Clear out all of the 'text content' - that is, all of the scalar values
+    //  in the newly cloned item. This will descend through the new item's data
+    //  structure and cleanse it all of previous values.
+    newItem.clearTextContent();
+
+    //  NB: The insertion index is computed to represent the row that will come
+    //  *after* the new row after the insertion operation is complete (per
+    //  'insertBefore()' semantics).
+
+    if (TP.isNumber(insertIndex = anInsertIndex)) {
+
+        if (aPosition !== TP.BEFORE) {
+            insertIndex++;
+        }
+
+        insertionPath = './*[' + insertIndex + ']';
+
+    } else {
+
+        //  No index specified - we will be manipulating the end of the
+        //  collection.
+        if (aPosition === TP.BEFORE) {
+            insertionPath = './*[last()]';
+        }
+    }
+
+    //  If the insertion path is not empty, that means that we're not just
+    //  appending to the end.
+    if (TP.notEmpty(insertionPath)) {
+        targetCollection.insertRawContent(newItem, insertionPath, null, false);
+    } else {
+        //  We're just appending to the end.
+        targetCollection.addRawContent(newItem, null, false);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('removeRowFromAt',
+function(aCollectionURI, aDeleteIndex) {
+
+    /**
+     * @method removeRowFromAt
+     * @summary Removes a row of data from the collection as defined by the
+     *     supplied collection URI. This collection should be either the whole
+     *     collection representing the data of the receiver or a subcollection
+     *     of that data.
+     * @param {TP.core.URI} aCollectionURI The URI pointing to the collection to
+     *     remove the row from.
+     * @param {Number} aDeleteIndex The index to remove the item from in the
+     *     collection.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var targetCollection,
+
+        deleteIndexes,
+        deletionPath,
+        i;
+
+    //  Make sure that we have a TP.core.CollectionNode
+    targetCollection = aCollectionURI.getResource(
+                                        TP.hc('resultType', TP.WRAP));
+
+    if (!TP.isKindOf(targetCollection, TP.core.CollectionNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  Compute an XPath to do the deletion.
+
+    //  If a deletion index was supplied or we have numbers in our selection
+    //  indexes, then use those as the deletion indexes.
+    if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
+
+        deletionPath = './*[' + deleteIndexes + ']';
+
+    } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
+        deletionPath = './*[';
+        for (i = 0; i < deleteIndexes.getSize(); i++) {
+            deletionPath += 'position = ' + deleteIndexes.at(i) + ' or ';
+        }
+
+        deletionPath = deletionPath.slice(0, -4) + ']';
+    } else {
+
+        //  Otherwise, just delete the last item.
+        deletionPath = './*[last()]';
+    }
+
+    //  Create an XPathPath object from the computed path and execute a delete.
+    TP.xpc(deletionPath).execRemove(targetCollection, false);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
