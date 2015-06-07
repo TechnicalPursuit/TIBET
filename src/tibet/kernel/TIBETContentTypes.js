@@ -6027,9 +6027,6 @@ function(targetObj, varargs) {
     //  Make sure the target object is unwrapped
     natTargetObj = TP.unwrap(targetObj);
 
-    //  Call 'getPathType()' (which may return null) to determine path type and
-    //  'false' on autoCollapse (we collapse later if we're set for it, but for
-    //  now we want an Array).
     nodes = TP.nodeEvaluatePath(
                 natTargetObj, path, this.getPathType(), false);
 
