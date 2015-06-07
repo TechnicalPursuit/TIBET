@@ -14,52 +14,79 @@
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
-    <style type="text/css">
+    <tibet:style type="less">
         <![CDATA[
         @namespace pclass url(urn:tibet:pseudoclass);
-
-        #SherpaConsoleOutputToolbar {
-
-            position: absolute;
-
-            top: 5px;
-            right: 0px;
-
-            width: 100px;
-            height: 20px;
-
-            display: flex;
-        }
-
-        #SherpaConsoleOutputToolbar[pclass|hidden] {
-
-            display: none;
-        }
 
         #SherpaConsoleCommandToolbar {
 
             position: absolute;
 
             top: 5px;
-            left: 0px;
+            left: 5px;
 
             width: 100px;
             height: 20px;
 
             display: flex;
+
+            &[pclass|hidden] {
+                display: none;
+            }
+
+            #clearButton {
+                background-image: url("@{ide_root}/media/rounded60.svg");
+            }
+
+            #watchButton {
+                background-image: url("@{ide_root}/media/eye.svg");
+            }
         }
 
-        #SherpaConsoleCommandToolbar[pclass|hidden] {
+        #SherpaConsoleOutputToolbar {
 
-            display: none;
+            position: absolute;
+
+            top: 5px;
+            right: 5px;
+
+            width: 100px;
+            height: 20px;
+
+            display: flex;
+            justify-content: flex-end;
+
+            &[pclass|hidden] {
+                display: none;
+            }
+
+            & > .toolbarButton {
+                background-size: 20px 20px;
+                background-position: -2px -2px;
+            }
+
+            #splitBottomButton {
+                background-image: url("@{ide_root}/media/h_split_bottom.svg");
+            }
+            #splitTopButton {
+                background-image: url("@{ide_root}/media/h_split_top.svg");
+            }
+            #splitLeftButton {
+                background-image: url("@{ide_root}/media/v_split_left.svg");
+            }
+            #splitRightButton {
+                background-image: url("@{ide_root}/media/v_split_right.svg");
+            }
+            #fullScreenButton {
+                background-image: url("@{ide_root}/media/full_screen.svg");
+            }
         }
 
         .toolbarButton {
-
             cursor: pointer;
 
-            width: 20px;
-            height: 20px;
+            width: 15px;
+            height: 15px;
         }
 
         *|div.framing[pclass|hidden] {
@@ -94,7 +121,7 @@
         }
         */
         ]]>
-    </style>
+    </tibet:style>
 
 </head>
 <body xmlns:pclass="urn:tibet:pseudoclass">
@@ -113,30 +140,16 @@
       <div class="drawer">
         <!-- The markup used for command toolbar -->
         <div id="SherpaConsoleCommandToolbar" pclass:hidden="true" tibet:handler="SherpaConsoleService">
-            <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})">
-                <img src="~ide_root/media/rounded60.svg" width="20" height="20"/>
-            </div>
-            <div id="watchButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':watchFS --auto'})">
-                <img src="~ide_root/media/eye.svg" width="20" height="20"/>
-            </div>
+            <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})"/>
+            <div id="watchButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':watchFS --auto'})"/>
         </div>
         <!-- The markup used for output toolbar -->
         <div id="SherpaConsoleOutputToolbar" pclass:hidden="true">
-            <div class="toolbarButton" mode="h_split_bottom">
-                <img src="~ide_root/media/h_split_bottom.svg" width="20" height="20"/>
-            </div>
-            <div class="toolbarButton" mode="h_split_top">
-                <img src="~ide_root/media/h_split_top.svg" width="20" height="20"/>
-            </div>
-            <div class="toolbarButton" mode="v_split_left">
-                <img src="~ide_root/media/v_split_left.svg" width="20" height="20"/>
-            </div>
-            <div class="toolbarButton" mode="v_split_right">
-                <img src="~ide_root/media/v_split_right.svg" width="20" height="20"/>
-            </div>
-            <div class="toolbarButton" mode="fullscreen">
-                <img src="~ide_root/media/full_screen.svg" width="20" height="20"/>
-            </div>
+            <div id="splitBottomButton" class="toolbarButton" mode="h_split_bottom"/>
+            <div id="splitTopButton" class="toolbarButton" mode="h_split_top"/>
+            <div id="splitLeftButton" class="toolbarButton" mode="v_split_left"/>
+            <div id="splitRightButton" class="toolbarButton" mode="v_split_right"/>
+            <div id="fullScreenButton" class="toolbarButton" mode="fullscreen"/>
         </div>
       </div>
   </div>

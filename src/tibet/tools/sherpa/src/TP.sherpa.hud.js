@@ -47,13 +47,12 @@ function() {
     //  Set up the console output toolbar
     toolbarElem = TP.byId('SherpaConsoleOutputToolbar', this.getNativeWindow());
     this.observe(toolbarElem,
-                    'TP.sig.DOMClick',
-                    function(aSignal) {
-                        TP.byId('SherpaConsole', this.getNativeWindow()).
-                            toggleOutputMode(
-                            TP.elementGetAttribute(
-                                aSignal.getTarget().parentNode, 'mode'));
-                    }.bind(this));
+        'TP.sig.DOMClick',
+        function(aSignal) {
+            TP.byId('SherpaConsole', this.getNativeWindow()).
+                    toggleOutputMode(
+                        TP.elementGetAttribute(aSignal.getTarget(), 'mode'));
+        }.bind(this));
 
     toolbarElem.toggle('hidden');
 
