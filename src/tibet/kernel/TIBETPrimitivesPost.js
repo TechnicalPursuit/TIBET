@@ -2668,7 +2668,10 @@ function(anObject, shallow) {
      *     inbound object.
      */
 
-    var eventDocument;
+    var eventDocument,
+
+        newObj,
+        keys;
 
     //  null, undefined, and window objects are obvious problems
     if (TP.notValid(anObject) || TP.isWindow(anObject)) {
@@ -2682,6 +2685,23 @@ function(anObject, shallow) {
                         TP.eventGetTarget(anObject).document)) {
             return TP.documentCreateEvent(eventDocument, anObject);
         }
+    } else if (TP.isPlainObject(anObject)) {
+        newObj = {};
+
+        keys = TP.keys(anObject);
+        keys.forEach(
+                function(aKey) {
+                    var val;
+
+                    val = anObject[aKey];
+                    if (!shallow && TP.isReferenceType(val)) {
+                        newObj[aKey] = TP.objectCopy(val);
+                    } else {
+                        newObj[aKey] = val;
+                    }
+                });
+
+        return newObj;
     }
 
     return;
