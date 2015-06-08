@@ -35,7 +35,8 @@ TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
 TP.sherpa.console.Inst.defineAttribute(
         'consoleInput',
-        {value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput',
+                                TP.hc('shouldCollapse', true))});
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
