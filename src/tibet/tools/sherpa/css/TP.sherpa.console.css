@@ -102,6 +102,9 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
     line-height: 1.5em;
 
     overflow: auto;
+
+    /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER */
+    z-index: 25000;
 }
 
 #SherpaConsoleOutput * {
