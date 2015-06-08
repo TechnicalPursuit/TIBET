@@ -664,18 +664,23 @@ function(aPrompt, aCSSClass) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('clearStatus',
-function() {
+function(statusOutID) {
 
     /**
      * @method clearStatus
      * @summary Clears any status information such as window.status and/or any
      *     status bar content, resetting it to the default state.
+     * @param
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    //  NB: This only works if the user gives us permission - need a different
-    //  way
-    TP.status('');
+    var statusTPElem;
+
+    if (TP.notEmpty(statusOutID) &&
+        TP.isValid(statusTPElem = TP.byId(
+                                    statusOutID, this.getNativeWindow()))) {
+        statusTPElem.setRawContent('');
+    }
 
     return this;
 });
@@ -683,7 +688,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('updateStatus',
-function(aSignal) {
+function(aSignal, statusOutID) {
 
     /**
      * @method updateStatus
@@ -693,70 +698,88 @@ function(aSignal) {
      *     which just occurred.
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
+     * @param {String} statusOutID The ID of the status readout to update.
      */
 
-    /*
-    var model,
-        doc,
-        outCell,
-        evt,
-        arr,
+    var statID,
+
+        canvasWin,
+
         str,
-        canvasWin;
+        arr,
+        evt;
 
-    model = this.getModel();
-    doc = this.get('vWin').document;
-
-    //  Make sure that we have a valid signal and that we actually have
-    //  cells to update the status of.
-    if (TP.isValid(aSignal) && TP.notEmpty(this.get('$cellHash'))) {
-        //  fake "reuse" here so we get back the original command cell
-        aSignal.atPut('cmdAppend', true);
-        outCell = this.getOutputCell(aSignal);
-
-        if (TP.isValid(outCell)) {
-            outCell.updateStats(aSignal);
-        }
-    }
+    statID = TP.ifEmpty(statusOutID, TP.ALL);
 
     //  ---
     //  status context ID (execution window's global ID)
     //  ---
 
-    str = '';
-    if (TP.isWindow(canvasWin = TP.sys.getUICanvas(true))) {
-        str = '' + TP.gid(canvasWin).sliceFrom('.', false, true);
+    if (statID === 'currentCanvasInfo' || statID === TP.ALL) {
+        if (TP.isWindow(canvasWin = TP.sys.getUICanvas(true))) {
+            str = TP.gid(canvasWin).sliceFrom('.', false, true);
 
-        TP.htmlElementSetContent(TP.byId('status2', this.$get('vWin'), false),
-            str, null, false);
+            TP.byId('currentCanvasInfo',
+                    this.getNativeWindow()).setRawContent(str);
+        }
     }
 
     //  ---
     //  logging level
     //  ---
 
-    str = '' + TP.getLogLevel().getName() + '::' + APP.getLogLevel().getName();
-    TP.htmlElementSetContent(TP.byId('status3', this.$get('vWin'), false),
-        str, null, false);
+    if (statID === 'logLevelInfo' || statID === TP.ALL) {
+        str = TP.getLogLevel().getName() + '::' + APP.getLogLevel().getName();
 
-    //  ---
-    //  keyboard modifiers pressed
-    //  ---
-
-    if (TP.isEvent(evt = aSignal.getEvent())) {
-
-        arr = TP.ac();
-        arr.push(aSignal.getCtrlKey() ? 'Ctrl' : null);
-        arr.push(aSignal.getAltKey() ? 'Alt' : null);
-        arr.push(aSignal.getMetaKey() ? 'Meta' : null);
-        arr.push(aSignal.getShiftKey() ? 'Shift' : null);
-        arr.compact();
-
-        str = arr.join(':');
-        TP.htmlElementSetContent(TP.byId('status1', this.$get('vWin'), false),
-            str, null, false);
+        TP.byId('logLevelInfo', this.getNativeWindow()).setRawContent(str);
     }
-    */
+
+    //  ---
+    //  keyboard key pressed
+    //  ---
+
+    if (statID === 'keyboardInfo' || statID === TP.ALL) {
+
+        if (TP.canInvoke(aSignal, 'getEvent') &&
+            TP.isEvent(evt = aSignal.getEvent())) {
+
+            arr = TP.ac();
+
+            arr.push(TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null);
+            arr.push(TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null);
+            arr.push(TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null);
+            arr.push(TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null);
+            arr.push('"' + TP.core.Keyboard.getEventVirtualKey(evt) + '"');
+            arr.push(evt.keyCode);
+            arr.push(evt.$unicodeCharCode);
+            arr.compact();
+
+            str = arr.join(' : ');
+
+            TP.byId('keyboardInfo', this.getNativeWindow()).setRawContent(str);
+        }
+    }
+
+    //  ---
+    //  mouse move triggered
+    //  ---
+
+    if (statID === 'mouseInfo' || statID === TP.ALL) {
+
+        if (TP.canInvoke(aSignal, 'getEvent') &&
+            TP.isEvent(evt = aSignal.getEvent())) {
+
+            if (TP.notValid(aSignal)) {
+                str = '';
+            } else {
+                str = aSignal.getPageX() + ' :: ' + aSignal.getPageY();
+            }
+
+            TP.byId('mouseInfo', this.getNativeWindow()).setRawContent(str);
+        } else {
+            TP.byId('mouseInfo', this.getNativeWindow()).clearTextContent();
+        }
+    }
 
     return;
 });

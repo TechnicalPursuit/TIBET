@@ -179,6 +179,16 @@ function(aResourceID, aRequest) {
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
 
+    (function(aSignal) {
+
+        if (aSignal.getWindow() === TP.sys.getUICanvas(true)) {
+            this.get('$consoleGUI').updateStatus(aSignal, 'mouseInfo');
+        } else {
+            this.get('$consoleGUI').updateStatus(null, 'mouseInfo');
+        }
+
+    }.bind(this)).observe(TP.core.Mouse, 'TP.sig.DOMMouseMove');
+
     return this;
 });
 
@@ -640,6 +650,8 @@ function(aSignal) {
         TP.eventStopPropagation(evt);
     }
 
+    this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
+
     return;
 });
 
@@ -669,6 +681,8 @@ function(aSignal) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
     }
+
+    this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
 
     return;
 });
@@ -734,6 +748,8 @@ function(aSignal) {
                 '*'.times(this.$get('concealedInput').getSize()));
     }
 
+    this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
+
     return;
 });
 
@@ -750,7 +766,7 @@ function(aSignal) {
      *     triggered this handler.
      */
 
-    this.get('$consoleGUI').updateStatus(aSignal);
+    this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
 
     return;
 });

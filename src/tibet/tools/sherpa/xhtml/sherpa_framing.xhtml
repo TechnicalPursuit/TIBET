@@ -18,15 +18,28 @@
         <![CDATA[
         @namespace pclass url(urn:tibet:pseudoclass);
 
+        *|div.framing[pclass|hidden] {
+            display: block;
+        }
+
+        #north > .drawer {
+            display: flex;
+            flex-wrap: wrap;
+            align-content: space-between;
+
+            & > * {
+                width: 33.3%
+            }
+        }
+
+        .toolbarButton {
+            cursor: pointer;
+
+            width: 15px;
+            height: 15px;
+        }
+
         #SherpaConsoleCommandToolbar {
-
-            position: absolute;
-
-            top: 5px;
-            left: 5px;
-
-            width: 100px;
-            height: 20px;
 
             display: flex;
 
@@ -44,14 +57,6 @@
         }
 
         #SherpaConsoleOutputToolbar {
-
-            position: absolute;
-
-            top: 5px;
-            right: 5px;
-
-            width: 100px;
-            height: 20px;
 
             display: flex;
             justify-content: flex-end;
@@ -82,15 +87,25 @@
             }
         }
 
-        .toolbarButton {
-            cursor: pointer;
+        .info {
+            cursor: default;
 
-            width: 15px;
-            height: 15px;
+            font-size: 10px;
+            line-height: 1em;
         }
 
-        *|div.framing[pclass|hidden] {
-            display: block;
+        #currentCanvasInfo {
+            text-align: left;
+        }
+
+        #logLevelInfo {
+            text-align: right;
+        }
+
+        #keyboardInfo {
+        }
+
+        #mouseInfo {
         }
 
         /*
@@ -138,11 +153,25 @@
 
   <div id="north" class="framing h-edge north center" pclass:hidden="true">
       <div class="drawer">
+
+        <!-- The markup used for current canvas name -->
+        <div id="currentCanvasInfo" class="info"/>
+
+        <!-- The markup used for current keyboard info -->
+        <div id="keyboardInfo" class="info"/>
+
+        <!-- The markup used for current log info -->
+        <div id="logLevelInfo" class="info"/>
+
         <!-- The markup used for command toolbar -->
         <div id="SherpaConsoleCommandToolbar" pclass:hidden="true" tibet:handler="SherpaConsoleService">
             <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})"/>
             <div id="watchButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':watchFS --auto'})"/>
         </div>
+
+        <!-- The markup used for current mouse info -->
+        <div id="mouseInfo" class="info"/>
+
         <!-- The markup used for output toolbar -->
         <div id="SherpaConsoleOutputToolbar" pclass:hidden="true">
             <div id="splitBottomButton" class="toolbarButton" mode="h_split_bottom"/>
@@ -151,6 +180,7 @@
             <div id="splitRightButton" class="toolbarButton" mode="v_split_right"/>
             <div id="fullScreenButton" class="toolbarButton" mode="fullscreen"/>
         </div>
+
       </div>
   </div>
 
