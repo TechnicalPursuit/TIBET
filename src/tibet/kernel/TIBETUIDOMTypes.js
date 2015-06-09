@@ -59,8 +59,6 @@ function(aDocument) {
      * @param {The} aDocument document to add the stylesheet to.
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
-     * @returns {Element} Any newly created style element or the existing style
-     *     element for the receiver, if one exists.
      */
 
     var ourID,
@@ -109,7 +107,7 @@ function(aDocument) {
     //  placed into the document over and over for each occurrence of the
     //  same type of element node.
     if (TP.isElement(styleElem = TP.byId(sheetID, aDocument, false))) {
-        return styleElem;
+        return;
     }
 
     //  Couldn't find that CSS style sheet, so we ask ourself to compute a
@@ -173,7 +171,7 @@ function(aDocument) {
     hrefVal = styleURI.getOriginalSource();
     TP.elementSetAttribute(styleElem, 'tibet:originalHref', hrefVal, true);
 
-    return styleElem;
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5707,7 +5705,9 @@ function(aRequest) {
         return;
     }
 
-    return this.addStylesheetTo(doc);
+    this.addStylesheetTo(doc);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
