@@ -44,9 +44,11 @@ function(aRequest) {
         resourceStr,
 
         doc,
-        type,
 
+        generatedStyleID,
         ourID,
+
+        type,
 
         currentDir,
         currentLoc,
@@ -69,6 +71,15 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
+    //  Get this element's document wrapper.
+    doc = TP.doc(elem);
+
+    //  Grab our ID, assigning one if necessary
+    ourID = TP.lid(elem, true);
+
+    //  Compute an ID for our generated (real) CSS style sheet.
+    generatedStyleID = ourID + '_generated';
+
     //  If we're not empty, then we use our child content as our content
     if (TP.notEmpty(elem.childNodes)) {
 
@@ -90,23 +101,17 @@ function(aRequest) {
             resourceStr = TP.nodeGetTextContent(cdatas.first());
         }
 
-        //  Get this element's document wrapper.
-        doc = TP.doc(elem);
-
-        //  Grab our ID, assigning one if necessary
-        ourID = TP.lid(elem, true);
-
         //  If there's a 'type' attribute, that should have the type of style
         //  that we're being asked to process.
         type = TP.elementGetAttribute(elem, 'type');
         switch (type) {
             case 'less':
 
-                //  Note that, due to a limitation of the LESS API, we can't just
-                //  provide a 'root path' that url()s can be resolved against.
-                //  So we get our document's collection path and attach a
-                //  nonsensical filename to it before supplying that to the LESS
-                //  compilation routine.
+                //  Note that, due to a limitation of the LESS API, we can't
+                //  just provide a 'root path' that url()s can be resolved
+                //  against. So we get our document's collection path and attach
+                //  a nonsensical filename to it before supplying that to the
+                //  LESS compilation routine.
                 currentDir = TP.uriCollectionPath(TP.documentGetLocation(doc));
                 currentLoc = TP.uriJoinPaths(currentDir, 'fluffy.less');
 
@@ -120,11 +125,15 @@ function(aRequest) {
                 //  its content.
                 if (!TP.isElement(
                         existingStyleElem =
-                        TP.byCSSPath('[for="' + ourID + '"]', doc, false, false))) {
+                        TP.byCSSPath(
+                            '[for="' + ourID + '"]', doc, false, false))) {
 
                     //  Just some CSS
                     newStyleElem = TP.documentAddStyleElement(
                                         doc, resourceStr, elem.nextSibling);
+
+                    TP.elementSetAttribute(
+                            newStyleElem, 'id', generatedStyleID, true);
 
                     //  Set an attribute on our newly created style element that
                     //  links it back to the source element.
@@ -181,13 +190,17 @@ function(aRequest) {
                 //  its content.
                 if (!TP.isElement(
                         existingStyleElem =
-                        TP.byCSSPath('[for="' + ourID + '"]', doc, false, false))) {
+                        TP.byCSSPath(
+                            '[for="' + ourID + '"]', doc, false, false))) {
 
                     //  Just some CSS - link it in.
                     newStyleElem = TP.documentAddLinkElement(
                                             doc,
                                             hrefLocation,
                                             elem.nextSibling);
+
+                    TP.elementSetAttribute(
+                            newStyleElem, 'id', generatedStyleID, true);
 
                     //  Set an attribute on our newly created style element that
                     //  links it back to the source element.
@@ -236,6 +249,7 @@ function(lessLoc, lessText) {
      */
 
     var ourID,
+        generatedStyleID,
 
         cfg,
         lessGlobalVars,
@@ -245,9 +259,11 @@ function(lessLoc, lessText) {
         lessParams,
         lessWorker;
 
-
     //  Get our local ID, assigning it if necessary.
     ourID = this.getLocalID(true);
+
+    //  Compute an ID for our generated (real) CSS style sheet.
+    generatedStyleID = ourID + '_generated';
 
     //  Get all of the cfg variables starting with 'path.'
     cfg = TP.sys.cfg('path');
@@ -264,9 +280,9 @@ function(lessLoc, lessText) {
             var val;
 
             //  If the cfg data has a real value for that key, get the key and
-            //  slice off the 'path.' portion. Any remaining periods ('.') in the
-            //  key are then replaced with '-'. Then, quote the value so that
-            //  LESS doesn't have issues with spaces, etc.
+            //  slice off the 'path.' portion. Any remaining periods ('.') in
+            //  the key are then replaced with '-'. Then, quote the value so
+            //  that LESS doesn't have issues with spaces, etc.
             if (TP.notEmpty(val = cfg.at(aKey))) {
                 lessGlobalVars[aKey.slice(5).replace(/\./g, '-')] =
                                 '"' + TP.uriResolveVirtualPath(val) + '"';
@@ -288,12 +304,16 @@ function(lessLoc, lessText) {
                 //  its content.
                 if (!TP.isElement(
                     existingStyleElem =
-                    TP.byCSSPath('[for="' + ourID + '"]', ourDoc, false, false))) {
+                    TP.byCSSPath(
+                        '[for="' + ourID + '"]', ourDoc, false, false))) {
 
                     compiledStyleElem = TP.documentAddStyleElement(
                                             ourDoc,
                                             result,
                                             TP.unwrap(this).nextSibling);
+
+                    TP.elementSetAttribute(
+                            compiledStyleElem, 'id', generatedStyleID, true);
 
                     //  Set an attribute on our newly created style element that
                     //  links it back to the source element.
