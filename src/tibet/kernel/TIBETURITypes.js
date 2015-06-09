@@ -9247,9 +9247,11 @@ function(aURI, aDirection) {
         signal,
         home,
         config,
+
         route,
         routeParts,
-        routeTarget;
+        routeTarget,
+        routeTPElem;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
@@ -9434,7 +9436,13 @@ function(aURI, aDirection) {
         //  The target will be the ID of the element to inject the content into
         //  and the 'route' is the type name of the TP.core.ElementNode to
         //  inject in there.
+
+        //  Make sure to slice off the leading '#'
         routeTarget = routeParts.first();
+        if (routeTarget.startsWith('#')) {
+            routeTarget = routeTarget.slice(1);
+        }
+
         route = routeParts.last();
     }
 
@@ -9446,17 +9454,20 @@ function(aURI, aDirection) {
     if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
         //  If we got a routeTarget above, then its a directed injection.
         if (TP.notEmpty(routeTarget)) {
-            routeTarget = TP.byId(routeTarget);
+            routeTPElem = TP.byId(routeTarget);
         }
 
         //  If we can't resolve a routeTarget, then just grab the body element
         //  for an undirected injection.
-        if (!TP.isKindOf(routeTarget, 'TP.core.ElementNode')) {
-            routeTarget = TP.sys.getUICanvas().getDocument().getBody();
+        if (!TP.isKindOf(routeTPElem, 'TP.core.ElementNode')) {
+            TP.warn('Unable to find route target: ' +
+                    routeTarget +
+                    '. Defaulting to body');
+            routeTPElem = TP.sys.getUICanvas().getDocument().getBody();
         }
 
         //  Inject the content.
-        routeTarget.setContentFromTagType(type);
+        routeTPElem.setContentFromTagType(type);
 
     } else {
 
