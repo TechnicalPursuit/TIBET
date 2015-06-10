@@ -235,9 +235,9 @@
   <!-- The WebDAV test server's vCard -->
   <vCard xmlns="vcard-temp">
     <VERSION>1.1</VERSION>
-    <FN>TPWebDAVServiceDefault</FN>
+    <FN>WebDAVServiceDefault</FN>
     <DESC>The WebDAV test Service</DESC>
-    <URL>http://demo.sabredav.org/</URL>
+    <URL>http://localhost:1407/tds/webdav/</URL>
     <X-IS-WEBDAV>true</X-IS-WEBDAV>
   </vCard>
 
