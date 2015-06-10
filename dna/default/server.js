@@ -169,8 +169,7 @@
     // Configure the webdav component so changes in the client can be propogated
     // to the server.
     if (argv.webdav !== false) {
-        app.put(TDS.getcfg('tds.webdav.uri'), TDS.webdav());
-        app.post(TDS.getcfg('tds.webdav.uri'), TDS.webdav());
+        app.use(TDS.getcfg('tds.webdav.uri'), TDS.webdav());
     }
 
     //  ---

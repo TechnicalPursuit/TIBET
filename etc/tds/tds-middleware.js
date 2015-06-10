@@ -485,7 +485,10 @@
             mount;
 
         node = path.resolve(TDS.expandPath(TDS.getcfg('tds.webdav.root')));
-        mount = TDS.expandPath(TDS.getcfg('tds.webdav.uri'));
+
+        //  NB: The mount is set to '/' because it is already relative to the
+        //  route that got us here (when we got installed as middleware).
+        mount = '/';
 
         return function(req, res, next) {
             jsDAV.mount({
