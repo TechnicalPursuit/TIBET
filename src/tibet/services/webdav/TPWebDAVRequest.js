@@ -34,109 +34,136 @@
  *
  *     Read content from a URI:
  *
- *     requestParams = TP.hc( 'action', 'read', 'uri', 'foo/baz.txt');
+ *     requestParams = TP.hc('action', 'read',
+ *                              'uri', 'foo/baz.txt');
  *
  *     OR
  *
  *     Write content to a URI:
  *
- *     requestParams = TP.hc( 'action', 'write', 'uri', 'foo/baz.txt', 'body',
- *     'Some text...');
+ *     requestParams = TP.hc('action', 'write',
+ *                              'uri', 'foo/baz.txt',
+ *                              'body', 'Some text...');
  *
  *     OR
  *
  *     Remove a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'remove', 'uri', 'foo/baz.txt');
+ *     requestParams = TP.hc('action', 'remove',
+ *                              'uri', 'foo/baz.txt');
  *
  *     OR
  *
  *     Copy a resource pointed to by a URI to another URI (and force
  *     overwrite):
  *
- *     requestParams = TP.hc( 'action', 'copy', 'uri', 'foo/baz.txt',
- *     'destination', 'foo/goo.txt', 'overwrite', true);
+ *     requestParams = TP.hc('action', 'copy',
+ *                              'uri', 'foo/baz.txt',
+ *                              'destination', 'foo/goo.txt',
+ *                              'overwrite', true);
  *
  *     OR
  *
  *     Move a resource pointed to by a URI to another URI (and force
  *     overwrite):
  *
- *     requestParams = TP.hc( 'action', 'move', 'uri', 'foo/baz.txt',
- *     'destination', 'foo/goo.txt', 'overwrite', true);
+ *     requestParams = TP.hc('action', 'move',
+ *                              'uri', 'foo/baz.txt',
+ *                              'destination', 'foo/goo.txt',
+ *                              'overwrite', true);
  *
  *     OR
  *
  *     Create a 'collection' (i.e. directory):
  *
- *     requestParams = TP.hc( 'action', 'makecoll', 'uri', 'foo/');
+ *     requestParams = TP.hc('action', 'makecoll',
+ *                              'uri', 'foo/');
  *
  *     OR
  *
  *     List a 'collection' (i.e. directory):
  *
- *     requestParams = TP.hc( 'action', 'listcoll', 'uri', 'foo/');
+ *     requestParams = TP.hc('action', 'listcoll',
+ *                              'uri', 'foo/');
  *
  *     OR
  *
  *     Get a property of a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'getprop', 'uri', 'foo/baz.txt',
- *     'property', TP.hc('name', 'creationdate'));
+ *     requestParams = TP.hc('action', 'getprop',
+ *                              'uri', 'foo/baz.txt',
+ *                              'property', TP.hc('name', 'creationdate'));
  *
  *     OR
  *
  *     Get all properties of a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'getprops', 'uri', 'foo/baz.txt');
+ *     requestParams = TP.hc('action', 'getprops',
+ *                              'uri', 'foo/baz.txt');
  *
  *     OR
  *
  *     Set a property of a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'setprop', 'uri', 'foo/baz.txt',
- *     'property', TP.hc('name', 'getlastmodified', 'value',
- *     TP.dc().as('TP.iso.ISO8601')));
+ *     requestParams = TP.hc(
+ *                      'action', 'setprop',
+ *                      'uri', 'foo/baz.txt',
+ *                      'property',
+ *                          TP.hc('name', 'getlastmodified',
+ *                                  'value', TP.dc().as('TP.iso.ISO8601')));
  *
  *     OR
  *
  *     Set some properties of a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'setprop', 'uri', 'foo/baz.txt',
- *     'setList', TP.ac( TP.hc('name', 'author', 'value', 'Jim Whitehead', 'ns',
- *     'http://www.w3.org/standards/z39.50/'), TP.hc('name', 'getlastmodified',
- *     'value', TP.dc().as('TP.iso.ISO8601'))));
+ *     requestParams = TP.hc(
+ *                  'action', 'setprop',
+ *                  'uri', 'foo/baz.txt',
+ *                  'setList', TP.ac(
+ *                      TP.hc('name', 'author', 'value', 'Jim Whitehead',
+ *                              'ns', 'http://www.w3.org/standards/z39.50/'),
+ *                      TP.hc('name', 'getlastmodified',
+ *                              'value', TP.dc().as('TP.iso.ISO8601'))));
  *
  *     OR
  *
  *     Delete some properties of a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'deleteprops', 'uri', 'foo/baz.txt',
- *     'removeList', TP.ac( TP.hc('name', 'author', 'ns',
- *     'http://www.w3.org/standards/z39.50/'), TP.hc('name',
- *     'getlastmodified')));
+ *     requestParams = TP.hc(
+ *                  'action', 'deleteprops',
+ *                  'uri', 'foo/baz.txt',
+ *                  'removeList', TP.ac(
+ *                      TP.hc('name', 'author',
+ *                              'ns', 'http://www.w3.org/standards/z39.50/'),
+ *                      TP.hc('name', 'getlastmodified')));
  *
  *     OR
  *
  *     Lock a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'lock', 'uri', 'foo/baz.txt',
- *     'lockscope', TP.WEBDAV_LOCKSCOPE_EXCLUSIVE, 'lockowner',
- *     'http://www.foo.com/joe.html');
+ *     requestParams = TP.hc('action', 'lock',
+ *                              'uri', 'foo/baz.txt',
+ *                              'lockscope', TP.WEBDAV_LOCKSCOPE_EXCLUSIVE,
+ *                              'lockowner', 'http://www.foo.com/joe.html');
  *
  *     OR
  *
  *     Unlock a resource pointed to by a URI:
  *
- *     requestParams = TP.hc( 'action', 'unlock', 'uri', 'foo/baz.txt',
- *     'locktoken', '<opaquelocktoken:a515cfa4-5da4-22e1-f5b5-00a0451e6bf7>');
+ *     requestParams = TP.hc(
+ *              'action', 'unlock',
+ *             'uri', 'foo/baz.txt',
+ *              'locktoken',
+ *                  '<opaquelocktoken:a515cfa4-5da4-22e1-f5b5-00a0451e6bf7>');
  *
  *     Package and fire the request:
  *
  *     davReq = TP.sig.WebDAVRequest.construct(requestParams);
- *     davReq.defineMethod('handleRequestSucceeded', function(aResponse) {
- *
- *     TP.info(aResponse.getResult(), TP.LOG); }); davReq.fire();
+ *     davReq.defineMethod('handleRequestSucceeded',
+ *              function(aResponse) {
+ *                  TP.info(aResponse.getResult(), TP.LOG);
+ *              });
+ *     davReq.fire();
  */
 
 //  ------------------------------------------------------------------------
