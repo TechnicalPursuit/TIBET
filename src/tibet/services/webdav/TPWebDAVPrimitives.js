@@ -641,9 +641,7 @@ function(targetUrl, aRequest, useQuery) {
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
 
-    //  tell the server that we're going to tell it about transfer encodings
-    headers.atPutIfAbsent('Connection', 'TE');
-    headers.atPutIfAbsent('TE', 'trailers,deflate,gzip,compress');
+    //  just have the WebDAV server return the content unprocessed
     headers.atPutIfAbsent('Translate', 'f');
 
     //  content for this operation is XML
@@ -651,6 +649,9 @@ function(targetUrl, aRequest, useQuery) {
 
     //  tell http primitive what to signal if we have an exception
     request.atPut('exceptionType', 'WebDAVException');
+
+    //  tell http primitive to encode our body as XML
+    request.atPut('mimetype', TP.XML_ENCODED);
 
     if (TP.isTrue(useQuery)) {
         //  use httpQuery since its NOT a state-changing request
