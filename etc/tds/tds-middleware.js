@@ -114,9 +114,11 @@
      * specifically activated.
      *
      * You can test whether it works by using URLs of the form:
+     *
      * url = TP.uc('~/tds/cli?cmd=echo&argv0=fluff&--testing=123&--no-color');
      *
      * Run the command by forcing a call to the server for the URL:
+     *
      * url.getContent();
      *
      * @param {Object} options Configuration options. Currently ignored.
@@ -138,23 +140,24 @@
 
             params = [cmd];
 
-            Object.keys(req.query).forEach(function(key) {
-                var value;
+            Object.keys(req.query).forEach(
+                    function(key) {
+                        var value;
 
-                if (key === 'cmd') {
-                    void 0;    // skip
-                } else {
-                    value = req.query[key];
+                        if (key === 'cmd') {
+                            void 0;    // skip
+                        } else {
+                            value = req.query[key];
 
-                    params.push('--' + key);
-                    if (value !== null &&
-                        value !== undefined &&
-                        value !== true &&
-                        value !== '') {
-                        params.push(value);
-                    }
-                }
-            });
+                            params.push('--' + key);
+                            if (value !== null &&
+                                value !== undefined &&
+                                value !== true &&
+                                value !== '') {
+                                params.push(value);
+                            }
+                        }
+                    });
 
             child = require('child_process');
             cli = child.spawn('tibet', params);
@@ -453,10 +456,11 @@
 
                 writeSSEHead(
                     req, res,
-                    function(req, res) {
+                    function(writeHeadReq, writeHeadRes) {
                         writeSSEData(
-                            req, res, eventName, changedFileName,
-                            function(req, res) {
+                            writeHeadReq, writeHeadRes,
+                            eventName, changedFileName,
+                            function(writeDataReq, writeDataRes) {
 
                                 changedFileName = '';
 
