@@ -3889,18 +3889,22 @@ function(aRequest) {
         return aRequest.fail('Invalid request input.');
     }
 
-    req = TP.sig.HTTPRequest.construct(TP.hc('uri', url, 'verb', TP.HTTP_POST));
+    req = url.constructRequest();
 
-    req.defineMethod('handleRequestSucceeded', function() {
-        aRequest.stdout(req.getResult());
-        aRequest.complete();
-    });
-    req.defineMethod('handleRequestFailed', function() {
-        aRequest.stderr(req.getResult());
-        aRequest.complete();
-    });
+    req.defineMethod('handleRequestSucceeded',
+                        function() {
+                            aRequest.stdout(req.getResult());
+                            aRequest.complete();
+                        });
+    req.defineMethod('handleRequestFailed',
+                        function() {
+                            aRequest.stderr(req.getResult());
+                            aRequest.complete();
+                        });
 
-    req.fire();
+    url.load(req);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
