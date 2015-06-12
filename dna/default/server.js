@@ -148,7 +148,6 @@
     // somewhat constrained.
     if (argv.cli !== false) {
         app.get(TDS.getcfg('tds.cli.uri'), TDS.cli());
-        app.post(TDS.getcfg('tds.cli.uri'), TDS.cli());
     }
 
     // Configure the TIBET patch handler. This will process requests from the
