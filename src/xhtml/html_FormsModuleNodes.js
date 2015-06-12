@@ -1676,7 +1676,8 @@ function(aValue, elementProperty) {
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
 
         aspect,
@@ -1690,8 +1691,11 @@ function(aValue, elementProperty) {
 
         labelElem;
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -1781,8 +1785,10 @@ function(aValue) {
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
+
         dict,
         dirty,
         len,
@@ -1792,8 +1798,11 @@ function(aValue) {
         return this.deselectAll();
     }
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -2366,7 +2375,8 @@ function(aValue, elementProperty) {
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
 
         aspect,
@@ -2380,8 +2390,11 @@ function(aValue, elementProperty) {
 
         labelElem;
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -2474,8 +2487,10 @@ function(aValue) {
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
+
         dict,
         dirty,
         len,
@@ -2486,8 +2501,11 @@ function(aValue) {
         return this.selectAll();
     }
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -2598,7 +2616,7 @@ function(aValue) {
      */
 
     var elementArray,
-
+        separator,
         value,
 
         dict,
@@ -2617,8 +2635,11 @@ function(aValue) {
         return this.raise('TP.sig.InvalidElementArray');
     }
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -3545,7 +3566,8 @@ function(aValue, optionProperty) {
      * @returns {TP.html.select} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
 
         aspect,
@@ -3557,8 +3579,11 @@ function(aValue, optionProperty) {
         item,
         val;
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -3666,8 +3691,10 @@ function(aValue) {
      * @returns {TP.html.select} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
+
         dict,
         dirty,
         len,
@@ -3677,8 +3704,11 @@ function(aValue) {
         return this.deselectAll();
     }
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -4213,7 +4243,8 @@ function(aValue, optionProperty) {
      * @returns {TP.html.select} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
 
         aspect,
@@ -4225,8 +4256,11 @@ function(aValue, optionProperty) {
         item,
         val;
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -4322,8 +4356,10 @@ function(aValue) {
      * @returns {TP.html.select} The receiver.
      */
 
-    var value,
+    var separator,
+        value,
         elementArray,
+
         dict,
         dirty,
         len,
@@ -4334,8 +4370,11 @@ function(aValue) {
         return this.selectAll();
     }
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }
@@ -4443,7 +4482,7 @@ function(aValue) {
      */
 
     var elementArray,
-
+        separator,
         value,
 
         dict,
@@ -4462,8 +4501,11 @@ function(aValue) {
         return this.raise('TP.sig.InvalidElementArray');
     }
 
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
     if (TP.isString(aValue)) {
-        value = aValue.split(' ').collapse();
+        value = aValue.split(separator).collapse();
     } else {
         value = aValue;
     }

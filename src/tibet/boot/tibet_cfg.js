@@ -833,6 +833,16 @@
     //  see where a transformation sequence may be going wrong
     TP.sys.setcfg('content.use_checkpoints', false);
 
+
+    //  ---
+    //  binding
+    //  ---
+
+    //  the data delimiter when splitting a String if one cannot be determined
+    //  from the data source and is not overridden by the author
+    TP.sys.setcfg('bind.value_separator', ';');
+
+
     //  ---
     //  css processor
     //  ---
