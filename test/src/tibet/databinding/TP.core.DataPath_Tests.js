@@ -1165,118 +1165,152 @@ function() {
 
     this.it('JSON path', function(test, options) {
 
-        path = TP.jpc('$.store.book[*].author').asXPath();
+        path = TP.jpc('$.store.book[*].author').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/store//book/author');
 
-        path = TP.jpc('$..author').asXPath();
+        path = TP.jpc('$..author').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//author');
 
-        path = TP.jpc('$.store.*').asXPath();
+        path = TP.jpc('$.store.*').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/store/*');
 
-        path = TP.jpc('$.store..price').asXPath();
+        path = TP.jpc('$.store..price').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/store//price');
 
-        path = TP.jpc('$.store..price.^').asXPath();
+        path = TP.jpc('$.store..price.^').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/store//price/..');
 
         //  ---
 
-        path = TP.jpc('$.book[2]').asXPath();
+        path = TP.jpc('$.book[2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() = 3]');
 
-        path = TP.jpc('$.book[-2,2]').asXPath();
+        path = TP.jpc('$.book[-2,2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() = -1 or position() = 3]');
 
-        path = TP.jpc('$.book[-1:]').asXPath();
+        path = TP.jpc('$.book[-1:]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() >= last() + 0]');
 
-        path = TP.jpc('$.book[:2]').asXPath();
+        path = TP.jpc('$.book[:2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() < 3]');
 
-        path = TP.jpc('$.book[1:2]').asXPath();
+        path = TP.jpc('$.book[1:2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() >= 2 and position() < 3]');
 
-        path = TP.jpc('$.book[-2:]').asXPath();
+        path = TP.jpc('$.book[-2:]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() >= last() + -1]');
 
-        path = TP.jpc('$.book[2:]').asXPath();
+        path = TP.jpc('$.book[2:]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() >= 3]');
 
         //  ---
 
-        path = TP.jpc('$.book[(@.length-1)]').asXPath();
+        path = TP.jpc('$.book[(@.length-1)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[position() = last() + 1-1]');
 
-        path = TP.jpc('$.book[?(@.isbn)]').asXPath();
+        path = TP.jpc('$.book[?(@.isbn)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[./isbn]');
 
-        path = TP.jpc('$.book[?(@.price < 10)]').asXPath();
+        path = TP.jpc('$.book[?(@.price < 10)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[./price < 10]');
 
-        path = TP.jpc('$.book[?(@.isbn && @.price < 10)]').asXPath();
+        path = TP.jpc('$.book[?(@.isbn && @.price < 10)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[./isbn and ./price < 10]');
 
-        path = TP.jpc('$.book[?(@.isbn || @.price < 10)]').asXPath();
+        path = TP.jpc('$.book[?(@.isbn || @.price < 10)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/book/*[./isbn or ./price < 10]');
 
         //  ---
 
-        path = TP.jpc('$..book[2]').asXPath();
+        path = TP.jpc('$..book[2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() = 3]');
 
-        path = TP.jpc('$..book[-2,2]').asXPath();
+        path = TP.jpc('$..book[-2,2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() = -1 or position() = 3]');
 
-        path = TP.jpc('$..book[-1:]').asXPath();
+        path = TP.jpc('$..book[-1:]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= last() + 0]');
 
-        path = TP.jpc('$..book[:2]').asXPath();
+        path = TP.jpc('$..book[:2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() < 3]');
 
-        path = TP.jpc('$..book[1:2]').asXPath();
+        path = TP.jpc('$..book[1:2]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= 2 and position() < 3]');
 
-        path = TP.jpc('$..book[-2:]').asXPath();
+        path = TP.jpc('$..book[-2:]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= last() + -1]');
 
-        path = TP.jpc('$..book[2:]').asXPath();
+        path = TP.jpc('$..book[2:]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= 3]');
 
         //  ---
 
-        path = TP.jpc('$..book[(@.length-1)]').asXPath();
+        path = TP.jpc('$..book[(@.length-1)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][position() = last() + 1-1]');
 
-        path = TP.jpc('$..book[?(@.isbn)]').asXPath();
+        path = TP.jpc('$..book[?(@.isbn)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./isbn]');
 
-        path = TP.jpc('$..book[?(@.price < 10)]').asXPath();
+        path = TP.jpc('$..book[?(@.price < 10)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./price < 10]');
 
-        path = TP.jpc('$..book[?(@.isbn && @.price < 10)]').asXPath();
+        path = TP.jpc('$..book[?(@.isbn && @.price < 10)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./isbn and ./price < 10]');
 
-        path = TP.jpc('$..book[?(@.isbn || @.price < 10)]').asXPath();
+        path = TP.jpc('$..book[?(@.isbn || @.price < 10)]').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//book[not(@type="array")][./isbn or ./price < 10]');
 
         //  ---
 
-        path = TP.jpc('$..*').asXPath();
+        path = TP.jpc('$..*').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//*');
 
-        path = TP.jpc('$').asXPath();
+        path = TP.jpc('$').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '//*');
 
-        path = TP.jpc('$.store').asXPath();
+        path = TP.jpc('$.store').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/store');
 
         //  ---
 
-        path = TP.jpc('$.children[0].^').asXPath();
+        path = TP.jpc('$.children[0].^').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/children/*[position() = 1]/..');
 
-        path = TP.jpc('$.store.book[*].reviews[?(@.nyt == @.cst)].^.title').asXPath();
+        path = TP.jpc('$.store.book[*].reviews[?(@.nyt == @.cst)].^.title').asString();
+        path = TP.core.JSONPath.asXPath(path);
         test.assert.isEqualTo(path, '/store//book/reviews/*[./nyt = ./cst]/../title');
     });
 });
