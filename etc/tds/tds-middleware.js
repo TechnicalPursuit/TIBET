@@ -115,11 +115,16 @@
      *
      * You can test whether it works by using URLs of the form:
      *
-     * url = TP.uc('~/tds/cli?cmd=echo&argv0=fluff&--testing=123&--no-color');
+     * url =
+     * TP.uc('~/tds/cli?cmd=echo&arg0=fluff&--testing=123&--no-color=no-color');
      *
      * Run the command by forcing a call to the server for the URL:
      *
      * url.getContent();
+     *
+     * Or, if you are in the TSH, you can execute:
+     *
+     * :tibet echo fluff --testing=123 --no-color
      *
      * @param {Object} options Configuration options. Currently ignored.
      * @returns {Function} A connect/express middleware function.
@@ -145,15 +150,27 @@
                         var value;
 
                         if (key === 'cmd') {
-                            void 0;    // skip
+                            return;    // skip
                         } else {
                             value = req.query[key];
 
-                            params.push('--' + key);
+                            //  We don't add the key if its one of arg*
+                            //  arguments. Its value will get added below.
+                            if (!/arg/.test(key)) {
+                                params.push('--' + key);
+                            }
+
+                            //  We don't add the value if it is null, undefined,
+                            //  true, the empty string or if the key equals the
+                            //  value (like a good XML shell, TSH will duplicate
+                            //  the key name as the value for Boolean flags:
+                            //  --no-color="no-color").
                             if (value !== null &&
                                 value !== undefined &&
                                 value !== true &&
-                                value !== '') {
+                                value !== '' &&
+                                value !== key) {
+
                                 params.push(value);
                             }
                         }
