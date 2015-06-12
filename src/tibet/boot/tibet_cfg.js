@@ -182,6 +182,7 @@
     //  (the 'app' config). this should be true in virtually all cases.
     TP.sys.setcfg('boot.two_phase', true);
 
+
     //  ---
     //  logging
     //  ---
@@ -202,6 +203,7 @@
     //  the logging level for the boot log. best to use strings to define.
     //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
     TP.sys.setcfg('boot.level', 'INFO');
+
 
     //  ---
     //  code roots
@@ -268,6 +270,7 @@
     //  default tibet.xml file includes unpackaged options for kernel/library
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.unpackaged', false);
+
 
     //  ---
     //  tibet ui roots
@@ -390,6 +393,7 @@
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
     }
 
+
     //  ---
     //  ui page initialization files
     //  ---
@@ -418,6 +422,7 @@
         TP.sys.setcfg('tibet.uibuffer', null);
     }
 
+
     //  ---
     //  misc flags
     //  ---
@@ -429,6 +434,7 @@
     //  responded to a "work offline" prompt (presumably provided by you when an
     //  HTTP connection times out with an HTTPTimeout or a similar error occurs)
     TP.sys.setcfg('tibet.offline', false);
+
 
     //  ---
     //  importer
@@ -502,6 +508,7 @@
     //  'http://127.0.0.1:1234/tibet/latest.js');
     TP.sys.setcfg('path.lib_version_file',
         'http://www.technicalpursuit.com/tibet/latest.js');
+
 
     //  ---
     //  obsolete ???
@@ -631,6 +638,7 @@
     //  behavior around hashes, just to make sure you're not conflicting
     //  with a built-in Javascript object, slot, or keyword of some form.
     TP.sys.setcfg('api.lint_keys', false);
+
 
     //  ---
     //  breakpointing
@@ -853,6 +861,7 @@
     //  NOTE NOTE NOTE, if you're using XForms with TIBET this should be true.
     TP.sys.setcfg('css.process_styles', false);
 
+
     //  ---
     //  shell
     //  ---
@@ -866,6 +875,7 @@
     //  currently false as we complete our command set. it can be changed to
     //  true once the initial command set is complete.
     TP.sys.setcfg('tsh.warn_extra_help', false);
+
 
     //  ---
     //  debug/error handling
@@ -913,6 +923,7 @@
     //  response to debugger statement
     TP.sys.setcfg('debug.use_debugger', false);
 
+
     //  ---
     //  http/jsonp/webdav/websocket
     //  ---
@@ -942,6 +953,7 @@
     //  default timeout for websocket requests in milliseconds (15 seconds).
     TP.sys.setcfg('websocket.timeout', 15000);
 
+
     //  ---
     //  job/fork control
     //  ---
@@ -970,6 +982,7 @@
     //  TP.core.Job will keep statistics regarding start/stop times, delays,
     //  intervals, etc.
     TP.sys.setcfg('job.track_stats', false);
+
 
     //  ---
     //  logging/notification
@@ -1181,6 +1194,7 @@
     //  occurring
     TP.sys.setcfg('log.xpaths', false);
 
+
     //  ---
     //  mouse/gesture
     //  ---
@@ -1200,12 +1214,14 @@
     //  how long a hover has to wait before retriggering a DOMMouseHover event.
     TP.sys.setcfg('mouse.hover_repeat', 100);
 
+
     //  ---
     //  keyboard
     //  ---
 
     //  how long to wait before cancelling a keyboard shortcut sequence
     TP.sys.setcfg('keyboard.shortcut_cancel_delay', 500);
+
 
     //  ---
     //  os integration
@@ -1259,6 +1275,7 @@
     //  roles, linking permissions assigned to those roles to a particular user.
     TP.sys.setcfg('path.vcard_file', '~lib_dat/vcards.xml');
 
+
     //  ---
     //  tdc processing
     //  ---
@@ -1290,6 +1307,7 @@
     //  how long should the TDC wait to fade out a bubble (in milliseconds)?
     TP.sys.setcfg('tdc.bubble_fade_time', 2000);
 
+
     //  ---
     //  sherpa processing
     //  ---
@@ -1317,6 +1335,7 @@
     //  machinery to manually replace 'tibet:root' with the app's app tag.
     TP.sys.setcfg('path.sherpa_screen_0', '~boot_xhtml/home.xhtml');
 
+
     //  ---
     //  tds support
     //  ---
@@ -1338,6 +1357,7 @@
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.root', '~app_src');
     TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
+
 
     //  ---
     //  tsh processing
@@ -1368,6 +1388,7 @@
     //  into a $RESULTS slot that can be inspected
     TP.sys.setcfg('tsh.trace_commands', false);
 
+
     //  ---
     //  test harness
     //  ---
@@ -1385,6 +1406,7 @@
     //  serviced? This is used in the testing and automation frameworks to
     //  prevent the Promise machinery from starving the event loop.
     TP.sys.setcfg('test.anti_starve_timeout', 10);
+
 
     //  ---
     //  signaling
@@ -1420,6 +1442,7 @@
     //  help determine average signal handler overhead
     TP.sys.setcfg('signal.track_stats', false);
 
+
     //  ---
     //  security
     //  ---
@@ -1428,6 +1451,7 @@
     //  certain operations that may fail, or work in a more limited fashion,
     //  particularly when running from the file system.
     TP.sys.setcfg('security.request_privileges', false);
+
 
     //  ---
     //  stack
@@ -1453,6 +1477,7 @@
     //  numbers might be necessary.
     TP.sys.setcfg('stack.max_recursion', 30);
 
+
     //  ---
     //  tibet
     //  ---
@@ -1469,6 +1494,7 @@
     //  with a space between the word 'function' and the leading '(' (i.e.
     //  'function ('. The default is false (i.e. 'function(').
     TP.sys.setcfg('tibet.space_after_function_name', false);
+
 
     //  ---
     //  tibet internal
@@ -1512,6 +1538,7 @@
     //  development (with a number of caveats).
     TP.sys.setcfg('oo.unique_types', true);
 
+
     //  ---
     //  tibet:root rendering control
     //  ---
@@ -1544,6 +1571,7 @@
 
     TP.sys.setcfg('path.login_page', '~app_xhtml/login.xhtml');
 
+
     //  ---
     //  tuning
     //  ---
@@ -1562,6 +1590,7 @@
     //  limit on the maximum number of entries in the signal stats array, which
     //  tracks overall times for signal handler invocations
     TP.sys.setcfg('signal.max_stats', 1000);
+
 
     //  ---
     //  uri/url
@@ -1587,6 +1616,7 @@
 
     //  should we try to route any initial path content on startup?
     TP.sys.setcfg('uri.routing_onstart', true);
+
 
     //  ---
     //  xpath/xslt
