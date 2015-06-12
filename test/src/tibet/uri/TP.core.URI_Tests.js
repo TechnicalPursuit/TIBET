@@ -2685,7 +2685,7 @@ function() {
     this.before(function() {
 
         //  This returns a TP.lang.Hash
-        modelObj = TP.obj2js('{"foo":["1st","2nd",{"hi":"there"}]}');
+        modelObj = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
         TP.sys.registerObject(modelObj, 'objData');
 
         //  Set up this path just to observe
@@ -2911,7 +2911,7 @@ function() {
         objURI1.set('shouldCreateContent', true);
 
         //  Set everything under 'foo' to a new data structure
-        objURI1.setResource(TP.obj2js('["A","B","C","D"]'), TP.hc('observeResource', true));
+        objURI1.setResource(TP.json2js('["A","B","C","D"]'), TP.hc('observeResource', true));
 
         //  In this case, we only get an aspect of 'value' in only the value
         //  path results, not the structure path results. The individual
