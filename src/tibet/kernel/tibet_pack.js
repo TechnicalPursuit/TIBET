@@ -329,7 +329,7 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
     //  tries to evaluate it.
 
     identHead = args === true ? /[@$_a-zA-Z{]/ : /[@$_a-zA-Z]/;
-    identBody = args === true ? /[{$_a-zA-Z0-9}]/ : /[$_a-zA-Z0-9]/;
+    identBody = args === true ? /[{$_a-zA-Z0-9-}]/ : /[$_a-zA-Z0-9]/;
 
     //  easily tested strings used for identifier/operator testing
     keywords = TP.boot.$keywordString;
