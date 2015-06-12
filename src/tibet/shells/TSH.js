@@ -3821,6 +3821,7 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeTibet',
 function(aRequest) {
+
     var cmd,
         args,
         argv,
@@ -3835,8 +3836,7 @@ function(aRequest) {
     }
 
     //  The url root we want to send to is in tds.cli.url
-    url = TP.uriJoinPaths(TP.sys.getLaunchRoot(),
-                            TP.sys.cfg('tds.cli.uri'));
+    url = TP.uriJoinPaths(TP.sys.getLaunchRoot(), TP.sys.cfg('tds.cli.uri'));
 
     //  TODO: Maybe use TP.httpEncode() here?
     url += '?cmd=' + encodeURIComponent(cmd);
@@ -3845,37 +3845,44 @@ function(aRequest) {
     if (TP.notEmpty(argv)) {
         argv.shift();       // pop off the first one, it's the command.
         if (TP.notEmpty(argv)) {
-            url += '&argv=' + encodeURIComponent(argv.join(' '));
+            argv.forEach(
+                    function(item, ind) {
+                        url += '&arg' + ind + '=' + encodeURIComponent(item);
+                    });
         }
     }
 
     args = this.getArguments(aRequest);
-    args.perform(function(arg) {
-        var key,
-            value;
+    args.perform(
+        function(arg) {
+            var key,
+                value;
 
-        key = arg.first();
-        value = arg.last();
+            key = arg.first();
+            value = arg.last();
 
-        if (/^ARG/.test(key)) {
-            return;
-        }
-
-        // Have to get a little fancier here. If we see tsh: prefixes we want to
-        // remove those. If we don't see a value that key is a boolean flag.
-        if (/tsh:/.test(key)) {
-            key = key.slice(4);
-        }
-
-        url += '&' + encodeURIComponent(key);
-        if (TP.notEmpty(value)) {
-            if (value !== true) {
-                // TODO: remove quotes?
-                url += '=' + encodeURIComponent(
-                    ('' + value).stripEnclosingQuotes());
+            //  We already processed ARGV above, which includes all ARG*
+            //  arguments.
+            if (/^ARG/.test(key)) {
+                return;
             }
-        }
-    });
+
+            //  Have to get a little fancier here. If we see tsh: prefixes we
+            //  want to remove those. If we don't see a value that key is a
+            //  boolean flag.
+            if (/tsh:/.test(key)) {
+                key = key.slice(4);
+            }
+
+            url += '&' + encodeURIComponent(key);
+            if (TP.notEmpty(value)) {
+                if (value !== true) {
+                    // TODO: remove quotes?
+                    url += '=' + encodeURIComponent(
+                        ('' + value).stripEnclosingQuotes());
+                }
+            }
+        });
 
     url = TP.uc(url);
     if (TP.notValid(url)) {
