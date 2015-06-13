@@ -12662,9 +12662,11 @@ function(aNode) {
      * @method getConcreteType
      * @summary Returns a viable processing instruction node type for aNode.
      * @description If a specific type isn't found the return value is
-     *     TP.core.ProcessingInstructionNode itself. The lookup process first
-     *     calculates a type name by acquiring the PI's name, title casing that
-     *     name, making its first character be uppercase, and stripping it of
+     *     either TP.core.HTMLProcessingInstruction or
+     *     TP.core.XMLProcessingInstruction depending on whether the node's
+     *     owner document is HTML or XML. The lookup process first calculates
+     *     a type name by acquiring the PI's name, title casing that name,
+     *     making its first character be uppercase, and stripping it of
      *     punctuation. It then uses that name with a suffix of 'PINode'. For
      *     example, a PI of the form '<?tibet-stylesheet?>' will search for
      *     TP.core.TibetStylesheetPINode.
