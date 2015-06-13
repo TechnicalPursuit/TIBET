@@ -7274,6 +7274,101 @@ function(anEvent) {
 TP.lang.Object.defineSubtype('core.Worker');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  a pool of worker objects, keyed by the worker type name
+TP.core.Worker.Type.defineAttribute('$workerPoolDict');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Initializes the type.
+     */
+
+    this.set('$workerPoolDict', TP.hc());
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Type.defineMethod('getWorker',
+function() {
+
+    /**
+     * @method getWorker
+     * @summary Returns a worker either from a pool of workers that exist for
+     *     the type being messaged or a new worker, if no workers are available
+     *     in the pool for the receiving type.
+     * @returns TP.core.Worker A worker of the type being messaged.
+     */
+
+    var poolDict,
+        pool,
+
+        worker;
+
+    //  The dictionary of pools is on the TP.core.Worker type itself as a type
+    //  local.
+    poolDict = TP.core.Worker.get('$workerPoolDict');
+
+    //  See if there is a pool for this receiving type, keyed by its name (the
+    //  type name). If not, create one and register it.
+    if (TP.notValid(pool = poolDict.at(this.getName()))) {
+        pool = TP.ac();
+        poolDict.atPut(this.getName(), pool);
+    }
+
+    //  If there are workers available for this receiving type, use one of them.
+    if (TP.notEmpty(pool)) {
+        worker = pool.shift();
+    } else {
+        worker = this.construct();
+    }
+
+    return worker;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Type.defineMethod('repoolWorker',
+function(worker) {
+
+    /**
+     * @method repoolWorker
+     * @summary Puts the supplied Worker into the pool for the receiving type.
+     * @param {TP.core.Worker} worker The worker to put into the pool.
+     * @returns TP.meta.core.Worker The receiver.
+     */
+
+    var poolDict,
+        pool;
+
+    //  The dictionary of pools is on the TP.core.Worker type itself as a type
+    //  local.
+    poolDict = TP.core.Worker.get('$workerPoolDict');
+
+    //  See if there is a pool for this receiving type, keyed by its name (the
+    //  type name). If not, create one and register it.
+    if (TP.notValid(pool = poolDict.at(this.getName()))) {
+        pool = TP.ac();
+        poolDict.atPut(this.getName(), pool);
+    }
+
+    //  Put the worker into the pool, ready to be used again.
+    pool.push(worker);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -7538,6 +7633,22 @@ function(name, body, async) {
     return promise;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('repool',
+function() {
+
+    /**
+     * @method repool
+     * @summary Puts the receiver into the pool for its type.
+     * @returns TP.core.Worker The receiver.
+     */
+
+    this.getType().repoolWorker(this);
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.core.LESSWorker
 //  ========================================================================
@@ -7636,7 +7747,11 @@ function(srcText, options) {
                 //  Flip our flag so that we don't do this again.
                 this.set('$workerIsSetUp', true);
 
-                //  Define the compilation 'worker method'.
+                //  Define the compilation 'worker method'. Note that worker
+                //  methods actually get shipped over to the worker thread, so
+                //  they can't contain TIBETisms. Also worker methods return a
+                //  Promise, which we leverage below.
+
                 /* eslint-disable no-undef,no-shadow */
                 return this.defineWorkerMethod(
                         'compileLESS',
@@ -7648,12 +7763,31 @@ function(srcText, options) {
             }.bind(this)).then(
             function() {
                 //  Then run the compilation 'worker method'.
-                return this.compileLESS(srcText, opts).then(resultFunc);
+                return this.compileLESS(srcText, opts).
+                                    then(function(results) {
+                                        //  Return the worker to the pool
+                                        //  when we're done, and make sure to
+                                        //  pass along the results to the result
+                                        //  function.
+                                        this.repool();
+
+                                        return results;
+                                    }.bind(this)).then(resultFunc);
             }.bind(this));
+
     } else {
 
         //  Otherwise, just run the compilation 'worker method'.
-        return this.compileLESS(srcText, opts).then(resultFunc);
+        return this.compileLESS(srcText, opts).
+                                    then(function(results) {
+                                        //  Return the worker to the pool
+                                        //  when we're done, and make sure to
+                                        //  pass along the results to the result
+                                        //  function.
+                                        this.repool();
+
+                                        return results;
+                                    }.bind(this)).then(resultFunc);
     }
 });
 
