@@ -326,7 +326,7 @@ function(lessLoc, lessText) {
                     //  Otherwise, just set the content of the existing one.
                     TP.styleElementSetContent(existingStyleElem, result);
                 }
-            });
+            }.bind(this));
 
     return;
 });
