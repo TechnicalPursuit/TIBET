@@ -155,8 +155,6 @@ Cmd.prototype.execute = function() {
         } else {
             index = '';
         }
-        msg = 'Starting server at http://127.0.0.1:' + port + index;
-        cmd.system(msg);
 
         server = child.spawn('node',
             ['server.js', '--port', port,
@@ -165,16 +163,17 @@ Cmd.prototype.execute = function() {
 
     server.stdout.on('data', function(data) {
         // Why the '' + ?. Copy/convert the string for output.
-        var msg = '' + data;
-        cmd.log(msg);
+        var str = '' + data;
+
+        cmd.log(str);
     });
 
     server.stderr.on('data', function(data) {
         // Why the '' + ?. Copy/convert the string for output.
-        var msg = '' + data;
+        var str = '' + data;
 
         // Ignore any empty lines.
-        if (msg.trim().length === 0) {
+        if (str.trim().length === 0) {
             return;
         }
 
@@ -184,7 +183,7 @@ Cmd.prototype.execute = function() {
         }
 
         // Most common error is that the port is in use. Trap that.
-        if (/ADDRINUSE/.test(msg)) {
+        if (/ADDRINUSE/.test(str)) {
             // Set a flag so we don't dump a lot of unhelpful output.
             inuse = true;
             cmd.error('Unable to start server. Port ' + port + ' is busy.');
@@ -194,14 +193,14 @@ Cmd.prototype.execute = function() {
         // A lot of errors will include what appears to be a common 'header'
         // output message from events.js:72 etc. which provides no useful
         // data but clogs up the output. Filter those messages.
-        if (/throw er;/.test(msg) || /events\.js/.test(msg)) {
+        if (/throw er;/.test(str) || /events\.js/.test(str)) {
             if (cmd.getcfg('debug') && cmd.getcfg('verbose')) {
-                cmd.error(msg);
+                cmd.error(str);
             }
             return;
         }
 
-        cmd.error(msg);
+        cmd.error(str);
     });
 
     server.on('close', function(code) {
