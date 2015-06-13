@@ -1,15 +1,14 @@
 # TIBET
 
-TIBET is an unparalleled
-<a href="https://github.com/TechnicalPursuit/TIBET/wiki">application-class web framework</a>
-paired with <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">immersive
-development tools</a> to help you leverage the best features of modern
-JavaScript.
+TIBET is an unparalleled application-class web client paired with immersive
+development tools focused on reducing server overhead and JavaScript-centric
+coding.
 
 Designed for large-scale web development, TIBET is more like Smalltalk than
 Scheme, bringing immersive, object-oriented, tag-centered development to
 JavaScript.
+
+##### Watch TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
 # Installation
 
