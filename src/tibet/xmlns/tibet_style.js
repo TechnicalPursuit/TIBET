@@ -293,8 +293,8 @@ function(lessLoc, lessText) {
 
     ourDoc = this.getNativeDocument();
 
-    //  Construct a 'LESS worker' and ask it to compile the LESS text.
-    lessWorker = TP.core.LESSWorker.construct();
+    //  Obtain a 'LESS worker' and ask it to compile the LESS text.
+    lessWorker = TP.core.LESSWorker.getWorker();
     lessWorker.compile(lessText, lessParams).then(
             function(result) {
                 var existingStyleElem,
