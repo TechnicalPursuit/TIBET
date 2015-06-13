@@ -1519,7 +1519,7 @@ function() {
         test.assert.isEqualTo(value, TP.ac('bar'));
 
         //  String (multiple)
-        tpElem.set('value', 'foo baz');
+        tpElem.set('value', 'foo;baz');
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo', 'baz'));
 
@@ -1796,7 +1796,7 @@ function() {
         test.assert.isEqualTo(value, TP.ac('bar'));
 
         //  String (multiple)
-        tpElem.set('value', 'foo baz');
+        tpElem.set('value', 'foo;baz');
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo', 'baz'));
 
