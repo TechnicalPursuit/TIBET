@@ -561,7 +561,7 @@ function(aNode) {
 
         case Node.ATTRIBUTE_NODE:
 
-            return TP.core.AttributeNode;
+            return TP.core.AttributeNode.getConcreteType(aNode);
 
         case Node.TEXT_NODE:
 
@@ -12437,6 +12437,38 @@ function(operation) {
 //  ========================================================================
 
 TP.core.Node.defineSubtype('AttributeNode');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.AttributeNode.Type.defineMethod('getConcreteType',
+function(aNode) {
+
+    /**
+     * @method getConcreteType
+     * @summary Returns a viable attribue node type for aNode.
+     * @description If a specific type isn't found the return value is
+     *     TP.core.AttributeNode itself. The lookup process calculates a type
+     *     name by acquiring the attribute's 'full name' (it's prefix + local
+     *     name), and looking up a type based on that.
+     * @returns {TP.lang.RootObject.<TP.core.AttributeNode>} A
+     *     TP.core.AttributeNode subtype type object.
+     */
+
+    var name,
+        type;
+
+    name = TP.attributeGetFullName(aNode);
+
+    type = TP.sys.require(name);
+
+    if (TP.isType(type)) {
+        return type;
+    }
+
+    return TP.core.AttributeNode;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
