@@ -120,7 +120,7 @@
      *
      * Run the command by forcing a call to the server for the URL:
      *
-     * url.getContent();
+     * url.save();
      *
      * Or, if you are in the TSH, you can execute:
      *

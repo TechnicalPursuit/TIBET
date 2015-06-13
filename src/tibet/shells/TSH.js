@@ -3843,7 +3843,7 @@ function(aRequest) {
 
     argv = this.getArgument(aRequest, 'ARGV');
     if (TP.notEmpty(argv)) {
-        argv.shift();       // pop off the first one, it's the command.
+        argv.shift();       //  pop off the first one, it's the command.
         if (TP.notEmpty(argv)) {
             argv.forEach(
                     function(item, ind) {
@@ -3877,7 +3877,7 @@ function(aRequest) {
             url += '&' + encodeURIComponent(key);
             if (TP.notEmpty(value)) {
                 if (value !== true) {
-                    // TODO: remove quotes?
+                    //  TODO: remove quotes?
                     url += '=' + encodeURIComponent(
                         ('' + value).stripEnclosingQuotes());
                 }
@@ -3902,7 +3902,7 @@ function(aRequest) {
                             aRequest.complete();
                         });
 
-    url.load(req);
+    url.save(req);
 
     return this;
 });
