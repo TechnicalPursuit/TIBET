@@ -798,6 +798,27 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.LocalizePhase'         //  adjust for browser, lang, etc.
     ));
 
+//  A common query used by some phases to find custom nodes - elements or
+//  attributes.This query returns only nodes that are:
+//      1. Element-type Nodes OR
+//      2. Attribute-type Nodes that:
+//          a. Have a namespace - most don't
+//          b. Are not in the 'bind:' namespace
+//          c. Are not in the 'ev:' namespace
+TP.core.TagProcessor.Type.defineConstant(
+    'CUSTOM_NODES_QUERY',
+        'descendant-or-self::*' +
+        ' | ' +
+        '//@*[' +
+        'namespace-uri()' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+        ']');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -1507,15 +1528,17 @@ function(aNode) {
      *     node that this phase should even consider to try to process.
      */
 
-    var queriedNodes;
+    var query,
+        queriedNodes;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  We're only interested in Element-type Nodes.
-    queriedNodes = TP.nodeGetElementsByTagName(aNode, '*');
-    queriedNodes.unshift(aNode);
+    //  See the type constants for a description of this query.
+    query = TP.core.TagProcessor.CUSTOM_NODES_QUERY;
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
     return queriedNodes;
 });
@@ -1710,6 +1733,40 @@ function() {
      */
 
     return 'tagAttachDOM';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachDOMPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  See the type constants for a description of this query.
+    query = TP.core.TagProcessor.CUSTOM_NODES_QUERY;
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
 });
 
 //  ========================================================================
