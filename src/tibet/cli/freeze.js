@@ -282,42 +282,42 @@ Cmd.prototype.execute = function() {
 
         bundle = this.options.tibet;
 
-        list.forEach(function(file) {
+        list.forEach(function(fname) {
 
             // TODO: come up with a better solution. For now the one file we
             // don't want to remove by default is tibet_developer.min.js since
             // the various phantomjs commands use that one.
-            if (/tibet_developer\.min\.js/.test(file)) {
-                if (/\.gz$/.test(file)) {
-                    sh.rm('-f', path.join(srcroot, file));
+            if (/tibet_developer\.min\.js/.test(fname)) {
+                if (/\.gz$/.test(fname)) {
+                    sh.rm('-f', path.join(srcroot, fname));
                 }
                 return;
             }
 
             // Remove any minified/unminified copies we don't want.
             if (cmd.options.minify) {
-                if (/\.min\./.test(file) !== true) {
-                    sh.rm('-f', path.join(srcroot, file));
+                if (/\.min\./.test(fname) !== true) {
+                    sh.rm('-f', path.join(srcroot, fname));
                 }
             } else {
-                if (/\.min\./.test(file) === true) {
-                    sh.rm('-f', path.join(srcroot, file));
+                if (/\.min\./.test(fname) === true) {
+                    sh.rm('-f', path.join(srcroot, fname));
                 }
             }
 
             // Remove any zipped/unzipped copies we don't want.
             if (cmd.options.zipped) {
-                if (/\.gz$/.test(file) !== true) {
-                    sh.rm('-f', path.join(srcroot, file));
+                if (/\.gz$/.test(fname) !== true) {
+                    sh.rm('-f', path.join(srcroot, fname));
                 }
             } else {
-                if (/\.gz$/.test(file) === true) {
-                    sh.rm('-f', path.join(srcroot, file));
+                if (/\.gz$/.test(fname) === true) {
+                    sh.rm('-f', path.join(srcroot, fname));
                 }
             }
 
             // Never prune any remaining hook or init file.
-            if (/_hook\./.test(file) || /_init\./.test(file)) {
+            if (/_hook\./.test(fname) || /_init\./.test(fname)) {
                 return;
             }
 
@@ -325,9 +325,9 @@ Cmd.prototype.execute = function() {
             // kept, only the hook and init files which are always pulled from
             // bundles. (NOTE phantom-based commands retain tibet_developer).
             if (cmd.options.raw) {
-                sh.rm('-f', path.join(srcroot, file));
-            } else if (file.indexOf('tibet_' + bundle + '.') === -1) {
-                sh.rm('-f', path.join(srcroot, file));
+                sh.rm('-f', path.join(srcroot, fname));
+            } else if (fname.indexOf('tibet_' + bundle + '.') === -1) {
+                sh.rm('-f', path.join(srcroot, fname));
             }
         });
     }
@@ -338,14 +338,14 @@ Cmd.prototype.execute = function() {
 
     this.log('updating embedded lib_root references...');
 
-    list = sh.find('.').filter(function(file) {
-        return !file.match('node_modules') && !file.match('TIBET-INF');
+    list = sh.find('.').filter(function(fname) {
+        return !fname.match('node_modules') && !fname.match('TIBET-INF');
     });
     list = sh.grep('-l', 'node_modules/tibet', list);
 
-    list.split('\n').forEach(function(file) {
-        if (file) {
-            sh.sed('-i', /node_modules\/tibet/g, 'TIBET-INF/tibet', file);
+    list.split('\n').forEach(function(fname) {
+        if (fname) {
+            sh.sed('-i', /node_modules\/tibet/g, 'TIBET-INF/tibet', fname);
         }
     });
 

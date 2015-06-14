@@ -352,6 +352,7 @@ Cmd.prototype.executeForEach = function(list) {
         list.forEach(function(item) {
             var src,
                 ext;
+
                 /*
                 opts,
                 engine,
@@ -444,9 +445,9 @@ Cmd.prototype.getScannedAssetList = function() {
         ignores = '';
     }
 
-    list = sh.find(dir).filter(function(file) {
-        return !sh.test('-d', file) &&
-            !file.match(/node_modules/);
+    list = sh.find(dir).filter(function(fname) {
+        return !sh.test('-d', fname) &&
+            !fname.match(/node_modules/);
     });
 
     return list;
@@ -506,12 +507,12 @@ Cmd.prototype.processEslintResult = function(result) {
 
     results = result.results;
 
-    results.forEach(function(result) {
+    results.forEach(function(entry) {
         var messages,
             file;
 
-        file = result.filePath;
-        messages = result.messages;
+        file = entry.filePath;
+        messages = entry.messages;
 
         if (messages.length === 0) {
             cmd.verbose(chalk.underline(file));
@@ -523,7 +524,7 @@ Cmd.prototype.processEslintResult = function(result) {
             return message.fatal || message.severity === 2;
         });
         errors = messages.length;
-        warnings = result.messages.length - errors;
+        warnings = entry.messages.length - errors;
 
         if (cmd.options.quiet) {
             // If we're only doing output when an error exists we're done if no
@@ -535,7 +536,7 @@ Cmd.prototype.processEslintResult = function(result) {
         } else {
             // If we're not in quiet-mode reset to the full message list since
             // we'll be outputting both errors and warnings.
-            messages = result.messages;
+            messages = entry.messages;
         }
 
         if (errors > 0) {

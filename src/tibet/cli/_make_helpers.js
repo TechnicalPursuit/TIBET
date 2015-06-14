@@ -160,9 +160,9 @@ helpers.rollup = function(make, options) {
         file = file + '.gz';
         make.log('creating zipped output in ' + file);
         return Q.denodeify(zlib.gzip)(result.output).then(
-            function(result) {
+            function(zipresult) {
                 try {
-                    fs.writeFileSync(file, result);
+                    fs.writeFileSync(file, zipresult);
                     deferred.resolve();
                     return deferred.promise;
                 } catch (e) {

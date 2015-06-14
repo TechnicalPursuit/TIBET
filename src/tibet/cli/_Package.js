@@ -63,8 +63,6 @@ notValid = function(aReference) {
     return aReference === null || aReference === undefined;
 };
 
-/* eslint-enable one-var */
-
 //  ---
 //  Require Utilities
 //  ---
@@ -93,11 +91,11 @@ require.uncache = function(moduleName) {
  */
 require.searchCache = function(moduleName, callback) {
     // Resolve the module identified by the specified name
-    var mod = require.resolve(moduleName);
+    var module = require.resolve(moduleName);
 
     // Check if the module has been resolved and found within
     // the cache
-    if (mod && (mod = require.cache[mod]) !== undefined) {
+    if (module && (module = require.cache[module]) !== undefined) {
         // Recursively go over the results
         (function run(mod) {
             // Go over each of the module's children and
@@ -109,7 +107,7 @@ require.searchCache = function(moduleName, callback) {
             // Call the specified callback providing the
             // found module
             callback(mod);
-        }(mod));
+        }(module));
     }
 };
 
@@ -142,7 +140,9 @@ Package = function(options) {
     TP = {};
     TP.sys = {};
     TP.sys.setcfg = function(property, value) {
-        var name = property; // property.replace(/\./g, '_');
+        var name;
+
+        name = property; // property.replace(/\./g, '_');
         pkg.cfg[name] = value;
     };
     this.setcfg = TP.sys.setcfg;
@@ -899,7 +899,7 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
  * @returns {String} The fully-expanded path value.
  */
 Package.prototype.expandPath = function(aPath) {
-    var path,
+    var nvpath,
         parts,
         virtual;
 
@@ -908,9 +908,9 @@ Package.prototype.expandPath = function(aPath) {
     }
 
     // If we've done this one before just return it.
-    path = this.paths[aPath];
-    if (path) {
-        return path;
+    nvpath = this.paths[aPath];
+    if (nvpath) {
+        return nvpath;
     }
 
     // TIBET virtual paths all start with '~'
@@ -921,45 +921,45 @@ Package.prototype.expandPath = function(aPath) {
 
         // If the path was ~/...something it's app_root prefixed.
         if (virtual === '~') {
-            path = this.getAppHead();
+            nvpath = this.getAppHead();
         } else if (virtual === '~app' ||
                    virtual === '~app_root') {
-            path = this.getAppRoot();
+            nvpath = this.getAppRoot();
         } else if (virtual === '~lib' ||
                    virtual === '~lib_root') {
-            path = this.getLibRoot();
+            nvpath = this.getLibRoot();
         } else {
             // Keys are of the form: path.app_root etc. so adjust.
-            path = this.getcfg('path.' + virtual.slice(1));
-            if (!path) {
+            nvpath = this.getcfg('path.' + virtual.slice(1));
+            if (!nvpath) {
                 throw new Error('Virtual path not found: ' + virtual);
             }
         }
 
-        parts.unshift(path);
-        path = parts.join('/');
+        parts.unshift(nvpath);
+        nvpath = parts.join('/');
 
         // Paths can expand into other virtual paths, so keep going until we
         // no longer get back a virtual path.
-        if (path.indexOf('~') === 0) {
+        if (nvpath.indexOf('~') === 0) {
 
             // If the newly constructed path has the same virtual component then
             // we're going to recurse.
-            if (virtual === path.split('/')[0]) {
+            if (virtual === nvpath.split('/')[0]) {
                 throw new Error('Recursive virtual path: ' + aPath);
             }
 
-            path = this.expandPath(path);
+            nvpath = this.expandPath(nvpath);
         }
 
     } else {
-        path = aPath;
+        nvpath = aPath;
     }
 
     // Cache the result so we avoid doing any path more than once.
-    this.paths[aPath] = path;
+    this.paths[aPath] = nvpath;
 
-    return path;
+    return nvpath;
 };
 
 
@@ -1258,7 +1258,6 @@ Package.prototype.getArgumentPrimitive = function(value) {
  */
 Package.prototype.getcfg = function(property) {
     var name,
-        value,
         keys,
         key,
         cfg,
@@ -1289,9 +1288,9 @@ Package.prototype.getcfg = function(property) {
     pkg = this;
 
     keys = Object.keys(this.cfg);
-    keys.forEach(function(key) {
-        if (key.indexOf(name) === 0) {
-            cfg[key] = pkg.cfg[key];
+    keys.forEach(function(aKey) {
+        if (aKey.indexOf(name) === 0) {
+            cfg[aKey] = pkg.cfg[aKey];
         }
     });
 
@@ -1438,7 +1437,7 @@ Package.prototype.getArgumentSource = function(value) {
  */
 Package.prototype.getVirtualPath = function(aPath) {
 
-    var path,
+    var vpath,
         app_root = this.getAppRoot(),
         lib_root = this.getLibRoot();
 
@@ -1449,15 +1448,15 @@ Package.prototype.getVirtualPath = function(aPath) {
 
     // TODO: best to replace with a better list derived from reflection on
     // the sys.cfg path.* properties.
-    path = aPath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
-    path = path.replace(this.expandPath('~lib_src'), '~lib_src');
-    path = path.replace(this.expandPath('~lib'), '~lib');
-    path = path.replace(this.expandPath('~app_cfg'), '~app_cfg');
-    path = path.replace(this.expandPath('~app_src'), '~app_src');
-    path = path.replace(this.expandPath('~app'), '~app');
-    path = path.replace(this.expandPath('~'), '~');
+    vpath = aPath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
+    vpath = vpath.replace(this.expandPath('~lib_src'), '~lib_src');
+    vpath = vpath.replace(this.expandPath('~lib'), '~lib');
+    vpath = vpath.replace(this.expandPath('~app_cfg'), '~app_cfg');
+    vpath = vpath.replace(this.expandPath('~app_src'), '~app_src');
+    vpath = vpath.replace(this.expandPath('~app'), '~app');
+    vpath = vpath.replace(this.expandPath('~'), '~');
 
-    return path;
+    return vpath;
 };
 
 
@@ -2112,9 +2111,9 @@ Package.prototype.overlayProperties = function(dict, prefix) {
  */
 Package.prototype.popPackage = function() {
 
-    var path;
+    var pkgpath;
 
-    path = this.packageStack.shift();
+    pkgpath = this.packageStack.shift();
 
     // When we pop the last package off the stack we clear the config list. This
     // allows the expand and listing phases to both do uniquing via configs.
@@ -2122,9 +2121,9 @@ Package.prototype.popPackage = function() {
         this.configs.length = 0;
     }
 
-    this.debug('Popping package: ' + path, true);
+    this.debug('Popping package: ' + pkgpath, true);
 
-    return path;
+    return pkgpath;
 };
 
 
