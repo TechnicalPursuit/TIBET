@@ -778,12 +778,12 @@ function(aDocument, anHref) {
                     //  of this element, we need to strip out the URL
                     //  parameters that we added to force the reload in order to
                     //  do a proper comparison.
-                    if ((href = anElem.href).indexOf('_tibet_nocache') !==
-                                                            TP.NOT_FOUND) {
+                    href = anElem.href;
+                    if (href.contains('_tibet_nocache')) {
 
                         //  If there is a '&', that means there were other
                         //  parameters on the URL that we don't want to replace.
-                        if (href.indexOf('&') !== TP.NOT_FOUND) {
+                        if (href.contains('&')) {
                             href = href.replace(
                                     /&?_tibet_nocache=(\d+)(\?|&)?/, '');
                         } else {
@@ -848,7 +848,7 @@ function(aDocument, anHref) {
     if (index !== TP.NOT_FOUND) {
 
         newHref = anHref +
-                    (anHref.indexOf('?') >= 0 ? '&' : '?') +
+                    (anHref.contains('?') ? '&' : '?') +
                     '_tibet_nocache=' + Date.now();
 
         currentTopLevelLinkElems.at(index).href = newHref;

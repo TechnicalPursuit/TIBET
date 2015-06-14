@@ -213,7 +213,7 @@ function(aRequest) {
                     //  property of the existing style element to it, thereby
                     //  guaranteeing a reload of the content.
                     newHref = hrefLocation +
-                                (hrefLocation.indexOf('?') >= 0 ? '&' : '?') +
+                                (hrefLocation.contains('?') ? '&' : '?') +
                                 '_tibet_nocache=' + Date.now();
 
                     existingStyleElem.href = newHref;
