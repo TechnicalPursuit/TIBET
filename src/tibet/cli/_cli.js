@@ -357,7 +357,9 @@ CLI.blend = function(target, source) {
 
         // Both arrays. Blend as best we can.
         source.forEach(function(item, index) {
-            var value = CLI.blend(target[index], item);
+            var value;
+
+            value = CLI.blend(target[index], item);
             if (target[index] !== value) {
                 target[index] = value;
             }
@@ -1065,12 +1067,16 @@ CLI.runViaGrunt = function(command) {
     );
 
     child.stdout.on('data', function(data) {
-        var msg = '' + data;
+        var msg;
+
+        msg = '' + data;
         cmd.log(msg);
     });
 
     child.stderr.on('data', function(data) {
-        var msg = '' + data;
+        var msg;
+
+        msg = '' + data;
         cmd.error(msg);
     });
 
@@ -1108,12 +1114,16 @@ CLI.runViaGulp = function(command) {
     );
 
     child.stdout.on('data', function(data) {
-        var msg = '' + data;
+        var msg;
+
+        msg = '' + data;
         cmd.log(msg);
     });
 
     child.stderr.on('data', function(data) {
-        var msg = '' + data;
+        var msg;
+
+        msg = '' + data;
         cmd.error(msg);
     });
 

@@ -303,7 +303,9 @@ Cmd.prototype.execute = function() {
 
     // Ignore hidden directories and the node_modules directory.
     finder.on('directory', function(dir, stat, stop) {
-        var base = path.basename(dir);
+        var base;
+
+        base = path.basename(dir);
         if (base.charAt(0) === '.' || base === 'node_modules') {
             stop();
         }

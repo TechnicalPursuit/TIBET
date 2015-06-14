@@ -109,7 +109,7 @@ Cmd.prototype.execute = function() {
         child,  // The child_process module.
         cmd,    // Closure'd var providing access to the command object.
         dna,
-        err;
+        rmerr;
 
     cmd = this;
 
@@ -133,9 +133,9 @@ Cmd.prototype.execute = function() {
             return 1;
         }
         this.warn('--force specified...removing and rebuilding node_modules.');
-        err = sh.rm('-rf', 'node_modules');
-        if (err) {
-            this.error('Error removing node_modules directory: ' + err);
+        rmerr = sh.rm('-rf', 'node_modules');
+        if (rmerr) {
+            this.error('Error removing node_modules directory: ' + rmerr);
             return 1;
         }
     }
@@ -155,9 +155,9 @@ Cmd.prototype.execute = function() {
         // also need an internal link to the tibet 5.0 platform.
         cmd.log('linking TIBET dynamically via `npm link tibet`.');
 
-        child.exec('npm link tibet', function(err, stdout, stderr) {
-            if (err) {
-                cmd.error('Failed to initialize: ' + stderr);
+        child.exec('npm link tibet', function(linkerr, linkstdout, linkstderr) {
+            if (linkerr) {
+                cmd.error('Failed to initialize: ' + linkstderr);
                 cmd.warn(
                     '`git clone` TIBET 5.x, `npm link .` it, and retry.');
                 throw new Error();

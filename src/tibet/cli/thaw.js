@@ -130,14 +130,14 @@ Cmd.prototype.execute = function() {
 
     this.log('updating embedded lib_root references...');
 
-    list = sh.find('.').filter(function(file) {
-        return !file.match('node_modules') && !file.match('TIBET-INF');
+    list = sh.find('.').filter(function(fname) {
+        return !fname.match('node_modules') && !fname.match('TIBET-INF');
     });
     list = sh.grep('-l', 'TIBET-INF/tibet', list);
 
-    list.split('\n').forEach(function(file) {
-        if (file) {
-            sh.sed('-i', /TIBET-INF\/tibet/g, 'node_modules/tibet', file);
+    list.split('\n').forEach(function(fname) {
+        if (fname) {
+            sh.sed('-i', /TIBET-INF\/tibet/g, 'node_modules/tibet', fname);
         }
     });
 
