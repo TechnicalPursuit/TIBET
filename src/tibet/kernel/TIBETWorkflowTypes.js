@@ -7273,6 +7273,9 @@ function(anEvent) {
 
 TP.lang.Object.defineSubtype('core.Worker');
 
+//  This type is used as a common supertype, but is not instantiable.
+TP.core.Worker.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
