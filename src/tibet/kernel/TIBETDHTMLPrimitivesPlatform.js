@@ -2703,7 +2703,7 @@ TP.hc(
     'test',
     TP.sys.getBrowserUI,
     'gecko',
-    function(aWindow, aFunction) {
+    function(aWindow) {
 
         /**
          * @method windowInstallOnBeforeUnloadHook
@@ -2713,7 +2713,6 @@ TP.hc(
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
-         * @param {Function} aFunction The onbeforeunload event handler.
          * @exception TP.sig.InvalidWindow
          */
 
@@ -2762,7 +2761,7 @@ TP.hc(
         };
     },
     'trident',
-    function(aWindow, aFunction) {
+    function(aWindow) {
 
         /**
          * @method windowInstallOnBeforeUnloadHook
@@ -2772,7 +2771,6 @@ TP.hc(
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
-         * @param {Function} aFunction The onbeforeunload event handler.
          * @exception TP.sig.InvalidWindow
          */
 
@@ -2825,7 +2823,7 @@ TP.hc(
         false);
     },
     'webkit',
-    function(aWindow, aFunction) {
+    function(aWindow) {
 
         /**
          * @method windowInstallOnBeforeUnloadHook
@@ -2835,7 +2833,6 @@ TP.hc(
          *     prompted.
          * @param {Window} aWindow The window to install the event hook function
          *     onto.
-         * @param {Function} aFunction The onbeforeunload event handler.
          * @exception TP.sig.InvalidWindow
          */
 
