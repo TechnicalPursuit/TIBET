@@ -4016,9 +4016,7 @@ function(aRequest) {
                         }
                     */
 
-                        TP.windowRefreshContentFrom(
-                                TP.sys.uiwin(true),
-                                file);
+                        TP.windowRefreshContentFrom(TP.sys.uiwin(true), file);
 
                     break;
 

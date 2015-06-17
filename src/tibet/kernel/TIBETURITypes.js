@@ -4573,7 +4573,7 @@ function(aRequest) {
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
-    //  that type for more information
+    //  that type for more information.
     handler = TP.core.URIHandler;
 
     return handler.load(url, request);
