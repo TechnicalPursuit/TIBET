@@ -8448,20 +8448,20 @@ function(signalTypes) {
 });
 
 //  ========================================================================
-//  SIGNAL SOURCE SIGNALS
+//  REMOTE SIGNAL SOURCE SIGNALS
 //  ========================================================================
 
-TP.sig.Signal.defineSubtype('SourceSignal');
-TP.sig.SourceSignal.Type.defineAttribute('defaultPolicy',
+TP.sig.Signal.defineSubtype('RemoteSourceSignal');
+TP.sig.RemoteSourceSignal.Type.defineAttribute('defaultPolicy',
     TP.INHERITANCE_FIRING);
 
-TP.sig.SourceSignal.defineSubtype('SourceOpen');
-TP.sig.SourceSignal.defineSubtype('SourceDataReceived');
-TP.sig.SourceSignal.defineSubtype('SourceClosed');
+TP.sig.RemoteSourceSignal.defineSubtype('SourceOpen');
+TP.sig.RemoteSourceSignal.defineSubtype('SourceDataReceived');
+TP.sig.RemoteSourceSignal.defineSubtype('SourceClosed');
 
-TP.sig.SourceSignal.defineSubtype('SourceReconnecting');
+TP.sig.RemoteSourceSignal.defineSubtype('SourceReconnecting');
 
-TP.sig.SourceSignal.defineSubtype('SourceError');
+TP.sig.RemoteSourceSignal.defineSubtype('SourceError');
 
 //  ========================================================================
 //  Object Extensions
