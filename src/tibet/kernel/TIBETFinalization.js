@@ -529,6 +529,29 @@ function() {
 //  APPLICATION SHUTDOWN
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('finalizeShutdown',
+function() {
+
+    /**
+     * @method finalizeShutdown
+     * @summary Finalizes the shut down of the application by removing the
+     *     protective onbeforeunload hooks that TIBET installs and sending the
+     *     'TP.sig.AppShutdown' signal.
+     */
+
+    if (TP.isElement(TP.documentGetBody(window.document))) {
+        TP.elementSetAttribute(TP.documentGetBody(window.document),
+                                'allowUnload',
+                                'true');
+    }
+
+    TP.signal(TP.sys, 'TP.sig.AppShutdown');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('terminate',
 function(aURI) {
 
@@ -545,38 +568,8 @@ function(aURI) {
      *     application.
      */
 
-    var canvasName,
-        canvasWindow,
-
-        url,
+    var url,
         str;
-
-    //  now we attempt to get a handle to the target canvas -- the window
-    //  or frame that will be our top level UI display surface
-    canvasName = TP.sys.getUICanvasName();
-
-    //  make sure we have a canvas window
-    if (TP.notValid(canvasWindow = TP.sys.getWindowById(canvasName))) {
-        TP.boot.$stderr('Canvas specification error. Cannot find window: ' +
-                        canvasName);
-
-        return;
-    }
-
-    //  Tell the various windows to allow unload, so that the onbeforeunload
-    //  hooks that we put into place will be inactive and the user can exit
-    //  without prompts.
-    if (TP.isElement(TP.documentGetBody(canvasWindow.document))) {
-        TP.elementSetAttribute(TP.documentGetBody(canvasWindow.document),
-                                'allowUnload',
-                                'true');
-    }
-
-    if (TP.isElement(TP.documentGetBody(window.document))) {
-        TP.elementSetAttribute(TP.documentGetBody(window.document),
-                                'allowUnload',
-                                'true');
-    }
 
     url = TP.uc(TP.ifInvalid(aURI, TP.sys.cfg('path.blank_page')));
 
@@ -593,9 +586,10 @@ function(aURI) {
     //  close open/registered windows. won't always work, but we can try :)
     TP.core.Window.closeRegisteredWindows();
 
-    TP.signal(TP.sys, 'TP.sig.AppShutdown');
-
     //  put up the blank page at top, which blows away the app
+
+    //  NB: This will eventually cause the 'finalizeShutdown' machinery above
+    //  through the 'unload' event handler.
     window.location = url.getLocation();
 
     return;
