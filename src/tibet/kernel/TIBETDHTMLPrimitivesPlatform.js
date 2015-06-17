@@ -2893,6 +2893,39 @@ TP.hc(
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('windowInstallShutdownFinalizationHook',
+TP.hc(
+    TP.DEFAULT,
+    function(aWindow) {
+
+        /**
+         * @method windowInstallShutdownFinalizationHook
+         * @summary Installs the 'shutdown finalization' hook that will complete
+         *     the shut down of the TIBET application when the user navigates
+         *     away from it.
+         * @param {Window} aWindow The window to install the shutdown
+         *     finalization hook onto.
+         * @exception TP.sig.InvalidWindow
+         */
+
+        if (!TP.isWindow(aWindow)) {
+            return TP.raise(this, 'TP.sig.InvalidWindow');
+        }
+
+        aWindow.addEventListener(
+        'unload',
+        function() {
+
+            TP.sys.finalizeShutdown();
+
+            return;
+        },
+        false);
+    }
+));
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('windowStopLoading',
 TP.hc(
     'test',
