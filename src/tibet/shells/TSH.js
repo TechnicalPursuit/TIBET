@@ -3911,7 +3911,7 @@ function(aRequest) {
 //  FILE SYSTEM WATCH
 //  ------------------------------------------------------------------------
 
-TP.sig.SourceSignal.defineSubtype('FileChangeEvent');
+TP.sig.RemoteSourceSignal.defineSubtype('FileChangeEvent');
 
 TP.sig.FileChangeEvent.Type.defineConstant('NATIVE_NAME',
     TP.sys.cfg('tds.watch.event'));
@@ -4016,9 +4016,7 @@ function(aRequest) {
                         }
                     */
 
-                        TP.windowRefreshContentFrom(
-                                TP.sys.uiwin(true),
-                                file);
+                        TP.windowRefreshContentFrom(TP.sys.uiwin(true), file);
 
                     break;
 

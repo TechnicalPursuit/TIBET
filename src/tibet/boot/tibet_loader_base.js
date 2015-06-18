@@ -10644,13 +10644,13 @@ TP.boot.$activate = function() {
         //  protect the codebase from inadvertent exits
         //  ---
 
-        //  Note that this logic is here for the Mozilla and IE browsers.
-        //  Webkit-based browsers (Safari and Chrome) use a different
-        //  mechanism that requires this hook to be placed on all visible
-        //  windows and iframes. That logic has been written to look for the
-        //  same property on the top-level window as Mozilla and IE
-        //  handlers, so the logic has the same effect.
+        //  make sure that the application knows to prompt the user before
+        //  quitting.
         TP.windowInstallOnBeforeUnloadHook(window);
+
+        //  make sure that the application knows to send the terminate signals
+        //  before quitting.
+        TP.windowInstallShutdownFinalizationHook(window);
 
         //  make sure that the application knows about online/offline
         //  events.

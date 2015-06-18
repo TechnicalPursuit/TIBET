@@ -852,17 +852,6 @@
 
 
     //  ---
-    //  css processor
-    //  ---
-
-    //  should we process CSS or let it pass through untouched? Normally TIBET
-    //  will process CSS style sheets to help ensure consistency and standards
-    //  compliance. NOTE that all browsers benefit from this, not just IE6 :).
-    //  NOTE NOTE NOTE, if you're using XForms with TIBET this should be true.
-    TP.sys.setcfg('css.process_styles', false);
-
-
-    //  ---
     //  shell
     //  ---
 

@@ -892,7 +892,7 @@ function(aParamInfo, aRequest) {
      * @param {TP.core.Hash} aParamInfo A parameter info hash that contains
      *     information on how to populate the request from the vCard.
      * @param {TP.sig.Request} aRequest The request to populate.
-     * @returns {TP.core.URIService} The receiver.
+     * @returns {TP.core.Resource} The receiver.
      */
 
     var sourceCard,
@@ -5563,7 +5563,6 @@ function() {
     return;
 });
 
-
 //  ========================================================================
 //  TP.core.URIService
 //  ========================================================================
@@ -5676,7 +5675,7 @@ function(resourceID, aRequest) {
                     TP.sc('Missing required URI parameter in request: ') +
                         'serviceURI');
 
-                return;
+                return this;
             }
         }
     }
