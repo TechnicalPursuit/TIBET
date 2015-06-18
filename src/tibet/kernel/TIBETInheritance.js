@@ -4248,8 +4248,8 @@ function() {
                 //  represented on the receiving object (this.Inst) unless the
                 //  value for that slot is TP.REQUIRED.
                 if (TP.isType(resolution) &&
-                     this.Inst[propName] !== TP.REQUIRED &&
-                     resolution.Inst[propName] === this.Type[propName]) {
+                     this.Type[propName] !== TP.REQUIRED &&
+                     resolution.Type[propName] === this.Type[propName]) {
                     return;
                 }
 
