@@ -2166,7 +2166,8 @@ Package.prototype.setProjectOptions = function() {
 
     var msg,
         root,
-        fullpath;
+        fullpath,
+        tibet_npm;
 
     // We need app root to load tibet.json, which hopefully has additional
     // configuration information we can leverage such as the lib_root path.
@@ -2234,6 +2235,24 @@ Package.prototype.setProjectOptions = function() {
     if (notEmpty(root) && root !== this.lib_root) {
         this.debug('setting lib_root to ' + root, true);
         this.lib_root = root;
+    }
+
+    //  With lib_root hopefully ready we want to access the package.json from
+    //  the library to get the version of TIBET being used.
+    fullpath = path.join(this.lib_root, Package.NPM_FILE);
+    if (sh.test('-f', fullpath)) {
+        try {
+            tibet_npm = require(fullpath) || {};
+        } catch (e) {
+            msg = 'Error loading library npm file: ' + e.message;
+            if (this.options.stack === true) {
+                msg += ' ' + e.stack;
+            }
+            throw new Error(msg);
+        }
+
+        //  Map over anything we want from the library package.
+        TP.sys.setcfg('tibet.version', tibet_npm.version);
     }
 };
 

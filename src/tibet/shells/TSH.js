@@ -4130,6 +4130,8 @@ TP.core.TSH.Inst.defineMethod('handleFileChangeEvent',
 function(aSignal) {
 
     var payload,
+        data,
+        path,
         count,
         name,
         str,
@@ -4149,8 +4151,23 @@ function(aSignal) {
     //  Add tracking data on the file that changed.
     dict = aSignal.getType().get('pending');
 
-    name = '.' + payload.at('data').asString().stripEnclosingQuotes();
-    name = TP.uriJoinPaths(TP.sys.getLaunchRoot(), name);
+    data = payload.at('data');
+    if (TP.notValid(data)) {
+        return;
+    }
+
+    if (TP.canInvoke(data, 'at')) {
+        path = data.at('path');
+    } else {
+        path = data.path;
+    }
+
+    if (TP.isEmpty(path)) {
+        return;
+    }
+
+    name = path.asString().stripEnclosingQuotes();
+    name = TP.uriJoinPaths(TP.sys.cfg('tds.watch.root'), name);
 
     count = dict.at(name);
     if (TP.notValid(count)) {
