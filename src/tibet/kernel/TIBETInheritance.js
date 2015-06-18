@@ -3891,8 +3891,25 @@ function() {
                     } else {
                         //  If the property is defined on the main type
                         if (TP.isDefined(mainTypeTarget[propName])) {
-                            entry = TP.hc('sources',
-                                            TP.ac(mainType, traitType));
+
+                            //  If the main type *owns* the property, or its not
+                            //  a method, then we can use the main type, along
+                            //  with the trait type, as the resolving sources.
+                            if (TP.owns(mainTypeTarget, propName) ||
+                                !TP.isMethod(mainTypeTarget[propName])) {
+
+                                entry = TP.hc('sources',
+                                                TP.ac(mainType, traitType));
+                            } else {
+                                //  Otherwise, we need to use the *owner* of the
+                                //  method that happens to be found (via the
+                                //  prototype chain) as that property on the
+                                //  main type.
+                                entry = TP.hc(
+                                    'sources',
+                                    TP.ac(mainTypeTarget[propName][TP.OWNER],
+                                            traitType));
+                            }
                         } else {
                             entry = TP.hc('sources', TP.ac(traitType));
                         }
@@ -4007,8 +4024,25 @@ function() {
                     } else {
                         //  If the property is defined on the main type
                         if (TP.isDefined(mainTypeTarget[propName])) {
-                            entry = TP.hc('sources',
-                                            TP.ac(mainType, traitType));
+
+                            //  If the main type *owns* the property, or its not
+                            //  a method, then we can use the main type, along
+                            //  with the trait type, as the resolving sources.
+                            if (TP.owns(mainTypeTarget, propName) ||
+                                !TP.isMethod(mainTypeTarget[propName])) {
+
+                                entry = TP.hc('sources',
+                                                TP.ac(mainType, traitType));
+                            } else {
+                                //  Otherwise, we need to use the *owner* of the
+                                //  method that happens to be found (via the
+                                //  prototype chain) as that property on the
+                                //  main type.
+                                entry = TP.hc(
+                                    'sources',
+                                    TP.ac(mainTypeTarget[propName][TP.OWNER],
+                                            traitType));
+                            }
                         } else {
                             entry = TP.hc('sources', TP.ac(traitType));
                         }
