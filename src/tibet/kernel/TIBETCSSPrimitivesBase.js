@@ -748,10 +748,10 @@ function(aDocument, anHref) {
 
         existingHrefs,
 
+        oldHref,
+
         len,
         i,
-
-        newHref,
 
         index;
 
@@ -775,31 +775,24 @@ function(aDocument, anHref) {
                     var href;
 
                     //  In case a previous run of this method was the generator
-                    //  of this element, we need to strip out the URL
+                    //  of this element, we need to strip out any 'unique query'
                     //  parameters that we added to force the reload in order to
                     //  do a proper comparison.
-                    href = anElem.href;
-                    if (href.contains('_tibet_nocache')) {
-
-                        //  If there is a '&', that means there were other
-                        //  parameters on the URL that we don't want to replace.
-                        if (href.contains('&')) {
-                            href = href.replace(
-                                    /&?_tibet_nocache=(\d+)(\?|&)?/, '');
-                        } else {
-                            href = href.replace(
-                                    /\?_tibet_nocache=(\d+)/, '');
-                        }
-                    }
+                    href = TP.uriRemoveUniqueQuery(anElem.href);
 
                     return href;
                 });
+
+    //  In case a previous run of this method was the generator of this element,
+    //  we need to strip out any 'unique query' parameters that we added to
+    //  force the reload in order to do a proper comparison.
+    oldHref = TP.uriRemoveUniqueQuery(anHref);
 
     //  If the existing hrefs in the document do not contain the href we're
     //  looking for, then it may be in an @import. Flatten out those @import
     //  statements (recursively), generating a top level 'link' element for each
     //  one (in the order they were found to preserve CSS specificity rules).
-    if (!existingHrefs.contains(anHref)) {
+    if (!existingHrefs.contains(oldHref)) {
 
         len = currentTopLevelLinkElems.getSize();
         for (i = 0; i < len; i++) {
@@ -809,7 +802,7 @@ function(aDocument, anHref) {
         //  Re-run the query. This time, there will be a fully realized value
         //  as the href, so we can use it here.
         currentTopLevelLinkElems =
-                TP.byCSSPath('link[rel="stylesheet"][href="' + anHref + '"]',
+                TP.byCSSPath('link[rel="stylesheet"][href="' + oldHref + '"]',
                             aDocument,
                             false,
                             false);
@@ -836,22 +829,17 @@ function(aDocument, anHref) {
 
     len = existingHrefs.getSize();
     for (i = 0; i < len; i++) {
-        if (existingHrefs.at(i) === anHref) {
+        if (existingHrefs.at(i) === oldHref) {
             index = i;
             break;
         }
     }
 
     //  If we actually found an index, then grab the element at that spot, set
-    //  it's 'href' to the supplied href plus a query that will ensure that it
-    //  reloads from the server.
+    //  it's 'href' to the supplied href, adding a query that will ensure that
+    //  any caching is busted and it reloads from the server.
     if (index !== TP.NOT_FOUND) {
-
-        newHref = anHref +
-                    (anHref.contains('?') ? '&' : '?') +
-                    '_tibet_nocache=' + Date.now();
-
-        currentTopLevelLinkElems.at(index).href = newHref;
+        currentTopLevelLinkElems.at(index).href = TP.uriAddUniqueQuery(oldHref);
     }
 
     return;
