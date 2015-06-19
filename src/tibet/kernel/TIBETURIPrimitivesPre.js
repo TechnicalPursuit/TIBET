@@ -27,7 +27,8 @@
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriBaseParameters', function(aURI, textOnly) {
+TP.definePrimitive('uriBaseParameters',
+function(aURI, textOnly) {
 
     /**
      * @method uriBaseParameters
@@ -67,7 +68,8 @@ TP.definePrimitive('uriBaseParameters', function(aURI, textOnly) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriBasePath', function(aURI) {
+TP.definePrimitive('uriBasePath',
+function(aURI) {
 
     /**
      * @method uriBasePath
