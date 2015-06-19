@@ -1344,6 +1344,7 @@
     TP.sys.setcfg('tds.500', 'ServerError');
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
+    TP.sys.setcfg('tds.watch.heartbeat', 10000);
     TP.sys.setcfg('tds.watch.root', '~app_src');
     TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
 

@@ -155,8 +155,6 @@ Cmd.prototype.execute = function() {
         } else {
             index = '';
         }
-        msg = 'Starting server at http://127.0.0.1:' + port + index;
-        cmd.system(msg);
 
         server = child.spawn('node',
             ['server.js', '--port', port,

@@ -16,14 +16,14 @@
 
     var path,
         jsDAV,
-        watch,
+        chokidar,
         Package,
         TDS;
 
     path = require('path');
 
     jsDAV = require('jsDAV/lib/jsdav');
-    watch = require('watch');
+    chokidar = require('chokidar');
 
     // Load the CLI's package support to help with option/configuration data.
     Package = require('../../src/tibet/cli/_Package');
@@ -318,172 +318,140 @@
     //  ---
 
     /**
-     * Watches for file change activity within a directory. If changes occur a
-     * server-sent event is created and transmitted.
+     * Watches for file change activity and passes notifications of changes to
+     * the client.
      * @param {Object} options Configuration options. Currently ignored.
      * @returns {Function} A connect/express middleware function.
      */
     TDS.watcher = function(options) {
-        var changedFiles,
 
-            root,
-            retry,
+        var startSSE,
+            interval,
+            watcher;
 
-            writeSSEHead,
-            writeSSEData,
+        //  Helper function to start an SSE connection.
+        startSSE = function(channel) {
+            console.log('Opening SSE channel for file watcher.');
 
-            pattern,
-            ignore,
-            escaper;
+            //  Write the proper SSE headers to establish the connection. Note
+            //  that the charset here is important...without it some versions of
+            //  Chrome (and maybe other browsers) will throw errors re: chunked
+            //  data formatting.
+            channel.writeHead(200, {
+                'Content-Type': 'text/event-stream; charset=UTF-8',
+                'Cache-Control': 'no-cache',
+                'transfer-encoding': '',
+                Connection: 'keep-alive'
+            });
+            channel.write('\n');
 
-        changedFiles = [];
-
-        root = path.resolve(TDS.expandPath(TDS.getcfg('tds.watch.root')));
-
-        retry = TDS.getcfg('tds.watch.retry');
-        if (!retry) {
-            retry = 500;
-        }
-
-        //  Helper function for escaping regex metacharacters for patterns. NOTE
-        //  that we need to take "ignore format" things like path/* and make it
-        //  path/.* or the regex will fail.
-        escaper = function(str) {
-            return str.replace(
-                /\*/g, '\.\*').replace(
-                /\./g, '\\.').replace(
-                /\//g, '\\/');
-        };
-
-        //  Build a pattern we can use to test against ignore files.
-        ignore = TDS.getcfg('tds.watch.ignore');
-        if (ignore) {
-
-            pattern = ignore.reduce(
-                        function(str, item) {
-                            return str ?
-                                    str + '|' + escaper(item) :
-                                    escaper(item);
-                        }, '');
-
-            try {
-                pattern = new RegExp(pattern);
-            } catch (e) {
-                return console.log('Error creating RegExp: ' + e.message);
-            }
-        }
-
-        // TODO: control this via a flag (and perhaps a command-line API)
-
-        // TODO: toggle from the client. Until we issue watchFS don't.
-
-        // TODO: may need to change to the "monitor" approach here. see docs for
-        // the watch module.
-
-        watch.watchTree(
-            root,
-            function(fileName, curr, prev) {
-
-                var expandedFileName;
-
-                if (typeof fileName === 'object' &&
-                        prev === null &&
-                        curr === null) {
-                    //  Finished walking the tree
-                    void 0;
-                } else if (prev === null) {
-                    //  fileName is a new file
-                    void 0;
-                } else if (curr.nlink === 0) {
-                    //  fileName was removed
-                    void 0;
-                } else {
-
-                    //  Normalize the file name. We need to send it to the
-                    //  client as if it were rooted from the launch root.
-                    expandedFileName = fileName.replace(TDS.getAppHead(), '');
-
-                    //  fileName was changed
-
-                    //  if the ignore pattern exists, use it to filter the file
-                    //  name
-                    if (pattern) {
-
-                        if (!pattern.test(expandedFileName)) {
-                            //  add it to the changedFiles queue
-                            changedFiles.push(expandedFileName);
-                        }
-                    } else {
-                        //  Otherwise, just add it to the changedFiles queue
-                        changedFiles.push(expandedFileName);
-                    }
-                }
+            //  Respond to notifications that we're closed on the client side by
+            //  shutting down the connection on our end
+            channel.on('close', function() {
+                console.log('Closing SSE channel for file watcher.');
+                clearInterval(interval);
+                watcher.close();
             });
 
-        writeSSEHead = function(req, res, cb) {
+            //  Return a function with a persistent handle to the original
+            //  response. We can use this to send out events at any time.
+            return function (name, data, id) {
+                var sseId;
 
-            res.writeHead(
-                200,
-                {
-                    'Content-Type': 'text/event-stream',
-                    'Cache-Control': 'no-cache',
-                    Connection: 'keep-alive'
-                });
+                sseId = id || (new Date()).getTime();
 
-            res.write('retry: ' + retry + '\n');
+                if (name !== 'sse-heartbeat') {
+                    console.log('Sending SSE data for ' + name + '#' + sseId +
+                        ': ' + JSON.stringify(data));
+                }
 
-            if (cb) {
-                return cb(req, res);
-            }
+                try {
+                    channel.write('id: ' + sseId + '\n');
+                    channel.write('event: ' + name + '\n');
+                    channel.write('data: ' + JSON.stringify(data) + '\n\n');
+                } catch (e) {
+                    console.error('Error writing SSE data: ' + e.message);
+                }
+            };
         };
 
-        writeSSEData = function(req, res, eventName, eventData, cb) {
-            var id;
-
-            id = (new Date()).getTime();
-
-            res.write('id: ' + id + '\n');
-            res.write('event: ' + eventName + '\n');
-            res.write('data: ' + JSON.stringify(eventData) + '\n\n');
-
-            if (cb) {
-                return cb(req, res);
-            }
-        };
-
+        //  The actual middleware. This is our entry point to activating the SSE
+        //  connection in response to an inbound request on our watcher url.
         return function(req, res, next) {
 
-            var eventName,
-                changedFileName;
+            var root,
+                escaper,
+                ignore,
+                pattern,
+                eventName,
+                sendSSE;
 
-            changedFileName = null;
-
+            //  Confirm this is an SSE request.
             if (req.headers.accept &&
                     req.headers.accept === 'text/event-stream') {
 
-                if (changedFiles.length > 0) {
-                    changedFileName = changedFiles.shift();
-                    eventName = TDS.getcfg('tds.watch.event');
-                } else {
-                    eventName = '';
+                req.socket.setTimeout(Infinity);
+
+                //  TODO: let URI parameters override the watch root.
+                //  Expand out the path we'll be watching.
+                root = path.resolve(TDS.expandPath(
+                    TDS.getcfg('tds.watch.root')));
+
+                //  Helper function for escaping regex metacharacters for
+                //  patterns. NOTE that we need to take "ignore format" things
+                //  like path/* and make it path/.* or the regex will fail.
+                escaper = function(str) {
+                    return str.replace(
+                        /\*/g, '\.\*').replace(
+                        /\./g, '\\.').replace(
+                        /\//g, '\\/');
+                };
+
+                //  Build a pattern we can use to test against ignore files.
+                ignore = TDS.getcfg('tds.watch.ignore');
+                if (ignore) {
+                    pattern = ignore.reduce(function(str, item) {
+                        return str ? str + '|' + escaper(item) : escaper(item);
+                    }, '');
+
+                    try {
+                        pattern = new RegExp(pattern);
+                    } catch (e) {
+                        return console.log('Error creating RegExp: ' +
+                            e.message);
+                    }
                 }
 
-                //  Write the SSE HEAD and then in that method's callback, write
-                //  the SSE data.
+                //  TODO: let URI parameters override the event name to send.
+                eventName = TDS.getcfg('tds.watch.event');
 
-                writeSSEHead(
-                    req, res,
-                    function(writeHeadReq, writeHeadRes) {
-                        writeSSEData(
-                            writeHeadReq, writeHeadRes,
-                            eventName, changedFileName,
-                            function(writeDataReq, writeDataRes) {
+                //  Write out the headers and hold on to the event writer
+                //  returned by that method. We'll invoke that function from
+                //  within our watch handler on file changes.
+                sendSSE = startSSE(res);
 
-                                changedFileName = '';
+                //  Configure a watcher for our root, including any ignore
+                //  patterns etc.
+                watcher = chokidar.watch(root, {
+                    ignored: pattern,
+                    cwd: root,
+                    ignorePermissionErrors: true,
+                    persistent: true
+                });
 
-                                res.end();
-                            });
+                watcher.on('change', function(file) {
+                    sendSSE(eventName, {
+                        path: file,
+                        event: 'change',
+                        details: {}
                     });
+                });
+
+                //  Set up a simple SSE pulse to keep proxy servers happy. If
+                //  not set otherwise we'll use ten seconds.
+                interval = setInterval(function() {
+                    sendSSE('sse-heartbeat', {});
+                }, TDS.getcfg('tds.watch.heartbeat') || 10000);
             }
         };
     };
