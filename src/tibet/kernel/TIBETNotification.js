@@ -8262,7 +8262,7 @@ function(signalTypes) {
                         data;
 
                     try {
-                        data = JSON.parse(evt.data);
+                        data = TP.json2js(evt.data);
                     } catch (e) {
                         data = evt.data;
                     }
