@@ -469,7 +469,7 @@ CLI.getAppRoot = function() {
  * property values. The virtual path for this root is '~' or '~/'. The search
  * for this location works upward from the current directory to attempt to find
  * either a PROJECT_FILE or NPM_FILE. If that fails the search is done relative
- * to the module.filename, ie. the _Package.js file location itself.
+ * to the module.filename, ie. the tibet-package.js file location itself.
  */
 CLI.getAppHead = function() {
     this.initPackage();
@@ -689,7 +689,7 @@ CLI.initPackage = function() {
         return;
     }
 
-    Package = require('./_Package');
+    Package = require('../../../etc/cli/tibet-package');
     this._package = new Package(this.options);
 
     this.config.tibet = this._package.getProjectConfig();

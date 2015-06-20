@@ -5,7 +5,7 @@
 
 <config id="standard">
 
-    <script src="~lib_deps/diff-tpi.js" no-lint="true"/>
+    <script src="~lib_deps/diff-tpi.js" unless="linting"/>
     <script>
         <![CDATA[
         TP.extern.JsDiff = JsDiff;

@@ -26,7 +26,7 @@
     chokidar = require('chokidar');
 
     // Load the CLI's package support to help with option/configuration data.
-    Package = require('../../src/tibet/cli/_Package');
+    Package = require('../cli/tibet-package');
 
 
     //  ---

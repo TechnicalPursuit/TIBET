@@ -360,9 +360,6 @@ Cmd.prototype.executeForEach = function(list) {
                 */
 
             if (cmd.options.nodes) {
-                if (item.getAttribute('no-lint') === 'true') {
-                    return;
-                }
                 // Depending on the nature of the resource there are two
                 // canonical attributes likely to point to the source file.
                 src = item.getAttribute('src') || item.getAttribute('href');
@@ -464,6 +461,9 @@ Cmd.prototype.finalizePackageOptions = function() {
     // the unwrapping ourselves so we have complete access to all
     // metadata and/or child node content.
     this.pkgOpts.nodes = true;
+
+    //  We're linting :)
+    this.pkgOpts.linting = true;
 
     // Force the most comprehensive package#config we can given our context.
     if (CLI.inProject()) {

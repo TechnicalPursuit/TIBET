@@ -210,11 +210,21 @@ Package.CONFIG = 'base';
 
 
 /**
+ * Default properties to ensure expected default behavior for cli/package.
+ */
+Package.DEFAULT_PROPERTIES = {
+    boot: {
+        phase_one: false,
+        phase_two: true
+}};
+
+
+/**
  * A map of element attributes that will be copied down during expansion.
  * @type {Array.<string>}
  */
 Package.MAPPED_ATTRS = {
-    'no-lint': true
+    'no-minify': true
 };
 
 
@@ -229,7 +239,7 @@ Package.NPM_FILE = 'package.json';
  * The default package file to process.
  * @type {string}
  */
-Package.PACKAGE = '~app_cfg/app.xml';
+Package.PACKAGE = '~app_cfg/standard.xml';
 
 
 /**
@@ -1169,7 +1179,7 @@ Package.prototype.getLibRoot = function() {
     }
 
     // How far is this file from the library root?
-    offset = '../../../..';
+    offset = '../../..';
 
     checks = [
         [moduleDir, path.join(offset, tibet_lib.toUpperCase())],
@@ -2219,6 +2229,9 @@ Package.prototype.setProjectOptions = function() {
     //  Blend in the values from npm and TIBET configuration files.
     this.overlayProperties(this.npm, 'npm');
     this.overlayProperties(this.tibet);
+
+    //  Blend in default properties, particularly for phases etc.
+    this.overlayProperties(Package.DEFAULT_PROPERTIES);
 
     // Clear this so the value from above doesn't affect our next steps.
     root = null;

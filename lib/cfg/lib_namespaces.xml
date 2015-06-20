@@ -205,13 +205,13 @@
 
     <!-- BEGIN xctrls:codeeditor -->
 
-    <script src="~lib_deps/codemirror/lib/codemirror.js" no-lint="true"/>
-    <script src="~lib_deps/codemirror/addon/runmode/runmode.js" no-lint="true"/>
-    <script src="~lib_deps/codemirror/addon/search/searchcursor.js" no-lint="true"/>
+    <script src="~lib_deps/codemirror/lib/codemirror.js" unless="linting"/>
+    <script src="~lib_deps/codemirror/addon/runmode/runmode.js" unless="linting"/>
+    <script src="~lib_deps/codemirror/addon/search/searchcursor.js" unless="linting"/>
 
-    <script src="~lib_deps/codemirror/mode/xml/xml.js" no-lint="true"/>
-    <script src="~lib_deps/codemirror/mode/javascript/javascript.js" no-lint="true"/>
-    <script src="~lib_deps/codemirror/mode/css/css.js" no-lint="true"/>
+    <script src="~lib_deps/codemirror/mode/xml/xml.js" unless="linting"/>
+    <script src="~lib_deps/codemirror/mode/javascript/javascript.js" unless="linting"/>
+    <script src="~lib_deps/codemirror/mode/css/css.js" unless="linting"/>
     <script>
         <![CDATA[
         TP.extern.CodeMirror = CodeMirror;
