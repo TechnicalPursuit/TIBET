@@ -25,9 +25,37 @@
  *     contained in the *Moz.js and *IE.js versions of this file.
  */
 
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('uriAddUniqueQuery',
+function(aPath) {
+
+    /**
+     * @method uriAddUniqueQuery
+     * @summary Adds a unique query parameter to the path. This is normally used
+     *     to 'bust' caches for things like CSS URLs.
+     * @param {String} aPath The path to add a unique query string to.
+     * @exception TP.sig.InvalidURI
+     * @returns {String} The path with the unique query added to it.
+     */
+
+    var path;
+
+    if (!TP.isString(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidURI');
+    }
+
+    path = aPath +
+            (aPath.contains('?') ? '&' : '?') +
+            '_tibet_nocache=' + Date.now();
+
+    return path;
+});
+
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriBaseParameters', function(aURI, textOnly) {
+TP.definePrimitive('uriBaseParameters',
+function(aURI, textOnly) {
 
     /**
      * @method uriBaseParameters
@@ -67,7 +95,8 @@ TP.definePrimitive('uriBaseParameters', function(aURI, textOnly) {
 
 //  ----------------------------------------------------------------------------
 
-TP.definePrimitive('uriBasePath', function(aURI) {
+TP.definePrimitive('uriBasePath',
+function(aURI) {
 
     /**
      * @method uriBasePath
@@ -1732,6 +1761,43 @@ function(firstPath, secondPath, filePath) {
     //  no common elements in the paths at all if we got here..., and the
     //  path wasn't relative so we have to assume absolute and just return
     return first;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('uriRemoveUniqueQuery',
+function(aPath) {
+
+    /**
+     * @method uriRemoveUniqueQuery
+     * @summary Removes any unique query that was added to the path by the
+     *     'uriAddUniqueQuery' method. See that method for more information
+     *     about why unique queries are used.
+     * @param {String} aPath The path to remove a unique query string from.
+     * @exception TP.sig.InvalidURI
+     * @returns {String} The path with the unique query removed from it.
+     */
+
+    var path;
+
+    if (!TP.isString(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidURI');
+    }
+
+    if (aPath.contains('_tibet_nocache')) {
+
+        //  If there is a '&', that means there were other parameters on the URL
+        //  that we don't want to replace.
+        if (aPath.contains('&')) {
+            path = aPath.strip(/&?_tibet_nocache=(\d+)(\?|&)?/);
+        } else {
+            path = aPath.strip(/\?_tibet_nocache=(\d+)/);
+        }
+    } else {
+        path = aPath;
+    }
+
+    return path;
 });
 
 //  ------------------------------------------------------------------------

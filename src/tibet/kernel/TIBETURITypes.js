@@ -8755,7 +8755,7 @@ function(aURI, aRequest) {
         //  it had one and we've cached it in the map for this profile
         if (TP.isEmpty(map)) {
             return uri.$getDefaultHandler(aRequest);
-        } else if (TP.isValid(mapping = map.at('mapping'))) {
+        } else if (TP.isValid(mapping = map.at('handlerType'))) {
             return mapping;
         }
 
@@ -8804,7 +8804,7 @@ function(aURI, aRequest) {
                     TP.LOG) : 0;
 
     //  went to some trouble to come up with this, so cache it for next time
-    map.atPut('mapping', handler);
+    map.atPut('handlerType', handler);
 
     return handler;
 });
