@@ -203,6 +203,13 @@ Package.REGEX_REGEX = /^\/.*\/$/;
 Package.KV_REGEX = /\=/;
 
 /**
+ * The default package config file to process.
+ * @type {string}
+ */
+Package.CONFIG = 'base';
+
+
+/**
  * A map of element attributes that will be copied down during expansion.
  * @type {Array.<string>}
  */
@@ -854,8 +861,7 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
 
         if (isEmpty(aConfig)) {
             if (notValid(this.config)) {
-                this.config = this.getcfg('config') ||
-                    this.getDefaultConfig(doc);
+                this.config = this.getcfg('config') || this.getDefaultConfig(doc);
             }
             config = this.config;
         } else {
@@ -1341,8 +1347,7 @@ Package.prototype.getDefaultConfig = function(aPackageDoc) {
         throw new Error(msg);
     }
     // TODO: rename to 'all' in config files etc?
-    // TODO: make this default of 'full' a constant?
-    return package.getAttribute('default') || 'full';
+    return package.getAttribute('default') || Package.CONFIG;
 };
 
 
@@ -1770,7 +1775,7 @@ Package.prototype.listAllAssets = function(aPath, aList) {
     try {
         doc = this.packages[expanded];
         if (notValid(doc)) {
-            msg = 'Unable to list unexpanded package: ' + aPath;
+            msg = 'Unable to list unexpanded package: ' + expanded;
             throw new Error(msg);
         }
 
@@ -2002,14 +2007,14 @@ Package.prototype.listPackageAssets = function(aPath, aConfig, aList) {
     try {
         doc = this.packages[expanded];
         if (notValid(doc)) {
-            msg = 'Unable to list unexpanded package: ' + aPath;
+            msg = 'Unable to list unexpanded package: ' + expanded;
             throw new Error(msg);
         }
 
-        // Determine the configuration we'll be listing. Note we rely on having
-        // been through a defaulting process during package expansion to have
-        // set this.config earlier.
         if (isEmpty(aConfig)) {
+            if (notValid(this.config)) {
+                this.config = this.getcfg('config') || this.getDefaultConfig(doc);
+            }
             config = this.config;
         } else {
             config = aConfig;
