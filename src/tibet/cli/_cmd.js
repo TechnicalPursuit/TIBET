@@ -90,6 +90,55 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, CLI.PARSE_OPTIONS);
 //  ---
 
 /**
+ * Returns an array of arguments from the command line parsing process. The
+ * content here does not include the command name itself in the results, but
+ * includes all other argument content after parsing/default value processing.
+ * @returns {Array.<String>}
+ */
+Cmd.prototype.getArglist = function() {
+
+    var arglist,
+        cmd;
+
+    cmd = this;
+
+    arglist = [];
+
+    // Process string arguments. We need both key and value here.
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.string) {
+        this.PARSE_OPTIONS.string.forEach(function(key) {
+            if (CLI.notEmpty(cmd.options[key])) {
+                arglist.push('--' + key, cmd.options[key]);
+            }
+        });
+    }
+
+    // Process number arguments. We need both key and value here.
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.number) {
+        this.PARSE_OPTIONS.number.forEach(function(key) {
+            if (CLI.notEmpty(cmd.options[key])) {
+                arglist.push('--' + key, cmd.options[key]);
+            }
+        });
+    }
+
+    // Process boolean arguments. These are just the key with --no- if the value
+    // is false.
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
+        this.PARSE_OPTIONS.boolean.forEach(function(key) {
+            if (CLI.notEmpty(cmd.options[key])) {
+                if (cmd.options[key]) {
+                    arglist.push('--' + key);
+                } else {
+                    arglist.push('--no-' + key);
+                }
+            }
+        });
+    }
+    return arglist;
+};
+
+/**
  * Returns the configuration values currently in force. Leverages the logic in a
  * TIBET Package object for the loading/processing of default TIBET parameters.
  * If no property is provided the entire set of configuration values is

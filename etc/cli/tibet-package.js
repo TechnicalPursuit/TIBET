@@ -1330,6 +1330,7 @@ Package.prototype.getcfg = function(property) {
             return cfg;
     }
 };
+Package.prototype.cfg = Package.prototype.getcfg;
 
 
 /**
@@ -2109,15 +2110,6 @@ Package.prototype.overlayProperties = function(dict, prefix) {
             TP.sys.setcfg(name, value);
         }
     });
-
-/*
-            Object.keys(value).forEach(function(subkey) {
-                var name;
-
-                name = 'npm.' + key + '.' + subkey;
-                TP.sys.setcfg(name, value[subkey]);
-            });
-*/
 };
 
 /**

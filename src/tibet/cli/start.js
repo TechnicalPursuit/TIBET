@@ -19,11 +19,13 @@
 
 var CLI,
     Parent,
-    Cmd;
+    Cmd,
+    TDS;
 
+//  Bring in the TDS code so we can reference command line options.
+TDS = require('../../../etc/tds/tds-middleware');
 
 CLI = require('./_cli');
-
 
 //  ---
 //  Type Construction
@@ -55,26 +57,29 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Starts the current TIBET project data server, if any.\n\n' +
+'Starts the current TIBET project data server, if available.\n\n' +
 
-'Many TIBET dna templates provide a simple Node.js-based server\n' +
-'based on Connect and/or Express for use during development. If\n' +
+'Many TIBET dna templates provide a simple Node.js-based server. If\n' +
 'the current project contains either a server.js file or can invoke\n' +
 '\'npm start\' this command will try to start that server.\n\n' +
 
 'The optional --port parameter lets you specify a port other than\n' +
-'the default (which is port 1407).\n\n' +
-
-'When a local server.js file is used it can be augmented with code\n' +
-'for TIBET Data Server (TDS) functionality. Use require() with the\n' +
-'path \'tibet/etc/tds/tds-middleware\' to load that module.\n\n' +
+'the registered TIBET Data Server port (which is port 1407).\n\n' +
 
 'If your server includes TDS features you can optionally add\n' +
 'command-line parameters to provide the various modules of the TDS\n' +
-'with config data. Use \'tds-{module}\' plus \'-{var}\' in these\n' +
+'with config data. Use \'tds.{module}\' plus \'.{var}\' in these\n' +
 'cases, replacing {var} with the config variable you need. As an\n' +
-'example \'--tds-watch-root\' provides the tds file watch module\n' +
+'example \'--tds.watch.root\' provides the tds file watch module\n' +
 'with the root path to watch for source code changes.\n';
+
+/**
+ * Command argument parsing options.
+ * @type {Object}
+ */
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    TDS.PARSE_OPTIONS,          //   NOTE we use the TDS's list here.
+    Parent.prototype.PARSE_OPTIONS);
 
 /**
  * The default TIBET port.
@@ -103,7 +108,7 @@ Cmd.prototype.execute = function() {
 
     var sh,     // The shelljs module.
         child,  // The child_process module.
-
+        args,   // Argument list for child process.
         server, // Spawned child process for the server.
         cmd,    // Closure'd var providing access to the command object.
         port,   // The port number to start up on.
@@ -129,9 +134,6 @@ Cmd.prototype.execute = function() {
         process.env.PORT ||
         this.PORT;
 
-// TODO:    process command line arguments such that we can add them to the
-//          array of parameters given to spawn() calls below.
-
     // Make sure we work from the launch (and hence server.js) location.
     process.chdir(CLI.getAppHead());
 
@@ -155,11 +157,17 @@ Cmd.prototype.execute = function() {
         } else {
             index = '';
         }
-
-        server = child.spawn('node',
-            ['server.js', '--port', port,
-                '--app-root', CLI.getAppRoot()]);
     }
+
+    //  Process command line arguments into array form so we can pass them.
+    if (CLI.isEmpty(this.options.app_root)) {
+        this.options.app_root = CLI.getAppRoot();
+    }
+    args = this.getArglist();
+    args.unshift('server.js');
+
+    //  Create and invoke the command to run the server.
+    server = child.spawn('node', args);
 
     server.stdout.on('data', function(data) {
         var logmsg;
