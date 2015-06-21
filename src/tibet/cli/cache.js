@@ -147,12 +147,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             'status', 'touch'],
         'string': ['file'],
         'default': {
-            develop: false,
-            disable: false,
-            enable: false,
-            missing: false,
-            rebuild: false,
-            touch: false
+            status: true
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -179,7 +174,7 @@ Cmd.prototype.execute = function() {
     var cachefile,
         appname;
 
-    if (!process.argv.slice(2).join(' ').match(this.REQUIRED_PARAMS_REGEX)) {
+    if (!this.getArglist().join(' ').match(this.REQUIRED_PARAMS_REGEX)) {
         return this.usage();
     }
 

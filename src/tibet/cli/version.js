@@ -75,9 +75,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['check'],
-        'default': {
-            check: false
-        }
+        'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */

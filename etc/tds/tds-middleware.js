@@ -45,23 +45,10 @@
         'boolean': ['tds.use.cli', 'tds.use.patcher', 'tds.use.watcher',
             'tds.use.webdav'],
         'string': ['app_root', 'config'],
-        'number': ['port'],
-        'default': {
-            port: 1407,
-            'tds.use.cli': false,
-            'tds.use.patcher': false,
-            'tds.use.watcher': false,
-            'tds.use.webdav': false
-        }
+        'number': ['tds.port'],
+        'default': {}
     };
     /* eslint-enable quote-props */
-
-    /**
-     * The configuration file used for the TIBET server, which keeps settings
-     * for the server separate from those used for the client.
-     * @type {string}
-     */
-    TDS.PROJECT_FILE = 'tibet-server.json';
 
     /**
      * The package instance assisting with configuration data loading/lookup.
@@ -119,13 +106,6 @@
         }
 
         this._package = new Package(options);
-
-        json = require(path.join(
-            this._package.getAppRoot(),
-            TDS.PROJECT_FILE));
-
-        this._package.overlayProperties(json);
-        this._package.setRuntimeOptions(options);
     };
 
     /**

@@ -192,8 +192,7 @@
         'number': ['timeout'],
         'default': {
             color: true,
-            system: false,
-            quiet: false
+            tap: true
         }
     };
 
@@ -678,7 +677,7 @@
         var argv,
             level;
 
-        argv = minimist(system.args);
+        argv = minimist(system.args, PhantomTSH.PARSE_OPTIONS);
         PhantomTSH.argv = argv;
 
         if (argv.help) {

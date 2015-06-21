@@ -1331,22 +1331,29 @@
 
     TP.sys.setcfg('tds.cli.uri', '/tds/cli');
 
-    TP.sys.setcfg('tds.webdav.root', '~app_src');
-    TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
-
     TP.sys.setcfg('tds.patch.root', '~');
     TP.sys.setcfg('tds.patch.uri', '/tds/patch');
 
-    TP.sys.setcfg('tds.port', 1407);
+    //  NOTE we do _not_ default this here so env.PORT etc can be used when the
+    //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
+    TP.sys.setcfg('tds.port', null);
     TP.sys.setcfg('tds.secret', 'change this in your TIBET config');
 
     TP.sys.setcfg('tds.404', 'NotFound');
     TP.sys.setcfg('tds.500', 'ServerError');
 
+    TP.sys.setcfg('tds.use.cli', false);
+    TP.sys.setcfg('tds.use.patcher', false);
+    TP.sys.setcfg('tds.use.watcher', false);
+    TP.sys.setcfg('tds.use.webdav', false);
+
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
     TP.sys.setcfg('tds.watch.root', '~app_src');
     TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
+
+    TP.sys.setcfg('tds.webdav.root', '~app_src');
+    TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
 
     //  ---

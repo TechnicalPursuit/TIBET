@@ -357,11 +357,9 @@ CLI.blend = function(target, source) {
 
         // Both arrays. Blend as best we can.
         source.forEach(function(item, index) {
-            var value;
-
-            value = CLI.blend(target[index], item);
-            if (target[index] !== value) {
-                target[index] = value;
+            //  Items that don't appear in the list get pushed.
+            if (target.indexOf(item) === -1) {
+                target.push(item);
             }
         });
 
@@ -369,12 +367,16 @@ CLI.blend = function(target, source) {
     }
 
     if (this.isValid(target)) {
+        //  Target is primitive value. Don't replace.
         if (!this.isObject(target)) {
             return target;
         }
 
+        //  Target is complex object, but source isn't.
         if (!this.isObject(source)) {
-            return target;
+            this.handleError(new Error('Incompatible Types'),
+                'blending', 'blend');
+            process.exit(1);
         }
     } else {
         // Target not valid, source should overlay.
@@ -391,6 +393,7 @@ CLI.blend = function(target, source) {
             return;
         }
 
+        //  Key isn't in target, build it out with source copy.
         if (Array.isArray(source[key])) {
             // Copy array/object slots deeply as needed.
             target[key] = CLI.blend([], source[key]);
@@ -502,7 +505,7 @@ CLI.getcfg = function(property) {
 
     return this._package.getcfg(property);
 };
-
+CLI.cfg = CLI.getcfg;
 
 /**
  * Searches a set of paths including ~app_cmd and ~lib_cmd for an implementation
@@ -693,6 +696,7 @@ CLI.initPackage = function() {
     this._package = new Package(this.options);
 
     this.config.tibet = this._package.getProjectConfig();
+    this.config.tds = this._package.getServerConfig();
     this.config.npm = this._package.getPackageConfig();
 };
 
@@ -992,10 +996,10 @@ CLI.runCommand = function(command, cmdPath) {
         }
     }
 
-    //  Dispatch the command with any config options. It will parse the command
+    //  Dispatch the command. It will parse the command
     //  line again itself so it can be certain of flag values.
     try {
-        cmd.run(this.options);
+        cmd.run();
     } catch (e) {
         this.handleError(e, 'processing', command);
     }

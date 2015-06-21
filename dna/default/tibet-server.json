@@ -1,0 +1,13 @@
+{
+    "//": "TIBET server configuration file.",
+    "default": {
+    },
+    "development": {
+        "use": {
+            "cli": true,
+            "patcher": true,
+            "watcher": true,
+            "webdav": true
+        }
+    }
+}
