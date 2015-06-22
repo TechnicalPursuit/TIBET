@@ -5444,8 +5444,7 @@ function(aNode, otherNode) {
 
     /**
      * @method nodeEqualsNode
-     * @summary Normalizes adjacent Text nodes on the supplied Node and its
-     *     descendants.
+     * @summary Compares two nodes for 'equality'.
      * @description This method follows the DOM Level 3 standard for checking
      *     Nodes for equality with each other. This specification states that
      *     two Nodes are equal if:
