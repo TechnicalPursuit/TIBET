@@ -13047,6 +13047,9 @@ function(aNode) {
                                 'Must provide a valid target Node.');
     }
 
+    //  condense multiple text node children
+    TP.nodeNormalize(aNode);
+
     switch (aNode.nodeType) {
         case Node.ELEMENT_NODE:
         case Node.DOCUMENT_FRAGMENT_NODE:
