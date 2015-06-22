@@ -8744,9 +8744,9 @@ function(aWindow, wants2DMatrix) {
      * @summary Returns the 'computed' transformation matrix for the window
      *     (really its iframe element).
      * @description This method assumes that the window is embedded in an iframe
-     *      (which may be embedded in more iframes up to a top-level window) and
-     *      is really returning the transformation of those iframe elements up
-     *      to the top-level window.
+     *     (which may be embedded in more iframes up to a top-level window) and
+     *     is really returning the transformation of those iframe elements up
+     *     to the top-level window.
      * @param {Window} aWindow The window to compute the matrix for.
      * @param {Boolean} wants2DMatrix An optional parameter that tells the
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
