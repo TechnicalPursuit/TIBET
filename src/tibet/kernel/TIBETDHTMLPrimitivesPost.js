@@ -8794,6 +8794,42 @@ function(aWindow, wants2DMatrix) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('windowForceRepaint',
+function(aWindow) {
+
+    /**
+     * @method windowForceRepaint
+     * @summary Forces the repaint of the supplied window. This is sometimes
+           necessary on certain browser platforms when the window isn't focused
+           or is hidden, but a repaint is required.
+     * @param {Window} aWindow The window to force a repaint of.
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     */
+
+    var doc;
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    if (!TP.isDocument(doc = aWindow.document)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    /* eslint-disable no-wrap-func,no-extra-parens */
+    (function() {
+        var focusedElem;
+
+        focusedElem = TP.documentGetFocusedElement(doc);
+        focusedElem.focus();
+    }).fork(50);
+    /* eslint-enable no-wrap-func,no-extra-parens */
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('windowGetLocation',
 function(aWindow, trimFile) {
 
