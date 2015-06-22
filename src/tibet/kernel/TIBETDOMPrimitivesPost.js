@@ -10238,6 +10238,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
     if (doRoot && TP.isElement(aNode)) {
         currentNode = aNode;
     } else if (TP.isDocument(aNode)) {
+        //  condense multiple text node children
         TP.nodeNormalize(aNode.documentElement);
 
         //  NB: We use 'firstChild', not 'documentElement' here, since we
@@ -11049,9 +11050,11 @@ function(aNode, aFunction, breadthFirst) {
     }
 
     if (TP.isTrue(breadthFirst)) {
-        return TP.nodeBreadthTraversal(aNode, aFunction, null, aFunction, false);
+        return TP.nodeBreadthTraversal(
+                            aNode, aFunction, null, aFunction, false);
     } else {
-        return TP.nodeDepthTraversal(aNode, aFunction, null, aFunction, false);
+        return TP.nodeDepthTraversal(
+                            aNode, aFunction, null, aFunction, false);
     }
 });
 
@@ -12786,7 +12789,6 @@ function(aNode, aNamespaceURI, includeDescendants) {
                     arr.push(attr.name.slice(6));
                 }
             }
-
         }
     }
 
