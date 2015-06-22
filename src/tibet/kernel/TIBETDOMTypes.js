@@ -5321,6 +5321,20 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return TP.nodeGetChildNodes(this.getNativeNode()).getSize() === 0;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('isSingleValued',
 function() {
 
