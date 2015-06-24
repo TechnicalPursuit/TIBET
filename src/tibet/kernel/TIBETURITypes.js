@@ -7951,6 +7951,31 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('getResource',
+function(aRequest) {
+
+    /**
+     * @method getResource
+     * @summary Returns a receiver-specific object representing the "secondary"
+     *     resource being accessed (i.e. the resource referenced by the base
+     *     resource path subset identified by any fragment portion. If there is
+     *     no fragment this method returns the same value as
+     *     $getPrimaryResource()).
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {Object} The resource or TP.sig.Response when async.
+     */
+
+    if (TP.isEmpty(this.getCanvasName())) {
+        return this.getNestedURI().getResource(aRequest);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('$getResourceResult',
 function(request, result, async, filter) {
 
@@ -8166,8 +8191,8 @@ function(aFlag) {
 
     /**
      * @method isDirty
-     * @summary Returns true if the receiver's content has been dirtied since
-     *     it was last loaded/reset.
+     * @summary Returns true if the receiver's content has changed since it was
+     *     last loaded from it's source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
@@ -8195,11 +8220,13 @@ function(aFlag) {
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
      */
 
-    //  We never really consider a TIBET URL to be "loaded". If we defer to
-    //  the nested URI when there's source data then certain refresh
-    //  semantics break since the TIBET URL won't load after the core URI
-    //  has loaded and starts reporting true.
-    return false;
+    //  TIBET URLs with no canvas are effectively simply aliases to the
+    //  content URI.
+    if (TP.isEmpty(this.getCanvasName())) {
+        return this.getNestedURI().isLoaded(aFlag);
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -8270,8 +8297,8 @@ function(aRequest) {
 
     TP.stop('break.uri_cache');
 
-    //  if we're just an alias for a concrete file or http url then we
-    //  continue to look like a proxy for that reference in string form
+    //  if we're just an alias for a concrete URL then we continue to look like
+    //  a proxy for that reference in string form
     if ((url = this.getPrimaryURI()) !== this) {
         return url.updateResourceCache(aRequest);
     }
