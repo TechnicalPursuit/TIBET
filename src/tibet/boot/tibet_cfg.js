@@ -1607,6 +1607,14 @@
     //  should we try to route any initial path content on startup?
     TP.sys.setcfg('uri.routing_onstart', true);
 
+    //  should we watch remote resources?
+    TP.sys.setcfg('uri.remote_watch', true);
+
+    //  remote resources that we should try to watch.
+    TP.sys.setcfg('uri.remote_watch_sources', ['~']);
+
+    //  should we process the queue of remote resource changes?
+    TP.sys.setcfg('uri.process_remote_changes', false);
 
     //  ---
     //  xpath/xslt

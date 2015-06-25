@@ -158,6 +158,10 @@ TP.core.URI.Type.defineAttribute(
             'schemeHandlers',
             TP.ifInvalid(TP.core.URI.$get('schemeHandlers'), TP.hc()));
 
+//  holder for URIs that have had their remote resources changed but that
+//  haven't been refreshed.
+TP.core.URI.Type.defineAttribute('resourceChangedQueue', TP.ac());
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -1504,6 +1508,71 @@ function(aURI, aRequest) {
 
         return TP.core.URIRewriter.rewrite(aURI, aRequest);
     }
+});
+
+//  ------------------------------------------------------------------------
+//  Remote Resource Change Queuing
+//  ------------------------------------------------------------------------
+
+/**
+ * Remote resources can sometimes notify TIBET when they are changed. This
+ * provides support for TIBET to manage a queue of URIs whose remote resource
+ * has changed and to process that queue.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineMethod('processRemoteResourceChange',
+function(aURI) {
+
+    /**
+     * @method processRemoteResourceChange
+     * @summary Processes a 'remote resource' change for the supplied URI.
+     * @descriptio Depending on whether the supplied URI 'auto refreshes' from
+     *     its remote resource or not, this method will either immediately
+     *     refresh the URI or it will puts an entry for the supplied URI into
+     *     a queue that manages URIs that have had their remote resources
+     *     changed, but don't auto refresh. The 'refreshChangedURIs()' method
+     *     can then be used to force these to refresh.
+     * @param {TP.core.URI|String} aURI The URI that had its remote resource
+     *     changed.
+     * @returns {TP.meta.core.URI} The receiver.
+     */
+
+    if (aURI.shouldAutoRefresh()) {
+        aURI.refreshFromRemoteResource();
+    } else {
+        TP.core.URI.get('resourceChangedQueue').push(aURI);
+        TP.core.URI.get('resourceChangedQueue').unique();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineMethod('refreshChangedURIs',
+function() {
+
+    /**
+     * @method refreshChangedURIs
+     * @summary Forces a refresh of all of the queued URIs that had their remote
+     * resource changed. The queue is then emptied.
+     * @returns {TP.meta.core.URI} The receiver.
+     */
+
+    var queue;
+
+    queue = TP.core.URI.get('resourceChangedQueue');
+
+    queue.forEach(
+        function(entry) {
+            entry.refreshFromRemoteResource();
+        });
+
+    queue.empty();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3466,6 +3535,22 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('refreshFromRemoteResource',
+function() {
+
+    /**
+     * @method refreshFromRemoteResource
+     * @summary Refreshes the receiver from the remote resource it's
+     *     representing. Note that subtypes of this type should override this
+     *     method.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$requestContent',
 function(aRequest, contentFName, successFName, failureFName, aResource) {
 
@@ -3934,6 +4019,22 @@ function(aRequest, aResult, aResource) {
     }
 
     return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('shouldAutoRefresh',
+function() {
+
+    /**
+     * @method shouldAutoRefresh
+     * @summary Returns whether or not the URI 'auto refreshes' from its remote
+     *     resource when it gets notified that that content has changed.
+     * @returns {Boolean} Whether or not the resource auto-refreshes.
+     */
+
+    //  At this level, objects of this type return false.
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -5904,6 +6005,115 @@ function(aRequest) {
     handler = url.map(this, request);
 
     return handler.save(url, request);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('refreshFromRemoteResource',
+function() {
+
+    /**
+     * @method refreshFromRemoteResource
+     * @summary Refreshes the receiver from the remote resource it's
+     *     representing.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    this.isLoaded(false);
+    this.$changed();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('shouldAutoRefresh',
+function() {
+
+    /**
+     * @method shouldAutoRefresh
+     * @summary Returns whether or not the URI 'auto refreshes' from its remote
+     *     resource when it gets notified that that content has changed.
+     * @returns {Boolean} Whether or not the resource auto-refreshes.
+     */
+
+    var ext;
+
+    //  By default CSS, XHTML and LESS resources auto refresh.
+
+    ext = this.getExtension();
+    if (/(css|xhtml|less)/.test(ext)) {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('watch',
+function(aRequest) {
+
+    /**
+     * @method watch
+     * @summary Watches for changes to the URLs remote resource, if the server
+     *     that is supplying the remote resource notifies us when the URL has
+     *     changed.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var request,
+        url,
+        handler;
+
+    TP.stop('break.uri_watch');
+
+    request = this.constructRequest(aRequest);
+
+    //  rewriting means we'll get to the concrete URI for the receiver so we
+    //  watch the data where it really is
+    url = this.rewrite(request);
+
+    request.atPut('operation', 'watch');
+    handler = url.map(this, request);
+
+    return handler.watch(url, request);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('unwatch',
+function(aRequest) {
+
+    /**
+     * @method unwatch
+     * @summary Removes any watches for changes to the URLs remote resource. See
+     *     this type's 'watch' method for more information.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var request,
+        url,
+        handler;
+
+    TP.stop('break.uri_watch');
+
+    request = this.constructRequest(aRequest);
+
+    //  rewriting means we'll get to the concrete URI for the receiver so we
+    //  unwatch the data where it really is
+    url = this.rewrite(request);
+
+    request.atPut('operation', 'unwatch');
+    handler = url.map(this, request);
+
+    return handler.unwatch(url, request);
 });
 
 //  ========================================================================
@@ -8435,6 +8645,55 @@ function(targetURI, aRequest) {
     request.complete(true);
 
     return response;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIHandler.Type.defineMethod('watch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method watch
+     * @summary Watches URI data content. This is used for URIs that represent
+     *     remote resources in the system and can be notified by a server-side
+     *     component that those resources have changed.
+     * @description At this level, this method does nothing. Handlers that
+     *     represent change-notification capable servers should override this
+     *     method to set up change notification machinery for this URI back to
+     *     TIBET.
+     * @param {String|TP.core.URI} targetURI A target URI.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The response.
+     */
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIHandler.Type.defineMethod('unwatch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method unwatch
+     * @summary Unwatches (i.e. ignores) URI data content. This is used for URIs
+     *     that represent remote resources in the system and can be notified by
+     *     a server-side component that those resources have changed.
+     * @description At this level, this method does nothing. Handlers that
+     *     represent change-notification capable servers should override this
+     *     method to tear down change notification machinery that it would have
+     *     method to tear down change notification machinery for this URI that
+     *     it would have set up to TIBET.
+     * @param {String|TP.core.URI} targetURI A target URI.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The response.
+     */
+
+    return;
 });
 
 //  ========================================================================
