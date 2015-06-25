@@ -10447,7 +10447,262 @@ function(targetURI, aRequest) {
     return response;
 });
 
+//  =======================================================================
+//  TP.core.RemoteURLWatchHandler
+//  ========================================================================
+
+/**
+ * @type {TP.core.RemoteURLWatchHandler}
+ * @summary Supports operations for remote resources that support notifying the
+ *     URL of changes made to those resources from the server side. This type is
+ *     normally used as a trait to the main handler type.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIHandler.defineSubtype('RemoteURLWatchHandler');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  The TIBET type to be constructed that will provide notifications when the
+//  URL's remote contents change.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('watcherSignalSourceType');
+
+//  The URI specifying the endpoint that the watcher will be sending
+//  notifications on.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('watcherSignalSourceURI');
+
+//  The TIBET type of signal that will be sent when the URL's remote content
+//  changes.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('watcherSignalType');
+
+//  The instance of the signal source that is responsible for sending
+//  notifications when the URL changes.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('$watcherSignalSource');
+
+//  A dictionary of URLs watched by this handler, keyed by the fully expanded
+//  URL.
+TP.core.RemoteURLWatchHandler.Type.defineAttribute('watchedURLs');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('watch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method watch
+     * @summary Watches for changes to the URLs remote resource, if the server
+     *     that is supplying the remote resource notifies us when the URL has
+     *     changed.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var watchSources,
+
+        uriLoc,
+        watcherLoc,
+        foundWatchSource,
+        i,
+
+        watchedURLs,
+        watcher,
+
+        watcherURI,
+        watcherType,
+
+        signalType;
+
+    //  First, make sure that we're configured to watch remote resources and
+    //  that we have remote resources to watch.
+    watchSources = TP.sys.cfg('uri.remote_watch_sources');
+    if (!TP.sys.cfg('uri.remote_watch') || TP.isEmpty(watchSources)) {
+        return;
+    }
+
+    uriLoc = targetURI.getLocation();
+
+    //  Make sure that we match one of our watched sources
+
+    foundWatchSource = false;
+    for (i = 0; i < watchSources.getSize(); i++) {
+
+        //  Make sure to expand the path.
+        watcherLoc = TP.uriExpandPath(watchSources.at(i));
+
+        //  If the URI location starts with our watcher location, then it must
+        //  be being served from that location - we found a match
+        if (uriLoc.startsWith(watcherLoc)) {
+            foundWatchSource = true;
+            break;
+        }
+    }
+
+    //  The target URI didn't come from one of our watched sources - exit here.
+    if (!foundWatchSource) {
+        return;
+    }
+
+    //  Put the URI in the list of URLs that we're watching.
+    if (TP.notValid(watchedURLs = this.get('watchedURLs'))) {
+        watchedURLs = TP.hc();
+        this.set('watchedURLs', watchedURLs);
+    }
+
+    //  If we haven't already allocated a signal source, go ahead and do that
+    //  now.
+    if (TP.notValid(watcher = this.get('$watcherSignalSource'))) {
+
+        //  Make sure that we have a valid signal source URI for the watcher.
+        watcherURI = this.get('watcherSignalSourceURI');
+        if (!TP.isURI(watcherURI)) {
+            return this.raise('TP.sig.InvalidURI',
+                                'Invalid watcher signal source URI.');
+        }
+
+        //  Make sure that we have a valid signal source type for the watcher.
+        watcherType = TP.sys.require(this.get('watcherSignalSourceType'));
+        if (!TP.isType(watcherType)) {
+            return this.raise('TP.sig.InvalidType',
+                                'Invalid watcher signal source type.');
+        }
+
+        //  Construct a watcher with its source source type and URI.
+        watcher = watcherType.construct(watcherURI.getLocation());
+        this.set('$watcherSignalSource', watcher);
+    }
+
+    //  Don't put this in here more than once.
+    if (!watchedURLs.hasKey(uriLoc)) {
+        //  NB: We add the targetURI to the collection of watched URIs before we
+        //  test the collection.
+        watchedURLs.atPut(targetURI.getLocation(), targetURI);
+    }
+
+    //  We only observe if we have real URIs to watch and it's the first one (we
+    //  don't want to observe more than once).
+    if (TP.notEmpty(watchedURLs) && watchedURLs.getSize() === 1) {
+
+        signalType = this.get('watcherSignalType');
+        if (TP.isEmpty(signalType)) {
+            return this.raise('TP.sig.InvalidType',
+                                'Invalid watcher signal type.');
+        }
+
+        //  Observe the watcher for the signal type. Note how we also observe
+        //  TP.sys for AppShutdown so that we can try to shut down our watcher
+        //  when we terminate.
+        this.observe(watcher, signalType);
+        this.observe(TP.sys, 'TP.sig.AppShutdown');
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('handleAppShutdown',
+function(aSignal) {
+
+    /**
+     * @method handleAppShutdown
+     * @summary Handles when the app is about to be shut down. This is used to
+     *     try to shut down the remote signal source which is notifying us of
+     *     changes to URLs that it manages.
+     * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
+     *     application is to be shut down.
+     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     */
+
+    var watcher,
+        signalType;
+
+    watcher = this.get('$watcherSignalSource');
+
+    //  If we don't have a valid watcher, we just exit here.
+    if (TP.notValid(watcher)) {
+        return this;
+    }
+
+    //  We can't ignore a signal that we're not configured for.
+    signalType = this.get('watcherSignalType');
+    if (TP.isEmpty(signalType)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Invalid watcher signal type.');
+    }
+
+    //  Ignore the watcher for the signal type. And make sure to remove our
+    //  observation of AppShutdown.
+    this.ignore(watcher, signalType);
+    this.ignore(TP.sys, 'TP.sig.AppShutdown');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('unwatch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method unwatch
+     * @summary Removes any watches for changes to the URLs remote resource. See
+     *     this type's 'watch' method for more information.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var watchedURLs,
+
+        watcher,
+        signalType;
+
+    //  If we don't have a list of watched URLs, create one.
+    if (TP.notValid(watchedURLs = this.get('watchedURLs'))) {
+        watchedURLs = TP.hc();
+        this.set('watchedURLs', watchedURLs);
+    }
+
+    //  NB: We remove the targetURI from the collection of watched URIs before
+    //  we test the collection.
+    watchedURLs.removeKey(targetURI.getLocation());
+
+    //  No more URIs to observe? Ignore the watcher - note that this may also
+    //  cause the watcher to shut down any notification machinery it has.
+    if (TP.isEmpty(watchedURLs)) {
+
+        watcher = this.get('$watcherSignalSource');
+
+        //  We can't ignore a signal that we're not configured for.
+        signalType = this.get('watcherSignalType');
+        if (TP.isEmpty(signalType)) {
+            return this.raise('TP.sig.InvalidType',
+                                'Invalid watcher signal type.');
+        }
+
+        //  Ignore the watcher for the signal type. And make sure to remove our
+        //  observation of AppShutdown.
+        this.ignore(watcher, signalType);
+        this.ignore(TP.sys, 'TP.sig.AppShutdown');
+    }
+
+    return;
+});
+
+//  =======================================================================
+//  TP.sig.RemoteURLChangeSignal
+//  ========================================================================
+
+TP.sig.RemoteSourceSignal.defineSubtype('RemoteURLChangeSignal');
+
 //  ========================================================================
 //  end
 //  ========================================================================
-
