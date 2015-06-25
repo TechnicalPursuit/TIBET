@@ -94,9 +94,11 @@ Cmd.prototype.HELP =
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['selftest', 'ignore-only', 'ignore-skip'],
+        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap'],
         'string': ['target', 'suite'],
-        'default': {}
+        'default': {
+            tap: true
+        }
     },
     Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
@@ -105,7 +107,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--ignore-only] [--ignore-skip]';
+Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--ignore-only] [--ignore-skip] [--no-tap]';
 
 //  ---
 //  Instance Methods
@@ -116,7 +118,7 @@ Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <s
  * @param {Array.<String>} arglist The argument list to finalize.
  * @returns {Array.<String>} The finalized argument list.
  */
-Cmd.prototype.finalizePhantomArglist = function(arglist) {
+Cmd.prototype.finalizeArglist = function(arglist) {
 
     if (arglist.indexOf('--tap') === -1 &&
             arglist.indexOf('--no-tap') === -1) {
@@ -139,7 +141,7 @@ Cmd.prototype.getProfile = function() {
         profile = this.options.profile;
     }
 
-    if (CLI.isValid(this.options.selftest)) {
+    if (this.options.selftest) {
         profile = '~lib_etc/phantom/phantom#selftest';
     } else if (CLI.notEmpty(this.options.profile)) {
         profile = this.options.profile;

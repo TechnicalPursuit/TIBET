@@ -59,7 +59,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['link'],
         'default': {
-            link: false
         }
     },
     Parent.prototype.PARSE_OPTIONS);

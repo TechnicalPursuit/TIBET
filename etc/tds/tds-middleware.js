@@ -26,7 +26,7 @@
     chokidar = require('chokidar');
 
     // Load the CLI's package support to help with option/configuration data.
-    Package = require('../../src/tibet/cli/_Package');
+    Package = require('../cli/tibet-package');
 
 
     //  ---
@@ -34,6 +34,21 @@
     //  ---
 
     TDS = {};
+
+    /**
+     * Command line parsing options for the minimist module to use. These are
+     * typically referenced in the server.js file for a project using the TDS.
+     * @type {Object} A dictionary of command line argument options.
+     */
+    /* eslint-disable quote-props */
+    TDS.PARSE_OPTIONS = {
+        'boolean': ['tds.use.cli', 'tds.use.patcher', 'tds.use.watcher',
+            'tds.use.webdav'],
+        'string': ['app_root', 'config'],
+        'number': ['tds.port'],
+        'default': {}
+    };
+    /* eslint-enable quote-props */
 
     /**
      * The package instance assisting with configuration data loading/lookup.
@@ -73,6 +88,9 @@
         return TDS._package.getcfg(property);
     };
 
+    //  Alias for same syntax found in TIBET client.
+    TDS.cfg = TDS.getcfg;
+
     /**
      * Initalizes the TDS package, providing it with any initialization options
      * needed such as app_root or lib_root. If the package has already been
@@ -81,6 +99,8 @@
      * @returns {Package} The package instance.
      */
     TDS.initPackage = function(options) {
+        var json;
+
         if (this._package) {
             return this._package;
         }
@@ -111,7 +131,8 @@
     /**
      * Processes command execution requests by passing the argument list to the
      * TIBET command. This option is disabled by default and must be
-     * specifically activated.
+     * specifically activated. Also note that only valid `tibet` command line
+     * options can be executed in this fashion, not general commands.
      *
      * You can test whether it works by using URLs of the form:
      *

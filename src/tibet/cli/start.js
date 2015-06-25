@@ -19,11 +19,13 @@
 
 var CLI,
     Parent,
-    Cmd;
+    Cmd,
+    TDS;
 
+//  Bring in the TDS code so we can reference command line options.
+TDS = require('../../../etc/tds/tds-middleware');
 
 CLI = require('./_cli');
-
 
 //  ---
 //  Type Construction
@@ -55,39 +57,35 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * @type {string}
  */
 Cmd.prototype.HELP =
-'Starts the current TIBET project data server, if any.\n\n' +
+'Starts the current TIBET project data server, if available.\n\n' +
 
-'Many TIBET dna templates provide a simple Node.js-based server\n' +
-'based on Connect and/or Express for use during development. If\n' +
+'Many TIBET dna templates provide a simple Node.js-based server. If\n' +
 'the current project contains either a server.js file or can invoke\n' +
 '\'npm start\' this command will try to start that server.\n\n' +
 
-'The optional --port parameter lets you specify a port other than\n' +
-'the default (which is port 1407).\n\n' +
-
-'When a local server.js file is used it can be augmented with code\n' +
-'for TIBET Data Server (TDS) functionality. Use require() with the\n' +
-'path \'tibet/etc/tds/tds-middleware\' to load that module.\n\n' +
+'The optional --tds.port parameter lets you specify a port other than\n' +
+'the registered TIBET Data Server port (which is port 1407).\n\n' +
 
 'If your server includes TDS features you can optionally add\n' +
 'command-line parameters to provide the various modules of the TDS\n' +
-'with config data. Use \'tds-{module}\' plus \'-{var}\' in these\n' +
+'with config data. Use \'tds.{module}\' plus \'.{var}\' in these\n' +
 'cases, replacing {var} with the config variable you need. As an\n' +
-'example \'--tds-watch-root\' provides the tds file watch module\n' +
+'example \'--tds.watch.root\' provides the tds file watch module\n' +
 'with the root path to watch for source code changes.\n';
 
 /**
- * The default TIBET port.
- * @type {number}
+ * Command argument parsing options.
+ * @type {Object}
  */
-Cmd.prototype.PORT = 1407;      // Reserved by us in another lifetime.
-
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    TDS.PARSE_OPTIONS,          //   NOTE we use the TDS's list here.
+    Parent.prototype.PARSE_OPTIONS);
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet start [--port <port>] [<tds options>]';
+Cmd.prototype.USAGE = 'tibet start [<tds options>]';
 
 
 //  ---
@@ -103,15 +101,12 @@ Cmd.prototype.execute = function() {
 
     var sh,     // The shelljs module.
         child,  // The child_process module.
-
+        args,   // Argument list for child process.
         server, // Spawned child process for the server.
         cmd,    // Closure'd var providing access to the command object.
-        port,   // The port number to start up on.
         inuse,  // Flag to trap EADDRINUSE exceptions.
         msg,    // Shared message content.
-        url,    // Url for file-based launch messaging.
-        indexpage,  // Config parameter for index page.
-        index;  // URL to the index page.
+        url;    // Url for file-based launch messaging.
 
     cmd = this;
 
@@ -122,43 +117,25 @@ Cmd.prototype.execute = function() {
         return CLI.notInitialized();
     }
 
-    // Determine the port the user wants to start on.
-    port = CLI.getcfg('port') ||
-        CLI.getcfg('tds.port') ||
-        process.env.npm_package_config_port ||
-        process.env.PORT ||
-        this.PORT;
-
-// TODO:    process command line arguments such that we can add them to the
-//          array of parameters given to spawn() calls below.
-
     // Make sure we work from the launch (and hence server.js) location.
     process.chdir(CLI.getAppHead());
 
-    // If there's no server.js assume a 'noserver' template or 'couchdb'
-    // template of some sort and default to opening the index.html.
     if (!sh.test('-f', 'server.js')) {
+        // If there's no server.js assume a 'noserver' template or 'couchdb'
+        // template of some sort and default to opening the index.html.
         url = CLI.expandPath(CLI.getcfg('path.index_page'));
         msg = 'No server.js. Opening ' + url;
         cmd.system(msg);
 
-        process.env.PORT = port;
-        server = child.spawn('open',
-            [CLI.expandPath(CLI.getcfg('path.index_page'))]);
+        server = child.spawn('open', [url]);
     } else {
-        // If possible try to output the actual page reference to the index
-        // page. This helps with things like CouchDB template start output.
-        indexpage = CLI.getcfg('path.index_page');
-        if (CLI.notEmpty(indexpage)) {
-            index = CLI.expandPath(CLI.getcfg('path.index_page'));
-            index = index.replace(CLI.expandPath(CLI.getAppHead()), '');
-        } else {
-            index = '';
-        }
+        //  Capture the command line arguments and place server.js on the front.
+        //  This essentially becomes the command line for a new 'node' command.
+        args = this.getArglist();
+        args.unshift('server.js');
 
-        server = child.spawn('node',
-            ['server.js', '--port', port,
-                '--app-root', CLI.getAppRoot()]);
+        //  Create and invoke the command to run the server.
+        server = child.spawn('node', args);
     }
 
     server.stdout.on('data', function(data) {
@@ -189,7 +166,8 @@ Cmd.prototype.execute = function() {
         if (/ADDRINUSE/.test(logmsg)) {
             // Set a flag so we don't dump a lot of unhelpful output.
             inuse = true;
-            cmd.error('Unable to start server. Port ' + port + ' is busy.');
+            cmd.error('Unable to start server. Port ' +
+                CLI.getcfg('tds.port') + ' is busy.');
             return;
         }
 

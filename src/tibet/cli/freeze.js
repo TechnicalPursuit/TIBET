@@ -106,10 +106,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['minify', 'raw', 'all', 'zipped'],
         'string': ['tibet'],
         'default': {
-            all: false,
             minify: true,
-            zipped: false,
-            raw: false,
             tibet: 'base'
         }
     },

@@ -126,6 +126,7 @@ Cmd.prototype.execute = function() {
         child,      // The spawned child process.
         tshpath,    // Path to the TIBET Shell runner script.
         cmd,        // Local binding variable.
+        script,     // The command script to run.
         arglist;    // The argument list to pass to phantomjs.
 
     proc = require('child_process');
@@ -139,15 +140,31 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
+    // Without a script we can't run so verify that we got something useful.
+    script = this.getScript();
+    if (script === void 0) {
+        this.usage();
+        return;
+    }
+    this.options.script = script;
+
+    // Ensure we update the value for our profile. This is often computed based
+    // on where the command is being executed.
+    this.options.profile = this.getProfile();
+
+    //  Push values into the config or we won't get them back in the arglist.
+    TP.sys.setcfg('script', this.options.script);
+    TP.sys.setcfg('profile', this.options.profile);
+
     // Access the argument list. Subtypes can adjust how they assemble this to
     // alter the default behavior.
-    arglist = this.getPhantomArglist();
+    arglist = this.getArglist();
     if (CLI.isEmpty(arglist)) {
         return;
     }
 
     // Finalize it, giving subtypes a chance to tweak the arguments as needed.
-    arglist = this.finalizePhantomArglist(arglist);
+    arglist = this.finalizeArglist(arglist);
 
     // If no arglist then we presubably output usage() and are just returning.
     if (!arglist) {
@@ -234,75 +251,6 @@ Cmd.prototype.execute = function() {
     });
 };
 
-
-/**
- * Performs any final processing of the argument list prior to execution. The
- * default implementation does nothing but subtypes can leverage this method
- * to ensure the command line meets their specific requirements.
- * @param {Array.<String>} arglist The argument list to finalize.
- * @returns {Array.<String>} The finalized argument list.
- */
-Cmd.prototype.finalizePhantomArglist = function(arglist) {
-    return arglist;
-};
-
-
-/**
- * Returns an array of arguments to be passed to a spawn() operation used to
- * invoke phantomjs. Subtypes can override this to default their behavior in
- * different ways.
- * @returns {Array.<String>}
- */
-Cmd.prototype.getPhantomArglist = function() {
-
-    var script,     // The script to run.
-        arglist,    // Array of parameters to spawn.
-        cmd;
-
-    cmd = this;
-
-    arglist = [];
-
-    // Without a script we can't run so verify that we got something useful.
-    script = this.getScript();
-    if (script === void 0) {
-        this.usage();
-        return;
-    }
-    this.options.script = script;
-
-    // Ensure we update the value for our profile. This is often computed based
-    // on where the command is being executed.
-    this.options.profile = this.getProfile();
-
-    // Process string arguments. We need both key and value here.
-    Cmd.prototype.PARSE_OPTIONS.string.forEach(function(key) {
-        if (CLI.notEmpty(cmd.options[key])) {
-            arglist.push('--' + key, cmd.options[key]);
-        }
-    });
-
-    // Process number arguments. We need both key and value here.
-    Cmd.prototype.PARSE_OPTIONS.number.forEach(function(key) {
-        if (CLI.notEmpty(cmd.options[key])) {
-            arglist.push('--' + key, cmd.options[key]);
-        }
-    });
-
-    // Process boolean arguments. These are just the key with --no- if the value
-    // is false.
-    Cmd.prototype.PARSE_OPTIONS.boolean.forEach(function(key) {
-        if (CLI.notEmpty(cmd.options[key])) {
-            if (cmd.options[key]) {
-                arglist.push('--' + key);
-            } else {
-                arglist.push('--no-' + key);
-            }
-        }
-    });
-
-    return arglist;
-};
 
 /**
  * Computes and returns the full boot profile value, combining the profile

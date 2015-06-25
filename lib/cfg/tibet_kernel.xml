@@ -28,9 +28,9 @@
     <script src="TIBETFoundation.js"/>
 
     <script src="~lib_deps/bluebird-tpi.min.js"
-        unless="boot.unminified" no-minify="true" no-lint="true"/>
+        unless="boot.unminified linting" no-minify="true"/>
     <script src="~lib_deps/bluebird-tpi.js"
-        if="boot.unminified" no-lint="true"/>
+        if="boot.unminified" unless="linting"/>
     <script>
         <![CDATA[
         Promise[TP.NAME] = 'Promise';
@@ -41,14 +41,14 @@
         ]]>
     </script>
 
-    <script src="~lib_deps/jxon-tpi.js" no-lint="true"/>
+    <script src="~lib_deps/jxon-tpi.js" unless="linting"/>
     <script>
         <![CDATA[
         TP.extern.jxon = JXON;
         ]]>
     </script>
 
-    <script src="~lib_deps/forge-tpi.min.js" no-minify="true" no-lint="true"/>
+    <script src="~lib_deps/forge-tpi.min.js" no-minify="true" unless="linting"/>
     <script>
         <![CDATA[
         TP.extern.forge = forge;
@@ -85,25 +85,25 @@
     <script src="TIBETCSSPrimitivesPlatform.js"/>
     <script src="TIBETCSSPrimitivesPost.js"/>
 
-    <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="true"/>
+    <script src="~lib_deps/jquery-sizzle-tpi.js" unless="linting"/>
     <script>
         <![CDATA[
         TP.extern.Sizzle = Sizzle;
         ]]>
     </script>
-    <script src="~lib_deps/jquery-jquery-tpi.js" no-lint="true"/>
+    <script src="~lib_deps/jquery-jquery-tpi.js" unless="linting"/>
     <script>
         <![CDATA[
         TP.extern.jQuery = jQuery;
         ]]>
     </script>
-    <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="true"/>
+    <script src="~lib_deps/jquery-xmlns-tpi.js" unless="linting"/>
     <script src="TIBETCSSQueryPost.js"/>
 
     <script src="~lib_deps/xpathjs-tpi.min.js"
-        unless="boot.unminified" no-minify="true" no-lint="true"/>
+        unless="boot.unminified linting" no-minify="true"/>
     <script src="~lib_deps/xpathjs-tpi.js"
-        if="boot.unminified" no-lint="true"/>
+        if="boot.unminified" unless="linting"/>
     <script>
         <![CDATA[
         TP.extern.XPathJS = XPathJS;

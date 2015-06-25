@@ -19,9 +19,10 @@
  *
  *  --app_root <string>         // Defaults to '.'
  *
- *  --no-cli                    // Defaults to false.
- *  --no-watcher                // Defaults to false.
- *  --no-webdav                 // Defaults to false.
+ *  --tds.use.cli               // Defaults to false.
+ *  --tds.use.patcher           // Defaults to false.
+ *  --tds.use.watcher           // Defaults to false.
+ *  --tds.use.webdav            // Defaults to false.
  *
  *  --tds.port <number>         // Defaults to 1407.
  *  --tds.secret <string>       // Should change from tibet_cfg value.
@@ -50,6 +51,7 @@
         cookieParser,       // Express cookie parser.
         csurf,              // Express cross-site protection.
         DefaultPouch,       // PouchDB.defaults instance.
+        env,                // Current execution environment.
         express,            // Express web framework.
         helmet,             // Security blanket.
         http,               // Web server baseline.
@@ -92,8 +94,8 @@
         "   //               //    //\n" +
         "   /                ///   /\n" +
         "  ,/____             //  ,/_____\n" +
-        " //////////-_,_      // ,///////////,_\n" +
-        "           `''//,_   '/            `'///,_\n" +
+        " //////////-,,_      // ,///////////,_\n" +
+        "           `'-//,_   '/            `'///,_\n" +
         "                `'/,_ /                 '//,\n" +
         "                   '/,/,                  '/_\n" +
         "                     `/,                   `/,\n" +
@@ -108,8 +110,11 @@
     console.log(logo);
 
     //  ---
-    //  require()'s
+    //  Baseline require()'s
     //  ---
+
+    http = require('http');
+    path = require('path');
 
     express = require('express');
     /* eslint-disable new-cap */
@@ -119,62 +124,81 @@
     bodyParser = require('body-parser');
     compression = require('compression');
     cookieParser = require('cookie-parser');
-    csurf = require('csurf');
-    helmet = require('helmet');
-    http = require('http');
-    io = require('socket.io');
-    minimist = require('minimist');
-    morgan = require('morgan');
-    path = require('path');
-    PouchDB = require('pouchdb');
-    requireDir = require('require-dir');
-    routes = requireDir('./routes');
     serveStatic = require('serve-static');
     session = require('express-session');
-    TDS = require('tibet/etc/tds/tds-middleware');
+    morgan = require('morgan');
     winston = require('winston');
+
+    csurf = require('csurf');
+    helmet = require('helmet');
+
+    minimist = require('minimist');
+
+    requireDir = require('require-dir');
+    routes = requireDir('./routes');
+
+    TDS = require('tibet/etc/tds/tds-middleware');
+    io = require('socket.io');
+    PouchDB = require('pouchdb');
+
+    //  ---
+    //  Environment base
+    //  ---
+
+    app = express();
+    env = app.get('env');
 
     //  ---
     //  Argument Processing
     //  ---
 
-    argv = minimist(process.argv.slice(2)) || {_: []};
+    //  NOTE we parse here leveraging the parse options for the TDS middleware.
+    //  These may need to be adjusted for custom flag support.
+    argv = minimist(process.argv.slice(2), TDS.PARSE_OPTIONS) || {_: []};
 
     // Since server.js typically sits in the project root directory we can work
     // with __dirname here as a default.
     appRoot = argv.app_root || __dirname;
 
-    // Ensure the TDS loads configuration data from our computed root.
+    // Ensure the TDS loads configuration data which includes the proper app
+    // root and any command line arguments. TDS.cfg/getcfg should work then.
     argv.app_root = appRoot;
+
+    // Pass in the defaulted environment from Express.
+    argv.env = argv.env || env;
+
     TDS.initPackage(argv);
 
     // Lots of options for where to get a port number but try to leverage TDS
     // first. Our IANA port is the last option.
-    port = TDS.getcfg('port') ||
-        TDS.getcfg('tds.port') ||
+    port = TDS.cfg('tds.port') || TDS.cfg('port') ||
         process.env.npm_package_config_port ||
         process.env.PORT ||
-        1407;
+        1407;   //  registered TIBET Data Server port.
 
     //  ---
     //  Server Setup/Security
     //  ---
 
-    app = express();
+
+    //  TODO:   environment-specific require() processing
+
+
+
 
     //  Create parsers for body content. These are applied on a route-by-route
     //  basis to avoid conflicting with things like express-pouchdb.
     jsonParser = bodyParser.json();
     urlencodedParser = bodyParser.urlencoded({extended: false});
 
-    // TODO: add login authentication based on params or some such.
+    // TODO: add login authentication (see passport.js).
 
     // Configure a basic session. We look up the secret here which allows it to
     // be set on the command line or via the project's tibet.json file.
     // TODO: warn if it's still the one coded into the library as a default
     // value.
     app.use(session({
-        secret: TDS.getcfg('tds.secret'),
+        secret: TDS.cfg('tds.secret'),
         resave: true,                       // TODO: remove when possible.
         saveUninitialized: true             // TODO: remove when possible.
     }));
@@ -240,29 +264,29 @@
     // Let the client access the tibet command line functionality. Potentially
     // not secure, but at least the command being run and the command set is
     // somewhat constrained.
-    if (argv.cli !== false) {
-        app.post(TDS.getcfg('tds.cli.uri'), TDS.cli());
+    if (TDS.cfg('tds.use.cli') === true) {
+        app.post(TDS.cfg('tds.cli.uri'), TDS.cli());
     }
 
     // Configure the TIBET patch handler. This will process requests from the
     // client to apply a patch to a source file, or to replace the file
     // entirely.
-    if (argv.patcher !== false) {
-        app.put(TDS.getcfg('tds.patch.uri'), TDS.patcher());
-        app.post(TDS.getcfg('tds.patch.uri'), TDS.patcher());
-        app.patch(TDS.getcfg('tds.patch.uri'), TDS.patcher());
+    if (TDS.cfg('tds.use.patcher') === true) {
+        app.put(TDS.cfg('tds.patch.uri'), TDS.patcher());
+        app.post(TDS.cfg('tds.patch.uri'), TDS.patcher());
+        app.patch(TDS.cfg('tds.patch.uri'), TDS.patcher());
     }
 
     // Configure the file watcher so changes on the server can be propogated to
     // the client. SSE must be active in the client for this to work.
-    if (argv.watcher !== false) {
-        app.get(TDS.getcfg('tds.watch.uri'), TDS.watcher());
+    if (TDS.cfg('tds.use.watcher') === true) {
+        app.get(TDS.cfg('tds.watch.uri'), TDS.watcher());
     }
 
     // Configure the webdav component so changes in the client can be propogated
     // to the server.
-    if (argv.webdav !== false) {
-        app.use(TDS.getcfg('tds.webdav.uri'), TDS.webdav());
+    if (TDS.cfg('tds.use.webdav') === true) {
+        app.use(TDS.cfg('tds.webdav.uri'), TDS.webdav());
     }
 
     //  ---
@@ -285,7 +309,7 @@
 
     // Serve a general 404 if no other handler too care of the request.
     app.use(function(req, res, next) {
-        res.status(404).send(TDS.getcfg('tds.404'));
+        res.status(404).send(TDS.cfg('tds.404'));
     });
 
     // Provide simple error handler middleware here.
@@ -293,7 +317,7 @@
         console.error(err.stack);
 
         // TODO: dump stack/error back to the client...?
-        res.status(500).send(TDS.getcfg('tds.500'));
+        res.status(500).send(TDS.cfg('tds.500'));
     });
 
 
@@ -306,12 +330,15 @@
 
     http.createServer(app).listen(port);
 
-    version = TDS.getcfg('tibet.version') || '';
-    console.log('TIBET Data Server ' +
+    env = argv.env.charAt(0).toUpperCase() + argv.env.slice(1);
+
+    version = TDS.cfg('tibet.version') || '';
+    console.log(env + ' TIBET Data Server ' +
             (version ? version + ' ' : '') +
             'running at http://127.0.0.1' +
         (port === 80 ? '' : ':' + port));
 
+    //  uncomment to view final route configuration
     //console.log(app._router.stack);
 }());
 

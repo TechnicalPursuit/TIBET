@@ -154,8 +154,8 @@ Package = function(options) {
     TP.sys.cfg = TP.sys.getcfg;
 
     // NOTE we do this early so command-line can affect debugging output etc for
-    // the later steps.
-    this.setRuntimeOptions();
+    // the later steps and a second time after loading config etc.
+    this.setRuntimeOptions(this.options);
 
     try {
         // Load remaining TIBET configuration data for paths/virtual paths etc.
@@ -183,9 +183,9 @@ Package = function(options) {
 
     // Process command-line flags to replace any loaded values with any values
     // the user (or invoking routine) provided directly.
-    this.setRuntimeOptions();
+    this.setRuntimeOptions(this.options, '', true);
 
-    // Expand options into working properties.
+    // Expand final option values into working properties.
     this.expandOptions();
 
     this.initialized = true;
@@ -203,11 +203,28 @@ Package.REGEX_REGEX = /^\/.*\/$/;
 Package.KV_REGEX = /\=/;
 
 /**
+ * The default package config file to process.
+ * @type {string}
+ */
+Package.CONFIG = 'base';
+
+
+/**
+ * Default properties to ensure expected default behavior for cli/package.
+ */
+Package.DEFAULT_PROPERTIES = {
+    boot: {
+        phase_one: false,
+        phase_two: true
+}};
+
+
+/**
  * A map of element attributes that will be copied down during expansion.
  * @type {Array.<string>}
  */
 Package.MAPPED_ATTRS = {
-    'no-lint': true
+    'no-minify': true
 };
 
 
@@ -222,7 +239,7 @@ Package.NPM_FILE = 'package.json';
  * The default package file to process.
  * @type {string}
  */
-Package.PACKAGE = '~app_cfg/app.xml';
+Package.PACKAGE = '~app_cfg/standard.xml';
 
 
 /**
@@ -230,6 +247,14 @@ Package.PACKAGE = '~app_cfg/app.xml';
  * @type {string}
  */
 Package.PROJECT_FILE = 'tibet.json';
+
+
+/**
+ * The configuration file used for the TIBET server, which keeps settings
+ * for the server separate from those used for the client.
+ * @type {string}
+ */
+Package.SERVER_FILE = 'tibet-server.json';
 
 
 /**
@@ -385,6 +410,13 @@ Package.prototype.options = null;
  * @type {Object.<string, object>}
  */
 Package.prototype.tibet = null;
+
+
+/**
+ * Contents of any SERVER_FILE (tibet-server.json) relative to the project.
+ * @type {Object.<string, object>}
+ */
+Package.prototype.tds = null;
 
 
 //  ---
@@ -854,8 +886,7 @@ Package.prototype.expandPackage = function(aPath, aConfig, anElement) {
 
         if (isEmpty(aConfig)) {
             if (notValid(this.config)) {
-                this.config = this.getcfg('config') ||
-                    this.getDefaultConfig(doc);
+                this.config = this.getcfg('config') || this.getDefaultConfig(doc);
             }
             config = this.config;
         } else {
@@ -1163,7 +1194,7 @@ Package.prototype.getLibRoot = function() {
     }
 
     // How far is this file from the library root?
-    offset = '../../../..';
+    offset = '../../..';
 
     checks = [
         [moduleDir, path.join(offset, tibet_lib.toUpperCase())],
@@ -1314,6 +1345,7 @@ Package.prototype.getcfg = function(property) {
             return cfg;
     }
 };
+Package.prototype.cfg = Package.prototype.getcfg;
 
 
 /**
@@ -1341,8 +1373,7 @@ Package.prototype.getDefaultConfig = function(aPackageDoc) {
         throw new Error(msg);
     }
     // TODO: rename to 'all' in config files etc?
-    // TODO: make this default of 'full' a constant?
-    return package.getAttribute('default') || 'full';
+    return package.getAttribute('default') || Package.CONFIG;
 };
 
 
@@ -1396,6 +1427,15 @@ Package.prototype.getPackageConfig = function() {
  */
 Package.prototype.getProjectConfig = function() {
     return this.tibet;
+};
+
+
+/**
+ * Returns the project configuration data from the SERVER_FILE.
+ * @returns {Object} Returns the tibet-server.json content.
+ */
+Package.prototype.getServerConfig = function() {
+    return this.tds;
 };
 
 
@@ -1770,7 +1810,7 @@ Package.prototype.listAllAssets = function(aPath, aList) {
     try {
         doc = this.packages[expanded];
         if (notValid(doc)) {
-            msg = 'Unable to list unexpanded package: ' + aPath;
+            msg = 'Unable to list unexpanded package: ' + expanded;
             throw new Error(msg);
         }
 
@@ -2002,14 +2042,14 @@ Package.prototype.listPackageAssets = function(aPath, aConfig, aList) {
     try {
         doc = this.packages[expanded];
         if (notValid(doc)) {
-            msg = 'Unable to list unexpanded package: ' + aPath;
+            msg = 'Unable to list unexpanded package: ' + expanded;
             throw new Error(msg);
         }
 
-        // Determine the configuration we'll be listing. Note we rely on having
-        // been through a defaulting process during package expansion to have
-        // set this.config earlier.
         if (isEmpty(aConfig)) {
+            if (notValid(this.config)) {
+                this.config = this.getcfg('config') || this.getDefaultConfig(doc);
+            }
             config = this.config;
         } else {
             config = aConfig;
@@ -2077,6 +2117,10 @@ Package.prototype.overlayProperties = function(dict, prefix) {
 
     pkg = this;
 
+    if (!dict) {
+        return;
+    }
+
     Object.keys(dict).forEach(function(key) {
         var value,
             name;
@@ -2094,15 +2138,6 @@ Package.prototype.overlayProperties = function(dict, prefix) {
             TP.sys.setcfg(name, value);
         }
     });
-
-/*
-            Object.keys(value).forEach(function(subkey) {
-                var name;
-
-                name = 'npm.' + key + '.' + subkey;
-                TP.sys.setcfg(name, value[subkey]);
-            });
-*/
 };
 
 /**
@@ -2166,6 +2201,7 @@ Package.prototype.setProjectOptions = function() {
 
     var msg,
         root,
+        env,
         fullpath,
         tibet_npm;
 
@@ -2198,6 +2234,19 @@ Package.prototype.setProjectOptions = function() {
         }
     }
 
+    fullpath = path.join(root, Package.SERVER_FILE);
+    if (sh.test('-f', fullpath)) {
+        try {
+            this.tds = require(fullpath) || {tds: {}};
+        } catch (e) {
+            msg = 'Error loading server file: ' + e.message;
+            if (this.options.stack === true) {
+                msg += ' ' + e.stack;
+            }
+            throw new Error(msg);
+        }
+    }
+
     fullpath = path.join(root, Package.NPM_FILE);
     if (sh.test('-f', fullpath)) {
         try {
@@ -2214,6 +2263,22 @@ Package.prototype.setProjectOptions = function() {
     //  Blend in the values from npm and TIBET configuration files.
     this.overlayProperties(this.npm, 'npm');
     this.overlayProperties(this.tibet);
+
+    //  Process the TDS file content, if any. This is a bit special in that we
+    //  observe environment keys from within the server json file.
+    if (this.tds) {
+        if (this.tds.default) {
+            this.overlayProperties(this.tds.default, 'tds');
+        }
+
+        env = this.getcfg('env');
+        if (this.tds[env]) {
+            this.overlayProperties(this.tds[env], 'tds');
+        }
+    }
+
+    //  Blend in default properties, particularly for phases etc.
+    this.overlayProperties(Package.DEFAULT_PROPERTIES);
 
     // Clear this so the value from above doesn't affect our next steps.
     root = null;
@@ -2258,32 +2323,51 @@ Package.prototype.setProjectOptions = function() {
 
 
 /**
- * Processes any command line options and maps them into the overall
- * configuration map. This allows getcfg to be used as the single source of
- * information on what flags are set.
+ * Processes any command line options and maps them into the configuration map.
+ * This allows getcfg to be used as the single source of information on what
+ * flags are set. Note that only parameters that are either a) missing or b)
+ * explicitly set on the command line will be used. Properties which defaulted
+ * for which a prior value exists (non-null) will not be set.
  */
-Package.prototype.setRuntimeOptions = function() {
-    var pkg;
+Package.prototype.setRuntimeOptions = function(options, prefix, filter) {
+    var pkg,
+        args,
+        opts;
 
     pkg = this;
 
-    Object.keys(this.options).forEach(function(key) {
-        var value;
+    args = process.argv.slice(2);
+    opts = options || {};
 
-        value = pkg.options[key];
+    Object.keys(opts).forEach(function(key) {
+        var value,
+            name;
 
-        // If the value isn't a primitive it means the key was initially
-        // provided with a prefix. We'll need to recreate that to store the
-        // data properly.
-        if (Object.prototype.toString.call(value) === '[object Object]') {
-            Object.keys(value).forEach(function(subkey) {
-                var name;
-
-                name = key + '.' + subkey;
-                TP.sys.setcfg(name, value[subkey]);
-            });
+        value = opts[key];
+        if (prefix) {
+            name = prefix + '.' + key;
         } else {
-            TP.sys.setcfg(key, value);
+            name = key;
+        }
+
+        //  For non-primitives we recurse so we get a flattened set of keys.
+        if (Object.prototype.toString.call(value) === '[object Object]') {
+            pkg.setRuntimeOptions(value, name, filter);
+        } else {
+            if (filter) {
+                //  Only set values that were explicitly on the command line or
+                //  which have no value in the current configuration. This
+                //  avoids cases where we overlay a config file value with a
+                //  value defaulted by the command line processor.
+                if (isValid(TP.sys.getcfg(name))) {
+                    //  Has a value. We have to see an explicit key to override.
+                    if (args.indexOf('--' + name) === -1 &&
+                        args.indexOf('--no-' + name === -1)) {
+                        return;
+                    }
+                }
+            }
+            TP.sys.setcfg(name, value);
         }
     });
 };

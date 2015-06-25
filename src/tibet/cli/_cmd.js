@@ -90,6 +90,152 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, CLI.PARSE_OPTIONS);
 //  ---
 
 /**
+ * Processes key/value pairs and adds missing ones to the argument list
+ * provided. The keys are checked against the optional list of known parameters
+ * to avoid redundant processing.
+ */
+Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
+
+    var list,
+        opts,
+        skips,
+        name,
+        cmd;
+
+    list = arglist || [];
+    opts = options || {};
+    skips = known || [];
+
+    cmd = this;
+
+    // Pass along anything found in the arglist that isn't part of the official
+    // list.
+    Object.keys(opts).forEach(function(key) {
+        var value;
+
+        //  Ignore the _ argument from minimist parsing.
+        if (key === '_') {
+            return;
+        }
+
+        if (prefix) {
+            name = prefix + '.' + key;
+        } else {
+            name = key;
+        }
+
+        //  If it's already in the arglist nothing to do.
+        if (list.indexOf(name) !== -1) {
+            return;
+        }
+
+        //  If it's a known property ignore it...already processed.
+        if (known.indexOf(name) !== -1) {
+            return;
+        }
+
+        value = opts[key];
+
+        if (value === true) {
+            list.push('--' + name);
+        } else if (value === false) {
+            list.push('--no-' + name);
+        } else {
+            if (CLI.isObject(value)) {
+                //  Nested value...have to recurse.
+                cmd.augmentArglist(list, value, skips, name);
+            } else {
+                list.push('--' + name + '=' + value);
+            }
+        }
+    });
+
+    return list;
+};
+
+
+/**
+ * Performs any final processing of the argument list prior to execution. The
+ * default implementation does nothing but subtypes can leverage this method
+ * to ensure the command line meets their specific requirements.
+ * @param {Array.<String>} arglist The argument list to finalize.
+ * @returns {Array.<String>} The finalized argument list.
+ */
+Cmd.prototype.finalizeArglist = function(arglist) {
+    return arglist;
+};
+
+
+/**
+ * Returns an argument list that reflects the final options the command using,
+ * essentially giving the most verbose form of the command line that would have
+ * produced the commands configuration. This is typically used when spawning
+ * commands which need to reflect the receiver's true execution settings.
+ * @returns {Array.<String>}
+ */
+Cmd.prototype.getArglist = function() {
+
+    var arglist,
+        known,
+        cmd;
+
+    cmd = this;
+    arglist = [];
+    known = [];
+
+    // Process string arguments. We need both key and value here.
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.string) {
+        this.PARSE_OPTIONS.string.forEach(function(key) {
+            known.push(key);
+            if (CLI.notEmpty(CLI.getcfg(key))) {
+                arglist.push('--' + key, CLI.getcfg(key));
+            } else if (key in cmd.PARSE_OPTIONS.default) {
+                arglist.push('--' + key, cmd.PARSE_OPTIONS.default[key]);
+            }
+        });
+    }
+
+    // Process number arguments. We need both key and value here.
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.number) {
+        this.PARSE_OPTIONS.number.forEach(function(key) {
+            known.push(key);
+            if (CLI.notEmpty(CLI.getcfg(key))) {
+                arglist.push('--' + key, CLI.getcfg(key));
+            } else if (key in cmd.PARSE_OPTIONS.default) {
+                arglist.push('--' + key, cmd.PARSE_OPTIONS.default[key]);
+            }
+        });
+    }
+
+    // Process boolean arguments. These are just the key with --no- if the value
+    // is false.
+    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
+        this.PARSE_OPTIONS.boolean.forEach(function(key) {
+            known.push(key);
+            if (CLI.notEmpty(CLI.getcfg(key))) {
+                if (CLI.getcfg(key)) {
+                    arglist.push('--' + key);
+                } else {
+                    //  Booleans default to false normally so adding all the
+                    //  --no- prefixing can be verbose. Only do it if the
+                    //  default value was supposed to be true.
+                    if (key in cmd.PARSE_OPTIONS.default) {
+                        arglist.push('--no-' + key);
+                    }
+                }
+            } else if (key in cmd.PARSE_OPTIONS.default) {
+                //  If no value provided but it's supposed to default to true
+                //  then we need to push the flag manually.
+                arglist.push('--' + key);
+            }
+        });
+    }
+
+    //  Ensure any missing arguments are properly accounted for.
+    return this.augmentArglist(arglist, this.options, known);
+};
+
+/**
  * Returns the configuration values currently in force. Leverages the logic in a
  * TIBET Package object for the loading/processing of default TIBET parameters.
  * If no property is provided the entire set of configuration values is
@@ -119,60 +265,21 @@ Cmd.prototype.help = function() {
 
 /**
  * Parse the arguments and blend with default values. This routine uses parsing
- * via minimist and places the resulting arguments in the receiver's options
- * attribute. Note that the options from the CLI as well as any command-specific
- * options in the CLI.PROJECT_FILE are used in constructing the final arglist.
- * @param {Array.<string>} args Processed arguments from the command line.
+ * via minimist and places the result in the receiver's options property.
  * @returns {Object} An object in minimist argument format.
  */
-Cmd.prototype.parse = function(options) {
+Cmd.prototype.parse = function() {
     var command,
-        cmd,
         cfg;
 
-    // Note we use the command's own version of PARSE_OPTIONS here.
+    //  Parse the command line (again) but with the command's specific args.
     this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS || {});
 
-    // Now overlay any options provided as input.
-    this.options = CLI.blend(this.options, options);
-
-    // Unfortunately our approach to defaulting means we have to apply CLI
-    // defaults _after_ we blend any CLI.NPM_FILE values. So we have to do a
-    // shuffle here to remove them, blend in the package file stuff, then add
-    // anything missing back in.
-
-    cmd = this;
-
-    // Booleans get default values of false unless otherwise set to true.
-    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
-        this.PARSE_OPTIONS.boolean.forEach(function(flag) {
-            if (process.argv.indexOf('--' + flag) === -1 &&
-                process.argv.indexOf('--no-' + flag) === -1) {
-                delete cmd.options[flag];
-            }
-        });
-    }
-
-    // Strings, numbers, etc. with explicit defaults also need to be handled.
-    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.default) {
-        Object.keys(this.PARSE_OPTIONS.default).forEach(function(flag) {
-            if (process.argv.indexOf('--' + flag) === -1 &&
-                process.argv.indexOf('--no-' + flag) === -1) {
-                delete cmd.options[flag];
-            }
-        });
-    }
-
-    // Now overlay any options missing but provided by the CLI.PROJECT_FILE.
+    //  Blend in any missing options provided by the CLI.PROJECT_FILE.
     command = CLI.options._[0];
     cfg = CLI.getPackage().getProjectConfig().cli;
     if (cfg && cfg[command]) {
         this.options = CLI.blend(this.options, cfg[command]);
-    }
-
-    // Now we have to reverse that process...sigh...
-    if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.default) {
-        this.options = CLI.blend(this.options, this.PARSE_OPTIONS.default);
     }
 
     this.debug('process.argv: ' + JSON.stringify(process.argv));
@@ -212,9 +319,8 @@ Cmd.prototype.prompt = CLI.prompt;
  * Parses, checks for --usage/--help, and invokes execute() as needed. This is a
  * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
- * @param {Object.<string, object>} options Command processing options.
  */
-Cmd.prototype.run = function(options) {
+Cmd.prototype.run = function() {
 
     var code;
 
@@ -222,7 +328,7 @@ Cmd.prototype.run = function(options) {
     this.config = CLI.config;
 
     // Re-parse the command line with any localized parser options.
-    this.options = this.parse(options);
+    this.options = this.parse();
 
     this.debug(beautify(JSON.stringify(this.config.tibet)), true);
 
