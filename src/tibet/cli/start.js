@@ -63,15 +63,17 @@ Cmd.prototype.HELP =
 'the current project contains either a server.js file or can invoke\n' +
 '\'npm start\' this command will try to start that server.\n\n' +
 
-'The optional --tds.port parameter lets you specify a port other than\n' +
+'The optional --env parameter lets you specify an environment setting\n' +
+'such as `development` or `production`. The default is development.\n' +
+'The current setting is announced in the server startup banner\n\n' +
+
+'The --tds.port parameter lets you specify a port other than\n' +
 'the registered TIBET Data Server port (which is port 1407).\n\n' +
 
 'If your server includes TDS features you can optionally add\n' +
 'command-line parameters to provide the various modules of the TDS\n' +
-'with config data. Use \'tds.{module}\' plus \'.{var}\' in these\n' +
-'cases, replacing {var} with the config variable you need. As an\n' +
-'example \'--tds.watch.root\' provides the tds file watch module\n' +
-'with the root path to watch for source code changes.\n';
+'with config data. All values for the tds are supported. See the\n' +
+'output of `tibet config tds` for a list of current options.\n\n';
 
 /**
  * Command argument parsing options.
@@ -85,7 +87,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet start [<tds options>]';
+Cmd.prototype.USAGE = 'tibet start [--env <name>] [<tds options>]';
 
 
 //  ---
@@ -166,8 +168,7 @@ Cmd.prototype.execute = function() {
         if (/ADDRINUSE/.test(logmsg)) {
             // Set a flag so we don't dump a lot of unhelpful output.
             inuse = true;
-            cmd.error('Unable to start server. Port ' +
-                CLI.getcfg('tds.port') + ' is busy.');
+            cmd.error('Server start failed. Port is busy.');
             return;
         }
 
