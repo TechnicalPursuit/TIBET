@@ -1256,7 +1256,7 @@
     //  an absolute path using either a / or ~ prefix to reference libroot or
     //  approot respectively. this can be set in the boot script/tibet.xml files
     //  using the 'uris' parameter. A sample is in ~lib_dat/uris.xml.
-    TP.sys.setcfg('path.uri_file', null);
+    TP.sys.setcfg('path.uri_file', '~lib_dat/uris.xml');
 
     //  where is the default vCard file containing application vcards? this file
     //  is used (by default) as a simple way to create a small set of vcards
