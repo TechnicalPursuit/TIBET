@@ -70,5 +70,45 @@ function(aURI) {
 });
 
 //  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.html.img.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        handlerFunc;
+
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  Register a handler function that will signal a TP.sig.DOMReady when the
+    //  image has finished loading.
+    handlerFunc =
+        function() {
+
+            //  Remove this handler to avoid memory leaks.
+            elem.removeEventListener('load', handlerFunc, false);
+
+            this.signal('TP.sig.DOMReady');
+        }.bind(this);
+
+    elem.addEventListener('load', handlerFunc, false);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
