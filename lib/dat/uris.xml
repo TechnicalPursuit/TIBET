@@ -85,36 +85,6 @@
     uri="tibet:///~app_xsl/tp_nodetree_gecko.xsl"
     tibet:browserUI="gecko"/>
 
-  <!--  map the URI for CSS for XControls on Firefox -->
-  <uri name="tibet:///~lib_src/xctrls/xmlns/xctrls.css"
-    uri="tibet:///~lib_src/xctrls/xmlns/xctrls_firefox.css"
-    tibet:browser="firefox"/>
-
-  <!--  map the URI for CSS for XControls on IE -->
-  <uri name="tibet:///~lib_src/xctrls/xmlns/xctrls.css"
-    uri="tibet:///~lib_src/xctrls/xmlns/xctrls_ie.css"
-    tibet:browser="ie"/>
-
-  <!--  map the URI for CSS for XControls on Safari -->
-  <uri name="tibet:///~lib_src/xctrls/xmlns/xctrls.css"
-    uri="tibet:///~lib_src/xctrls/xmlns/xctrls_safari.css"
-    tibet:browser="safari"/>
-
-  <!--  map the URI for the app CSS file on Gecko -->
-  <uri name="tibet:///~app_styles/app.css"
-    uri="tibet:///~app_styles/app_gecko.css"
-    tibet:browserUI="gecko"/>
-
-  <!--  map the URI for the app CSS file on Trident -->
-  <uri name="tibet:///~app_styles/app.css"
-    uri="tibet:///~app_styles/app_trident.css"
-    tibet:browserUI="trident"/>
-
-  <!--  map the URI for the app CSS file on Webkit -->
-  <uri name="tibet:///~app_styles/app.css"
-    uri="tibet:///~app_styles/app_webkit.css"
-    tibet:browserUI="webkit"/>
-
   <!--
   The XML Catalog specification defines a rewriteURI element which allows
   the uriStartString to be rewritten with a new rewritePrefix. These rules
@@ -166,6 +136,12 @@
 
   <delegateURI tibet:uriMatchString="ws://.*:10081"
     tibet:urihandler="TP.test.WSEchoHandler" />
+
+  <delegateURI tibet:uriMatchString="http://localhost:1407.*"
+    tibet:urihandler="TP.tds.TDSURLHandler" />
+
+  <delegateURI tibet:uriMatchString="http://127.0.0.1:1407.*"
+    tibet:urihandler="TP.tds.TDSURLHandler" />
 
   <delegateURI uriStartString="jsonp://ajax.googleapis.com/ajax/services/search/web"
     tibet:contenttype="TP.goog.GoogleSearchData" />
