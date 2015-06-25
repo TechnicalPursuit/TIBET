@@ -9389,6 +9389,13 @@ TP.core.ElementNode.Type.defineAttribute('booleanAttrs', TP.ac());
 //  attributes' that need XML Base/virtual URI resolution.
 TP.core.ElementNode.Type.defineAttribute('uriAttrs', TP.ac());
 
+//  The attributes for this element type that are URI attributes that are also
+//  'reloadable' - that is, if the system is configured to reload URIs and the
+//  server that the resource loads from can send change notifications about URI
+//  changes, this type will be messaged when the resource pointed to by one of
+//  these URI attributes changes.
+TP.core.ElementNode.Type.defineAttribute('reloadableUriAttrs', TP.ac());
+
 //  the node's template. this will be used when instances are constructed
 //  with a TP.core.Hash incoming value
 TP.core.ElementNode.Type.defineAttribute('template');
@@ -10849,6 +10856,70 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        reloadableAttrs,
+        len,
+        i,
+
+        attrName,
+        val,
+
+        uri;
+
+    //  If we are configured to watch remote resources, then we need to query
+    //  this type for any 'reloadable URI attributes' and observe any URI
+    //  values that we find there.
+    if (TP.sys.cfg('uri.remote_watch')) {
+
+        //  Make sure that we have a node to work from.
+        if (!TP.isElement(elem = aRequest.at('node'))) {
+            return this.raise('TP.sig.InvalidNode');
+        }
+
+        tpElem = TP.wrap(elem);
+
+        //  Iterate over the reloadable attributes and try to get a URI value
+        //  from each one.
+
+        reloadableAttrs = this.get('reloadableUriAttrs');
+        len = reloadableAttrs.getSize();
+
+        for (i = 0; i < len; i++) {
+            attrName = reloadableAttrs.at(i);
+
+            if (TP.notEmpty(
+                val = TP.elementGetAttribute(elem, attrName, true))) {
+
+                //  If we can create a valid URI from the value we find there,
+                //  observe it for changes and tell it to watch its handler for
+                //  change notifications.
+
+                uri = TP.uc(val);
+                if (TP.isURI(uri)) {
+                    tpElem.observe(uri, 'TP.sig.ValueChange');
+                    uri.watch();
+                }
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagAttachEvents',
 function(aRequest) {
 
@@ -10897,6 +10968,76 @@ function(aRequest) {
     node = aRequest.at('node');
 
     return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Performs any 'detach' logic when the node is detached from its
+     *     owning document.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        reloadableAttrs,
+        len,
+        i,
+
+        attrName,
+        val,
+
+        uri;
+
+    //  If we are configured to watch remote resources, then we need to query
+    //  this type for any 'reloadable URI attributes' and ignore any URI
+    //  values that we find there (we will have already observed them in the
+    //  'tagAttachDOM' call above).
+    if (TP.sys.cfg('uri.remote_watch')) {
+
+        //  Make sure that we have a node to work from.
+        if (!TP.isElement(elem = aRequest.at('node'))) {
+            return this.raise('TP.sig.InvalidNode');
+        }
+
+        tpElem = TP.wrap(elem);
+
+        //  Iterate over the reloadable attributes and try to get a URI value
+        //  from each one.
+
+        reloadableAttrs = this.get('reloadableUriAttrs');
+        len = reloadableAttrs.getSize();
+
+        for (i = 0; i < len; i++) {
+            attrName = reloadableAttrs.at(i);
+
+            if (TP.notEmpty(
+                val = TP.elementGetAttribute(elem, attrName, true))) {
+
+                //  If we can create a valid URI from the value we find there,
+                //  ignore it for changes and tell it to unwatch its handler for
+                //  change notifications.
+
+                uri = TP.uc(val);
+                if (TP.isURI(uri)) {
+                    tpElem.ignore(uri, 'TP.sig.ValueChange');
+                    uri.unwatch();
+                }
+            }
+        }
+
+        //  Note: call this *after* we do the above since it does a bunch of
+        //  unregistration, etc.
+        this.callNextMethod();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -11485,6 +11626,78 @@ function() {
     }
 
     return content;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('handleValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles notification of an incoming signal. For types the
+     *     standard handle call will try to locate a signal-specific handler
+     *     function just like with instances, but the default method for
+     *     handling them defers to an instance rather than the type itself.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @returns {Object} The function's return value.
+     */
+
+    var origin,
+        originLocation,
+
+        reloadableAttrs,
+        len,
+        i,
+
+        attrName,
+        val,
+
+        methodName;
+
+    //  Grab the signal origin - for changes to observed URI resources (see the
+    //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
+    //  changed.
+    origin = aSignal.getSignalOrigin();
+
+    //  If it was a URI, then process it as a 'remote resource change'.
+    if (TP.isKindOf(origin, TP.core.URI)) {
+
+        //  Grab the fully expanded location of the URI that changed.
+        originLocation = origin.getLocation();
+
+        //  Iterate over the reloadable attributes.
+
+        reloadableAttrs = this.getType().get('reloadableUriAttrs');
+        len = reloadableAttrs.getSize();
+
+        for (i = 0; i < len; i++) {
+
+            attrName = reloadableAttrs.at(i);
+
+            //  Grab any URI location value that can be computed from the
+            //  result of getting the attribute on ourself (and removing any
+            //  'unique query' cache-busting string from it).
+            val = TP.uriRemoveUniqueQuery(
+                    TP.uc(this.getAttribute(attrName)).getLocation());
+
+            //  If that value equals the location that changed, call the proper
+            //  messaging machinery.
+            if (val === originLocation) {
+
+                //  Compute a method name for reloading the resource referenced
+                //  by that attribute on ourself and invoke it if we respond to
+                //  that method..
+                methodName = 'reloadFromAttr' + attrName.asTitleCase();
+                if (TP.canInvoke(this, methodName)) {
+                    this[methodName](val);
+                    break;
+                }
+            }
+        }
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
