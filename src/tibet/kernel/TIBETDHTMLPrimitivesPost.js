@@ -5869,11 +5869,11 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('htmlElementReplaceWith',
+TP.definePrimitive('htmlElementReplaceContent',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @method htmlElementReplaceWith
+     * @method htmlElementReplaceContent
      * @summary Replaces anElement which should be an HTML element.
      * @description This method sets the 'outer content' of anElement to
      *     theContent which means that the entire element, including its start
@@ -9092,7 +9092,7 @@ function(aWindow, anHref) {
             //  Merge the attributes from the existing element onto the new
             //  element and replace the old with the new.
             TP.elementMergeAttributes(elemsWithTTag.at(i), newElem);
-            TP.xmlElementReplaceWith(elemsWithTTag.at(i), newElem);
+            TP.xmlElementReplaceContent(elemsWithTTag.at(i), newElem);
         }
     }
 

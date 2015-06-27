@@ -16111,7 +16111,7 @@ function(aRequest) {
 
     //  Replace the original element in the DOM so processing will continue in
     //  the proper context.
-    replacement = TP.elementReplaceWith(elem, replacement, null, false);
+    replacement = TP.elementReplaceContent(elem, replacement, null, false);
 
     return replacement;
 });
