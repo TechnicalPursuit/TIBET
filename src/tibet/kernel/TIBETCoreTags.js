@@ -60,7 +60,7 @@ function(aRequest) {
             '&lt;' + this.getCanonicalName() + '/&gt;' +
             '</a>');
 
-    TP.elementReplaceWith(elem, newElem);
+    TP.elementReplaceContent(elem, newElem);
 
     return;
 });
@@ -199,7 +199,7 @@ function(aRequest) {
         '</p>' +
     '</div>');
 
-    TP.elementReplaceWith(elem, newElem);
+    TP.elementReplaceContent(elem, newElem);
 
     return;
 });

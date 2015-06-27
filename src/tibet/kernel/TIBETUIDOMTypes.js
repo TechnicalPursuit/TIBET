@@ -5629,8 +5629,7 @@ isBubbling) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('signalAfterUnwind',
-function(aSignal, aPayload, aPolicy, aType, isCancelable,
-isBubbling) {
+function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
      * @method signalAfterUnwind

@@ -1047,6 +1047,7 @@ TP.CREATE = 'create';
 TP.DELETE = 'delete';
 TP.INSERT = 'insert';
 TP.UPDATE = 'update';
+TP.REPLACE = 'replace';
 TP.SORTED = 'sorted';
 
 //  information

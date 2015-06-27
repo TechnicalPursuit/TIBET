@@ -14,6 +14,8 @@
     <config ref="soap"/>
     <config ref="webdav"/>
     <config ref="xmlrpc"/>
+
+    <config ref="tds"/>
 </config>
 
 <config id="rest">
@@ -49,6 +51,10 @@
     <script src="xmlrpc/TPXMLRPCRequest.js"/>
     <script src="xmlrpc/TPXMLRPCResponse.js"/>
     <script src="xmlrpc/TPXMLRPCService.js"/>
+</config>
+
+<config id="tds">
+    <script src="tds/TP.tds.TDSURLHandler.js"/>
 </config>
 
 </package>

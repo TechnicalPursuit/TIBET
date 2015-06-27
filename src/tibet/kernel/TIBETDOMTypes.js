@@ -5321,6 +5321,20 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return TP.nodeGetChildNodes(this.getNativeNode()).getSize() === 0;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('isSingleValued',
 function() {
 
@@ -5367,6 +5381,193 @@ function(aParamHash) {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('replaceContent',
+function(newContent, aRequest, stdinContent) {
+
+    /**
+     * @method replaceContent
+     * @summary Replaces the content of the receiver's native DOM counterpart
+     *     with the content supplied.
+     * @param {Object} newContent The content to write into the receiver. This
+     *     can be a String, a Node, or an Object capable of being converted into
+     *     one of those forms.
+     * @param {TP.sig.Request} aRequest An optional request object which defines
+     *     further parameters.
+     * @param {Object} stdinContent Content to set as the 'stdin' when executing
+     *     the supplied content. Note that if this parameter is supplied, the
+     *     content is 'executed', as well as processed, by the shell.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
+     */
+
+    var request,
+        content;
+
+    //  We return if newContent isn't valid and clear ourself if newContent is
+    //  the empty String.
+    if (TP.notValid(newContent)) {
+        return;
+    } else if (newContent === '') {
+        return this.empty();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup, then
+    //  it doesn't need to be processed but can just be set as the regular
+    //  content of the receiver, so we call up to the supertype to do that. At
+    //  the Node level, it is determined whether this is a scalar or
+    //  single-value node and might do some further processing on 'newContent'
+    //  at that point.
+    if (!TP.isElement(content = TP.unwrap(newContent)) &&
+        !TP.isURI(content = TP.str(content)) &&
+        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+        return this.callNextMethod();
+    }
+
+    request = TP.request(aRequest);
+    request.atPutIfAbsent('targetPhase', this.getTargetPhase());
+
+    //  If the content to be set is a URI, then track it via the 'uri'
+    //  property on the request. This allows us to use it later when
+    //  attempting to add to the history mechanism.
+    if (TP.isURI(newContent)) {
+        request.atPutIfAbsent('uri', newContent);
+    }
+
+    //  Put ourself into the 'target' slot, so that the content pipeline has
+    //  the target 'surface' that its processing for available to it.
+    request.atPut('target', this);
+
+    //  For now, anyway, processing the content needs to be synchronous.
+    request.atPut('async', false);
+
+    //  If this is not a Document node, content drawn from here will be awakened
+    //  when the nodes are placed into a visible DOM, so we don't awaken them
+    //  here. But, if this is a Document node, we need to manually configure the
+    //  nodes to be awakened.
+    if (TP.isDocument(this.getNativeNode())) {
+        request.atPutIfAbsent('awaken', true);
+    }
+
+    //  If stdin content was supplied, execute the content as well as
+    //  process it.
+    if (TP.notEmpty(stdinContent)) {
+        content = TP.processAndExecuteWith(newContent,
+                                            request,
+                                            stdinContent);
+    } else {
+        content = TP.process(newContent, request);
+    }
+
+    if (request.didFail()) {
+        return;
+    }
+
+    return this.replaceRawContent(content, request);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('replaceRawContent',
+function(newContent, aRequest, shouldSignal) {
+
+    /**
+     * @method setRawContent
+     * @summary Replaces the content of the receiver with the content provided
+     *     without performing any content processing on it.
+     * @param {Object} newContent The content to write into the receiver. This
+     *     can be a String, a Node, or an Object capable of being converted into
+     *     one of those forms.
+     * @param {TP.sig.Request} aRequest An optional request object which defines
+     *     further parameters.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to true.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
+     */
+
+    var node,
+        content,
+        request,
+        arrContent,
+        func,
+        thisref,
+        reqLoadFunc,
+        loadFunc,
+        result;
+
+    node = this.getNativeNode();
+
+    //  We return if newContent isn't valid and clear ourself if newContent is
+    //  the empty String.
+    if (TP.notValid(newContent)) {
+        return;
+    } else if (newContent === '') {
+        return this.empty();
+    }
+
+    request = TP.request(aRequest);
+    content = TP.unwrap(newContent);
+
+    if (!TP.isKindOf(content, Node) && !TP.isString(content)) {
+
+        //  If the content is an Array, then we want the individual
+        //  '.asString()' representations of each item - not what Array gives
+        //  us.
+        if (TP.isArray(arrContent = content)) {
+            content = '';
+            arrContent.perform(
+                    function(item) {
+                        content += TP.str(item);
+                    });
+        } else {
+            content = TP.str(content);
+        }
+    }
+
+    func = this.getContentPrimitive(TP.REPLACE);
+    thisref = this;
+
+    if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
+        loadFunc =
+            function(aNode) {
+                reqLoadFunc(aNode);
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.UPDATE);
+                }
+            };
+    } else {
+        loadFunc =
+            function(aNode) {
+                thisref.contentReplaceCallback(aNode);
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.UPDATE);
+                }
+            };
+    }
+
+    result = func(node,
+                    content,
+                    loadFunc,
+                    TP.ifKeyInvalid(request, 'awaken', false));
+
+    //  If we're an Element and we're flagging changes, go ahead and do that
+    //  now.
+    if (TP.isElement(node) && this.shouldFlagChanges()) {
+        TP.elementFlagChange(node, TP.SELF, TP.UPDATE);
+
+        TP.ifTrace() && TP.$DEBUG ?
+            TP.trace('Node flagged: ' + TP.nodeAsString(node),
+                        TP.LOG) : 0;
+    }
+
+    //  The primitive will have returned a native Node, but we need to
+    //  return a TP.core.Node.
+    return TP.wrap(result);
 });
 
 //  ------------------------------------------------------------------------
@@ -9375,6 +9576,13 @@ TP.core.ElementNode.Type.defineAttribute('booleanAttrs', TP.ac());
 //  attributes' that need XML Base/virtual URI resolution.
 TP.core.ElementNode.Type.defineAttribute('uriAttrs', TP.ac());
 
+//  The attributes for this element type that are URI attributes that are also
+//  'reloadable' - that is, if the system is configured to reload URIs and the
+//  server that the resource loads from can send change notifications about URI
+//  changes, this type will be messaged when the resource pointed to by one of
+//  these URI attributes changes.
+TP.core.ElementNode.Type.defineAttribute('reloadableUriAttrs', TP.ac());
+
 //  the node's template. this will be used when instances are constructed
 //  with a TP.core.Hash incoming value
 TP.core.ElementNode.Type.defineAttribute('template');
@@ -10835,6 +11043,70 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        reloadableAttrs,
+        len,
+        i,
+
+        attrName,
+        val,
+
+        uri;
+
+    //  If we are configured to watch remote resources, then we need to query
+    //  this type for any 'reloadable URI attributes' and observe any URI
+    //  values that we find there.
+    if (TP.sys.cfg('uri.remote_watch')) {
+
+        //  Make sure that we have a node to work from.
+        if (!TP.isElement(elem = aRequest.at('node'))) {
+            return this.raise('TP.sig.InvalidNode');
+        }
+
+        tpElem = TP.wrap(elem);
+
+        //  Iterate over the reloadable attributes and try to get a URI value
+        //  from each one.
+
+        reloadableAttrs = this.get('reloadableUriAttrs');
+        len = reloadableAttrs.getSize();
+
+        for (i = 0; i < len; i++) {
+            attrName = reloadableAttrs.at(i);
+
+            if (TP.notEmpty(
+                val = TP.elementGetAttribute(elem, attrName, true))) {
+
+                //  If we can create a valid URI from the value we find there,
+                //  observe it for changes and tell it to watch its handler for
+                //  change notifications.
+
+                uri = TP.uc(val);
+                if (TP.isURI(uri)) {
+                    tpElem.observe(uri, 'TP.sig.ValueChange');
+                    uri.watch();
+                }
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagAttachEvents',
 function(aRequest) {
 
@@ -10883,6 +11155,76 @@ function(aRequest) {
     node = aRequest.at('node');
 
     return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Performs any 'detach' logic when the node is detached from its
+     *     owning document.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        reloadableAttrs,
+        len,
+        i,
+
+        attrName,
+        val,
+
+        uri;
+
+    //  If we are configured to watch remote resources, then we need to query
+    //  this type for any 'reloadable URI attributes' and ignore any URI
+    //  values that we find there (we will have already observed them in the
+    //  'tagAttachDOM' call above).
+    if (TP.sys.cfg('uri.remote_watch')) {
+
+        //  Make sure that we have a node to work from.
+        if (!TP.isElement(elem = aRequest.at('node'))) {
+            return this.raise('TP.sig.InvalidNode');
+        }
+
+        tpElem = TP.wrap(elem);
+
+        //  Iterate over the reloadable attributes and try to get a URI value
+        //  from each one.
+
+        reloadableAttrs = this.get('reloadableUriAttrs');
+        len = reloadableAttrs.getSize();
+
+        for (i = 0; i < len; i++) {
+            attrName = reloadableAttrs.at(i);
+
+            if (TP.notEmpty(
+                val = TP.elementGetAttribute(elem, attrName, true))) {
+
+                //  If we can create a valid URI from the value we find there,
+                //  ignore it for changes and tell it to unwatch its handler for
+                //  change notifications.
+
+                uri = TP.uc(val);
+                if (TP.isURI(uri)) {
+                    tpElem.ignore(uri, 'TP.sig.ValueChange');
+                    uri.unwatch();
+                }
+            }
+        }
+
+        //  Note: call this *after* we do the above since it does a bunch of
+        //  unregistration, etc.
+        this.callNextMethod();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -11341,6 +11683,37 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getContentPrimitive',
+function(operation) {
+
+    /**
+     * @method getContentPrimitive
+     * @summary Returns the primitive function used to perform the operation
+     *     specified. For example, an operation of TP.APPEND might return the
+     *     TP.nodeAddContent primitive or a related function specific to the
+     *     type of node being modified.
+     * @param {String} operation A constant defining the operation. Valid values
+     *     include: TP.APPEND TP.INSERT TP.UPDATE.
+     * @exception TP.sig.InvalidOperation When the operation isn't a valid one.
+     * @returns {Function} A TP primitive function.
+     */
+
+    switch (operation) {
+        case TP.APPEND:
+            return TP.elementAddContent;
+        case TP.INSERT:
+            return TP.elementInsertContent;
+        case TP.REPLACE:
+            return TP.elementReplaceContent;
+        case TP.UPDATE:
+            return TP.elementSetContent;
+        default:
+            return this.raise('TP.sig.InvalidOperation');
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getChangeAction',
 function(locationPath) {
 
@@ -11471,6 +11844,78 @@ function() {
     }
 
     return content;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('handleValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles notification of an incoming signal. For types the
+     *     standard handle call will try to locate a signal-specific handler
+     *     function just like with instances, but the default method for
+     *     handling them defers to an instance rather than the type itself.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     * @returns {Object} The function's return value.
+     */
+
+    var origin,
+        originLocation,
+
+        reloadableAttrs,
+        len,
+        i,
+
+        attrName,
+        val,
+
+        methodName;
+
+    //  Grab the signal origin - for changes to observed URI resources (see the
+    //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
+    //  changed.
+    origin = aSignal.getSignalOrigin();
+
+    //  If it was a URI, then process it as a 'remote resource change'.
+    if (TP.isKindOf(origin, TP.core.URI)) {
+
+        //  Grab the fully expanded location of the URI that changed.
+        originLocation = origin.getLocation();
+
+        //  Iterate over the reloadable attributes.
+
+        reloadableAttrs = this.getType().get('reloadableUriAttrs');
+        len = reloadableAttrs.getSize();
+
+        for (i = 0; i < len; i++) {
+
+            attrName = reloadableAttrs.at(i);
+
+            //  Grab any URI location value that can be computed from the
+            //  result of getting the attribute on ourself (and removing any
+            //  'unique query' cache-busting string from it).
+            val = TP.uriRemoveUniqueQuery(
+                    TP.uc(this.getAttribute(attrName)).getLocation());
+
+            //  If that value equals the location that changed, call the proper
+            //  messaging machinery.
+            if (val === originLocation) {
+
+                //  Compute a method name for reloading the resource referenced
+                //  by that attribute on ourself and invoke it if we respond to
+                //  that method..
+                methodName = 'reloadFromAttr' + attrName.asTitleCase();
+                if (TP.canInvoke(this, methodName)) {
+                    this[methodName](val);
+                    break;
+                }
+            }
+        }
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -12385,6 +12830,8 @@ function(operation) {
             return TP.htmlElementAddContent;
         case TP.INSERT:
             return TP.htmlElementInsertContent;
+        case TP.REPLACE:
+            return TP.htmlElementReplaceContent;
         case TP.UPDATE:
             return TP.htmlElementSetContent;
         default:
@@ -12425,6 +12872,8 @@ function(operation) {
             return TP.xmlElementAddContent;
         case TP.INSERT:
             return TP.xmlElementInsertContent;
+        case TP.REPLACE:
+            return TP.xmlElementReplaceContent;
         case TP.UPDATE:
             return TP.xmlElementSetContent;
         default:
@@ -15884,7 +16333,7 @@ function(aRequest) {
 
     //  Replace the original element in the DOM so processing will continue in
     //  the proper context.
-    replacement = TP.elementReplaceWith(elem, replacement, null, false);
+    replacement = TP.elementReplaceContent(elem, replacement, null, false);
 
     return replacement;
 });

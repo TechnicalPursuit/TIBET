@@ -5869,11 +5869,11 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('htmlElementReplaceWith',
+TP.definePrimitive('htmlElementReplaceContent',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @method htmlElementReplaceWith
+     * @method htmlElementReplaceContent
      * @summary Replaces anElement which should be an HTML element.
      * @description This method sets the 'outer content' of anElement to
      *     theContent which means that the entire element, including its start
@@ -8744,9 +8744,9 @@ function(aWindow, wants2DMatrix) {
      * @summary Returns the 'computed' transformation matrix for the window
      *     (really its iframe element).
      * @description This method assumes that the window is embedded in an iframe
-     *      (which may be embedded in more iframes up to a top-level window) and
-     *      is really returning the transformation of those iframe elements up
-     *      to the top-level window.
+     *     (which may be embedded in more iframes up to a top-level window) and
+     *     is really returning the transformation of those iframe elements up
+     *     to the top-level window.
      * @param {Window} aWindow The window to compute the matrix for.
      * @param {Boolean} wants2DMatrix An optional parameter that tells the
      *     method whether or not to return a 3x2 matrix for use with CSS 2D
@@ -8790,6 +8790,42 @@ function(aWindow, wants2DMatrix) {
     }
 
     return matrix;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowForceRepaint',
+function(aWindow) {
+
+    /**
+     * @method windowForceRepaint
+     * @summary Forces the repaint of the supplied window. This is sometimes
+           necessary on certain browser platforms when the window isn't focused
+           or is hidden, but a repaint is required.
+     * @param {Window} aWindow The window to force a repaint of.
+     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     */
+
+    var doc;
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    if (!TP.isDocument(doc = aWindow.document)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    /* eslint-disable no-wrap-func,no-extra-parens */
+    (function() {
+        var focusedElem;
+
+        focusedElem = TP.documentGetFocusedElement(doc);
+        focusedElem.focus();
+    }).fork(50);
+    /* eslint-enable no-wrap-func,no-extra-parens */
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -9056,7 +9092,7 @@ function(aWindow, anHref) {
             //  Merge the attributes from the existing element onto the new
             //  element and replace the old with the new.
             TP.elementMergeAttributes(elemsWithTTag.at(i), newElem);
-            TP.xmlElementReplaceWith(elemsWithTTag.at(i), newElem);
+            TP.xmlElementReplaceContent(elemsWithTTag.at(i), newElem);
         }
     }
 

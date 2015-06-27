@@ -1256,7 +1256,7 @@
     //  an absolute path using either a / or ~ prefix to reference libroot or
     //  approot respectively. this can be set in the boot script/tibet.xml files
     //  using the 'uris' parameter. A sample is in ~lib_dat/uris.xml.
-    TP.sys.setcfg('path.uri_file', null);
+    TP.sys.setcfg('path.uri_file', '~lib_dat/uris.xml');
 
     //  where is the default vCard file containing application vcards? this file
     //  is used (by default) as a simple way to create a small set of vcards
@@ -1614,6 +1614,14 @@
     //  should we try to route any initial path content on startup?
     TP.sys.setcfg('uri.routing_onstart', true);
 
+    //  should we watch remote resources?
+    TP.sys.setcfg('uri.remote_watch', true);
+
+    //  remote resources that we should try to watch.
+    TP.sys.setcfg('uri.remote_watch_sources', ['~']);
+
+    //  should we process the queue of remote resource changes?
+    TP.sys.setcfg('uri.process_remote_changes', false);
 
     //  ---
     //  xpath/xslt

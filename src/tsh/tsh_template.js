@@ -725,7 +725,7 @@ function(aRequest) {
             //  No more child *elements*?
             if (TP.notValid(child)) {
                 //  No child elements means replacement must be complete.
-                newNode = TP.elementReplaceWith(elem, newNode);
+                newNode = TP.elementReplaceContent(elem, newNode);
 
                 return TP.ac(newNode, TP.CONTINUE);
             } else {
@@ -793,7 +793,7 @@ function(aRequest) {
 
         //  Note the reassignment here and the 'false' as the 4th parameter,
         //  indicating that we do *not* want the content to be awakened.
-        processedNode = TP.elementReplaceWith(elem, processedNode, null, false);
+        processedNode = TP.elementReplaceContent(elem, processedNode, null, false);
 
         retNode = processedNode;
     } else {

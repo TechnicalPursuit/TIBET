@@ -18,6 +18,9 @@
 
 TP.core.UIElementNode.defineSubtype('tibet:style');
 
+TP.tibet.style.Type.set('uriAttrs', TP.ac('href'));
+TP.tibet.style.Type.set('reloadableUriAttrs', TP.ac('href'));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -26,199 +29,38 @@ TP.core.UIElementNode.defineSubtype('tibet:style');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.tibet.style.Type.defineMethod('tagAttachStyle',
+TP.tibet.style.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
-     * @method tagAttachStyle
+     * @method tagAttachDOM
      * @summary Sets up runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
     var elem,
-        tpElem,
+        tpElem;
 
-        cdatas,
-
-        resourceStr,
-
-        doc,
-
-        generatedStyleID,
-        ourID,
-
-        type,
-
-        currentDir,
-        currentLoc,
-
-        newStyleElem,
-        existingStyleElem,
-
-        href,
-        ext,
-        hrefURI,
-        hrefLocation,
-        fetchRequest,
-        newHref;
+    this.callNextMethod();
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
+        return this.raise('TP.sig.InvalidNode');
     }
 
     tpElem = TP.wrap(elem);
 
-    //  Get this element's document wrapper.
-    doc = TP.doc(elem);
+    //  If we're not empty, then we reload from our child text content.
+    if (!tpElem.isEmpty()) {
 
-    //  Grab our ID, assigning one if necessary
-    ourID = TP.lid(elem, true);
+        tpElem.reloadFromContent();
 
-    //  Compute an ID for our generated (real) CSS style sheet.
-    generatedStyleID = ourID + '_generated';
+    } else if (TP.notEmpty(TP.elementGetAttribute(elem, 'href', true))) {
 
-    //  If we're not empty, then we use our child content as our content
-    if (TP.notEmpty(elem.childNodes)) {
-
-        //  NOTE: Many of these calls use the native node, since we want to
-        //  manipulate native node objects here.
-
-        //  Normalize the node to try to get the best representation
-        TP.nodeNormalize(elem);
-
-        //  Get a result type for the data (either defined on the receiver
-        //  element itself or from a supplied MIME type), construct an instance
-        //  of that type and set it as the named URI's resource.
-
-        //  If there is a CDATA section, then we grab it's text value.
-        cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
-        if (TP.notEmpty(cdatas)) {
-
-            //  The string we'll use is from the first CDATA.
-            resourceStr = TP.nodeGetTextContent(cdatas.first());
-        }
-
-        //  If there's a 'type' attribute, that should have the type of style
-        //  that we're being asked to process.
-        type = TP.elementGetAttribute(elem, 'type');
-        switch (type) {
-            case 'less':
-
-                //  Note that, due to a limitation of the LESS API, we can't
-                //  just provide a 'root path' that url()s can be resolved
-                //  against. So we get our document's collection path and attach
-                //  a nonsensical filename to it before supplying that to the
-                //  LESS compilation routine.
-                currentDir = TP.uriCollectionPath(TP.documentGetLocation(doc));
-                currentLoc = TP.uriJoinPaths(currentDir, 'fluffy.less');
-
-                tpElem.compileAndInsertLESS(currentLoc, resourceStr);
-
-                break;
-
-            default:
-
-                //  If there is no existing 'style' element, create one and set
-                //  its content.
-                if (!TP.isElement(
-                        existingStyleElem =
-                        TP.byCSSPath(
-                            '[for="' + ourID + '"]', doc, false, false))) {
-
-                    //  Just some CSS
-                    newStyleElem = TP.documentAddStyleElement(
-                                        doc, resourceStr, elem.nextSibling);
-
-                    TP.elementSetAttribute(
-                            newStyleElem, 'id', generatedStyleID, true);
-
-                    //  Set an attribute on our newly created style element that
-                    //  links it back to the source element.
-                    TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
-                } else {
-
-                    //  Otherwise, just set the content of the existing one.
-                    TP.styleElementSetContent(existingStyleElem, resourceStr);
-                }
-        }
-
-    } else if (TP.notEmpty(href = TP.elementGetAttribute(elem, 'href', true))) {
-
-        //  Otherwise, if we have an href attribute, then use it to try to
-        //  extract the style and process it.
-        ext = TP.uriExtension(href);
-
-        hrefURI = TP.uc(href);
-        hrefLocation = hrefURI.getLocation();
-
-        switch (ext) {
-
-            case 'less' :
-
-                //  The style is some LESS CSS. Go fetch it and, when it's
-                //  returned, compile and insert it into the document.
-                fetchRequest = TP.request('async', true);
-                fetchRequest.defineMethod(
-                        'handleRequestSucceeded',
-                            function(aResponse) {
-                                var fetchLoc,
-                                    fetchResult;
-
-                                //  Note here how we grab the 'whole location'
-                                //  of the URI and supply that to the LESS
-                                //  processor. No need to do the 'nonsensical
-                                //  file name' trick like above - we have the
-                                //  real LESS file here.
-                                fetchLoc = hrefLocation;
-                                fetchResult = aResponse.get('result');
-
-                                //  Run the LESS compiler and insert the
-                                //  results.
-                                tpElem.compileAndInsertLESS(
-                                            fetchLoc, fetchResult);
-                            });
-                hrefURI.getResource(fetchRequest);
-
-                break;
-
-            default:
-
-                //  If there is no existing 'style' element, create one and set
-                //  its content.
-                if (!TP.isElement(
-                        existingStyleElem =
-                        TP.byCSSPath(
-                            '[for="' + ourID + '"]', doc, false, false))) {
-
-                    //  Just some CSS - link it in.
-                    newStyleElem = TP.documentAddLinkElement(
-                                            doc,
-                                            hrefLocation,
-                                            elem.nextSibling);
-
-                    TP.elementSetAttribute(
-                            newStyleElem, 'id', generatedStyleID, true);
-
-                    //  Set an attribute on our newly created style element that
-                    //  links it back to the source element.
-                    TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
-
-                } else {
-
-                    //  Otherwise, just compute a new href from the old href
-                    //  value that is guaranteed to be unique and set the 'href'
-                    //  property of the existing style element to it, thereby
-                    //  guaranteeing a reload of the content.
-                    newHref = hrefLocation +
-                                (hrefLocation.contains('?') ? '&' : '?') +
-                                '_tibet_nocache=' + Date.now();
-
-                    existingStyleElem.href = newHref;
-                }
-        }
+        //  Otherwise, if our 'href' attribute isn't empty, then we reload from
+        //  the content that can be found at the end of the URI contained there.
+        tpElem.reloadFromAttrHref();
 
     } else {
 
@@ -305,7 +147,7 @@ function(lessLoc, lessText) {
                 if (!TP.isElement(
                     existingStyleElem =
                     TP.byCSSPath(
-                        '[for="' + ourID + '"]', ourDoc, false, false))) {
+                        '[for="' + ourID + '"]', ourDoc, true, false))) {
 
                     compiledStyleElem = TP.documentAddStyleElement(
                                             ourDoc,
@@ -326,8 +168,254 @@ function(lessLoc, lessText) {
                     //  Otherwise, just set the content of the existing one.
                     TP.styleElementSetContent(existingStyleElem, result);
                 }
+
+                //  Work around Chrome (and possibly others) stupidity
+                TP.windowForceRepaint(TP.nodeGetWindow(ourDoc));
+
             }.bind(this));
 
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Inst.defineMethod('reloadFromAttrHref',
+function() {
+
+    /**
+     * @method reloadFromAttrHref
+     * @summary Reloads the receiver with the content found at the end of the
+     *     href.
+     * @param {String} anHref The URL that the receiver will use to reload its
+     *     content.
+     * @returns {TP.html.link} The receiver.
+     */
+
+    var doc,
+
+        generatedStyleID,
+        ourID,
+
+        newStyleElem,
+        existingStyleElem,
+
+        href,
+        ext,
+        hrefURI,
+        hrefLocation,
+        fetchRequest,
+        newHref;
+
+    if (TP.notEmpty(href = this.getAttribute('href'))) {
+
+        ext = TP.uriExtension(href);
+
+        hrefURI = TP.uc(href);
+        hrefLocation = hrefURI.getLocation();
+
+        switch (ext) {
+
+            case 'less' :
+
+                //  The style is some LESS CSS. Go fetch it and, when it's
+                //  returned, compile and insert it into the document.
+                fetchRequest = TP.request('async', true, 'refresh', true);
+                fetchRequest.defineMethod(
+                        'handleRequestSucceeded',
+                            function(aResponse) {
+                                var fetchLoc,
+                                    fetchResult;
+
+                                //  Note here how we grab the 'whole location'
+                                //  of the URI and supply that to the LESS
+                                //  processor. No need to do the 'nonsensical
+                                //  file name' trick - we have the real LESS
+                                //  file here.
+                                fetchLoc = hrefLocation;
+                                fetchResult = aResponse.get('result');
+
+                                //  Run the LESS compiler and insert the
+                                //  results.
+                                this.compileAndInsertLESS(
+                                            fetchLoc, fetchResult);
+                            }.bind(this));
+                hrefURI.getResource(fetchRequest);
+
+                break;
+
+            default:
+
+                doc = this.getNativeDocument();
+
+                //  Get our local ID, assigning it if necessary.
+                ourID = this.getLocalID(true);
+
+                //  Compute an ID for our generated (real) CSS style sheet.
+                generatedStyleID = ourID + '_generated';
+
+                //  If there is no existing 'style' element, create one and set
+                //  its content.
+                if (!TP.isElement(
+                        existingStyleElem =
+                        TP.byCSSPath(
+                            '[for="' + ourID + '"]', doc, true, false))) {
+
+                    //  Just some CSS - link it in.
+                    newStyleElem = TP.documentAddLinkElement(
+                                            doc,
+                                            hrefLocation,
+                                            this.getNativeNode().nextSibling);
+
+                    TP.elementSetAttribute(
+                            newStyleElem, 'id', generatedStyleID, true);
+
+                    //  Set an attribute on our newly created style element that
+                    //  links it back to the source element.
+                    TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
+
+                } else {
+
+                    //  Otherwise, just compute a new href from the old href
+                    //  value that is guaranteed to be unique and set the 'href'
+                    //  property of the existing style element to it, thereby
+                    //  guaranteeing a reload of the content.
+                    newHref = TP.uriAddUniqueQuery(hrefLocation);
+
+                    existingStyleElem.href = newHref;
+                }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Inst.defineMethod('reloadFromContent',
+function() {
+
+    /**
+     * @method reloadFromContent
+     * @summary Reloads the receiver with the child text content found inside of
+     *     the receiver.
+     * @returns {null}
+     */
+
+    var resourceStr,
+
+        doc,
+
+        generatedStyleID,
+        ourID,
+
+        type,
+
+        currentDir,
+        currentLoc,
+
+        newStyleElem,
+        existingStyleElem;
+
+    doc = this.getNativeDocument();
+
+    //  Get our local ID, assigning it if necessary.
+    ourID = this.getLocalID(true);
+
+    //  Compute an ID for our generated (real) CSS style sheet.
+    generatedStyleID = ourID + '_generated';
+
+    resourceStr = this.getTextContent();
+
+    //  If there's a 'type' attribute, that should have the type of style
+    //  that we're being asked to process.
+    type = this.getAttribute('type');
+
+    switch (type) {
+        case 'less':
+
+            //  Note that, due to a limitation of the LESS API, we can't
+            //  just provide a 'root path' that url()s can be resolved
+            //  against. So we get our document's collection path and attach
+            //  a nonsensical filename to it before supplying that to the
+            //  LESS compilation routine.
+            currentDir = TP.uriCollectionPath(TP.documentGetLocation(doc));
+            currentLoc = TP.uriJoinPaths(currentDir, 'fluffy.less');
+
+            this.compileAndInsertLESS(currentLoc, resourceStr);
+
+            break;
+
+        default:
+
+            //  If there is no existing 'style' element, create one and set
+            //  its content.
+            if (!TP.isElement(
+                    existingStyleElem =
+                    TP.byCSSPath(
+                        '[for="' + ourID + '"]', doc, true, false))) {
+
+                //  Just some CSS
+                newStyleElem = TP.documentAddStyleElement(
+                                    doc,
+                                    resourceStr,
+                                    this.getNativeNode().nextSibling);
+
+                TP.elementSetAttribute(
+                        newStyleElem, 'id', generatedStyleID, true);
+
+                //  Set an attribute on our newly created style element that
+                //  links it back to the source element.
+                TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
+            } else {
+                //  Otherwise, just set the content of the existing one.
+                TP.styleElementSetContent(existingStyleElem, resourceStr);
+            }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Inst.defineMethod('setContent',
+function(aContentObject, aRequest) {
+
+    /**
+     * @method setContent
+     * @summary Sets the content of the receiver's native DOM counterpart to
+     *     the value supplied.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {null}
+     */
+
+    this.callNextMethod();
+
+    //  reload from the child text content found inside ourself.
+    this.reloadFromContent();
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Inst.defineMethod('setAttrHref',
+function(anHref) {
+
+    /**
+     * @method setAttrHref
+     * @summary Sets the href that the receiver will use to retrieve its
+     *     content.
+     * @param {String} anHref The URL that the receiver will use to fetch its
+     *     content.
+     */
+
+    this.$setAttribute('href', anHref);
+
+    //  reload from the content found at the href.
+    this.reloadFromAttrHref();
+
+    //  setting an attribute returns void according to the spec
     return;
 });
 
