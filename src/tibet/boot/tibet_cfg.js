@@ -104,8 +104,8 @@
     //  the settings in these configuration properties to control manifest
     //  generation and importing. when 'single-phase' booting is requested it
     //  simply means phase two begins immediately upon completion of phase one.
-    TP.sys.setcfg('boot.phase_one', true);
-    TP.sys.setcfg('boot.phase_two', false);
+    TP.sys.setcfg('boot.phase_one', null);
+    TP.sys.setcfg('boot.phase_two', null);
 
     //  do we start with a login page?
     TP.sys.setcfg('boot.use_login', false);

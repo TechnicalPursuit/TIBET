@@ -64,6 +64,7 @@ helpers.rollup = function(make, options) {
         file,
         pkg,
         config,
+        phase,
         dir,
         prefix,
         root,
@@ -85,6 +86,7 @@ helpers.rollup = function(make, options) {
 
     pkg = options.pkg;
     config = options.config;
+    phase = options.phase || 'two';
 
     prefix = options.prefix || '';
     dir = options.dir || '.';
@@ -113,6 +115,7 @@ helpers.rollup = function(make, options) {
     cmd = path.join(module.filename, '..', '..', '..', '..', 'bin', 'tibet') +
         ' rollup --package \'' + pkg +
         '\' --config ' + config +
+        ' --phase ' + phase +
         (CLI.options.debug ? ' --debug' : '') +
         (CLI.options.verbose ? ' --verbose' : '') +
         (CLI.options.color ? '' : ' --no-color') +

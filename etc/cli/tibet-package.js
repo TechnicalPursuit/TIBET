@@ -178,11 +178,14 @@ Package = function(options) {
         return this;
     }
 
-    // Process local project file content into proper configuration data.
+    // Process local project file content into proper configuration data. This
+    // step overwrites initial options with npm, default, tibet, and tds config
+    // in that order. This allows config file content to override "defaults"
+    // from the inbound options.
     this.setProjectOptions();
 
-    // Process command-line flags to replace any loaded values with any values
-    // the user (or invoking routine) provided directly.
+    // Reapply any configuration data specifically defined on the command line.
+    // This final step lets the command line override config data file content.
     this.setRuntimeOptions(this.options, '', true);
 
     // Expand final option values into working properties.
@@ -207,16 +210,6 @@ Package.KV_REGEX = /\=/;
  * @type {string}
  */
 Package.CONFIG = 'base';
-
-
-/**
- * Default properties to ensure expected default behavior for cli/package.
- */
-Package.DEFAULT_PROPERTIES = {
-    boot: {
-        phase_one: false,
-        phase_two: true
-}};
 
 
 /**
@@ -2262,10 +2255,12 @@ Package.prototype.setProjectOptions = function() {
 
     //  Blend in the values from npm and TIBET configuration files.
     this.overlayProperties(this.npm, 'npm');
+
+    //  TIBET project file (mostly client but some shared values).
     this.overlayProperties(this.tibet);
 
-    //  Process the TDS file content, if any. This is a bit special in that we
-    //  observe environment keys from within the server json file.
+    //  Process the TDS configuration data last. We do this in two steps to load
+    //  any default section followed by any data that's environment-specific.
     if (this.tds) {
         if (this.tds.default) {
             this.overlayProperties(this.tds.default, 'tds');
@@ -2276,9 +2271,6 @@ Package.prototype.setProjectOptions = function() {
             this.overlayProperties(this.tds[env], 'tds');
         }
     }
-
-    //  Blend in default properties, particularly for phases etc.
-    this.overlayProperties(Package.DEFAULT_PROPERTIES);
 
     // Clear this so the value from above doesn't affect our next steps.
     root = null;
@@ -2341,7 +2333,8 @@ Package.prototype.setRuntimeOptions = function(options, prefix, filter) {
 
     Object.keys(opts).forEach(function(key) {
         var value,
-            name;
+            name,
+            current;
 
         value = opts[key];
         if (prefix) {
@@ -2354,12 +2347,14 @@ Package.prototype.setRuntimeOptions = function(options, prefix, filter) {
         if (Object.prototype.toString.call(value) === '[object Object]') {
             pkg.setRuntimeOptions(value, name, filter);
         } else {
+
             if (filter) {
                 //  Only set values that were explicitly on the command line or
                 //  which have no value in the current configuration. This
                 //  avoids cases where we overlay a config file value with a
                 //  value defaulted by the command line processor.
-                if (isValid(TP.sys.getcfg(name))) {
+                current = TP.sys.getcfg(name);
+                if (isValid(current)) {
                     //  Has a value. We have to see an explicit key to override.
                     if (args.indexOf('--' + name) === -1 &&
                         args.indexOf('--no-' + name === -1)) {

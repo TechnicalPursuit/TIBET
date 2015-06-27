@@ -469,6 +469,7 @@ targets.rollup_loader = function(make) {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
             config: 'loader',
+            phase: 'one',
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
@@ -479,6 +480,7 @@ targets.rollup_loader = function(make) {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
             config: 'loader',
+            phase: 'one',
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
@@ -500,6 +502,7 @@ targets.rollup_hook = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'hook',
+        phase: 'one',
         dir: './lib/src',
         prefix: 'tibet_',
         headers: false,
@@ -509,6 +512,7 @@ targets.rollup_hook = function(make) {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
             config: 'hook',
+            phase: 'one',
             dir: './lib/src',
             prefix: 'tibet_',
             headers: false,
@@ -530,6 +534,7 @@ targets.rollup_base = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'base',
+        phase: 'one',
         dir: './lib/src',
         prefix: 'tibet_',
         headers: true,
@@ -539,6 +544,7 @@ targets.rollup_base = function(make) {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
             config: 'base',
+            phase: 'one',
             dir: './lib/src',
             prefix: 'tibet_',
             headers: true,
@@ -560,6 +566,7 @@ targets.rollup_developer = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'developer',
+        phase: 'one',
         dir: './lib/src',
         prefix: 'tibet_',
         headers: true,
@@ -569,6 +576,7 @@ targets.rollup_developer = function(make) {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
             config: 'developer',
+            phase: 'one',
             dir: './lib/src',
             prefix: 'tibet_',
             headers: true,
@@ -590,6 +598,7 @@ targets.rollup_full = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'full',
+        phase: 'one',
         dir: './lib/src',
         prefix: 'tibet_',
         headers: true,
@@ -599,6 +608,7 @@ targets.rollup_full = function(make) {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
             config: 'full',
+            phase: 'one',
             dir: './lib/src',
             prefix: 'tibet_',
             headers: true,

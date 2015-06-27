@@ -208,7 +208,7 @@ Cmd.prototype.executeForEach = function(list) {
 
 /**
  * Perform any last-minute changes to the package options before creation of the
- * internal Package instance. Intended to be overridden but custom subcommands.
+ * internal Package instance. Intended to be overridden by custom subcommands.
  */
 Cmd.prototype.finalizePackageOptions = function() {
 

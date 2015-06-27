@@ -28,7 +28,7 @@
  *      silent      Silence normal logging. Defaults to the value set for 'all'.
  *                  If 'all' is true we default this to true to suppress
  *                  warnings about duplicate assets.
- *      phase       Package phase? Default is phase two (application phase).
+ *      phase       Package phase? Default depends on context (app vs. lib).
  *
  * OTHER OPTIONS:
  *
@@ -182,9 +182,18 @@ Cmd.prototype.configurePackageOptions = function(options) {
         this.pkgOpts.silent = true;
     }
 
+    //  Default the phase based on project vs. library context.
+    if (CLI.notValid(this.options.phase)) {
+        if (CLI.inProject()) {
+            this.options.phase = 'two';
+        } else if (CLI.inLibrary()) {
+            this.options.phase = 'one';
+        }
+    }
+
     // Set boot phase defaults. If we don't manage these then most app package
     // runs will quietly filter out all their content nodes.
-    this.pkgOpts.boot = {};
+    this.pkgOpts.boot = this.pkgOpts.boot || {};
     switch (this.options.phase) {
         case 'one':
             this.pkgOpts.boot.phase_one = true;
