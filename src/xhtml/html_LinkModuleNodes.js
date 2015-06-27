@@ -22,6 +22,7 @@
 TP.html.Attrs.defineSubtype('link');
 
 TP.html.link.Type.set('uriAttrs', TP.ac('href'));
+TP.html.link.Type.set('reloadableUriAttrs', TP.ac('href'));
 
 TP.html.link.addTraits(TP.core.EmptyElementNode);
 
@@ -81,6 +82,61 @@ function(aRequest) {
 
     elem.addEventListener('load', handlerFunc, false);
 
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.link.Inst.defineMethod('reloadFromAttrHref',
+function(anHref) {
+
+    /**
+     * @method reloadFromAttrHref
+     * @summary Reloads the receiver with the content found at the end of the
+     *     href.
+     * @param {String} anHref The URL that the receiver will use to reload its
+     *     content.
+     * @returns {TP.html.link} The receiver.
+     */
+
+    var doc;
+
+    if (TP.notEmpty(anHref)) {
+
+        //  Use the core primitive routine to reload our href in our native
+        //  document. Note that this will automatically take care of assigning a
+        //  cache-busting URL to the href, etc.
+        doc = this.getNativeDocument();
+        TP.documentStyleHrefReload(doc, anHref);
+
+        //  Work around Chrome (and possibly others) stupidity.
+        TP.windowForceRepaint(TP.nodeGetWindow(doc));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.link.Inst.defineMethod('setAttrHref',
+function(anHref) {
+
+    /**
+     * @method setAttrHref
+     * @summary Sets the href that the receiver will use to retrieve its
+     *     content.
+     * @param {String} anHref The URL that the receiver will use to fetch its
+     *     content.
+     */
+
+    this.$setAttribute('href', anHref);
+
+    //  reload from the content found at the href.
+    this.reloadFromAttrHref();
+
+    //  setting an attribute returns void according to the spec
     return;
 });
 
