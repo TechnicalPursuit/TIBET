@@ -11683,6 +11683,37 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getContentPrimitive',
+function(operation) {
+
+    /**
+     * @method getContentPrimitive
+     * @summary Returns the primitive function used to perform the operation
+     *     specified. For example, an operation of TP.APPEND might return the
+     *     TP.nodeAddContent primitive or a related function specific to the
+     *     type of node being modified.
+     * @param {String} operation A constant defining the operation. Valid values
+     *     include: TP.APPEND TP.INSERT TP.UPDATE.
+     * @exception TP.sig.InvalidOperation When the operation isn't a valid one.
+     * @returns {Function} A TP primitive function.
+     */
+
+    switch (operation) {
+        case TP.APPEND:
+            return TP.elementAddContent;
+        case TP.INSERT:
+            return TP.elementInsertContent;
+        case TP.REPLACE:
+            return TP.elementReplaceContent;
+        case TP.UPDATE:
+            return TP.elementSetContent;
+        default:
+            return this.raise('TP.sig.InvalidOperation');
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getChangeAction',
 function(locationPath) {
 
