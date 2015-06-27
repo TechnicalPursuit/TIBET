@@ -5385,6 +5385,193 @@ function(aParamHash) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('replaceContent',
+function(newContent, aRequest, stdinContent) {
+
+    /**
+     * @method replaceContent
+     * @summary Replaces the content of the receiver's native DOM counterpart
+     *     with the content supplied.
+     * @param {Object} newContent The content to write into the receiver. This
+     *     can be a String, a Node, or an Object capable of being converted into
+     *     one of those forms.
+     * @param {TP.sig.Request} aRequest An optional request object which defines
+     *     further parameters.
+     * @param {Object} stdinContent Content to set as the 'stdin' when executing
+     *     the supplied content. Note that if this parameter is supplied, the
+     *     content is 'executed', as well as processed, by the shell.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
+     */
+
+    var request,
+        content;
+
+    //  We return if newContent isn't valid and clear ourself if newContent is
+    //  the empty String.
+    if (TP.notValid(newContent)) {
+        return;
+    } else if (newContent === '') {
+        return this.empty();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup, then
+    //  it doesn't need to be processed but can just be set as the regular
+    //  content of the receiver, so we call up to the supertype to do that. At
+    //  the Node level, it is determined whether this is a scalar or
+    //  single-value node and might do some further processing on 'newContent'
+    //  at that point.
+    if (!TP.isElement(content = TP.unwrap(newContent)) &&
+        !TP.isURI(content = TP.str(content)) &&
+        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+        return this.callNextMethod();
+    }
+
+    request = TP.request(aRequest);
+    request.atPutIfAbsent('targetPhase', this.getTargetPhase());
+
+    //  If the content to be set is a URI, then track it via the 'uri'
+    //  property on the request. This allows us to use it later when
+    //  attempting to add to the history mechanism.
+    if (TP.isURI(newContent)) {
+        request.atPutIfAbsent('uri', newContent);
+    }
+
+    //  Put ourself into the 'target' slot, so that the content pipeline has
+    //  the target 'surface' that its processing for available to it.
+    request.atPut('target', this);
+
+    //  For now, anyway, processing the content needs to be synchronous.
+    request.atPut('async', false);
+
+    //  If this is not a Document node, content drawn from here will be awakened
+    //  when the nodes are placed into a visible DOM, so we don't awaken them
+    //  here. But, if this is a Document node, we need to manually configure the
+    //  nodes to be awakened.
+    if (TP.isDocument(this.getNativeNode())) {
+        request.atPutIfAbsent('awaken', true);
+    }
+
+    //  If stdin content was supplied, execute the content as well as
+    //  process it.
+    if (TP.notEmpty(stdinContent)) {
+        content = TP.processAndExecuteWith(newContent,
+                                            request,
+                                            stdinContent);
+    } else {
+        content = TP.process(newContent, request);
+    }
+
+    if (request.didFail()) {
+        return;
+    }
+
+    return this.replaceRawContent(content, request);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('replaceRawContent',
+function(newContent, aRequest, shouldSignal) {
+
+    /**
+     * @method setRawContent
+     * @summary Replaces the content of the receiver with the content provided
+     *     without performing any content processing on it.
+     * @param {Object} newContent The content to write into the receiver. This
+     *     can be a String, a Node, or an Object capable of being converted into
+     *     one of those forms.
+     * @param {TP.sig.Request} aRequest An optional request object which defines
+     *     further parameters.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to true.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
+     */
+
+    var node,
+        content,
+        request,
+        arrContent,
+        func,
+        thisref,
+        reqLoadFunc,
+        loadFunc,
+        result;
+
+    node = this.getNativeNode();
+
+    //  We return if newContent isn't valid and clear ourself if newContent is
+    //  the empty String.
+    if (TP.notValid(newContent)) {
+        return;
+    } else if (newContent === '') {
+        return this.empty();
+    }
+
+    request = TP.request(aRequest);
+    content = TP.unwrap(newContent);
+
+    if (!TP.isKindOf(content, Node) && !TP.isString(content)) {
+
+        //  If the content is an Array, then we want the individual
+        //  '.asString()' representations of each item - not what Array gives
+        //  us.
+        if (TP.isArray(arrContent = content)) {
+            content = '';
+            arrContent.perform(
+                    function(item) {
+                        content += TP.str(item);
+                    });
+        } else {
+            content = TP.str(content);
+        }
+    }
+
+    func = this.getContentPrimitive(TP.REPLACE);
+    thisref = this;
+
+    if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
+        loadFunc =
+            function(aNode) {
+                reqLoadFunc(aNode);
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.UPDATE);
+                }
+            };
+    } else {
+        loadFunc =
+            function(aNode) {
+                thisref.contentReplaceCallback(aNode);
+                if (TP.notFalse(shouldSignal)) {
+                    thisref.changed('content', TP.UPDATE);
+                }
+            };
+    }
+
+    result = func(node,
+                    content,
+                    loadFunc,
+                    TP.ifKeyInvalid(request, 'awaken', false));
+
+    //  If we're an Element and we're flagging changes, go ahead and do that
+    //  now.
+    if (TP.isElement(node) && this.shouldFlagChanges()) {
+        TP.elementFlagChange(node, TP.SELF, TP.UPDATE);
+
+        TP.ifTrace() && TP.$DEBUG ?
+            TP.trace('Node flagged: ' + TP.nodeAsString(node),
+                        TP.LOG) : 0;
+    }
+
+    //  The primitive will have returned a native Node, but we need to
+    //  return a TP.core.Node.
+    return TP.wrap(result);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('setContent',
 function(newContent, aRequest, stdinContent) {
 
@@ -12612,6 +12799,8 @@ function(operation) {
             return TP.htmlElementAddContent;
         case TP.INSERT:
             return TP.htmlElementInsertContent;
+        case TP.REPLACE:
+            return TP.htmlElementReplaceContent;
         case TP.UPDATE:
             return TP.htmlElementSetContent;
         default:
@@ -12652,6 +12841,8 @@ function(operation) {
             return TP.xmlElementAddContent;
         case TP.INSERT:
             return TP.xmlElementInsertContent;
+        case TP.REPLACE:
+            return TP.xmlElementReplaceContent;
         case TP.UPDATE:
             return TP.xmlElementSetContent;
         default:
