@@ -717,6 +717,7 @@ TP.WRAPPER = 'tp_wrapper';
 TP.GENERATOR = 'tp_generator';
 TP.IS_XHTML = 'tp_isXHTML';
 TP.SRC_LOCATION = 'tp_sourcelocation';
+TP.OBSERVED_ATTRS = 'tp_observedattrs';
 
 //  meta owners and their target objects
 

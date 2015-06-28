@@ -11063,7 +11063,9 @@ function(aRequest) {
         attrName,
         val,
 
-        uri;
+        uri,
+
+        obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query
     //  this type for any 'reloadable URI attributes' and observe any URI
@@ -11098,6 +11100,13 @@ function(aRequest) {
                     tpElem.observe(uri, 'TP.sig.ValueChange');
                     uri.watch();
                 }
+
+                if (!TP.isArray(obsAttrs = elem[TP.OBSERVED_ATTRS])) {
+                    obsAttrs = TP.ac();
+                    elem[TP.OBSERVED_ATTRS] = obsAttrs;
+                }
+
+                obsAttrs.push(attrName);
             }
         }
     }
@@ -11180,7 +11189,9 @@ function(aRequest) {
         attrName,
         val,
 
-        uri;
+        uri,
+
+        obsAttrs;
 
     //  If we are configured to watch remote resources, then we need to query
     //  this type for any 'reloadable URI attributes' and ignore any URI
@@ -11202,10 +11213,14 @@ function(aRequest) {
         len = reloadableAttrs.getSize();
 
         for (i = 0; i < len; i++) {
+
+            if (!TP.isArray(obsAttrs = elem[TP.OBSERVED_ATTRS])) {
+                continue;
+            }
+
             attrName = reloadableAttrs.at(i);
 
-            if (TP.notEmpty(
-                val = TP.elementGetAttribute(elem, attrName, true))) {
+            if (obsAttrs.contains(attrName)) {
 
                 //  If we can create a valid URI from the value we find there,
                 //  ignore it for changes and tell it to unwatch its handler for
@@ -11216,6 +11231,8 @@ function(aRequest) {
                     tpElem.ignore(uri, 'TP.sig.ValueChange');
                     uri.unwatch();
                 }
+
+                obsAttrs.splice(obsAttrs.indexOf(attrName), 1);
             }
         }
 
