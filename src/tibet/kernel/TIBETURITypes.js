@@ -7807,6 +7807,9 @@ function(aRequest, filterResult) {
 
         result,
 
+        locRoot,
+        pathRoot,
+
         tpwin,
         inst;
 
@@ -7979,10 +7982,14 @@ function(aRequest, filterResult) {
                 //  path with/without pointer?
                 if (TP.notEmpty(path) &&
                     (url = this.getPrimaryURI()) !== this) {
-                    //  If our path matches the current document location or our
-                    //  pointer is '#document', return the wrapped Document.
-                    if (TP.documentGetLocation(win.document) === path ||
-                            pointer === '#document') {
+
+                    locRoot = TP.uriRoot(TP.documentGetLocation(win.document));
+                    pathRoot = TP.uriRoot(path);
+
+                    //  If our path root matches the current document location
+                    //  root or our pointer is '#document', return the wrapped
+                    //  Document.
+                    if (locRoot === pathRoot || pointer === '#document') {
                         //  NB: We don't set the result's 'uri' here since
                         //  the result is the document and we probably don't
                         //  represent the document.
