@@ -5691,8 +5691,6 @@ function(aRequest) {
      * @summary Sets up runtime style for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Element} Any newly created style element or the existing style
-     *     element for the tag we're processing, if one exists.
      */
 
     var doc;
