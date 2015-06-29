@@ -10356,7 +10356,7 @@ function(aNode) {
 
     //  If the proper TP.core.Node subtype has been cached on the supplied
     //  node, then just return it.
-    if (TP.isValid(type = aNode.tpNodeType)) {
+    if (TP.isValid(type = aNode[TP.NODE_TYPE])) {
         return type;
     }
 
@@ -10369,7 +10369,7 @@ function(aNode) {
         last = name;
         if (TP.isType(type = TP.sys.require(name))) {
             //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
             return type;
         }
@@ -10384,7 +10384,7 @@ function(aNode) {
         //  name wins if we have a type with that precise name
         if (TP.isType(type = TP.sys.require(name))) {
             //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
             return type;
         }
@@ -10398,7 +10398,7 @@ function(aNode) {
                 //  we'll try to find a type named '<prefix>:Element'
                 if (TP.isType(type = TP.sys.require(prefix + ':Element'))) {
                     //  Only set the slot if its an HTML node... see above.
-                    TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+                    TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
                     return type;
                 }
@@ -10413,7 +10413,7 @@ function(aNode) {
                                 //  Only set the slot if its an HTML node...
                                 //  see above.
                                 TP.isHTMLNode(aNode) ?
-                                        aNode.tpNodeType = type :
+                                        aNode[TP.NODE_TYPE] = type :
                                         0;
 
                                 return type;
@@ -10439,7 +10439,7 @@ function(aNode) {
         //  return those
         if (!TP.isNativeType(type)) {
             //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
             return type;
         }
@@ -10455,7 +10455,7 @@ function(aNode) {
     name = TP.elementGetCanonicalName(aNode, true);
     if (name !== last && TP.isType(type = TP.sys.require(name))) {
         //  Only set the slot if its an HTML node... see above.
-        TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+        TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
         return type;
     }
@@ -10473,7 +10473,7 @@ function(aNode) {
             if (TP.notEmpty(prefix = info.at('prefix'))) {
                 if (TP.isType(type = TP.sys.require(prefix + ':Element'))) {
                     //  Only set the slot if its an HTML node... see above.
-                    TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+                    TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
                     return type;
                 }
@@ -10484,7 +10484,7 @@ function(aNode) {
             if (TP.notEmpty(defaultType = info.at('defaultNodeType'))) {
                 if (TP.isType(type = TP.sys.require(defaultType))) {
                     //  Only set the slot if its an HTML node... see above.
-                    TP.isHTMLNode(aNode) ? aNode.tpNodeType = type : 0;
+                    TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
                     return type;
                 }
@@ -10494,7 +10494,7 @@ function(aNode) {
 
     //  default is to wrap based on XML vs. HTML
     if (TP.isHTMLNode(aNode)) {
-        //  NOTE that we don't cache tpNodeType here to leave open the
+        //  NOTE that we don't cache TP.NODE_TYPE here to leave open the
         //  possibility that we're still loading functionality and may find
         //  a better match on subsequent attempts
         return TP.core.HTMLElementNode;
