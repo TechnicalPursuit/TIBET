@@ -115,7 +115,7 @@ function(aDocument) {
     //  computation here will automatically adjust for theme.
     styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
     if (TP.notValid(styleURI)) {
-        return null;
+        return;
     }
 
     //  Make sure we have a 'head' element and query it for existing 'style'
