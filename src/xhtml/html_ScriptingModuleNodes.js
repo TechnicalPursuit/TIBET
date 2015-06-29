@@ -129,10 +129,7 @@ function(aSrc) {
             return this.raise('InvalidURI', 'Not a valid \'src\' URI: ' + aSrc);
         }
 
-        //  NB: We do *not* force 'refresh' here, since this URL will have
-        //  already (probably) had its content reloaded by the change machinery
-        //  setting the 'isLoaded' flag to false and then calling 'getResource'.
-        src = srcURL.getContent(TP.hc('async', false));
+        src = srcURL.getContent(TP.hc('async', false, 'refresh', true));
 
         if (TP.notValid(src)) {
             return this.raise('InvalidString',
