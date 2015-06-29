@@ -5381,8 +5381,10 @@ function(aRequest, filterResult) {
     //  subrequest instance we can locally modify.
     subrequest = this.constructSubRequest(aRequest);
 
-    //  may need to force refresh to true if the content hasn't been loaded
-    if (!this.isLoaded() || TP.notValid(refresh = subrequest.at('refresh'))) {
+    refresh = subrequest.at('refresh');
+    if (TP.notValid(refresh)) {
+        //  may need to force refresh to true if the content hasn't been loaded
+        //  and there wasn't a specific value for refresh.
         refresh = !this.isLoaded();
     }
 
