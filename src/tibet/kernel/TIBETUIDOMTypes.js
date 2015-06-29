@@ -157,7 +157,15 @@ function(aDocument) {
 
         TP.elementSetAttribute(styleElem, 'href', styleURI.getLocation());
 
-        TP.nodeInsertBefore(docHead, styleElem, insertionPoint);
+        //  Make sure to set the 'shouldAwake' parameter to the inverse of
+        //  whether the system has started or not. This is because, if the
+        //  system has already started, the MutationObserver machinery will take
+        //  care of awakening this content (i.e. the 'tibet:style' element) but
+        //  if it hasn't already started, then we need to do that manually.
+        TP.nodeInsertBefore(docHead,
+                            styleElem,
+                            insertionPoint,
+                            !TP.sys.hasStarted());
     }
 
     //  Make sure also to set the style element's 'id' attribute, so that the
