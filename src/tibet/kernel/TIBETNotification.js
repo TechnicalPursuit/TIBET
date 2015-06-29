@@ -7558,8 +7558,8 @@ function(aDocument) {
                             //  and don't process them again.
                             //  https://bugs.webkit.org/show_bug.cgi?id=103916
                             if (!record.handled) {
-                                this.handleMutationEvent(record);
                                 record.handled = true;
+                                this.handleMutationEvent(record);
                             }
                         }
                     }.bind(this));
