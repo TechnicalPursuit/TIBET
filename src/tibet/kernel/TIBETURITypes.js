@@ -2051,7 +2051,7 @@ function(anAspect, anAction, aDescription) {
 
     //  Note how we set the target to the *primary URI's* resource. This is the
     //  target that the path query will be executed against to obtain any value.
-    primaryResource = this.getPrimaryURI().getResource();
+    primaryResource = this.getPrimaryURI().getResource(TP.hc('refresh', false));
 
     //  If this this doesn't have any sub URIs, then it's we'll just let all of
     //  the parameters default in the supertype call, except we do provide the
