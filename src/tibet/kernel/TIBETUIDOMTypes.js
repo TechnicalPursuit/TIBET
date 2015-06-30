@@ -146,6 +146,12 @@ function(aDocument) {
                         styleURI.getLocation(),
                         insertionPoint);
 
+        //  Make sure also to set the style element's 'id' attribute, so that
+        //  the above 'uniquing' logic will work for future occurrences of this
+        //  element being processed (which ensures that we don't add the same
+        //  element more than once).
+        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+
     } else {
 
         //  It's another kind of style - set up a 'tibet:style' element and let
@@ -157,6 +163,17 @@ function(aDocument) {
 
         TP.elementSetAttribute(styleElem, 'href', styleURI.getLocation());
 
+        //  Make sure also to set the style element's 'id' attribute, so that
+        //  the above 'uniquing' logic will work for future occurrences of this
+        //  element being processed (which ensures that we don't add the same
+        //  element more than once).
+        //
+        //  Note also how we do this *before* we insert/awaken the content - if
+        //  the system hasn't started and the content needs to be awakened (see
+        //  below), the awaken machinery will set up an observation on this
+        //  element's URI - we want that to be set up using the proper ID.
+        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+
         //  Make sure to set the 'shouldAwake' parameter to the inverse of
         //  whether the system has started or not. This is because, if the
         //  system has already started, the MutationObserver machinery will take
@@ -167,12 +184,6 @@ function(aDocument) {
                             insertionPoint,
                             !TP.sys.hasStarted());
     }
-
-    //  Make sure also to set the style element's 'id' attribute, so that the
-    //  above 'uniquing' logic will work for future occurrences of this element
-    //  being processed (which ensures that we don't add the same element more
-    //  than once).
-    TP.elementSetAttribute(styleElem, 'id', sheetID, true);
 
     //  Track the original source from the URI - this is what the author
     //  originally typed and might be a virtual URI. We'd like to track it here.
