@@ -11929,6 +11929,8 @@ function(aSignal) {
                 }
             }
         }
+    } else {
+        return this.callNextMethod();
     }
 
     return;
