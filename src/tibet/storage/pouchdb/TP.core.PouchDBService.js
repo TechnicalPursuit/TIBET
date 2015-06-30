@@ -24,8 +24,7 @@
  *     It is possible, however, to manually set up a server. To do so, execute
  *     the following:
  *
- *     myPouchDBService = TP.core.PouchDBService.construct(
- *          'myPouchDBServer');
+ *     myPouchDBService = TP.core.PouchDBService.construct('myPouchDBServer');
  *
  *     You will then need to register your service instance so that it services
  *     TP.sig.PouchDBRequests (otherwise, the TIBET machinery will
@@ -33,7 +32,6 @@
  *     described above and register it to service these kinds of requests):
  *
  *     myPouchDBService.register();
- *
  */
 
 /* JSHint checking */
@@ -78,7 +76,6 @@ function(aRequest) {
      * @param {TP.sig.PouchDBRequest} aRequest The request object to take
      *     the request parameters from.
      * @returns {TP.core.PouchDBService} The receiver.
-      @todo
      */
 
     var request,

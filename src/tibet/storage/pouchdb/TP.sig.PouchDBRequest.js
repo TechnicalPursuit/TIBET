@@ -101,11 +101,6 @@
  *
  *     req.fire();
  *
- *     requestParams = TP.hc('action', 'createItem',
- *                              'dbName', 'pouchdb_test',
- *                              'id', 'author_info',
- *                              'body', TP.hc('foo', 'bar'));
- *
  */
 
 //  ------------------------------------------------------------------------
