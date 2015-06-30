@@ -11870,12 +11870,11 @@ function(aSignal) {
 
     /**
      * @method handleValueChange
-     * @summary Handles notification of an incoming signal. For types the
-     *     standard handle call will try to locate a signal-specific handler
-     *     function just like with instances, but the default method for
-     *     handling them defers to an instance rather than the type itself.
+     * @summary Handles notification of a change.
+     * @description If the origin is a URI that one of our 'reloadable
+     *     attributes' has as the reference to its remote resource, then the
+     *     'reloadFrom<Attr>' method is invoked on the receiver.
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
-     * @returns {Object} The function's return value.
      */
 
     var origin,
