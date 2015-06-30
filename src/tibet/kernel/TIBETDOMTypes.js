@@ -13811,6 +13811,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('handleValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles notification of a change.
+     * @description If the origin is the URI that the receiver is observing
+     *     for change (because it loaded that URI into itself), then this method
+     *     reloads the URI's remote resource into the receiver.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     */
+
+    var req,
+        origin;
+
+    origin = aSignal.getSignalOrigin();
+
+    if (TP.isKindOf(origin, TP.core.URI)) {
+        req = TP.request();
+        this.setContent(origin, req);
+    } else {
+        return this.callNextMethod();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DocumentNode.Inst.defineMethod('setID',
 function(anID) {
 
@@ -13866,6 +13895,56 @@ function(aPhase) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('setRawContent',
+function(newContent, aRequest, shouldSignal) {
+
+    /**
+     * @method setRawContent
+     * @summary Sets the content of the receiver to the content provided
+     *     without performing any content processing on it.
+     * @param {Object} newContent The content to write into the receiver. This
+     *     can be a String, a Node, or an Object capable of being converted into
+     *     one of those forms.
+     * @param {TP.sig.Request} aRequest An optional request object which defines
+     *     further parameters.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to true.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
+     */
+
+    var loc,
+        uri,
+
+        retVal;
+
+    //  Grab our current location and ignore/unwatch the URI for the
+    //  ValueChange.
+    loc = this.getLocation();
+    uri = TP.uc(loc);
+
+    if (TP.isURI(uri)) {
+        this.ignore(uri, 'TP.sig.ValueChange');
+        uri.unwatch();
+    }
+
+    //  Call up to our supertype, which will set the location/content.
+    retVal = this.callNextMethod();
+
+    //  Get the new location and observe/watch the URI for the ValueChange.
+    loc = this.getLocation();
+    uri = TP.uc(loc);
+
+    if (TP.isURI(uri)) {
+        this.observe(uri, 'TP.sig.ValueChange');
+        uri.watch();
+    }
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
