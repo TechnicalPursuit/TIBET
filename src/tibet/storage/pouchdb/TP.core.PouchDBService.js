@@ -89,7 +89,8 @@ function(aRequest) {
 
         info,
         data,
-        theDate;
+
+        dateStamp;
 
     request = TP.request(aRequest);
 
@@ -279,10 +280,10 @@ function(aRequest) {
             //  Convert the object into a TP.core.Hash and then into a plain
             //  Object.
             data = body.asHash();
-            theDate = TP.dc();
+            dateStamp = TP.dc().asNumber();
 
-            data.atPut('date_created', theDate);
-            data.atPut('date_modified', theDate);
+            data.atPut('date_created', dateStamp);
+            data.atPut('date_modified', dateStamp);
 
             //  If there is no id, then do a 'post' and let PouchDB create one.
             if (TP.isEmpty(id)) {
