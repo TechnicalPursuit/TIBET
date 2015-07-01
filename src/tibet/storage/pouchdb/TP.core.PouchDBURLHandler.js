@@ -269,7 +269,17 @@ function(targetURI, aRequest) {
         securePW = queryDict.at('securePW');
     }
 
-    if (request.at('verb') === TP.HTTP_PUT) {
+    //  If the user forces a POST, then we go ahead and configure the request to
+    //  be 'createItem' - otherwise, we specify 'updateOrCreateItem' and let the
+    //  service object handle the case where an item needs to be created.
+    if (request.at('verb') === TP.HTTP_POST) {
+
+        requestParams = TP.hc(
+                        'action', 'createItem',
+                        'dbName', dbName,
+                        'securePW', securePW,
+                        'body', content);
+    } else {
 
         if (TP.notValid(resourceID)) {
             request.fail('No resource ID specified for: ' + TP.str(targetURI));
@@ -278,17 +288,10 @@ function(targetURI, aRequest) {
         }
 
         requestParams = TP.hc(
-                        'action', 'updateItem',
+                        'action', 'updateOrCreateItem',
                         'dbName', dbName,
                         'securePW', securePW,
                         'id', resourceID,
-                        'body', content);
-    } else {
-
-        requestParams = TP.hc(
-                        'action', 'createItem',
-                        'dbName', dbName,
-                        'securePW', securePW,
                         'body', content);
     }
 
