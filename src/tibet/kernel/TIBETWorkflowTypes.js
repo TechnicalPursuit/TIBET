@@ -6282,7 +6282,8 @@ function(aSignal) {
     (function(signal) {
 
         var elem,
-            rootWin;
+            rootWin,
+            homeURL;
 
         //  Grab the UI root window and focus it if possible.
         if (TP.isElement(elem = signal.at('ApplicationTag'))) {
@@ -6296,10 +6297,27 @@ function(aSignal) {
         //  other behaviors but after we're sure the UI has been finalized.
         this.signal('TP.sig.AppStart');
 
+        //  Note that we check and clear sessionStorage here to avoid having any
+        //  values set by a bookmark or reload operation on a hooked file from
+        //  hanging around and affecting future operations.
+        if (window.sessionStorage) {
+            homeURL = window.sessionStorage.getItem(
+                'TIBET.project.home_page');
+            if (TP.notEmpty(homeURL)) {
+                //  preserve the value in runtime config to support the
+                //  TP.sys.getHomeURL call.
+                TP.sys.setcfg('session.home_page', homeURL);
+
+                window.sessionStorage.removeItem('TIBET.project.home_page');
+            }
+        }
+
         //  If we're asked to trigger routing on startup do that to properly set
         //  the initial path context.
-        if (TP.sys.cfg('uri.routing_onstart')) {
-            this.getRouter().route(TP.sys.getLaunchURL());
+        if (TP.notEmpty(homeURL)) {
+            this.getHistory().pushLocation(homeURL);
+        } else if (TP.sys.cfg('uri.routing_onstart')) {
+            this.getRouter().route(TP.sys.getHomeURL());
         }
 
         try {
@@ -6375,7 +6393,7 @@ function() {
      */
 
     //  Install a popstate handler to catch changes due to history API.
-    top.addEventListener('popstate', function(evt) {
+    window.addEventListener('popstate', function(evt) {
         this.onpopstate(evt);
     }.bind(this), false);
 
@@ -6671,7 +6689,7 @@ function() {
      * @returns {Window} The native window instance.
      */
 
-    return top;
+    return window;
 });
 
 //  ------------------------------------------------------------------------
@@ -6854,7 +6872,7 @@ function(aURL, fromDoc) {
     launchParts = TP.uriDecompose(launch);
 
     //  Convert urls pointing to the home page into their "normalized" form.
-    home = TP.uriExpandPath(TP.sys.cfg('project.home_page'));
+    home = TP.uriExpandPath(TP.sys.getHomeURL());
     if (TP.uriHead(url) === TP.uriHead(home)) {
         urlParts = TP.uriDecompose(url);
         urlParts.atPut('basePath', launchParts.at('basePath'));

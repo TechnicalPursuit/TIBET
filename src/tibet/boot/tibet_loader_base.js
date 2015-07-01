@@ -1499,6 +1499,46 @@ TP.sys.getLaunchURL = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.sys.getHomeURL = function(checkSession) {
+
+    /**
+     * @method getHomeURL
+     * Returns the full URL string the application used as its home page.
+     * @param {Boolean} [checkSession=false] Whether the routine should check
+     *     startup session parameters or not. When true the return value will
+     *     prioritize session storage and/or session.home_page over normal
+     *     values for project.home_page et. al. This is largely used during
+     *     startup to get the page to load in the canvas, even though it's not
+     *     the "standard" home page for the app.
+     * @returns {String} The home page URL.
+     */
+
+    var homeURL;
+
+    if (checkSession && window.sessionStorage) {
+        homeURL = window.sessionStorage.getItem('TIBET.project.home_page');
+    }
+
+    //  NOTE that the session.home_page value is set during startup to preserve
+    //  any value found in session storage before clearing it to avoid incorrect
+    //  home page computation on startup.
+    if (checkSession) {
+        homeURL = homeURL || TP.sys.cfg('session.home_page');
+    }
+
+    homeURL = homeURL || TP.sys.cfg('project.home_page');
+
+    if (TP.sys.cfg('tibet.sherpa')) {
+        homeURL = homeURL || TP.sys.cfg('path.sherpa_screen_0');
+    }
+
+    homeURL = homeURL || TP.sys.cfg('path.blank_page');
+
+    return homeURL;
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.sys.getHost = function() {
 
     /**
