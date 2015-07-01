@@ -290,29 +290,25 @@ function(parts) {
         url += basePath;
     }
 
+    //  Base parameters are parameters on the base uri, prior to the fragment.
     if (TP.notEmpty(baseParams)) {
         url += '?' +
             (TP.isString(baseParams) ? baseParams : baseParams.asQueryString());
     }
 
+    //  Fragment path is any portion of the fragment prior to fragment params.
+    //  By default an empty path is '/' to be consistent with location.pathname.
     if (fragPath !== '/' && TP.notEmpty(fragPath)) {
-
-        if (url.last() !== '/') {
-            url += '/';
-        }
-
         url += '#' +
             (fragPath.charAt(0) === '/' ? fragPath.slice(1) : fragPath);
     }
 
+    //  Fragment parameters, aka boot parameters, are parameters which are part
+    //  of the TIBET configuration system which are found in the fragment.
     if (TP.notEmpty(fragParams)) {
 
+        //  Make sure that we're always within a fragment by forcing leading #.
         if (!/#/.test(url)) {
-
-            if (url.last() !== '/') {
-                url += '/';
-            }
-
             url += '#';
         }
 
@@ -395,7 +391,7 @@ function(aURI) {
 
         //  From a route perspective '/' means UICANVAS should get the home
         //  page. We don't want launch URLs here since this isn't about top.
-        home = TP.uriExpandPath(TP.sys.cfg('project.home_page'));
+        home = TP.uriExpandPath(TP.sys.getHomeURL());
         homeParts = TP.uriDecompose(home);
 
         //  Preserve any base parameters from launch if not overridden.

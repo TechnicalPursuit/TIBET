@@ -61,19 +61,10 @@ function() {
                             false,
                             false);
 
-    //  Check for startup home page override if possible.
-    if (top.sessionStorage) {
-        homeURL = top.sessionStorage.getItem('TIBET.project.home_page');
-        if (TP.notEmpty(homeURL)) {
-            top.sessionStorage.removeItem('TIBET.project.home_page');
-        }
-    }
-
-    //  Work through list of possible page urls to use for screen 0.
-    homeURL = homeURL ||
-        TP.sys.cfg('project.home_page') ||
-        TP.sys.cfg('path.sherpa_screen_0') ||
-        TP.sys.cfg('path.blank_page');
+    //  Check for startup home page override if possible. Note that because this
+    //  is a startup sequence we need to consider session-level settings for
+    //  home.
+    homeURL = TP.sys.getHomeURL(true);
 
     //  If a specific URL isn't specified for 'path.sherpa_screen_0', then load
     //  the project root page into screen_0 and put some markup in there that

@@ -301,9 +301,9 @@ function(aRequest) {
      * @method tagAttachDOM
      * @summary Sets up runtime machinery for the element in aRequest.
      * @description In this type, if the Sherpa is not 'active' this method
-     *     loads the URL pointed to by the 'project.home_page' configuration
-     *     variable into the UIROOT frame. If a value hasn't been configured,
-     *     then the standard system blank page is loaded into that frame.
+     *     loads the URL pointed to by the TP.sys.getHomeURL method into the
+     *     UIROOT frame. If a value hasn't been configured, then the standard
+     *     system blank page is loaded into that frame.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -331,20 +331,9 @@ function(aRequest) {
         return;
     }
 
-    //  Grab the URI that corresponds to the project's homepage. If it's not
-    //  present, use the blank page instead. We check the session storage in
-    //  case the launch started from a bookmarked content page.
-    if (window.sessionStorage) {
-        homeURL = window.sessionStorage.getItem('TIBET.project.home_page');
-        if (TP.notEmpty(homeURL)) {
-            top.sessionStorage.removeItem('TIBET.project.home_page');
-        }
-    }
-
-    homeURL = homeURL ||
-                TP.sys.cfg('project.home_page') ||
-                TP.sys.cfg('path.blank_page');
-    homeURL = TP.uc(homeURL);
+    //  Capture the actual home page URL for loading which means passing true
+    //  here to force session variables to be checked.
+    homeURL = TP.uc(TP.sys.getHomeURL(true));
 
     request = TP.request();
     request.atPut(TP.ONLOAD,

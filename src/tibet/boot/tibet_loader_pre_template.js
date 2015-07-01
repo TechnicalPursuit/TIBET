@@ -25,6 +25,11 @@
 /* eslint indent:0 */
 (function(root) {
 
+if (window.location.pathname === '/index.html') {
+    window.location.replace(
+        window.location.toString().replace('/index.html', '/'));
+}
+
 //  GLOBAL - Defines where TIBET booted and where the codeframe is. We set this
 //  early so the cfg/post/hook file knows it's bundled with tibet_loader_pre.js.
 window.$$TIBET = window;
