@@ -18,6 +18,12 @@
 TP.core.URIHandler.defineSubtype('PouchDBURLHandler');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.PouchDBURLHandler.Type.defineAttribute('watchers');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -308,6 +314,226 @@ function(targetURI, aRequest) {
 
     //  Make sure that the 2 requests match on sync/async
     request.updateRequestMode(saveRequest);
+
+    return response;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.PouchDBURLHandler.Type.defineMethod('watch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method watch
+     * @summary Watches for changes to the URLs PouchDB resource.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var request,
+        response,
+
+        dbName,
+        theDB,
+
+        watchers,
+        watcher;
+
+    request = TP.request(aRequest);
+    response = request.constructResponse();
+
+    if (TP.notValid(dbName = targetURI.get('dbName'))) {
+        request.fail('No db name specified for: ' + TP.str(targetURI));
+
+        return response;
+    }
+
+    if (TP.notValid(theDB = new TP.extern.PouchDB(dbName))) {
+        request.fail(
+                TP.sc('Cannot open pouchDB database named: ' + dbName));
+
+        return response;
+    }
+
+    //  This type keeps a hash of 'watchers' - with the dbName as the key and a
+    //  PouchDB 'changes' object as the value.
+    if (TP.notValid(watchers = this.get('watchers'))) {
+        watchers = TP.hc();
+        this.set('watchers', watchers);
+
+        this.observe(TP.sys, 'TP.sig.AppShutdown');
+    }
+
+    //  If there was no valid watcher for this database. Create one and
+    //  configure it's event handler.
+    if (TP.notValid(watcher = watchers.at(dbName))) {
+
+        watcher = theDB.changes(
+                        {
+                            since: 'now',
+                            live: true,
+                            include_docs: true
+                        });
+        watchers.atPut(dbName, watcher);
+
+        //  Configure the 'change' event on the watcher to signal a URI change
+        //  when notified of a change.
+        watcher.on('change',
+                    function(change) {
+                        var doc,
+                            id,
+
+                            loc,
+                            action,
+                            uri;
+
+                        if (TP.notValid(doc = change.doc)) {
+                            return this.raise(
+                                    'TP.sig.InvalidDocument',
+                                    'Invalid document from change event.');
+                        }
+
+                        if (!TP.isString(id = doc._id)) {
+                            return this.raise(
+                                    'TP.sig.InvalidString',
+                                    'Invalid document ID from change event.');
+                        }
+
+                        //  Form a URI location from the dbName and id
+                        loc = 'pouchdb://' + dbName + '/' + id;
+
+                        //  If the date create and the date modified are the
+                        //  same, then the action is TP.CREATE, otherwise we're
+                        //  updating so it's TP.UPDATE
+                        action = doc.date_created === doc.date_modified ?
+                                    TP.CREATE :
+                                    TP.UPDATE;
+
+                        //  Look up the URI without creating a new one if it
+                        //  doesn't exist.
+                        if (TP.isURI(uri = TP.core.URI.getInstanceById(loc))) {
+
+                            //  Signal a 'TP.sig.ValueChange' from the URI,
+                            //  using the computed action and supplying a new
+                            //  value.
+                            uri.$changed(
+                                'value',
+                                action,
+                                TP.hc(TP.NEWVAL,
+                                        TP.json2js(TP.js2json(change.doc))));
+                        }
+                    });
+
+        //  We keep a count of the number of times this watcher is used for a
+        //  particular database. When it's 0, this watcher will be canceled.
+        watcher._watcherCount = 0;
+    } else {
+
+        //  There was already a watcher for this database, but we need to
+        //  increment it's watcherCount by 1 to keep track of how many URIs were
+        //  interested in it. This is so that the 'unwatch' below knows when to
+        //  cancel it (when watcherCount reaches 0).
+        watcher._watcherCount++;
+    }
+
+    return response;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.PouchDBURLHandler.Type.defineMethod('handleAppShutdown',
+function(aSignal) {
+
+    /**
+     * @method handleAppShutdown
+     * @summary Handles when the app is about to be shut down. This is used to
+     *     try to cancel any PouchDB watchers that are notifying us of changes
+     *     to URLs that represent their resources.
+     * @param {TP.sig.AppShutdown} aSignal The signal indicating that the
+     *     application is to be shut down.
+     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     */
+
+    var watchers;
+
+    //  This type keeps a hash of 'watchers' - with the dbName as the key and a
+    //  PouchDB 'changes' object as the value.
+    if (TP.notEmpty(watchers = this.get('watchers'))) {
+
+        //  Get every watcher and cancel it - we're done.
+        watchers.getValues().forEach(
+                    function(watcher) {
+                        watcher.cancel();
+                    });
+    }
+
+    //  Ignore the app shutdown signal - we're done.
+    this.ignore(TP.sys, 'TP.sig.AppShutdown');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.PouchDBURLHandler.Type.defineMethod('unwatch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method unwatch
+     * @summary Removes any watches for changes to the URLs PouchDB resource.
+     *     See this type's 'watch' method for more information.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var request,
+        response,
+
+        dbName,
+
+        watchers,
+        watcher;
+
+    request = TP.request(aRequest);
+    response = request.constructResponse();
+
+    if (TP.notValid(dbName = targetURI.get('dbName'))) {
+        request.fail('No db name specified for: ' + TP.str(targetURI));
+
+        return response;
+    }
+
+    //  This type keeps a hash of 'watchers' - with the dbName as the key and a
+    //  PouchDB 'changes' object as the value.
+    if (TP.notEmpty(watchers = this.get('watchers'))) {
+
+        //  Grab the watcher for the database.
+        watcher = watchers.at(dbName);
+
+        //  If it's a valid watcher, decrement the count (the number of times
+        //  it's been asked to watch) and check the count.
+        if (TP.isValid(watcher)) {
+
+            //  Decrement the watcher count - we're being unwatched.
+            watcher._watcherCount--;
+
+            //  If the count is back at 0, then we cancel the watcher and remove
+            //  it from dictionary of watchers.
+            if (watcher._watcherCount === 0) {
+                watcher.cancel();
+                watchers.removeKey(dbName);
+            }
+        }
+    }
+
+    //  No more watchers in the dictionary? Ignore the app shutdown signal.
+    if (TP.isEmpty(watchers)) {
+        this.ignore(TP.sys, 'TP.sig.AppShutdown');
+    }
 
     return response;
 });
