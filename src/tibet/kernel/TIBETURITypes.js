@@ -10517,6 +10517,9 @@ function(targetURI, aRequest) {
 
     var watchSources,
 
+        request,
+        response,
+
         uriLoc,
         watcherLoc,
         foundWatchSource,
@@ -10536,6 +10539,9 @@ function(targetURI, aRequest) {
     if (!TP.sys.cfg('uri.remote_watch') || TP.isEmpty(watchSources)) {
         return;
     }
+
+    request = targetURI.constructRequest(aRequest);
+    response = request.constructResponse();
 
     uriLoc = targetURI.getLocation();
 
@@ -10573,15 +10579,15 @@ function(targetURI, aRequest) {
         //  Make sure that we have a valid signal source URI for the watcher.
         watcherURI = this.get('watcherSignalSourceURI');
         if (!TP.isURI(watcherURI)) {
-            return this.raise('TP.sig.InvalidURI',
-                                'Invalid watcher signal source URI.');
+            request.fail('Invalid watcher signal source URI.');
+            return response;
         }
 
         //  Make sure that we have a valid signal source type for the watcher.
         watcherType = TP.sys.require(this.get('watcherSignalSourceType'));
         if (!TP.isType(watcherType)) {
-            return this.raise('TP.sig.InvalidType',
-                                'Invalid watcher signal source type.');
+            request.fail('Invalid watcher signal source type.');
+            return response;
         }
 
         //  Construct a watcher with its source source type and URI.
@@ -10602,8 +10608,8 @@ function(targetURI, aRequest) {
 
         signalType = this.get('watcherSignalType');
         if (TP.isEmpty(signalType)) {
-            return this.raise('TP.sig.InvalidType',
-                                'Invalid watcher signal type.');
+            request.fail('Invalid watcher signal type.');
+            return response;
         }
 
         //  Observe the watcher for the signal type. Note how we also observe
@@ -10613,7 +10619,7 @@ function(targetURI, aRequest) {
         this.observe(TP.sys, 'TP.sig.AppShutdown');
     }
 
-    return;
+    return response;
 });
 
 //  ------------------------------------------------------------------------
@@ -10671,10 +10677,16 @@ function(targetURI, aRequest) {
      * @returns {TP.sig.Response} The request's response object.
      */
 
-    var watchedURLs,
+    var request,
+        response,
+
+        watchedURLs,
 
         watcher,
         signalType;
+
+    request = targetURI.constructRequest(aRequest);
+    response = request.constructResponse();
 
     //  If we don't have a list of watched URLs, create one.
     if (TP.notValid(watchedURLs = this.get('watchedURLs'))) {
@@ -10695,8 +10707,8 @@ function(targetURI, aRequest) {
         //  We can't ignore a signal that we're not configured for.
         signalType = this.get('watcherSignalType');
         if (TP.isEmpty(signalType)) {
-            return this.raise('TP.sig.InvalidType',
-                                'Invalid watcher signal type.');
+            request.fail('Invalid watcher signal type.');
+            return response;
         }
 
         //  Ignore the watcher for the signal type. And make sure to remove our
@@ -10705,7 +10717,7 @@ function(targetURI, aRequest) {
         this.ignore(TP.sys, 'TP.sig.AppShutdown');
     }
 
-    return;
+    return response;
 });
 
 //  =======================================================================
