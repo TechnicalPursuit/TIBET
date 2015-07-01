@@ -368,7 +368,7 @@ function(aRequest) {
 
         break;
 
-        case 'updateItem':
+        case 'updateOrCreateItem':
 
             if (TP.isEmpty(id)) {
 
@@ -388,35 +388,65 @@ function(aRequest) {
                     id,
                     function(err, resp) {
 
-                        //  If the DB had an error report it.
+                        var needsCreate;
+
+                        dateStamp = TP.dc().asNumber();
+
+                        //  If the DB had an error and it wasn't a 404 (which we
+                        //  we're interested in for auto create), report it.
                         if (TP.isValid(err)) {
-                            return request.fail(
-                                    TP.sc('Trying to update an item in the',
-                                            ' database:', dbName,
-                                            ' but had an error: ',
-                                            TP.str(err)),
-                                    err);
+                            if (err.status !== 404) {
+                                return request.fail(
+                                        TP.sc('Trying to update an item in the',
+                                                ' database:', dbName,
+                                                ' but had an error: ',
+                                                TP.str(err)),
+                                        err);
+                            } else {
+                                needsCreate = true;
+                            }
+                        } else {
+                            needsCreate = false;
                         }
 
-                        //  If there wasn't a valid response or there was but it
-                        //  didn't have a proper revision number, then we can't
-                        //  update an object that doesn't exist.
-                        if (TP.notValid(resp) || TP.notValid(resp._rev)) {
+                        //  If needsCreate is false and there wasn't a valid
+                        //  response or there was but it didn't have a proper
+                        //  revision number, then we can't update an object that
+                        //  doesn't exist.
+                        if (!needsCreate &&
+                            (TP.notValid(resp) || TP.notValid(resp._rev))) {
                             return request.fail(
                                     TP.sc('There is no existing item with id: ',
                                             id, ' in database:', dbName, '.'));
                         }
 
-                        //  Update the rev number in the data we're updating.
-                        //  This will cause the update to happen.
-                        data.atPut('_rev', resp._rev);
-
                         //  Update the date modified stamp
-                        data.atPut('date_modified', TP.dc());
+                        data.atPut('date_modified', dateStamp);
 
-                        //  Make sure to convert it to a POJO before handing it
-                        //  to PouchDB.
-                        data = data.asObject();
+                        //  If we're also creating, then we stamp in the date
+                        //  created.
+                        if (needsCreate) {
+
+                            data.atPut('date_created', dateStamp);
+
+                            //  Make sure to convert it to a POJO before handing
+                            //  it to PouchDB.
+                            data = data.asObject();
+
+                        } else {
+
+                            //  Otherwise, we grab the response, which is the
+                            //  whole document (as we're doing an update) and
+                            //  copy any new data from the passed in data over
+                            //  to it.
+                            data.getKeys().forEach(
+                                    function(aKey) {
+                                        resp[aKey] = data.at(aKey);
+                                    });
+
+                            //  Make the new data be that data.
+                            data = resp;
+                        }
 
                         //  Go ahead and try to 'put' the data.
                         theDB.put(
