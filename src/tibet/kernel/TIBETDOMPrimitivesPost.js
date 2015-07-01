@@ -623,7 +623,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         newEvent,
 
         scriptURLs,
-        placeholderElem,
 
         allContentLoadedFunc,
 
@@ -709,8 +708,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  But because of the way they are processed by browsers, and because of
     //  the way that certain browsers (Chrome) will retain information (and
     //  attempt to act on that information) about script elements even if they
-    //  are removed from the document, we make sure to capture their URLs and
-    //  remove them from the nodeContent *before* we set it into the document.
+    //  are removed from the document, we make sure to capture their URLs
+    //  *before* we set it into the document.
 
     //  Grab all of the existing scripts.
     scriptURLs = TP.ac();
@@ -718,22 +717,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                             'script',
                                             TP.w3.Xmlns.XHTML);
 
-    //  Loop over them, capturing their 'src' URL, and substituting a span
-    //  element for each one. Tag that placeholder span with the number of the
-    //  script that it represents in the document.
+    //  Loop over them and capture their 'src' URL.
     for (i = 0; i < scripts.getSize(); i++) {
         scriptURLs.push(scripts.at(i).src);
-
-        placeholderElem = TP.documentCreateElement(
-                                        aDocument,
-                                        'span',
-                                        TP.w3.Xmlns.XHTML);
-
-        TP.elementSetAttribute(placeholderElem, 'script_num', i);
-
-        TP.nodeReplaceChild(scripts.at(i).parentNode,
-                            placeholderElem, scripts.at(i),
-                            false);
     }
 
     //  Append the new child into the target document
@@ -806,7 +792,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     count = 0;
     loadFunc = function(evt) {
         var scriptURL,
-            newScript;
+
+            newScript,
+            existingScript;
 
         if (evt) {
             evt.target.removeEventListener('load', loadFunc, false);
@@ -822,21 +810,23 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                     scriptURL);
             newScript.addEventListener('load', loadFunc, false);
 
-            //  Find the 'span' placeholder element that we created above and
-            //  that is standing in for this script.
-            placeholderElem = TP.byCSSPath('span[script_num="' + count + '"]',
-                                        aDocument,
-                                        true,
-                                        false);
+            //  Find the 'script' element that matches the script URL
+            existingScript = TP.byCSSPath('script[src="' + scriptURL + '"]',
+                                            aDocument,
+                                            true,
+                                            false);
 
-            if (TP.isElement(placeholderElem)) {
-                TP.nodeReplaceChild(placeholderElem.parentNode,
-                                    newScript, placeholderElem,
+            //  Replace it with the new script. This will cause it to execute.
+            if (TP.isElement(existingScript)) {
+                TP.nodeReplaceChild(existingScript.parentNode,
+                                    newScript, existingScript,
                                     false);
             } else {
                 TP.ifWarn() ?
-                    TP.warn('Couldn\'t find placeholder for script #: ' + count,
-                            TP.LOG) : 0;
+                    TP.warn(
+                        'Couldn\'t find existing script element with URL: ' +
+                                                                    scriptURL,
+                        TP.LOG) : 0;
             }
 
             //  Make sure to increment the count for the next pass!
