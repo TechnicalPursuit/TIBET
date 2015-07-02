@@ -5497,10 +5497,10 @@ function(methodName, methodBody, desc) {
             if (owner.$traitsTypeResolutions &&
                 owner.$traitsTypeResolutions.getKeys().contains(methodName)) {
 
-                //  If the $traitsResolved flag is false and we're not in the
+                //  If the $traitsFinalized flag is false and we're not in the
                 //  middle of already finalizing traits from this method (see
                 //  below), then finalize them.
-                if (!owner.get('$traitsResolved') && !owner.$$finalizing) {
+                if (!owner.get('$traitsFinalized') && !owner.$$finalizing) {
                     if (TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
                         TP.ifWarn() ?
                             TP.warn('Adding method slot: ' + methodName +
@@ -5632,10 +5632,10 @@ function(methodName, methodBody, desc) {
             if (owner.$traitsInstResolutions &&
                 owner.$traitsInstResolutions.getKeys().contains(methodName)) {
 
-                //  If the $traitsResolved flag is false and we're not in the
+                //  If the $traitsFinalized flag is false and we're not in the
                 //  middle of already finalizing traits from this method (see
                 //  below), then finalize them.
-                if (!owner.get('$traitsResolved') && !owner.$$finalizing) {
+                if (!owner.get('$traitsFinalized') && !owner.$$finalizing) {
                     if (TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
                         TP.ifWarn() ?
                             TP.warn('Adding method slot: ' + methodName +

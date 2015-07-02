@@ -3441,7 +3441,7 @@ function(anInterface, anObject) {
 //  META PROGRAMMING - TRAITS
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineAttribute('$traitsResolved');
+TP.lang.RootObject.Type.defineAttribute('$traitsFinalized');
 
 TP.lang.RootObject.Type.defineAttribute('$traitsTypeResolutions');
 TP.lang.RootObject.Type.defineAttribute('$traitsInstResolutions');
@@ -3682,21 +3682,20 @@ function() {
      * @returns {TP.lang.RootObject} The receiver.
      */
 
-    if (!this.get('$traitsResolved')) {
+    if (!this.get('$traitsFinalized')) {
 
-        //  Make sure that the supertype has resolved it's traits
+        //  Make sure that the supertype has finalized it's traits
         this.getSupertype().finalizeTraits();
 
         //  Now that the supertype (and all of its supertypes - up the chain)
-        //  have resolved their traits, if we have traits we can resolve them.
+        //  have finalized their traits, if we have traits we can finalize them.
         if (this.hasTraits()) {
-            //  If we have traits, try to resolve them.
+            //  NB: performTraitResolution() sets the '$traitsFinalized' flag.
             this.$performTraitComposition();
-            //  NB: performTraitResolution() sets the '$traitsResolved' flag.
             this.$performTraitResolution();
         } else {
             //  Otherwise, it didn't have traits so we just set the flag.
-            this.set('$traitsResolved', true);
+            this.set('$traitsFinalized', true);
         }
     }
 
@@ -3767,9 +3766,9 @@ function() {
         mainType,
         mainTypeTarget;
 
-    //  If we've already resolved traits for this type, then we don't allow any
+    //  If we've already finalized traits for this type, then we don't allow any
     //  more composition / resolution to occur.
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO: Raise an exception
         return this;
     }
@@ -4367,8 +4366,8 @@ function() {
     }
 
     if (TP.isEmpty(unresolvedTypeTraits) && TP.isEmpty(unresolvedInstTraits)) {
-        //  The traits are resolved - we're done. No going back ;-).
-        this.set('$traitsResolved', true);
+        //  The traits are finalized - we're done. No going back ;-).
+        this.set('$traitsFinalized', true);
     }
 
     return this;
@@ -4847,9 +4846,9 @@ function(propertyName, resolverObject, resolvingOption) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -4916,9 +4915,9 @@ function(propertyNames, resolverObject) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -5001,9 +5000,9 @@ function(propertyName, resolverObject, resolvingOption) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -5070,9 +5069,9 @@ function(propertyNames, resolverObject) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -8283,18 +8282,18 @@ function() {
         return this.constructViaSubtype.apply(this, arguments);
     }
 
-    //  If our traits haven't yet been resolved, try to do that. Note that this
+    //  If our traits haven't yet been finalized, try to do that. Note that this
     //  type very well might *not* have traits, but one of it's supertypes may.
     //  This flag will only be set to true if all trait resolution 'up the
     //  chain' has been performed. This way, we can ensure that all supertypes
-    //  have properly resolved any traits they might have.
-    if (!this.get('$traitsResolved')) {
+    //  have properly finalized any traits they might have.
+    if (!this.get('$traitsFinalized')) {
 
         this.finalizeTraits();
 
-        //  If they remain unresolved then that's an error - throw one. We can't
-        //  create instances of types that have unresolved traits.
-        if (!this.get('$traitsResolved')) {
+        //  If they remain unfinalized then that's an error - throw one. We
+        //  can't create instances of types that have unresolved traits.
+        if (!this.get('$traitsFinalized')) {
             return undefined;
         }
     }
