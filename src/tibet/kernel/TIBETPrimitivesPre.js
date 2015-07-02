@@ -5486,7 +5486,6 @@ function(methodName, methodBody, desc) {
         owner = this[TP.OWNER];
 
         if (TP.isMethod(owner.hasTraits) && owner.hasTraits()) {
-            this.resolveTrait(methodName, owner);
         }
     } else {
         track = TP.TYPE_LOCAL_TRACK;
@@ -5582,7 +5581,6 @@ function(methodName, methodBody, desc) {
         owner = this[TP.OWNER];
 
         if (TP.isMethod(owner.hasTraits) && owner.hasTraits()) {
-            this.resolveTrait(methodName, owner);
         }
     } else {
         track = TP.LOCAL_TRACK;
