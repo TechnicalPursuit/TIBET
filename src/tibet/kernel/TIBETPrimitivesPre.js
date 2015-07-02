@@ -5485,7 +5485,47 @@ function(methodName, methodBody, desc) {
         track = TP.TYPE_TRACK;
         owner = this[TP.OWNER];
 
+        //  If the traits code has loaded and the owner has traits, then we try
+        //  to resolve them.
         if (TP.isMethod(owner.hasTraits) && owner.hasTraits()) {
+
+            //  Before we can grab a reference to the 'next most specific'
+            //  method function that the traits machinery has resolved to, we
+            //  have to make sure that (if we have another slot that has been
+            //  marked to resolve to the same one that we're installing for)
+            //  that trait finalization has occurred.
+            if (owner.$traitsTypeResolutions &&
+                owner.$traitsTypeResolutions.getKeys().contains(methodName)) {
+
+                //  If the $traitsResolved flag is false and we're not in the
+                //  middle of already finalizing traits from this method (see
+                //  below), then finalize them.
+                if (!owner.get('$traitsResolved') && !owner.$$finalizing) {
+                    if (TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
+                        TP.ifWarn() ?
+                            TP.warn('Adding method slot: ' + methodName +
+                                    ' for type-level of: ' + TP.name(owner) +
+                                    ' where traits haven\'t been finalized.' +
+                                    ' Finalizing now.',
+                                    TP.LOG) : 0;
+                    }
+
+                    //  Go ahead and finalize the traits. Note here how we set a
+                    //  flag on the owner which we check above because we'll be
+                    //  recursively called in this process.
+                    owner.$$finalizing = true;
+                    owner.finalizeTraits();
+                    owner.$$finalizing = false;
+                }
+
+                //  If we now own a traited-in method, we don't want to lose the
+                //  reference to it when we install the supplied methodBody - in
+                //  fact, it will be considered our 'next most specific' method.
+                //  Capture it here for use by callNextMethod().
+                if (TP.owns(this, methodName)) {
+                    methodBody.$$nextfunc = this[methodName];
+                }
+            }
         }
     } else {
         track = TP.TYPE_LOCAL_TRACK;
@@ -5580,7 +5620,47 @@ function(methodName, methodBody, desc) {
         track = TP.INST_TRACK;
         owner = this[TP.OWNER];
 
+        //  If the traits code has loaded and the owner has traits, then we try
+        //  to resolve them.
         if (TP.isMethod(owner.hasTraits) && owner.hasTraits()) {
+
+            //  Before we can grab a reference to the 'next most specific'
+            //  method function that the traits machinery has resolved to, we
+            //  have to make sure that (if we have another slot that has been
+            //  marked to resolve to the same one that we're installing for)
+            //  that trait finalization has occurred.
+            if (owner.$traitsInstResolutions &&
+                owner.$traitsInstResolutions.getKeys().contains(methodName)) {
+
+                //  If the $traitsResolved flag is false and we're not in the
+                //  middle of already finalizing traits from this method (see
+                //  below), then finalize them.
+                if (!owner.get('$traitsResolved') && !owner.$$finalizing) {
+                    if (TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
+                        TP.ifWarn() ?
+                            TP.warn('Adding method slot: ' + methodName +
+                                    ' for instance-level of: ' + TP.name(owner) +
+                                    ' where traits haven\'t been finalized.' +
+                                    ' Finalizing now.',
+                                    TP.LOG) : 0;
+                    }
+
+                    //  Go ahead and finalize the traits. Note here how we set a
+                    //  flag on the owner which we check above because we'll be
+                    //  recursively called in this process.
+                    owner.$$finalizing = true;
+                    owner.finalizeTraits();
+                    owner.$$finalizing = false;
+                }
+
+                //  If we now own a traited-in method, we don't want to lose the
+                //  reference to it when we install the supplied methodBody - in
+                //  fact, it will be considered our 'next most specific' method.
+                //  Capture it here for use by callNextMethod().
+                if (TP.owns(this, methodName)) {
+                    methodBody.$$nextfunc = this[methodName];
+                }
+            }
         }
     } else {
         track = TP.LOCAL_TRACK;

@@ -3692,6 +3692,7 @@ function() {
         if (this.hasTraits()) {
             //  If we have traits, try to resolve them.
             this.$performTraitComposition();
+            //  NB: performTraitResolution() sets the '$traitsResolved' flag.
             this.$performTraitResolution();
         } else {
             //  Otherwise, it didn't have traits so we just set the flag.
@@ -8435,7 +8436,7 @@ function() {
         functionTrack,
         functionParent,
 
-        superFunc;
+        nextfunc;
 
     //  there is no "next method" after you reach the top (TP.ObjectProto)
     if (this === TP.ObjectProto) {
@@ -8456,14 +8457,19 @@ function() {
         return this.raise('TP.sig.InvalidContext');
     }
 
-    if (theFunction.hasOwnProperty('$$superfunc')) {
-        superFunc = theFunction.$$superfunc;
-        if (superFunc === TP.NONE) {
+    //  If a '$$nextfunc' property has been placed on the Function, that means
+    //  that it's either a) already been through here once or b) theFunction
+    //  represents a local override of a trait-resolved method and that
+    //  '$$nextfunc' was captured in 'defineMethod()'. In either case, we don't
+    //  have to compute it here.
+    if (theFunction.hasOwnProperty('$$nextfunc')) {
+        nextfunc = theFunction.$$nextfunc;
+        if (nextfunc === TP.NONE) {
             return;
         }
     }
 
-    if (TP.notValid(superFunc)) {
+    if (TP.notValid(nextfunc)) {
 
         functionName = theFunction.getName();
 
@@ -8485,13 +8491,13 @@ function() {
                 //  make sure that theFunction's owner really has a parent
                 functionParent = functionOwner[TP.SUPER];
                 if (TP.notValid(functionParent)) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
 
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionParent[TP.INSTC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
@@ -8500,38 +8506,38 @@ function() {
                 //  make sure that theFunction's owner really has a parent
                 functionParent = functionOwner.$$supertype;
                 if (TP.notValid(functionParent)) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
 
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionParent[TP.TYPEC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
 
             case TP.TYPE_LOCAL_TRACK:
                 //  local method on the type itself...
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionOwner[TP.TYPEC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
 
             case TP.LOCAL_TRACK:
                 //  local method on an instance
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionOwner.getType()[TP.INSTC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
 
             case TP.GLOBAL_TRACK:
             case TP.PRIMITIVE_TRACK:
-                theFunction.$$superfunc = TP.NONE;
+                theFunction.$$nextfunc = TP.NONE;
                 return;
 
             default:
@@ -8539,16 +8545,16 @@ function() {
         }
 
         //  DO NOT RECURSE...NO 'NEXT' FUNCTION
-        if (theFunction === superFunc) {
-            theFunction.$$superfunc = TP.NONE;
+        if (theFunction === nextfunc) {
+            theFunction.$$nextfunc = TP.NONE;
             return;
         }
 
         //  cache result for future lookups
-        theFunction.$$superfunc = superFunc;
+        theFunction.$$nextfunc = nextfunc;
     }
 
-    return superFunc.apply(this, theArgs);
+    return nextfunc.apply(this, theArgs);
 });
 
 //  ------------------------------------------------------------------------
@@ -8580,7 +8586,7 @@ function() {
 
         functionName,
 
-        superFunc;
+        nextfunc;
 
     //  there is no "next method" after you reach the top (TP.ObjectProto)
     if (this === TP.ObjectProto) {
@@ -8601,40 +8607,40 @@ function() {
         return this.raise('TP.sig.InvalidContext');
     }
 
-    if (theFunction.hasOwnProperty('$$superfunc')) {
-        superFunc = theFunction.$$superfunc;
-        if (superFunc === TP.NONE) {
+    if (theFunction.hasOwnProperty('$$nextfunc')) {
+        nextfunc = theFunction.$$nextfunc;
+        if (nextfunc === TP.NONE) {
             return;
         }
     }
 
-    if (TP.notValid(superFunc)) {
+    if (TP.notValid(nextfunc)) {
 
         functionName = theFunction.getName();
 
         if (TP.isType(this)) {
-            if (!TP.isCallable(superFunc = Object[functionName])) {
-                theFunction.$$superfunc = TP.NONE;
+            if (!TP.isCallable(nextfunc = Object[functionName])) {
+                theFunction.$$nextfunc = TP.NONE;
                 return;
             }
         } else {
-            if (!TP.isCallable(superFunc = TP.ObjectProto[functionName])) {
-                theFunction.$$superfunc = TP.NONE;
+            if (!TP.isCallable(nextfunc = TP.ObjectProto[functionName])) {
+                theFunction.$$nextfunc = TP.NONE;
                 return;
             }
         }
 
         //  DO NOT RECURSE...NO 'NEXT' FUNCTION
-        if (theFunction === superFunc) {
-            theFunction.$$superfunc = TP.NONE;
+        if (theFunction === nextfunc) {
+            theFunction.$$nextfunc = TP.NONE;
             return;
         }
 
         //  cache result for future lookups
-        theFunction.$$superfunc = superFunc;
+        theFunction.$$nextfunc = nextfunc;
     }
 
-    return superFunc.apply(this, theArgs);
+    return nextfunc.apply(this, theArgs);
 });
 
 //  ------------------------------------------------------------------------
