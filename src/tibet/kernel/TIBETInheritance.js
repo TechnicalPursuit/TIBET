@@ -9272,7 +9272,7 @@ function() {
                         return;
                     }
 
-                    // Trap type initialization errors and report them.
+                    //  Trap type initialization errors and report them.
                     try {
                         if (obj.isInitialized()) {
                             TP.boot.$stdout(

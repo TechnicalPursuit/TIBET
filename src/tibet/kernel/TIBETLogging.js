@@ -1254,7 +1254,7 @@ TP.lang.Object.defineSubtype('log.Appender');
 
 //  ----------------------------------------------------------------------------
 
-// Appenders are leveled and filtered based on both level and filter content.
+//  Appenders are leveled and filtered based on both level and filter content.
 TP.log.Appender.addTraits(TP.log.Leveled);
 TP.log.Appender.addTraits(TP.log.Filtered);
 
