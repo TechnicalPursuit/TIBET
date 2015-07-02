@@ -18,9 +18,7 @@ TP.sherpa.Element.defineSubtype('sherpa:hud');
 
 TP.sherpa.hud.addTraits(TP.core.TemplatedNode);
 
-TP.sherpa.hud.Type.resolveTraits(
-        TP.ac('tagCompile'),
-        TP.core.TemplatedNode);
+TP.sherpa.hud.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 TP.sherpa.hud.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
@@ -30,6 +28,8 @@ TP.sherpa.hud.Inst.resolveTraits(
 TP.sherpa.hud.Inst.resolveTraits(
         TP.ac('haloCanBlur', 'haloCanFocus'),
         TP.sherpa.hud);
+
+TP.sherpa.hud.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -182,12 +182,6 @@ function() {
 
     return this;
 });
-
-//  ------------------------------------------------------------------------
-//  Finalization
-//  ------------------------------------------------------------------------
-
-TP.sherpa.hud.finalizeTraits();
 
 //  ========================================================================
 //  TP.sherpa.huddrawer

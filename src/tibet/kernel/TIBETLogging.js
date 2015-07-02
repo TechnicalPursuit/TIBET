@@ -629,8 +629,8 @@ TP.log.Logger.Inst.resolveTraits(
 
 TP.log.Logger.Inst.resolveTrait('getName', TP.log.Nestable);
 
-//  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
-//  TRAIT FINALIZATION
+//  Resolve traits now that definition is complete.
+TP.log.Logger.finalizeTraits();
 
 //  ----------------------------------------------------------------------------
 
@@ -1240,11 +1240,6 @@ function(varargs) {
 
     return this.$logArglist(TP.log.SYSTEM, TP.args(arguments));
 });
-
-//  ----------------------------------------------------------------------------
-
-//  Resolve traits now that definition is complete.
-TP.log.Logger.finalizeTraits();
 
 //  ============================================================================
 //  Appender

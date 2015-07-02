@@ -20,6 +20,11 @@
 
 TP.core.HTTPURLHandler.defineSubtype('tds.TDSURLHandler');
 
+TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
+
+//  Resolve traits now that definition is complete.
+TP.tds.TDSURLHandler.finalizeTraits();
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -31,9 +36,6 @@ function() {
      * @method initialize
      * @summary Performs one-time type initialization.
      */
-
-    TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
-    TP.tds.TDSURLHandler.finalizeTraits();
 
     //  We use the SSE signal source as our watcher signal source type.
     this.set('watcherSignalSourceType', 'TP.core.SSESignalSource');
