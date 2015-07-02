@@ -230,6 +230,9 @@ function(oldIndexes) {
 
 TP.lang.Object.defineSubtype('core.Content');
 
+//  TP.core.Content objects can hold a selection
+TP.core.Content.addTraits(TP.core.Selection);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -840,9 +843,6 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Content.defineSubtype('core.JSONContent');
-
-//  TP.core.Content objects can hold a selection
-TP.core.Content.addTraits(TP.core.Selection);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

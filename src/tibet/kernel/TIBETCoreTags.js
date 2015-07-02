@@ -34,6 +34,8 @@ TP.core.CompiledTag.Inst.resolveTraits(
 TP.core.CompiledTag.finalizeTraits();
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
 TP.core.CompiledTag.Type.defineMethod('tagCompile',
 function(aRequest) {
@@ -83,9 +85,7 @@ TP.core.UIElementNode.defineSubtype('TP.core.TemplatedTag');
 TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 TP.core.TemplatedTag.addTraits(TP.core.NonNativeUIElementNode);
 
-TP.core.TemplatedTag.Type.resolveTraits(
-        TP.ac('tagCompile'),
-        TP.core.TemplatedNode);
+TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',

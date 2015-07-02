@@ -3441,7 +3441,7 @@ function(anInterface, anObject) {
 //  META PROGRAMMING - TRAITS
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineAttribute('$traitsResolved');
+TP.lang.RootObject.Type.defineAttribute('$traitsFinalized');
 
 TP.lang.RootObject.Type.defineAttribute('$traitsTypeResolutions');
 TP.lang.RootObject.Type.defineAttribute('$traitsInstResolutions');
@@ -3682,20 +3682,20 @@ function() {
      * @returns {TP.lang.RootObject} The receiver.
      */
 
-    if (!this.get('$traitsResolved')) {
+    if (!this.get('$traitsFinalized')) {
 
-        //  Make sure that the supertype has resolved it's traits
+        //  Make sure that the supertype has finalized it's traits
         this.getSupertype().finalizeTraits();
 
         //  Now that the supertype (and all of its supertypes - up the chain)
-        //  have resolved their traits, if we have traits we can resolve them.
+        //  have finalized their traits, if we have traits we can finalize them.
         if (this.hasTraits()) {
-            //  If we have traits, try to resolve them.
+            //  NB: performTraitResolution() sets the '$traitsFinalized' flag.
             this.$performTraitComposition();
             this.$performTraitResolution();
         } else {
             //  Otherwise, it didn't have traits so we just set the flag.
-            this.set('$traitsResolved', true);
+            this.set('$traitsFinalized', true);
         }
     }
 
@@ -3766,9 +3766,9 @@ function() {
         mainType,
         mainTypeTarget;
 
-    //  If we've already resolved traits for this type, then we don't allow any
+    //  If we've already finalized traits for this type, then we don't allow any
     //  more composition / resolution to occur.
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO: Raise an exception
         return this;
     }
@@ -4366,8 +4366,8 @@ function() {
     }
 
     if (TP.isEmpty(unresolvedTypeTraits) && TP.isEmpty(unresolvedInstTraits)) {
-        //  The traits are resolved - we're done. No going back ;-).
-        this.set('$traitsResolved', true);
+        //  The traits are finalized - we're done. No going back ;-).
+        this.set('$traitsFinalized', true);
     }
 
     return this;
@@ -4846,9 +4846,9 @@ function(propertyName, resolverObject, resolvingOption) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -4915,9 +4915,9 @@ function(propertyNames, resolverObject) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -5000,9 +5000,9 @@ function(propertyName, resolverObject, resolvingOption) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -5069,9 +5069,9 @@ function(propertyNames, resolverObject) {
         return this;
     }
 
-    //  If we've already resolved traits for this type, we don't proceed any
+    //  If we've already finalized traits for this type, we don't proceed any
     //  further
-    if (TP.isTrue(this.get('$traitsResolved'))) {
+    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -8282,18 +8282,18 @@ function() {
         return this.constructViaSubtype.apply(this, arguments);
     }
 
-    //  If our traits haven't yet been resolved, try to do that. Note that this
+    //  If our traits haven't yet been finalized, try to do that. Note that this
     //  type very well might *not* have traits, but one of it's supertypes may.
     //  This flag will only be set to true if all trait resolution 'up the
     //  chain' has been performed. This way, we can ensure that all supertypes
-    //  have properly resolved any traits they might have.
-    if (!this.get('$traitsResolved')) {
+    //  have properly finalized any traits they might have.
+    if (!this.get('$traitsFinalized')) {
 
         this.finalizeTraits();
 
-        //  If they remain unresolved then that's an error - throw one. We can't
-        //  create instances of types that have unresolved traits.
-        if (!this.get('$traitsResolved')) {
+        //  If they remain unfinalized then that's an error - throw one. We
+        //  can't create instances of types that have unresolved traits.
+        if (!this.get('$traitsFinalized')) {
             return undefined;
         }
     }
@@ -8435,7 +8435,7 @@ function() {
         functionTrack,
         functionParent,
 
-        superFunc;
+        nextfunc;
 
     //  there is no "next method" after you reach the top (TP.ObjectProto)
     if (this === TP.ObjectProto) {
@@ -8456,14 +8456,19 @@ function() {
         return this.raise('TP.sig.InvalidContext');
     }
 
-    if (theFunction.hasOwnProperty('$$superfunc')) {
-        superFunc = theFunction.$$superfunc;
-        if (superFunc === TP.NONE) {
+    //  If a '$$nextfunc' property has been placed on the Function, that means
+    //  that it's either a) already been through here once or b) theFunction
+    //  represents a local override of a trait-resolved method and that
+    //  '$$nextfunc' was captured in 'defineMethod()'. In either case, we don't
+    //  have to compute it here.
+    if (theFunction.hasOwnProperty('$$nextfunc')) {
+        nextfunc = theFunction.$$nextfunc;
+        if (nextfunc === TP.NONE) {
             return;
         }
     }
 
-    if (TP.notValid(superFunc)) {
+    if (TP.notValid(nextfunc)) {
 
         functionName = theFunction.getName();
 
@@ -8485,13 +8490,13 @@ function() {
                 //  make sure that theFunction's owner really has a parent
                 functionParent = functionOwner[TP.SUPER];
                 if (TP.notValid(functionParent)) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
 
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionParent[TP.INSTC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
@@ -8500,38 +8505,38 @@ function() {
                 //  make sure that theFunction's owner really has a parent
                 functionParent = functionOwner.$$supertype;
                 if (TP.notValid(functionParent)) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
 
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionParent[TP.TYPEC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
 
             case TP.TYPE_LOCAL_TRACK:
                 //  local method on the type itself...
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionOwner[TP.TYPEC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
 
             case TP.LOCAL_TRACK:
                 //  local method on an instance
-                if (!TP.isCallable(superFunc =
+                if (!TP.isCallable(nextfunc =
                     functionOwner.getType()[TP.INSTC].prototype[functionName])) {
-                    theFunction.$$superfunc = TP.NONE;
+                    theFunction.$$nextfunc = TP.NONE;
                     return;
                 }
                 break;
 
             case TP.GLOBAL_TRACK:
             case TP.PRIMITIVE_TRACK:
-                theFunction.$$superfunc = TP.NONE;
+                theFunction.$$nextfunc = TP.NONE;
                 return;
 
             default:
@@ -8539,16 +8544,16 @@ function() {
         }
 
         //  DO NOT RECURSE...NO 'NEXT' FUNCTION
-        if (theFunction === superFunc) {
-            theFunction.$$superfunc = TP.NONE;
+        if (theFunction === nextfunc) {
+            theFunction.$$nextfunc = TP.NONE;
             return;
         }
 
         //  cache result for future lookups
-        theFunction.$$superfunc = superFunc;
+        theFunction.$$nextfunc = nextfunc;
     }
 
-    return superFunc.apply(this, theArgs);
+    return nextfunc.apply(this, theArgs);
 });
 
 //  ------------------------------------------------------------------------
@@ -8580,7 +8585,7 @@ function() {
 
         functionName,
 
-        superFunc;
+        nextfunc;
 
     //  there is no "next method" after you reach the top (TP.ObjectProto)
     if (this === TP.ObjectProto) {
@@ -8601,40 +8606,40 @@ function() {
         return this.raise('TP.sig.InvalidContext');
     }
 
-    if (theFunction.hasOwnProperty('$$superfunc')) {
-        superFunc = theFunction.$$superfunc;
-        if (superFunc === TP.NONE) {
+    if (theFunction.hasOwnProperty('$$nextfunc')) {
+        nextfunc = theFunction.$$nextfunc;
+        if (nextfunc === TP.NONE) {
             return;
         }
     }
 
-    if (TP.notValid(superFunc)) {
+    if (TP.notValid(nextfunc)) {
 
         functionName = theFunction.getName();
 
         if (TP.isType(this)) {
-            if (!TP.isCallable(superFunc = Object[functionName])) {
-                theFunction.$$superfunc = TP.NONE;
+            if (!TP.isCallable(nextfunc = Object[functionName])) {
+                theFunction.$$nextfunc = TP.NONE;
                 return;
             }
         } else {
-            if (!TP.isCallable(superFunc = TP.ObjectProto[functionName])) {
-                theFunction.$$superfunc = TP.NONE;
+            if (!TP.isCallable(nextfunc = TP.ObjectProto[functionName])) {
+                theFunction.$$nextfunc = TP.NONE;
                 return;
             }
         }
 
         //  DO NOT RECURSE...NO 'NEXT' FUNCTION
-        if (theFunction === superFunc) {
-            theFunction.$$superfunc = TP.NONE;
+        if (theFunction === nextfunc) {
+            theFunction.$$nextfunc = TP.NONE;
             return;
         }
 
         //  cache result for future lookups
-        theFunction.$$superfunc = superFunc;
+        theFunction.$$nextfunc = nextfunc;
     }
 
-    return superFunc.apply(this, theArgs);
+    return nextfunc.apply(this, theArgs);
 });
 
 //  ------------------------------------------------------------------------
@@ -9267,7 +9272,7 @@ function() {
                         return;
                     }
 
-                    // Trap type initialization errors and report them.
+                    //  Trap type initialization errors and report them.
                     try {
                         if (obj.isInitialized()) {
                             TP.boot.$stdout(
