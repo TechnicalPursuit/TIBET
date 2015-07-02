@@ -34,6 +34,8 @@ TP.core.CompiledTag.Inst.resolveTraits(
 TP.core.CompiledTag.finalizeTraits();
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
 TP.core.CompiledTag.Type.defineMethod('tagCompile',
 function(aRequest) {
