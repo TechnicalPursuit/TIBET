@@ -8820,8 +8820,9 @@ function(aWindow) {
     (function() {
         var focusedElem;
 
-        focusedElem = TP.documentGetFocusedElement(doc);
-        focusedElem.focus();
+        if (TP.isElement(focusedElem = TP.documentGetFocusedElement(doc))) {
+            focusedElem.focus();
+        }
     }).fork(50);
     /* eslint-enable no-wrap-func,no-extra-parens */
 
