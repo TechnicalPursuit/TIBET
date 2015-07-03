@@ -5,7 +5,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.defineSubtype('{{nsroot}}.{{nsname}}:{{tagname}}');
+TP.core.CompiledTag.defineSubtype('{{nsroot}}.{{nsname}}:{{tagname}}');
 
 //  ------------------------------------------------------------------------
 
