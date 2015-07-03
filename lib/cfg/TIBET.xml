@@ -30,6 +30,7 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="tibet_kernel.xml" config="full"/>
     <package src="tibet_extensions.xml" config="standard"/>
     <package src="lib_namespaces.xml" config="standard"/>
+    <package src="tibet_services.xml" config="tds"/>
 </config>
 
 <!--    typical config for autoloader, fastest loading -->
