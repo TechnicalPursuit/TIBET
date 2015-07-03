@@ -27,12 +27,29 @@ TP.xctrls.curtain.Inst.resolveTraits(
                 'removeAttribute', 'select', 'signal'),
         TP.xctrls.Element);
 
-//  This is necessary to avoid a warning when we set() the traited-in attribute
-//  below - we need it to be defined.
-TP.xctrls.curtain.finalizeTraits();
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 //  xctrls:curtain controls are initially hidden, so we ensure that here.
 TP.xctrls.curtain.set('requiredAttrs', TP.hc('pclass:hidden', true));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.curtain.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  end

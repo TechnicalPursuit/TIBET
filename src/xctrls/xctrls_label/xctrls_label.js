@@ -28,9 +28,23 @@ TP.xctrls.label.Inst.resolveTraits(
                 'removeAttribute', 'select', 'signal'),
         TP.xctrls.Element);
 
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.label.finalizeTraits();
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.label.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  end

@@ -31,12 +31,23 @@ TP.xctrls.barcode.Inst.resolveTraits(
                 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.barcode.finalizeTraits();
-
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.barcode.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.barcode.Type.defineMethod('generateCode39Table',

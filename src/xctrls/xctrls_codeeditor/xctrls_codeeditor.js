@@ -41,6 +41,23 @@ TP.xctrls.codeeditor.Inst.resolveTraits(
         TP.html.textUtilities);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.codeeditor.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  TSH Execution Support
 //  ------------------------------------------------------------------------
 
@@ -960,12 +977,6 @@ function(beforeText, afterText) {
 
     return this;
 });
-
-//  ------------------------------------------------------------------------
-
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.codeeditor.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  end

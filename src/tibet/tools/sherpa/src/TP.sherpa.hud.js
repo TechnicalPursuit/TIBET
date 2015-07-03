@@ -29,7 +29,22 @@ TP.sherpa.hud.Inst.resolveTraits(
         TP.ac('haloCanBlur', 'haloCanFocus'),
         TP.sherpa.hud);
 
-TP.sherpa.hud.finalizeTraits();
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.hud.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

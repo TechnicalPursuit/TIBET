@@ -629,7 +629,8 @@ TP.log.Logger.Inst.resolveTraits(
 
 TP.log.Logger.Inst.resolveTrait('getName', TP.log.Nestable);
 
-//  Resolve traits now that definition is complete.
+//  Finalize the traits right away as type methods of this type are called
+//  during the booting process.
 TP.log.Logger.finalizeTraits();
 
 //  ----------------------------------------------------------------------------
@@ -1258,7 +1259,8 @@ TP.lang.Object.defineSubtype('log.Appender');
 TP.log.Appender.addTraits(TP.log.Leveled);
 TP.log.Appender.addTraits(TP.log.Filtered);
 
-//  Resolve traits now that definition is complete.
+//  Finalize the traits right away as type methods of this type are called
+//  during the booting process.
 TP.log.Appender.finalizeTraits();
 
 //  ----------------------------------------------------------------------------

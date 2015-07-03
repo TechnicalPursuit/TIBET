@@ -23,10 +23,6 @@ TP.xctrls.Element.Inst.resolveTraits(
                 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.Element.finalizeTraits();
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -37,6 +33,21 @@ TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Element.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Element.Type.defineMethod('tagCompile',

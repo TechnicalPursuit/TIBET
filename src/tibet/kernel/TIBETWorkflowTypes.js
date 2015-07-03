@@ -422,7 +422,7 @@ TP.lang.Object.defineSubtype('core.Resource');
 TP.core.Resource.addTraits(TP.core.SyncAsync);
 TP.core.Resource.addTraits(TP.core.Triggered);
 
-//  Resolve the traits right away as subtypes of this type are used during the
+//  Finalize the traits right away as subtypes of this type are used during the
 //  booting process.
 TP.core.Resource.finalizeTraits();
 
@@ -1120,10 +1120,16 @@ TP.sig.WorkflowSignal.Inst.resolveTraits(
                 'isRecyclable', 'recycle', 'removeKey'),
         TP.sig.Signal);
 
-//  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
-//  TRAIT FINALIZATION
+//  Finalize the traits right away as subtypes of this type are used during the
+//  booting process.
+TP.sig.WorkflowSignal.finalizeTraits();
 
-TP.sig.WorkflowSignal.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.sig.WorkflowSignal.Type.defineAttribute('defaultPolicy',
+                                            TP.INHERITANCE_FIRING);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1195,12 +1201,6 @@ function() {
 
     return this.get('result');
 });
-
-//  ------------------------------------------------------------------------
-
-//  Resolve the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.sig.WorkflowSignal.finalizeTraits();
 
 //  ========================================================================
 //  TP.sig.Request

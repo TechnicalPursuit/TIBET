@@ -87,16 +87,22 @@ TP.lang.Object.defineSubtype('TP.core.StateMachine');
 
 TP.core.StateMachine.addTraits(TP.core.Triggered);
 
-//  Resolve the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.core.StateMachine.finalizeTraits();
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  The maximum number of entries maintained in a StateMachine transition log.
 TP.core.StateMachine.Type.defineConstant('LOG_MAX', 100);
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateMachine.Type.defineMethod('initialize',
+function() {
+
+    this.finalizeTraits();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

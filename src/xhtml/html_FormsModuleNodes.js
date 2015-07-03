@@ -620,7 +620,22 @@ TP.html.textUtilities.Inst.resolveTraits(
 //  can't construct concrete instances of this
 TP.html.textUtilities.isAbstract(true);
 
-TP.html.textUtilities.finalizeTraits();
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.textUtilities.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1220,6 +1235,21 @@ TP.html.input.Inst.resolveTraits(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.html.input.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.input.Type.defineMethod('fromArray',
 function(anObject, aRequest) {
 
@@ -1535,12 +1565,6 @@ function() {
 
     return true;
 });
-
-//  ------------------------------------------------------------------------
-
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.html.input.finalizeTraits();
 
 //  ========================================================================
 //  TP.html.inputVisible

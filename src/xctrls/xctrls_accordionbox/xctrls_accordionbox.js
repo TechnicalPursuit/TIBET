@@ -17,8 +17,7 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls:accordionbox');
 
-TP.xctrls.accordionbox.addTraits(TP.xctrls.Element,
-                                        TP.core.TemplatedNode);
+TP.xctrls.accordionbox.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
 TP.xctrls.accordionbox.Type.resolveTraits(
         TP.ac('cmdRunContent', 'tagCompile'),
@@ -29,9 +28,22 @@ TP.xctrls.accordionbox.Inst.resolveTraits(
                 'removeAttribute', 'select', 'signal'),
         TP.xctrls.Element);
 
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.accordionbox.finalizeTraits();
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.accordionbox.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

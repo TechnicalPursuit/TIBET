@@ -29,9 +29,22 @@ TP.xctrls.log.Inst.resolveTraits(
         TP.xctrls.Element);
 TP.xctrls.log.Inst.resolveTrait('addItem', TP.xctrls.MultiItemElement);
 
-//  Resolve the traits right away as type methods of this type are called during
-//  content processing when we only have type methods involved.
-TP.xctrls.log.finalizeTraits();
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.log.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.finalizeTraits();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

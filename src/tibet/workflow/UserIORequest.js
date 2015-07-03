@@ -37,10 +37,9 @@ TP.sig.UserIORequest.Inst.resolveTraits(
             'removeKey', 'shouldLog'),
     TP.sig.Signal);
 
-//  LOOK AT THE END OF THIS TYPE DEFINITION AFTER THE TYPE IS FULLY DEFINED FOR
-//  TRAIT FINALIZATION
-
-TP.sig.UserIORequest.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
+//  Finalize the traits right away as subtypes of this type are used during the
+//  booting process.
+TP.sig.UserIORequest.finalizeTraits();
 
 TP.sig.UserIORequest.isSignalingRoot(true);
 
@@ -48,11 +47,11 @@ TP.sig.UserIORequest.isSignalingRoot(true);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.UserIORequest.Type.defineAttribute('responseType', 'TP.sig.UserIOResponse');
+TP.sig.UserIORequest.Type.defineAttribute('defaultPolicy',
+                                            TP.INHERITANCE_FIRING);
 
-//  Resolve the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.sig.UserIORequest.finalizeTraits();
+TP.sig.UserIORequest.Type.defineAttribute('responseType',
+                                            'TP.sig.UserIOResponse');
 
 //  ------------------------------------------------------------------------
 //  end
