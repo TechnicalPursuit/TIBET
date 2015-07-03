@@ -253,3 +253,22 @@ target="_blank">issues list</a> for TIBET.
 Additional contact info is available at <a href="http://www.technicalpursuit.com"
 target="_blank">www.technicalpursuit.com</a>.
 
+# License
+
+TIBET is Open Source under the OSI-approved <a target="_blank" href="http://opensource.org/licenses/RPL-1.5">Reciprocal Public License (RPL)</a>.
+
+You should read the license but, in short, the RPL requires those who deploy
+applications incorporating RPL'd code to reciprocate by open sourcing their code.
+
+Technical Pursuit Inc., the company behind TIBET, offers privacy waivers which
+allow you to keep your source code private while helping to fund further TIBET
+development. Read more about privacy waivers at <a target="_blank"
+href="http://www.technicalpursuit.com/license.xhtml">http://www.technicalpursuit.com/license.xhtml</a>.
+
+##### Third Party Libraries
+
+Like virtually all JavaScript frameworks, TIBET uses a number of npm
+modules. The list changes per release. To see the specific licenses for a
+particular TIBET release's third-party components see the content of your TIBET
+release's node\_modules directory.
+
