@@ -1552,8 +1552,9 @@
     //  should the TDC currently be active? default is false.
     TP.sys.setcfg('tibet.tdc', false);
 
-    //  should the sherpa currently be active? default is false.
-    TP.sys.setcfg('tibet.sherpa', false);
+    //  should the sherpa currently be active? default is true. if the code
+    //  hasn't loaded it won't matter, and if it has then it'll activate.
+    TP.sys.setcfg('tibet.sherpa', true);
 
     //  what CSS theme should we use? default is none.
     TP.sys.setcfg('tibet.theme', null);
