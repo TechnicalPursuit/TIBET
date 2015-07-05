@@ -9,175 +9,13 @@
 //  ------------------------------------------------------------------------
 
 /*
-//  ---
-//  introduction
-//  ---
-
-Part of the vision for TIBET is that it can help seamlessly integrate the
-web browser into workflow-driven applications. This vision is most clearly
-seen in TIBET's "workflow types" and support for the XMPP messaging
-protocol standardized by the IETF for triggering and routing events.
-
-By leveraging XMPP servers as "event routers" we can allow business events
-to move between server-side workflow systems and the web browser as if the
-client and server were "chatting" about those business events. When IM/chat
-data arrives at the client TIBET is able to deserialize TP.sig.Signal
-content and trigger it to drive client-side logic.
-
-The types in this file provide support for managing requests and responses
-in a unified fashion regardless of the targeted resource and regardless of
-whether the invocation is synchronous or asynchronous. Also included are
-types that help manage role-based functionality.
-
-//  ---
-//  workflow terms
-//  ---
-
-To make sure we're all working from the same starting point let's look at
-a few definitions from the Workflow Management Coalition...
-
-Workflow revolves around processing individual 'cases' in a meaningful way.
-This is accomplished by moving each case through a 'process' made up of one
-or more 'tasks'. In workflow terms, a task is a script for how to perform
-a transactionally consistent unit of work. The events which drive workflow
-processes through a series of tasks are known as 'triggers'.
-
-A specific invocation of a task in response to a trigger is known as an
-'activity'; however, before an activity can occur a 'work item', a request
-binding a specific task to a specific case, must be constructed. This work
-item can then be 'allocated' to an appropriate 'resource' capable of
-performing the work.
-
-To assist with resource allocation individual resources are often assigned
-to groups.  When the group is functionally-oriented it is referred to as a
-'role'. When it is organizationally-oriented it is known as a 'unit' (short
-for organizational unit (i.e. "sales").
-
-TIBET takes a very event-driven view of all this, mapping as much of the
-workflow model just described into its object and signaling systems:
-
-'case'          ->  Object (any object can represent a case to be processed)
-'process'       ->  A defined/designed series of signals and their handlers
-'task'          ->  A handler function (the template for doing atomic work)
-'trigger'       ->  TP.sig.Signal (Change, TP.sig.Request, UISignal, etc)
-'activity'      ->  A specific signal handler invocation
-'work item'     ->  TP.sig.Request (i.e. "please perform a task on this
-                    case")
-'allocation'    ->  A lookup/binding of a specific TP.core.Resource to a
-                    TP.sig.Request
-'resource'      ->  Any object primarily responsible for servicing requests
-
-In essence, when you need to make a request you can leverage a common
-supertype, or create a specific subtype to manage that process. Likewise you
-can create custom response types when there's advanced result manipulation
-that you need to organize. The rest of the process is handled automatically
-by TIBET's signaling system and the request/response matching that happens
-automatically via the TP.core.Resource, TP.sig.Request, and TP.sig.Response
-base types.
-
-//  ---
-//  keys and keyrings
-//  ---
-
-A common requirement in resource allocation is that work items be assigned
-to resources which have not only the ability, but permission, to perform
-the work. In web interfaces this shows up in terms of how different pages,
-or portions of a page, are hidden from users without permission to view
-and/or modify certain data. This can happen due to both "provisioning"
-differences (you didn't buy that module), or data security restrictions.
-
-From an authoring perspective it's problematic to define completely separate
-pages to deal with all but the largest-grained cases. What we wanted TIBET
-to support was something that would allow you to place permission
-requirements on various UI elements and have the UI adjust -- preferably by
-using nothing more than standard CSS. While that wouldn't support data
-protection directly it would ensure the related UI would remain hidden.
-
-To support easier construction of permission-sensitive UI TIBET uses the
-concept of "keys" and "key rings". A "key" in this context is any string you
-like, usually a two to four letter mnemonic for some permission. For
-example, you might assign 'SLF' to the permission 'store local files'.
-A collection of such keys, along with their full descriptions, is called a
-"key ring". The intersection of the current user's keys and the various key
-requirements you've authored on your UI element can be leveraged by CSS
-selectors to alter the UI without the need for custom JavaScript logic.
-
-//  ---
-//  roles and units
-//  ---
-
-As mentioned earlier, workflow systems organize functional elements into
-"roles" and organizational elements into "units". TIBET uses these elements
-in managing permission-based behavior.
-
-Key rings, which represent permissions in TIBET, are always associated
-directly with a role or unit, and only indirectly with a user by way of the
-role(s) and unit(s) to which they are assigned. This assignment is made by
-assigning a vCard containing role and unit information to a TP.core.User
-instance.
-As a result of this assignment TIBET will dynamically load and associate
-the vCard's role and unit information with that user.
-
-Permission-based behavior, logic in the application that differs based on
-the user's role or unit affiliations, is managed in a similar fashion. Since
-the role and user data is managed via types you can alter not only a set of
-keys but the actual methods which are invoked based on role and/or unit.
-
-When any role/unit-driven resource (service) is asked to perform a task it
-delegates some of that responsiblity to the current role and unit types.
-This happens automatically, allowing you to focus on messaging the resource
-in a common way, while benefiting from permission-specific functionality.
-
-//  ---
-//  real vs. effective users
-//  ---
-
-One additional issue around permissions is that a number of applications
-require the user to shift between roles of various permission levels. For
-example,  developers, quality assurance personnel, operations personnel, and
-administrators often need to emulate other users who have fewer permissions.
-If this kind of emulation isn't managed properly it's possible for the user
-to "lose permissions" during certain transitions and find some of their
-control surfaces (user interface elements) are no longer accessible to them.
-
-To deal with this common situation TIBET takes a cue from UNIX permissions
-and allows both a "real" and "effective" user to be defined. The currently
-defined real user determines the "real role" and "real unit", while the
-current effective user determines the effective role and effective unit.
-
-While many applications won't construct more than one user instance, hence
-having the same real and effective user, those applications that need more
-control can get it simply by creating a second TP.core.User instance and
-associating it with the appropriate vCard(s).
-
-As you shift between user profiles TIBET automatically updates the body
-element of all open windows (at least those under TIBET's control) to
-contain the user's real and effective keys. This augmentation of the body
-element provides a hook that you can leverage in your CSS to automatically
-control the display of the UI, showing or hiding elements as appropriate to
-the current user.  More advanced transitions can be managed by simply
-observing changes to the current user.
-
-//  ---
-//  security
-//  ---
-
-Obviously all this talk about permissions, keys, etc. is focused primarily
-on managing the user interface in a meaningful way for the current user. As
-always the server should validate user credentials with each call to
-ensure that the user has permission to perform those server-side calls. The
-value in TIBET's permission system is simply that it pushes much of the
-common UI-specific permission-related work to the CSS and markup rather than
-requiring custom JavaScript simply to show/hide UI.
-
-If your security requirements need to go even further and conceal the fact
-that certain UI elements exist when a user doesn't have permission to access
-the data it's easy to factor those out into separately xi:include sections
-which return permission-specific content. You can alternatively use
-different types to drive custom behavior to build those elements for users
-with permission. This approach can be taken as far as vending a different
-application manifest for different user role/unit affiliations.
-*/
+ * Types specific to workflow in terms of requests, resources, and their
+ * responses. The types here, particularly TP.core.Request, TP.core.Service,
+ * and TP.core.Response provide the foundation of TIBET's "service layer".
+ *
+ * Also included here are TIBET's Controller and Application types along with
+ * helpers for things like History etc.
+ */
 
 //  ========================================================================
 //  TP.core.Triggered
@@ -202,6 +40,63 @@ TP.core.Triggered.Type.defineAttribute('triggerSignals');
 //  at the instance level
 TP.core.Triggered.Inst.defineAttribute('triggerOrigins');
 TP.core.Triggered.Inst.defineAttribute('triggerSignals');
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Inst.defineMethod('addTrigger',
+function(trigger) {
+
+    /**
+     * @method addTrigger
+     * @summary Stores one or more trigger definitions in the receiver's list
+     *     of triggers. The trigger should be a string containing a signal name
+     *     and optional origin separated by a '#'.
+     * @param {Object} trigger The trigger signal, string, or other object.
+     * @return {TP.core.Triggered} The receiver.
+     */
+
+    var signals,
+        origins,
+        signal,
+        origin,
+        parts;
+
+    if (/#/.test(trigger)) {
+        parts = trigger.split('#');
+        origin = parts.first();
+        signal = parts.last();
+    } else {
+        signal = trigger;
+    }
+
+    if (TP.notValid(signals = this.$get('triggerSignals'))) {
+        signals = this.getType().get('triggerSignals');
+        if (TP.notEmpty(signals)) {
+            signals = TP.ac().concat(signals);
+        } else {
+            signals = TP.ac();
+            this.$set('triggerSignals', signals);
+        }
+    }
+    signals.push(signal);
+
+    if (TP.isEmpty(origin)) {
+        return;
+    }
+
+    if (TP.notValid(origins = this.$get('triggerOrigins'))) {
+        origins = this.getType().get('triggerOrigins');
+        if (TP.notEmpty(origins)) {
+            origins = TP.ac().concat(origins);
+        } else {
+            origins = TP.ac();
+            this.$set('triggerOrigins', origins);
+        }
+    }
+    origin.push(origin);
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 
