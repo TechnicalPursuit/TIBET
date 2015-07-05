@@ -355,11 +355,9 @@ function(target, options) {
 
     var suites,
         id,
-
         params,
         name,
-
-        allSuites;
+        realSuites;
 
     suites = TP.test.Suite.$get('suites');
 
@@ -419,7 +417,7 @@ function(target, options) {
                         });
 
         if (TP.isValid(suites)) {
-            return TP.hc(id || name, TP.hc(name, suites));
+            suites = TP.hc(id || name, TP.hc(name, suites));
         } else {
             return;
         }
@@ -430,18 +428,34 @@ function(target, options) {
 
         //  We need to return a hash keyed by the target and suites found for
         //  that target.
-        allSuites = TP.hc();
+        realSuites = TP.hc();
 
         suites.perform(
-                function(kvPair) {
-                    allSuites.atPut(TP.id(kvPair.first()),
-                                     kvPair.last());
-                });
+            function(kvPair) {
+                realSuites.atPut(TP.id(kvPair.first()), kvPair.last());
+            });
 
-        return allSuites;
+        suites = realSuites;
     }
 
-    return null;
+    name = params.at('cases');
+    if (TP.notEmpty(name)) {
+        //  Painful, but necessary to filter down to the suites that have cases
+        //  that match our criteria. The data structures really aren't
+        //  well-designed for this use case.
+        realSuites = TP.hc();
+        suites.getValues().forEach(
+            function(item) {
+                item.perform(function(kvPair) {
+                    if (TP.notEmpty(kvPair.last().getCaseList(params))) {
+                        realSuites.atPut(TP.id(item), item);
+                    }
+                });
+            });
+        suites = realSuites;
+    }
+
+    return suites;
 });
 
 //  ------------------------------------------------------------------------
@@ -560,7 +574,7 @@ function(target, options) {
                     var caselist,
                         stats;
 
-                    caselist = suite.getCaseList();
+                    caselist = suite.getCaseList(params);
                     stats = suite.get('statistics');
 
                     cases += caselist.getSize();
@@ -607,7 +621,7 @@ function(target, options) {
             function(suite) {
                 var caselist;
 
-                caselist = suite.getCaseList();
+                caselist = suite.getCaseList(params);
                 cases += caselist.getSize();
             });
 
@@ -632,7 +646,8 @@ function(target, options) {
             function(chain, current, index, array) {
                 return chain.then(
                     function(obj) {
-                        return current.run(TP.hc(options));
+                        //return current.run(TP.hc(options));
+                        return current.run(params);
                     },
                     function(err) {
                         //  Suite.run should trap all errors and resolve() so
@@ -1003,30 +1018,32 @@ function(options) {
      * Runs the internal suite functions and returns the list of specific test
      * case instances created as a result. The 'suite functions' are the
      * functions passed to describe() which define the suite.
-     * @param {TP.core.Hash} options A dictionary of test options.
+     * @param {TP.core.Hash} options A dictionary of test options. For this
+     *     method the relevant key is 'cases' which provides a string to match
+     *     against case names as a simple filter.
      * @returns {Array.<TP.test.Case>} The case list.
      */
 
     var cases,
         suites,
-        suite;
+        suite,
+        name;
 
     cases = this.$get('caseList');
-    if (TP.isValid(cases)) {
-        return cases;
-    }
 
-    cases = TP.ac();
-    this.$set('caseList', cases);
+    if (TP.notValid(cases)) {
+        cases = TP.ac();
+        this.$set('caseList', cases);
 
-    suite = this;
+        suite = this;
 
-    //  Execute the suiteList functions to generate the case list.
-    suites = this.$get('suiteList');
-    suites.perform(
+        //  Execute the suiteList functions to generate the case list.
+        suites = this.$get('suiteList');
+        suites.perform(
             function(func) {
-                //  Running this function ends up invoking 'this.it()' against
-                //  the test suite instance. See 'it()' for more information.
+                //  Running this function ends up invoking 'this.it()'
+                //  against the test suite instance. See 'it()' for more
+                //  information.
                 try {
                     func.apply(suite);
                 } catch (e) {
@@ -1037,8 +1054,16 @@ function(options) {
                     suite.error(e);
                 }
             });
+    }
 
-    return cases;
+    if (TP.notValid(options) || TP.isEmpty(options.at('cases'))) {
+        return cases;
+    }
+
+    name = options.at('cases');
+    return cases.filter(function(item) {
+        return item.getCaseName().indexOf(name) !== TP.NOT_FOUND;
+    });
 });
 
 //  ------------------------------------------------------------------------
@@ -1170,7 +1195,7 @@ function(options) {
         skipped = 0;
         ignored = 0;
 
-        caseList = this.getCaseList();
+        caseList = this.getCaseList(options);
         caseList.perform(
                 function(item) {
                     var status;

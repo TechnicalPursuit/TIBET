@@ -42,6 +42,7 @@ function(aRequest) {
         ignore_skip,
         options,
         suiteName,
+        cases,
         obj;
 
     TP.stop('break.tsh_test');
@@ -75,9 +76,15 @@ function(aRequest) {
         suiteName = suiteName.unquoted();
     }
 
+    cases = shell.getArgument(aRequest, 'tsh:cases', null);
+    if (TP.notEmpty(cases)) {
+        cases = cases.unquoted();
+    }
+
     options = TP.hc('ignore_only', ignore_only,
                     'ignore_skip', ignore_skip,
-                    'suite', suiteName);
+                    'suite', suiteName,
+                    'cases', cases);
 
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 

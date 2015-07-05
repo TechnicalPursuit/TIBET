@@ -95,7 +95,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap'],
-        'string': ['target', 'suite'],
+        'string': ['target', 'suite', 'cases'],
         'default': {
             tap: true
         }
@@ -107,7 +107,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--ignore-only] [--ignore-skip] [--no-tap]';
+Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap]';
 
 //  ---
 //  Instance Methods
@@ -202,6 +202,10 @@ Cmd.prototype.getScript = function() {
         if (ignore === true) {
             target += ' --ignore_skip';
         }
+    }
+
+    if (CLI.notEmpty(this.options.cases)) {
+        target = target.trim() + ' -cases=\'' + this.options.cases + '\'';
     }
 
     return target;
