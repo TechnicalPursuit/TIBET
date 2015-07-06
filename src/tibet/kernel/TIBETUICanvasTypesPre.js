@@ -1448,8 +1448,6 @@ function(aURL, aRequest) {
         thisArg,
         handler;
 
-    TP.stop('break.window_location');
-
     //  Default URL to the blank page when empty or null/undefined.
     if (TP.isEmpty(aURL)) {
         url = TP.sys.cfg('path.blank_page');
@@ -2328,8 +2326,6 @@ function(aSignalOrHash) {
      *     of true to cause a deep refresh that updates all nodes.
      * @returns {TP.core.Window} The receiver.
      */
-
-    TP.stop('break.bind_refresh');
 
     this.getContentDocument().refresh(aSignalOrHash);
 

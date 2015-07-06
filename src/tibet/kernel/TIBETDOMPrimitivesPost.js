@@ -5249,8 +5249,6 @@ function(aNode, newNode, shouldAwake) {
 
                 return;
             } else if (childContent.childNodes.length > 1) {
-                TP.stop('break.node_discarded');
-
                 TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
@@ -5851,8 +5849,6 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
 
                 return;
             } else if (childContent.childNodes.length > 1) {
-                TP.stop('break.node_discarded');
-
                 TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
@@ -6367,8 +6363,6 @@ function(aNode, newNode, oldNode, shouldAwake) {
 
                 return;
             } else if (childContent.childNodes.length > 1) {
-                TP.stop('break.node_discarded');
-
                 TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
                                 TP.str(childContent),
@@ -7078,8 +7072,6 @@ function(aNode, anXPath, resultType, logErrors) {
         node,
 
         msg;
-
-    TP.stop('break.xpath');
 
     //  According to the DOM Level 3 XPath specification, aNode can only be
     //  one of:
@@ -9995,8 +9987,6 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
         repcount,
         repmax;
 
-    TP.stop('break.breadth_traversal');
-
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
@@ -10098,8 +10088,6 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                         ret !== TP.CONTINUE &&
                         ret !== TP.DESCEND &&
                         TP.nodeIsDetached(currentNode, rootNode)) {
-                        TP.stop('break.node_detachment');
-
                         TP.ifWarn() && TP.sys.cfg('log.node_detachment') ?
                             TP.warn('Traversal node detached: ' +
                                         TP.str(currentNode, false),
@@ -10213,8 +10201,6 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
         repcount,
         repmax;
 
-    TP.stop('break.depth_traversal');
-
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
     if (!TP.isCollectionNode(aNode)) {
@@ -10309,8 +10295,6 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     ret !== TP.REPEAT &&
                     ret !== TP.DESCEND &&
                     TP.nodeIsDetached(currentNode, rootNode)) {
-                    TP.stop('break.node_detachment');
-
                     TP.ifWarn() && TP.sys.cfg('log.node_detachment') ?
                         TP.warn('Traversal node detached: ' +
                                     TP.str(currentNode, false),

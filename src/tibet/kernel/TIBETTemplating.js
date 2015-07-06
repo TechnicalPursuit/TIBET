@@ -38,8 +38,6 @@ function(aDataSource, transformParams) {
      * @returns {String} The string resulting from the transformation process.
      */
 
-    TP.stop('break.content_transform');
-
     //  context, specializer, prefix, suffix, fallback, arglist
     return this.callBestMethod(arguments, aDataSource,
                                 'transform', null,
@@ -101,8 +99,6 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
         uri,
         func,
         tokens;
-
-    TP.stop('break.content_templating');
 
     //  Force a string representation. This ensures certain Mozilla bugs
     //  don't get triggered by referencing 'this' alone.
@@ -690,8 +686,6 @@ function(aDataSource, transformParams) {
         urn,
         url;
 
-    TP.stop('break.content_transform');
-
     if (TP.isEmpty(str = this.toString())) {
         return;
     }
@@ -826,8 +820,6 @@ function(aDataSource, transformParams) {
         i,
 
         val;
-
-    TP.stop('break.content_transform');
 
     //  NOTE!!! We do *not* change for validity of the data source. Some
     //  templating expressions can be executed without a data source. If no data

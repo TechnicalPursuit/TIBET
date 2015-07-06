@@ -440,8 +440,6 @@ function(aPath) {
         value,
         start;
 
-    TP.stop('break.uri_virtual');
-
     //  not a real path, but we can't assume what should come next
     if (TP.isEmpty(aPath)) {
         return '';
@@ -1194,8 +1192,6 @@ function(firstPath, secondPath) {
         second,
         path;
 
-    TP.stop('break.uri_resolve');
-
     //  deal with looping when more than two args
     if (arguments.length > 2) {
         path = arguments[0];
@@ -1531,8 +1527,6 @@ function(firstPath, secondPath, filePath) {
         i,
         partial;
 
-    TP.stop('break.uri_resolve');
-
     //  the "path we append" to the second path to get the first path when
     //  the first path doesn't exist is null
     if (TP.isEmpty(firstPath)) {
@@ -1857,8 +1851,6 @@ function(aPath, resourceOnly) {
         value,
         type,
         canvas;
-
-    TP.stop('break.uri_virtual');
 
     if (!TP.isString(aPath)) {
         return TP.raise(this, 'TP.sig.InvalidURI');

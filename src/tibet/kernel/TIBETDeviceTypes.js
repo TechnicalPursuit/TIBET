@@ -30,8 +30,6 @@ TP.core.Device.Type.defineConstant('REDIRECTOR',
         var normalizedEvent,
             targetElem;
 
-        TP.stop('break.device_redirect');
-
         normalizedEvent = aSignal.getEvent();
 
         if (TP.isElement(targetElem =
@@ -79,8 +77,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         handler,
         dict,
         arr;
-
-    TP.stop('break.device_observe');
 
     if (TP.isArray(aSignal)) {
         signals = aSignal;
@@ -265,8 +261,6 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         dict,
         arr;
 
-    TP.stop('break.device_ignore');
-
     if (TP.isArray(aSignal)) {
         signals = aSignal;
     } else if (TP.isString(aSignal)) {
@@ -391,8 +385,6 @@ isCancelable, isBubbling) {
         signal,
         typename,
         type;
-
-    TP.stop('break.device_signal');
 
     //  have to recast this into something we can pass to the invoke
     //  observers call, or we have to duplicate that logic when provided

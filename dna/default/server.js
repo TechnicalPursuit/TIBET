@@ -6,7 +6,6 @@
  *     a complementary server to a TIBET client in that it focuses on serving
  *     data, not "pages", in a purely RESTful fashion. As part of this latter
  *     feature the TDS integrates pouchdb and supports CouchDB APIs natively.
- * @author Scott Shattuck (ss), William J. Edney (wje)
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL

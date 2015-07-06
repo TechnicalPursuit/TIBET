@@ -274,8 +274,6 @@ function(aRequest) {
         re,
         result;
 
-    TP.stop('break.tsh_filter');
-
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
         return aRequest.fail(msg);
@@ -356,8 +354,6 @@ function(aRequest) {
         str,
         arr,
         match;
-
-    TP.stop('break.tsh_transform');
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
@@ -462,8 +458,6 @@ function(aRequest) {
         result,
         testfunc;
 
-    TP.stop('break.tsh_filter');
-
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
         return aRequest.fail(msg);
@@ -556,8 +550,6 @@ function(aRequest) {
         params,
         func,
         result;
-
-    TP.stop('break.tsh_transform');
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         msg = 'No content.';
@@ -1006,8 +998,6 @@ function(aRequest, cmdType) {
         subrequest,
         commitreq,
         content;
-
-    TP.stop('break.tsh_uri');
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         msg = 'No command instance.';

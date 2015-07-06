@@ -107,8 +107,6 @@ function(aNode, aSelector, autoCollapse) {
         i,
         result;
 
-    TP.stop('break.query_css');
-
     theNode = TP.isWindow(aNode) ? aNode.document : aNode;
 
     if (!TP.isNode(theNode)) {

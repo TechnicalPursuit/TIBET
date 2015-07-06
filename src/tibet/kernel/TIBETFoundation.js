@@ -2884,8 +2884,6 @@ function(aFilter) {
         // TODO: why don't we use this value?
         //proto;
 
-    TP.stop('break.interface');
-
     //  shortcut for using this method to get all keys of any kind.
     if (aFilter === 'known' || aFilter === TP.SLOT_FILTERS.known) {
 
@@ -4285,9 +4283,6 @@ TP.$changed = function(anAspect, anAction, aDescription) {
     if (!TP.sys.hasInitialized()) {
         return;
     }
-
-    //  Keep this after the test above to keep overhead down.
-    TP.stop('break.change');
 
     //  Build up the signal name we'll be firing.
     sig = 'Change';

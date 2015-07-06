@@ -892,8 +892,6 @@ isBubbling) {
 
         thrownSignal;
 
-    TP.stop('break.signal_dispatch');
-
     //  copy of the args we can manipulate as needed
     argsOrEvent = anEventOrHash;
 
@@ -1714,8 +1712,6 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
         element,
         elementNameArray,
         eventNameArray;
-
-    TP.stop('break.signal_arm');
 
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');

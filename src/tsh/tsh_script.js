@@ -124,8 +124,6 @@ function(aNode, aCommandList, aRequest) {
         last,
         ins;
 
-    TP.stop('break.tsh_pipe_adjust');
-
     //  the parse phase assigns pipes to the leading element, but we really
     //  want them assigned to the element which has to work with that as a
     //  form of instruction for input/output processing, so we move them.
@@ -212,8 +210,6 @@ function(commands, aRequest) {
         node,
         cond,
         state;
-
-    TP.stop('break.tsh_pipe_connect');
 
     if (!TP.isArray(commands)) {
         this.raise('TP.sig.InvalidParameter',
@@ -632,8 +628,6 @@ function(source, shell, sibling, request) {
         i += 1;
         token = arr[i];
     }
-
-    TP.stop('break.tsh_desugar');
 
     while (token) {
         switch (mode) {
@@ -1795,8 +1789,6 @@ function(aRequest) {
     //  BEEN CHANGED TO USE THE TAG PROCESSOR RATHER THAN IT'S OWN TAG
     //  PROCESSING MACHINERY (AT LEAST FOR COMPILATION).
 
-    TP.stop('break.tsh_compile');
-
     node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
 
@@ -1897,8 +1889,6 @@ function(aRequest) {
         content,
         req,
 
-        debug,
-
         i,
         children,
         child,
@@ -1922,8 +1912,6 @@ function(aRequest) {
         len,
         out,
         service;
-
-    TP.stop('break.tsh_execute');
 
     node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
@@ -2014,8 +2002,6 @@ function(aRequest) {
         node = root;
     }
 
-    debug = TP.sys.cfg('break.tsh_tag_exec');
-
     i = 0;
     children = node.childNodes;
 
@@ -2038,9 +2024,6 @@ function(aRequest) {
             i += 1;
             continue;
         }
-
-        //  allow for tag-by-tag debugging at each execution cycle
-        TP.stop(debug);
 
         //  the first child in each segment is the command, remaining
         //  elements in a contiguous segment are the redirects
@@ -2421,8 +2404,6 @@ function(src, shell, request) {
         !TP.regex.TSH_HEREDOC.test(src)) {
         return src;
     }
-
-    TP.stop('break.tsh_xmlify');
 
     //  tokenize and do our best...
     arr = TP.$tokenize(src, this.$tshOperators, true, false, false, false);
@@ -3100,8 +3081,6 @@ function(output, request) {
 
         rootRequest;
 
-    TP.stop('break.tsh_stderr');
-
     //  merge keys when we get extra parameters via the request/hash.
     req = TP.isValid(request) ? this.getPayload().addAll(request) : this;
 
@@ -3162,8 +3141,6 @@ function() {
         peer,
         index,
         value;
-
-    TP.stop('break.tsh_stdin');
 
     //  if we've already processed the data we'll have it cached in TP.STDIN
     if (TP.isValid(buffer = this.at(TP.STDIN))) {
@@ -3331,8 +3308,6 @@ function(output, request) {
         start,
         end;
 
-    TP.stop('break.tsh_stdout');
-
     //  merge keys when we get extra parameters via the request/hash.
     req = TP.isValid(request) ? this.getPayload().addAll(request) : this;
 
@@ -3439,8 +3414,6 @@ function(aRequest) {
         start,
         pipe,
         async;
-
-    TP.stop('break.tsh_execute');
 
     aRequest.isActive(true);
 

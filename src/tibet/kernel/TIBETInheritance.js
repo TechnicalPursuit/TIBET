@@ -2224,8 +2224,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         len,
         parents;
 
-    TP.stop('break.infer');
-
     //  no inferencing possible on types, we don't convert type objects to
     //  instances of other types...
     if (TP.isType(anOrigin)) {
@@ -2443,8 +2441,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         len,
         superName;
 
-    TP.stop('break.dnu');
-
     if (TP.notValid(anOrigin)) {
         return;
     }
@@ -2455,8 +2451,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  windows are notoriously poor at dealing with DNUs since
     //  they're "special objects" in the browser world, so don't try
     if (TP.isWindow(anOrigin)) {
-        TP.stop('break.unbound');
-
         TP.sys.logInference((orgid || 'Unresolvable window ') +
                 ' triggered backstop for method ' + aMethodName,
                 TP.DEBUG);

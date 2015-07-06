@@ -83,8 +83,6 @@ function(anID, regOnly, nodeContext) {
         reg,
         obj;
 
-    TP.stop('break.gobi');
-
     //  make sure it's something we can manipulate
     if (TP.isEmpty(anID)) {
         return;

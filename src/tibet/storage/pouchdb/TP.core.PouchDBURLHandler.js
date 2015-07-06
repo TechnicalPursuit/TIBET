@@ -65,8 +65,6 @@ function(targetURI, aRequest) {
 
         loadRequest;
 
-    TP.stop('break.uri_load');
-
     request = TP.request(aRequest);
     response = request.constructResponse();
 
@@ -151,8 +149,6 @@ function(targetURI, aRequest) {
 
         nukeRequest;
 
-    TP.stop('break.uri_nuke');
-
     request = TP.request(aRequest);
     response = request.constructResponse();
 
@@ -228,8 +224,6 @@ function(targetURI, aRequest) {
         requestParams,
 
         saveRequest;
-
-    TP.stop('break.uri_save');
 
     request = TP.request(aRequest);
     response = request.constructResponse();

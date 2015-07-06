@@ -694,8 +694,6 @@ function(aRequest) {
         len,
         i;
 
-    TP.stop('break.bind_stdin');
-
     //  check for any input-related binding references. if we don't have any
     //  then we won't try to return our bound input default value, we'll
     //  return undefined since the element isn't bound.
@@ -1024,8 +1022,6 @@ function(aValue, shouldSignal) {
     var newval,
         oldval;
 
-    TP.stop('break.bind_stdout');
-
     //  this method may be triggered automatically by low-level change
     //  handlers so we want to filter out extra work when we're not bound.
     if (!this.isBoundElement(TP.STDOUT)) {
@@ -1064,8 +1060,6 @@ function(anError) {
      *     value.
      * @returns {TP.core.ElementNode} The receiver.
      */
-
-    TP.stop('break.bind_stderr');
 
     //  this method may be triggered automatically by low-level change
     //  handlers so we want to filter out extra work when we're not bound.
@@ -1108,8 +1102,6 @@ function(aSignal) {
      */
 
     var request;
-
-    TP.stop('break.bind_refresh');
 
     //  signals coming into the refresh method should be requests already,
     //  but in case we didn't get one...

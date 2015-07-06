@@ -1676,12 +1676,6 @@ occurring as you intend. Registering this handler will force a log entry
 when the handler is actually invoked.
 */
 TP.TEST_HANDLER = function(aSignal) {
-
-    //  by having this here we can observe and break
-    //  into the handler to check signal stack traces
-
-    TP.stop('break.signal_handler');
-
     TP.info('TP.TEST_HANDLER fired for: ' +
                 aSignal.getSignalName() + ' @ ' +
                 aSignal.getSignalOrigin(),

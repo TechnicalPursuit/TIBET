@@ -64,8 +64,6 @@ function(aRequest) {
         isEdit,
         origReq;
 
-    TP.stop('break.tsh_history');
-
     node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
 

@@ -45,8 +45,6 @@ function(aRequest) {
         cases,
         obj;
 
-    TP.stop('break.tsh_test');
-
     runner = TP.sys.getTypeByName('TP.test.Suite');
     if (TP.notValid(runner)) {
         aRequest.fail('Unable to find TP.test.Suite.');

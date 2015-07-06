@@ -125,8 +125,6 @@ function(nodeSpec, varargs) {
         inst,
         args;
 
-    TP.stop('break.node_construct');
-
     //  ---
     //  Node Construction
     //  ---
@@ -4757,8 +4755,6 @@ function(anObject, aParamHash) {
         str,
         urn;
 
-    TP.stop('break.content_transform');
-
     if (TP.notEmpty(templateName = this.getTemplateName())) {
         templateFunc = TP.uc(templateName).getResource();
         if (TP.isCallable(templateFunc)) {
@@ -9088,8 +9084,6 @@ function(aRequest) {
 
         type;
 
-    TP.stop('break.content_process');
-
     node = this.getNativeNode();
 
     //  before we worry about anything else let's make sure we've got the
@@ -9498,8 +9492,6 @@ function(aRequest) {
         i,
 
         nodeGID;
-
-    TP.stop('break.content_process');
 
     node = this.getNativeNode();
 
@@ -10996,8 +10988,6 @@ function(aNode) {
      */
 
     var processor;
-
-    TP.stop('break.awaken_content');
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -12615,8 +12605,6 @@ function(aValue, formats) {
         elemFmts,
         format;
 
-    TP.stop('break.bind_format');
-
     //  nothing to do?
     if (TP.isEmpty(formats)) {
         return aValue;
@@ -12732,8 +12720,6 @@ function(aValue) {
         validators,
         value,
         valid;
-
-    TP.stop('break.validate');
 
     value = aValue;
 
@@ -14589,8 +14575,6 @@ function(anObject, aParamHash) {
         result,
         resultTPNode;
 
-    TP.stop('break.content_transform');
-
     node = this.getNativeNode();
 
     if (TP.isNode(anObject)) {
@@ -15044,8 +15028,6 @@ function(aRequest, expandArguments, resolveArguments) {
         resolvedValue,
         resolvedTN;
 
-    TP.stop('break.tsh_uri');
-
     shell = aRequest.at('cmdShell');
 
     reportHash = TP.hc();
@@ -15248,9 +15230,6 @@ function(aSignal) {
 
     var request,
         shell;
-
-    //  not all action invocations go through handle* so we'll break here
-    TP.stop('break.tsh_action');
 
     //  check with the type to see if we can run
     if (TP.notTrue(this.getType().canAct(this.getNativeNode()))) {

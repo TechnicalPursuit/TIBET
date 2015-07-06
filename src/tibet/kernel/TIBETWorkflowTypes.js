@@ -2817,8 +2817,6 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
         join,
         arglen;
 
-    TP.stop('break.request_wrapup');
-
     //  consider this to be "end of processing" time since what follows is
     //  largely about notifying rather than "real work" for the request
     if (TP.isValid(this.at('cmdStart'))) {

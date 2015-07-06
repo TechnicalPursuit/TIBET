@@ -4209,8 +4209,6 @@ function(target, name, value, track, owner) {
             TP.warn('Ignoring duplicate attribute definition: ' + name,
                     TP.LOG) : 0;
 
-        TP.stop('break.duplicate_attribute');
-
         return target[name];
     }
 
@@ -4272,8 +4270,6 @@ function(target, name, value, track, owner) {
         TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
             TP.warn('Ignoring duplicate constant definition: ' + name,
                     TP.LOG) : 0;
-
-        TP.stop('break.duplicate_constant');
 
         return target[name];
     }
@@ -6113,28 +6109,13 @@ function(aFlagOrParam) {
      * @summary A stand-in for the debugger keyword that won't cause Safari to
      *     complain about syntax errors. Also a convenient way to provide if
      *     (some condition) debugger; logic. By providing either a Boolean or a
-     *     configuration parameter name to this function you can simplify coding
-     *     as in:
-     *
-     *     TP.stop('break.uri_construct');
-     *
-     *     The previous example will trigger the debugger if a call to
-     *     TP.sys.cfg('break.uri_construct') returns true. You'll see this kind
-     *     of idiomatic use throughout TIBET to set conditional break locations
-     *     that help avoid having to reload to debug. NOTE that
-     *     TP.sys.cfg('break.use_debugger') must be true for this function to
-     *     test/break, otherwise it simply returns.
+     *     configuration parameter to this function you can simplify coding.
      * @param {Boolean|String} aFlagOrParam False to not trigger the debugger.
      *     When a string is provided it should be the name of a configuration
      *     parameter. Default is true.
      * @example Set a permanent "breakpoint" via a debugger statement.
      *     <code>
      *          TP.stop();
-     *     </code>
-     * @example Set a conditional "breakpoint" that will trigger when the
-     *     configuration parameter break.document_loaded is true.
-     *     <code>
-     *          TP.stop('break.document_loaded');
      *     </code>
      */
 

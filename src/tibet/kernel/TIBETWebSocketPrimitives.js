@@ -559,8 +559,6 @@ function(targetUrl, aRequest, wsObj) {
         sig,
         id;
 
-    TP.stop('break.websocket_wrapup');
-
     request = TP.request(aRequest);
 
     //  make sure the request has access to the native WebSocket object

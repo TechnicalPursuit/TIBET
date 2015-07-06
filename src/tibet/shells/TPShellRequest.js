@@ -319,8 +319,6 @@ function(output, request) {
     var req,
         shell;
 
-    TP.stop('break.tsh_stderr');
-
     req = TP.request(TP.ifInvalid(request, this));
     if (TP.notTrue(req.at('cmdSilent'))) {
         shell = req.at('cmdShell');
@@ -346,8 +344,6 @@ function() {
      * @returns {Array} An array of 0 to N input objects.
      */
 
-    TP.stop('break.tsh_stdin');
-
     //  If the receiver has a value in TP.STDIN, use it. Otherwise return an
     //  empty Array.
     return TP.ifInvalid(this.at(TP.STDIN), TP.ac());
@@ -369,8 +365,6 @@ function(output, request) {
 
     var req,
         shell;
-
-    TP.stop('break.tsh_stdout');
 
     req = TP.request(TP.ifInvalid(request, this));
     if (TP.notTrue(req.at('cmdSilent'))) {

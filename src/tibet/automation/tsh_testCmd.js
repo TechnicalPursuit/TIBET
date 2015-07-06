@@ -111,8 +111,6 @@ function(aRequest) {
         resolvedValue,
         resolvedTN;
 
-    TP.stop('break.tsh_uri');
-
     shell = aRequest.at('cmdShell');
 
     reportHash = TP.hc();

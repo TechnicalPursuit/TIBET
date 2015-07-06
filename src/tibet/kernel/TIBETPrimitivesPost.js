@@ -2760,8 +2760,6 @@ function(anObject, aFormat, formatParams) {
         return;
     }
 
-    TP.stop('break.format');
-
     //  If the 'shouldWrap' flag in the format params isn't false, wrap the
     //  object so that we ensure we're talking to TIBET objects.
     if (TP.isValid(formatParams) &&

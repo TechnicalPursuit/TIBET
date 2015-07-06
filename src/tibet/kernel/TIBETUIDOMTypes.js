@@ -5635,8 +5635,6 @@ isBubbling) {
      * @returns {TP.sig.Signal}
      */
 
-    TP.stop('break.signal_dispatch');
-
     return this.dispatch(aSignal,
                             this.getNativeNode(),
                             aPayload,
@@ -5670,8 +5668,6 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
      *     whether they bubble (when using TP.DOM_FIRING).
      * @returns {TP.sig.Signal}
      */
-
-    TP.stop('break.signal_dispatch');
 
     (function() {
 

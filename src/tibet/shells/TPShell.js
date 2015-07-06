@@ -2291,8 +2291,6 @@ function(aString) {
 
     var str;
 
-    TP.stop('break.tsh_substitutions');
-
     str = aString;
 
     //  We special case the standard "stdin" variable $_ so it doesn't have
@@ -2392,8 +2390,6 @@ function(aRequest, shouldReport) {
         len,
         i;
 
-    TP.stop('break.tsh_substitutions');
-
     if (TP.notValid(node = aRequest.at('cmdNode'))) {
         return aRequest.fail();
     }
@@ -2431,8 +2427,6 @@ function(aRequest) {
         i,
 
         stdin;
-
-    TP.stop('break.tsh_substitutions');
 
     scope = this.getExecutionInstance();
 
@@ -2936,8 +2930,6 @@ function(aRequest) {
 
         node;
 
-    TP.stop('break.tsh_params');
-
     if (TP.isValid(dict = aRequest.get('PARAMS'))) {
         return dict;
     }
@@ -3073,8 +3065,6 @@ function(aRequest) {
         value,
 
         node;
-
-    TP.stop('break.tsh_alias');
 
     shell = aRequest.at('cmdShell');
     argv = this.getArgument(aRequest, 'ARGV');

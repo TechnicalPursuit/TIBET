@@ -3618,8 +3618,6 @@ function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserv
         observer,
         handlers;
 
-    TP.stop('break.signal_register');
-
     if (TP.isEmpty(anOrigin) || anOrigin === '*') {
         origins = TP.ANY;
     } else {
@@ -4646,8 +4644,6 @@ aSigEntry, checkTarget) {
         xml_target,
         targetID;
 
-    TP.stop('break.signal_notify');
-
     //  callers need to already have set up a signal instance
     if (TP.notValid(aSignal)) {
         return;
@@ -4774,10 +4770,6 @@ aSigEntry, checkTarget) {
                     continue;
                 }
             }
-
-            //  to help with DOM filter and handler debugging we'll put
-            //  a break option in
-            TP.stop('break.signal_handler');
 
             //  if we're using strict XMLEvent or DOM firing then
             //  we have to check to see if the signal's target matches
@@ -5162,8 +5154,6 @@ function(originSet, aSignal, aPayload, aType) {
         dataidx,
         sigParams;
 
-    TP.stop('break.signal_domfiring');
-
     //  in the DOM model we can only fire if we have a signal and origin
     if (TP.notValid(aSignal) || TP.notValid(originSet)) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidDOMSignal');
@@ -5544,8 +5534,6 @@ function(originSet, aSignal, aPayload, aType) {
         respChain,
         responder,
         i;
-
-    TP.stop('break.signal_responderfiring');
 
     if (TP.notValid(aSignal)) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
@@ -5989,8 +5977,6 @@ function(originSet, aSignal, aPayload, aType) {
         handler,
 
         orgid;
-
-    TP.stop('break.signal_crudfiring');
 
     if (TP.notValid(aSignal)) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
@@ -7083,18 +7069,6 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
             if (!shouldSignalMap) {
                 return;
             }
-        }
-    }
-
-    //  watch out for DOMFocus signals trying to work between the tools and
-    //  the debugger...basically unusable in that mode
-    TP.stop(TP.sys.cfg('break.signal') &&
-            TP.name(aSignal).indexOf('DOMFocus') !== 0);
-
-    if (TP.sys.cfg('break.signal_exception')) {
-        if (/Invalid|Exception/.test(aSignal) ||
-            TP.isKindOf(aSignal, TP.sig.Exception)) {
-            TP.stop();
         }
     }
 

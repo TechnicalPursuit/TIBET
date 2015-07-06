@@ -129,8 +129,6 @@ function(aLocale, sourceLocale, forceRefresh) {
     var locale,
         localeObj;
 
-    TP.stop('break.locale_localize');
-
     locale = TP.ifInvalid(aLocale, TP.sys.getLocale());
 
     //  allow passage of the locale's ID string
@@ -392,8 +390,6 @@ function(anObject, sourceLocale, forceRefresh) {
 
     var tname,
         fname;
-
-    TP.stop('break.locale_localize');
 
     //  we'll be using the type name to switch, or build a method lookup key
     //  so we start there
@@ -1064,8 +1060,6 @@ function(aString, sourceLocale) {
 
     var str;
 
-    TP.stop('break.locale_parse');
-
     str = this.localizeString(aString, sourceLocale);
 
     //  match against our false strings and consider everything else true
@@ -1090,8 +1084,6 @@ function(aString, sourceLocale) {
      *     language-country value.
      * @returns {Date} The localized Date value.
      */
-
-    TP.stop('break.locale_parse');
 
     //  the typical originator for a parse() is the object itself, so we'll
     //  normally have gone through Date.parse() which first tries the TIBET
@@ -1125,8 +1117,6 @@ function(aString, sourceLocale) {
 
     var str,
         sep;
-
-    TP.stop('break.locale_parse');
 
     str = aString;
 
@@ -1164,8 +1154,6 @@ function(aString, sourceLocale) {
      *     language-country value.
      * @returns {String} The localized String value.
      */
-
-    TP.stop('break.locale_parse');
 
     return this.localizeString(aString, sourceLocale);
 });

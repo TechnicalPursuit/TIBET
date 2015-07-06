@@ -6,8 +6,6 @@
 <config id="properties" if="boot.phase_one">
     <property name="tibet.sherpa" value="true"/>
     <property name="debug.use_debugger" value="true"/>
-    <property name="break.dnu" value="true"/>
-    <property name="break.unbound" value="true"/>
     <property name="log.bootcfg" value="true"/>
     <property name="log.bootenv" value="true"/>
     <property name="log.level" value="DEBUG"/>

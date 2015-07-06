@@ -92,8 +92,6 @@ function(aString, aShell, aRequest, asTokens) {
         result2,
         identValue;
 
-    TP.stop('break.tsh_desugar');
-
     str = aString;
 
     //  use the condense routine to tokenize our content for runtime parse
@@ -129,8 +127,6 @@ function(aString, aShell, aRequest, asTokens) {
             break;
 
         case '^':
-
-            TP.stop('break.tsh_history');
 
             //  regular expression-based history substitution relative to
             //  the previous command's fully-expanded text content
@@ -248,8 +244,6 @@ function(aString, aShell, aRequest, asTokens) {
                 //  processing since the alias could reference new tags or
                 //  other content the tsh_cmd tag can't process itself.
                 if (alias !== token.value) {
-                    TP.stop('break.tsh_alias');
-
                     //  before we submit as a "new request" we have to
                     //  process any local variable interpolations in the
                     //  alias such as ARGV or named argument references.
@@ -615,9 +609,6 @@ function(aliasString, aTokenArray) {
         str,
         num;
 
-    TP.stop(TP.sys.cfg('break.tsh_alias') ||
-                TP.sys.cfg('break.tsh_interpolate'));
-
     //  if the alias has no variables we can do simple concatenation
     if (!TP.regex.VARSUB.test(aliasString)) {
         return aliasString + aTokenArray.collect(
@@ -906,8 +897,6 @@ function(REQUEST$$) {
         $SCOPE,
         $SCRIPT;
 
-    TP.stop(TP.sys.cfg('break.tsh_fetch') || TP.sys.cfg('break.tsh_cmd'));
-
     $REQUEST = REQUEST$$;
     $NODE = $REQUEST.at('cmdNode');
     $SHELL = $REQUEST.at('cmdShell');
@@ -1098,8 +1087,6 @@ function(REQUEST$$, CMDTYPE$$) {
         $SCOPE,
         $SCRIPT;
 
-    TP.stop('break.tsh_cmd');
-
     $REQUEST = REQUEST$$;
 
     $SHELL = $REQUEST.at('cmdShell');
@@ -1146,7 +1133,7 @@ function(REQUEST$$, CMDTYPE$$) {
 
     //  there are a few pipe symbols which, while they are part of the
     //  overall pipe syntax, imply the current element shouldn't try to read
-    //  from stdin since it's at a segment break. when that's true we clear
+    //  from stdin since it's at a segment break. When that's true we clear
     //  the pipe symbol so we'll more likely drop through to a cmdGetContent
     if (TP.$is_ioend(PIPE$$)) {
         PIPE$$ = null;
@@ -1387,8 +1374,6 @@ function(REQUEST$$, CMDTYPE$$) {
             TIME$$,
             SCRIPT$$,
             FLAG$$;
-
-        TP.stop('break.tsh_execute');
 
         INPUT$$ = $REQUEST.stdin();
         LOOP$$ = $REQUEST.at('cmdIterate');
@@ -1975,8 +1960,6 @@ function(aRequest) {
      * @exception TP.sig.InvalidOperation
      * @returns {TP.BREAK}
      */
-
-    TP.stop('break.tsh_cmd');
 
     this.raise('TP.sig.InvalidOperation');
 
