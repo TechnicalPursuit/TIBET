@@ -2362,7 +2362,7 @@ function(aValue) {
      */
 
     return aValue !== undefined;
-}, false, 'TP.isDefined');
+}, null, 'TP.isDefined');
 
 //  ------------------------------------------------------------------------
 
@@ -2393,7 +2393,7 @@ function(aValue) {
     }
 
     return false;
-}, false, 'TP.isNaN');
+}, null, 'TP.isNaN');
 
 //  ------------------------------------------------------------------------
 
@@ -2413,7 +2413,7 @@ function(aValue) {
      */
 
     return aValue === null;
-}, false, 'TP.isNull');
+}, null, 'TP.isNull');
 
 //  ------------------------------------------------------------------------
 
@@ -2432,7 +2432,7 @@ function(aValue) {
      */
 
     return aValue === undefined;
-}, false, 'TP.notDefined');
+}, null, 'TP.notDefined');
 
 //  ------------------------------------------------------------------------
 
@@ -2451,7 +2451,7 @@ function(aValue) {
      */
 
     return !TP.isNaN(aValue);
-}, false, 'TP.notNaN');
+}, null, 'TP.notNaN');
 
 //  ------------------------------------------------------------------------
 
@@ -2472,7 +2472,7 @@ function(aValue) {
      */
 
     return aValue !== null;
-}, false, 'TP.notNull');
+}, null, 'TP.notNull');
 
 //  ------------------------------------------------------------------------
 //  Value-Based Branching
@@ -2499,7 +2499,7 @@ function(aSuspectValue, aDefaultValue) {
     /* eslint-disable no-extra-parens */
     return (aSuspectValue === null) ? aDefaultValue : aSuspectValue;
     /* eslint-enable no-extra-parens */
-}, false, 'TP.ifNull');
+}, null, 'TP.ifNull');
 
 //  ------------------------------------------------------------------------
 
@@ -2524,7 +2524,7 @@ function(aSuspectValue, aDefaultValue) {
     /* eslint-disable no-extra-parens */
     return (aSuspectValue === undefined) ? aDefaultValue : aSuspectValue;
     /* eslint-enable no-extra-parens */
-}, false, 'TP.ifUndefined');
+}, null, 'TP.ifUndefined');
 
 //  ------------------------------------------------------------------------
 //  TYPE CHECKS
@@ -2555,7 +2555,7 @@ function(anObj) {
      */
 
     return TP.isValid(anObj) && typeof anObj.nodeType === 'number';
-}, false, 'TP.ifNode');
+}, null, 'TP.ifNode');
 
 //  ------------------------------------------------------------------------
 
@@ -2573,7 +2573,7 @@ function(anObj) {
      */
 
     return TP.isValid(TP.getNonFunctionConstructorName(anObj));
-}, false, 'TP.isNonFunctionConstructor');
+}, null, 'TP.isNonFunctionConstructor');
 
 //  ------------------------------------------------------------------------
 
@@ -2682,7 +2682,7 @@ function(anObj) {
     }
 
     return;
-}, false, 'TP.getNonFunctionConstructorName');
+}, null, 'TP.getNonFunctionConstructorName');
 
 //  ------------------------------------------------------------------------
 
@@ -2738,7 +2738,7 @@ function(anObj) {
     }
 
     return true;
-}, false, 'TP.isPlainObject');
+}, null, 'TP.isPlainObject');
 
 //  ------------------------------------------------------------------------
 
@@ -2816,7 +2816,7 @@ function(anObj) {
     }
 
     return false;
-}, false, 'TP.isType');
+}, null, 'TP.isType');
 
 //  ------------------------------------------------------------------------
 
@@ -2834,7 +2834,7 @@ function(anObj) {
 
     return TP.regex.NATIVE_CODE.test(anObj.toString());
 
-}, false, 'TP.isNativeFunction');
+}, null, 'TP.isNativeFunction');
 
 //  ------------------------------------------------------------------------
 
@@ -2867,7 +2867,7 @@ function(anObj) {
                  TP.isType(anObj)) ||
             (anObj === Function);
     /* eslint-enable no-extra-parens */
-}, false, 'TP.isNativeType');
+}, null, 'TP.isNativeType');
 
 //  ------------------------------------------------------------------------
 
@@ -2895,7 +2895,7 @@ function(anObj) {
     /* eslint-disable no-extra-parens */
     return (TP.isValid(anObj) && anObj.moveBy !== undefined);
     /* eslint-enable no-extra-parens */
-}, false, 'TP.isWindow');
+}, null, 'TP.isWindow');
 
 //  ------------------------------------------------------------------------
 //  PROTOTYPE TESTING
@@ -2936,7 +2936,7 @@ function(anObject) {
     }
 
     return anObject === TP.ObjectProto;
-}, false, 'TP.isPrototype');
+}, null, 'TP.isPrototype');
 
 //  ------------------------------------------------------------------------
 //  MUTABILITY/REFERENCE
@@ -3016,7 +3016,7 @@ function(anObj) {
 
     //  everything else is mutable
     return true;
-}, false, 'TP.isMutable');
+}, null, 'TP.isMutable');
 
 //  ------------------------------------------------------------------------
 
@@ -3082,7 +3082,7 @@ function(anObj) {
     //  If it's not an Array and neither it or it's type can answer to
     //  '$$isReferenceType', then only return true if its a plain Object.
     return anObj.constructor === Object;
-}, false, 'TP.isReferenceType');
+}, null, 'TP.isReferenceType');
 
 //  ------------------------------------------------------------------------
 
@@ -3110,7 +3110,7 @@ function() {
             });
     /* eslint-enable no-extra-parens */
     /* jshint bitwise:true */
-}, false, 'TP.genUUID');
+}, null, 'TP.genUUID');
 
 //  ------------------------------------------------------------------------
 //  PERFORMANCE TRACKING
@@ -3159,7 +3159,7 @@ function(anObject) {
     //  if owner/track are valid is it callable? then it's a method as long
     //  as we don't trip over a native type
     return TP.isCallable(anObject) && !TP.isType(anObject);
-}, false, 'TP.isMethod');
+}, null, 'TP.isMethod');
 
 //  ------------------------------------------------------------------------
 
@@ -3935,7 +3935,7 @@ function(methodName, methodBody) {
     TP.sys.defineGlobal(methodName, method, true);
 
     return method;
-}, false, 'TP.defineGlobalMethod');
+}, null, 'TP.defineGlobalMethod');
 
 //  ------------------------------------------------------------------------
 
@@ -3988,7 +3988,7 @@ function(methodName, methodBody) {
     }
 
     return null;
-}, false, 'TP.defineMetaTypeMethod');
+}, null, 'TP.defineMetaTypeMethod');
 
 //  ------------------------------------------------------------------------
 
@@ -4090,7 +4090,7 @@ function(methodName, methodBody) {
     }
 
     return null;
-}, false, 'TP.defineMetaInstMethod');
+}, null, 'TP.defineMetaInstMethod');
 
 //  ------------------------------------------------------------------------
 
@@ -4164,7 +4164,7 @@ function(methodName, methodBody) {
     }
 
     return null;
-}, false, 'TP.defineCommonMethod');
+}, null, 'TP.defineCommonMethod');
 
 //  -----------------------------------------------------------------------
 
@@ -4238,7 +4238,7 @@ function(target, name, value, track, owner) {
     }
 
     return attribute;
-}, false, 'TP.defineAttributeSlot');
+}, null, 'TP.defineAttributeSlot');
 
 //  -----------------------------------------------------------------------
 
@@ -4302,7 +4302,7 @@ function(target, name, value, track, owner) {
 
     return constant;
 
-}, false, 'TP.defineConstantSlot');
+}, null, 'TP.defineConstantSlot');
 
 //  ------------------------------------------------------------------------
 
@@ -4390,7 +4390,7 @@ function(functionBodyOrTests) {
     }
 
     return theFunc();
-}, false, 'TP.runConditionalFunction');
+}, null, 'TP.runConditionalFunction');
 
 //  ------------------------------------------------------------------------
 
@@ -4413,7 +4413,7 @@ function(target, methodName, methodBody) {
     target[methodName] = methodBody;
 
     return target[methodName];
-}, false, 'TP.defineMethodAlias');
+}, null, 'TP.defineMethodAlias');
 
 //  ------------------------------------------------------------------------
 //  REFLECTION - PART I
