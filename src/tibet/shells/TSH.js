@@ -1527,7 +1527,9 @@ function(aRequest) {
                     } catch (e) {
                         message = 'Error running ' + TP.name(type) + '.' +
                             funcName;
-                        TP.error(message + ': ' + e.message);
+
+                        TP.error(message + '\n' +
+                            TP.getStackInfo(e).join('\n'));
 
                         return aRequest.fail(TP.ec(e, message));
                     }
