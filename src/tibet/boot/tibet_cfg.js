@@ -960,11 +960,11 @@
     //  if $error is called should the call stack names be included? off by
     //  default primarily due to permission requirements in Mozilla :(. Used to
     //  be useful before they went and made stack access a security issue again.
-    TP.sys.setcfg('log.stack', false);
+    TP.sys.setcfg('log.stack', true);
 
     //  when logging the call stack should we try to get file information such
     //  as filenames and line numbers for the functions?
-    TP.sys.setcfg('log.stack_file_info', false);
+    TP.sys.setcfg('log.stack_file_info', true);
 
     //  logs output from the TSH desugaring step
     TP.sys.setcfg('log.tsh_desugar', false);
