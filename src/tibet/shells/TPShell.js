@@ -2198,6 +2198,7 @@ function(anObjectSpec, aRequest) {
     for (i = 0; i < specs.getSize(); i++) {
         if (!TP.regex.JS_IDENTIFIER.test(specs.at(i))) {
             //  Not a JS identifier - can't use it as such.
+            isIdentifier = false;
             break;
         }
         isIdentifier = true;
