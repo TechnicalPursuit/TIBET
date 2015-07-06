@@ -138,9 +138,9 @@
   <!-- sample user-specific login, showing single-role/single-unit -->
   <vCard xmlns="vcard-temp">
     <VERSION>1.1</VERSION>
-    <FN>bedney</FN>
-    <N>bedney</N>
-    <JABBERID>bedney@localhost</JABBERID>
+    <FN>inforat</FN>
+    <N>inforat</N>
+    <JABBERID>inforat@localhost</JABBERID>
     <X-PASSWORD>{USER}</X-PASSWORD>
     <ROLE>Evangelist</ROLE>
     <ORG>

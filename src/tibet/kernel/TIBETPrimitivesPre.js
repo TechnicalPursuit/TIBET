@@ -12136,7 +12136,7 @@ function() {
      * @example Get TIBET's current 'effective user':
      *     <code>
      *          TP.sys.getEffectiveUser();
-     *          <samp>bedney</samp>
+     *          <samp>public</samp>
      *     </code>
      * @returns {TP.core.User} The effective TP.core.User instance, if there is
      *     one.
@@ -12163,7 +12163,7 @@ function() {
      * @example Get TIBET's current 'real user':
      *     <code>
      *          TP.sys.getRealUser();
-     *          <samp>bedney</samp>
+     *          <samp>public</samp>
      *     </code>
      * @returns {TP.core.User} The real TP.core.User instance, if there is one.
      */

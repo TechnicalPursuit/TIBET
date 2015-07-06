@@ -709,7 +709,7 @@ function() {
         xmlPath2 = TP.apc('/emp/lname');
         xmlPath2.set('shouldMakeStructures', true);
 
-        xmlPath2.executeSet(modelObj, 'Shattuck', true);
+        xmlPath2.executeSet(modelObj, 'Jones', true);
 
         //  The value path should have the path for xmlPath2
         test.assert.contains(valuePathResults, xmlPath2.get('srcPath'));

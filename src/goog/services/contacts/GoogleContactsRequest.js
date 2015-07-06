@@ -40,7 +40,7 @@
  *
  *     Retrieve the list of all contacts:
  *
- *     requestParams = TP.hc( 'action', 'fetchContacts', 'userEmail', 'bedney
+ *     requestParams = TP.hc( 'action', 'fetchContacts', 'userEmail', 'info
  * @technicalpursuit.com');
 
  Package and fire the request:

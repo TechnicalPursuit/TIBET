@@ -477,6 +477,7 @@ function(target, options) {
         keys,
         suitelist,
         shouldThrowSetting,
+        shouldLogSetting,
         promise,
         exclusives,
         summarize,
@@ -632,9 +633,11 @@ function(target, options) {
     //  case will cause TIBET to throw an Error and then the test case will be
     //  considered to be in 'error'.
 
-    //  TODO: Should the test harness also observe TP.sig.Exceptions?
     shouldThrowSetting = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
+
+    shouldLogSetting = TP.sys.shouldLogStack();
+    TP.sys.shouldLogStack(true);
 
     /* eslint-disable handle-callback-err */
 
@@ -663,10 +666,12 @@ function(target, options) {
     return promise.then(
             function(obj) {
                 TP.sys.shouldThrowExceptions(shouldThrowSetting);
+                TP.sys.shouldLogStack(shouldLogSetting);
                 summarize();
             },
             function(err) {
                 TP.sys.shouldThrowExceptions(shouldThrowSetting);
+                TP.sys.shouldLogStack(shouldLogSetting);
                 summarize();
             });
     /* eslint-enable handle-callback-err */
