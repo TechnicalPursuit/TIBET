@@ -6,7 +6,7 @@
 /**
  * Define the JavaScript namespace object which will hold application code.
  */
-TP.defineNamespace('{{appname}}', 'APP');
+TP.defineNamespace('APP.{{appname}}');
 
 /**
  * Define the XML namespace and prefix for any tags in the application.

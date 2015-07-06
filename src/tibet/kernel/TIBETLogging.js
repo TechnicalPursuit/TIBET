@@ -30,7 +30,7 @@
  * The namespace responsible for all framework logging.
  */
 /* eslint-disable no-unused-vars */
-TP.defineNamespace('log', 'TP');
+TP.defineNamespace('TP.log');
 /* eslint-enable no-unused-vars */
 
 //  ============================================================================

@@ -3830,13 +3830,13 @@ function() {
 //  ------------------------------------------------------------------------
 
 //  The core TIBET namespace.
-TP.defineNamespace('lang', 'TP');
+TP.defineNamespace('TP.lang');
 
 //  We define the 'meta' namespace as a unique namespace where TIBET types are
 //  placed and can be referenced. Types will return the 'meta' namespace as part
 //  of their 'getTypeName()' call (i.e. 'TP.meta.lang.Object'). As each type is
 //  defined, a reference to it is placed on the 'meta' namespace.
-TP.defineNamespace('meta', 'TP');
+TP.defineNamespace('TP.meta');
 
 //  ------------------------------------------------------------------------
 //  TP.lang.RootObject - BOOTSTRAP DEFINITION
@@ -3903,7 +3903,7 @@ TP.lang.RootObject.Inst[TP.OWNER] = TP.lang.RootObject;
 //  EXTERNAL LIBRARY SUPPORT
 //  -----------------------------------------------------------------------
 
-TP.defineNamespace('extern', 'TP');
+TP.defineNamespace('TP.extern');
 
 //  -----------------------------------------------------------------------
 //  TP Primitives

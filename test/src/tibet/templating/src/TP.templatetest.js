@@ -6,7 +6,7 @@
 /**
  * Define the JavaScript namespace object which will hold application code.
  */
-TP.defineNamespace('templatetest', 'TP');
+TP.defineNamespace('TP.templatetest');
 
 /**
  * Define the XML namespace and prefix for any tags in the application.

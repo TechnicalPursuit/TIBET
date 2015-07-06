@@ -134,26 +134,29 @@ TP.PROPERTY_READONLY.enumerable = false;
 //  MODULE DEFINITION
 //  ------------------------------------------------------------------------
 
-TP.defineNamespace = function(namespaceName, root) {
+TP.defineNamespace = function(namespaceName) {
 
     /**
      * @method defineNamespace
-     * @summary Defines a namespace named by the supplied name, defined as a
-     *     'namespace' on the root provided.
+     * @summary Defines a namespace named by the supplied name, which must
+     *     include a root reference of either TP or APP.
      * @description The name supplied to this method defines a namespace list
      *     from the root object to the last name at the end of the supplied
      *     namespace name.
      * @param {String} namespaceName A String of 1 or more period-separated
      *     names that will define the name of a namespace.
-     * @param {String} root The top-level namespace owner.
      * @returns {Object} The newly defined namespace.
      */
 
     var names,
+        root,
         currentObj,
         prefix,
         name,
         i;
+
+    names = namespaceName.split('.');
+    root = names.shift();
 
     currentObj = self[root];
     if (!currentObj) {
@@ -162,8 +165,6 @@ TP.defineNamespace = function(namespaceName, root) {
     }
 
     prefix = root + '.';
-
-    names = namespaceName.split('.');
 
     //  Descend through the names, making sure that there's a real Object at
     //  each level.
@@ -224,7 +225,7 @@ TP.defineNamespace = function(namespaceName, root) {
 
 //  Define an Array to collect primitive namespace objects. Note how we
 //  pre-populate with the 'special namespaces' that didn't get added via
-//  TP.defineNamespace().
+//  TP.defineNamespace.
 TP.$$bootstrap_namespaces = [self.TP, self.APP, self.TP.sys, self.TP.boot];
 
 //  Manual setup
@@ -1736,7 +1737,7 @@ Somewhat brute-force, but useful sort functions that come up often.
 
 //  ------------------------------------------------------------------------
 
-TP.defineNamespace('sort', 'TP');
+TP.defineNamespace('TP.sort');
 
 //  ------------------------------------------------------------------------
 
@@ -2231,7 +2232,7 @@ enumerator over a string.
 
 //  ------------------------------------------------------------------------
 
-TP.defineNamespace('regex', 'TP');
+TP.defineNamespace('TP.regex');
 
 //  ------------------------------------------------------------------------
 

@@ -19,7 +19,7 @@
 //  TP.test namespace (and friends...)
 //  ------------------------------------------------------------------------
 
-TP.defineNamespace('test', 'TP');
+TP.defineNamespace('TP.test');
 
 //  Create a custom Error for use in Assert processing.
 AssertionFailed = function(message) { this.message = message; };
