@@ -4372,8 +4372,8 @@ function() {
             shouldThrowSetting = TP.sys.shouldThrowExceptions();
             TP.sys.shouldThrowExceptions(false);
 
-            autoResolveSetting = TP.sys.cfg('oo.$$traits_resolve');
-            TP.sys.setcfg('oo.$$traits_resolve', false);
+            autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
+            TP.sys.setcfg('oo.$$traits_autoresolve', false);
         });
 
     //  ---
@@ -4886,7 +4886,7 @@ function() {
         //  For this particular test, we undo the behavior we have in the
         //  before() / after() and turn trait autoresolution on
 
-        TP.sys.setcfg('oo.$$traits_resolve', true);
+        TP.sys.setcfg('oo.$$traits_autoresolve', true);
 
         //  ---
 
@@ -4933,7 +4933,7 @@ function() {
                     ' not: ', val, '.'));
 
         //  Turn auto resolution back off
-        TP.sys.setcfg('oo.$$traits_resolve', false);
+        TP.sys.setcfg('oo.$$traits_autoresolve', false);
     });
 
     //  ---
@@ -5101,7 +5101,7 @@ function() {
 
             TP.sys.shouldThrowExceptions(shouldThrowSetting);
 
-            TP.sys.setcfg('oo.$$traits_resolve', autoResolveSetting);
+            TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
         });
 });
 

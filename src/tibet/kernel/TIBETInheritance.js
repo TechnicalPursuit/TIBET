@@ -3717,7 +3717,7 @@ function(propName, sources, track) {
         errStr;
 
     //  Make sure that we're configure to auto resolve.
-    if (TP.isTrue(TP.sys.cfg('oo.$$traits_resolve'))) {
+    if (TP.isTrue(TP.sys.cfg('oo.$$traits_autoresolve'))) {
 
         //  Compute the C3 linearization for the target type
         c3TypeList = this.computeC3Linearization();

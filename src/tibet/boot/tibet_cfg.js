@@ -1348,7 +1348,7 @@
     TP.sys.setcfg('oo.$$use_inferencing', true);
 
     //  should we 'auto resolve' traits?
-    TP.sys.setcfg('oo.$$traits_resolve', true);
+    TP.sys.setcfg('oo.$$traits_autoresolve', true);
 
     //  should we warn when traits are 'auto resolved'?
     TP.sys.setcfg('oo.traits_warn', false);
