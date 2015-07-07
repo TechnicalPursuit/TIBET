@@ -31,8 +31,6 @@ TP.core.CompiledTag.Inst.resolveTraits(
                 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
-TP.core.CompiledTag.finalizeTraits();
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -91,8 +89,6 @@ TP.core.TemplatedTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
                 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
-
-TP.core.TemplatedTag.finalizeTraits();
 
 //  ========================================================================
 //  TP.tibet.app
