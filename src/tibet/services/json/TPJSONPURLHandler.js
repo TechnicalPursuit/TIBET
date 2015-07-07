@@ -57,8 +57,6 @@ function(targetURI, aRequest) {
         requestParams,
         loadRequest;
 
-    TP.stop('break.uri_load');
-
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         this.raise('TP.sig.InvalidURI');
 

@@ -2,7 +2,6 @@
 
 /**
  * @overview The TIBET command-line entry point.
- * @author Scott Shattuck (ss)
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-Approved Reciprocal Public License (RPL) Version 1.5. See the RPL

@@ -80,8 +80,6 @@ function(aRequest) {
         params,
         response;
 
-    TP.stop('break.uri_service');
-
     if (!TP.isKindOf(aRequest, 'TP.sig.JSONRequest')) {
         this.raise('TP.sig.InvalidRequest');
         return;

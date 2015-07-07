@@ -70,8 +70,8 @@
         Sets the value of the 'body' under that _id:
 
         {
-            "First_name": "Scott",
-            "Last_name": "Shattuck"
+            "First_name": "November",
+            "Last_name": "Jones"
         }
 
         Returns:
@@ -90,8 +90,8 @@
         Sets the value of the 'body' under a generated _id:
 
         {
-            "First_name": "Scott",
-            "Last_name": "Shattuck"
+            "First_name": "November",
+            "Last_name": "Jones"
         }
 
         Returns:

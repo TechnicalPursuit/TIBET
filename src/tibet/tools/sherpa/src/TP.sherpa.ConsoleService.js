@@ -921,8 +921,6 @@ function(aSignal) {
         consoleGUI,
         request;
 
-    TP.stop('break.shell_completed');
-
     if (TP.canInvoke(aSignal, 'getRequestID')) {
         id = aSignal.getRequestID();
     } else {
@@ -1599,9 +1597,6 @@ function(anError, aRequest) {
     var request,
         err;
 
-    TP.stop('break.tdc_stderr');
-    TP.stop('break.tdc_stdio');
-
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
         request = aRequest;
@@ -1660,9 +1655,6 @@ function(anObject, aDefault, aRequest) {
 
     var consoleGUI;
 
-    TP.stop('break.tdc_stdin');
-    TP.stop('break.tdc_stdio');
-
     consoleGUI = this.get('$consoleGUI');
 
     consoleGUI.setPrompt(anObject);
@@ -1694,9 +1686,6 @@ function(anObject, aRequest) {
         outObject,
 
         append;
-
-    TP.stop('break.tdc_stdout');
-    TP.stop('break.tdc_stdio');
 
     //  We should see multiple output calls, at least one of which is the
     //  cmdConstruct notifier which tells us to build our output cell.

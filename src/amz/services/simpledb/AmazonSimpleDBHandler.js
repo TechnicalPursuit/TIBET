@@ -46,8 +46,6 @@ function(targetURI, aRequest) {
         domainName,
         itemName;
 
-    TP.stop('break.uri_load');
-
     request = TP.request(aRequest);
     response = request.constructResponse();
 
@@ -132,8 +130,6 @@ function(targetURI, aRequest) {
         names,
         values,
         saveRequest;
-
-    TP.stop('break.uri_save');
 
     request = TP.request(aRequest);
     response = request.constructResponse();

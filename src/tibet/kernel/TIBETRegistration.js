@@ -83,8 +83,6 @@ function(anID, regOnly, nodeContext) {
         reg,
         obj;
 
-    TP.stop('break.gobi');
-
     //  make sure it's something we can manipulate
     if (TP.isEmpty(anID)) {
         return;
@@ -111,10 +109,12 @@ function(anID, regOnly, nodeContext) {
             parts.shift();
             while (TP.isValid(obj) && parts.length) {
                 key = parts.shift();
-                if (TP.canInvoke(obj, 'get')) {
+                if (TP.isValid(obj[key])) {
+                    obj = obj[key];
+                } else if (TP.canInvoke(obj, 'get')) {
                     obj = obj.get(key);
                 } else {
-                    obj = obj[key];
+                    obj = void 0;
                 }
             }
 

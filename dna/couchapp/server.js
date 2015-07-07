@@ -6,7 +6,6 @@
  *     support for storing edits done on the client. In combination these
  *     let you edit your application components on either side of the wire and
  *     keep them in sync with a minimum of overhead and minimum reload impact.
- * @author Scott Shattuck (ss), William J. Edney (wje)
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL

@@ -8,38 +8,6 @@
  */
 //  ========================================================================
 
-/*
-Our belief is that a solid set of collection types is just as important to
-success for a language/library as any other feature you might consider.
-Programming is, after all, largely about data structures and their
-manipulation so an OO system without powerful collections is crippled.
-
-While we certainly can't claim to be any good at writing optimal data
-structures we've made an attempt here to get the API in place along with
-a first cut at functionality. Perhaps most importantly, we've made every
-attempt to leverage this API throughout TIBET so that as better, faster
-implementations of these methods come out the entire system will benefit.
-
-In addition to what you'll find here, you'll also find a number of iteration
-support functions in TIBETFoundation.js, particularly those on native types
-like Array, Number, and String that are also part of our collection support.
-This allows us to use those functions throughout lower levels of the kernel
-which may be loading and executing before this file loads.
-
-One of the primary features of our collection types is their integration
-with TIBET's change notification system. This allows Arrays, Objects, and
-the various TIBET collections to act as models in an MVC system. Every
-object in TIBET is capable of being observed for Change signals related to
-various aspects of their state.
-
-Finally you'll find a complete set of encapsulation functions for get/set
-operations that are specific to collection content rather than properties of
-the collections themselves. Aside from the obvious polymorphism benefits
-that this conveys (avoiding type checks and allowing swapping of data
-structures in some cases) it also provides benefits like being able to
-handle negative indexes in a fashion consistent with the rest of JavaScript.
-*/
-
 //  ------------------------------------------------------------------------
 //  TP.api.CollectionAPI
 //  ------------------------------------------------------------------------

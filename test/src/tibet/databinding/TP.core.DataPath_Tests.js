@@ -1742,14 +1742,14 @@ function() {
         path3,
         path4;
 
-    this.before(
+    this.beforeEach(
         function() {
             model1 = TP.json2js(
                 '[' +
-                    '{"fname":"bill", "lname":"edney", "aliases":["billy", "willy", "eds"]},' +
-                    '{"fname":"scott", "lname":"shattuck"},' +
-                    '{"fname":"jim", "lname":"bowery"},' +
-                    '{"fname":"another", "lname":"hacker"}' +
+                    '{"fname":"january", "lname":"smith", "aliases":["jan", "j", "janny"]},' +
+                    '{"fname":"august", "lname":"jones"},' +
+                    '{"fname":"november", "lname":"white"},' +
+                    '{"fname":"june", "lname":"cleaver"}' +
                 ']');
 
             path1 = TP.apc('0.fname');
@@ -1758,7 +1758,7 @@ function() {
             path4 = TP.apc('0.aliases[:-1]');
         });
 
-    this.after(
+    this.afterEach(
         function() {
             model1 = null;
 
@@ -1773,19 +1773,19 @@ function() {
 
         val = path1.executeGet(model1);
 
-        test.assert.isEqualTo(val, 'bill');
+        test.assert.isEqualTo(val, 'january');
     });
 
     this.it('tail results set', function(test, options) {
         var val;
 
-        path1.executeSet(model1, 'William', true);
+        path1.executeSet(model1, 'john', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.at('0').at('fname');
 
-        test.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'john');
     });
 
     this.it('middle results get', function(test, options) {
@@ -1793,39 +1793,39 @@ function() {
 
         val = path2.executeGet(model1);
 
-        test.assert.isEqualTo(val, TP.ac('William', 'jim'));
+        test.assert.isEqualTo(val, TP.ac('january', 'november'));
     });
 
     this.it('middle results single value set', function(test, options) {
         var val;
 
-        path2.executeSet(model1, 'William', true);
+        path2.executeSet(model1, 'january', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        test.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'january');
 
         val = model1.at(2).at('fname');
 
-        test.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'january');
     });
 
     this.it('middle results multi value set', function(test, options) {
         var val;
 
-        path2.executeSet(model1, TP.ac('Willy', 'Jimmy'), true);
+        path2.executeSet(model1, TP.ac('Janny', 'Jenny'), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.at(0).at('fname');
 
-        test.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
+        test.assert.isEqualTo(val, TP.ac('Janny', 'Jenny'));
 
         val = model1.at(2).at('fname');
 
-        test.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
+        test.assert.isEqualTo(val, TP.ac('Janny', 'Jenny'));
     });
 
     this.it('tail results slicing get', function(test, options) {
@@ -1833,43 +1833,44 @@ function() {
 
         val = path3.executeGet(model1);
 
-        test.assert.isEqualTo(val, 'willy');
+        test.assert.isEqualTo(val, 'j');
     });
 
     this.it('tail results slicing set', function(test, options) {
         var val;
 
-        path3.executeSet(model1, TP.ac('willy', 'jimmy'), true);
+        path3.executeSet(model1, TP.ac('janny', 'jenny'), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(1);
 
-        test.assert.isEqualTo(val, TP.ac('willy', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
     });
 
     this.it('tail results multi-value slicing get', function(test, options) {
         var val;
 
+        path3.executeSet(model1, TP.ac('janny', 'j'), true);
         val = path4.executeGet(model1);
 
-        test.assert.isEqualTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
+        test.assert.isEqualTo(val, TP.ac('jan', TP.ac('janny', 'j')));
     });
 
     this.it('tail results multi-value slicing set', function(test, options) {
         var val;
 
-        path4.executeSet(model1, TP.ac('bobby', 'jimmy'), true);
+        path4.executeSet(model1, TP.ac('janny', 'jenny'), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.at('0').at('aliases').at(0);
 
-        test.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
 
         val = model1.at('0').at('aliases').at(1);
 
-        test.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
     });
 });
 
@@ -2310,10 +2311,10 @@ function() {
         path2;
 
     this.before(function() {
-        model1 = TP.tpdoc('<emp><lname>Edney</lname></emp>');
+        model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/lname').set('shouldCollapse', true);
 
-        model2 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        model2 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path2 = TP.apc('/emp/lname|/emp/age').set('shouldCollapse', true);
     });
 
@@ -2326,7 +2327,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result);
 
-        test.assert.isEqualTo(val, 'Edney');
+        test.assert.isEqualTo(val, 'Jones');
     });
 
     this.it('single value set', function(test, options) {
@@ -2357,7 +2358,7 @@ function() {
         //  This will return the node's text value
         val = TP.val(result.at(0));
 
-        test.assert.isEqualTo(val, 'Edney');
+        test.assert.isEqualTo(val, 'Jones');
 
         val = TP.val(result.at(1));
 
@@ -2402,12 +2403,12 @@ function() {
         path2;
 
     this.before(function() {
-        model1 = TP.tpdoc('<emp><lname>Edney</lname></emp>');
+        model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/lname').set('shouldCollapse', true);
 
         setPath = TP.apc('/emp').set('shouldCollapse', true);
 
-        model2 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        model2 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path2 = TP.apc('/emp/lname|/emp/age').set('shouldCollapse', true);
     });
 
@@ -2416,7 +2417,7 @@ function() {
 
         val = path1.executeGet(model1);
 
-        test.assert.isEqualTo(val, TP.elem('<lname>Edney</lname>'));
+        test.assert.isEqualTo(val, TP.elem('<lname>Jones</lname>'));
     });
 
     this.it('single value set', function(test, options) {
@@ -2439,7 +2440,7 @@ function() {
 
         val = path2.executeGet(model2);
 
-        test.assert.isEqualTo(val.at(0), TP.elem('<lname>Edney</lname>'));
+        test.assert.isEqualTo(val.at(0), TP.elem('<lname>Jones</lname>'));
 
         test.assert.isEqualTo(val.at(1), TP.elem('<age>47</age>'));
     });
@@ -2473,7 +2474,7 @@ function() {
         path2;
 
     this.before(function() {
-        model1 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/fname');
 
         path2 = TP.apc('/emp/fname|/emp/nickname');
@@ -2491,7 +2492,7 @@ function() {
         TP.setLogLevel(TP.ERROR);
 
         //  Shouldn't create - by default, we have creation turned off
-        path1.executeSet(model1, 'William', true);
+        path1.executeSet(model1, 'November', true);
 
         //  Put log level back to what it was
         TP.setLogLevel(oldLogLevel);
@@ -2512,7 +2513,7 @@ function() {
         path1.set('shouldMakeStructures', true);
 
         //  Should create - we just turned it on
-        path1.executeSet(model1, 'William', true);
+        path1.executeSet(model1, 'November', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
@@ -2524,7 +2525,7 @@ function() {
         //  This will return its text value
         val = TP.val(result);
 
-        test.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'November');
     });
 
     this.it('multiple value set', function(test, options) {
@@ -2605,7 +2606,7 @@ function() {
         path2;
 
     this.before(function() {
-        model1 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/vitals');
 
         path2 = TP.apc('/emp/billingaddress|/emp/shippingaddress');
@@ -2740,7 +2741,7 @@ function() {
         path2;
 
     this.before(function() {
-        model1 = TP.tpdoc('<emp><lname foo="bar">Edney</lname><age baz="goo">47</age></emp>');
+        model1 = TP.tpdoc('<emp><lname foo="bar">Jones</lname><age baz="goo">47</age></emp>');
         path1 = TP.apc('/emp/lname/@foo').set('shouldCollapse', true);
         path2 = TP.apc('/emp/lname/@foo|/emp/age/@baz').set('shouldCollapse', true);
     });
@@ -2832,10 +2833,10 @@ function() {
         path2;
 
     this.before(function() {
-        model1 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        model1 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path1 = TP.apc('/emp/fname/@foo');
 
-        model2 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        model2 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path2 = TP.apc('/emp/lname/@foo|/emp/age/@bar');
     });
 
@@ -2973,12 +2974,12 @@ function() {
         path2;
 
     this.before(function() {
-        model1 = TP.tpdoc('<emp><lname>Edney</lname></emp>');
+        model1 = TP.tpdoc('<emp><lname>Jones</lname></emp>');
         path1 = TP.apc('/emp/{{0}}').set('shouldCollapse', true);
 
         setPath = TP.apc('/{{0}}').set('shouldCollapse', true);
 
-        model2 = TP.tpdoc('<emp><lname>Edney</lname><age>47</age></emp>');
+        model2 = TP.tpdoc('<emp><lname>Jones</lname><age>47</age></emp>');
         path2 = TP.apc('/emp/{{0}}|/emp/{{1}}').set('shouldCollapse', true);
     });
 
@@ -2987,7 +2988,7 @@ function() {
 
         val = path1.executeGet(model1, 'lname');
 
-        test.assert.isEqualTo(val, TP.elem('<lname>Edney</lname>'));
+        test.assert.isEqualTo(val, TP.elem('<lname>Jones</lname>'));
     });
 
     this.it('single value set', function(test, options) {
@@ -3011,7 +3012,7 @@ function() {
 
         val = path2.executeGet(model2, 'lname', 'age');
 
-        test.assert.isEqualTo(val.at(0), TP.elem('<lname>Edney</lname>'));
+        test.assert.isEqualTo(val.at(0), TP.elem('<lname>Jones</lname>'));
 
         test.assert.isEqualTo(val.at(1), TP.elem('<age>47</age>'));
     });
@@ -3446,14 +3447,14 @@ function() {
         path3,
         path4;
 
-    this.before(
+    this.beforeEach(
         function() {
             model1 = TP.core.JSONContent.construct(
                 '{"value":[' +
-                    '{"fname":"bill", "lname":"edney", "aliases":["billy", "willy", "eds"]},' +
-                    '{"fname":"scott", "lname":"shattuck"},' +
-                    '{"fname":"jim", "lname":"bowery"},' +
-                    '{"fname":"another", "lname":"hacker"}' +
+                    '{"fname":"january", "lname":"smith", "aliases":["jan", "j", "janny"]},' +
+                    '{"fname":"august", "lname":"jones"},' +
+                    '{"fname":"november", "lname":"white"},' +
+                    '{"fname":"june", "lname":"cleaver"}' +
                 ']}');
 
             path1 = TP.apc('$.value[0].fname');
@@ -3462,7 +3463,7 @@ function() {
             path4 = TP.apc('$.value[0].aliases[:-1]');
         });
 
-    this.after(
+    this.afterEach(
         function() {
             model1 = null;
 
@@ -3477,19 +3478,19 @@ function() {
 
         val = path1.executeGet(model1);
 
-        test.assert.isEqualTo(val, 'bill');
+        test.assert.isEqualTo(val, 'january');
     });
 
     this.it('tail results set', function(test, options) {
         var val;
 
-        path1.executeSet(model1, 'William', true);
+        path1.executeSet(model1, 'July', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.get('data').value[0].fname;
 
-        test.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'July');
     });
 
     this.it('middle results get', function(test, options) {
@@ -3497,39 +3498,39 @@ function() {
 
         val = path2.executeGet(model1);
 
-        test.assert.isEqualTo(val, TP.ac('William', 'jim'));
+        test.assert.isEqualTo(val, TP.ac('january', 'november'));
     });
 
     this.it('middle results single value set', function(test, options) {
         var val;
 
-        path2.executeSet(model1, 'William', true);
+        path2.executeSet(model1, 'January', true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.get('data').value[0].fname;
 
-        test.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'January');
 
         val = model1.get('data').value[2].fname;
 
-        test.assert.isEqualTo(val, 'William');
+        test.assert.isEqualTo(val, 'January');
     });
 
     this.it('middle results multi value set', function(test, options) {
         var val;
 
-        path2.executeSet(model1, TP.ac('Willy', 'Jimmy'), true);
+        path2.executeSet(model1, TP.ac('Janny', 'Jenny'), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.get('data').value[0].fname;
 
-        test.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
+        test.assert.isEqualTo(val, TP.ac('Janny', 'Jenny'));
 
         val = model1.get('data').value[2].fname;
 
-        test.assert.isEqualTo(val, TP.ac('Willy', 'Jimmy'));
+        test.assert.isEqualTo(val, TP.ac('Janny', 'Jenny'));
     });
 
     this.it('tail results slicing get', function(test, options) {
@@ -3537,43 +3538,45 @@ function() {
 
         val = path3.executeGet(model1);
 
-        test.assert.isEqualTo(val, 'willy');
+        test.assert.isEqualTo(val, 'j');
     });
 
     this.it('tail results slicing set', function(test, options) {
         var val;
 
-        path3.executeSet(model1, TP.ac('willy', 'jimmy'), true);
+        path3.executeSet(model1, TP.ac('janny', 'jenny'), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.get('data').value[0].aliases[1];
 
-        test.assert.isEqualTo(val, TP.ac('willy', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
     });
 
     this.it('tail results multi-value slicing get', function(test, options) {
         var val;
 
+        path3.executeSet(model1, TP.ac('janny', 'jenny'), true);
+
         val = path4.executeGet(model1);
 
-        test.assert.isEqualTo(val, TP.ac('billy', TP.ac('willy', 'jimmy')));
+        test.assert.isEqualTo(val, TP.ac('jan', TP.ac('janny', 'jenny')));
     });
 
     this.it('tail results multi-value slicing set', function(test, options) {
         var val;
 
-        path4.executeSet(model1, TP.ac('bobby', 'jimmy'), true);
+        path4.executeSet(model1, TP.ac('janny', 'jenny'), true);
 
         //  NB: We use a manual mechanism to get to the value to get independent
         //  validation of 'path' execution code.
         val = model1.get('data').value[0].aliases[0];
 
-        test.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
 
         val = model1.get('data').value[0].aliases[1];
 
-        test.assert.isEqualTo(val, TP.ac('bobby', 'jimmy'));
+        test.assert.isEqualTo(val, TP.ac('janny', 'jenny'));
     });
 });
 
@@ -3956,14 +3959,14 @@ function() {
         path3,
         path4;
 
-    this.before(function() {
+    this.beforeEach(function() {
 
         model1 = TP.core.JSONContent.construct(
             '{"value":[' +
-                '{"fname":"bill", "lname":"edney", "aliases":["billy", "willy", "eds"]},' +
-                '{"fname":"scott", "lname":"shattuck"},' +
-                '{"fname":"jim", "lname":"bowery"},' +
-                '{"fname":"another", "lname":"hacker"}' +
+                '{"fname":"january", "lname":"smith", "aliases":["jan", "j", "janny"]},' +
+                '{"fname":"august", "lname":"jones"},' +
+                '{"fname":"november", "lname":"white"},' +
+                '{"fname":"june", "lname":"cleaver"}' +
             ']}');
 
         path1 = TP.apc('$.value[{{0}}].fname');
@@ -3972,12 +3975,22 @@ function() {
         path4 = TP.apc('$.value[{{0}}].aliases[{{1}}:{{2}}]');
     });
 
+    this.afterEach(
+        function() {
+            model1 = null;
+
+            path1 = null;
+            path2 = null;
+            path3 = null;
+            path4 = null;
+        });
+
     this.it('single level get', function(test, options) {
         var val;
 
         val = path1.executeGet(model1, 0);
 
-        test.assert.isEqualTo(val, 'bill');
+        test.assert.isEqualTo(val, 'january');
     });
 
     this.it('single level get slice', function(test, options) {
@@ -3985,7 +3998,7 @@ function() {
 
         val = path2.executeGet(model1, 0, 2);
 
-        test.assert.isEqualTo(val, TP.ac('bill', 'scott'));
+        test.assert.isEqualTo(val, TP.ac('january', 'august'));
     });
 
     this.it('single level get union', function(test, options) {
@@ -3993,7 +4006,7 @@ function() {
 
         val = path3.executeGet(model1, 1, 3);
 
-        test.assert.isEqualTo(val, TP.ac('scott', 'another'));
+        test.assert.isEqualTo(val, TP.ac('august', 'june'));
     });
 
     this.it('multi level get slice', function(test, options) {
@@ -4001,7 +4014,7 @@ function() {
 
         val = path4.executeGet(model1, 0, 1, 3);
 
-        test.assert.isEqualTo(val, TP.ac('willy', 'eds'));
+        test.assert.isEqualTo(val, TP.ac('j', 'janny'));
     });
 
     this.it('single level set', function(test, options) {

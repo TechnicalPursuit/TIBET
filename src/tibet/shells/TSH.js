@@ -733,8 +733,6 @@ function(aSignal) {
         timeend,
         exectime;
 
-    TP.stop('break.shell_response');
-
     response = aSignal;
     request = response.getRequest();
 
@@ -1011,8 +1009,6 @@ function(aRequest) {
 
         nextPhase;
 
-    TP.stop('break.shell_execute');
-
     //  no request means no work :)
     if (TP.notValid(aRequest)) {
         return;
@@ -1262,8 +1258,6 @@ function(aRequest) {
             //  console.
             root = aRequest.at('cmdRoot');
             if (TP.nodeIsDetached(root, rootDoc)) {
-                TP.stop('break.node_detached');
-
                 cmdNode = aRequest.at('cmdNode');
                 if (TP.nodeIsDetached(cmdNode, rootDoc)) {
                     //  error. both the root and node have been swapped out
@@ -1528,13 +1522,14 @@ function(aRequest) {
                                         TP.nodeAsString(child, false, true),
                                     TP.LOG) : 0;
 
-                    TP.stop('break.tsh_phase_exec');
                     try {
                         result = type[funcName](aRequest);
                     } catch (e) {
                         message = 'Error running ' + TP.name(type) + '.' +
                             funcName;
-                        TP.error(message + ': ' + e.message);
+
+                        TP.error(message + '\n' +
+                            TP.getStackInfo(e).join('\n'));
 
                         return aRequest.fail(TP.ec(e, message));
                     }
@@ -1637,8 +1632,6 @@ function(aRequest) {
                     //  sure that the child is still contained in the node
                     //  to trap potentially bad transform logic
                     if (TP.nodeIsDetached(child, rootDoc)) {
-                        TP.stop('break.node_detachment');
-
                         message = 'TP.core.TSH ' + phase +
                                     ' node detached: ' +
                                     TP.nodeAsString(child, false);
@@ -1709,7 +1702,6 @@ function(aRequest) {
                                                             true),
                                         TP.LOG) : 0;
 
-                TP.stop('break.tsh_phase_exec');
                 try {
                     result = type[funcName](aRequest);
                 } catch (e) {
@@ -1766,7 +1758,6 @@ function(aRequest) {
                     //  sure that the child is still contained in the node
                     //  to trap potentially bad transform logic
                     if (TP.nodeIsDetached(child, rootDoc)) {
-                        TP.stop('break.node_detachment');
                         message = 'TP.core.TSH ' + phase +
                                     ' node detached: ' +
                                     TP.nodeAsString(child, false);

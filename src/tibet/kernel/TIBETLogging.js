@@ -30,7 +30,7 @@
  * The namespace responsible for all framework logging.
  */
 /* eslint-disable no-unused-vars */
-TP.defineNamespace('log', 'TP');
+TP.defineNamespace('TP.log');
 /* eslint-enable no-unused-vars */
 
 //  ============================================================================
@@ -2537,7 +2537,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.TRACE);
 
-}, false, 'TP.ifTrace');
+}, null, 'TP.ifTrace');
 
 //  ----------------------------------------------------------------------------
 
@@ -2564,7 +2564,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.DEBUG);
 
-}, false, 'TP.ifDebug');
+}, null, 'TP.ifDebug');
 
 //  ----------------------------------------------------------------------------
 
@@ -2591,7 +2591,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.INFO);
 
-}, false, 'TP.ifInfo');
+}, null, 'TP.ifInfo');
 
 //  ----------------------------------------------------------------------------
 
@@ -2618,7 +2618,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.WARN);
 
-}, false, 'TP.ifWarn');
+}, null, 'TP.ifWarn');
 
 //  ----------------------------------------------------------------------------
 
@@ -2645,7 +2645,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.ERROR);
 
-}, false, 'TP.ifError');
+}, null, 'TP.ifError');
 
 //  ----------------------------------------------------------------------------
 
@@ -2673,7 +2673,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.SEVERE);
 
-}, false, 'TP.ifSevere');
+}, null, 'TP.ifSevere');
 
 //  ----------------------------------------------------------------------------
 
@@ -2700,7 +2700,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.FATAL);
 
-}, false, 'TP.ifFatal');
+}, null, 'TP.ifFatal');
 
 //  ----------------------------------------------------------------------------
 
@@ -2727,7 +2727,7 @@ function(aLogName) {
 
     return logger.isEnabled(TP.log.SYSTEM);
 
-}, false, 'TP.ifSystem');
+}, null, 'TP.ifSystem');
 
 //  ----------------------------------------------------------------------------
 //  Level Loggers

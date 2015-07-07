@@ -1172,8 +1172,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         str,
         win;
 
-    TP.stop('break.html_content');
-
     if (!TP.isHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
@@ -8188,8 +8186,6 @@ function(aWindow) {
         app,
         len;
 
-    TP.stop('break.document_loaded');
-
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
@@ -8366,8 +8362,6 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     var checkWindow,
         winID,
         winDidClose;
-
-    TP.stop('break.document_unloaded');
 
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');

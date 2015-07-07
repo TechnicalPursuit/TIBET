@@ -5386,7 +5386,7 @@ function() {
         //  A PUT request here using the ID causes an UPDATE
         locStr = 'localdb://local_test/author_info';
 
-        testBody = TP.hc('firstName', 'Scott', 'lastName', 'Shattuck');
+        testBody = TP.hc('firstName', 'November', 'lastName', 'Jones');
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the verb
@@ -5418,8 +5418,8 @@ function() {
 
                 test.assert.isEqualTo(
                         obj.at('firstName'),
-                        'Scott',
-                        TP.sc('Expected: ', '"Scott"',
+                        'November',
+                        TP.sc('Expected: ', '"November"',
                                 ' and got instead: ', obj.at('firstName'), '.'));
 
                 test.assert.isTrue(
@@ -5429,8 +5429,8 @@ function() {
 
                 test.assert.isEqualTo(
                         obj.at('lastName'),
-                        'Shattuck',
-                        TP.sc('Expected: ', '"Shattuck"',
+                        'Jones',
+                        TP.sc('Expected: ', '"Jones"',
                                 ' and got instead: ', obj.at('lastName'), '.'));
 
                 TP.uc(locStr).unregister();
@@ -5452,7 +5452,7 @@ function() {
         //  auto-generated ID
         locStr = 'localdb://local_test/';
 
-        testBody = TP.hc('firstName', 'Another', 'lastName', 'Hacker');
+        testBody = TP.hc('firstName', 'John', 'lastName', 'Smith');
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'.
@@ -5487,8 +5487,8 @@ function() {
 
                         test.assert.isEqualTo(
                                 obj.at('firstName'),
-                                'Another',
-                                TP.sc('Expected: ', '"Another"',
+                                'John',
+                                TP.sc('Expected: ', '"John"',
                                         ' and got instead: ', obj.at('firstName'), '.'));
 
                         test.assert.isTrue(
@@ -5498,8 +5498,8 @@ function() {
 
                         test.assert.isEqualTo(
                                 obj.at('lastName'),
-                                'Hacker',
-                                TP.sc('Expected: ', '"Hacker"',
+                                'Smith',
+                                TP.sc('Expected: ', '"Smith"',
                                         ' and got instead: ', obj.at('lastName'), '.'));
 
                         TP.uc(locStr).unregister();
@@ -5741,7 +5741,7 @@ function() {
 
         locStr = 'pouchdb://pouch_test/author_info';
 
-        testBody = TP.hc('firstName', 'Scott', 'lastName', 'Shattuck');
+        testBody = TP.hc('firstName', 'November', 'lastName', 'Jones');
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the verb
@@ -5771,8 +5771,8 @@ function() {
 
                         test.assert.isEqualTo(
                             testResult.at('firstName'),
-                            'Scott',
-                            TP.sc('Expected: ', '"Scott"',
+                            'November',
+                            TP.sc('Expected: ', '"November"',
                                     ' and got instead: ', testResult.at('firstName'), '.'));
 
                         test.assert.isTrue(
@@ -5782,8 +5782,8 @@ function() {
 
                         test.assert.isEqualTo(
                                 testResult.at('lastName'),
-                                'Shattuck',
-                                TP.sc('Expected: ', '"Shattuck"',
+                                'Jones',
+                                TP.sc('Expected: ', '"Jones"',
                                         ' and got instead: ', testResult.at('lastName'), '.'));
 
                         TP.uc(locStr).unregister();
@@ -5806,7 +5806,7 @@ function() {
         //  auto-generated ID
         locStr = 'pouchdb://pouch_test/';
 
-        testBody = TP.hc('firstName', 'Another', 'lastName', 'Hacker');
+        testBody = TP.hc('firstName', 'John', 'lastName', 'Smith');
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'.
@@ -5837,8 +5837,8 @@ function() {
 
                         test.assert.isEqualTo(
                                 testResult.at('firstName'),
-                                'Another',
-                                TP.sc('Expected: ', '"Another"',
+                                'John',
+                                TP.sc('Expected: ', '"John"',
                                         ' and got instead: ', testResult.at('firstName'), '.'));
 
                         test.assert.isTrue(
@@ -5848,8 +5848,8 @@ function() {
 
                         test.assert.isEqualTo(
                                 testResult.at('lastName'),
-                                'Hacker',
-                                TP.sc('Expected: ', '"Hacker"',
+                                'Smith',
+                                TP.sc('Expected: ', '"Smith"',
                                         ' and got instead: ', testResult.at('lastName'), '.'));
 
                         TP.uc(locStr).unregister();

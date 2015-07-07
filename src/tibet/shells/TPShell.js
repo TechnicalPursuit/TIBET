@@ -2198,6 +2198,7 @@ function(anObjectSpec, aRequest) {
     for (i = 0; i < specs.getSize(); i++) {
         if (!TP.regex.JS_IDENTIFIER.test(specs.at(i))) {
             //  Not a JS identifier - can't use it as such.
+            isIdentifier = false;
             break;
         }
         isIdentifier = true;
@@ -2290,8 +2291,6 @@ function(aString) {
      */
 
     var str;
-
-    TP.stop('break.tsh_substitutions');
 
     str = aString;
 
@@ -2392,8 +2391,6 @@ function(aRequest, shouldReport) {
         len,
         i;
 
-    TP.stop('break.tsh_substitutions');
-
     if (TP.notValid(node = aRequest.at('cmdNode'))) {
         return aRequest.fail();
     }
@@ -2431,8 +2428,6 @@ function(aRequest) {
         i,
 
         stdin;
-
-    TP.stop('break.tsh_substitutions');
 
     scope = this.getExecutionInstance();
 
@@ -2936,8 +2931,6 @@ function(aRequest) {
 
         node;
 
-    TP.stop('break.tsh_params');
-
     if (TP.isValid(dict = aRequest.get('PARAMS'))) {
         return dict;
     }
@@ -3073,8 +3066,6 @@ function(aRequest) {
         value,
 
         node;
-
-    TP.stop('break.tsh_alias');
 
     shell = aRequest.at('cmdShell');
     argv = this.getArgument(aRequest, 'ARGV');

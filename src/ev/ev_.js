@@ -395,8 +395,6 @@ function(anElement, shouldRegister) {
         return;
     }
 
-    TP.stop('break.awaken_events');
-
     signalName = eventAttrValue.trim();
 
     //  in XML Events this would be an error, but we allow * in both

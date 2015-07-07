@@ -9,7 +9,11 @@
 //  ========================================================================
 
 /*
+ *  TODO:
  *
+ *  - add test(s) for defining signals only via transition details
+ *  - add tests for adding guard functions only via transition details
+ *  - add tests to ensure we can default guards based on signal input
  */
 
 //  ------------------------------------------------------------------------
@@ -24,6 +28,7 @@ function() {
     });
 
     this.afterEach(function() {
+        machine.deactivate(true);
         machine = null;
     });
 
@@ -32,7 +37,7 @@ function() {
         machine.defineState(null, 'initial');
         this.assert.isEqualTo(
             machine.$get('byTarget').at('initial'),
-            [null]);
+            [[null, TP.hc()]]);
     });
 
     this.it('can define states with no target state',
@@ -40,7 +45,7 @@ function() {
         machine.defineState('final');
         this.assert.isEqualTo(
             machine.$get('byInitial').at('final'),
-            [null]);
+            [[null, TP.hc()]]);
     });
 
     this.it('can define initial states with array of targets',
@@ -48,13 +53,13 @@ function() {
         machine.defineState('foo', ['bar', 'baz']);
         this.assert.isEqualTo(
             machine.$get('byInitial').at('foo'),
-            ['bar', 'baz']);
+            [['bar', TP.hc()], ['baz', TP.hc()]]);
         this.assert.isEqualTo(
             machine.$get('byTarget').at('bar'),
-            ['foo']);
+            [['foo', TP.hc()]]);
         this.assert.isEqualTo(
             machine.$get('byTarget').at('baz'),
-            ['foo']);
+            [['foo', TP.hc()]]);
     });
 
     this.it('can define target states with array of initials',
@@ -62,13 +67,13 @@ function() {
         machine.defineState(['bar', 'baz'], 'moo');
         this.assert.isEqualTo(
             machine.$get('byInitial').at('bar'),
-            ['moo']);
+            [['moo', TP.hc()]]);
         this.assert.isEqualTo(
             machine.$get('byInitial').at('baz'),
-            ['moo']);
+            [['moo', TP.hc()]]);
         this.assert.isEqualTo(
             machine.$get('byTarget').at('moo'),
-            ['bar', 'baz']);
+            [['bar', TP.hc()], ['baz', TP.hc()]]);
     });
 
     this.it('can define initials and targets as arrays',
@@ -76,16 +81,16 @@ function() {
         machine.defineState(['bar', 'baz'], ['moo', 'goo']);
         this.assert.isEqualTo(
             machine.$get('byInitial').at('bar'),
-            ['moo', 'goo']);
+            [['moo', TP.hc()], ['goo', TP.hc()]]);
         this.assert.isEqualTo(
             machine.$get('byInitial').at('baz'),
-            ['moo', 'goo']);
+            [['moo', TP.hc()], ['goo', TP.hc()]]);
         this.assert.isEqualTo(
             machine.$get('byTarget').at('moo'),
-            ['bar', 'baz']);
+            [['bar', TP.hc()], ['baz', TP.hc()]]);
         this.assert.isEqualTo(
             machine.$get('byTarget').at('goo'),
-            ['bar', 'baz']);
+            [['bar', TP.hc()], ['baz', TP.hc()]]);
     });
 
     this.it('can find potential start states',
@@ -126,6 +131,7 @@ function() {
     });
 
     this.afterEach(function() {
+        machine.deactivate(true);
         machine = null;
     });
 
@@ -220,6 +226,7 @@ function() {
     });
 
     this.afterEach(function() {
+        machine.deactivate(true);
         machine = null;
     });
 
@@ -286,6 +293,7 @@ function() {
     });
 
     this.afterEach(function() {
+        machine.deactivate(true);
         machine = null;
     });
 
@@ -359,7 +367,7 @@ function() {
         machine.activate();
         this.assert.raises(function() {
             TP.signal(TP.ANY, 'Fluffy');
-        }, 'InvalidStateMachine');
+        }, 'InvalidStateTransition');
         machine.deactivate(true);
     });
 
@@ -660,6 +668,7 @@ function() {
     });
 
     this.afterEach(function() {
+        machine.deactivate(true);
         machine = null;
     });
 
@@ -957,6 +966,119 @@ function() {
 
         this.assert.isNull(m2.get('parent'));
         this.assert.isNull(machine.get('child'));
+
+        this.assert.isTrue(called);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateMachine.describe('transition details',
+function() {
+
+    var machine;
+
+    this.beforeEach(function() {
+        machine = TP.core.StateMachine.construct();
+    });
+
+    this.afterEach(function() {
+        machine.deactivate(true);
+        machine = null;
+    });
+
+    this.it('stores transition details',
+    function(test, options) {
+        var details;
+
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'finish', {test: 'yay'});
+        machine.defineState('finish');
+
+        details = machine.get('byInitial').at('start');
+        details = details.first();
+
+        this.assert.equalTo(details.last(), {test: 'yay'});
+    });
+
+    this.it('triggers based on transition details',
+    function(test, options) {
+        var called;
+
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'finish', {trigger: 'Fluffy'});
+        machine.defineState('finish');
+
+        TP.sys.getApplication().defineHandler('FinishEnter',
+        function() {
+            called = true;
+        });
+
+        machine.activate();
+        TP.signal(TP.ANY, 'Fluffy');
+
+        this.assert.isTrue(called);
+    });
+
+    this.it('guards based on transition details',
+    function(test, options) {
+        var called;
+
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'finish',
+            {guard: 'checkItOut',
+            trigger: 'Fluffy'});
+        machine.defineState('finish');
+
+        machine.defineMethod('checkItOut', function(trigger) {
+            called = true;
+            return true;
+        });
+
+        machine.activate();
+        TP.signal(TP.ANY, 'Fluffy');
+
+        this.assert.isTrue(called);
+    });
+
+    this.it('fails with multiple pathways',
+    function(test, options) {
+
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'option1');
+        machine.defineState('start', 'option2');
+        machine.defineState('option1', 'finish');
+        machine.defineState('option2', 'finish');
+        machine.defineState('finish');
+
+        machine.addTrigger('Fluffy');
+
+        this.assert.raises(
+            function() {
+                machine.activate();
+                TP.signal(TP.ANY, 'Fluffy');
+            },
+            'InvalidStateTransition');
+    });
+
+    this.it('selects pathways based on trigger',
+    function(test, options) {
+        var called;
+
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'option1', {trigger: 'Fluffy'});
+        machine.defineState('start', 'option2', {trigger: 'Foofy'});
+        machine.defineState('option1', 'finish');
+        machine.defineState('option2', 'finish');
+        machine.defineState('finish');
+
+        TP.sys.getApplication().defineHandler('Option1Enter',
+        function() {
+            called = true;
+        });
+
+        machine.activate();
+        TP.signal(TP.ANY, 'Fluffy');
 
         this.assert.isTrue(called);
     });

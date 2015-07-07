@@ -672,8 +672,6 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
                 parsedVal;
 
-            TP.stop('break.bind_change');
-
             try {
                 origin = aSignal.getOrigin();
 
@@ -1128,8 +1126,6 @@ function(aSignalOrHash) {
 
     var node,
         body;
-
-    TP.debug('break.bind_refresh');
 
     node = this.getNativeNode();
 
@@ -2835,8 +2831,6 @@ function(aSignalOrHash) {
         scopeVals,
 
         boundDescendants;
-
-    TP.stop('break.bind_refresh');
 
     //  If our binding information is not empty, then try to refresh our
     //  bindings.

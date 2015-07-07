@@ -155,6 +155,7 @@
         'Additional <flags> for this command include:\n' +
         '\t[--color]   - Colorizes the output in the terminal. [true]\n' +
         '\t[--errimg]  - Capture PhantomError_{ts}.png onError. [false]\n' +
+        '\t[--errexit] - Exit the PhantomJS execution onError. [false]\n' +
         '\t[--tap]     - Specifies test anything protocol format. [false]\n' +
         '\t[--debug]   - Activates additional debugging output. [false]\n' +
         '\t[--quiet]   - Silences startup/finish message display. [false]\n' +
@@ -186,8 +187,8 @@
      * @type {Object}
      */
     PhantomTSH.PARSE_OPTIONS = {
-        'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
-            'system', 'quiet'],
+        'boolean': ['color', 'errexit', 'errimg', 'help', 'usage', 'debug',
+            'tap', 'system', 'quiet'],
         'string': ['script', 'url', 'profile', 'params', 'level'],
         'number': ['timeout'],
         'default': {
@@ -1032,7 +1033,12 @@
             });
         }
 
-        PhantomTSH.exit(str, PhantomTSH.ERROR);
+        //  Either log and exit or just log based on startup flags.
+        if (PhantomTSH.argv.errexit) {
+            PhantomTSH.exit(str, PhantomTSH.ERROR);
+        } else {
+            PhantomTSH.log(str, 'red', true);
+        }
     };
 
 

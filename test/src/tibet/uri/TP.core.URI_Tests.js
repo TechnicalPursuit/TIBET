@@ -2239,7 +2239,7 @@ function() {
         //  By default, localdb:// URLs are synchronous and configure their
         //  request to 'refresh' automatically.
 
-        url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
+        url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
         saveResult = url.save(TP.hc('verb', TP.HTTP_PUT)).get('result');
 
         test.assert.isValid(
@@ -2259,8 +2259,8 @@ function() {
 
         test.assert.isEqualTo(
                 obj.at('firstName'),
-                'Scott',
-                TP.sc('Expected: ', '"Scott"',
+                'November',
+                TP.sc('Expected: ', '"November"',
                         ' and got instead: ', obj.at('firstName'), '.'));
 
         test.assert.isTrue(
@@ -2270,8 +2270,8 @@ function() {
 
         test.assert.isEqualTo(
                 obj.at('lastName'),
-                'Shattuck',
-                TP.sc('Expected: ', '"Shattuck"',
+                'Jones',
+                TP.sc('Expected: ', '"Jones"',
                         ' and got instead: ', obj.at('lastName'), '.'));
 
         url.unregister();
@@ -2292,7 +2292,7 @@ function() {
         //  are synchronous and configure their request to 'refresh'
         //  automatically.
 
-        url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
+        url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
         saveResult = url.save().get('result');
 
         test.assert.isValid(
@@ -2311,8 +2311,8 @@ function() {
 
         test.assert.isEqualTo(
                 obj.at('firstName'),
-                'Another',
-                TP.sc('Expected: ', '"Another"',
+                'John',
+                TP.sc('Expected: ', '"John"',
                         ' and got instead: ', obj.at('firstName'), '.'));
 
         test.assert.isTrue(
@@ -2322,8 +2322,8 @@ function() {
 
         test.assert.isEqualTo(
                 obj.at('lastName'),
-                'Hacker',
-                TP.sc('Expected: ', '"Hacker"',
+                'Smith',
+                TP.sc('Expected: ', '"Smith"',
                         ' and got instead: ', obj.at('lastName'), '.'));
 
         url.unregister();
@@ -2458,7 +2458,7 @@ function() {
                                                 'verb', TP.HTTP_PUT,
                                                 'async', true));
 
-                url.setResource(TP.hc('firstName', 'Scott', 'lastName', 'Shattuck'));
+                url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
 
                 pouchRequest.defineMethod('handleRequestSucceeded',
                     function(aResponse) {
@@ -2509,7 +2509,7 @@ function() {
                                                 'verb', TP.HTTP_POST,
                                                 'async', true));
 
-                url.setResource(TP.hc('firstName', 'Another', 'lastName', 'Hacker'));
+                url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
 
                 pouchRequest.defineMethod('handleRequestSucceeded',
                     function(aResponse) {
@@ -3042,7 +3042,7 @@ function() {
         xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
         xmlURI3.set('shouldCreateContent', true);
 
-        xmlURI3.setResource('Shattuck', TP.hc('observeResource', true));
+        xmlURI3.setResource('Jones', TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI3
         test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
@@ -3102,7 +3102,7 @@ function() {
         xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
         xmlURI6.set('shouldCreateContent', true);
 
-        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
+        xmlURI6.setResource('November', TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI6
         test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
@@ -3184,7 +3184,7 @@ function() {
         xmlURI8.getResource();
 
         //  But set using xmlURI6
-        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
+        xmlURI6.setResource('November', TP.hc('observeResource', true));
 
         //  Both results should have the path for xmlURI8 (it's for all
         //  elements)
@@ -3612,7 +3612,7 @@ function() {
         xmlURI3 = TP.uc('urn:tibet:xmlData#xpath1(/emp/lname)');
         xmlURI3.set('shouldCreateContent', true);
 
-        xmlURI3.setResource('Shattuck', TP.hc('observeResource', true));
+        xmlURI3.setResource('Jones', TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI3
         test.assert.contains(valuePathResults, xmlURI3.getFragmentExpr());
@@ -3672,7 +3672,7 @@ function() {
         xmlURI6 = TP.uc('urn:tibet:xmlData#xpath1(/emp/fname)');
         xmlURI6.set('shouldCreateContent', true);
 
-        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
+        xmlURI6.setResource('November', TP.hc('observeResource', true));
 
         //  The value path should have the path for xmlURI6
         test.assert.contains(valuePathResults, xmlURI6.getFragmentExpr());
@@ -3754,7 +3754,7 @@ function() {
         xmlURI8.getResource();
 
         //  But set using xmlURI6
-        xmlURI6.setResource('Scott', TP.hc('observeResource', true));
+        xmlURI6.setResource('November', TP.hc('observeResource', true));
 
         //  Both results should have the path for xmlURI8 (it's for all
         //  elements)

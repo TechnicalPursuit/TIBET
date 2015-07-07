@@ -649,8 +649,6 @@ TP.hc(
             docAttrs,
             foundDefaultNSAttr;
 
-        TP.stop('break.node_xslt');
-
         if (!TP.isXMLDocument(styleDoc)) {
             return TP.raise(this, 'TP.sig.InvalidXMLDocument');
         }
@@ -926,8 +924,6 @@ TP.hc(
             processor,
 
             result;
-
-        TP.stop('break.node_xslt');
 
         if (!TP.isXMLDocument(styleDoc)) {
             return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -1252,8 +1248,6 @@ TP.hc(
 
             docAttrs,
             foundDefaultNSAttr;
-
-        TP.stop('break.node_xslt');
 
         if (!TP.isXMLDocument(styleDoc)) {
             return TP.raise(this, 'TP.sig.InvalidXMLDocument');

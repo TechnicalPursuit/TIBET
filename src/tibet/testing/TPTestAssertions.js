@@ -1076,7 +1076,7 @@ function(anObject, aValue, aType, aComment) {
     this.assert(
         TP.sc(anObject, aValue).equalAs(aType),
         aComment,
-        TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
+        TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
                 ' to be equal as ', TP.name(aType), 's.'));
 
     return;
@@ -1092,7 +1092,7 @@ function(anObject, aValue, aComment) {
     this.assert(
         TP.equal(anObject, aValue),
         aComment,
-        TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
+        TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
                 ' to be equal.'));
 
     return;

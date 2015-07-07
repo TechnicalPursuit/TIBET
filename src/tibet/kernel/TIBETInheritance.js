@@ -228,7 +228,7 @@ function(name) {
     }
 
     //  define an object that matches the namespace if necessary
-    nsObj = TP.defineNamespace(nsName, root);
+    nsObj = TP.defineNamespace(root + '.' + nsName);
 
     wholeName = root + '.' + nsName + '.' + subtypeName;
 
@@ -366,7 +366,7 @@ function(name) {
     }
 
     //  Put the type *constructor* under the 'meta' namespace as well.
-    TP.defineNamespace('meta.' + nsName, root);
+    TP.defineNamespace(root + '.meta.' + nsName);
 
     if (TP.regex.HAS_PERIOD.test(nsName)) {
         // Have to iterate our way down.
@@ -2224,8 +2224,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         len,
         parents;
 
-    TP.stop('break.infer');
-
     //  no inferencing possible on types, we don't convert type objects to
     //  instances of other types...
     if (TP.isType(anOrigin)) {
@@ -2443,8 +2441,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
         len,
         superName;
 
-    TP.stop('break.dnu');
-
     if (TP.notValid(anOrigin)) {
         return;
     }
@@ -2455,8 +2451,6 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
     //  windows are notoriously poor at dealing with DNUs since
     //  they're "special objects" in the browser world, so don't try
     if (TP.isWindow(anOrigin)) {
-        TP.stop('break.unbound');
-
         TP.sys.logInference((orgid || 'Unresolvable window ') +
                 ' triggered backstop for method ' + aMethodName,
                 TP.DEBUG);
@@ -10237,46 +10231,39 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('defineNamespace',
-function(namespaceName, root, forceDefinition) {
+function(namespaceName, forceDefinition) {
 
     /**
      * @method defineNamespace
-     * @summary Defines a namespace named by the supplied name, defined as a
-     *     'namespace' on the root provided.
+     * @summary Defines a namespace named by the supplied name, which must
+     *     include a root reference of either TP or APP.
      * @description The name supplied to this method defines a namespace list
      *     from the root object to the last name at the end of the supplied
      *     namespace name.
      *     Note that this method is a replacement for the bootstrap version of
-     *     TP.defineNamespace() that defines namespaces using real
+     *     TP.defineNamespace that defines namespaces using real
      *     TP.lang.Namespace objects. See below for logic that upconverts any
      *     existing namespaces to be real TP.lang.Namespace objects.
      * @param {String} namespaceName A String of 1 or more period-separated
      *     names that will define the name of a namespace.
-     * @param {String} root The top-level namespace owner.
      * @param {Boolean} [forceDefinition=false] Whether or not to force the
      *     definition of the namespace whether it is already defined or not.
      * @returns {TP.lang.Namespace} The newly defined namespace.
      */
 
     var names,
+        root,
         currentObj,
         prefix,
         fullName,
         i;
 
+    names = namespaceName.split('.');
+    root = names.shift();
+
     currentObj = self[root];
 
-    //  No resolvable root namespace and we're not trying to define just a root.
-    if (!currentObj && TP.notEmpty(namespaceName)) {
-        TP.boot.$stderr('Invalid namespace root.', TP.FATAL);
-        return;
-    }
-
-    if (TP.isEmpty(namespaceName)) {
-
-        //  We're defining a root
-
-        currentObj = self[root];
+    if (TP.isEmpty(names)) {
 
         //  Only define if either the name is not defined or if the
         //  forceDefinition flag is true.
@@ -10288,10 +10275,7 @@ function(namespaceName, root, forceDefinition) {
     } else {
 
         //  We're defining a sub root namespace
-
         prefix = root + '.';
-
-        names = namespaceName.split('.');
 
         //  Descend through the names, making sure that there's a real Object at
         //  each level.
@@ -10348,7 +10332,7 @@ function(namespaceName, root, forceDefinition) {
     for (i = 0; i < len; i++) {
 
         //  Grab the existing namespace *object* (i.e. POJO) that was registered
-        //  using the bootstrap version of TP.defineNamespace().
+        //  using the bootstrap version of TP.defineNamespace.
         oldNamespace = TP.$$bootstrap_namespaces.at(i);
 
         //  Get the old namespace's name and split it into two parts: the root
@@ -10362,7 +10346,7 @@ function(namespaceName, root, forceDefinition) {
         //  Define a new real namespace object to supplant the old namespace.
         //  Note that after this call, our only handle to the old namespace is
         //  our local variable holding it here.
-        newNamespace = TP.defineNamespace(name, root, true);
+        newNamespace = TP.defineNamespace(oldNamespace[TP.NAME], true);
 
         //  For certain namespaces, TP, TP.sys, TP.boot and APP, we configure
         //  them a bit differently. We define a 'getTypeNames()' that returns an
@@ -10432,7 +10416,7 @@ function(namespaceName, root, forceDefinition) {
 //  API OBJECT SUPPORT
 //  -----------------------------------------------------------------------
 
-TP.defineNamespace('api', 'TP');
+TP.defineNamespace('TP.api');
 
 //  ------------------------------------------------------------------------
 //  end

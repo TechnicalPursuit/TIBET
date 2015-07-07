@@ -6057,8 +6057,6 @@ function(aDataSource, aKeySource, aScope) {
         theKeySource,
         results;
 
-    TP.stop('break.content_substitute');
-
     //  exit hatch -- no more substitution entities
     if (TP.notValid(String.$subsRe) || !String.$subsRe.test(this)) {
         return this.toString();
@@ -6230,8 +6228,6 @@ function(anItem, aDataSource, aKeySource) {
 
     theHandler = TP.val(aKeySource, theItem);
     if (TP.notValid(theHandler)) {
-        TP.stop('break.formatter');
-
         //  might be a bogus format where no key source or no key
         TP.ifWarn() ?
             TP.warn('Format handler not found for: ' + anItem,

@@ -44,8 +44,6 @@ function(aRequest) {
 
         obj;
 
-    TP.stop('break.tsh_lint');
-
     shell = aRequest.at('cmdShell');
 
     target = shell.getArgument(aRequest, 'ARG0');

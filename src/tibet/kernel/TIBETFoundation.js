@@ -2884,8 +2884,6 @@ function(aFilter) {
         // TODO: why don't we use this value?
         //proto;
 
-    TP.stop('break.interface');
-
     //  shortcut for using this method to get all keys of any kind.
     if (aFilter === 'known' || aFilter === TP.SLOT_FILTERS.known) {
 
@@ -3760,6 +3758,28 @@ function(aNumber) {
 
 //  ------------------------------------------------------------------------
 
+Number.Inst.defineMethod('last',
+function(aNumber) {
+
+    /**
+     * @method last
+     * @summary Considering the number as a range this returns the last index in
+     *     that range.
+     * @param {Number} aNumber The number of items to return. When N is greater
+     *     than 1 the return value is a new array. Ignored for this type.
+     * @exception TP.sig.InvalidIndex
+     * @returns {Object} The last index.
+     */
+
+    if (this > 0) {
+        return this - 1;
+    } else {
+        return 0;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 String.Inst.defineMethod('last',
 function(aNumber) {
 
@@ -4285,9 +4305,6 @@ TP.$changed = function(anAspect, anAction, aDescription) {
     if (!TP.sys.hasInitialized()) {
         return;
     }
-
-    //  Keep this after the test above to keep overhead down.
-    TP.stop('break.change');
 
     //  Build up the signal name we'll be firing.
     sig = 'Change';
@@ -7631,6 +7648,34 @@ function(aFunction) {
     this.changed('value', TP.UPDATE);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineCommonMethod('detect',
+function(aFunction, startIndex) {
+
+    /**
+     * @method detect
+     * @summary Returns the first element in a collection which matches a
+     *     condition as defined by the function provided.
+     * @param {Function} aFunction A function which should return true or false
+     *     after testing the element it is passed.
+     * @param {Number} startIndex A starting index for the search.
+     * @returns {Object} The first object to match the test criteria.
+     */
+
+    var result;
+
+    this.perform(
+        function(item, index) {
+            if (aFunction(item, index)) {
+                result = item;
+                return TP.BREAK;
+            }
+        });
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------

@@ -52,8 +52,6 @@ function(aValue, aNode) {
 
         attr;
 
-    TP.stop('break.validate');
-
     //  have to have a schema reference of some kind
     if (TP.notValid(aNode)) {
         return this.raise('TP.sig.InvalidParameter',

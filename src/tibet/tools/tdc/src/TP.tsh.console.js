@@ -1466,8 +1466,6 @@ function(aSignal) {
     var id,
         request;
 
-    TP.stop('break.shell_completed');
-
     if (TP.canInvoke(aSignal, 'getRequestID')) {
         id = aSignal.getRequestID();
     } else {
@@ -2291,9 +2289,6 @@ function(anError, aRequest) {
     var request,
         err;
 
-    TP.stop('break.tdc_stderr');
-    TP.stop('break.tdc_stdio');
-
     if (TP.isValid(aRequest)) {
         aRequest.atPutIfAbsent('messageType', 'failure');
         request = aRequest;
@@ -2350,9 +2345,6 @@ function(anObject, aDefault, aRequest) {
      *     processing instructions.
      */
 
-    TP.stop('break.tdc_stdin');
-    TP.stop('break.tdc_stdio');
-
     this.setPrompt(anObject, 'cmdline_prompt');
     this.setInputContent(aDefault);
 
@@ -2379,9 +2371,6 @@ function(anObject, aRequest) {
         cmdSequence,
         outObject,
         append;
-
-    TP.stop('break.tdc_stdout');
-    TP.stop('break.tdc_stdio');
 
     //  We should see multiple output calls, at least one of which is the
     //  cmdConstruct notifier which tells us to build our output cell.

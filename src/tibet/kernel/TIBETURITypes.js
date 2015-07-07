@@ -186,8 +186,6 @@ function(aURI, $$vetted) {
         type,
         err;
 
-    TP.stop('break.uri_construct');
-
     //  this method invokes itself with a fully-expanded URI once the
     //  concrete subtype has been determined. By checking here we can avoid
     //  a lot of extra overhead redoing work that was done in the first
@@ -722,8 +720,6 @@ function(aURI, aCatalog, aFilter) {
         catalog,
         delegates;
 
-    TP.stop('break.uri_catalog');
-
     //  typically we'll be using a cached catalog, or a root catalog passed
     //  in so we can merge data with it properly
     cat = this.$get('uriCatalog') || aCatalog;
@@ -938,8 +934,6 @@ function(aURI) {
         delegates,
         rewrites;
 
-    TP.stop('break.uri_entry');
-
     //  NOTE that this will force catalog creation on first invocation
     cat = this.$getURICatalog();
 
@@ -1116,8 +1110,6 @@ function(url, entry, key) {
         str,
         re;
 
-    TP.stop('break.uri_map');
-
     //  construct empty map so we don't have to do this work twice
     map = TP.hc();
     entry.atPut(key, map);
@@ -1250,8 +1242,6 @@ function(forceRefresh) {
 
         key;
 
-    TP.stop('break.uri_profile');
-
     //  NOTE that this profile is cached under tibet.uriprofile so it can be
     //  looked up only when it's changing
     hash = TP.sys.cfg('tibet.uriprofile');
@@ -1347,8 +1337,6 @@ function(aProfile, useWildcards) {
         tpuser,
         role,
         user;
-
-    TP.stop('break.uri_profile');
 
     //  profile defaults to current runtime profile
     profile = aProfile || TP.core.URI.$getURIProfile();
@@ -1450,8 +1438,6 @@ function(aURI, aRequest) {
     var mapper,
         type;
 
-    TP.stop('break.uri_mapping');
-
     mapper = TP.sys.cfg('uri.mapper');
     type = TP.sys.require(mapper);
 
@@ -1488,8 +1474,6 @@ function(aURI, aRequest) {
 
     var rewriter,
         type;
-
-    TP.stop('break.uri_rewrite');
 
     rewriter = TP.sys.cfg('uri.rewriter');
     type = TP.sys.require(rewriter);
@@ -1767,8 +1751,6 @@ function(schemeSpecificString) {
 
     var primaryHref,
         fragment;
-
-    TP.stop('break.uri_parse');
 
     if (TP.isEmpty(schemeSpecificString)) {
         return;
@@ -2382,8 +2364,6 @@ function(anObject, resultType, collapse) {
 
     var obj;
 
-    TP.stop('break.uri_filter');
-
     if (TP.isValid(anObject)) {
         switch (resultType) {
             case TP.DOM:
@@ -2996,8 +2976,6 @@ function(aRequest, aResult, aResource) {
     var result,
         resultType;
 
-    TP.stop('break.uri_content');
-
     //  Try to collapse and process using the smartest objects possible.
     result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
     result = TP.isNode(result) ? TP.wrap(result) : result;
@@ -3030,8 +3008,6 @@ function(aRequest, aResult, aResource) {
     var resultType,
         fragment,
         result;
-
-    TP.stop('break.uri_fragment');
 
     resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
 
@@ -3576,8 +3552,6 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
         subrequest,
         thisref;
 
-    TP.stop('break.uri_content');
-
     if (!TP.canInvoke(this, contentFName)) {
         this.raise('TP.sig.InvalidParameter',
             'Must supply content accessor function name.');
@@ -3825,8 +3799,6 @@ function(aResource, aRequest) {
         oldResource,
         newResource;
 
-    TP.stop('break.uri_resource');
-
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
     if ((url = this.getPrimaryURI()) !== this) {
@@ -3942,8 +3914,6 @@ function(aRequest, aResult, aResource) {
 
     var result;
 
-    TP.stop('break.uri_content');
-
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
     } else {
@@ -3983,8 +3953,6 @@ function(aRequest, aResult, aResource) {
 
     var fragment,
         result;
-
-    TP.stop('break.uri_fragment');
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -4130,8 +4098,6 @@ function(aDataSource, aRequest) {
     var subrequest,
         async;
 
-    TP.stop('break.uri_transform');
-
     //  If we're going to have to request the data then the key thing we
     //  want to avoid is having an incoming request complete() before the
     //  entire process is finished. That means ensuring we have a clean
@@ -4260,8 +4226,6 @@ function(headerData) {
         value,
 
         theDate;
-
-    TP.stop('break.uri_headers');
 
     dict = this.$get('headers');
 
@@ -4492,7 +4456,6 @@ function(schemeSpecificString) {
     var match,
         hash;
 
-    TP.stop('break.uri_parse');
             /*
     //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
     //  for this type, so we don't invoke the supertype method here, we set
@@ -4537,8 +4500,6 @@ function(aRequest, filterResult) {
         result,
         resultType,
         response;
-
-    TP.stop('break.uri_resource');
 
     //  If we're not the primary URI, that means we have a fragment. So we have
     //  to get the 'whole' resource from the primary URI and then proceed
@@ -4658,8 +4619,6 @@ function(aRequest) {
         url,
         handler;
 
-    TP.stop('break.uri_load');
-
     request = this.constructRequest(aRequest);
 
     //  rewriting means we'll get to the concrete URI for the receiver so we
@@ -4694,8 +4653,6 @@ function(aRequest) {
         url,
         handler;
 
-    TP.stop('break.uri_nuke');
-
     request = this.constructRequest(aRequest);
 
     //  rewriting means we'll get to the concrete URI for the receiver so we
@@ -4729,8 +4686,6 @@ function(aRequest) {
     var request,
         url,
         handler;
-
-    TP.stop('break.uri_save');
 
     request = this.constructRequest(aRequest);
 
@@ -4843,8 +4798,6 @@ function(aResource, aRequest) {
         description,
         fragText,
         i;
-
-    TP.stop('break.uri_resource');
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
@@ -5109,8 +5062,6 @@ function() {
         fragment,
         content;
 
-    TP.stop('break.uri_mime');
-
     //  TODO:   if we're a fragment then is it possible that our MIME type
     //  could differ from that of our container?
     //  Always defer to the primary URI if we have a distinct one.
@@ -5364,8 +5315,6 @@ function(aRequest, filterResult) {
         response,
         resource;
 
-    TP.stop('break.uri_resource');
-
     //  TODO:   do we need a fragment check here for any reason?
     if ((url = this.getPrimaryURI()) !== this) {
         return url.$getPrimaryResource(aRequest, filterResult);
@@ -5518,8 +5467,6 @@ function(aRequest) {
         type,
 
         mime;
-
-    TP.stop('break.uri_cache');
 
     //  TODO:   verify the receiver should cache anything...it should be
     //  either a "caching" URI (whatever that means) or a primary URI.
@@ -5785,8 +5732,6 @@ function(aRequest) {
         thisref,
         async;
 
-    TP.stop('break.uri_process');
-
     //  This request will be used for transformation processing.
     request = this.constructSubRequest(aRequest);
     request.atPutIfAbsent('targetPhase', 'Finalize');
@@ -5899,8 +5844,6 @@ function(aRequest) {
         url,
         handler;
 
-    TP.stop('break.uri_load');
-
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.sys.logIO('Loading content data for ID: ' +
                     TP.ifInvalid(this.getLocation(), 'FROM_SOURCE'),
@@ -5949,8 +5892,6 @@ function(aRequest) {
         url,
         handler;
 
-    TP.stop('break.uri_nuke');
-
     //  TODO:   when the receiver has a fragment what then? Are we supposed
     //  to remove only the fragment subset of the receiver?
 
@@ -5987,8 +5928,6 @@ function(aRequest) {
     var request,
         url,
         handler;
-
-    TP.stop('break.uri_save');
 
     //  TODO:   when the receiver has a fragment what then? Should just
     //          update "document href" and save that?
@@ -6067,8 +6006,6 @@ function(aRequest) {
         url,
         handler;
 
-    TP.stop('break.uri_watch');
-
     request = this.constructRequest(aRequest);
 
     //  rewriting means we'll get to the concrete URI for the receiver so we
@@ -6099,8 +6036,6 @@ function(aRequest) {
     var request,
         url,
         handler;
-
-    TP.stop('break.uri_watch');
 
     request = this.constructRequest(aRequest);
 
@@ -6726,8 +6661,6 @@ function(schemeSpecificString) {
      * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
-    TP.stop('break.uri_parse');
-
     //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
     //  for this type, so we don't invoke the supertype method here, we set
     //  our primary href directly.
@@ -6771,8 +6704,6 @@ function(aRequest, filterResult) {
 
         resultType,
         response;
-
-    TP.stop('break.uri_resource');
 
     request = this.constructRequest(aRequest);
     async = this.rewriteRequestMode(request);
@@ -6868,8 +6799,6 @@ function(aRequest) {
         url,
         handler;
 
-    TP.stop('break.uri_load');
-
     request = this.constructRequest(aRequest);
 
     //  rewriting means we'll get to the concrete URI for the receiver so we
@@ -6904,8 +6833,6 @@ function(aRequest) {
         url,
         handler;
 
-    TP.stop('break.uri_nuke');
-
     request = this.constructRequest(aRequest);
 
     //  rewriting means we'll get to the concrete URI for the receiver so we
@@ -6939,8 +6866,6 @@ function(aRequest) {
     var request,
         url,
         handler;
-
-    TP.stop('break.uri_save');
 
     request = this.constructRequest(aRequest);
 
@@ -7811,8 +7736,6 @@ function(aRequest, filterResult) {
         tpwin,
         inst;
 
-    TP.stop('break.uri_resource');
-
     request = this.constructRequest(aRequest);
     refresh = request.at('refresh');
     filter = filterResult || false;
@@ -8212,8 +8135,6 @@ function(request, result, async, filter) {
         resultType,
         response;
 
-    TP.stop('break.uri_resource');
-
     resource = result;
 
     if (TP.isValid(resource)) {
@@ -8510,8 +8431,6 @@ function(aRequest) {
 
     var url;
 
-    TP.stop('break.uri_cache');
-
     //  if we're just an alias for a concrete URL then we continue to look like
     //  a proxy for that reference in string form
     if ((url = this.getPrimaryURI()) !== this) {
@@ -8564,8 +8483,6 @@ function(targetURI, aRequest) {
      * @returns {TP.sig.Response} The response.
      */
 
-    TP.stop('break.uri_load');
-
     //  DB, File and HTTP urls have their own handlers. This default handler
     //  is typically leveraged only by javascript: and urn: resources whose
     //  data isn't really "loaded" from a particular resource location.
@@ -8593,8 +8510,6 @@ function(targetURI, aRequest) {
 
     var request,
         response;
-
-    TP.stop('break.uri_nuke');
 
     TP.todo('Implement nuke for non-file/http/db urls.');
 
@@ -8636,8 +8551,6 @@ function(targetURI, aRequest) {
 
     var request,
         response;
-
-    TP.stop('break.uri_save');
 
     //  DB, File and HTTP urls have their own handlers. This default handler
     //  is typically leveraged only by javascript: and urn: resources whose
@@ -8772,8 +8685,6 @@ function(aURI, aRequest) {
         str,
 
         newuri;
-
-    TP.stop('break.uri_rewrite');
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
@@ -9003,8 +8914,6 @@ function(aURI, aRequest) {
         item,
 
         handler;
-
-    TP.stop('break.uri_mapping');
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
@@ -9892,8 +9801,6 @@ function(targetURI, aRequest) {
         targetLoc,
         response;
 
-    TP.stop('break.uri_load');
-
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
     subrequest = targetURI.constructSubRequest(aRequest);
@@ -10009,8 +9916,6 @@ function(targetURI, aRequest) {
         targetLoc,
         response;
 
-    TP.stop('break.uri_nuke');
-
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
     subrequest = targetURI.constructSubRequest(aRequest);
@@ -10104,8 +10009,6 @@ function(targetURI, aRequest) {
         targetLoc,
         content,
         response;
-
-    TP.stop('break.uri_save');
 
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
@@ -10224,8 +10127,6 @@ function(targetURI, aRequest) {
         targetLoc,
         loadRequest;
 
-    TP.stop('break.uri_load');
-
     request = targetURI.constructRequest(aRequest);
     response = request.constructResponse();
 
@@ -10292,8 +10193,6 @@ function(targetURI, aRequest) {
         nukeRequest,
 
         useWebDAV;
-
-    TP.stop('break.uri_nuke');
 
     request = targetURI.constructRequest(aRequest);
     response = request.constructResponse();
@@ -10377,8 +10276,6 @@ function(targetURI, aRequest) {
         saveRequest,
         content,
         useWebDAV;
-
-    TP.stop('break.uri_save');
 
     request = targetURI.constructRequest(aRequest);
     response = request.constructResponse();

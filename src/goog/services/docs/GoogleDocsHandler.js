@@ -49,8 +49,6 @@ function(targetURI, aRequest) {
 
         loadRequest;
 
-    TP.stop('break.uri_load');
-
     request = TP.request(aRequest);
     response = request.constructResponse();
 
@@ -119,8 +117,6 @@ function(targetURI, aRequest) {
         content,
 
         saveRequest;
-
-    TP.stop('break.uri_save');
 
     request = TP.request(aRequest);
     response = request.constructResponse();

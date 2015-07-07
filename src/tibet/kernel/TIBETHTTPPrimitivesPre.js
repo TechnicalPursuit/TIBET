@@ -1065,8 +1065,6 @@ function(targetUrl, aRequest, httpObj) {
         sig,
         id;
 
-    TP.stop('break.http_wrapup');
-
     request = TP.request(aRequest);
     url = TP.ifInvalid(targetUrl, request.at('uri'));
 

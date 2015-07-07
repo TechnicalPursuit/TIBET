@@ -563,8 +563,6 @@ function(aTypeName, shouldReload, isProxy) {
         proxy,
         type;
 
-    TP.stop('break.require');
-
     reload = TP.ifInvalid(shouldReload, false);
     proxy = TP.ifInvalid(isProxy, false);
 

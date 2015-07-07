@@ -107,8 +107,6 @@ function(aRequest) {
         value,
         resolvedValue;
 
-    TP.stop('break.tsh_uri');
-
     shell = aRequest.at('cmdShell');
 
     if (shell.getArgument(aRequest, 'tsh:debug', null, false)) {

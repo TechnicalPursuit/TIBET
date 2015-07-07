@@ -133,8 +133,6 @@ function() {
         return;
     }
 
-    TP.stop('break.main');
-
     TP.boot.$setStage('initializing');
 
     //  "up-convert" configuration and environment data
@@ -271,8 +269,6 @@ function() {
 
         // If we initialized without error move on to rendering the UI.
         TP.boot.$setStage('rendering');
-
-        TP.stop('break.rendering');
 
         //  Recapture starting time in case we broke for debugging.
         TP.boot.$uitime = new Date();
