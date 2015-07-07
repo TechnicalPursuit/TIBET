@@ -16304,10 +16304,20 @@ TP.core.ElementNode.defineSubtype('core:TemplatedNode');
 //  instance creation.
 TP.core.TemplatedNode.isAbstract(true);
 
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
 //  Whether or not the node wants a 'tsh:template' wrapper (necessary for
 //  dynamic templating, etc.)
 TP.core.TemplatedNode.Type.defineAttribute('wantsTemplateWrapper');
 
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
 //  ------------------------------------------------------------------------
 
 TP.core.TemplatedNode.Type.defineMethod('tagCompile',
