@@ -33,22 +33,5 @@ TP.html.base.Inst.resolveTraits(
         TP.core.EmptyElementNode);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.base.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

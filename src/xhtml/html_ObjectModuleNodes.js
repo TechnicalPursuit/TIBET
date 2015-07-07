@@ -386,23 +386,6 @@ TP.html.param.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.param.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
 //  ========================================================================
 //  TP.html.source (HTML 5)
 //  ========================================================================
@@ -444,23 +427,6 @@ TP.html.track.Inst.resolveTraits(
 TP.html.track.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.track.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
 
 //  ========================================================================
 //  TP.html.video (HTML 5)

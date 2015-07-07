@@ -67,23 +67,6 @@ TP.html.col.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.col.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
 //  ========================================================================
 //  TP.html.colgroup
 //  ========================================================================

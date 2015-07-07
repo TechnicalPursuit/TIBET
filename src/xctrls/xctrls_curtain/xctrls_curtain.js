@@ -35,22 +35,5 @@ TP.xctrls.curtain.Inst.resolveTraits(
 TP.xctrls.curtain.set('requiredAttrs', TP.hc('pclass:hidden', true));
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.curtain.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

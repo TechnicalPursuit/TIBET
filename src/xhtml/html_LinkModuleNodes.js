@@ -41,21 +41,6 @@ TP.html.link.Inst.resolveTraits(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.html.link.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 //  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------

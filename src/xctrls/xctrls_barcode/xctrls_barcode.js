@@ -35,21 +35,6 @@ TP.xctrls.barcode.Inst.resolveTraits(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.barcode.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.barcode.Type.defineMethod('generateCode39Table',
 function(code, params) {
 

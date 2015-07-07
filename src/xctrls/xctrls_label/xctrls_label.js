@@ -28,24 +28,6 @@ TP.xctrls.label.Inst.resolveTraits(
                 'removeAttribute', 'select', 'signal'),
         TP.xctrls.Element);
 
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.label.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

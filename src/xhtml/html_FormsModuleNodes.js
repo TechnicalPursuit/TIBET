@@ -621,23 +621,6 @@ TP.html.textUtilities.Inst.resolveTraits(
 TP.html.textUtilities.isAbstract(true);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.textUtilities.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -1233,21 +1216,6 @@ TP.html.input.Inst.resolveTraits(
 
 //  ------------------------------------------------------------------------
 //  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.html.input.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.html.input.Type.defineMethod('fromArray',

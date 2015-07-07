@@ -95,16 +95,6 @@ TP.core.StateMachine.addTraits(TP.core.Triggered);
 TP.core.StateMachine.Type.defineConstant('LOG_MAX', 100);
 
 //  ------------------------------------------------------------------------
-
-TP.core.StateMachine.Type.defineMethod('initialize',
-function() {
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 

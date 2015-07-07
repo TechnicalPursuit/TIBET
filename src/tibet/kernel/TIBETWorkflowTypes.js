@@ -422,10 +422,6 @@ TP.lang.Object.defineSubtype('core.Resource');
 TP.core.Resource.addTraits(TP.core.SyncAsync);
 TP.core.Resource.addTraits(TP.core.Triggered);
 
-//  Finalize the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.core.Resource.finalizeTraits();
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -1119,10 +1115,6 @@ TP.sig.WorkflowSignal.Inst.resolveTraits(
                 'at', 'atPut', 'copy', 'getProperty', 'getSignalName', 'init',
                 'isRecyclable', 'recycle', 'removeKey'),
         TP.sig.Signal);
-
-//  Finalize the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.sig.WorkflowSignal.finalizeTraits();
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

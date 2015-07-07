@@ -24,23 +24,6 @@ TP.sherpa.Element.Inst.resolveTraits(
         TP.core.UIElementNode);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.Element.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Halo focusing methods
 //  ------------------------------------------------------------------------
 

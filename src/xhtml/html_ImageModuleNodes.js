@@ -44,21 +44,6 @@ TP.html.img.Inst.resolveTraits(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.html.img.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.img.Type.defineMethod('constructContentObject',
 function(aURI) {
 

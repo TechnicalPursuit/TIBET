@@ -2852,22 +2852,6 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaTypeMethod('finalizeTraits',
-function() {
-
-    /**
-     * @method finalizeTraits
-     * @summary Executes traits resolution machinery if the traits for the
-           receiver have not yet been resolved. For these objects, this method
-           is a no-op.
-     * @returns {Object} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.defineMetaTypeMethod('getSupertype',
 function() {
 
@@ -3453,31 +3437,558 @@ function(varargs) {
 
     /**
      * @method addTraits
-     * @summary Adds trait types in the arguments list to the receiver.
-     * @param {Array} varargs A variable list of 0 to N TIBET types that
-     *     represent 'traits' to add to the receiving type.
+     * @summary Adds the type objects supplied as a variable arguments list as
+     *     trait types to the receiver.
+     * @param {arguments} varargs 1...n trait type objects.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    var existingTraits,
+
+        trapInstaller,
+
+        newTraits,
+
+        mainTypeTarget,
+
+        len,
+        i,
+
+        len2,
+        j,
+
+        traitType,
+        traitTypeTarget,
+        traitProps;
+
+    //  Define a 'trap installer' function that will install a 'trait trap
+    //  getter' on the supplied target under the supplied track and property
+    //  name.
+    trapInstaller = function(target, targetPropName, track) {
+
+        var traitTrapGetter;
+
+        traitTrapGetter = function() {
+
+            var mainType,
+
+                propName,
+                propTrack,
+
+                traitTypes,
+                retVal;
+
+            //  If the no exec flag is true (see below in the main method body),
+            //  then we just hand back the initially configured value.
+            if (TP.$$no_trait_getter_exec === true) {
+                return traitTrapGetter.targetVal;
+            }
+
+            //  Since the target here will be either the '.Type' or '.Inst'
+            //  prototype object, we want to get back to the type object itself
+            //  - that's the $$owner.
+            mainType = traitTrapGetter.target.$$owner;
+
+            propName = traitTrapGetter.targetPropName;
+            propTrack = traitTrapGetter.traitTrack;
+
+            //  (Re)define the property on our target that just hands back the
+            //  initial target value. This is done so that trait composition and
+            //  resolution below will not trigger this function when poking at
+            //  the slot we're on.
+            Object.defineProperty(
+                traitTrapGetter.target,
+                propName,
+                {
+                    writable: true,
+                    value: traitTrapGetter.targetVal
+                });
+
+            //  Grab all of the type's traits.
+            traitTypes = mainType.getAllTraits();
+
+            //  Iterate over them and compose this traited property using the
+            //  main type and the individual trait type. This will cause a
+            //  dictionary of 'trait resolutions' to be created for this slot.
+            len = traitTypes.getSize();
+            for (i = 0; i < len; i++) {
+                mainType.$composeTraitedProperty(
+                    traitTypes[i],
+                    propName,
+                    propTrack);
+            }
+
+            //  Resolve the traited property using the trait resolution that
+            //  was computed above. This should return an Object value that now
+            //  represents the resolved trait.
+            retVal = mainType.$resolveTraitedProperty(propName, propTrack);
+
+            //  One trick here is that if the Object value is undefined, we want
+            //  to return null instead. This is so that TIBET's 'undefined
+            //  attribute' machinery will work properly.
+            retVal = retVal === undefined ? null : retVal;
+
+            //  (Re)define the property one last time with the Object value that
+            //  got computed.
+            Object.defineProperty(
+                traitTrapGetter.target,
+                propName,
+                {
+                    writable: true,
+                    value: retVal
+                });
+
+            //  Make sure to return the computed Object value so that the first
+            //  slot access (that kicked off this whole process) gets the
+            //  correct value.
+            return retVal;
+        };
+
+        //  Cache these values on the getter for use by the getter.
+        traitTrapGetter.target = target;
+        traitTrapGetter.targetVal = target[targetPropName];
+        traitTrapGetter.targetPropName = targetPropName;
+        traitTrapGetter.traitTrack = track;
+
+        //  Define a property on the target under the property name that uses
+        //  the getter function as the getter for the named property slot. When
+        //  that slot is accessed, the getter above will be executed.
+        Object.defineProperty(
+            target,
+            targetPropName,
+            {
+                configurable: true,
+                get: traitTrapGetter
+            });
+    };
+
+    //  ---
+    //  Gather traits
+    //  ---
+
+    //  Make sure that we have an Array for all traits for the receiver, kept as
+    //  the overall long-term list of traits that the receiver has.
+    if (TP.notValid(existingTraits = this[TP.TRAITS])) {
+        existingTraits = TP.ac();
+        this[TP.TRAITS] = existingTraits;
+    }
+
+    //  Allocate an Array of 'new traits' that will be used as the 'short list'
+    //  below to consult for just this 'add traits' run.
+    newTraits = TP.ac();
+
+    //  Collect up any new trait types we're adding
+
+    len = arguments.length;
+    for (i = 0; i < len; i++) {
+
+        traitType = arguments[i];
+
+        //  We only add the trait type if it is a Type and if it's not already
+        //  contained in the list of existing traits.
+        if (TP.isType(traitType) &&
+            !existingTraits.contains(traitType, TP.IDENTITY)) {
+
+            //  Add it to both lists
+            newTraits.push(traitType);
+            existingTraits.push(traitType);
+        }
+    }
+
+    //  ---
+    //  Preliminary setup
+    //  ---
+
+    //  Allocate a 'quick reference' POJO for slots on various types. This
+    //  avoids having to call 'getInterface' repeatedly on boot.
+
+    if (TP.notValid(TP.$$trait_interface_store)) {
+        TP.$$trait_interface_store = {};
+    }
+
+    //  Set the flag that is used above to make sure that when slot is accessed
+    //  below that the trait trap getter installed above just returns the value
+    //  and doesn't try to resolve the trait.
+    TP.$$no_trait_getter_exec = true;
+
+    //  ---
+    //  Install traps for the type side
+    //  ---
+
+    mainTypeTarget = this.getPrototype();
+
+    /* eslint-disable no-loop-func */
+    len = newTraits.getSize();
+    for (i = 0; i < len; i++) {
+
+        traitType = newTraits.at(i);
+
+        traitTypeTarget = traitType.getPrototype();
+
+        //  If the trait type interface isn't represented in the quick reference
+        //  POJO, make an entry for it by asking the trait type's 'type' side
+        //  for its interface and stashing that away.
+        if (!(traitProps = TP.$$trait_interface_store[traitTypeTarget.$$id])) {
+            traitProps = traitTypeTarget.getInterface('known');
+            TP.$$trait_interface_store[traitTypeTarget.$$id] = traitProps;
+        }
+
+        //  Iterate over the properties and, if they don't point to the *exact*
+        //  same value, then install the 'trait resolver getter trap'.
+        len2 = traitProps.getSize();
+        for (j = 0; j < len2; j++) {
+
+            if (mainTypeTarget[traitProps[j]] ===
+                traitTypeTarget[traitProps[j]]) {
+                continue;
+            }
+
+            trapInstaller(mainTypeTarget, traitProps[j], TP.TYPE_TRACK);
+        }
+    }
+    /* eslint-enable no-loop-func */
+
+    //  ---
+    //  Install traps for the instance side
+    //  ---
+
+    mainTypeTarget = this.getInstPrototype();
+
+    /* eslint-disable no-loop-func */
+    len = newTraits.getSize();
+    for (i = 0; i < len; i++) {
+
+        traitType = newTraits.at(i);
+
+        traitTypeTarget = traitType.getInstPrototype();
+
+        //  If the trait instance interface isn't represented in the quick
+        //  reference POJO, make an entry for it by asking the trait type's
+        //  'instance' side for its interface and stashing that away.
+        if (!(traitProps = TP.$$trait_interface_store[traitTypeTarget.$$id])) {
+            traitProps = traitTypeTarget.getInterface('known');
+            TP.$$trait_interface_store[traitTypeTarget.$$id] = traitProps;
+        }
+
+        //  Iterate over the properties and, if they don't point to the *exact*
+        //  same value, then install the 'trait resolver getter trap'.
+        len2 = traitProps.getSize();
+        for (j = 0; j < len2; j++) {
+
+            if (mainTypeTarget[traitProps[j]] ===
+                traitTypeTarget[traitProps[j]]) {
+                continue;
+            }
+
+            trapInstaller(mainTypeTarget, traitProps[j], TP.INST_TRACK);
+        }
+    }
+    /* eslint-enable no-loop-func */
+
+    //  Flip the trait trap getter flag back to false. Slot accesses on any
+    //  slots that have been populated will now cause a trait resolution to
+    //  occur.
+    TP.$$no_trait_getter_exec = false;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('$autoResolveConflictedTrait',
+function(propName, sources, track) {
+
+    /**
+     * @method $autoResolveConflictedTrait
+     * @summary Populates the slot on the receiver given the trait resolution.
+     * @param {String} propName The property name of the conflicted trait.
+     * @param {Array} sources An Array of Type objects that represent both the
+     *     main type and the trait types that the auto resolution machinery will
+     *     use to try to resolve the slot.
+     * @param {String} track The track that the property is for, instance or
+     *     type.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
-    var traits,
+    var c3TypeList,
 
-        len,
-        i;
+        resolvedType,
 
-    //  Make sure that we have an Array for traits.
-    if (TP.notValid(traits = this[TP.TRAITS])) {
-        traits = TP.ac();
-        this[TP.TRAITS] = traits;
+        lowestIndex,
+        i,
+        candidateIndex,
+
+        unresolvedEntry,
+
+        errStr;
+
+    //  Make sure that we're configure to auto resolve.
+    if (TP.isTrue(TP.sys.cfg('oo.$$traits_resolve'))) {
+
+        //  Compute the C3 linearization for the target type
+        c3TypeList = this.computeC3Linearization();
+
+        resolvedType = null;
+
+        //  sources is usually an Array of all of the types that the named
+        //  property was found on, but is also sometimes the TP.REQUIRED
+        //  constant.
+        if (TP.isArray(sources)) {
+
+            lowestIndex = c3TypeList.getSize() - 1;
+
+            //  If we got real candidate types for the conflicts, then try to
+            //  resolve using them.
+            if (TP.notEmpty(sources)) {
+
+                //  Iterate over the candidate types and find the one with the
+                //  *lowest* index in c3TypeList. The C3 list is sorted from
+                //  *most* specific to *least* specific - therefore, the one
+                //  with the lowest index is the one we want.
+                for (i = 0; i < sources.getSize(); i++) {
+                    candidateIndex =
+                        c3TypeList.indexOf(sources.at(i).getName());
+                    lowestIndex = Math.min(lowestIndex, candidateIndex);
+                }
+
+                //  Try to get a matching type for the type name we computed.
+                resolvedType = TP.sys.getTypeByName(c3TypeList.at(lowestIndex));
+            }
+        }
+
+        //  If the conflicted traits didn't have any sources or we couldn't get
+        //  a type for the name that we computed, then set the unresolved entry
+        //  to the supplied sources.
+        if (!TP.isType(resolvedType)) {
+            unresolvedEntry = sources;
+        } else {
+
+            //  If we're logging warnings when we auto resolve, then do so here.
+            if (TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
+
+                //  NOTE: We use a lower-level logging call here, since the
+                //  TIBET-level logs themselves use traits and if they are
+                //  trying to resolve themselves, then we end up in endlessly
+                //  recursive loops.
+                TP.boot.$stdout(
+                        'AUTO RESOLVING CONFLICTED' +
+                            ' ' + track.toUpperCase() + '-LEVEL' +
+                            ' PROPERTY: ' + propName +
+                            ' ON TARGET: ' + TP.name(this) +
+                            ' TO TYPE: ' + TP.name(resolvedType) +
+                            ' (CONFLICTED BETWEEN: ' +
+                                    sources.collect(
+                                        function(aType) {
+                                            return aType.getName();
+                                        }).join(', ') + ')');
+            }
+        }
+    } else {
+
+        //  Otherwise, we're not auto-resolving, so just set the unresolved
+        //  entry to true
+        unresolvedEntry = true;
     }
 
-    //  Iterate over all of the supplied arguments and add them to the traits
-    //  list, but only if they're not already represented.
-    len = arguments.length;
-    for (i = 0; i < len; i++) {
-        if (TP.isType(arguments[i]) &&
-                !traits.contains(arguments[i], TP.IDENTITY)) {
-            traits.push(arguments[i]);
+    if (TP.isValid(unresolvedEntry)) {
+
+        errStr = 'TARGET: ' + TP.name(this) + ' ' +
+                    track.toUpperCase() + '-LEVEL:\n';
+
+        errStr += 'CONFLICTED PROPERTY: ' + propName + ' :: PROBLEM: ';
+
+        //  If it's an Array, then we assume it's an Array of Type objects.
+        if (TP.isArray(sources)) {
+            errStr += 'conflicted between: ' +
+                sources.collect(
+                    function(aType) {
+                        var proto,
+                            val;
+
+                        if (track === TP.TYPE_TRACK) {
+                            proto = aType.getPrototype();
+                        } else {
+                            proto = aType.getInstPrototype();
+                        }
+
+                        val = proto[propName];
+
+                        if (TP.isMethod(val)) {
+                            //  Important for reporting purposes to actually
+                            //  find the owner.
+                            return TP.name(val[TP.OWNER]);
+                        }
+
+                        return TP.name(aType);
+                    });
+        } else {
+
+            //  If sources is TP.REQUIRED, that will print here.
+            errStr += sources;
         }
+
+        errStr += ' \n';
+
+        errStr += '\nUse resolveTrait[s] to repair' +
+                    ' or turn on trait auto-resolution';
+
+        if (track === TP.TYPE_TRACK) {
+            return this.raise('TP.sig.InvalidInstantiation',
+                                TP.sc('Unresolved type trait: ', errStr));
+        } else {
+            return this.raise('TP.sig.InvalidInstantiation',
+                                TP.sc('Unresolved instance trait: ', errStr));
+        }
+    }
+
+    return resolvedType;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('$composeTraitedProperty',
+function(traitType, propName, track) {
+
+    /**
+     * @method $composeTraitedProperty
+     * @summary Composes a set of resolutions for the traited property.
+     * @param {TP.lang.RootObject} traitType The trait type that is being 'mixed
+     *     in' on the property.
+     * @param {String} propName The property name of the conflicted trait.
+     * @param {String} track The track that the property is for, instance or
+     *     type.
+     * @returns {TP.lang.RootObject} The receiving type.
+     */
+
+    var mainTypeTarget,
+        traitTypeTarget,
+        resolutions,
+
+        checkProp1,
+        checkProp2,
+
+        entry,
+        sources,
+        i,
+        pastSourceTarget;
+
+    //  Grab the proper targets and resolution data structures depending on the
+    //  track supplied.
+    if (track === TP.TYPE_TRACK) {
+        mainTypeTarget = this.getPrototype();
+        traitTypeTarget = traitType.getPrototype();
+
+        if (TP.notValid(resolutions = this.$get('$traitsTypeResolutions'))) {
+            resolutions = TP.hc();
+            this.$set('$traitsTypeResolutions', resolutions);
+        }
+    } else if (track === TP.INST_TRACK) {
+        mainTypeTarget = this.getInstPrototype();
+        traitTypeTarget = traitType.getInstPrototype();
+
+        if (TP.notValid(resolutions = this.$get('$traitsInstResolutions'))) {
+            resolutions = TP.hc();
+            this.$set('$traitsInstResolutions', resolutions);
+        }
+    }
+
+    //  If the mainTypeTarget has this property, then we need to check whether
+    //  the trait type has it too - in that case, we just proceed on.
+    if (TP.isProperty(mainTypeTarget, propName)) {
+
+        checkProp1 = mainTypeTarget[propName];
+        checkProp2 = traitTypeTarget[propName];
+
+        if (checkProp1 === checkProp2) {
+            return;
+        }
+
+        //  If they both really exist, then we need to drill in and see if they
+        //  have '$resolutionMethod' slots that would match the other's slot (or
+        //  '$resolutionMethod' slot). This is critical to avoid problems with
+        //  traits cascading down the inheritance hierarchy.
+        if (checkProp1 && checkProp2) {
+            checkProp1 = checkProp1.$resolutionMethod ?
+                            checkProp1.$resolutionMethod :
+                            checkProp1;
+            checkProp2 = checkProp2.$resolutionMethod ?
+                            checkProp2.$resolutionMethod :
+                            checkProp2;
+
+            if (checkProp1 === checkProp2) {
+                return;
+            }
+        }
+    }
+
+    //  If the property already has an entry, then check to see if this trait is
+    //  represented in its list of sources. If it is, then this trait/property
+    //  combination is already represented.
+    if (TP.isValid(entry = resolutions.at(propName))) {
+        sources = entry.at('sources');
+        if (sources.indexOf(traitType) !== TP.NOT_FOUND) {
+            return;
+        }
+
+        //  Loop over all of the sources that have been resolutions for this
+        //  slot so far and make the same checks that we made above. Again,
+        //  critical to avoid problems with traits and the inheritance hierachy.
+        for (i = 0; i < sources.getSize(); i++) {
+
+            pastSourceTarget = track === TP.INST_TRACK ?
+                                sources.at(i).getInstPrototype() :
+                                sources.at(i).getPrototype();
+
+            checkProp1 = pastSourceTarget[propName];
+            checkProp2 = traitTypeTarget[propName];
+
+            if (checkProp1 === checkProp2) {
+                return;
+            }
+
+            if (checkProp1 && checkProp2) {
+                checkProp1 = checkProp1.$resolutionMethod ?
+                                checkProp1.$resolutionMethod :
+                                checkProp1;
+                checkProp2 = checkProp2.$resolutionMethod ?
+                                checkProp2.$resolutionMethod :
+                                checkProp2;
+
+                if (checkProp1 === checkProp2) {
+                    return;
+                }
+            }
+        }
+
+        //  Otherwise, there was an entry for this property, but this trait is
+        //  not represented in it - therefore we have a *conflict*. Add this
+        //  trait type to the list of sources and mark the property as
+        //  conflicted.
+        sources.push(traitType);
+    } else {
+        //  If the property is defined on the receiver
+        if (TP.isDefined(mainTypeTarget[propName])) {
+
+            //  If the receiver *owns* the property, or its not a method, then
+            //  we can use the receiver, along with the trait type, as the
+            //  resolving sources.
+            if (TP.owns(mainTypeTarget, propName) ||
+                !TP.isMethod(mainTypeTarget[propName])) {
+
+                entry = TP.hc('sources', TP.ac(this, traitType));
+            } else {
+                //  Otherwise, we need to use the *owner* of the method that
+                //  happens to be found (via the prototype chain) as that
+                //  property on the receiver.
+                entry = TP.hc(
+                    'sources',
+                    TP.ac(mainTypeTarget[propName][TP.OWNER],
+                            traitType));
+            }
+        } else if (TP.isDefined(traitTypeTarget[propName])) {
+            entry = TP.hc('sources', TP.ac(traitType));
+        }
+        resolutions.atPut(propName, entry);
     }
 
     return this;
@@ -3494,11 +4005,15 @@ function() {
      * @description In TIBET, multiple inheritance is implemented using traits.
      *     In other multiple inheritance systems, the 'C3 linearization'
      *     algorithm is used to compute the 'method resolution order' when
-     *     looking up methods. Although traits doesn't use C3, sometimes it's
-     *     useful to be able to compute a 'C3 linearization' of the type, its
-     *     supertypes and all of it's traits supertypes.
-     *     This is used, for instance, by the system when 'auto resolution' of
-     *     traits is turned on.
+     *     looking up methods (as described here:
+     *     http://en.wikipedia.org/wiki/C3_linearization). Officially, trait
+     *     systems don't look up methods in an automatic fashion - they require
+     *     the developer to resolve the trait to a particular type manually.
+     *     TIBET supports this very well (see the resolveTrait()/resolveTraits()
+     *     methods), but TIBET also allows for the system to 'auto resolve' a
+     *     trait and it does this using the C3 algorithm. Therefore, it's
+     *     necessary to be able to compute a 'C3 linearization' of the type,
+     *     its supertypes, its traits and all of its traits supertypes.
      * @returns {Array} A list of type names that forms the list of the
      *     receiver's supertype names and all of the trait type names, sorted
      *     using the C3 linearization algorithm.
@@ -3672,38 +4187,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('finalizeTraits',
-function() {
-
-    /**
-     * @method finalizeTraits
-     * @summary Executes traits resolution machinery if the traits for the
-           receiver have not yet been resolved.
-     * @returns {TP.lang.RootObject} The receiver.
-     */
-
-    if (!this.get('$traitsFinalized')) {
-
-        //  Make sure that the supertype has finalized it's traits
-        this.getSupertype().finalizeTraits();
-
-        //  Now that the supertype (and all of its supertypes - up the chain)
-        //  have finalized their traits, if we have traits we can finalize them.
-        if (this.hasTraits()) {
-            //  NB: performTraitResolution() sets the '$traitsFinalized' flag.
-            this.$performTraitComposition();
-            this.$performTraitResolution();
-        } else {
-            //  Otherwise, it didn't have traits so we just set the flag.
-            this.set('$traitsFinalized', true);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.lang.RootObject.Type.defineMethod('getAllTraits',
 function() {
 
@@ -3748,639 +4231,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('$performTraitComposition',
-function() {
-
-    /**
-     * @method $performTraitComposition
-     * @summary 'Composes' the traits of the receiver into a set of 'property
-     *     sources' for each property that exists on both the receiver and each
-     *     of the receiver's traits types *that have the same property name but
-     *     different values* between the two.
-     * @returns {TP.lang.RootObject} The receiving type.
-     */
-
-    var traits,
-        resolutions,
-
-        mainType,
-        mainTypeTarget;
-
-    //  If we've already finalized traits for this type, then we don't allow any
-    //  more composition / resolution to occur.
-    if (TP.isTrue(this.get('$traitsFinalized'))) {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    //  Make sure that we actually have traits (all of the traits from ourself
-    //  and any other traits that have been added - recursively).
-    if (TP.isEmpty(traits = this.getAllTraits())) {
-        return this;
-    }
-
-    mainType = this;
-
-    //  Type-side compose
-
-    if (TP.notValid(resolutions = this.get('$traitsTypeResolutions'))) {
-        resolutions = TP.hc();
-        this.set('$traitsTypeResolutions', resolutions);
-    }
-
-    mainTypeTarget = this.getPrototype();
-
-    //  Then, loop over each trait, getting all of the known properties of that
-    //  *type* object and try to populate entries for them into the 'traits type
-    //  resolutions' hash.
-    traits.forEach(
-        function(traitType) {
-            var traitTypeTarget,
-                traitProps;
-
-            traitTypeTarget = traitType.getPrototype();
-
-            traitProps = traitTypeTarget.getInterface('known');
-
-            //  Loop over each property and make an entry in the 'resolutions'
-            //  hash
-            traitProps.forEach(
-                function(propName) {
-                    var checkProp1,
-                        checkProp2,
-
-                        entry,
-                        sources,
-                        i,
-                        pastSourceTarget;
-
-                    //  If the mainTypeTarget has this property, then we need to
-                    //  check whether the trait type has it too - in that case,
-                    //  we just proceed on.
-                    if (TP.isProperty(mainTypeTarget, propName)) {
-
-                        checkProp1 = mainTypeTarget[propName];
-                        checkProp2 = traitTypeTarget[propName];
-
-                        if (checkProp1 === checkProp2) {
-                            return;
-                        }
-
-                        //  If they both really exist, then we need to drill in
-                        //  and see if they have '$resolutionMethod' slots that
-                        //  would match the other's slot (or '$resolutionMethod'
-                        //  slot). This is critical to avoid problems with
-                        //  traits cascading down the inheritance hierarchy.
-                        if (checkProp1 && checkProp2) {
-                            checkProp1 = checkProp1.$resolutionMethod ?
-                                            checkProp1.$resolutionMethod :
-                                            checkProp1;
-                            checkProp2 = checkProp2.$resolutionMethod ?
-                                            checkProp2.$resolutionMethod :
-                                            checkProp2;
-
-                            if (checkProp1 === checkProp2) {
-                                return;
-                            }
-                        }
-                    }
-
-                    //  If the property already has an entry, then check to see
-                    //  if this trait is represented in its list of sources. If
-                    //  it is, then this trait/property combination is already
-                    //  represented.
-                    if (TP.isValid(entry = resolutions.at(propName))) {
-                        sources = entry.at('sources');
-                        if (sources.indexOf(traitType) !== TP.NOT_FOUND) {
-                            return;
-                        }
-
-                        //  Loop over all of the sources that have been
-                        //  resolutions for this slot so far and make the same
-                        //  checks that we made above. Again, critical to avoid
-                        //  problems with traits and the inheritance hierachy.
-                        for (i = 0; i < sources.getSize(); i++) {
-                            pastSourceTarget = sources.at(i).getPrototype();
-
-                            checkProp1 = pastSourceTarget[propName];
-                            checkProp2 = traitTypeTarget[propName];
-
-                            if (checkProp1 === checkProp2) {
-                                return;
-                            }
-
-                            if (checkProp1 && checkProp2) {
-                                checkProp1 = checkProp1.$resolutionMethod ?
-                                                checkProp1.$resolutionMethod :
-                                                checkProp1;
-                                checkProp2 = checkProp2.$resolutionMethod ?
-                                                checkProp2.$resolutionMethod :
-                                                checkProp2;
-
-                                if (checkProp1 === checkProp2) {
-                                    return;
-                                }
-                            }
-                        }
-
-                        //  Otherwise, there was an entry for this property, but
-                        //  this trait is not represented in it - therefore we
-                        //  have a *conflict*. Add this trait type to the list
-                        //  of sources and mark the property as conflicted.
-                        sources.push(traitType);
-                    } else {
-                        //  If the property is defined on the main type
-                        if (TP.isDefined(mainTypeTarget[propName])) {
-
-                            //  If the main type *owns* the property, or its not
-                            //  a method, then we can use the main type, along
-                            //  with the trait type, as the resolving sources.
-                            if (TP.owns(mainTypeTarget, propName) ||
-                                !TP.isMethod(mainTypeTarget[propName])) {
-
-                                entry = TP.hc('sources',
-                                                TP.ac(mainType, traitType));
-                            } else {
-                                //  Otherwise, we need to use the *owner* of the
-                                //  method that happens to be found (via the
-                                //  prototype chain) as that property on the
-                                //  main type.
-                                entry = TP.hc(
-                                    'sources',
-                                    TP.ac(mainTypeTarget[propName][TP.OWNER],
-                                            traitType));
-                            }
-                        } else {
-                            entry = TP.hc('sources', TP.ac(traitType));
-                        }
-                        resolutions.atPut(propName, entry);
-                    }
-                });
-        });
-
-    //  Instance-side compose
-
-    if (TP.notValid(resolutions = this.get('$traitsInstResolutions'))) {
-        resolutions = TP.hc();
-        this.set('$traitsInstResolutions', resolutions);
-    }
-
-    mainTypeTarget = this.getInstPrototype();
-
-    //  Then, loop over each trait, getting all of the known properties of that
-    //  type object's *instance prototype* and try to populate entries for them
-    //  into the 'traits instance resolutions' hash.
-    traits.forEach(
-        function(traitType) {
-            var traitTypeTarget,
-                traitProps;
-
-            traitTypeTarget = traitType.getInstPrototype();
-
-            traitProps = traitTypeTarget.getInterface('known');
-
-            //  Loop over each property and make an entry in the 'resolutions'
-            //  hash
-            traitProps.forEach(
-                function(propName) {
-                    var checkProp1,
-                        checkProp2,
-
-                        entry,
-                        sources,
-                        i,
-                        pastSourceTarget;
-
-                    //  If the mainTypeTarget has this property, then we need to
-                    //  check whether the trait type has it too - in that case,
-                    //  we just proceed on.
-                    if (TP.isProperty(mainTypeTarget, propName)) {
-                        checkProp1 = mainTypeTarget[propName];
-                        checkProp2 = traitTypeTarget[propName];
-
-                        if (checkProp1 === checkProp2) {
-                            return;
-                        }
-
-                        //  If they both really exist, then we need to drill in
-                        //  and see if they have '$resolutionMethod' slots that
-                        //  would match the other's slot (or '$resolutionMethod'
-                        //  slot). This is critical to avoid problems with
-                        //  traits cascading down the inheritance hierarchy.
-                        if (checkProp1 && checkProp2) {
-                            checkProp1 = checkProp1.$resolutionMethod ?
-                                            checkProp1.$resolutionMethod :
-                                            checkProp1;
-                            checkProp2 = checkProp2.$resolutionMethod ?
-                                            checkProp2.$resolutionMethod :
-                                            checkProp2;
-
-                            if (checkProp1 === checkProp2) {
-                                return;
-                            }
-                        }
-                    }
-
-                    //  If the property already has an entry, then check to see
-                    //  if this trait is represented in its list of sources. If
-                    //  it is, then this trait/property combination is already
-                    //  represented.
-                    if (TP.isValid(entry = resolutions.at(propName))) {
-                        sources = entry.at('sources');
-
-                        //  Loop over all of the sources that have been
-                        //  resolutions for this slot so far and make the same
-                        //  checks that we made above. Again, critical to avoid
-                        //  problems with traits and the inheritance hierachy.
-                        for (i = 0; i < sources.getSize(); i++) {
-                            pastSourceTarget = sources.at(i).getInstPrototype();
-
-                            checkProp1 = pastSourceTarget[propName];
-                            checkProp2 = traitTypeTarget[propName];
-
-                            if (checkProp1 && checkProp2) {
-                                checkProp1 = checkProp1.$resolutionMethod ?
-                                                checkProp1.$resolutionMethod :
-                                                checkProp1;
-                                checkProp2 = checkProp2.$resolutionMethod ?
-                                                checkProp2.$resolutionMethod :
-                                                checkProp2;
-
-                                if (checkProp1 === checkProp2) {
-                                    return;
-                                }
-                            }
-                        }
-
-                        if (sources.indexOf(traitType) !== TP.NOT_FOUND) {
-                            return;
-                        }
-
-                        //  Otherwise, there was an entry for this property, but
-                        //  this trait is not represented in it - therefore we
-                        //  have a *conflict*. Add this trait type to the list
-                        //  of sources and mark the property as conflicted.
-                        sources.push(traitType);
-                    } else {
-                        //  If the property is defined on the main type
-                        if (TP.isDefined(mainTypeTarget[propName])) {
-
-                            //  If the main type *owns* the property, or its not
-                            //  a method, then we can use the main type, along
-                            //  with the trait type, as the resolving sources.
-                            if (TP.owns(mainTypeTarget, propName) ||
-                                !TP.isMethod(mainTypeTarget[propName])) {
-
-                                entry = TP.hc('sources',
-                                                TP.ac(mainType, traitType));
-                            } else {
-                                //  Otherwise, we need to use the *owner* of the
-                                //  method that happens to be found (via the
-                                //  prototype chain) as that property on the
-                                //  main type.
-                                entry = TP.hc(
-                                    'sources',
-                                    TP.ac(mainTypeTarget[propName][TP.OWNER],
-                                            traitType));
-                            }
-                        } else {
-                            entry = TP.hc('sources', TP.ac(traitType));
-                        }
-                        resolutions.atPut(propName, entry);
-                    }
-                });
-        });
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('$performTraitResolution',
-function() {
-
-    /**
-     * @method $performTraitResolution
-     * @summary Performs the final resolution of trait resolution for the type.
-     *     This is normally called the first time an instance is constructed and
-     *     can be considered a 'one way' operation (i.e. once it's done and the
-     *     type starts returning proper instances, it cannot be done again).
-     * @returns {TP.lang.RootObject} The receiving type.
-     */
-
-    var mainType,
-
-        keys,
-
-        typeResolutions,
-        instResolutions,
-
-        unresolvedTypeTraits,
-        resolvedTypeTraits,
-        unresolvedInstTraits,
-        resolvedInstTraits;
-
-    //  Make sure that we actually have traits
-    if (!this.hasTraits()) {
-        return this;
-    }
-
-    mainType = this;
-
-    //  The resolutions that apply to 'type side' properties.
-    typeResolutions = this.get('$traitsTypeResolutions');
-
-    //  First, make a pass to make sure that any conflicting trait properties
-    //  have been resolved.
-
-    //  Type-side
-
-    unresolvedTypeTraits = TP.hc();
-    resolvedTypeTraits = TP.hc();
-
-    if (TP.notEmpty(typeResolutions)) {
-
-        keys = typeResolutions.getKeys();
-        keys.forEach(
-            function(propName) {
-                var entry,
-                    len,
-                    i,
-                    source,
-                    val,
-                    traitSources;
-
-                entry = typeResolutions.at(propName);
-
-                //  If the trait wasn't manually resolved via 'resolveTrait()',
-                //  then we can resolve it if all but one of the values of
-                //  'propName' on each of the sources is TP.REQUIRED. If more
-                //  than one is "real", then we have a conflict.
-                if (TP.notValid(entry.at('resolvesTo'))) {
-
-                    len = entry.at('sources').getSize();
-                    for (i = 0; i < len; i++) {
-
-                        source = entry.at('sources').at(i);
-
-                        val = source.getPrototype()[propName];
-
-                        if (val !== TP.REQUIRED) {
-                            //  If we already had one that wasn't a TP.REQUIRED,
-                            //  then we have a conflict.
-                            if (TP.isValid(entry.at('resolvesTo'))) {
-
-                                if (TP.notValid(
-                                        traitSources =
-                                            unresolvedTypeTraits.at(propName))) {
-
-                                    traitSources = TP.ac();
-
-                                    //  Push the entry we already found and put
-                                    //  the Array into the 'unresolved traits'
-                                    //  hash.
-                                    traitSources.push(entry.at('resolvesTo'));
-                                    unresolvedTypeTraits.atPut(propName,
-                                                            traitSources);
-
-                                    //  Remove the 'resolvesTo' key - we no
-                                    //  longer can resolve this - we're
-                                    //  conflicted.
-                                    entry.removeKey('resolvesTo');
-                                }
-
-                                traitSources.push(source);
-                            } else {
-                                entry.atPut('resolvesTo', source);
-                            }
-                        }
-                    }
-                }
-
-                if (TP.notValid(entry.at('resolvesTo'))) {
-                    if (TP.notValid(unresolvedTypeTraits.at(propName))) {
-                        unresolvedTypeTraits.atPut(propName, TP.ac());
-                        unresolvedTypeTraits.at(propName).push(TP.REQUIRED);
-                    }
-                } else {
-                    //  Otherwise, there was no conflict.
-                    resolvedTypeTraits.atPut(propName, entry);
-                }
-            });
-
-        //  If we have unresolved traits, bail out here.
-        if (TP.notEmpty(unresolvedTypeTraits)) {
-            typeResolutions = this.$resolveConflictedTraits(
-                                mainType, unresolvedTypeTraits, TP.TYPE_TRACK);
-        }
-    }
-
-    //  Instance-side
-
-    //  The resolutions that apply to 'instance side' properties.
-    instResolutions = this.get('$traitsInstResolutions');
-
-    unresolvedInstTraits = TP.hc();
-    resolvedInstTraits = TP.hc();
-
-    if (TP.notEmpty(instResolutions)) {
-
-        keys = instResolutions.getKeys();
-        keys.forEach(
-            function(propName) {
-                var entry,
-                    len,
-                    i,
-                    source,
-                    val,
-                    traitSources;
-
-                entry = instResolutions.at(propName);
-
-                //  If the trait wasn't manually resolved via 'resolveTrait()',
-                //  then we can resolve it if all but one of the values of
-                //  'propName' on each of the sources is TP.REQUIRED. If more
-                //  than one is "real", then we have a conflict.
-                if (TP.notValid(entry.at('resolvesTo'))) {
-
-                    len = entry.at('sources').getSize();
-                    for (i = 0; i < len; i++) {
-
-                        source = entry.at('sources').at(i);
-
-                        val = source.getInstPrototype()[propName];
-
-                        if (val !== TP.REQUIRED) {
-
-                            //  If we already had one that wasn't a TP.REQUIRED,
-                            //  then we may have a conflict.
-                            if (TP.isValid(entry.at('resolvesTo'))) {
-
-                                if (TP.notValid(
-                                        traitSources =
-                                            unresolvedInstTraits.at(propName))) {
-
-                                    traitSources = TP.ac();
-
-                                    //  Push the entry we already found and put
-                                    //  the Array into the 'unresolved traits'
-                                    //  hash.
-                                    traitSources.push(entry.at('resolvesTo'));
-                                    unresolvedInstTraits.atPut(propName,
-                                                            traitSources);
-
-                                    //  Remove the 'resolvesTo' key - we no
-                                    //  longer can resolve this - we're
-                                    //  conflicted.
-                                    entry.removeKey('resolvesTo');
-                                }
-
-                                //  Push the new entry onto the traits sources.
-                                traitSources.push(source);
-                            } else {
-                                entry.atPut('resolvesTo', source);
-                            }
-                        }
-                    }
-                }
-
-                //  If we don't have a 'resolvesTo', then we need to use the
-                //  conflict detection machinery
-                if (TP.notValid(entry.at('resolvesTo'))) {
-                    if (TP.notValid(unresolvedInstTraits.at(propName))) {
-                        unresolvedInstTraits.atPut(propName, TP.ac());
-                        unresolvedInstTraits.at(propName).push(TP.REQUIRED);
-                    }
-                } else {
-                    //  Otherwise, there was no conflict.
-                    resolvedInstTraits.atPut(propName, entry);
-                }
-            });
-
-        //  If we have unresolved traits, bail out here.
-        if (TP.notEmpty(unresolvedInstTraits)) {
-            instResolutions = this.$resolveConflictedTraits(
-                                mainType, unresolvedInstTraits, TP.INST_TRACK);
-        }
-    }
-
-    //  Then, go ahead and populate the type's TYPE and INST with the proper
-    //  slots
-
-    //  Type-side
-
-    //  First, the ones that resolved properly with no conflicts
-    if (TP.notEmpty(resolvedTypeTraits)) {
-        keys = resolvedTypeTraits.getKeys();
-        keys.forEach(
-            function(propName) {
-                var resolution;
-
-                resolution = resolvedTypeTraits.at(propName).at('resolvesTo');
-
-                //  Note here how we do *not* install a slot if it already
-                //  represented on the receiving object (this.Inst) unless the
-                //  value for that slot is TP.REQUIRED.
-                if (TP.isType(resolution) &&
-                     this.Type[propName] !== TP.REQUIRED &&
-                     resolution.Type[propName] === this.Type[propName]) {
-                    return;
-                }
-
-                this.$populateTraitedSlot(resolution, propName, this.Type, false);
-            }.bind(this));
-    }
-
-    //  Then, the ones that had to get resolved either manually or through the
-    //  auto-resolver.
-    if (TP.notEmpty(typeResolutions)) {
-        keys = typeResolutions.getKeys();
-        keys.forEach(
-            function(propName) {
-                var resolution;
-
-                resolution = typeResolutions.at(propName).at('resolvesTo');
-
-                //  Note here how we do *not* install a slot if it already
-                //  represented on the receiving object (this.Type) unless the
-                //  value for that slot is TP.REQUIRED.
-                if (TP.isType(resolution) &&
-                     this.Type[propName] !== TP.REQUIRED &&
-                     resolution.Type[propName] === this.Type[propName]) {
-                    return;
-                }
-
-                this.$populateTraitedSlot(resolution, propName, this.Type, false);
-            }.bind(this));
-
-        unresolvedTypeTraits.empty();
-    }
-
-    //  Instance-side
-
-    //  First, the ones that resolved properly with no conflicts
-    if (TP.notEmpty(resolvedInstTraits)) {
-        keys = resolvedInstTraits.getKeys();
-        keys.forEach(
-            function(propName) {
-                var resolution;
-
-                resolution = resolvedInstTraits.at(propName).at('resolvesTo');
-
-                //  Note here how we do *not* install a slot if it already
-                //  represented on the receiving object (this.Inst) unless the
-                //  value for that slot is TP.REQUIRED.
-                if (TP.isType(resolution) &&
-                     this.Inst[propName] !== TP.REQUIRED &&
-                     resolution.Inst[propName] === this.Inst[propName]) {
-                    return;
-                }
-
-                this.$populateTraitedSlot(resolution, propName, this.Inst, true);
-            }.bind(this));
-    }
-
-    //  Then, the ones that had to get resolved either manually or through the
-    //  auto-resolver.
-    if (TP.notEmpty(instResolutions)) {
-        keys = instResolutions.getKeys();
-        keys.forEach(
-            function(propName) {
-                var resolution;
-
-                resolution = instResolutions.at(propName).at('resolvesTo');
-
-                //  Note here how we do *not* install a slot if it already
-                //  represented on the receiving object (this.Inst) unless the
-                //  value for that slot is TP.REQUIRED.
-                if (TP.isType(resolution) &&
-                     this.Inst[propName] !== TP.REQUIRED &&
-                     resolution.Inst[propName] === this.Inst[propName]) {
-                    return;
-                }
-
-                this.$populateTraitedSlot(resolution, propName, this.Inst, true);
-            }.bind(this));
-
-        unresolvedInstTraits.empty();
-    }
-
-    if (TP.isEmpty(unresolvedTypeTraits) && TP.isEmpty(unresolvedInstTraits)) {
-        //  The traits are finalized - we're done. No going back ;-).
-        this.set('$traitsFinalized', true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.lang.RootObject.Type.defineMethod('$populateC3Resolver',
 function(c3Resolver) {
 
     /**
      * @method $populateC3Resolver
-     * @summary Populates
+     * @summary Populates the supplied C3 resolver with type names, including
+     *     the main supertype names up the supertype chain and trait types up
+     *     the supertype chain.
+     * @description TIBET uses a C3 resolution mechanism (as described here:
+     *     http://en.wikipedia.org/wiki/C3_linearization), to 'auto resolve'
+     *     traits where the developer hasn't provided an explicit resolution for
+     *     a particular trait.
      * @param {Object} c3Resolver The object used to compute a C3 linearization
      *     of types.
      * @returns {TP.lang.RootObject} The receiver.
@@ -4423,7 +4285,7 @@ function(c3Resolver) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('$populateTraitedSlot',
-function(resolution, propName, targetObject, forInstances) {
+function(resolution, propName, targetObject, track) {
 
     /**
      * @method $populateTraitedSlot
@@ -4435,8 +4297,8 @@ function(resolution, propName, targetObject, forInstances) {
      *     to store it on the receiver.
      * @param {Object} targetObject The target object (either a prototype or
      *     instance prototype) that the resolved property will be put on.
-     * @param {Boolean} forInstances Whether or not this method is being run for
-     *     'instance prototype' properties or not.
+     * @param {String} track The track that the property is for, instance or
+     *     type.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
@@ -4466,7 +4328,7 @@ function(resolution, propName, targetObject, forInstances) {
             resolutionOption = resolution.last();
 
             if (TP.isType(resolutionType)) {
-                if (forInstances) {
+                if (track === TP.INST_TRACK) {
                     mainTypeVal = mainType.Inst[propName];
                     resolutionTypeVal = resolutionType.Inst[propName];
                 } else {
@@ -4522,7 +4384,7 @@ function(resolution, propName, targetObject, forInstances) {
             //  type name.
             if (TP.isType(resolutionType = TP.sys.getTypeByName(resolution)) &&
                 resolutionType !== mainType) {
-                if (forInstances) {
+                if (track === TP.INST_TRACK) {
                     resolutionTypeVal = resolutionType.Inst[propName];
                 } else {
                     resolutionTypeVal = resolutionType.Type[propName];
@@ -4539,7 +4401,7 @@ function(resolution, propName, targetObject, forInstances) {
             //  If the resolution is simply a Type, then we just look up the
             //  property on that type using the propName and install either an
             //  attribute or method, depending on what's on that slot.
-            if (forInstances) {
+            if (track === TP.INST_TRACK) {
                 resolutionTypeVal = resolutionType.Inst[propName];
             } else {
                 resolutionTypeVal = resolutionType.Type[propName];
@@ -4560,7 +4422,7 @@ function(resolution, propName, targetObject, forInstances) {
             //  If it is defined on the main type target, then we don't redefine
             //  it - it may have a value.
             //  TODO: Do we raise an exception if it is defined?
-            if (forInstances) {
+            if (track === TP.INST_TRACK) {
                 if (TP.notDefined(mainType.Inst[propName])) {
                     mainType.Inst.defineAttribute(propName, resolutionTypeVal);
                 }
@@ -4570,7 +4432,7 @@ function(resolution, propName, targetObject, forInstances) {
                 }
             }
 
-            return this;
+            return resolutionTypeVal;
         }
 
         //  If we didn't assign a dispatch Function earlier, that means that we
@@ -4598,188 +4460,7 @@ function(resolution, propName, targetObject, forInstances) {
                                     resolutionType.getID() + '.' + propName;
     }
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('$resolveConflictedTraits',
-function(targetType, conflictedTraits, track) {
-
-    /**
-     * @method $resolveConflictedTraits
-     * @summary Processes the supplied hash of conflicted traits.
-     * @description If auto-resolution is turned on, it will try to resolve the
-     *     conflicts. If it cannot, an error will be raised. If auto-resolution
-     *     is not turned on, an error will be raised straightaway.
-     * @param {TP.lang.RootObject} targetType The type object that the
-     *     conflicted property was found on.
-     * @param {TP.core.Hash} conflictedTraits A hash of the conflicted traits.
-     *     The keys in this hash are the property names that were conflicted and
-     *     the values are a list of the computed possible sources of trait
-     *     resolution, usually a type object.
-     * @param {Constants} track The track, either TP.TYPE_TRACK or
-     *     TP.INST_TRACK, that the conflicted property was found on.
-     * @returns {TP.core.Hash} A Hash of properly-resolved traits.
-     */
-
-    var unresolvedTraits,
-        resolutions,
-        c3TypeList,
-        errStr;
-
-    if (TP.isTrue(TP.sys.cfg('oo.$$traits_resolve'))) {
-
-        //  There still may be conflicts that we can't handle via
-        //  auto-resolution, so we keep a hash for ones that we couldn't
-        //  auto resolve.
-        unresolvedTraits = TP.hc();
-
-        //  The real computed resolutions
-        resolutions = TP.hc();
-
-        //  Compute the C3 linearization for the target type
-        c3TypeList = targetType.computeC3Linearization();
-
-        //  Iterate over the unprocessed conflicts and try to auto-resolve them.
-        conflictedTraits.sort().perform(
-                function(kvPair) {
-                    var propName,
-                        sources,
-                        resolvedType,
-
-                        i,
-                        candidateIndex,
-                        lowestIndex;
-
-                    propName = kvPair.first();
-
-                    resolvedType = null;
-
-                    if (TP.isArray(sources = kvPair.last())) {
-
-                        lowestIndex = c3TypeList.getSize() - 1;
-
-                        //  If we got real candidate types for the conflicts,
-                        //  then try to resolve using them.
-                        if (TP.notEmpty(sources)) {
-
-                            //  Iterate over the candidate types and find the
-                            //  one with the *lowest* index in c3TypeList. The
-                            //  C3 list is sorted from *most* specific to
-                            //  *least* specific - therefore, the one with the
-                            //  lowest index is the one
-                            //  we want.
-                            for (i = 0; i < sources.getSize(); i++) {
-                                candidateIndex =
-                                    c3TypeList.indexOf(sources.at(i).getName());
-                                lowestIndex = lowestIndex.min(candidateIndex);
-                            }
-
-                            //  Try to get a matching type for the type name we
-                            //  computed.
-                            resolvedType = TP.sys.getTypeByName(
-                                                c3TypeList.at(lowestIndex));
-                        }
-                    }
-
-                    //  If the conflicted traits didn't have any sources or we
-                    //  couldn't get a type for the name that we computed, then
-                    //  add that to the hash that's keeping track of unresolved
-                    //  traits
-                    if (!TP.isType(resolvedType)) {
-                        unresolvedTraits.atPut(propName, kvPair.last());
-                    } else {
-
-                        //  Otherwise, add it to the list of resolutions.
-                        resolutions.atPut(
-                                propName, TP.hc('resolvesTo', resolvedType));
-
-                        //  If we're warn()ing when we auto resolve, then do so
-                        //  here.
-                        if (TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
-
-                            TP.ifWarn() ?
-                                TP.warn('AUTO RESOLVING CONFLICTED' +
-                                        ' ' + track.toUpperCase() + '-LEVEL' +
-                                        ' PROPERTY: ' + propName +
-                                        ' ON TARGET: ' + TP.name(targetType) +
-                                        ' TO TYPE: ' + TP.name(resolvedType) +
-                                        ' (CONFLICTED BETWEEN: ' +
-                                                sources.collect(
-                                                    function(aType) {
-                                                        return aType.getName();
-                                                    }).join(', ') + ')',
-                                        TP.LOG) : 0;
-                        }
-                    }
-                });
-    } else {
-
-        //  Otherwise, we're not auto-resolving, so just set unresolved traits
-        //  to conflicted traits.
-        unresolvedTraits = conflictedTraits;
-    }
-
-    if (TP.notEmpty(unresolvedTraits)) {
-
-        errStr = 'TARGET: ' + TP.name(targetType) + ' ' +
-                    track.toUpperCase() + '-LEVEL:\n';
-
-        unresolvedTraits.sort().perform(
-                function(kvPair) {
-                    var propName,
-                        sources;
-
-                    propName = kvPair.first();
-
-                    errStr += 'CONFLICTED PROPERTY: ' +
-                                propName +
-                                ' :: PROBLEM: ';
-
-                    if (TP.isArray(sources = kvPair.last())) {
-                        errStr += 'conflicted between: ' +
-                            sources.collect(
-                                function(aType) {
-                                    var proto,
-                                        val;
-
-                                    if (track === TP.TYPE_TRACK) {
-                                        proto = aType.getPrototype();
-                                    } else {
-                                        proto = aType.getInstPrototype();
-                                    }
-
-                                    val = proto[propName];
-
-                                    if (TP.isMethod(val)) {
-                                        //  Important for reporting purposes
-                                        //  to actually find the owner.
-                                        return TP.name(val[TP.OWNER]);
-                                    }
-
-                                    return TP.name(aType);
-                                });
-                    } else {
-                        errStr += sources;
-                    }
-
-                    errStr += ' \n';
-                });
-
-        errStr += '\nUse resolveTrait[s] to repair' +
-                    ' or turn on trait auto-resolution';
-
-        if (track === TP.TYPE_TRACK) {
-            return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved type traits: ', errStr));
-        } else {
-            return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved instance traits: ', errStr));
-        }
-    }
-
-    return resolutions;
+    return dispatchFunc;
 });
 
 //  ------------------------------------------------------------------------
@@ -4846,17 +4527,11 @@ function(propertyName, resolverObject, resolvingOption) {
         return this;
     }
 
-    //  If we've already finalized traits for this type, we don't proceed any
-    //  further
-    if (TP.isTrue(this.get('$traitsFinalized'))) {
-        //  TODO Raise an exception
-        return this;
-    }
-
     //  Note here how we go after the TP.OWNER - that's because, in this
     //  context, 'this' is the instance prototype object, not the type and not
     //  an instance of the type (as per our check above).
-    if (TP.notValid(resolutions = this[TP.OWNER].get('$traitsInstResolutions'))) {
+    if (TP.notValid(
+            resolutions = this[TP.OWNER].get('$traitsInstResolutions'))) {
         resolutions = TP.hc();
         this[TP.OWNER].set('$traitsInstResolutions', resolutions);
     }
@@ -4911,13 +4586,6 @@ function(propertyNames, resolverObject) {
     //  'this' will be bound to that object. If it's not (i.e. the user is
     //  trying to execute on a real instance of this type), throw an exception
     if (!TP.isPrototype(this)) {
-        //  TODO Raise an exception
-        return this;
-    }
-
-    //  If we've already finalized traits for this type, we don't proceed any
-    //  further
-    if (TP.isTrue(this.get('$traitsFinalized'))) {
         //  TODO Raise an exception
         return this;
     }
@@ -5000,13 +4668,6 @@ function(propertyName, resolverObject, resolvingOption) {
         return this;
     }
 
-    //  If we've already finalized traits for this type, we don't proceed any
-    //  further
-    if (TP.isTrue(this.get('$traitsFinalized'))) {
-        //  TODO Raise an exception
-        return this;
-    }
-
     //  Note here how we go after the TP.OWNER - that's because, in this
     //  context, 'this' is the type prototype object, not the type (as per our
     //  check above).
@@ -5069,13 +4730,6 @@ function(propertyNames, resolverObject) {
         return this;
     }
 
-    //  If we've already finalized traits for this type, we don't proceed any
-    //  further
-    if (TP.isTrue(this.get('$traitsFinalized'))) {
-        //  TODO Raise an exception
-        return this;
-    }
-
     if (!TP.isArray(propertyNames)) {
         return this.raise('TP.sig.InvalidParameter',
                 'Not a valid Array of property names for trait resolution.');
@@ -5088,6 +4742,140 @@ function(propertyNames, resolverObject) {
             });
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('$resolveTraitedProperty',
+function(propName, track) {
+
+    /**
+     * @method $resolveTraitedProperty
+     * @summary Resolves the property with the supplied name and track using the
+     *     trait compositions computed for it.
+     * @param {String} propName The name of the property to resolve.
+     * @param {String} track The track to locate the property on.
+     * @returns {TP.lang.RootObject} The receiving type.
+     */
+
+    var resolutions,
+        mainTypeTarget,
+
+        entry,
+        len,
+        i,
+        source,
+        val,
+
+        resolution,
+        unresolution,
+
+        resolutionTypeTarget;
+
+    //  Grab the proper set of potential resolutions of the trait and the target
+    //  we will be using.
+    if (track === TP.TYPE_TRACK) {
+        resolutions = this.$get('$traitsTypeResolutions');
+        mainTypeTarget = this.Type;
+    } else if (track === TP.INST_TRACK) {
+        resolutions = this.get('$traitsInstResolutions');
+        mainTypeTarget = this.Inst;
+    } else {
+        //  Error
+    }
+
+    //  Get the resolution entry for this property
+    entry = resolutions.at(propName);
+
+    //  If the trait wasn't manually resolved via 'resolveTrait()', then we can
+    //  still resolve it here if all but one of the values of 'propName' on each
+    //  of the sources is TP.REQUIRED. If more than one is "real", then we have
+    //  a conflict.
+    if (TP.notValid(entry.at('resolvesTo'))) {
+
+        //  Loop over all of the 'possible resolution sources'.
+        len = entry.at('sources').getSize();
+        for (i = 0; i < len; i++) {
+
+            source = entry.at('sources').at(i);
+
+            val = track === TP.INST_TRACK ?
+                    source.getInstPrototype()[propName] :
+                    source.getPrototype()[propName];
+
+            if (val !== TP.REQUIRED) {
+                //  If we already had one that wasn't a TP.REQUIRED, then we
+                //  have a conflict. Create an 'unresolution' and clear the
+                //  'resolvesTo' property in the resolution entry.
+                if (TP.isValid(entry.at('resolvesTo'))) {
+
+                    if (TP.notValid(unresolution)) {
+
+                        unresolution = TP.ac();
+
+                        //  Push the 'resolvesTo' source that we already found
+                        unresolution.push(entry.at('resolvesTo'));
+
+                        //  Remove the 'resolvesTo' key - we no longer can
+                        //  resolve this - we're conflicted.
+                        entry.removeKey('resolvesTo');
+                    }
+
+                    //  Push the new source value
+                    unresolution.push(source);
+                } else {
+
+                    //  The first time through - put the source value into the
+                    //  resolution entry's 'resolvesTo' property.
+                    entry.atPut('resolvesTo', source);
+                }
+            }
+        }
+    }
+
+    //  If there is no entry in 'resolvesTo', that means we had a conflict -
+    //  let's try to 'auto resolve' it.
+    if (TP.notValid(resolution = entry.at('resolvesTo'))) {
+
+        //  Normalize non-Array 'unresolution' values to TP.REQUIRED - this
+        //  allows for an easy check in the auto resolve machinery.
+        if (!TP.isArray(unresolution)) {
+            unresolution = TP.REQUIRED;
+        }
+
+        //  Execute the auto-resolution machinery.
+        resolution = this.$autoResolveConflictedTrait(
+                                propName, unresolution, track);
+
+        if (TP.isValid(resolution)) {
+            entry.atPut('resolvesTo', resolution);
+        }
+    }
+
+    if (TP.isType(resolution)) {
+
+        if (track === TP.TYPE_TRACK) {
+            resolutionTypeTarget = resolution.Type;
+        } else if (track === TP.INST_TRACK) {
+            resolutionTypeTarget = resolution.Inst;
+        }
+
+        //  Note here how we do *not* install a slot if it already represented
+        //  on the receiving object (this.Type / this.Inst) unless the value for
+        //  that slot is TP.REQUIRED.
+        if (mainTypeTarget[propName] !== TP.REQUIRED &&
+            resolutionTypeTarget[propName] === mainTypeTarget[propName]) {
+            return mainTypeTarget[propName];
+        }
+
+        //  Populate the slot with the resolution.
+        return this.$populateTraitedSlot(resolution,
+                                            propName,
+                                            mainTypeTarget,
+                                            track);
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -8280,22 +8068,6 @@ function() {
     //  themselves.
     if (this.isAbstract()) {
         return this.constructViaSubtype.apply(this, arguments);
-    }
-
-    //  If our traits haven't yet been finalized, try to do that. Note that this
-    //  type very well might *not* have traits, but one of it's supertypes may.
-    //  This flag will only be set to true if all trait resolution 'up the
-    //  chain' has been performed. This way, we can ensure that all supertypes
-    //  have properly finalized any traits they might have.
-    if (!this.get('$traitsFinalized')) {
-
-        this.finalizeTraits();
-
-        //  If they remain unfinalized then that's an error - throw one. We
-        //  can't create instances of types that have unresolved traits.
-        if (!this.get('$traitsFinalized')) {
-            return undefined;
-        }
     }
 
     //  If we can respond to 'initializeLazily', do it.

@@ -30,23 +30,6 @@ TP.xctrls.log.Inst.resolveTraits(
 TP.xctrls.log.Inst.resolveTrait('addItem', TP.xctrls.MultiItemElement);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.log.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 

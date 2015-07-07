@@ -34,10 +34,6 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    //  No instances of this object are created, so we need to finalize traits
-    //  on type initialization.
-    this.finalizeTraits();
-
     //  We use the SSE signal source as our watcher signal source type.
     this.set('watcherSignalSourceType', 'TP.core.SSESignalSource');
 

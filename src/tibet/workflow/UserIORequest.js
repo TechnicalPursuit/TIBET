@@ -37,10 +37,6 @@ TP.sig.UserIORequest.Inst.resolveTraits(
             'removeKey', 'shouldLog'),
     TP.sig.Signal);
 
-//  Finalize the traits right away as subtypes of this type are used during the
-//  booting process.
-TP.sig.UserIORequest.finalizeTraits();
-
 TP.sig.UserIORequest.isSignalingRoot(true);
 
 //  ------------------------------------------------------------------------

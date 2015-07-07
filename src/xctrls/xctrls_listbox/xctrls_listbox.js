@@ -30,23 +30,6 @@ TP.xctrls.listbox.Inst.resolveTraits(
 TP.xctrls.listbox.Inst.resolveTrait('addItem', TP.xctrls.MultiItemElement);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.listbox.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 

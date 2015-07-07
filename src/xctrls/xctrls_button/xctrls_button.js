@@ -28,23 +28,5 @@ TP.xctrls.button.Inst.resolveTraits(
         TP.xctrls.Element);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.button.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

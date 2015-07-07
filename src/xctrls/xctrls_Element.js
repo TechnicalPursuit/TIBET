@@ -35,21 +35,6 @@ TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Element.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
-     */
-
-    this.finalizeTraits();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.Element.Type.defineMethod('tagCompile',
 function(aRequest) {
 
