@@ -584,6 +584,7 @@
         PhantomTSH.page.settings.localToRemoteUrlAccessEnabled = true;
         PhantomTSH.page.settings.webSecurityEnabled = false;
 
+        PhantomTSH.page.clearMemoryCache();
         PhantomTSH.page.open(PhantomTSH.url, PhantomTSH.opened);
     };
 
