@@ -3472,6 +3472,11 @@ function(varargs) {
                 traitTypes,
                 retVal;
 
+            //  If we have a final value, just return that.
+            if (traitTrapGetter.finalVal) {
+                return traitTrapGetter.finalVal;
+            }
+
             //  If the no exec flag is true (see below in the main method body),
             //  then we just hand back the initially configured value.
             if (TP.$$no_trait_getter_exec === true) {
@@ -3486,20 +3491,13 @@ function(varargs) {
             propName = traitTrapGetter.targetPropName;
             propTrack = traitTrapGetter.traitTrack;
 
-            //  (Re)define the property on our target that just hands back the
-            //  initial target value. This is done so that trait composition and
-            //  resolution below will not trigger this function when poking at
-            //  the slot we're on.
-            Object.defineProperty(
-                traitTrapGetter.target,
-                propName,
-                {
-                    writable: true,
-                    value: traitTrapGetter.targetVal
-                });
-
             //  Grab all of the type's traits.
             traitTypes = mainType.getAllTraits();
+
+            //  Set the flag so that during composition and resolution we won't
+            //  recurse, but we'll stop short above and just return the original
+            //  value.
+            TP.$$no_trait_getter_exec = true;
 
             //  Iterate over them and compose this traited property using the
             //  main type and the individual trait type. This will cause a
@@ -3517,20 +3515,18 @@ function(varargs) {
             //  represents the resolved trait.
             retVal = mainType.$resolveTraitedProperty(propName, propTrack);
 
+            //  Now that composition and resolution are done, flip the flag back
+            //  off.
+            TP.$$no_trait_getter_exec = false;
+
             //  One trick here is that if the Object value is undefined, we want
             //  to return null instead. This is so that TIBET's 'undefined
             //  attribute' machinery will work properly.
             retVal = retVal === undefined ? null : retVal;
 
-            //  (Re)define the property one last time with the Object value that
-            //  got computed.
-            Object.defineProperty(
-                traitTrapGetter.target,
-                propName,
-                {
-                    writable: true,
-                    value: retVal
-                });
+            //  Set the final value to the returned value. From now on, we'll
+            //  just return this value.
+            traitTrapGetter.finalVal = retVal;
 
             //  Make sure to return the computed Object value so that the first
             //  slot access (that kicked off this whole process) gets the
