@@ -3823,6 +3823,7 @@ function() {
      */
 
     this.addKeyRing('Public');
+
     return;
 });
 
