@@ -6,6 +6,7 @@
 <config id="properties" if="boot.phase_one">
     <property name="tibet.sherpa" value="false"/>
     <property name="tibet.tdc" value="false"/>
+    <property name="uri.remote_watch" value="false"/>
 </config>
 
 <config id="phantom">
