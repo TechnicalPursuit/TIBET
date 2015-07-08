@@ -9057,19 +9057,34 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('compile',
-function(aRequest) {
+function(aRequest, replaceNode, alternateNode) {
 
     /**
      * @method compile
      * @summary This method invokes the 'compile' functionality of the tag
      *     processing system, to provide conversion from authored markup into
      *     markup that can be understood by the platform.
+     * @description It is important to note that this method will use the
+     *     receiver's native node as the source for compilation *and will
+     *     reassign the receiver's native node reference to any new content
+     *     produced*. It will *not*, however, replace it's old node in that
+     *     node's hierarchy unless the 'replaceNode' flag is true (or unless the
+     *     receiver's compilation process has already done it).
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @param {Boolean} [replaceNode=false] Whether or not this method will
+     *     replace its native node in that node's hierarchy. Note that,
+     *     depending on the receiver's compilation process, this might have
+     *     already been done.
+     * @param {Node} alternateNode An alternate node to use in place of the
+     *     native node of the receiver when compiling. This parameter is
+     *     optional.
      * @returns {TP.core.CollectionNode} The receiver or a new object if the
      *     tag content compiles to a different kind of tag than the receiver.
      */
 
-    var node,
+    var originalNode,
+
+        node,
 
         shouldProcess,
 
@@ -9084,7 +9099,16 @@ function(aRequest) {
 
         type;
 
-    node = this.getNativeNode();
+    originalNode = this.getNativeNode();
+
+    //  If an alternate node was supplied, use it (and set it as our native node
+    //  so that the compilation machinery will work properly).
+    if (TP.isNode(alternateNode)) {
+        node = alternateNode;
+        this.setNativeNode(alternateNode);
+    } else {
+        node = originalNode;
+    }
 
     //  before we worry about anything else let's make sure we've got the
     //  proper frame of reference for any URI content
@@ -9163,17 +9187,28 @@ function(aRequest) {
     //  wrapper and return that as the result.
 
     if (!TP.isNode(newNode)) {
+
         return newNode;
+
     } else if (TP.isDocument(node)) {
+
         //  The original node was a document, so set its document element to the
         //  newly produced node.
         TP.nodeReplaceChild(node, newNode, node.documentElement, false);
-    } else if (
+
+    } else if ((type = TP.core.Node.getConcreteType(newNode)) ===
+                                                            this.getType()) {
+
         //  if our processing produced a new native node of the same type as our
-        //  original content (so we're still the right kind of wrapper) we can
-        //  update our internal node content.
-        (type = TP.core.Node.getConcreteType(newNode)) === this.getType()) {
+        //  original native node (so we're still the right kind of wrapper) we
+        //  can update our internal node content.
+        if (!TP.nodeIsDetached(originalNode) && TP.isTrue(replaceNode)) {
+
+            newNode = TP.elementReplaceContent(
+                                originalNode, newNode, null, false);
+        }
         this.setNativeNode(newNode);
+
     } else {
         //  It's not so we'll need to get a new wrapper and return that as the
         //  result.
