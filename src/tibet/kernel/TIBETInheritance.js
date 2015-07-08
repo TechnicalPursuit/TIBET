@@ -3857,6 +3857,8 @@ function(traitType, propName, track) {
         checkProp1,
         checkProp2,
 
+        computeOwningType,
+
         entry,
         sources,
         i,
@@ -3911,6 +3913,34 @@ function(traitType, propName, track) {
         }
     }
 
+    //  Define a Function that will compute the 'owning type' of the supplied
+    //  type target (using either the Type or Inst prototype) and the property
+    //  name.
+    computeOwningType = function(aTypeTarget, aPropName) {
+
+        var owner;
+
+        //  If it's not a Method, then it's just an attribute slot - return the
+        //  '$$owner' (which for the supplied type target is the owning type
+        //  object).
+        if (!TP.isMethod(aTypeTarget[aPropName])) {
+            return aTypeTarget.$$owner;
+        }
+
+        //  Grab the owner of the method.
+        owner = aTypeTarget[aPropName][TP.OWNER];
+
+        //  If the owner is either one of these two, we don't want because it
+        //  won't be able to answer most of the metaprotocol level questions...
+        //  return TP.lang.RootObject instead.
+        if (owner === TP.META_TYPE_OWNER ||
+            owner === TP.META_INST_OWNER) {
+            return TP.lang.RootObject;
+        }
+
+        return owner;
+    };
+
     //  If the property already has an entry, then check to see if this trait is
     //  represented in its list of sources. If it is, then this trait/property
     //  combination is already represented.
@@ -3956,28 +3986,21 @@ function(traitType, propName, track) {
         //  conflicted.
         sources.push(traitType);
     } else {
-        //  If the property is defined on the receiver
+
         if (TP.isDefined(mainTypeTarget[propName])) {
 
-            //  If the receiver *owns* the property, or its not a method, then
-            //  we can use the receiver, along with the trait type, as the
-            //  resolving sources.
-            if (TP.owns(mainTypeTarget, propName) ||
-                !TP.isMethod(mainTypeTarget[propName])) {
+            entry = TP.hc(
+                'sources',
+                TP.ac(computeOwningType(mainTypeTarget, propName),
+                        computeOwningType(traitTypeTarget, propName)));
 
-                entry = TP.hc('sources', TP.ac(this, traitType));
-            } else {
-                //  Otherwise, we need to use the *owner* of the method that
-                //  happens to be found (via the prototype chain) as that
-                //  property on the receiver.
-                entry = TP.hc(
-                    'sources',
-                    TP.ac(mainTypeTarget[propName][TP.OWNER],
-                            traitType));
-            }
         } else if (TP.isDefined(traitTypeTarget[propName])) {
-            entry = TP.hc('sources', TP.ac(traitType));
+
+            entry = TP.hc(
+                'sources',
+                TP.ac(computeOwningType(traitTypeTarget, propName)));
         }
+
         resolutions.atPut(propName, entry);
     }
 
