@@ -190,7 +190,7 @@
         'boolean': ['color', 'errexit', 'errimg', 'help', 'usage', 'debug',
             'tap', 'system', 'quiet'],
         'string': ['script', 'url', 'profile', 'params', 'level'],
-        'number': ['timeout'],
+        'number': ['timeout', 'remote-debug-port'],
         'default': {
             color: true,
             tap: true
@@ -355,8 +355,10 @@
      * Executes the TIBET shell script provided using the TP.shell() primitive.
      * The PhantomTSH.page.onCallback routine is invoked with the result JSON.
      * @param {String} tshInput The TSH command line to execute.
+     * @param {Boolean} pauseBeforeExec Whether or not to pause (using a
+     *     'debugger' statement) before beginning execution of the shell script.
      */
-    PhantomTSH.exec = function(tshInput) {
+    PhantomTSH.exec = function(tshInput, pauseBeforeExec) {
         var handler;
 
         handler = function(aSignal, stdioResults) {
@@ -391,6 +393,10 @@
                 return;
             }
         };
+
+        if (pauseBeforeExec) {
+            debugger;
+        }
 
         TP.shell(TP.hc(
             'cmdSrc', tshInput,         // the TSH input to run
@@ -722,6 +728,7 @@
         //PhantomTSH.timeout = argv.timeout || PhantomTSH.DEFAULT_TIMEOUT;
     };
 
+
     /**
      * Performs basic TAP-format output processing.
      * @param {String} msg The TAP-formatted message to process.
@@ -801,23 +808,45 @@
         }
     };
 
+
     /**
      * Triggers execution of the page.evaluate function which loads our
      * execution logic and the script we want to run.
      */
     PhantomTSH.tsh = function() {
 
-        PhantomTSH.lastActivity = new Date().getTime();
-        PhantomTSH.timer = setInterval(function() {
-            var now = new Date().getTime();
-            if (now - PhantomTSH.lastActivity > PhantomTSH.timeout) {
-                clearInterval(PhantomTSH.timer);
-                PhantomTSH.exit(PhantomTSH.color('Operation timed out.', 'red'),
-                    PhantomTSH.ERROR);
-            }
-        }, 250);
+        var pauseBeforeExec;
 
-        PhantomTSH.page.evaluate(PhantomTSH.exec, PhantomTSH.script);
+        PhantomTSH.lastActivity = new Date().getTime();
+
+        //  If the CLI command that invoked this passed along a remote debugging
+        //  port, then the user wants to debug this session, so we pause with a
+        //  'debugger' statement per the PhantomJS instructions. Note here how
+        //  we do *not* install an 'exit' timer, as its indeterminate how long
+        //  it will take the user to configure their debugger to take over from
+        //  here.
+        if (PhantomTSH.argv['remote-debug-port']) {
+            pauseBeforeExec = true;
+
+            debugger;
+        } else {
+            //  Otherwise, we're running in a regular context, which means we
+            //  set up a timer.
+            pauseBeforeExec = false;
+
+            PhantomTSH.timer = setInterval(function() {
+                var now = new Date().getTime();
+                if (now - PhantomTSH.lastActivity > PhantomTSH.timeout) {
+                    clearInterval(PhantomTSH.timer);
+                    PhantomTSH.exit(PhantomTSH.color('Operation timed out.', 'red'),
+                        PhantomTSH.ERROR);
+                }
+            }, 250);
+        }
+
+        PhantomTSH.page.evaluate(PhantomTSH.exec,
+                                    PhantomTSH.script,
+                                    pauseBeforeExec);
     };
 
 

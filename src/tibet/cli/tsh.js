@@ -91,7 +91,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     'boolean': ['color', 'errimg', 'help', 'usage', 'debug', 'tap',
         'system', 'quiet'],
     'string': ['script', 'url', 'profile', 'params', 'level'],
-    'number': ['timeout'],
+    'number': ['timeout', 'remote-debug-port'],
     'default': {
         color: true
     }
@@ -113,6 +113,41 @@ Cmd.prototype.USAGE = 'tibet tsh <script> [<phantomtsh_args>]';
  * Perform phantom startup announcement as appropriate for the (sub)command.
  */
 Cmd.prototype.announce = function() {
+
+    var port,
+        str;
+
+    if (CLI.isValid(port = this.options['remote-debug-port'])) {
+
+        str =
+        'You\'ve configured TIBET to run using a remote debugger.\n' +
+        'To begin a debugging session, follow these steps:\n\n' +
+
+        '1. Navigate to this url using a browser:\n\n' +
+            'http://localhost:' +
+            port +
+            '/webkit/inspector/inspector.html?page=1\n\n' +
+
+        '2. Open the console by clicking the button in the lower\n' +
+        'left corner and evaluate the following source code: \n\n' +
+        '__run()\n\n' +
+        'TIBET will then load and pause in the debugger.\n\n' +
+
+        '3. Open a *second* browser window or tab and navigate to this\n' +
+        'url:\n\n' +
+            'http://localhost:' +
+            port +
+            '/webkit/inspector/inspector.html?page=2\n\n' +
+
+        '4. Return to the *first* browser window or tab and click the\n' +
+        '"Run" button (an arrow in the upper right hand corner)\n\n' +
+
+        '5. Return to the *second* browser window or tab. TIBET will\n' +
+        'be paused, ready for you to set breakpoints, etc.\n';
+
+        this.info(str);
+    }
+
     return;
 };
 
@@ -179,6 +214,11 @@ Cmd.prototype.execute = function() {
     if (this.options.debug && this.options.verbose) {
         arglist.unshift(true);
         arglist.unshift('--debug');
+    }
+
+    if (CLI.isValid(this.options['remote-debug-port'])) {
+        arglist.unshift('--remote-debugger-port=' +
+                        this.options['remote-debug-port']);
     }
 
     this.debug('phantomjs ' + arglist.join(' '));
