@@ -175,11 +175,11 @@ Cmd.prototype.getScript = function() {
         target = this.options._[1];
     }
 
-    prefix = ':test ';
+    prefix = ':test';
     target = target || '';
 
     if (target.length > 0 && target.indexOf(prefix) !== 0) {
-        target = prefix + '\'' + target + '\'';
+        target = ' ' + prefix + '\'' + target + '\'';
     } else {
         target = prefix;
     }
