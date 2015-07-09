@@ -186,6 +186,7 @@
      * Option list defining command line flag parser options for minimist.
      * @type {Object}
      */
+    /* eslint-disable quote-props */
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'errexit', 'errimg', 'help', 'usage', 'debug',
             'tap', 'system', 'quiet'],
@@ -196,6 +197,7 @@
             tap: true
         }
     };
+    /* eslint-enable quote-props */
 
     /**
      * Return code when everything succeeds (both this script and the TSH script
@@ -395,7 +397,9 @@
         };
 
         if (pauseBeforeExec) {
+            /* eslint-disable no-debugger */
             debugger;
+            /* eslint-enable no-debugger */
         }
 
         TP.shell(TP.hc(
@@ -424,11 +428,11 @@
         console.log(PhantomTSH.buffer.join('\n'));
         PhantomTSH.buffer.length = 0;
 
-        /* eslint-disable no-nested-ternary */
+        /* eslint-disable no-nested-ternary,no-extra-parens */
         status = PhantomTSH.status === null ?
             (code === undefined ? 0 : code) :
             PhantomTSH.status;
-        /* eslint-enable no-nested-ternary */
+        /* eslint-enable no-nested-ternary,no-extra-parens */
 
         if (status === 0) {
             color = 'white';
@@ -443,10 +447,12 @@
         if (!PhantomTSH.argv.quiet) {
             now = new Date().getTime();
 
+            /* eslint-disable no-extra-parens */
             msg = 'Finished in ' +
                 (now - PhantomTSH.start) + ' ms' +
                 ' w/TSH exec time of ' +
                 (PhantomTSH.startExec ? (now - PhantomTSH.startExec) : 0) + ' ms.';
+            /* eslint-enable no-extra-parens */
 
             PhantomTSH.log(msg, 'gray', true);
         }
@@ -555,7 +561,7 @@
      */
     PhantomTSH.main = function() {
         var index,
-            root,
+            primary,
             fragment;
 
         PhantomTSH.start = (new Date()).getTime();
@@ -576,9 +582,9 @@
 
             if (PhantomTSH.argv.debug) {
                 index = PhantomTSH.url.indexOf('#');
-                root = PhantomTSH.url.slice(0, index);
+                primary = PhantomTSH.url.slice(0, index);
                 fragment = PhantomTSH.url.slice(index + 1);
-                PhantomTSH.log(root, 'gray');
+                PhantomTSH.log(primary, 'gray');
                 PhantomTSH.log(fragment, 'gray');
                 PhantomTSH.log('PhantomTSH.argv: ' +
                     JSON.stringify(PhantomTSH.argv), 'gray');
@@ -815,7 +821,8 @@
      */
     PhantomTSH.tsh = function() {
 
-        var pauseBeforeExec;
+        var pauseBeforeExec,
+            now;
 
         PhantomTSH.lastActivity = new Date().getTime();
 
@@ -828,14 +835,16 @@
         if (PhantomTSH.argv['remote-debug-port']) {
             pauseBeforeExec = true;
 
+            /* eslint-disable no-debugger */
             debugger;
+            /* eslint-enable no-debugger */
         } else {
             //  Otherwise, we're running in a regular context, which means we
             //  set up a timer.
             pauseBeforeExec = false;
 
             PhantomTSH.timer = setInterval(function() {
-                var now = new Date().getTime();
+                now = new Date().getTime();
                 if (now - PhantomTSH.lastActivity > PhantomTSH.timeout) {
                     clearInterval(PhantomTSH.timer);
                     PhantomTSH.exit(PhantomTSH.color('Operation timed out.', 'red'),
@@ -888,7 +897,9 @@
         interval = setInterval(function() {
             var now = new Date().getTime();
 
+            /* eslint-disable no-extra-parens */
             if ((now - start < timeout) && !ready) {
+            /* eslint-enable no-extra-parens */
                 try {
                     ready = isReady();
                     if (typeof ready === 'string') {
@@ -1052,8 +1063,10 @@
         var str;
 
         if (PhantomTSH.argv.errimg) {
+            /* eslint-disable no-extra-parens */
             PhantomTSH.page.render('PhantomError_' +
                 (new Date().getTime()) + '.png');
+            /* eslint-enable no-extra-parens */
         }
 
         // Only log errors if the application didn't just do it for us. Usually
