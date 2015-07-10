@@ -143,7 +143,10 @@ Cmd.prototype.announce = function() {
         '"Run" button (an arrow in the upper right hand corner)\n\n' +
 
         '5. Return to the *second* browser window or tab. TIBET will\n' +
-        'be paused, ready for you to set breakpoints, etc.\n';
+        'be paused, ready for you to set breakpoints, etc.\n\n' +
+
+        '6. Set your breakpoints, etc. and then click the "Run" button\n' +
+        'in this browser window or tab.\n\n';
 
         this.info(str);
     }
