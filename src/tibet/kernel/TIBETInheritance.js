@@ -3437,7 +3437,10 @@ function(varargs) {
      * @returns {TP.lang.RootObject} The receiver.
      */
 
-    var existingTraits,
+    var inImmediateMode,
+        lastArg,
+
+        existingTraits,
 
         trapInstaller,
 
@@ -3458,7 +3461,7 @@ function(varargs) {
     //  Define a 'trap installer' function that will install a 'trait trap
     //  getter' on the supplied target under the supplied track and property
     //  name.
-    trapInstaller = function(target, targetPropName, track) {
+    trapInstaller = function(target, targetPropName, track, wantsImmediate) {
 
         var traitTrapGetter;
 
@@ -3540,6 +3543,15 @@ function(varargs) {
         traitTrapGetter.targetPropName = targetPropName;
         traitTrapGetter.traitTrack = track;
 
+        //  If the caller wants this in immediate mode, we just resolve it
+        //  immediately here and set the slot.
+        if (wantsImmediate) {
+            TP.$$no_trait_getter_exec = false;
+            target[targetPropName] = traitTrapGetter();
+            TP.$$no_trait_getter_exec = true;
+            return;
+        }
+
         //  Define a property on the target under the property name that uses
         //  the getter function as the getter for the named property slot. When
         //  that slot is accessed, the getter above will be executed.
@@ -3551,6 +3563,15 @@ function(varargs) {
                 get: traitTrapGetter
             });
     };
+
+    inImmediateMode = false;
+
+    //  The last parameter to this method can be an optional Boolean that will
+    //  immediately resolve all slots rather than setting up a getter.
+    lastArg = arguments[arguments.length - 1];
+    if (TP.isBoolean(lastArg)) {
+        inImmediateMode = lastArg;
+    }
 
     //  ---
     //  Gather traits
@@ -3633,7 +3654,10 @@ function(varargs) {
                 continue;
             }
 
-            trapInstaller(mainTypeTarget, traitProps[j], TP.TYPE_TRACK);
+            trapInstaller(mainTypeTarget,
+                            traitProps[j],
+                            TP.TYPE_TRACK,
+                            inImmediateMode);
         }
     }
     /* eslint-enable no-loop-func */
@@ -3670,7 +3694,10 @@ function(varargs) {
                 continue;
             }
 
-            trapInstaller(mainTypeTarget, traitProps[j], TP.INST_TRACK);
+            trapInstaller(mainTypeTarget,
+                            traitProps[j],
+                            TP.INST_TRACK,
+                            inImmediateMode);
         }
     }
     /* eslint-enable no-loop-func */

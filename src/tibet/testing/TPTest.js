@@ -36,7 +36,10 @@ AssertionFailed.prototype.name = 'AssertionFailed';
 TP.lang.Object.defineSubtype('test.Root');
 
 //  Add support for job control status tracking and querying.
-TP.test.Root.addTraits(TP.core.JobStatus);
+
+//  NB: For PhantomJS, we resolve the traits right away, due to a crashing bug.
+TP.test.Root.addTraits(TP.core.JobStatus,
+                        TP.sys.cfg('boot.context') === 'phantomjs');
 
 TP.test.Root.Inst.resolveTrait('resume', TP.core.JobStatus);
 
