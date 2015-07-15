@@ -79,6 +79,9 @@ Cmd.prototype.HELP =
 'Output is to the terminal in colorized TAP format by default.\n' +
 'Future versions will support additional test output formatters.\n\n' +
 
+'You can use the built-in debugging facilities of PhantomJS by\n' +
+'specifying --remote-debug-port and a port number.\n\n' +
+
 'Changing the boot profile is not normally required however you\n' +
 'can easily test components simply by naming them via the --script\n' +
 'parameter. For example, you can run all String tests via:\n\n' +
