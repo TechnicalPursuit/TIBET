@@ -4195,21 +4195,30 @@ function(target, name, value, track, owner) {
      * @returns {Object} The newly defined attribute value.
      */
 
-    var own,
+    var desc,
+
+        own,
         trk,
         attribute,
 
-        desc,
         val;
 
     //  Typically try to define only once. We test code change flag to avoid
     //  warning during source operations during development.
     if (target && TP.owns(target, name)) {
-        TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
-            TP.warn('Ignoring duplicate attribute definition: ' + name,
-                    TP.LOG) : 0;
 
-        return target[name];
+        //  If the target has a property descriptor with an E5 getter and that
+        //  getter has a 'finalVal' slot, then it's a TIBET traits getter. If
+        //  the 'finalVal' is undefined, that means that it's ok to set it.
+        if ((desc = Object.getOwnPropertyDescriptor(target, name)) &&
+                desc.get && desc.get.finalVal === undefined) {
+            //  empty
+        } else {
+            TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
+                TP.warn('Ignoring duplicate attribute definition: ' + name,
+                        TP.LOG) : 0;
+            return target[name];
+        }
     }
 
     own = TP.ifInvalid(owner, target);
