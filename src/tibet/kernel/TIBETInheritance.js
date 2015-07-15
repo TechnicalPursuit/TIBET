@@ -3419,10 +3419,226 @@ function(anInterface, anObject) {
 //  META PROGRAMMING - TRAITS
 //  ------------------------------------------------------------------------
 
+/* Traits are a powerful way of doing multiple inheritance. You can read more
+ * about traits here:
+ *      https://en.wikipedia.org/wiki/Trait_(computer_programming)
+ *
+ *      TIBET uses traits, but with a few twists on traditional traits:
+ *
+ *      1. In keeping with the pseudo-classical nature of inheritance in TIBET,
+ *      rather than traits being 'instance based', they are type based. That is,
+ *      traits are 'inherited' through both the Type side and Instance side of
+ *      the hierarchy.
+ *
+ *      2. Conflicted trait resolution can happen either manually or
+ *      automatically:
+ *
+ *          a. Manual trait resolution, the traditional trait conflict
+ *          resolution mechanism, has a variety of resolution strategies. In
+ *          TIBET, this includes:
+ *              i. resolving to the same named method on a trait type,
+ *              ii. resolving to the same named method on a trait type, but with
+ *              an alternate method name to retain access to the original method
+ *              on the receiving type
+ *              iii. resolving to a method given to the resolveTrait() call,
+ *              iv. resolving using a Function given to the resolveTrait() call,
+ *              which takes two parameters, the value of the trait on the
+ *              receiving type and the value of the trait on the resolved type
+ *              v. resolving to the method on the trait type, executing it
+ *              'before' or 'after' the method on the receiving type
+ *
+ *          b. Automatic trait resolution. If conflicts are not manually
+ *          resolved, and TIBET's automatic trait resolution machinery is turned
+ *          on (it is by default), then TIBET will use the C3 multiple
+ *          inheritance algorithm to determine a resolution for the conflicted
+ *          trait. More information can be found here:
+ *              http://en.wikipedia.org/wiki/C3_linearization
+ *
+ *      TIBET uses the following data structure, one per type 'side' and one per
+ *      instance 'side' on each type:
+ *       {
+ *          propName : {
+ *              propName    : {String} The property name the trait is for
+ *              sourceTypes : {Array} An Array of source Type objects that
+ *                              represent possible resolutions for the trait
+ *              aliasedTo   : {String} A property name that the trait might be
+ *                              aliased to (i.e. call 'foo', which redirects to
+ *                              'bar' on a resolved type)
+ *              aroundFlag  : {String} Either TP.BEFORE or TP.AFTER to allow the
+ *                              named method from the resolved type to execute
+ *                              before or after the method on the receiving type
+ *              resolverFunction    : {Function} a Function that will be
+ *                                      executed once to determine the value of
+ *                                      the property being resolved. The
+ *                                      Function will be passed 2 arguments, the
+ *                                      value of the property on the receiving
+ *                                      type and the value of the property on
+ *                                      the resolved type. It should return the
+ *                                      value it wants the system to use.
+ *              definedMethod   : {Function} A method that overrides all of the
+ *                                  resolution machinery to be the method that
+ *                                  gets invoked.
+ *              resolvesToType  : {TP.meta.lang.RootObject} The type that the
+ *                                   trait got resolved to.
+ *              initialValue    : {Object} In case that the traited property is
+ *                                   an attribute, this will be its initial
+ *                                   value on the receiving type.
+ *          }
+ *      }
+ *
+ */
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineAttribute('$traitsFinalized');
 
 TP.lang.RootObject.Type.defineAttribute('$traitsTypeResolutions');
 TP.lang.RootObject.Type.defineAttribute('$traitsInstResolutions');
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('$installTraitTrap',
+function(target, targetPropName, track, initialValue, wantsImmediate) {
+
+    /**
+     * @method $installTraitTrap
+     * @summary Installs a 'trait trap getter' on the supplied target under the
+     *     supplied track and property name.
+     * @param {Object} target The target object to install the trait trap on.
+     * @param {String} targetPropName The name of the property on the target to
+     *     install the trait on.
+     * @param {String} track The track that the property is for, instance or
+     *     type.
+     * @param {Object} initialValue Any initial value that the trait will have.
+     * @param {Boolean} wantsImmediate Whether or not to resolve the trait
+     *     immediately.
+     * @returns {TP.lang.RootObject} The receiver.
+     */
+
+    var traitTrapGetter,
+        traitTrapSetter;
+
+    //  Define a Function that will be used as an E5 getter on the slot. This
+    //  function will perform trait resolution.
+    traitTrapGetter = function() {
+
+        var mainType,
+
+            propName,
+            propTrack,
+
+            len,
+            i,
+
+            traitTypes,
+            retVal;
+
+        //  If we have a final value, just return that.
+        if (traitTrapGetter.finalVal) {
+            return traitTrapGetter.finalVal;
+        }
+
+        //  If the no exec flag is true (see below in the main method body),
+        //  then we just hand back the initially configured value.
+        if (TP.$$no_exec_trait_resolution === true) {
+            return traitTrapGetter.initialVal;
+        }
+
+        //  Since the target here will be either the '.Type' or '.Inst'
+        //  prototype object, we want to get back to the type object itself
+        //  - that's the TP.OWNER
+        mainType = traitTrapGetter.target[TP.OWNER];
+
+        propName = traitTrapGetter.targetPropName;
+        propTrack = traitTrapGetter.targetTrack;
+
+        //  Grab all of the type's traits.
+        traitTypes = mainType.getAllTraits();
+
+        //  Set the flag so that during composition and resolution we won't
+        //  recurse, but we'll stop short above and just return the original
+        //  value.
+        TP.$$no_exec_trait_resolution = true;
+
+        //  Iterate over them and compose this traited property using the main
+        //  type and the individual trait type. This will cause a dictionary of
+        //  'trait resolutions' to be created for this slot.
+        len = traitTypes.getSize();
+        for (i = 0; i < len; i++) {
+            mainType.$computePossibleSourceType(
+                                    traitTypes.at(i),
+                                    propName,
+                                    propTrack);
+        }
+
+        //  Resolve the traited property using the trait resolution that was
+        //  computed above. This should return an Object value that now
+        //  represents the resolved trait.
+        retVal = mainType.$resolveTraitedProperty(propName, propTrack);
+
+        //  Now that composition and resolution are done, flip the flag back
+        //  off.
+        TP.$$no_exec_trait_resolution = false;
+
+        //  Set the final value to the returned value. From now on, we'll just
+        //  return this value.
+        traitTrapGetter.finalVal = retVal;
+
+        //  Make sure to return the computed Object value so that the first slot
+        //  access (that kicked off this whole process) gets the correct value.
+        return retVal;
+    };
+
+    //  Cache these values on the getter for use by the getter.
+    traitTrapGetter.target = target;
+
+    //  Define a Function that will be used as an E5 setter on the slot. This
+    //  function will perform trait resolution.
+    traitTrapSetter = function(val) {
+        if (TP.isDefined(traitTrapGetter.finalVal)) {
+            traitTrapGetter.finalVal = val;
+        } else {
+            traitTrapGetter.initialVal = val;
+        }
+    };
+
+    //  Capture 'meta data' about the property, it's values and the property
+    //  name it represents on the target object.
+    traitTrapGetter.initialVal = initialValue;
+    traitTrapGetter.finalVal = undefined;
+    traitTrapGetter.targetPropName = targetPropName;
+    traitTrapGetter.targetTrack = track;
+
+    //  If the caller wants this in immediate mode, we just resolve it
+    //  immediately here and set the slot.
+    if (wantsImmediate) {
+
+        //  Note here how we turn off the 'don't execute the trait resolution'
+        //  flag so that the trait resolution machinery actually executes, even
+        //  if there is an initial value.
+
+        TP.$$no_exec_trait_resolution = false;
+        target[targetPropName] = traitTrapGetter();
+        TP.$$no_exec_trait_resolution = true;
+
+        return;
+    }
+
+    //  Define a property on the target under the property name that uses the
+    //  getter function as the getter and the setter function as the setter for
+    //  the named property slot. When that slot is accessed, the getter and
+    //  setter above will be executed.
+    Object.defineProperty(
+        target,
+        targetPropName,
+        {
+            configurable: true,
+            get: traitTrapGetter,
+            set: traitTrapSetter
+        });
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -3433,18 +3649,17 @@ function(varargs) {
      * @method addTraits
      * @summary Adds the type objects supplied as a variable arguments list as
      *     trait types to the receiver.
-     * @param {arguments} varargs 1...n trait type objects.
+     * @param {arguments} varargs 1...n trait type objects or a Boolean (the
+     *     last argument only - see below).
      * @returns {TP.lang.RootObject} The receiver.
      */
 
     var inImmediateMode,
         lastArg,
 
-        existingTraits,
+        traitList,
 
-        trapInstaller,
-
-        newTraits,
+        allTraits,
 
         mainTypeTarget,
 
@@ -3457,112 +3672,6 @@ function(varargs) {
         traitType,
         traitTypeTarget,
         traitProps;
-
-    //  Define a 'trap installer' function that will install a 'trait trap
-    //  getter' on the supplied target under the supplied track and property
-    //  name.
-    trapInstaller = function(target, targetPropName, track, wantsImmediate) {
-
-        var traitTrapGetter;
-
-        traitTrapGetter = function() {
-
-            var mainType,
-
-                propName,
-                propTrack,
-
-                traitTypes,
-                retVal;
-
-            //  If we have a final value, just return that.
-            if (traitTrapGetter.finalVal) {
-                return traitTrapGetter.finalVal;
-            }
-
-            //  If the no exec flag is true (see below in the main method body),
-            //  then we just hand back the initially configured value.
-            if (TP.$$no_trait_getter_exec === true) {
-                return traitTrapGetter.targetVal;
-            }
-
-            //  Since the target here will be either the '.Type' or '.Inst'
-            //  prototype object, we want to get back to the type object itself
-            //  - that's the $$owner.
-            mainType = traitTrapGetter.target.$$owner;
-
-            propName = traitTrapGetter.targetPropName;
-            propTrack = traitTrapGetter.traitTrack;
-
-            //  Grab all of the type's traits.
-            traitTypes = mainType.getAllTraits();
-
-            //  Set the flag so that during composition and resolution we won't
-            //  recurse, but we'll stop short above and just return the original
-            //  value.
-            TP.$$no_trait_getter_exec = true;
-
-            //  Iterate over them and compose this traited property using the
-            //  main type and the individual trait type. This will cause a
-            //  dictionary of 'trait resolutions' to be created for this slot.
-            len = traitTypes.getSize();
-            for (i = 0; i < len; i++) {
-                mainType.$composeTraitedProperty(
-                    traitTypes[i],
-                    propName,
-                    propTrack);
-            }
-
-            //  Resolve the traited property using the trait resolution that
-            //  was computed above. This should return an Object value that now
-            //  represents the resolved trait.
-            retVal = mainType.$resolveTraitedProperty(propName, propTrack);
-
-            //  Now that composition and resolution are done, flip the flag back
-            //  off.
-            TP.$$no_trait_getter_exec = false;
-
-            //  One trick here is that if the Object value is undefined, we want
-            //  to return null instead. This is so that TIBET's 'undefined
-            //  attribute' machinery will work properly.
-            retVal = retVal === undefined ? null : retVal;
-
-            //  Set the final value to the returned value. From now on, we'll
-            //  just return this value.
-            traitTrapGetter.finalVal = retVal;
-
-            //  Make sure to return the computed Object value so that the first
-            //  slot access (that kicked off this whole process) gets the
-            //  correct value.
-            return retVal;
-        };
-
-        //  Cache these values on the getter for use by the getter.
-        traitTrapGetter.target = target;
-        traitTrapGetter.targetVal = target[targetPropName];
-        traitTrapGetter.targetPropName = targetPropName;
-        traitTrapGetter.traitTrack = track;
-
-        //  If the caller wants this in immediate mode, we just resolve it
-        //  immediately here and set the slot.
-        if (wantsImmediate) {
-            TP.$$no_trait_getter_exec = false;
-            target[targetPropName] = traitTrapGetter();
-            TP.$$no_trait_getter_exec = true;
-            return;
-        }
-
-        //  Define a property on the target under the property name that uses
-        //  the getter function as the getter for the named property slot. When
-        //  that slot is accessed, the getter above will be executed.
-        Object.defineProperty(
-            target,
-            targetPropName,
-            {
-                configurable: true,
-                get: traitTrapGetter
-            });
-    };
 
     inImmediateMode = false;
 
@@ -3579,17 +3688,12 @@ function(varargs) {
 
     //  Make sure that we have an Array for all traits for the receiver, kept as
     //  the overall long-term list of traits that the receiver has.
-    if (TP.notValid(existingTraits = this[TP.TRAITS])) {
-        existingTraits = TP.ac();
-        this[TP.TRAITS] = existingTraits;
+    if (TP.notValid(traitList = this[TP.TRAITS])) {
+        traitList = TP.ac();
+        this[TP.TRAITS] = traitList;
     }
 
-    //  Allocate an Array of 'new traits' that will be used as the 'short list'
-    //  below to consult for just this 'add traits' run.
-    newTraits = TP.ac();
-
-    //  Collect up any new trait types we're adding
-
+    //  Add any new trait types
     len = arguments.length;
     for (i = 0; i < len; i++) {
 
@@ -3598,13 +3702,14 @@ function(varargs) {
         //  We only add the trait type if it is a Type and if it's not already
         //  contained in the list of existing traits.
         if (TP.isType(traitType) &&
-            !existingTraits.contains(traitType, TP.IDENTITY)) {
+            !traitList.contains(traitType, TP.IDENTITY)) {
 
-            //  Add it to both lists
-            newTraits.push(traitType);
-            existingTraits.push(traitType);
+            traitList.push(traitType);
         }
     }
+
+    //  Grab all of the traits.
+    allTraits = this.getAllTraits();
 
     //  ---
     //  Preliminary setup
@@ -3620,7 +3725,7 @@ function(varargs) {
     //  Set the flag that is used above to make sure that when slot is accessed
     //  below that the trait trap getter installed above just returns the value
     //  and doesn't try to resolve the trait.
-    TP.$$no_trait_getter_exec = true;
+    TP.$$no_exec_trait_resolution = true;
 
     //  ---
     //  Install traps for the type side
@@ -3629,10 +3734,10 @@ function(varargs) {
     mainTypeTarget = this.getPrototype();
 
     /* eslint-disable no-loop-func */
-    len = newTraits.getSize();
+    len = allTraits.getSize();
     for (i = 0; i < len; i++) {
 
-        traitType = newTraits.at(i);
+        traitType = allTraits.at(i);
 
         traitTypeTarget = traitType.getPrototype();
 
@@ -3654,9 +3759,13 @@ function(varargs) {
                 continue;
             }
 
-            trapInstaller(mainTypeTarget,
+            //  Install a trait trap on the main type 'type prototype' for the
+            //  property found on the trait type.
+            this.$installTraitTrap(
+                            mainTypeTarget,
                             traitProps[j],
                             TP.TYPE_TRACK,
+                            mainTypeTarget[traitProps[j]],
                             inImmediateMode);
         }
     }
@@ -3669,10 +3778,10 @@ function(varargs) {
     mainTypeTarget = this.getInstPrototype();
 
     /* eslint-disable no-loop-func */
-    len = newTraits.getSize();
+    len = allTraits.getSize();
     for (i = 0; i < len; i++) {
 
-        traitType = newTraits.at(i);
+        traitType = allTraits.at(i);
 
         traitTypeTarget = traitType.getInstPrototype();
 
@@ -3689,14 +3798,19 @@ function(varargs) {
         len2 = traitProps.getSize();
         for (j = 0; j < len2; j++) {
 
+
             if (mainTypeTarget[traitProps[j]] ===
                 traitTypeTarget[traitProps[j]]) {
                 continue;
             }
 
-            trapInstaller(mainTypeTarget,
+            //  Install a trait trap on the main type 'instance prototype' for
+            //  the property found on the trait type.
+            this.$installTraitTrap(
+                            mainTypeTarget,
                             traitProps[j],
                             TP.INST_TRACK,
+                            mainTypeTarget[traitProps[j]],
                             inImmediateMode);
         }
     }
@@ -3705,7 +3819,7 @@ function(varargs) {
     //  Flip the trait trap getter flag back to false. Slot accesses on any
     //  slots that have been populated will now cause a trait resolution to
     //  occur.
-    TP.$$no_trait_getter_exec = false;
+    TP.$$no_exec_trait_resolution = false;
 
     return this;
 });
@@ -3717,7 +3831,8 @@ function(propName, sources, track) {
 
     /**
      * @method $autoResolveConflictedTrait
-     * @summary Populates the slot on the receiver given the trait resolution.
+     * @summary 'Auto resolves' the conflicted trait, given the type objects
+     *     supplied in sources.
      * @param {String} propName The property name of the conflicted trait.
      * @param {Array} sources An Array of Type objects that represent both the
      *     main type and the trait types that the auto resolution machinery will
@@ -3807,12 +3922,15 @@ function(propName, sources, track) {
         unresolvedEntry = true;
     }
 
-    if (TP.isValid(unresolvedEntry)) {
+    if (TP.isValid(unresolvedEntry) &&
+        TP.isTrue(TP.sys.cfg('oo.traits_warn'))) {
 
-        errStr = 'TARGET: ' + TP.name(this) + ' ' +
-                    track.toUpperCase() + '-LEVEL:\n';
+        errStr = 'TARGET: ' + TP.name(this) + '\n';
 
-        errStr += 'CONFLICTED PROPERTY: ' + propName + ' :: PROBLEM: ';
+        errStr += 'CONFLICTED PROPERTY: ' + propName +
+                    ' (' + track.toUpperCase() + '-LEVEL)\n';
+
+        errStr += 'PROBLEM: ';
 
         //  If it's an Array, then we assume it's an Array of Type objects.
         if (TP.isArray(sources)) {
@@ -3840,8 +3958,10 @@ function(propName, sources, track) {
                     });
         } else {
 
-            //  If sources is TP.REQUIRED, that will print here.
-            errStr += sources;
+            //  If sources is TP.REQUIRED, print a nice message here
+            if (sources === TP.REQUIRED) {
+                errStr += 'property required';
+            }
         }
 
         errStr += ' \n';
@@ -3851,10 +3971,10 @@ function(propName, sources, track) {
 
         if (track === TP.TYPE_TRACK) {
             return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved type trait: ', errStr));
+                                TP.sc('Unresolved type trait\n', errStr));
         } else {
             return this.raise('TP.sig.InvalidInstantiation',
-                                TP.sc('Unresolved instance trait: ', errStr));
+                                TP.sc('Unresolved instance trait\n', errStr));
         }
     }
 
@@ -3863,17 +3983,20 @@ function(propName, sources, track) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('$composeTraitedProperty',
+TP.lang.RootObject.Type.defineMethod('$computePossibleSourceType',
 function(traitType, propName, track) {
 
     /**
-     * @method $composeTraitedProperty
-     * @summary Composes a set of resolutions for the traited property.
-     * @param {TP.lang.RootObject} traitType The trait type that is being 'mixed
-     *     in' on the property.
+     * @method $computePossibleSourceType
+     * @summary Computes a possible source type between the receiver and the
+     *     supplied trait type.
+     * @param {TP.meta.lang.RootObject} traitType The trait type that is being
+     *     'traited in' on the property.
      * @param {String} propName The property name of the conflicted trait.
      * @param {String} track The track that the property is for, instance or
      *     type.
+     * @exception TP.sig.InvalidTrack This is raised when a track is supplied
+     *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
@@ -3909,17 +4032,25 @@ function(traitType, propName, track) {
             resolutions = TP.hc();
             this.$set('$traitsInstResolutions', resolutions);
         }
+    } else {
+        return this.raise('TP.sig.InvalidTrackRequest', track);
+    }
+
+    //  If there is no property named by propName on the trait type, exit here.
+    if (!TP.isProperty(traitTypeTarget, propName)) {
+        return this;
     }
 
     //  If the mainTypeTarget has this property, then we need to check whether
-    //  the trait type has it too - in that case, we just proceed on.
+    //  the traitTypeTarget has it too *and that the values exactly match* (i.e.
+    //  they are the same object/value). In that case, we just proceed on.
     if (TP.isProperty(mainTypeTarget, propName)) {
 
         checkProp1 = mainTypeTarget[propName];
         checkProp2 = traitTypeTarget[propName];
 
         if (checkProp1 === checkProp2) {
-            return;
+            return this;
         }
 
         //  If they both really exist, then we need to drill in and see if they
@@ -3935,7 +4066,7 @@ function(traitType, propName, track) {
                             checkProp2;
 
             if (checkProp1 === checkProp2) {
-                return;
+                return this;
             }
         }
     }
@@ -3948,10 +4079,10 @@ function(traitType, propName, track) {
         var owner;
 
         //  If it's not a Method, then it's just an attribute slot - return the
-        //  '$$owner' (which for the supplied type target is the owning type
+        //  TP.OWNER (which for the supplied type target is the owning type
         //  object).
         if (!TP.isMethod(aTypeTarget[aPropName])) {
-            return aTypeTarget.$$owner;
+            return aTypeTarget[TP.OWNER];
         }
 
         //  Grab the owner of the method.
@@ -3968,13 +4099,22 @@ function(traitType, propName, track) {
         return owner;
     };
 
+    entry = resolutions.at(propName);
+
     //  If the property already has an entry, then check to see if this trait is
     //  represented in its list of sources. If it is, then this trait/property
     //  combination is already represented.
-    if (TP.isValid(entry = resolutions.at(propName))) {
-        sources = entry.at('sources');
+    if (TP.isValid(entry)) {
+
+        //  If the trait resolution entry already has a 'local method' used to
+        //  resolve the trait, exit here.
+        if (entry.hasKey('definedMethod')) {
+            return this;
+        }
+
+        sources = entry.at('sourceTypes');
         if (sources.indexOf(traitType) !== TP.NOT_FOUND) {
-            return;
+            return this;
         }
 
         //  Loop over all of the sources that have been resolutions for this
@@ -3990,7 +4130,7 @@ function(traitType, propName, track) {
             checkProp2 = traitTypeTarget[propName];
 
             if (checkProp1 === checkProp2) {
-                return;
+                return this;
             }
 
             if (checkProp1 && checkProp2) {
@@ -4002,7 +4142,7 @@ function(traitType, propName, track) {
                                 checkProp2;
 
                 if (checkProp1 === checkProp2) {
-                    return;
+                    return this;
                 }
             }
         }
@@ -4014,17 +4154,22 @@ function(traitType, propName, track) {
         sources.push(traitType);
     } else {
 
+        //  If the property is defined on the main type, then populate the
+        //  'sourceTypes' with the type objects computed from the main type
+        //  target and the trait type target.
         if (TP.isDefined(mainTypeTarget[propName])) {
 
             entry = TP.hc(
-                'sources',
+                'sourceTypes',
                 TP.ac(computeOwningType(mainTypeTarget, propName),
                         computeOwningType(traitTypeTarget, propName)));
 
         } else if (TP.isDefined(traitTypeTarget[propName])) {
 
+            //  Otherwise just populate the 'sourceTypes' with the type object
+            //  computed from the trait type target.
             entry = TP.hc(
-                'sources',
+                'sourceTypes',
                 TP.ac(computeOwningType(traitTypeTarget, propName)));
         }
 
@@ -4245,6 +4390,8 @@ function() {
 
     if (TP.notEmpty(traits = this[TP.TRAITS])) {
         len = traits.getSize();
+
+        //  Recurse into the trait types and get *their* traits.
         for (i = 0; i < len; i++) {
             if (TP.notEmpty(traitTraits = traits.at(i).getAllTraits())) {
                 traits = traits.concat(traitTraits);
@@ -4297,6 +4444,10 @@ function(c3Resolver) {
     //  If we have traits, add them.
     if (TP.notEmpty(traits = this[TP.TRAITS])) {
 
+        //  Make sure to copy the Array - we reverse it below and don't want to
+        //  alter that.
+        traits = traits.copy();
+
         for (i = 0; i < traits.getSize(); i++) {
             c3Resolver.add(this.getName(), traits.at(i).getName());
         }
@@ -4325,13 +4476,12 @@ function(c3Resolver) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('$populateTraitedSlot',
-function(resolution, propName, targetObject, track) {
+function(entry, propName, targetObject, track) {
 
     /**
      * @method $populateTraitedSlot
      * @summary Populates the slot on the receiver given the trait resolution.
-     * @param {Function|String|TP.lang.RootObject} resolution The object that
-     *     will be used to bring the particular trait slot to resolution.
+     * @param {TP.core.Hash} entry The trait resolution entry.
      * @param {String} propName The property name to use to fetch the property
      *     from the resolution (if it's a type or references one) and possibly
      *     to store it on the receiver.
@@ -4339,105 +4489,130 @@ function(resolution, propName, targetObject, track) {
      *     instance prototype) that the resolved property will be put on.
      * @param {String} track The track that the property is for, instance or
      *     type.
-     * @returns {TP.lang.RootObject} The receiving type.
+     * @exception TP.sig.InvalidTrack This is raised when a track is supplied
+     *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
+     * @returns
      */
 
-    var mainType,
+    var resolutions,
+        realEntry,
+
+        resolution,
+
+        flag,
+        resolutionFunc,
+
+        mainType,
+
+        dispatchFunc,
+
         resolutionType,
-        resolutionOption,
 
         mainTypeVal,
         resolutionTypeVal,
 
-        installName,
-        dispatchFunc;
+        installName;
+
+    //  If this property has been aliased to another one, then we need to go
+    //  back to the type/inst resolution and get *that* entry.
+    if (entry.hasKey('aliasedTo')) {
+        if (track === TP.TYPE_TRACK) {
+            resolutions = this.$get('$traitsTypeResolutions');
+        } else if (track === TP.INST_TRACK) {
+            resolutions = this.get('$traitsInstResolutions');
+        } else {
+            return this.raise('TP.sig.InvalidTrackRequest', track);
+        }
+        realEntry = resolutions.at(entry.at('aliasedTo'));
+    } else {
+        realEntry = entry;
+    }
 
     mainType = this;
 
-    //  If the resolution value is a Function, just install it as the method
-    if (TP.isFunction(resolution)) {
-        targetObject.defineMethod(propName, resolution);
+    if (realEntry.hasKey('definedMethod')) {
+        //  The resolution is a Method - install it as the method
+        resolution = realEntry.at('definedMethod');
+        dispatchFunc = targetObject.defineMethod(propName, resolution);
     } else {
-        //  If it's an Array that means it was encoded to be a type and either a
-        //  different method name or TP.BEFORE / TP.AFTER.
-        if (TP.isArray(resolution)) {
 
-            resolutionType = TP.isString(resolution.first()) ?
-                                TP.sys.getTypeByName(resolution.first()) :
-                                resolution.first();
-            resolutionOption = resolution.last();
+        //  Otherwise, the resolution should contain a resolution type that will
+        //  be used in some form or fashion below.
+        resolution = realEntry.at('resolvesToType');
+        if (TP.notValid(resolution)) {
+            return this.raise('TP.sig.InvalidType');
+        }
 
-            if (TP.isType(resolutionType)) {
-                if (track === TP.INST_TRACK) {
-                    mainTypeVal = mainType.Inst[propName];
-                    resolutionTypeVal = resolutionType.Inst[propName];
-                } else {
-                    mainTypeVal = mainType.Type[propName];
-                    resolutionTypeVal = resolutionType.Type[propName];
-                }
+        //  Make sure it's a Type object - if it's a String, see if we can
+        //  resolve it into a Type.
+        resolutionType = TP.isString(resolution) ?
+                            TP.sys.getTypeByName(resolution) :
+                            resolution;
 
-                //  The resolutionOption was a Function, so we execute it with
-                //  both the main type's and resolution type's versions of the
-                //  method and use it's return value as the resolutionTypeVal we
-                //  want.
-                if (TP.isFunction(resolutionOption)) {
-                    resolutionTypeVal = resolutionOption(
-                                            mainTypeVal, resolutionTypeVal);
-                } else if (TP.isString(resolutionOption)) {
-                    switch (resolutionOption) {
-                        case TP.BEFORE:
-                            dispatchFunc = function() {
-                                    dispatchFunc.$resolutionMethod.apply(
-                                            this, arguments);
-                                    return dispatchFunc.$mainMethod.apply(
-                                            this, arguments);
-                                };
-                            dispatchFunc.$resolutionMethod = resolutionTypeVal;
-                            dispatchFunc.$mainMethod = mainTypeVal;
-                            dispatchFunc.$propName = propName;
-                            installName = propName;
-                            break;
-                        case TP.AFTER:
-                            dispatchFunc = function() {
-                                    dispatchFunc.$mainMethod.apply(
-                                            this, arguments);
-                                    return dispatchFunc.$resolutionMethod.apply(
-                                            this, arguments);
-                                };
-                            dispatchFunc.$resolutionMethod = resolutionTypeVal;
-                            dispatchFunc.$mainMethod = mainTypeVal;
-                            dispatchFunc.$propName = propName;
-                            installName = propName;
-                            break;
-                        default:
-                            //  An alternate name was supplied
-                            installName = resolutionOption;
-                    }
-                }
-            } else {
-                //  TODO: Raise an exception - type name doesn't point to a
-                //  valid type.
-                void 0;
-            }
-        } else if (TP.isString(resolution)) {
-            //  The resolution is a String, which means it should've just been a
-            //  type name.
-            if (TP.isType(resolutionType = TP.sys.getTypeByName(resolution)) &&
-                resolutionType !== mainType) {
-                if (track === TP.INST_TRACK) {
-                    resolutionTypeVal = resolutionType.Inst[propName];
-                } else {
-                    resolutionTypeVal = resolutionType.Type[propName];
-                }
+        if (track === TP.INST_TRACK) {
+            resolutionTypeVal = resolutionType.Inst[propName];
+        } else {
+            resolutionTypeVal = resolutionType.Type[propName];
+        }
 
-                installName = propName;
-            } else {
-                //  TODO: Raise an exception - type name doesn't point to a
-                //  valid type.
-                void 0;
+        //  If the resolution contains a resolver Function, execute it with the
+        //  value from both the main type and the resolved type.
+        if (realEntry.hasKey('resolverFunction')) {
+            resolutionFunc = realEntry.at('resolverFunction');
+
+            //  The value on the main type would've been replaced by the getter
+            //  and stuffed into here.
+            mainTypeVal = realEntry.at('initialValue');
+
+            //  Call the resolver Function
+            resolutionTypeVal = resolutionFunc(
+                                    mainTypeVal, resolutionTypeVal);
+        } else if (realEntry.hasKey('aroundFlag')) {
+
+            //  It has a TP.BEFORE or TP.AFTER flag.
+            flag = realEntry.at('aroundFlag');
+
+            switch (flag) {
+                case TP.BEFORE:
+
+                    //  TP.BEFORE means run the resolved method first, then the
+                    //  version on the main type.
+                    dispatchFunc = function() {
+                            dispatchFunc.$resolutionMethod.apply(
+                                    this, arguments);
+                            return dispatchFunc.$mainMethod.apply(
+                                    this, arguments);
+                        };
+
+                    dispatchFunc.$resolutionMethod = resolutionTypeVal;
+                    dispatchFunc.$mainMethod = mainTypeVal;
+                    dispatchFunc.$propName = propName;
+                    installName = propName;
+
+                    break;
+                case TP.AFTER:
+
+                    //  TP.AFTER means run the main method first, then the
+                    //  version on the resolved type.
+                    dispatchFunc = function() {
+                            dispatchFunc.$mainMethod.apply(
+                                    this, arguments);
+                            return dispatchFunc.$resolutionMethod.apply(
+                                    this, arguments);
+                        };
+
+                    dispatchFunc.$resolutionMethod = resolutionTypeVal;
+                    dispatchFunc.$mainMethod = mainTypeVal;
+                    dispatchFunc.$propName = propName;
+                    installName = propName;
+
+                    break;
+                default:
+                    break;
             }
         } else if (TP.isType(resolutionType = resolution) &&
                     resolutionType !== mainType) {
+
             //  If the resolution is simply a Type, then we just look up the
             //  property on that type using the propName and install either an
             //  attribute or method, depending on what's on that slot.
@@ -4448,28 +4623,16 @@ function(resolution, propName, targetObject, track) {
             }
 
             installName = propName;
-        } else {
-            //  TODO: Raise an exception - type name doesn't point to a valid
-            //  type.
-            void 0;
         }
 
         //  If the resolution type value is not a method, then it's an
         //  attribute.
         if (!TP.isMethod(resolutionTypeVal)) {
-            //  If it's not defined on the main type, then define it.
 
-            //  If it is defined on the main type target, then we don't redefine
-            //  it - it may have a value.
-            //  TODO: Do we raise an exception if it is defined?
             if (track === TP.INST_TRACK) {
-                if (TP.notDefined(mainType.Inst[propName])) {
-                    mainType.Inst.defineAttribute(propName, resolutionTypeVal);
-                }
+                mainType.Inst.defineAttribute(propName, resolutionTypeVal);
             } else {
-                if (TP.notDefined(mainType.Type[propName])) {
-                    mainType.Type.defineAttribute(propName, resolutionTypeVal);
-                }
+                mainType.Type.defineAttribute(propName, resolutionTypeVal);
             }
 
             return resolutionTypeVal;
@@ -4506,57 +4669,58 @@ function(resolution, propName, targetObject, track) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('resolveTrait',
-function(propertyName, resolverObject, resolvingOption) {
+function(propertyName, resolution, resolutionOption) {
 
     /**
      * @method resolveTrait
      * @summary Adds an entry to resolve the named trait according to the
-     *     supplied resolverObject, which can either be a TIBET Type object or
+     *     supplied resolution, which can either be a TIBET Type object or
      *     a JavaScript Function.
      * @description This resolves a trait in a number of ways:
      *
-     *     1. If the resolverObject is a JavaScript Function, then the property
+     *     1. If the resolution is a JavaScript Function, then the property
      *     on the receiver will be resolved by installing the Function as a
      *     method named with the property name on the receiver.
      *
-     *     2. If the resolverObject is a TIBET type and a resolvingOption is not
+     *     2. If the resolution is a TIBET type and a resolutionOption is not
      *     supplied, then the property on the receiver will be resolved to be
-     *     the value of that property on the resolverObject.
+     *     the value of that property on the resolution.
      *
-     *     3. If the resolverObject is a TIBET type and a resolvingOption is
+     *     3. If the resolution is a TIBET type and a resolutionOption is
      *     supplied and is a String, then the property on the receiver will be
-     *     resolved to be the value of that property on the resolverObject but
-     *     using the name supplied as the resolvingOption.
+     *     resolved to be the value of that property on the resolution but
+     *     using the name supplied as the resolutionOption.
      *
-     *     4. If the resolverObject is a TIBET type and a resolvingOption is
-     *     supplied and is a Function, then the resolvingOption will be executed
-     *     with the value of the property on the main type as the first argument
-     *     and the value of the property on the resolverObject as the second
-     *     argument. The property on the receiver will be resolved to be the
-     *     returned value.
+     *     4. If the resolution is a TIBET type and a resolutionOption is
+     *     supplied and is a Function, then the resolutionOption will be
+     *     executed with the value of the property on the main type as the first
+     *     argument and the value of the property on the resolution as the
+     *     second argument. The property on the receiver will be resolved to be
+     *     the returned value.
      *
-     *     5. If the resolverObject is a TIBET type and a resolvingOption is
+     *     5. If the resolution is a TIBET type and a resolutionOption is
      *     supplied and is the value 'TP.BEFORE', then the property on the
      *     receiver will be resolved to be a method consisting of a call to the
-     *     same named method on the resolverObject first, followed by a call to
+     *     same named method on the resolution first, followed by a call to
      *     the receiver's version of that method.
      *
-     *     6. If the resolverObject is a TIBET type and a resolvingOption is
+     *     6. If the resolution is a TIBET type and a resolutionOption is
      *     supplied and is the value 'TP.AFTER', then the property on the
      *     receiver will be resolved to be a method consisting of a call to the
      *     same named method on the receiver first, followed by a call to the
-     *     resolverObject's version of that method.
+     *     resolution's version of that method.
      *
      * @param {String} propertyName The property name of the receiver to resolve
-     *     using the supplied resolverObject.
-     * @param {TP.lang.RootObject|Function} resolverObject The object to use to
+     *     using the supplied resolution.
+     * @param {TP.lang.RootObject|Function} resolution The object to use to
      *     resolve the trait.
-     * @param {String|Constant|Function} resolvingOption An optional property
+     * @param {String|Constant|Function} resolutionOption An optional property
      *     name or values of TP.BEFORE/TP.AFTER or Function.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
     var resolutions,
+        populateResolutionType,
         entry;
 
     //  Because we're executing this in the context of the 'instance prototype',
@@ -4576,25 +4740,79 @@ function(propertyName, resolverObject, resolvingOption) {
         this[TP.OWNER].set('$traitsInstResolutions', resolutions);
     }
 
-    //  Make sure that there is an entry in this type's 'instance resolutions'
-    //  for this property
-    if (TP.notValid(entry = resolutions.at(propertyName))) {
-        entry = TP.hc('sources', TP.ac(resolverObject));
-        resolutions.atPut(propertyName, entry);
-    } else {
-        //  We want each resolver object specified only once.
-        if (!entry.at('sources').contains(resolverObject, TP.IDENTITY)) {
-            entry.at('sources').push(resolverObject);
+    //  Define a Function that will add the supplied type to the 'sourceTypes'
+    //  entry
+    populateResolutionType = function(anEntry, aType) {
+
+        var sourceTypes;
+
+        sourceTypes = entry.at('sourceTypes');
+        if (!TP.isArray(sourceTypes)) {
+            sourceTypes = TP.ac(aType);
+            entry.atPut('sourceTypes', sourceTypes);
+        } else {
+            //  We want each resolution type specified only once.
+            if (!sourceTypes.contains(aType, TP.IDENTITY)) {
+                sourceTypes.push(aType);
+            }
         }
+
+        entry.atPut('resolvesToType', aType);
+    };
+
+    //  If there's no entry for the supplied property name, then make one.
+    if (TP.notValid(entry = resolutions.at(propertyName))) {
+        entry = TP.hc('propName', propertyName);
+        resolutions.atPut(propertyName, entry);
     }
 
-    //  If there's a resolvingOption, capture it in an Array along with
-    //  resolverObject (which should be a TIBET type in this case).
-    if (TP.isType(resolverObject) && TP.isValid(resolvingOption)) {
-        entry.atPut('resolvesTo',
-                    TP.ac(resolverObject, resolvingOption));
-    } else {
-        entry.atPut('resolvesTo', resolverObject);
+    //  Case #1: The resolution is a Function - install it as the method
+    if (TP.isCallable(resolution)) {
+        entry.atPut('definedMethod', resolution);
+    } else if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
+
+        //  Case #2: The resolution is a Type with no option
+        populateResolutionType(entry, resolution);
+
+    } else if (TP.isType(resolution) && TP.isCallable(resolutionOption)) {
+
+        //  Case #4: The resolution is a Type with a Function option
+        populateResolutionType(entry, resolution);
+
+        //  The option is a Function, which means that it will be executed once
+        //  and the result will be used as the value.
+        entry.atPut('resolverFunction', resolutionOption);
+        TP.$$no_exec_trait_resolution = true;
+        entry.atPut('initialValue', this[propertyName]);
+        TP.$$no_exec_trait_resolution = false;
+
+        //  Install a trap to execute our resolver Function
+        this[TP.OWNER].$installTraitTrap(
+                        this,
+                        propertyName,
+                        TP.INST_TRACK);
+    } else if (TP.isType(resolution) && TP.isString(resolutionOption)) {
+
+        if (resolutionOption !== TP.BEFORE && resolutionOption !== TP.AFTER) {
+
+            //  Case #3: The resolution is a Type with a String option
+            populateResolutionType(entry, resolution);
+
+            //  The option is a String, which means that it's an aliased method
+            //  (same method - different name).
+            entry.atPut('aliasedTo', resolutionOption);
+
+            //  Install a trap *for the property that we're being aliased to*
+            this[TP.OWNER].$installTraitTrap(
+                            this,
+                            resolutionOption,
+                            TP.INST_TRACK);
+        } else {
+            //  Case #5 or 6: The resolution is a Type with a TP.BEFORE or
+            //  TP.AFTER option
+            populateResolutionType(entry, resolution);
+            entry.atPut('aroundFlag', resolutionOption);
+        }
     }
 
     return this;
@@ -4603,19 +4821,19 @@ function(propertyName, resolverObject, resolvingOption) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Inst.defineMethod('resolveTraits',
-function(propertyNames, resolverObject) {
+function(propertyNames, resolution) {
 
     /**
      * @method resolveTraits
      * @summary Adds an entry to resolve the named trait according to the
-     *     supplied resolverObject, which must be a TIBET Type object. This is a
+     *     supplied resolution, which must be a TIBET Type object. This is a
      *     convenience wrapper for the singular 'resolveTrait' method with the
      *     ability to supply an Array of propertyNames, but limited to providing
-     *     only a TIBET type as the resolverObject (which is the only option
+     *     only a TIBET type as the resolution (which is the only option
      *     that makes sense for a list of property names).
      * @param {Array} propertyNames An Array of property names of the receiver
-     *     to resolve using the supplied resolverObject.
-     * @param {TP.lang.RootObject} resolverObject The object to use to resolve
+     *     to resolve using the supplied resolution.
+     * @param {TP.lang.RootObject} resolution The object to use to resolve
      *     the trait.
      * @returns {TP.lang.RootObject} The receiving type.
      */
@@ -4638,7 +4856,7 @@ function(propertyNames, resolverObject) {
     thisref = this;
     propertyNames.forEach(
             function(propName) {
-                thisref.resolveTrait(propName, resolverObject);
+                thisref.resolveTrait(propName, resolution);
             });
 
     return this;
@@ -4647,94 +4865,150 @@ function(propertyNames, resolverObject) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('resolveTrait',
-function(propertyName, resolverObject, resolvingOption) {
+function(propertyName, resolution, resolutionOption) {
 
     /**
      * @method resolveTrait
      * @summary Adds an entry to resolve the named trait according to the
-     *     supplied resolverObject, which can either be a TIBET Type object or
+     *     supplied resolution, which can either be a TIBET Type object or
      *     a JavaScript Function.
      * @description This resolves a trait in a number of ways:
      *
-     *     1. If the resolverObject is a JavaScript Function, then the property
+     *     1. If the resolution is a JavaScript Function, then the property
      *     on the receiver will be resolved by installing the Function as a
      *     method named with the property name on the receiver.
      *
-     *     2. If the resolverObject is a TIBET type and a resolvingOption is not
+     *     2. If the resolution is a TIBET type and a resolutionOption is not
      *     supplied, then the property on the receiver will be resolved to be
-     *     the value of that property on the resolverObject.
+     *     the value of that property on the resolution.
      *
-     *     3. If the resolverObject is a TIBET type and a resolvingOption is
+     *     3. If the resolution is a TIBET type and a resolutionOption is
      *     supplied and is a String, then the property on the receiver will be
-     *     resolved to be the value of that property on the resolverObject but
-     *     using the name supplied as the resolvingOption.
+     *     resolved to be the value of that property on the resolution but
+     *     using the name supplied as the resolutionOption.
      *
-     *     4. If the resolverObject is a TIBET type and a resolvingOption is
-     *     supplied and is a Function, then the resolvingOption will be executed
-     *     with the value of the property on the main type as the first argument
-     *     and the value of the property on the resolverObject as the second
-     *     argument. This Function should return one of these two values and the
-     *     property on the receiver will be resolved to be that value.
+     *     4. If the resolution is a TIBET type and a resolutionOption is
+     *     supplied and is a Function, then the resolutionOption will be
+     *     executed with the value of the property on the main type as the first
+     *     argument and the value of the property on the resolution as the
+     *     second argument. The property on the receiver will be resolved to be
+     *     the returned value.
      *
-     *     5. If the resolverObject is a TIBET type and a resolvingOption is
+     *     5. If the resolution is a TIBET type and a resolutionOption is
      *     supplied and is the value 'TP.BEFORE', then the property on the
      *     receiver will be resolved to be a method consisting of a call to the
-     *     same named method on the resolverObject first, followed by a call to
+     *     same named method on the resolution first, followed by a call to
      *     the receiver's version of that method.
      *
-     *     6. If the resolverObject is a TIBET type and a resolvingOption is
+     *     6. If the resolution is a TIBET type and a resolutionOption is
      *     supplied and is the value 'TP.AFTER', then the property on the
      *     receiver will be resolved to be a method consisting of a call to the
      *     same named method on the receiver first, followed by a call to the
-     *     resolverObject's version of that method.
+     *     resolution's version of that method.
      *
      * @param {String} propertyName The property name of the receiver to resolve
-     *     using the supplied resolverObject.
-     * @param {TP.lang.RootObject|Function} resolverObject The object to use to
+     *     using the supplied resolution.
+     * @param {TP.lang.RootObject|Function} resolution The object to use to
      *     resolve the trait.
-     * @param {String|Constant|Function} resolvingOption An optional property
+     * @param {String|Constant|Function} resolutionOption An optional property
      *     name or values of TP.BEFORE/TP.AFTER or Function.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
     var resolutions,
+        populateResolutionType,
         entry;
 
     //  Because we're executing this in the context of the 'type prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
-    //  trying to execute on the actual type object), throw an exception
+    //  trying to execute on a real instance of this type), throw an exception
     if (!TP.isPrototype(this)) {
         //  TODO Raise an exception
         return this;
     }
 
     //  Note here how we go after the TP.OWNER - that's because, in this
-    //  context, 'this' is the type prototype object, not the type (as per our
-    //  check above).
-    if (TP.notValid(resolutions = this[TP.OWNER].get('$traitsTypeResolutions'))) {
+    //  context, 'this' is the type prototype object, not the type and not
+    //  an instance of the type (as per our check above).
+    if (TP.notValid(
+            resolutions = this[TP.OWNER].get('$traitsTypeResolutions'))) {
         resolutions = TP.hc();
         this[TP.OWNER].set('$traitsTypeResolutions', resolutions);
     }
 
-    //  Make sure that there is an entry in this type's 'type resolutions' for
-    //  this property
-    if (TP.notValid(entry = resolutions.at(propertyName))) {
-        entry = TP.hc('sources', TP.ac(resolverObject));
-        resolutions.atPut(propertyName, entry);
-    } else {
-        //  We want each resolver object specified only once.
-        if (!entry.at('sources').contains(resolverObject, TP.IDENTITY)) {
-            entry.at('sources').push(resolverObject);
+    //  Define a Function that will add the supplied type to the 'sourceTypes'
+    //  entry
+    populateResolutionType = function(anEntry, aType) {
+
+        var sourceTypes;
+
+        sourceTypes = entry.at('sourceTypes');
+        if (!TP.isArray(sourceTypes)) {
+            sourceTypes = TP.ac(aType);
+            entry.atPut('sourceTypes', sourceTypes);
+        } else {
+            //  We want each resolution type specified only once.
+            if (!sourceTypes.contains(aType, TP.IDENTITY)) {
+                sourceTypes.push(aType);
+            }
         }
+
+        entry.atPut('resolvesToType', aType);
+    };
+
+    //  If there's no entry for the supplied property name, then make one.
+    if (TP.notValid(entry = resolutions.at(propertyName))) {
+        entry = TP.hc('propName', propertyName);
+        resolutions.atPut(propertyName, entry);
     }
 
-    //  If there's a resolvingOption, encode it alongside the name of the
-    //  resolverObject (which should be a TIBET type in this case).
-    if (TP.isValid(resolvingOption)) {
-        entry.atPut('resolvesTo',
-                    TP.name(resolverObject) + '::' + resolvingOption);
-    } else {
-        entry.atPut('resolvesTo', resolverObject);
+    //  Case #1: The resolution is a Function - install it as the method
+    if (TP.isCallable(resolution)) {
+        entry.atPut('definedMethod', resolution);
+    } else if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
+
+        //  Case #2: The resolution is a Type with no option
+        populateResolutionType(entry, resolution);
+
+    } else if (TP.isType(resolution) && TP.isCallable(resolutionOption)) {
+
+        //  Case #4: The resolution is a Type with a Function option
+        populateResolutionType(entry, resolution);
+
+        //  The option is a Function, which means that it will be executed once
+        //  and the result will be used as the value.
+        entry.atPut('resolverFunction', resolutionOption);
+        TP.$$no_exec_trait_resolution = true;
+        entry.atPut('initialValue', this[propertyName]);
+        TP.$$no_exec_trait_resolution = false;
+
+        //  Install a trap to execute our resolver Function
+        this[TP.OWNER].$installTraitTrap(
+                        this,
+                        propertyName,
+                        TP.TYPE_TRACK);
+    } else if (TP.isType(resolution) && TP.isString(resolutionOption)) {
+
+        if (resolutionOption !== TP.BEFORE && resolutionOption !== TP.AFTER) {
+
+            //  Case #3: The resolution is a Type with a String option
+            populateResolutionType(entry, resolution);
+
+            //  The option is a String, which means that it's an aliased method
+            //  (same method - different name).
+            entry.atPut('aliasedTo', resolutionOption);
+
+            //  Install a trap *for the property that we're being aliased to*
+            this[TP.OWNER].$installTraitTrap(
+                            this,
+                            resolutionOption,
+                            TP.TYPE_TRACK);
+        } else {
+            //  Case #5 or 6: The resolution is a Type with a TP.BEFORE or
+            //  TP.AFTER option
+            populateResolutionType(entry, resolution);
+            entry.atPut('aroundFlag', resolutionOption);
+        }
     }
 
     return this;
@@ -4743,19 +5017,19 @@ function(propertyName, resolverObject, resolvingOption) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('resolveTraits',
-function(propertyNames, resolverObject) {
+function(propertyNames, resolution) {
 
     /**
      * @method resolveTraits
      * @summary Adds an entry to resolve the named trait according to the
-     *     supplied resolverObject, which must be a TIBET Type object. This is a
+     *     supplied resolution, which must be a TIBET Type object. This is a
      *     convenience wrapper for the singular 'resolveTrait' method with the
      *     ability to supply an Array of propertyNames, but limited to providing
-     *     only a TIBET type as the resolverObject (which is the only option
+     *     only a TIBET type as the resolution (which is the only option
      *     that makes sense for a list of property names).
      * @param {Array} propertyNames An Array of property names of the receiver
-     *     to resolve using the supplied resolverObject.
-     * @param {TP.lang.RootObject} resolverObject The object to use to resolve
+     *     to resolve using the supplied resolution.
+     * @param {TP.lang.RootObject} resolution The object to use to resolve
      *     the trait.
      * @returns {TP.lang.RootObject} The receiving type.
      */
@@ -4778,7 +5052,7 @@ function(propertyNames, resolverObject) {
     thisref = this;
     propertyNames.forEach(
             function(propName) {
-                thisref.resolveTrait(propName, resolverObject);
+                thisref.resolveTrait(propName, resolution);
             });
 
     return this;
@@ -4795,6 +5069,8 @@ function(propName, track) {
      *     trait compositions computed for it.
      * @param {String} propName The name of the property to resolve.
      * @param {String} track The track to locate the property on.
+     * @exception TP.sig.InvalidTrack This is raised when a track is supplied
+     *     that isn't either TP.TYPE_TRACK or TP.INST_TRACK.
      * @returns {TP.lang.RootObject} The receiving type.
      */
 
@@ -4802,6 +5078,9 @@ function(propName, track) {
         mainTypeTarget,
 
         entry,
+
+        actualPropName,
+
         len,
         i,
         source,
@@ -4821,44 +5100,56 @@ function(propName, track) {
         resolutions = this.get('$traitsInstResolutions');
         mainTypeTarget = this.Inst;
     } else {
-        //  Error
+        return this.raise('TP.sig.InvalidTrackRequest', track);
     }
 
-    //  Get the resolution entry for this property
     entry = resolutions.at(propName);
 
-    //  If the trait wasn't manually resolved via 'resolveTrait()', then we can
-    //  still resolve it here if all but one of the values of 'propName' on each
-    //  of the sources is TP.REQUIRED. If more than one is "real", then we have
-    //  a conflict.
-    if (TP.notValid(entry.at('resolvesTo'))) {
+    //  Get the resolution entry for this property
+    if (TP.isValid(entry) && entry.hasKey('aliasedFrom')) {
+        actualPropName = entry.at('aliasedFrom');
+        entry = resolutions.at(actualPropName);
+    } else if (TP.isValid(entry) && entry.hasKey('definedMethod')) {
+        return this.$populateTraitedSlot(entry,
+                                            propName,
+                                            mainTypeTarget,
+                                            track);
+    } else {
+        actualPropName = propName;
+    }
 
-        //  Loop over all of the 'possible resolution sources'.
-        len = entry.at('sources').getSize();
+    //  If the trait wasn't manually resolved via 'resolveTrait()', then we can
+    //  still resolve it here if all but one of the values of 'actualPropName' on
+    //  each of the sources is TP.REQUIRED. If more than one is "real", then we
+    //  have a conflict.
+    if (TP.notValid(entry.at('resolvesToType'))) {
+
+        //  Loop over all of the 'possible resolution sourceTypes'.
+        len = entry.at('sourceTypes').getSize();
         for (i = 0; i < len; i++) {
 
-            source = entry.at('sources').at(i);
+            source = entry.at('sourceTypes').at(i);
 
             val = track === TP.INST_TRACK ?
-                    source.getInstPrototype()[propName] :
-                    source.getPrototype()[propName];
+                    source.getInstPrototype()[actualPropName] :
+                    source.getPrototype()[actualPropName];
 
             if (val !== TP.REQUIRED) {
                 //  If we already had one that wasn't a TP.REQUIRED, then we
                 //  have a conflict. Create an 'unresolution' and clear the
-                //  'resolvesTo' property in the resolution entry.
-                if (TP.isValid(entry.at('resolvesTo'))) {
+                //  'resolvesToType' property in the resolution entry.
+                if (TP.isValid(entry.at('resolvesToType'))) {
 
                     if (TP.notValid(unresolution)) {
 
                         unresolution = TP.ac();
 
-                        //  Push the 'resolvesTo' source that we already found
-                        unresolution.push(entry.at('resolvesTo'));
+                        //  Push the 'resolvesToType' source that we already found
+                        unresolution.push(entry.at('resolvesToType'));
 
-                        //  Remove the 'resolvesTo' key - we no longer can
+                        //  Remove the 'resolvesToType' key - we no longer can
                         //  resolve this - we're conflicted.
-                        entry.removeKey('resolvesTo');
+                        entry.removeKey('resolvesToType');
                     }
 
                     //  Push the new source value
@@ -4866,16 +5157,16 @@ function(propName, track) {
                 } else {
 
                     //  The first time through - put the source value into the
-                    //  resolution entry's 'resolvesTo' property.
-                    entry.atPut('resolvesTo', source);
+                    //  resolution entry's 'resolvesToType' property.
+                    entry.atPut('resolvesToType', source);
                 }
             }
         }
     }
 
-    //  If there is no entry in 'resolvesTo', that means we had a conflict -
+    //  If there is no entry in 'resolvesToType', that means we had a conflict -
     //  let's try to 'auto resolve' it.
-    if (TP.notValid(resolution = entry.at('resolvesTo'))) {
+    if (TP.notValid(resolution = entry.at('resolvesToType'))) {
 
         //  Normalize non-Array 'unresolution' values to TP.REQUIRED - this
         //  allows for an easy check in the auto resolve machinery.
@@ -4885,14 +5176,22 @@ function(propName, track) {
 
         //  Execute the auto-resolution machinery.
         resolution = this.$autoResolveConflictedTrait(
-                                propName, unresolution, track);
+                                actualPropName, unresolution, track);
 
         if (TP.isValid(resolution)) {
-            entry.atPut('resolvesTo', resolution);
+            entry.atPut('resolvesToType', resolution);
         }
     }
 
-    if (TP.isType(resolution)) {
+    //  No valid resolution? Exit here.
+    if (TP.notValid(resolution)) {
+        return;
+    }
+
+    //  The resolution could be a type or a Function
+
+    //  If it's a type, then we do extra checks
+    if (TP.isType(resolution) && !entry.hasKey('resolverFunction')) {
 
         if (track === TP.TYPE_TRACK) {
             resolutionTypeTarget = resolution.Type;
@@ -4903,19 +5202,15 @@ function(propName, track) {
         //  Note here how we do *not* install a slot if it already represented
         //  on the receiving object (this.Type / this.Inst) unless the value for
         //  that slot is TP.REQUIRED.
-        if (mainTypeTarget[propName] !== TP.REQUIRED &&
-            resolutionTypeTarget[propName] === mainTypeTarget[propName]) {
-            return mainTypeTarget[propName];
+        if (mainTypeTarget[actualPropName] !== TP.REQUIRED &&
+            resolutionTypeTarget[actualPropName] ===
+                            mainTypeTarget[actualPropName]) {
+            return mainTypeTarget[actualPropName];
         }
-
-        //  Populate the slot with the resolution.
-        return this.$populateTraitedSlot(resolution,
-                                            propName,
-                                            mainTypeTarget,
-                                            track);
     }
 
-    return;
+    //  Populate the slot with the entry.
+    return this.$populateTraitedSlot(entry, propName, mainTypeTarget, track);
 });
 
 //  ------------------------------------------------------------------------
