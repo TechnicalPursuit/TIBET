@@ -4578,6 +4578,10 @@ function(entry, installName, targetObject, track) {
                                     mainTypeVal, resolutionTypeVal);
         } else if (entry.hasKey('aroundFlag')) {
 
+            //  The value on the main type would've been replaced by the getter
+            //  and stuffed into here.
+            mainTypeVal = entry.at('initialValue');
+
             //  It has a TP.BEFORE or TP.AFTER flag.
             flag = entry.at('aroundFlag');
 
@@ -4827,7 +4831,18 @@ function(propertyName, resolution, resolutionOption) {
             //  Case #5 or 6: The resolution is a Type with a TP.BEFORE or
             //  TP.AFTER option
             populateResolutionType(entry, resolution);
+
+            TP.$$no_exec_trait_resolution = true;
+            entry.atPut('initialValue', this[propertyName]);
+            TP.$$no_exec_trait_resolution = false;
+
             entry.atPut('aroundFlag', resolutionOption);
+
+            //  Install a trap to execute our resolver Function
+            this[TP.OWNER].$installTraitTrap(
+                            this,
+                            propertyName,
+                            TP.INST_TRACK);
         }
     }
 
