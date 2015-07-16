@@ -3560,25 +3560,31 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
         //  value.
         TP.$$no_exec_trait_resolution = true;
 
-        //  Iterate over them and compose this traited property using the main
-        //  type and the individual trait type. This will cause a dictionary of
-        //  'trait resolutions' to be created for this slot.
-        len = traitTypes.getSize();
-        for (i = 0; i < len; i++) {
-            mainType.$computePossibleSourceType(
-                                    traitTypes.at(i),
-                                    propName,
-                                    propTrack);
+        try {
+            //  Iterate over them and compose this traited property using the
+            //  main type and the individual trait type. This will cause a
+            //  dictionary of 'trait resolutions' to be created for this slot.
+            len = traitTypes.getSize();
+            for (i = 0; i < len; i++) {
+                mainType.$computePossibleSourceType(
+                                        traitTypes.at(i),
+                                        propName,
+                                        propTrack);
+            }
+
+            //  Resolve the traited property using the trait resolution that was
+            //  computed above. This should return an Object value that now
+            //  represents the resolved trait.
+            retVal = mainType.$resolveTraitedProperty(propName, propTrack);
+
+        } catch (e) {
+            //  Throw it up to the caller
+            throw e;
+        } finally {
+            //  Now that composition and resolution are done, flip the flag back
+            //  off.
+            TP.$$no_exec_trait_resolution = false;
         }
-
-        //  Resolve the traited property using the trait resolution that was
-        //  computed above. This should return an Object value that now
-        //  represents the resolved trait.
-        retVal = mainType.$resolveTraitedProperty(propName, propTrack);
-
-        //  Now that composition and resolution are done, flip the flag back
-        //  off.
-        TP.$$no_exec_trait_resolution = false;
 
         //  Set the final value to the returned value. From now on, we'll just
         //  return this value.
