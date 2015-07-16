@@ -5049,7 +5049,18 @@ function(propertyName, resolution, resolutionOption) {
             //  Case #5 or 6: The resolution is a Type with a TP.BEFORE or
             //  TP.AFTER option
             populateResolutionType(entry, resolution);
+
+            TP.$$no_exec_trait_resolution = true;
+            entry.atPut('initialValue', this[propertyName]);
+            TP.$$no_exec_trait_resolution = false;
+
             entry.atPut('aroundFlag', resolutionOption);
+
+            //  Install a trap to execute our resolver Function
+            this[TP.OWNER].$installTraitTrap(
+                            this,
+                            propertyName,
+                            TP.TYPE_TRACK);
         }
     }
 
