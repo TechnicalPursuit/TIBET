@@ -3461,9 +3461,14 @@ function(anInterface, anObject) {
  *              propName    : {String} The property name the trait is for
  *              sourceTypes : {Array} An Array of source Type objects that
  *                              represent possible resolutions for the trait
+ *              aliasedFrom : {String} A property name that the trait might be
+ *                              aliased from. This is the original property
+ *                              name.
  *              aliasedTo   : {String} A property name that the trait might be
- *                              aliased to (i.e. call 'foo', which redirects to
- *                              'bar' on a resolved type)
+ *                              aliased to (i.e. call the aliased method 'bar',
+ *                              which redirects the original method 'foo' on a
+ *                              resolved type). This is the aliased property
+ *                              name.
  *              aroundFlag  : {String} Either TP.BEFORE or TP.AFTER to allow the
  *                              named method from the resolved type to execute
  *                              before or after the method on the receiving type
@@ -4016,6 +4021,8 @@ function(traitType, propName, track) {
         computeOwningType,
 
         entry,
+        actualPropName,
+
         sources,
         i,
         pastSourceTarget;
@@ -4042,18 +4049,31 @@ function(traitType, propName, track) {
         return this.raise('TP.sig.InvalidTrackRequest', track);
     }
 
-    //  If there is no property named by propName on the trait type, exit here.
-    if (!TP.isProperty(traitTypeTarget, propName)) {
+    //  Get the resolution entry for this property
+    entry = resolutions.at(propName);
+
+    //  If this property has been aliased from another property, then we want
+    //  the entry for that property.
+    if (TP.isValid(entry) && entry.hasKey('aliasedFrom')) {
+        actualPropName = entry.at('aliasedFrom');
+        entry = resolutions.at(actualPropName);
+    } else {
+        actualPropName = propName;
+    }
+
+    //  If there is no property named by actualPropName on the trait type, exit
+    //  here.
+    if (!TP.isProperty(traitTypeTarget, actualPropName)) {
         return this;
     }
 
     //  If the mainTypeTarget has this property, then we need to check whether
     //  the traitTypeTarget has it too *and that the values exactly match* (i.e.
     //  they are the same object/value). In that case, we just proceed on.
-    if (TP.isProperty(mainTypeTarget, propName)) {
+    if (TP.isProperty(mainTypeTarget, actualPropName)) {
 
-        checkProp1 = mainTypeTarget[propName];
-        checkProp2 = traitTypeTarget[propName];
+        checkProp1 = mainTypeTarget[actualPropName];
+        checkProp2 = traitTypeTarget[actualPropName];
 
         if (checkProp1 === checkProp2) {
             return this;
@@ -4105,8 +4125,6 @@ function(traitType, propName, track) {
         return owner;
     };
 
-    entry = resolutions.at(propName);
-
     //  If the property already has an entry, then check to see if this trait is
     //  represented in its list of sources. If it is, then this trait/property
     //  combination is already represented.
@@ -4132,8 +4150,8 @@ function(traitType, propName, track) {
                                 sources.at(i).getInstPrototype() :
                                 sources.at(i).getPrototype();
 
-            checkProp1 = pastSourceTarget[propName];
-            checkProp2 = traitTypeTarget[propName];
+            checkProp1 = pastSourceTarget[actualPropName];
+            checkProp2 = traitTypeTarget[actualPropName];
 
             if (checkProp1 === checkProp2) {
                 return this;
@@ -4163,23 +4181,25 @@ function(traitType, propName, track) {
         //  If the property is defined on the main type, then populate the
         //  'sourceTypes' with the type objects computed from the main type
         //  target and the trait type target.
-        if (TP.isDefined(mainTypeTarget[propName])) {
+        if (TP.isDefined(mainTypeTarget[actualPropName])) {
 
             entry = TP.hc(
+                'propName', actualPropName,
                 'sourceTypes',
-                TP.ac(computeOwningType(mainTypeTarget, propName),
-                        computeOwningType(traitTypeTarget, propName)));
+                TP.ac(computeOwningType(mainTypeTarget, actualPropName),
+                        computeOwningType(traitTypeTarget, actualPropName)));
 
-        } else if (TP.isDefined(traitTypeTarget[propName])) {
+        } else if (TP.isDefined(traitTypeTarget[actualPropName])) {
 
             //  Otherwise just populate the 'sourceTypes' with the type object
             //  computed from the trait type target.
             entry = TP.hc(
+                'propName', actualPropName,
                 'sourceTypes',
-                TP.ac(computeOwningType(traitTypeTarget, propName)));
+                TP.ac(computeOwningType(traitTypeTarget, actualPropName)));
         }
 
-        resolutions.atPut(propName, entry);
+        resolutions.atPut(actualPropName, entry);
     }
 
     return this;
@@ -4482,15 +4502,14 @@ function(c3Resolver) {
 //  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('$populateTraitedSlot',
-function(entry, propName, targetObject, track) {
+function(entry, installName, targetObject, track) {
 
     /**
      * @method $populateTraitedSlot
      * @summary Populates the slot on the receiver given the trait resolution.
      * @param {TP.core.Hash} entry The trait resolution entry.
-     * @param {String} propName The property name to use to fetch the property
-     *     from the resolution (if it's a type or references one) and possibly
-     *     to store it on the receiver.
+     * @param {String} installName The name under which the property will
+     *     actually be installed on the supplied target object.
      * @param {Object} targetObject The target object (either a prototype or
      *     instance prototype) that the resolved property will be put on.
      * @param {String} track The track that the property is for, instance or
@@ -4500,13 +4519,12 @@ function(entry, propName, targetObject, track) {
      * @returns
      */
 
-    var resolutions,
-        realEntry,
-
-        resolution,
+    var resolution,
 
         flag,
         resolutionFunc,
+
+        propName,
 
         mainType,
 
@@ -4515,36 +4533,21 @@ function(entry, propName, targetObject, track) {
         resolutionType,
 
         mainTypeVal,
-        resolutionTypeVal,
+        resolutionTypeVal;
 
-        installName;
-
-    //  If this property has been aliased to another one, then we need to go
-    //  back to the type/inst resolution and get *that* entry.
-    if (entry.hasKey('aliasedTo')) {
-        if (track === TP.TYPE_TRACK) {
-            resolutions = this.$get('$traitsTypeResolutions');
-        } else if (track === TP.INST_TRACK) {
-            resolutions = this.get('$traitsInstResolutions');
-        } else {
-            return this.raise('TP.sig.InvalidTrackRequest', track);
-        }
-        realEntry = resolutions.at(entry.at('aliasedTo'));
-    } else {
-        realEntry = entry;
-    }
+    propName = entry.at('propName');
 
     mainType = this;
 
-    if (realEntry.hasKey('definedMethod')) {
+    if (entry.hasKey('definedMethod')) {
         //  The resolution is a Method - install it as the method
-        resolution = realEntry.at('definedMethod');
-        dispatchFunc = targetObject.defineMethod(propName, resolution);
+        resolution = entry.at('definedMethod');
+        dispatchFunc = targetObject.defineMethod(installName, resolution);
     } else {
 
         //  Otherwise, the resolution should contain a resolution type that will
         //  be used in some form or fashion below.
-        resolution = realEntry.at('resolvesToType');
+        resolution = entry.at('resolvesToType');
         if (TP.notValid(resolution)) {
             return this.raise('TP.sig.InvalidType');
         }
@@ -4563,20 +4566,20 @@ function(entry, propName, targetObject, track) {
 
         //  If the resolution contains a resolver Function, execute it with the
         //  value from both the main type and the resolved type.
-        if (realEntry.hasKey('resolverFunction')) {
-            resolutionFunc = realEntry.at('resolverFunction');
+        if (entry.hasKey('resolverFunction')) {
+            resolutionFunc = entry.at('resolverFunction');
 
             //  The value on the main type would've been replaced by the getter
             //  and stuffed into here.
-            mainTypeVal = realEntry.at('initialValue');
+            mainTypeVal = entry.at('initialValue');
 
             //  Call the resolver Function
             resolutionTypeVal = resolutionFunc(
                                     mainTypeVal, resolutionTypeVal);
-        } else if (realEntry.hasKey('aroundFlag')) {
+        } else if (entry.hasKey('aroundFlag')) {
 
             //  It has a TP.BEFORE or TP.AFTER flag.
-            flag = realEntry.at('aroundFlag');
+            flag = entry.at('aroundFlag');
 
             switch (flag) {
                 case TP.BEFORE:
@@ -4593,7 +4596,6 @@ function(entry, propName, targetObject, track) {
                     dispatchFunc.$resolutionMethod = resolutionTypeVal;
                     dispatchFunc.$mainMethod = mainTypeVal;
                     dispatchFunc.$propName = propName;
-                    installName = propName;
 
                     break;
                 case TP.AFTER:
@@ -4610,7 +4612,6 @@ function(entry, propName, targetObject, track) {
                     dispatchFunc.$resolutionMethod = resolutionTypeVal;
                     dispatchFunc.$mainMethod = mainTypeVal;
                     dispatchFunc.$propName = propName;
-                    installName = propName;
 
                     break;
                 default:
@@ -4627,8 +4628,6 @@ function(entry, propName, targetObject, track) {
             } else {
                 resolutionTypeVal = resolutionType.Type[propName];
             }
-
-            installName = propName;
         }
 
         //  If the resolution type value is not a method, then it's an
@@ -4636,9 +4635,9 @@ function(entry, propName, targetObject, track) {
         if (!TP.isMethod(resolutionTypeVal)) {
 
             if (track === TP.INST_TRACK) {
-                mainType.Inst.defineAttribute(propName, resolutionTypeVal);
+                mainType.Inst.defineAttribute(installName, resolutionTypeVal);
             } else {
-                mainType.Type.defineAttribute(propName, resolutionTypeVal);
+                mainType.Type.defineAttribute(installName, resolutionTypeVal);
             }
 
             return resolutionTypeVal;
@@ -4807,6 +4806,17 @@ function(propertyName, resolution, resolutionOption) {
             //  The option is a String, which means that it's an aliased method
             //  (same method - different name).
             entry.atPut('aliasedTo', resolutionOption);
+
+            //  Make an entry for the aliased option, but all we'll store there
+            //  is a reference to the original property name.
+            if (TP.notValid(entry = resolutions.at(resolutionOption))) {
+                entry = TP.hc('propName', resolutionOption);
+                resolutions.atPut(resolutionOption, entry);
+            }
+
+            //  And a reference back to the original property name we're an
+            //  alias for.
+            entry.atPut('aliasedFrom', propertyName);
 
             //  Install a trap *for the property that we're being aliased to*
             this[TP.OWNER].$installTraitTrap(
@@ -5004,6 +5014,17 @@ function(propertyName, resolution, resolutionOption) {
             //  (same method - different name).
             entry.atPut('aliasedTo', resolutionOption);
 
+            //  Make an entry for the aliased option, but all we'll store there
+            //  is a reference to the original property name.
+            if (TP.notValid(entry = resolutions.at(resolutionOption))) {
+                entry = TP.hc('propName', resolutionOption);
+                resolutions.atPut(resolutionOption, entry);
+            }
+
+            //  And a reference back to the original property name we're an
+            //  alias for.
+            entry.atPut('aliasedFrom', propertyName);
+
             //  Install a trap *for the property that we're being aliased to*
             this[TP.OWNER].$installTraitTrap(
                             this,
@@ -5109,9 +5130,11 @@ function(propName, track) {
         return this.raise('TP.sig.InvalidTrackRequest', track);
     }
 
+    //  Get the resolution entry for this property
     entry = resolutions.at(propName);
 
-    //  Get the resolution entry for this property
+    //  If this property has been aliased from another property, then we want
+    //  the entry for that property.
     if (TP.isValid(entry) && entry.hasKey('aliasedFrom')) {
         actualPropName = entry.at('aliasedFrom');
         entry = resolutions.at(actualPropName);
@@ -5125,9 +5148,9 @@ function(propName, track) {
     }
 
     //  If the trait wasn't manually resolved via 'resolveTrait()', then we can
-    //  still resolve it here if all but one of the values of 'actualPropName' on
-    //  each of the sources is TP.REQUIRED. If more than one is "real", then we
-    //  have a conflict.
+    //  still resolve it here if all but one of the values of 'actualPropName'
+    //  on each of the sources is TP.REQUIRED. If more than one is "real", then
+    //  we have a conflict.
     if (TP.notValid(entry.at('resolvesToType'))) {
 
         //  Loop over all of the 'possible resolution sourceTypes'.
@@ -5150,7 +5173,8 @@ function(propName, track) {
 
                         unresolution = TP.ac();
 
-                        //  Push the 'resolvesToType' source that we already found
+                        //  Push the 'resolvesToType' source that we already
+                        //  found
                         unresolution.push(entry.at('resolvesToType'));
 
                         //  Remove the 'resolvesToType' key - we no longer can
@@ -5215,8 +5239,11 @@ function(propName, track) {
         }
     }
 
-    //  Populate the slot with the entry.
-    return this.$populateTraitedSlot(entry, propName, mainTypeTarget, track);
+    //  Populate the slot with the entry. Note here how we do this with the
+    //  *original* property name supplied to this method. This will be the
+    //  slot's 'install name'.
+    return this.$populateTraitedSlot(
+                    entry, propName, mainTypeTarget, track);
 });
 
 //  ------------------------------------------------------------------------
