@@ -264,9 +264,9 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.activate();
-        machine.deactivate = function() {
+        machine.defineMethod('deactivate', function() {
             called = true;
-        };
+        });
         machine.transition(TP.hc('state', 'finish'));
         this.assert.isTrue(called);
     });
@@ -305,9 +305,9 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
-        machine.updateCurrentState = function() {
+        machine.defineMethod('updateCurrentState', function() {
             called = true;
-        };
+        });
         machine.activate();
         TP.signal(TP.ANY, 'Fluffy');
         machine.deactivate(true);
@@ -322,10 +322,10 @@ function() {
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
-        machine.transition = function(details) {
+        machine.defineMethod('transition', function(details) {
             called = true;
             params = details;
-        };
+        });
         machine.activate();
         machine.deactivate(true);
         this.assert.isTrue(called);
@@ -342,14 +342,14 @@ function() {
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
         called = 0;
-        machine.transition = function(details) {
+        machine.defineMethod('transition', function(details) {
             called += 1;
             params = details;
             //  NOTE we have to still set the state on the first pass or the
             //  second pass won't process correctly since we won't have actually
             //  transitioned in a concrete sense.
             machine.$setState(details.at('state'));
-        };
+        });
         machine.activate();     //  first call occurs here...
         TP.signal(TP.ANY, 'Fluffy');    //  second call here...
         machine.deactivate(true);
@@ -419,8 +419,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
-        machine.defineMethod('acceptFinishWhenStart',
-        function(details) {
+        machine.defineMethod('acceptFinishWhenStart', function(details) {
             called = true;
         });
         machine.activate();
@@ -441,8 +440,7 @@ function() {
         machine.defineMethod('acceptFinish', function(details) {
             return false;
         });
-        machine.defineMethod('handleStateInput',
-        function(details) {
+        machine.defineMethod('handleStateInput', function(details) {
             called = true;
         });
         machine.activate();
@@ -465,8 +463,7 @@ function() {
             return false;
         });
         //  Add state-specific handler method for input processing.
-        machine.defineMethod('handleStateInputWhenStart',
-        function(details) {
+        machine.defineMethod('handleStateInputWhenStart', function(details) {
             called = true;
         });
         machine.activate();
@@ -489,8 +486,7 @@ function() {
             return false;
         });
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StartInput',
-        function(aSignal) {
+        TP.sys.getApplication().defineHandler('StartInput', function(aSignal) {
             called = true;
         });
         machine.activate();
@@ -510,8 +506,7 @@ function() {
         machine.defineState('finish');
         machine.setTriggerSignals(TP.ac('Fluffy'));
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StartExit',
-        function(aSignal) {
+        TP.sys.getApplication().defineHandler('StartExit', function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
@@ -715,8 +710,7 @@ function() {
         machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
-        machine.defineHandler('Fluffy',
-        function() {
+        machine.defineHandler('Fluffy', function() {
             called = true;
         });
         machine.activate();
@@ -750,8 +744,7 @@ function() {
         machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
-        machine.defineHandler('FluffyWhenChildstart',
-        function() {
+        machine.defineHandler('FluffyWhenChildstart', function() {
             called = true;
         });
         machine.activate();
@@ -787,8 +780,7 @@ function() {
         machine.defineState(null, 'start', TP.hc('nested', m2));
         machine.defineState('start', 'finish');
         machine.defineState('finish');
-        machine.defineHandler('FluffyWhenStart',
-        function() {
+        machine.defineHandler('FluffyWhenStart', function() {
             called = true;
         });
         machine.activate();
@@ -889,10 +881,10 @@ function() {
         m2.defineState(null, 'childstart');
         m2.defineState('childstart', 'childfinish');
         m2.defineState('childfinish');
-        m2.deactivate = function(force) {
+        m2.defineMethod('deactivate', function(force) {
             forced = force;
             called = true;
-        };
+        });
 
         //  Define the outer state machine.
         machine.defineState(null, 'start', TP.hc('nested', m2));
@@ -916,9 +908,9 @@ function() {
         m2.defineState(null, 'childstart');
         m2.defineState('childstart', 'childfinish');
         m2.defineState('childfinish');
-        m2.exit = function(details) {
+        m2.defineMethod('exit', function(details) {
             called = true;
-        };
+        });
 
         //  Define the outer state machine.
         machine.defineState(null, 'start', TP.hc('nested', m2));
