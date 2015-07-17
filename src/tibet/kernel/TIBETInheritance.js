@@ -3428,7 +3428,7 @@ function(anInterface, anObject) {
  *      1. In keeping with the pseudo-classical nature of inheritance in TIBET,
  *      rather than traits being 'instance based', they are type based. That is,
  *      traits are 'inherited' through both the Type side and Instance side of
- *      the hierarchy.
+ *      a type hierarchy.
  *
  *      2. Conflicted trait resolution can happen either manually or
  *      automatically:
@@ -3436,16 +3436,21 @@ function(anInterface, anObject) {
  *          a. Manual trait resolution, the traditional trait conflict
  *          resolution mechanism, has a variety of resolution strategies. In
  *          TIBET, this includes:
- *              i. resolving to the same named method on a trait type,
- *              ii. resolving to the same named method on a trait type, but with
- *              an alternate method name to retain access to the original method
- *              on the receiving type
- *              iii. resolving to a method given to the resolveTrait() call,
- *              iv. resolving using a Function given to the resolveTrait() call,
- *              which takes two parameters, the value of the trait on the
- *              receiving type and the value of the trait on the resolved type
- *              v. resolving to the method on the trait type, executing it
- *              'before' or 'after' the method on the receiving type
+ *
+ *              i. resolving either type of property to the same named property
+ *              on a trait type,
+ *              ii. resolving either type of property to the same named property
+ *              on a trait type, but with an alternate property name to retain
+ *              access to the original property on the receiving type
+ *              iii. resolving either type of property to a value given to the
+ *              resolveTrait() call,
+ *              iv. resolving either type of property using a Function given to
+ *              the resolveTrait() call, which takes two parameters, the value
+ *              of the trait on the receiving type and the value of the trait on
+ *              the resolved type
+ *              v. resolving a method property to the method on the trait type,
+ *              executing it 'before' or 'after' the method on the receiving
+ *              type
  *
  *          b. Automatic trait resolution. If conflicts are not manually
  *          resolved, and TIBET's automatic trait resolution machinery is turned
