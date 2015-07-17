@@ -2119,6 +2119,10 @@ function(target, name, value, track, desc, display, owner) {
 
     var own,
         trk,
+
+        str,
+        installCalleePatch,
+
         method,
         disp;
 
@@ -2156,75 +2160,123 @@ function(target, name, value, track, desc, display, owner) {
     //  to true which means that the system will definitely not install a patch,
     //  even if the RegExp passes or 'wantsCalleePatch' to true which forces the
     //  system to install a patch, even if the RegExp fails.
-    /* eslint-disable no-extra-parens */
-    if ((TP.NEEDS_CALLEE.test(value.toString()) && !value.noCalleePatch) ||
-        value.wantsCalleePatch === true) {
-    /* eslint-enable no-extra-parens */
-        method = function() {
-            var oldCallee,
-                oldArgs,
+    if (TP.NEEDS_CALLEE.test(str = value.toString())) {
 
-                args,
-                i,
+        if (value.wantsCalleePatch === true) {
+            installCalleePatch = true;
+        } else if (value.wantsCalleePatch === false) {
+            installCalleePatch = false;
+        } else {
 
-                retVal;
+            //  The author hasn't directly specified whether to use the callee
+            //  patch or not, but it's not as simple as just using the RegExp
+            //  above. We only want the patch to be installed if the
+            //  callNextMethod() statement is at the 'top-level' of the method
+            //  itself - not in any nested 'function() {...}' statements.
 
-            //  Capture the current values of callee and args - we might already
-            //  be in a place where we're using them.
-            oldCallee = TP.$$currentCallee$$;
-            oldArgs = TP.$$currentArgs$$;
+            installCalleePatch = false;
 
-            //  Set the value of callee.
-            TP.$$currentCallee$$ = value;
+            //  Trim off any whitespace
+            str = str.trim();
 
-            //  Set the value of args. Note the unique way we gather up the
-            //  arguments here - using very primitive Array constructs and only
-            //  touching the items in 'arguments', not the object itself. This
-            //  allows engines such as V8 in Chrome to optimize.
-            args = new Array(arguments.length);
-            for (i = 0; i < args.length; i++) {
-                args[i] = arguments[i];
+            //  The overall Function's 'function' keyword should be within the
+            //  first few characters. Since we don't want to take it into
+            //  account when detecting nested functions, we skip 8 characters
+            //  into the source String.
+            if (str.indexOf('function', 8) !== TP.NOT_FOUND) {
+                //  We have nested functions - see if we can remove the bodies
+                //  of those functions and if we still have a callee match. If
+                //  so, then we need a callee patch.
+                if (value.stripNestedFunctionContent) {
+                    str = value.stripNestedFunctionContent();
+                    installCalleePatch = TP.NEEDS_CALLEE.test(str);
+                } else {
+                    //  Too early in the boot process to use the
+                    //  'stripNestedFunctionContent' method - install the patch
+                    //  anyway.
+                    installCalleePatch = true;
+                }
+            } else {
+                //  No nested functions - go ahead and install
+                installCalleePatch = true;
             }
-            TP.$$currentArgs$$ = args;
-
-            //  Now, call the method
-            retVal = value.apply(this, TP.$$currentArgs$$);
-
-            //  Restore the old values for callee and args
-            TP.$$currentCallee$$ = oldCallee;
-            TP.$$currentArgs$$ = oldArgs;
-
-            return retVal;
-        };
-
-        //  Let's make sure we can get back to the original function here.
-        method.$realFunc = value;
-
-        //  So this is a little tricky. We've defined a patch function to 'stand
-        //  in' for (and wrap a call to) our method. We do want to distinguish
-        //  the real method from the erstaz for reflection purposes, so we tell
-        //  the patch function to instrument itself with the name of the method
-        //  it's standing in for but with a '$$calleePatch' suffix.
-        method.asMethod(own, name + '$$calleePatch', trk, display);
-
-        //  If the original 'display' argument was provided, that means that
-        //  'asMethod()' won't have set the display name using the supplied
-        //  'name' - which means we need to append '$$calleePatch' to the
-        //  display name.
-        if (TP.notEmpty(display)) {
-            disp = method[TP.DISPLAY];
-            method[TP.DISPLAY] = disp + '$$calleePatch';
         }
 
-        //  We then go ahead and register that on the receiving object under
-        //  that name as well. And then, NOTE BELOW: We will register this patch
-        //  function as the method *UNDER THE REGULAR NAME* on the receiving
-        //  object. Yes, that means that the patch function is registered under
-        //  both names, but reflection will be able to distinguish between the
-        //  two because it's instrumented itself with it's "real name" (the
-        //  method name with the '$$calleePatch' suffix).
-        TP.defineSlot(target, name + '$$calleePatch', method, TP.METHOD, trk,
-                        TP.HIDDEN_DESCRIPTOR);
+        if (installCalleePatch) {
+
+            method = function() {
+                var oldCallee,
+                    oldArgs,
+
+                    args,
+                    i,
+
+                    retVal;
+
+                //  Capture the current values of callee and args - we might
+                //  already be in a place where we're using them.
+                oldCallee = TP.$$currentCallee$$;
+                oldArgs = TP.$$currentArgs$$;
+
+                //  Set the value of callee.
+                TP.$$currentCallee$$ = value;
+
+                //  Set the value of args. Note the unique way we gather up the
+                //  arguments here - using very primitive Array constructs and
+                //  only touching the items in 'arguments', not the object
+                //  itself. This allows engines such as V8 in Chrome to
+                //  optimize.
+                args = new Array(arguments.length);
+                for (i = 0; i < args.length; i++) {
+                    args[i] = arguments[i];
+                }
+                TP.$$currentArgs$$ = args;
+
+                //  Now, call the method
+                retVal = value.apply(this, TP.$$currentArgs$$);
+
+                //  Restore the old values for callee and args
+                TP.$$currentCallee$$ = oldCallee;
+                TP.$$currentArgs$$ = oldArgs;
+
+                return retVal;
+            };
+
+            //  Let's make sure we can get back to the original function here.
+            method.$realFunc = value;
+
+            //  So this is a little tricky. We've defined a patch function to
+            //  'stand in' for (and wrap a call to) our method. We do want to
+            //  distinguish the real method from the ersatz for reflection
+            //  purposes, so we tell the patch function to instrument itself
+            //  with the name of the method it's standing in for but with a
+            //  '$$calleePatch' suffix.
+            method.asMethod(own, name + '$$calleePatch', trk, display);
+
+            //  If the original 'display' argument was provided, that means that
+            //  'asMethod()' won't have set the display name using the supplied
+            //  'name' - which means we need to append '$$calleePatch' to the
+            //  display name.
+            if (TP.notEmpty(display)) {
+                disp = method[TP.DISPLAY];
+                method[TP.DISPLAY] = disp + '$$calleePatch';
+            }
+
+            //  We then go ahead and register that on the receiving object under
+            //  that name as well. And then, NOTE BELOW: We will register this
+            //  patch function as the method *UNDER THE REGULAR NAME* on the
+            //  receiving object. Yes, that means that the patch function is
+            //  registered under both names, but reflection will be able to
+            //  distinguish between the two because it's instrumented itself
+            //  with it's "real name" (the method name with the '$$calleePatch'
+            //  suffix).
+            TP.defineSlot(target, name + '$$calleePatch', method, TP.METHOD,
+                            trk, TP.HIDDEN_DESCRIPTOR);
+        } else {
+            //  The logic above determined that we don't want/need a callee
+            //  patch.
+            method = value;
+        }
     } else {
         //  The normal (non-needs-callee) case. Everything is straightforward.
         method = value;

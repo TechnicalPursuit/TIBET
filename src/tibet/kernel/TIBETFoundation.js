@@ -1191,6 +1191,91 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('$getFunctionLiteralIndexes',
+function() {
+
+    /**
+     * @method $getFunctionLiteralIndexes
+     * @summary Returns an Array of start and end indexes of each occurrence of
+     *     a 'function() {...}' literal in the receiver's source text. Note that
+     *     the first pair here will be the method's 'function() {...}' statement
+     *     for itself.
+     * @returns {Number[]} An Array of two numbers: the start index and the end
+     *     index of each occurrence of the literal.
+     */
+
+    var text,
+        tokens,
+
+        funcIndexes,
+        i,
+        j,
+        count,
+
+        startPos,
+        endPos;
+
+    //  In case this Function is bound
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.$getFunctionLiteralIndexes();
+    }
+
+    text = this.toString();
+
+    //  Tokenize our source String - it's the only way ;-).
+    tokens = TP.$tokenize(text);
+
+    funcIndexes = TP.ac();
+
+    for (i = 0; i < tokens.getSize(); i++) {
+
+        //  Look for an opening 'function' keyword
+        if (tokens.at(i).value !== 'function') {
+            continue;
+        }
+
+        //  Find the first '{' after that.
+        count = 0;
+        for (j = i; j < tokens.getSize(); j++) {
+            if (tokens.at(j).value === '{') {
+
+                //  Capture the starting position and begin the counter.
+                startPos = tokens.at(j).to + 1;
+                count++;
+
+                break;
+            }
+        }
+
+        //  Increment to the next token and continue.
+        for (j = j + 1; j < tokens.getSize(); j++) {
+
+            //  Kick the counter back and forth as we hit opening and closing
+            //  braces.
+            if (tokens.at(j).value === '{') {
+                count++;
+            }
+            if (tokens.at(j).value === '}') {
+                count--;
+            }
+
+            //  If the counter is back at 0, exit.
+            if (count === 0) {
+                break;
+            }
+        }
+
+        //  Capture the ending position.
+        endPos = tokens.at(j).to;
+
+        funcIndexes.push(TP.ac(startPos, endPos));
+    }
+
+    return funcIndexes;
+});
+
+//  ------------------------------------------------------------------------
+
 Function.Inst.defineMethod('getParameterNames',
 function() {
 
@@ -1294,6 +1379,74 @@ function() {
                         return previous + current.value;
                     },
                     '');
+
+    return text;
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('stripNestedFunctionContent',
+function() {
+
+    /**
+     * @method stripNestedFunctionContent
+     * @summary Strips out the content of any nested function literal content in
+     *     the receiver's String representation and returns it. Note that this
+     *     method leaves the empty 'function() {...}' statements in the returned
+     *     value to act as 'placeholders'.
+     * @returns {String} The receiver's source String with any nested Function
+     *     literals stripped of their content.
+     */
+
+    var text,
+        strSplice,
+
+        nestedFuncIndexes,
+
+        offset,
+        i,
+
+        indexPair,
+        len;
+
+    //  In case this Function is bound
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.stripNestedFunctionContent();
+    }
+
+    text = this.toString();
+
+    strSplice = function(str, index, count, add) {
+        return str.slice(0, index) + (add || '') + str.slice(index + count);
+    };
+
+    //  Grab indexes of any Function literals embedded of our source string.
+    nestedFuncIndexes = this.$getFunctionLiteralIndexes();
+
+    offset = 0;
+
+    //  Start at 1 here... the receiver's 'function() {...}' literal text will
+    //  be in the 0th position and we're only interested in nested Function
+    //  literals.
+    for (i = 1; i < nestedFuncIndexes.getSize(); i++) {
+        if (offset >= text.length) {
+            break;
+        }
+
+        indexPair = nestedFuncIndexes.at(i);
+
+        //  The length of how much we'll slice out.
+        len = indexPair.at(1) - indexPair.at(0);
+
+        //  Delete the content of the nested literal using our 'string splice'
+        //  defined above. Note the use of the offset here.
+        text = strSplice(text, indexPair.at(0) - offset, len);
+
+        //  We keep an offset because, as chunks are deleted out of the string,
+        //  the original starting index for the *next* pair of indexes has to be
+        //  adjusted to be less by that amount.
+        offset = len;
+    }
 
     return text;
 });
