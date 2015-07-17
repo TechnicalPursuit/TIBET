@@ -110,7 +110,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap]';
+Cmd.prototype.USAGE = 'tibet test [target|suite] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap] [--remote-debug-port <portnumber>]';
 
 //  ---
 //  Instance Methods
