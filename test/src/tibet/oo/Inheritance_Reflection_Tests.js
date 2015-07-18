@@ -25,7 +25,6 @@ TP.OOTests = TP.lang.Object.construct();
 TP.OOTests.defineAttribute('circleEqualsCount');
 TP.OOTests.defineAttribute('colorEqualsCount');
 TP.OOTests.defineAttribute('colorGetRGBCount');
-TP.OOTests.defineAttribute('dimensionEqualsCount');
 TP.OOTests.defineAttribute('differsCount');
 TP.OOTests.defineAttribute('greaterCount');
 TP.OOTests.defineAttribute('smallerCount');
@@ -149,13 +148,12 @@ function() {
 
     TP.lang.Object.defineSubtype('test.Equality');
 
-    TP.test.Equality.Inst.defineAttribute('doesDiffer');
+    TP.test.Equality.Inst.defineAttribute('doesDiffer', TP.REQUIRED);
 
     //  Methods inside of TP.test.Equality 'require' that a type that it
     //  is mixed into supply an implementation of that method
     TP.test.Equality.Inst.defineMethod('equals', TP.REQUIRED);
     TP.test.Equality.Inst.defineMethod('differs', function() {
-        this.set('doesDiffer', true);
         TP.OOTests.set(
             'differsCount',
             TP.OOTests.get('differsCount') + 1);
@@ -192,8 +190,7 @@ function() {
     //  'between' from TP.test.Magnitude
     TP.test.Circle.addTraits(TP.test.Magnitude);
 
-    //  Note we could've done this in any order:
-    //TP.test.Circle.addTraits(TP.test.Equality, TP.test.Magnitude);
+    TP.test.Circle.Inst.defineAttribute('doesDiffer', true);
 
     TP.test.Circle.Inst.defineMethod('area',
             function() {return Math.PI * this.radius * this.radius; });
@@ -217,6 +214,9 @@ function() {
 
     //  Now define an additional trait for Colors
     TP.lang.Object.defineSubtype('test.Color');
+
+    TP.test.Color.Inst.defineAttribute('doesDiffer', false);
+
     TP.test.Color.Inst.defineMethod('getRgb', function() {
         TP.OOTests.set(
             'colorGetRGBCount',
@@ -4291,822 +4291,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Inheritance - C3 linearization',
-function() {
-
-    this.before(
-        function() {
-            //  From the canonical description of C3 linearization
-            //  http://en.wikipedia.org/wiki/C3_linearization
-
-            TP.lang.Object.defineSubtype('test.O');
-
-            TP.test.O.defineSubtype('test.A');
-            TP.test.O.defineSubtype('test.B');
-            TP.test.O.defineSubtype('test.C');
-            TP.test.O.defineSubtype('test.D');
-            TP.test.O.defineSubtype('test.E');
-
-            TP.test.A.defineSubtype('test.K1');
-            TP.test.K1.addTraits(TP.test.B);
-            TP.test.K1.addTraits(TP.test.C);
-
-            TP.test.D.defineSubtype('test.K2');
-            TP.test.K2.addTraits(TP.test.B);
-            TP.test.K2.addTraits(TP.test.E);
-
-            TP.test.D.defineSubtype('test.K3');
-            TP.test.K3.addTraits(TP.test.A);
-
-            TP.test.K1.defineSubtype('test.Z');
-            TP.test.Z.addTraits(TP.test.K2);
-            TP.test.Z.addTraits(TP.test.K3);
-        });
-
-    //  ---
-
-    this.it('Inheritance - C3 linearization', function(test, options) {
-        var val;
-
-        val = TP.test.Z.computeC3Linearization();
-
-        test.assert.isEqualTo(
-            val,
-            TP.ac('TP.test.Z',
-                    'TP.test.K1',
-                    'TP.test.K2',
-                    'TP.test.K3',
-                    'TP.test.D',
-                    'TP.test.A',
-                    'TP.test.B',
-                    'TP.test.C',
-                    'TP.test.E',
-                    'TP.test.O',
-                    'TP.lang.Object',
-                    'TP.lang.RootObject',
-                    'Object'));
-    });
-
-});
-
-//  ------------------------------------------------------------------------
-
-TP.OOTests.describe('Inheritance - addTraits',
-function() {
-
-    var shouldThrowSetting,
-        autoResolveSetting,
-        func;
-
-    this.before(
-        function() {
-            TP.OOTests.commonBefore();
-
-            //  Reset our counters
-            TP.OOTests.set('circleEqualsCount', 0);
-            TP.OOTests.set('greaterCount', 0);
-            TP.OOTests.set('smallerCount', 0);
-            TP.OOTests.set('differsCount', 0);
-            TP.OOTests.set('betweenCount', 0);
-
-            shouldThrowSetting = TP.sys.shouldThrowExceptions();
-            TP.sys.shouldThrowExceptions(false);
-
-            autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
-            TP.sys.setcfg('oo.$$traits_autoresolve', false);
-        });
-
-    //  ---
-
-    this.it('TIBET instance addTraits - required method trait', function(test, options) {
-
-        var obj,
-            oldLogLevel;
-
-        //  Turn off logging of ERROR and below for now - otherwise, the fact
-        //  that we haven't resolved traits properly (which is what we're
-        //  testing here) will log to the console
-        oldLogLevel = TP.getLogLevel();
-        TP.setLogLevel(TP.SEVERE);
-
-        //  Define a type
-        TP.lang.Object.defineSubtype('test.Triangle');
-
-        //  Add the TP.test.Equality trait
-        TP.test.Triangle.addTraits(TP.test.Equality);
-
-        //  Construct an instance. Because we didn't supply an implementation of
-        //  'equals' (a requirement of the TP.test.Equality trait), this should
-        //  return undefined.
-        obj = TP.test.Triangle.construct();
-
-        this.refute.isDefined(
-            obj,
-            TP.sc('This instance of "TP.test.Triangle" should be undefined'));
-
-        //  Put log level back to what it was
-        TP.setLogLevel(oldLogLevel);
-
-        //  ---
-
-        //  Now we add an implementation of 'equals' to TP.test.Triangle
-        TP.test.Triangle.Inst.defineMethod('equals', function() {return true; });
-
-        //  Try to construct an instance again. Because we now supply an
-        //  implementation of 'equals' this should return a defined object.
-        obj = TP.test.Triangle.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Triangle" should be valid'));
-    });
-
-    //  ---
-
-    this.it('TIBET instance addTraits - no-conflict traits', function(test, options) {
-
-        var obj,
-            val,
-            correctVal;
-
-        //  ---
-
-        obj = TP.test.Circle.construct();
-
-        //  Invoke a instance method. This should kick the 'circleEqualsCount'
-        //  once.
-        obj.equals();
-
-        val = TP.OOTests.get('circleEqualsCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "circleEqualsCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  Invoke a method 'traited in' from another type
-        obj.greater();
-
-        val = TP.OOTests.get('greaterCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "greaterCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  Invoke a regular method that invokes a 'traited in' method
-        obj.smaller();
-
-        val = TP.OOTests.get('smallerCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "smallerCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  Invoke a 'traited in' method that invokes a regular method
-        obj.differs();
-
-        val = TP.OOTests.get('differsCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "differsCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  'differs' also called the 'equals' regular method - it's count
-        //  should now be 2.
-        val = TP.OOTests.get('circleEqualsCount');
-        correctVal = 2;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "circleEqualsCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-    });
-
-    //  ---
-
-    this.it('TIBET instance addTraits - conflicted traits - simple resolution', function(test, options) {
-
-        var obj,
-
-            val,
-            correctVal,
-
-            oldLogLevel,
-
-            inlineCount;
-
-        //  Turn off logging of ERROR and below for now - otherwise, the fact
-        //  that we haven't resolved traits properly (which is what we're
-        //  testing here) will log to the console
-        oldLogLevel = TP.getLogLevel();
-        TP.setLogLevel(TP.SEVERE);
-
-        //  Square Definition
-        TP.lang.Object.defineSubtype('test.Square');
-
-        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
-        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
-        //  Magnitude directly. We also picked up a real implementation of
-        //  'equals' from TP.test.Color.
-        //  But now we have a conflict over 'getRgb' between TP.test.Color and
-        //  TP.test.RGBData
-        TP.test.Square.addTraits(
-            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
-
-        //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Square.Inst.defineMethod('smaller', function() {});
-
-        //  If an instance is made at this point, it will raise an exception
-        //  that 'getRgb' is conflicted between 'TP.test.RGBData' and
-        //  'TP.test.Color':
-        obj = TP.test.Square.construct();
-
-        this.refute.isDefined(
-            obj,
-            TP.sc('This instance of "TP.test.Square" should be undefined'));
-
-        //  Put log level back to what it was
-        TP.setLogLevel(oldLogLevel);
-
-        //  ---
-
-        //  Resolve the conflict in favor of TP.test.Color
-        TP.test.Square.Inst.resolveTrait('getRgb', TP.test.Color);
-
-        //  Try to construct an instance again. Because we now resolved the
-        //  implementation of 'getRgb' this should return a defined object.
-        obj = TP.test.Square.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Square" should be valid'));
-
-        //  ---
-
-        //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
-
-        obj.getRgb();
-
-        val = TP.OOTests.get('colorGetRGBCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "colorGetRGBCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  Turn off logging of ERROR and below for now - otherwise, the fact
-        //  that we haven't resolved traits properly (which is what we're
-        //  testing here) will log to the console
-        oldLogLevel = TP.getLogLevel();
-        TP.setLogLevel(TP.SEVERE);
-
-        //  Rectangle Definition
-        TP.lang.Object.defineSubtype('test.Rectangle');
-
-        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
-        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
-        //  Magnitude directly. We also picked up a real implementation of
-        //  'equals' from TP.test.Color.
-        //  But now we have a conflict over 'getRgb' between TP.test.Color and
-        //  TP.test.RGBData
-        TP.test.Rectangle.addTraits(
-            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
-
-        //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Rectangle.Inst.defineMethod('smaller', function() {});
-
-        //  If an instance is made at this point, it will raise an exception
-        //  that 'getRgb' is conflicted between 'TP.test.RGBData' and
-        //  'TP.test.Color':
-        obj = TP.test.Rectangle.construct();
-
-        this.refute.isDefined(
-            obj,
-            TP.sc('This instance of "TP.test.Rectangle" should be undefined'));
-
-        //  Put log level back to what it was
-        TP.setLogLevel(oldLogLevel);
-
-        //  ---
-
-        //  Resolve the conflict using an inline Function
-        TP.test.Rectangle.Inst.resolveTrait('getRgb', function() {
-                inlineCount = 1;
-            });
-
-        //  Try to construct an instance again. Because we now resolved the
-        //  implementation of 'getRgb' this should return a defined object.
-        obj = TP.test.Rectangle.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Rectangle" should be valid'));
-
-        //  ---
-
-        //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
-
-        obj.getRgb();
-
-        //  We should *not* have invoked the 'getRgb' method on TP.test.Color
-        val = TP.OOTests.get('colorGetRGBCount');
-        correctVal = 0;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "colorGetRGBCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  We *should* have invoked the inline Function as the 'getRgb' method.
-        val = inlineCount;
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for the inline count',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-    });
-
-    //  ---
-
-    this.it('TIBET instance addTraits - conflicted traits - complex resolution', function(test, options) {
-
-        var obj,
-
-            val,
-            correctVal,
-
-            inlineCount,
-            oldLogLevel;
-
-        //  Turn off logging of ERROR and below for now - otherwise, the fact
-        //  that we haven't resolved traits properly (which is what we're
-        //  testing here) will log to the console
-        oldLogLevel = TP.getLogLevel();
-        TP.setLogLevel(TP.SEVERE);
-
-        //  Octogon Definition
-        TP.lang.Object.defineSubtype('test.Octogon');
-
-        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
-        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
-        //  Magnitude directly. We also picked up a real implementation of
-        //  'equals' from TP.test.Color.
-        //  But now we have a conflict over 'getRgb' between TP.test.Color and
-        //  TP.test.RGBData
-        TP.test.Octogon.addTraits(
-            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
-
-        //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Octogon.Inst.defineMethod('smaller', function() {});
-
-        //  If an instance is made at this point, it will raise an exception
-        //  that 'getRgb' is conflicted between 'TP.test.RGBData' and
-        //  'TP.test.Color':
-        obj = TP.test.Octogon.construct();
-
-        this.refute.isDefined(
-            obj,
-            TP.sc('This instance of "TP.test.Octogon" should be undefined'));
-
-        //  Put log level back to what it was
-        TP.setLogLevel(oldLogLevel);
-
-        //  ---
-
-        //  Resolve the conflict in favor of TP.test.Color, but renaming it
-        //  'getRgbData'.
-        TP.test.Octogon.Inst.resolveTrait('getRgb', TP.test.Color,
-                                            'getRgbData');
-
-        //  Try to construct an instance again. Because we now resolved the
-        //  implementation of 'getRgb' this should return a defined object.
-        obj = TP.test.Octogon.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Octogon" should be valid'));
-
-        //  ---
-
-        //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
-
-        //  Call it using the new name we gave it above.
-        obj.getRgbData();
-
-        //  We should have invoked the 'getRgb' method on TP.test.Color, even
-        //  though we called it 'getRgbData'.
-        val = TP.OOTests.get('colorGetRGBCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "colorGetRGBCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  Hexagon Definition
-        TP.lang.Object.defineSubtype('test.Hexagon');
-
-        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
-        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
-        //  Magnitude directly. We also picked up a real implementation of
-        //  'equals' from TP.test.Color.
-        //  But now we have a conflict over 'getRgb' between TP.test.Color and
-        //  TP.test.RGBData
-        TP.test.Hexagon.addTraits(
-            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
-
-        //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Hexagon.Inst.defineMethod('smaller', function() {});
-
-        //  This is TP.test.Hexagon's own implementation of 'getRgb'
-        TP.test.Hexagon.Inst.defineMethod('getRgb', function() {
-                inlineCount = 1;
-            });
-
-        //  Resolve the conflict in favor of TP.test.Color, but executing the
-        //  one on TP.test.Hexagon first.
-        TP.test.Hexagon.Inst.resolveTrait('getRgb', TP.test.Color, TP.BEFORE);
-
-        //  Try to construct an instance again. Because we now resolved the
-        //  implementation of 'getRgb' this should return a defined object.
-        obj = TP.test.Hexagon.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Hexagon" should be valid'));
-
-        //  ---
-
-        //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
-
-        obj.getRgb();
-
-        //  We should have invoked the 'getRgb' method on TP.test.Color
-        val = TP.OOTests.get('colorGetRGBCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "colorGetRGBCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  We *should* have invoked the main type's instance method as well.
-        val = inlineCount;
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for the inline count',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  Pentagon Definition
-        TP.lang.Object.defineSubtype('test.Pentagon');
-
-        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
-        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
-        //  Magnitude directly. We also picked up a real implementation of
-        //  'equals' from TP.test.Color.
-        //  But now we have a conflict over 'getRgb' between TP.test.Color and
-        //  TP.test.RGBData
-        TP.test.Pentagon.addTraits(
-            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
-
-        //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Pentagon.Inst.defineMethod('smaller', function() {});
-
-        //  This is TP.test.Pentagon's own implementation of 'getRgb'
-        TP.test.Pentagon.Inst.defineMethod('getRgb', function() {
-                inlineCount = 1;
-            });
-
-        //  Resolve the conflict in favor of TP.test.Color, but executing the
-        //  one on TP.test.Pentagon first.
-        TP.test.Pentagon.Inst.resolveTrait('getRgb', TP.test.Color, TP.AFTER);
-
-        //  Try to construct an instance again. Because we now resolved the
-        //  implementation of 'getRgb' this should return a defined object.
-        obj = TP.test.Pentagon.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Pentagon" should be valid'));
-
-        //  ---
-
-        //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
-
-        obj.getRgb();
-
-        //  We should have invoked the 'getRgb' method on TP.test.Color
-        val = TP.OOTests.get('colorGetRGBCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "colorGetRGBCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  ---
-
-        //  We *should* have invoked the main type's instance method as well.
-        val = inlineCount;
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for the inline count',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-    });
-
-    //  ---
-
-    this.it('TIBET instance addTraits - conflicted traits - automatic resolution', function(test, options) {
-
-        var obj,
-
-            val,
-            correctVal;
-
-        //  For this particular test, we undo the behavior we have in the
-        //  before() / after() and turn trait autoresolution on
-
-        TP.sys.setcfg('oo.$$traits_autoresolve', true);
-
-        //  ---
-
-        //  Diamond Definition
-        TP.lang.Object.defineSubtype('test.Diamond');
-
-        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
-        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
-        //  Magnitude directly. We also picked up a real implementation of
-        //  'equals' from TP.test.Color.
-        //  But now we have a conflict over 'getRgb' between TP.test.Color and
-        //  TP.test.RGBData
-        TP.test.Diamond.addTraits(
-            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
-
-        //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.Diamond.Inst.defineMethod('smaller', function() {});
-
-        //  Since auto resolution is turned on, if an instance is made at this
-        //  point, it will automatically resolve any conflicts and the instance
-        //  will be real. This should've resolved the conflict in favor of the
-        //  'TP.test.Color' type.
-        obj = TP.test.Diamond.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Diamond" should be valid'));
-
-        //  ---
-
-        //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
-
-        obj.getRgb();
-
-        val = TP.OOTests.get('colorGetRGBCount');
-        correctVal = 1;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "colorGetRGBCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-
-        //  Turn auto resolution back off
-        TP.sys.setcfg('oo.$$traits_autoresolve', false);
-    });
-
-    //  ---
-
-    func = function(aRequest) {
-
-        var obj,
-
-            val,
-            correctVal;
-
-        //  First, make trait type and extend it.
-        TP.lang.Object.defineSubtype('test.Dimension');
-
-        //  Define an 'equals' method on it
-        TP.test.Dimension.Inst.defineMethod('equals', function() {
-            TP.OOTests.set(
-                'dimensionEqualsCount',
-                    TP.OOTests.get('dimensionEqualsCount') + 1);
-        });
-
-        //  Make a subtype of that
-        TP.test.Dimension.defineSubtype('test.AnotherDimension');
-
-        //  Define an 'equals' method on it - calling 'up' to its supertype
-        TP.test.AnotherDimension.Inst.defineMethod('equals', function() {
-            this.callNextMethod();
-        });
-
-        //  DimensionedThing Definition
-        TP.lang.Object.defineSubtype('test.DimensionedThing');
-
-        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from Equality by way
-        //  of Magnitude and 'smaller' (TP.REQUIRED), 'greater' & 'between' from
-        //  Magnitude directly. We also picked up a real implementation of
-        //  'equals' from TP.test.AnotherDimension.
-        TP.test.DimensionedThing.addTraits(
-                TP.test.Magnitude, TP.test.AnotherDimension);
-
-        //  Satisfies 'smaller' from TP.test.Magnitude
-        TP.test.DimensionedThing.Inst.defineMethod('smaller', function() {
-        });
-
-        obj = TP.test.DimensionedThing.construct();
-
-        //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('dimensionEqualsCount', 0);
-
-        obj.equals();
-
-        val = TP.OOTests.get('dimensionEqualsCount');
-        correctVal = 1;
-
-        this.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "dimensionEqualsCount"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-    };
-    func.noCalleePatch = true;
-
-    this.it('TIBET instance addTraits - conflicted traits - callNextMethod()',
-            func);
-
-    //  ---
-
-    this.it('TIBET instance addTraits - required attribute trait', function(test, options) {
-
-        var obj;
-
-        //  Define a type
-        TP.lang.Object.defineSubtype('test.Quadrangle');
-
-        //  Add the TP.test.Equality trait
-        TP.test.Quadrangle.addTraits(TP.test.Equality);
-
-        //  Now we add an implementation of 'equals' to TP.test.Quadrangle
-        TP.test.Quadrangle.Inst.defineMethod('equals',
-                                                function() {return true; });
-
-        //  Try to construct an instance again. Because we now supply an
-        //  implementation of 'equals' this should return a defined object.
-        obj = TP.test.Quadrangle.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Quadrangle" should be valid'));
-    });
-
-    //  ---
-
-    this.it('TIBET instance addTraits - required attribute trait', function(test, options) {
-
-        var obj,
-
-            val,
-            correctVal,
-
-            oldLogLevel;
-
-        //  Turn off logging of ERROR and below for now - otherwise, the fact
-        //  that we haven't resolved traits properly (which is what we're
-        //  testing here) will log to the console
-        oldLogLevel = TP.getLogLevel();
-        TP.setLogLevel(TP.SEVERE);
-
-        //  Define a type
-        TP.lang.Object.defineSubtype('test.Ellipsis');
-
-        //  Add the TP.test.Equality trait
-        TP.test.Ellipsis.addTraits(TP.test.Equality);
-
-        //  Now we add a value for 'doesDiffer' to TP.test.Ellipsis that will be
-        //  different than the one on TP.test.Equality.
-        TP.test.Ellipsis.Inst.defineAttribute('doesDiffer', false);
-
-        //  Now we add an implementation of 'equals' to TP.test.Ellipsis
-        TP.test.Ellipsis.Inst.defineMethod('equals', function() {return true; });
-
-        //  Construct an instance. Because we didn't supply a resolution of
-        //  'doesDiffer' this should return undefined.
-        obj = TP.test.Ellipsis.construct();
-
-        this.refute.isDefined(
-            obj,
-            TP.sc('This instance of "TP.test.Ellipsis" should be undefined'));
-
-        //  Put log level back to what it was
-        TP.setLogLevel(oldLogLevel);
-
-        //  Resolve the conflict in favor of TP.test.Color
-        TP.test.Ellipsis.Inst.resolveTrait('doesDiffer',
-                                            TP.test.Equality,
-                                            function(ellipsisVal, equalityVal) {
-                                                return ellipsisVal;
-                                            });
-
-        //  Try to construct an instance again. Because we now supply a
-        //  resolution for 'doesDiffer' this should return a defined object.
-        obj = TP.test.Ellipsis.construct();
-
-        test.assert.isValid(
-            obj,
-            TP.sc('This instance of "TP.test.Ellipsis" should be valid'));
-
-        //  When we 'get' doesDiffer, it should be the value 'false', since we
-        //  resolved it using TP.test.Ellipsis's value.
-        val = obj.get('doesDiffer');
-        correctVal = false;
-
-        test.assert.isEqualTo(
-            val,
-            correctVal,
-            TP.sc('The count for "doesDiffer"',
-                    ' should be: ', correctVal,
-                    ' not: ', val, '.'));
-    });
-
-    //  ---
-
-    this.after(
-        function() {
-            TP.OOTests.commonAfter();
-
-            TP.sys.shouldThrowExceptions(shouldThrowSetting);
-
-            TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
-        });
-});
-
-//  ------------------------------------------------------------------------
-
 TP.OOTests.describe('Inheritance - callNextMethod',
 function() {
 
@@ -5250,6 +4434,1303 @@ function() {
             metadata.removeKey('TP.test.FooType');
             metadata.removeKey('TP.test.BarType');
             metadata.removeKey('TP.test.BazType');
+        });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.OOTests.describe('Inheritance - C3 linearization',
+function() {
+
+    this.before(
+        function() {
+            //  From the canonical description of C3 linearization
+            //  http://en.wikipedia.org/wiki/C3_linearization
+
+            TP.lang.Object.defineSubtype('test.O');
+
+            TP.test.O.defineSubtype('test.A');
+            TP.test.O.defineSubtype('test.B');
+            TP.test.O.defineSubtype('test.C');
+            TP.test.O.defineSubtype('test.D');
+            TP.test.O.defineSubtype('test.E');
+
+            TP.test.A.defineSubtype('test.K1');
+            TP.test.K1.addTraits(TP.test.B);
+            TP.test.K1.addTraits(TP.test.C);
+
+            TP.test.D.defineSubtype('test.K2');
+            TP.test.K2.addTraits(TP.test.B);
+            TP.test.K2.addTraits(TP.test.E);
+
+            TP.test.D.defineSubtype('test.K3');
+            TP.test.K3.addTraits(TP.test.A);
+
+            TP.test.K1.defineSubtype('test.Z');
+            TP.test.Z.addTraits(TP.test.K2);
+            TP.test.Z.addTraits(TP.test.K3);
+        });
+
+    //  ---
+
+    this.it('Inheritance - C3 linearization', function(test, options) {
+        var val;
+
+        val = TP.test.Z.computeC3Linearization();
+
+        test.assert.isEqualTo(
+            val,
+            TP.ac('TP.test.Z',
+                    'TP.test.K1',
+                    'TP.test.K2',
+                    'TP.test.K3',
+                    'TP.test.D',
+                    'TP.test.A',
+                    'TP.test.B',
+                    'TP.test.C',
+                    'TP.test.E',
+                    'TP.test.O',
+                    'TP.lang.Object',
+                    'TP.lang.RootObject',
+                    'Object'));
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
+TP.OOTests.describe('Inheritance - addTraits',
+function() {
+
+    var shouldThrowSetting;
+
+    this.before(
+        function() {
+            TP.OOTests.commonBefore();
+
+            //  Reset our counters
+            TP.OOTests.set('circleEqualsCount', 0);
+            TP.OOTests.set('greaterCount', 0);
+            TP.OOTests.set('smallerCount', 0);
+            TP.OOTests.set('differsCount', 0);
+            TP.OOTests.set('betweenCount', 0);
+
+            shouldThrowSetting = TP.sys.shouldThrowExceptions();
+            TP.sys.shouldThrowExceptions(false);
+        });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - required method trait', function(test, options) {
+
+        var obj;
+
+        //  Define a type
+        TP.lang.Object.defineSubtype('test.Triangle');
+
+        //  Add the TP.test.Equality trait
+        TP.test.Triangle.addTraits(TP.test.Equality);
+
+        //  Construct an instance. Because we didn't supply an implementation of
+        //  'equals' (a requirement of the TP.test.Equality trait), this should
+        //  return an object where 'equals' is undefined.
+        obj = TP.test.Triangle.construct();
+
+        test.refute.isDefined(
+            obj.equals,
+            TP.sc('The "equals" method on "TP.test.Triangle" should not be defined'));
+
+        //  ---
+
+        //  Now we add an implementation of 'equals' to TP.test.Triangle
+        TP.test.Triangle.Inst.defineMethod('equals', function() {return true; });
+
+        //  Test again. Because we now supply an implementation of 'equals' the
+        //  slot should return a method object.
+        test.assert.isMethod(
+            obj.equals,
+            TP.sc('The "equals" method on "TP.test.Triangle" should be a method'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - no-conflict traits', function(test, options) {
+
+        var obj,
+            val,
+            correctVal;
+
+        //  ---
+
+        obj = TP.test.Circle.construct();
+
+        //  Invoke a instance method. This should kick the 'circleEqualsCount'
+        //  once.
+        obj.equals();
+
+        val = TP.OOTests.get('circleEqualsCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "circleEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Invoke a method 'traited in' from another type
+        obj.greater();
+
+        val = TP.OOTests.get('greaterCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "greaterCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Invoke a regular method that invokes a 'traited in' method
+        obj.smaller();
+
+        val = TP.OOTests.get('smallerCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "smallerCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Invoke a 'traited in' method that invokes a regular method
+        obj.differs();
+
+        val = TP.OOTests.get('differsCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "differsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  'differs' also called the 'equals' regular method - it's count
+        //  should now be 2.
+        val = TP.OOTests.get('circleEqualsCount');
+        correctVal = 2;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "circleEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - conflicted method traits - simple manual resolution', function(test, options) {
+
+        var autoResolveSetting,
+
+            obj,
+
+            val,
+            correctVal,
+
+            inlineCount;
+
+        //  Turn off auto resolution here
+        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
+        TP.sys.setcfg('oo.$$traits_autoresolve', false);
+
+        //  ---
+        //  Resolving to the same named trait
+        //  ---
+
+        //  Square Definition
+        TP.lang.Object.defineSubtype('test.Square');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Square.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Square.Inst.defineMethod('smaller', function() {});
+
+        //  If an instance is made at this point, there will be no
+        //  implementation for 'getRgb' since it is conflicted between
+        //  'TP.test.RGBData' and 'TP.test.Color'.
+
+        //  Construct an instance. Because 'getRgb' is now conflicted between
+        //  TP.test.RGBData and TP.test.Color, this should return an object
+        //  where 'getRgb' is undefined.
+        obj = TP.test.Square.construct();
+
+        test.refute.isDefined(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Square" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color
+        TP.test.Square.Inst.resolveTrait('getRgb', TP.test.Color);
+
+        //  Test again. Because we've now resolved an implementation of 'getRgb'
+        //  the slot should return a method object.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Square" should be a method'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+
+        obj.getRgb();
+
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  Resolving to an alternate value given on the resolveTrait() call.
+        //  ---
+
+        //  Rectangle Definition
+        TP.lang.Object.defineSubtype('test.Rectangle');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Rectangle.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Rectangle.Inst.defineMethod('smaller', function() {});
+
+        //  If an instance is made at this point, there will be no
+        //  implementation for 'getRgb' since it is conflicted between
+        //  'TP.test.RGBData' and 'TP.test.Color'.
+
+        //  Construct an instance. Because 'getRgb' is now conflicted between
+        //  TP.test.RGBData and TP.test.Color, this should return an object
+        //  where 'getRgb' is undefined.
+        obj = TP.test.Rectangle.construct();
+
+        test.refute.isDefined(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Rectangle" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict using an alternate value
+        TP.test.Rectangle.Inst.resolveTrait('getRgb', function() {
+                inlineCount = 1;
+            });
+
+        //  Test again. Because we now supply an alterative value (an
+        //  implementation of 'getRgb') using the resolveTrait() above, the slot
+        //  should return a method object.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Rectangle" should be a method'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+
+        obj.getRgb();
+
+        //  We should *not* have invoked the 'getRgb' method on TP.test.Color
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 0;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  We *should* have invoked the inline Function as the 'getRgb' method.
+        val = inlineCount;
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for the inline count',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Set auto resolution back to its prior setting here
+        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - conflicted method traits - complex manual resolution', function(test, options) {
+
+        var autoResolveSetting,
+
+            obj,
+
+            val,
+            correctVal,
+
+            inlineCount;
+
+        //  Turn off auto resolution here
+        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
+        TP.sys.setcfg('oo.$$traits_autoresolve', false);
+
+        //  ---
+        //  Resolving to a different named trait
+        //  ---
+
+        //  Octogon Definition
+        TP.lang.Object.defineSubtype('test.Octogon');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Octogon.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Octogon.Inst.defineMethod('smaller', function() {});
+
+        //  If an instance is made at this point, there will be no
+        //  implementation for 'getRgb' since it is conflicted between
+        //  'TP.test.RGBData' and 'TP.test.Color'.
+
+        //  Construct an instance. Because 'getRgb' is now conflicted between
+        //  TP.test.RGBData and TP.test.Color, this should return an object
+        //  where 'getRgb' is undefined.
+        obj = TP.test.Octogon.construct();
+
+        test.refute.isDefined(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Octogon" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color, but renaming it to
+        //  'getRgbData'.
+        TP.test.Octogon.Inst.resolveTrait('getRgb', TP.test.Color,
+                                            'getRgbData');
+
+        //  Test again. Because we've now resolved an implementation of 'getRgb'
+        //  the slot should return a method object.
+        test.assert.isMethod(
+            obj.getRgbData,
+            TP.sc('The "getRgb" method (aliased to the "getRgbData" method) on "TP.test.Octogon" should be a method'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+
+        //  Call it using the new name we gave it above.
+        obj.getRgbData();
+
+        //  We should have invoked the 'getRgb' method on TP.test.Color, even
+        //  though we called it 'getRgbData'.
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  Resolving to the same named trait, but executing the main type's
+        //  version of the method before the trait type.
+        //  ---
+
+        //  Hexagon Definition
+        TP.lang.Object.defineSubtype('test.Hexagon');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Hexagon.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Hexagon.Inst.defineMethod('smaller', function() {});
+
+        //  This is TP.test.Hexagon's own implementation of 'getRgb'
+        TP.test.Hexagon.Inst.defineMethod('getRgb', function() {
+                inlineCount = 1;
+            });
+
+        //  Construct an instance.
+        obj = TP.test.Hexagon.construct();
+
+        //  We actually have an implementation of 'getRgb' on TP.test.Hexagon,
+        //  even though what we really want is to execute our implementation and
+        //  then the traited-in implementation. In any case, the slot should
+        //  return a method object.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Hexagon" should be a method'));
+
+        //  Set the test count and invoke the method
+        TP.OOTests.set('colorGetRGBCount', 0);
+        inlineCount = 0;
+
+        //  Execute it.
+        obj.getRgb();
+
+        //  Inline count should be 1, but colorGetRGBCount should still be 0
+        //  since all we did was invoke our version
+
+        val = inlineCount;
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 0;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color, but executing the
+        //  one on TP.test.Hexagon first.
+        TP.test.Hexagon.Inst.resolveTrait('getRgb', TP.test.Color, TP.BEFORE);
+
+        //  Now we have the implementation of 'getRgb' on TP.test.Hexagon that
+        //  we want. Make sure it is still a method.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Hexagon" should be a method'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+        inlineCount = 0;
+
+        //  Execute it.
+        obj.getRgb();
+
+        //  Both inline count and colorGetRGBCount should be 1
+
+        //  We should have invoked the 'getRgb' method on TP.test.Color
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  We *should* have invoked the main type's instance method as well.
+        val = inlineCount;
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for the inline count',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  Resolving to the same named trait, but executing the main type's
+        //  version of the method after the trait type.
+        //  ---
+
+        //  Pentagon Definition
+        TP.lang.Object.defineSubtype('test.Pentagon');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Pentagon.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Pentagon.Inst.defineMethod('smaller', function() {});
+
+        //  This is TP.test.Pentagon's own implementation of 'getRgb'
+        TP.test.Pentagon.Inst.defineMethod('getRgb', function() {
+                inlineCount = 1;
+            });
+
+        //  Construct an instance.
+        obj = TP.test.Pentagon.construct();
+
+        //  We actually have an implementation of 'getRgb' on TP.test.Pentagon,
+        //  even though what we really want is to execute our implementation and
+        //  then the traited-in implementation. In any case, the slot should
+        //  return a method object.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Pentagon" should be a method'));
+
+        //  Set the test count and invoke the method
+        TP.OOTests.set('colorGetRGBCount', 0);
+        inlineCount = 0;
+
+        //  Execute it.
+        obj.getRgb();
+
+        //  Inline count should be 1, but colorGetRGBCount should still be 0
+        //  since all we did was invoke our version
+
+        val = inlineCount;
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 0;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color, but executing the
+        //  one on TP.test.Pentagon first.
+        TP.test.Pentagon.Inst.resolveTrait('getRgb', TP.test.Color, TP.AFTER);
+
+        //  Now we have the implementation of 'getRgb' on TP.test.Pentagon that
+        //  we want. Make sure it is still a method.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Pentagon" should be a method'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+        inlineCount = 0;
+
+        //  Execute it.
+        obj.getRgb();
+
+        //  We should have invoked the 'getRgb' method on TP.test.Color
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  We *should* have invoked the main type's instance method as well.
+        val = inlineCount;
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for the inline count',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  Resolving using a Function on addTrait()
+        //  ---
+
+        //  Heptagon Definition
+        TP.lang.Object.defineSubtype('test.Heptagon');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Heptagon.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Heptagon.Inst.defineMethod('smaller', function() {});
+
+        //  If an instance is made at this point, there will be no
+        //  implementation for 'getRgb' since it is conflicted between
+        //  'TP.test.RGBData' and 'TP.test.Color'.
+
+        //  Construct an instance. Because 'getRgb' is now conflicted between
+        //  TP.test.RGBData and TP.test.Color, this should return an object
+        //  where 'getRgb' is undefined.
+        obj = TP.test.Heptagon.construct();
+
+        test.refute.isDefined(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Heptagon" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color - note how this
+        //  allows you to return an entirely different value, although the value
+        //  for the 'getRgb' slot on the TP.test.Heptagon and TP.test.Color
+        //  types are supplied as arguments.
+        TP.test.Heptagon.Inst.resolveTrait('getRgb',
+                                            TP.test.Color,
+                                            function(heptagonVal, colorVal) {
+                                                return colorVal;
+                                            });
+
+        //  Test again. Because we've now resolved an implementation of 'getRgb'
+        //  the slot should return a method object.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Heptagon" should be a method'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+
+        obj.getRgb();
+
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Set auto resolution back to its prior setting here
+        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - conflicted method traits - automatic resolution', function(test, options) {
+
+        var obj,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        //  Diamond Definition
+        TP.lang.Object.defineSubtype('test.Diamond');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Diamond.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Diamond.Inst.defineMethod('smaller', function() {});
+
+        //  Auto resolution will automatically resolve any conflicts at this
+        //  point. This should've resolved the conflict in favor of the
+        //  'TP.test.Color' type.
+        obj = TP.test.Diamond.construct();
+
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Diamond" should be a method'));
+
+        //  ---
+
+        //  Set the test count and invoke the 'resolved' method
+        TP.OOTests.set('colorGetRGBCount', 0);
+
+        obj.getRgb();
+
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - method traits - callNextMethod()', function(test, options) {
+
+        var obj,
+
+            dimensionEqualsCount,
+            anotherDimensionEqualsCount,
+            dimensionedSquareEqualsCount,
+            dimensionedCircleEqualsCount,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        //  First, make trait type and extend it.
+        TP.lang.Object.defineSubtype('test.Dimension');
+
+        //  Define an 'equals' method on it
+        TP.test.Dimension.Inst.defineMethod('equals', function() {
+            dimensionEqualsCount = 1;
+        });
+
+        //  Make a subtype of that
+        TP.test.Dimension.defineSubtype('test.AnotherDimension');
+
+        //  Define an 'equals' method on it - calling 'up' to its supertype
+        TP.test.AnotherDimension.Inst.defineMethod('equals', function() {
+
+            this.callNextMethod();
+
+            anotherDimensionEqualsCount = 1;
+        });
+
+        //  ---
+        //  callNextMethod() from a method from a trait type 'up' to its
+        //  supertype
+        //  ---
+
+        //  TP.test.DimensionedRectangle Definition
+        TP.lang.Object.defineSubtype('test.TP.test.DimensionedRectangle');
+
+        TP.test.TP.test.DimensionedRectangle.addTraits(
+                TP.test.Magnitude, TP.test.AnotherDimension);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.TP.test.DimensionedRectangle.Inst.defineMethod('smaller', function() {});
+
+        obj = TP.test.TP.test.DimensionedRectangle.construct();
+
+        //  Set the test counts and invoke the method
+        dimensionEqualsCount = 0;
+        anotherDimensionEqualsCount = 0;
+
+        obj.equals();
+
+        val = dimensionEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = anotherDimensionEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "anotherDimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  callNextMethod() from a method on the main type 'up' to one of its
+        //  trait types
+        //  ---
+
+        //  DimensionedSquare Definition
+        TP.lang.Object.defineSubtype('test.DimensionedSquare');
+
+        TP.test.DimensionedSquare.addTraits(
+                TP.test.Magnitude, TP.test.AnotherDimension);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.DimensionedSquare.Inst.defineMethod('smaller', function() {});
+
+        //  Define an 'equals' method on it - calling 'up' to the traited type
+        TP.test.DimensionedSquare.Inst.defineMethod('equals', function() {
+
+            this.callNextMethod();
+
+            dimensionedSquareEqualsCount = 1;
+        });
+
+        obj = TP.test.DimensionedSquare.construct();
+
+        //  Set the test counts and invoke the method
+        dimensionEqualsCount = 0;
+        anotherDimensionEqualsCount = 0;
+        dimensionedSquareEqualsCount = 0;
+
+        obj.equals();
+
+        val = dimensionEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = anotherDimensionEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "anotherDimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = dimensionedSquareEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionedSquareEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  callNextMethod() from a method on the main type 'up' to one of its
+        //  trait types, but
+        //  ---
+
+        //  DimensionedCircle Definition
+        TP.lang.Object.defineSubtype('test.DimensionedCircle');
+
+        TP.test.DimensionedCircle.addTraits(
+                TP.test.Circle, TP.test.AnotherDimension);
+
+        //  Resolve the conflict in favor of TP.test.Circle, but renaming it to
+        //  'equalsCircle'.
+        TP.test.DimensionedCircle.Inst.resolveTrait(
+                                            'equals',
+                                            TP.test.Circle,
+                                            'equalsCircle');
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.DimensionedCircle.Inst.defineMethod('smaller', function() {});
+
+        //  Define an 'equals' method on it - calling 'up' to the traited type
+        TP.test.DimensionedCircle.Inst.defineMethod('equalsCircle', function() {
+
+            this.callNextMethod();
+
+            dimensionedCircleEqualsCount = 1;
+        });
+
+        obj = TP.test.DimensionedCircle.construct();
+
+        //  Set the test counts and invoke the method
+        dimensionEqualsCount = 0;
+        anotherDimensionEqualsCount = 0;
+        dimensionedCircleEqualsCount = 0;
+        TP.OOTests.set('circleEqualsCount', 0);
+
+        obj.equalsCircle();
+
+        //  This should have remained 0 - the 'callNextMethod()' in
+        //  TP.test.DimensionedCircle's 'equals' method should call up to
+        //  TP.test.Circle's 'equals' method.
+        val = dimensionEqualsCount;
+        correctVal = 0;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  This should have remained 0 - the 'callNextMethod()' in
+        //  TP.test.DimensionedCircle's 'equals' method should call up to
+        //  TP.test.Circle's 'equals' method.
+        val = anotherDimensionEqualsCount;
+        correctVal = 0;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "anotherDimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = dimensionedCircleEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionedCircleEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = TP.OOTests.get('circleEqualsCount');
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "circleEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - required attribute trait', function(test, options) {
+
+        var obj;
+
+        //  Define a type
+        TP.lang.Object.defineSubtype('test.Quadrangle');
+
+        //  Add the TP.test.Equality trait
+        TP.test.Quadrangle.addTraits(TP.test.Equality);
+
+        //  Construct an instance.
+        obj = TP.test.Quadrangle.construct();
+
+        test.refute.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Quadrangle" should not be defined'));
+
+        //  Now we add a value for 'doesDiffer' to TP.test.Quadrangle that will
+        //  satisfy the attribute from TP.test.Equality.
+        TP.test.Quadrangle.Inst.defineAttribute('doesDiffer', false);
+
+        test.assert.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Quadrangle" should be defined'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - conflicted attribute traits - simple manual resolution', function(test, options) {
+
+        var autoResolveSetting,
+
+            obj,
+
+            val,
+            correctVal;
+
+        //  Turn off auto resolution here
+        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
+        TP.sys.setcfg('oo.$$traits_autoresolve', false);
+
+        //  ---
+        //  Resolving to the same named trait
+        //  ---
+
+        //  Define a type
+        TP.lang.Object.defineSubtype('test.Hectogon');
+
+        //  Add the TP.test.Circle and TP.test.Color traits
+        TP.test.Hectogon.addTraits(TP.test.Circle, TP.test.Color);
+
+        //  Construct an instance.
+        obj = TP.test.Hectogon.construct();
+
+        test.refute.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Hectogon" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color
+        TP.test.Hectogon.Inst.resolveTrait('doesDiffer', TP.test.Color);
+
+        test.assert.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Hectogon" should be defined'));
+
+        //  ---
+
+        //  When we 'get' doesDiffer, it should be the value 'false', since we
+        //  resolved it using TP.test.Color's value.
+        val = obj.get('doesDiffer');
+        correctVal = false;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "doesDiffer"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  Resolving to an alternate value given on the resolveTrait() call.
+        //  ---
+
+        //  Define a type
+        TP.lang.Object.defineSubtype('test.Digon');
+
+        //  Add the TP.test.Circle and TP.test.Color traits
+        TP.test.Digon.addTraits(TP.test.Circle, TP.test.Color);
+
+        //  Construct an instance.
+        obj = TP.test.Digon.construct();
+
+        test.refute.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Digon" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict using an alternate value
+        TP.test.Digon.Inst.resolveTrait('doesDiffer', true);
+
+        test.assert.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Digon" should be defined'));
+
+        //  ---
+
+        //  Test again. Because we now supply an alterative value (a value for
+        //  'doesDiffer') using the resolveTrait() above, the slot should return
+        //  true.
+        val = obj.get('doesDiffer');
+        correctVal = true;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "doesDiffer"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Set auto resolution back to its prior setting here
+        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - conflicted attribute traits - complex manual resolution', function(test, options) {
+
+        var autoResolveSetting,
+
+            obj,
+
+            val,
+            correctVal;
+
+        //  Turn off auto resolution here
+        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
+        TP.sys.setcfg('oo.$$traits_autoresolve', false);
+
+        //  ---
+        //  Resolving to a different named trait
+        //  ---
+
+        //  Define a type
+        TP.lang.Object.defineSubtype('test.Ellipsis');
+
+        //  Add the TP.test.Circle and TP.test.Color traits
+        TP.test.Ellipsis.addTraits(TP.test.Circle, TP.test.Color);
+
+        //  Construct an instance.
+        obj = TP.test.Ellipsis.construct();
+
+        test.refute.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Ellipsis" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color
+        TP.test.Ellipsis.Inst.resolveTrait('doesDiffer', TP.test.Color,
+                                            'didDiffer');
+
+        test.assert.isDefined(
+            obj.get('didDiffer'),
+            TP.sc('The "doesDiffer" attribute (aliased to the "didDiffer" attribute) on "TP.test.Ellipsis" should be defined'));
+
+        //  ---
+
+        //  When we 'get' didDiffer, it should be the value 'false', since we
+        //  resolved it using TP.test.Color's value, and that's doesDiffer's
+        //  value on TP.test.Color.
+        val = obj.get('didDiffer');
+        correctVal = false;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "doesDiffer"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  Resolving using a Function on addTrait()
+        //  ---
+
+        //  Define a type
+        TP.lang.Object.defineSubtype('test.Monogon');
+
+        //  Add the TP.test.Circle and TP.test.Color traits
+        TP.test.Monogon.addTraits(TP.test.Circle, TP.test.Color);
+
+        //  Construct an instance.
+        obj = TP.test.Monogon.construct();
+
+        test.refute.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Monogon" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color
+        TP.test.Monogon.Inst.resolveTrait('doesDiffer',
+                                            TP.test.Color,
+                                            function(ellipsisVal, colorVal) {
+                                                return colorVal;
+                                            });
+
+        test.assert.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Monogon" should be defined'));
+
+        //  ---
+
+        //  When we 'get' doesDiffer, it should be the value 'false', since we
+        //  resolved it using TP.test.Color's value.
+        val = obj.get('doesDiffer');
+        correctVal = false;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "doesDiffer"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Set auto resolution back to its prior setting here
+        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - conflicted attribute traits - automatic resolution', function(test, options) {
+
+        var obj,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        //  Define a type
+        TP.lang.Object.defineSubtype('test.Tridecagon');
+
+        //  Add the TP.test.Circle and TP.test.Color traits
+        TP.test.Tridecagon.addTraits(TP.test.Circle, TP.test.Color);
+
+        //  Construct an instance.
+        obj = TP.test.Tridecagon.construct();
+
+        test.assert.isDefined(
+            obj.get('doesDiffer'),
+            TP.sc('The "doesDiffer" attribute on "TP.test.Tridecagon" should be defined'));
+
+        //  ---
+
+        //  When we 'get' doesDiffer, it should be the value 'true', since we
+        //  resolved it using TP.test.Circle's value.
+        val = obj.get('doesDiffer');
+        correctVal = true;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "doesDiffer"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            TP.OOTests.commonAfter();
+
+            TP.sys.shouldThrowExceptions(shouldThrowSetting);
         });
 });
 
