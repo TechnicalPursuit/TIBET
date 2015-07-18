@@ -726,7 +726,8 @@
             (argv.profile || PhantomTSH.DEFAULT_PROFILE) + '"';
 
         if (argv.params) {
-            PhantomTSH.url += '&' + argv.params + '&boot.level=' + PhantomTSH.level;
+            PhantomTSH.url += '&' + argv.params + '&boot.level=' +
+                PhantomTSH.level;
         } else {
             PhantomTSH.url += '&boot.level=' + PhantomTSH.level;
         }
