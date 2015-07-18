@@ -3485,9 +3485,10 @@ function(anInterface, anObject) {
  *                                      type and the value of the property on
  *                                      the resolved type. It should return the
  *                                      value it wants the system to use.
- *              definedMethod   : {Function} A method that overrides all of the
- *                                  resolution machinery to be the method that
- *                                  gets invoked.
+ *              definedValue   : {Function} A value that overrides all of the
+ *                                  resolution machinery to be the value that
+ *                                  gets returned (i.e. for a method trait, this
+ *                                  will be the method that gets invoked).
  *              resolvesToType  : {TP.meta.lang.RootObject} The type that the
  *                                   trait got resolved to.
  *              initialValue    : {Object} In case that the traited property is
@@ -3814,7 +3815,6 @@ function(varargs) {
         len2 = traitProps.getSize();
         for (j = 0; j < len2; j++) {
 
-
             if (mainTypeTarget[traitProps[j]] ===
                 traitTypeTarget[traitProps[j]]) {
                 continue;
@@ -4135,9 +4135,9 @@ function(traitType, propName, track) {
     //  combination is already represented.
     if (TP.isValid(entry)) {
 
-        //  If the trait resolution entry already has a 'local method' used to
+        //  If the trait resolution entry already has a 'local value' used to
         //  resolve the trait, exit here.
-        if (entry.hasKey('definedMethod')) {
+        if (entry.hasKey('definedValue')) {
             return this;
         }
 
@@ -4544,24 +4544,33 @@ function(entry, installName, targetObject, track) {
 
     mainType = this;
 
-    if (entry.hasKey('definedMethod')) {
-        //  The resolution is a Method - install it as the method
-        resolution = entry.at('definedMethod');
-        dispatchFunc = targetObject.defineMethod(installName, resolution);
+    if (entry.hasKey('definedValue')) {
+
+        resolution = entry.at('definedValue');
+
+        if (!TP.isCallable(resolution)) {
+            //  The resolution is an Attribute - install it as the value
+            targetObject.defineAttribute(installName, resolution);
+            dispatchFunc = resolution;
+        } else {
+            //  The resolution is a Method - install it as the method
+            dispatchFunc = targetObject.defineMethod(installName, resolution);
+        }
     } else {
 
         //  Otherwise, the resolution should contain a resolution type that will
         //  be used in some form or fashion below.
         resolution = entry.at('resolvesToType');
-        if (TP.notValid(resolution)) {
-            return this.raise('TP.sig.InvalidType');
-        }
 
         //  Make sure it's a Type object - if it's a String, see if we can
         //  resolve it into a Type.
         resolutionType = TP.isString(resolution) ?
                             TP.sys.getTypeByName(resolution) :
                             resolution;
+
+        if (!TP.isType(resolution)) {
+            return this.raise('TP.sig.InvalidType');
+        }
 
         if (track === TP.INST_TRACK) {
             resolutionTypeVal = resolutionType.Inst[propName];
@@ -4780,10 +4789,7 @@ function(propertyName, resolution, resolutionOption) {
         resolutions.atPut(propertyName, entry);
     }
 
-    //  Case #1: The resolution is a Function - install it as the method
-    if (TP.isCallable(resolution)) {
-        entry.atPut('definedMethod', resolution);
-    } else if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
+    if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
 
         //  Case #2: The resolution is a Type with no option
         populateResolutionType(entry, resolution);
@@ -4849,6 +4855,9 @@ function(propertyName, resolution, resolutionOption) {
                             propertyName,
                             TP.INST_TRACK);
         }
+    } else if (TP.isValid(resolution)) {
+        //  Case #1: The resolution is a valid value - install it as the value
+        entry.atPut('definedValue', resolution);
     }
 
     return this;
@@ -4998,10 +5007,7 @@ function(propertyName, resolution, resolutionOption) {
         resolutions.atPut(propertyName, entry);
     }
 
-    //  Case #1: The resolution is a Function - install it as the method
-    if (TP.isCallable(resolution)) {
-        entry.atPut('definedMethod', resolution);
-    } else if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
+    if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
 
         //  Case #2: The resolution is a Type with no option
         populateResolutionType(entry, resolution);
@@ -5067,6 +5073,9 @@ function(propertyName, resolution, resolutionOption) {
                             propertyName,
                             TP.TYPE_TRACK);
         }
+    } else if (TP.isValid(resolution)) {
+        //  Case #1: The resolution is a valid value - install it as the value
+        entry.atPut('definedValue', resolution);
     }
 
     return this;
@@ -5169,7 +5178,7 @@ function(propName, track) {
     if (TP.isValid(entry) && entry.hasKey('aliasedFrom')) {
         actualPropName = entry.at('aliasedFrom');
         entry = resolutions.at(actualPropName);
-    } else if (TP.isValid(entry) && entry.hasKey('definedMethod')) {
+    } else if (TP.isValid(entry) && entry.hasKey('definedValue')) {
         return this.$populateTraitedSlot(entry,
                                             propName,
                                             mainTypeTarget,
