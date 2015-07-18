@@ -12,14 +12,6 @@
 The types and methods in this file support data formatting, particularly
 producing string representations for various input/output requirements.
 
-For example, TIBET's XControls features include inputfmt and outputfmt attributes
-which allow you to control how data looks at the UI and how it's reformatted prior
-to storage in a model. Formatters play an important role in this. For example, you
-might have UI requirements for upperCase but database storage requirements for
-lowerCase. The inputfmt/outputfmt feature allows you to map this requirement on a
-field-by-field basis with little orno effort. More complex formatting is certainly
-possible as well.
-
 NOTE: The functionality here is integrated with TP.core.Locale support to enable
 formatters to be driven by the current locale.
 */
@@ -34,12 +26,12 @@ formatters to be driven by the current locale.
 The methods defined in this section provide support for common data formats via
 TIBET's as() and from() method interfaces. Using obj.as(format) where format is
 any type will cause TIBET to automatically dispatch to either a local method
-specific to the receiver, or to the type to invoke it's from() method. The formats
-here support string and Node representations suitable for display or storage of
-HTML, XML (defaulting to XMLRPC), or JSON strings.
+specific to the receiver, or to the type to invoke it's from() method. The
+formats here support string and Node representations suitable for display or
+storage of HTML, XML (defaulting to XMLRPC), or JSON strings.
 
-When the format is a string the receiver's asString method is called. Many of the
-common types in TIBET will respond to this by using type-specific rules for
+When the format is a string the receiver's asString method is called. Many of
+the common types in TIBET will respond to this by using type-specific rules for
 processing format strings. For example, Date and Number allow you to provide a
 UTC #35 (http://www.unicode.org/reports/tr35/tr35-4.html) format string.
 */
