@@ -136,6 +136,7 @@ Cmd.prototype.execute = function() {
         finder,     // The find event emitter we'll handle find events on.
         target,     // The target directory name (based on appname).
         params,     // Parameter data for template processing.
+        flags,      // Flag list for copy routines etc.
         list;       // List of files in a directory.
 
     cmd = this;
@@ -270,10 +271,10 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    // TODO: add --force support
+    flags = options.force ? '-rf' : '-r';
 
     // NOTE: a trailing slash says to copy source content, not source directory.
-    sh.cp('-r', dna + '/', target);
+    sh.cp(flags, dna + '/', target);
     err = sh.error();
     if (err) {
         this.error('Error cloning dna directory: ' + err);
@@ -281,7 +282,7 @@ Cmd.prototype.execute = function() {
     }
 
     // HACK: due to a bug in shelljs with hidden files copy any at the root.
-    sh.cp('-r', dna + '/.*', target);
+    sh.cp(flags, dna + '/.*', target);
     err = sh.error();
     if (err) {
         this.error('Error copying hidden files: ' + err);
