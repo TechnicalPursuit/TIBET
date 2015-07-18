@@ -251,6 +251,7 @@ Cmd.prototype.executeForEach = function(list) {
         sh,
         buildDir,
         dirs,
+        pouch,
         files,
         count;
 
@@ -267,6 +268,9 @@ Cmd.prototype.executeForEach = function(list) {
         return;
     }
 
+    // Capture value for where the TDS may have put pouchdb files.
+    pouch = CLI.cfg('tds.pouch') || 'pouch';
+
     // If we're doing a missing file check we need to compare the content of our
     // list with the list of all known files in the application's various source
     // directories.
@@ -279,6 +283,7 @@ Cmd.prototype.executeForEach = function(list) {
             !file.match(/node_modules/) &&      // remove npm dir
             !file.match(/TIBET-INF/) &&         // remove tibet dir
             !file.match(/\//) &&                // remove subdirs
+            file !== pouch &&                   // remove TDS pouch dir
             file !== buildDir;                  // remove build dir
     });
 
