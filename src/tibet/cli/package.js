@@ -275,6 +275,7 @@ Cmd.prototype.executeForEach = function(list) {
     dirs = sh.find('.').filter(function(file) {
         return sh.test('-d', file) &&
             file !== '.' &&                     // remove current dir
+            !file.match(/^\./) &&               // remove hidden dir content
             !file.match(/node_modules/) &&      // remove npm dir
             !file.match(/TIBET-INF/) &&         // remove tibet dir
             !file.match(/\//) &&                // remove subdirs
