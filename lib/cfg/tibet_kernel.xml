@@ -7,9 +7,11 @@
 
     <!--    KERNEL STAGE 1, BASE PRIMITIVES -->
     <script src="copyright.js" no-minify="true"/>
-    <script src="tibet_pack.js"/>
+
     <script src="TIBETGlobals.js"/>
     <script src="TIBETVersion.js"/>
+
+    <script src="TIBETTokenizer.js"/>
 
     <script src="TIBETPrimitivesPre.js"/>
     <script src="TIBETPrimitivesBase.js"/>
