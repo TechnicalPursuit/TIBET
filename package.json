@@ -71,7 +71,7 @@
     "mocha": "*",
     "node-forge": "TechnicalPursuit/forge",
     "phantomjs": "*",
-    "pouchdb": "TechnicalPursuit/pouchdb#3.4.0",
+    "pouchdb": "TechnicalPursuit/pouchdb#3.6.0",
     "q": "TechnicalPursuit/q#v1",
     "readline-sync": "^1.2.19",
     "shelljs": "TechnicalPursuit/shelljs",

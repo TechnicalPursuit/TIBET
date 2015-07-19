@@ -2640,7 +2640,7 @@ function() {
 
                 url.nuke(pouchRequest);
             });
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
     //  ---
 
