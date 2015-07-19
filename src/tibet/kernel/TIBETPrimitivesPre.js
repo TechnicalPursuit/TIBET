@@ -3155,7 +3155,9 @@ function() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
             /[xy]/g,
             function(c) {
-                var r = Math.random() * 16 | 0, v = c === 'x' ?
+                var r, v;
+
+                r = Math.random() * 16 | 0, v = c === 'x' ?
                     r : (r & 0x3 | 0x8);
 
                 return v.toString(16);
@@ -3288,7 +3290,8 @@ function(aFlag, shouldSignal) {
 
 /* jshint -W054 */
 /* eslint-disable no-new-func,one-var,vars-on-top,newline-after-var */
-var NativeTypeStub = new Function();
+var NativeTypeStub;
+NativeTypeStub = new Function();
 NativeTypeStub.prototype = {};
 /* eslint-enable no-new-func,one-var,vars-on-top,newline-after-var */
 /* jshint +W054 */
@@ -3562,7 +3565,8 @@ Window.Type[TP.OWNER] = Window;
 
 /* jshint -W054 */
 /* eslint-disable no-new-func,one-var,vars-on-top,newline-after-var */
-var NativeInstStub = new Function();
+var NativeInstStub;
+NativeInstStub = new Function();
 NativeInstStub.prototype = {};
 /* eslint-enable no-new-func,one-var,vars-on-top,newline-after-var */
 /* jshint +W054 */
@@ -5704,7 +5708,9 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
      * @returns {Function} The installed method.
      */
 
-    var display = 'Window.Type.' + methodName;
+    var display;
+
+    display = 'Window.Type.' + methodName;
 
     return TP.defineMethodSlot(
             Window, methodName, methodBody, TP.TYPE_TRACK, desc, display);
@@ -10033,7 +10039,9 @@ function(anAspect, anAction, aDescription) {
 //  ------------------------------------------------------------------------
 
 (function() {
-    var func = function(aFlag) {
+    var func;
+
+    func = function(aFlag) {
 
         /**
          * @method shouldSignalChange
@@ -10153,7 +10161,9 @@ function(aFlag) {
 //  Add this as a 'meta instance method' to all of the objects managed by
 //  meta-methods.
 (function() {
-    var func = function(attributeName) {
+    var func;
+
+    func = function(attributeName) {
 
         /**
          * @method $get
@@ -10189,7 +10199,9 @@ function(aFlag) {
 //  Add it as a 'meta inst method' to all of the objects managed by
 //  meta-methods.
 (function() {
-    var func = function(attributeName, attributeValue) {
+    var func;
+
+    func = function(attributeName, attributeValue) {
 
         /**
          * @method $set

@@ -2137,7 +2137,7 @@ function(aRequest) {
     var wasAutoSending,
         observeReq,
         reqID,
-                handler,
+        handler,
         stanza;
 
     //  Capture the autosend value and set autosend to false.
@@ -2174,14 +2174,14 @@ function(aRequest) {
                             aRequest.at('cmd_action'),
                             TP.elem(aRequest.at('node')));
 
-        break;
+            break;
 
         //  Just activate the connection
         case 'connect':
 
         //  There won't be a stanza - we're just activating the connection
 
-        break;
+            break;
 
         //  Send a message from the 'from' JID
 
@@ -2195,7 +2195,7 @@ function(aRequest) {
                             aRequest.at('thread'),
                             aRequest.at('type'));
 
-        break;
+            break;
 
         //  Subscribe to a pubsub node
 
@@ -2213,7 +2213,7 @@ function(aRequest) {
                                         aRequest.at('subAccessModel'),
                                         aRequest.at('pubAccessModel'));
 
-                break;
+                    break;
 
                 case 'subscribe':
 
@@ -2222,7 +2222,7 @@ function(aRequest) {
                                         aRequest.at('pubsubServiceJID'),
                                         aRequest.at('nodeID'));
 
-                break;
+                    break;
 
                 case 'unsubscribe':
 
@@ -2231,7 +2231,7 @@ function(aRequest) {
                                         aRequest.at('pubsubServiceJID'),
                                         aRequest.at('nodeID'));
 
-                break;
+                    break;
 
                 case 'subscriptions':
 
@@ -2239,7 +2239,7 @@ function(aRequest) {
                                         reqID,
                                         aRequest.at('pubsubServiceJID'));
 
-                break;
+                    break;
 
                 case 'publish':
 
@@ -2250,7 +2250,7 @@ function(aRequest) {
                                         aRequest.at('payload'),
                                         aRequest.at('subAccessModel'));
 
-                break;
+                    break;
 
                 case 'retract':
 
@@ -2260,7 +2260,7 @@ function(aRequest) {
                                         aRequest.at('nodeID'),
                                         aRequest.at('itemID'));
 
-                break;
+                    break;
 
                 case 'delete':
 
@@ -2269,7 +2269,7 @@ function(aRequest) {
                                         aRequest.at('pubsubServiceJID'),
                                         aRequest.at('nodeID'));
 
-                break;
+                    break;
 
                 default:
 
@@ -2278,7 +2278,7 @@ function(aRequest) {
                     return this;
             }
 
-        break;
+            break;
 
         //  Remove an entry from the 'from' JID's roster
         case 'remove':
@@ -2289,7 +2289,7 @@ function(aRequest) {
                                             aRequest.at('toJID'),
                                             aRequest.at('name'));
 
-        break;
+            break;
 
         //  Add an entry from the 'from' JID's roster
         case 'roster':
@@ -2301,7 +2301,7 @@ function(aRequest) {
                                         aRequest.at('name'),
                                         aRequest.at('group'));
 
-        break;
+            break;
 
         //  Subscribe to a JID
         case 'subscribe':
@@ -2309,7 +2309,7 @@ function(aRequest) {
             stanza = this.subscribeTo(reqID,
                                         aRequest.at('toJID'));
 
-        break;
+            break;
 
         //  Unsubscribe from a JID
         case 'unsubscribe':
@@ -2317,7 +2317,7 @@ function(aRequest) {
             stanza = this.unsubscribeFrom(reqID,
                                             aRequest.at('toJID'));
 
-        break;
+            break;
 
         //  Change the 'from' JID's presence
         case 'presence':
@@ -2326,7 +2326,7 @@ function(aRequest) {
                                         aRequest.at('show'),
                                         aRequest.at('status'));
 
-        break;
+            break;
 
         default:
 

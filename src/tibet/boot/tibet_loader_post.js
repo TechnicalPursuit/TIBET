@@ -961,7 +961,7 @@ TP.boot.$$removeUIHandler = function(anObject, eventName) {
      */
 
     var handlerFunc,
-            theEventName;
+        theEventName;
 
     theEventName = eventName;
 

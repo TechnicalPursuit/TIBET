@@ -2738,61 +2738,61 @@ function(anElement, boxType, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
-                /* eslint-disable no-extra-parens */
+            /* eslint-disable no-extra-parens */
 
-                //  TP.CONTENT_BOX means we subtract both the border and the
-                //  padding from both ends.
-                heightVal -=
-                    (TP.elementGetPaddingInPixels(anElement,
-                                                  TP.TOP,
-                                                  wantsTransformed) +
-                        TP.elementGetBorderInPixels(anElement,
-                                                     TP.TOP,
-                                                     wantsTransformed));
+            //  TP.CONTENT_BOX means we subtract both the border and the
+            //  padding from both ends.
+            heightVal -=
+                (TP.elementGetPaddingInPixels(anElement,
+                                              TP.TOP,
+                                              wantsTransformed) +
+                    TP.elementGetBorderInPixels(anElement,
+                                                 TP.TOP,
+                                                 wantsTransformed));
 
-                heightVal -=
-                    (TP.elementGetPaddingInPixels(anElement,
-                                                  TP.BOTTOM,
-                                                  wantsTransformed) +
-                        TP.elementGetBorderInPixels(anElement,
-                                                     TP.BOTTOM,
-                                                     wantsTransformed));
+            heightVal -=
+                (TP.elementGetPaddingInPixels(anElement,
+                                              TP.BOTTOM,
+                                              wantsTransformed) +
+                    TP.elementGetBorderInPixels(anElement,
+                                                 TP.BOTTOM,
+                                                 wantsTransformed));
 
-                /* eslint-enable no-extra-parens */
+            /* eslint-enable no-extra-parens */
 
-                break;
+            break;
 
         case TP.PADDING_BOX:
 
-                //  TP.PADDING_BOX means we add the border from both ends.
-                heightVal -= TP.elementGetBorderInPixels(anElement,
-                                                            TP.TOP,
-                                                            wantsTransformed);
-                heightVal -= TP.elementGetBorderInPixels(anElement,
-                                                            TP.BOTTOM,
-                                                            wantsTransformed);
+            //  TP.PADDING_BOX means we add the border from both ends.
+            heightVal -= TP.elementGetBorderInPixels(anElement,
+                                                        TP.TOP,
+                                                        wantsTransformed);
+            heightVal -= TP.elementGetBorderInPixels(anElement,
+                                                        TP.BOTTOM,
+                                                        wantsTransformed);
 
-                break;
+            break;
 
         case TP.BORDER_BOX:
 
-                //  TP.BORDER_BOX means we do nothing
+            //  TP.BORDER_BOX means we do nothing
 
-                break;
+            break;
 
         case TP.MARGIN_BOX:
 
-                //  TP.MARGIN_BOX means we add the margin from both ends.
-                heightVal += TP.elementGetMarginInPixels(anElement,
-                                                            TP.TOP,
-                                                            wantsTransformed);
-                heightVal += TP.elementGetMarginInPixels(anElement,
-                                                            TP.BOTTOM,
-                                                            wantsTransformed);
-                break;
+            //  TP.MARGIN_BOX means we add the margin from both ends.
+            heightVal += TP.elementGetMarginInPixels(anElement,
+                                                        TP.TOP,
+                                                        wantsTransformed);
+            heightVal += TP.elementGetMarginInPixels(anElement,
+                                                        TP.BOTTOM,
+                                                        wantsTransformed);
+            break;
 
         default:
-                break;
+            break;
     }
 
     return heightVal;
@@ -2915,116 +2915,116 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
-                //  TP.CONTENT_BOX means we inset both the border and the
-                //  padding from all sides
+            //  TP.CONTENT_BOX means we inset both the border and the
+            //  padding from all sides
 
-                offsets = TP.elementGetStyleValuesInPixels(
-                            anElement,
-                            TP.ac('borderTopWidth', 'borderBottomWidth',
-                                    'borderLeftWidth', 'borderRightWidth',
-                                    'paddingTop', 'paddingBottom',
-                                    'paddingLeft', 'paddingRight'),
-                            wantsTransformed);
+            offsets = TP.elementGetStyleValuesInPixels(
+                        anElement,
+                        TP.ac('borderTopWidth', 'borderBottomWidth',
+                                'borderLeftWidth', 'borderRightWidth',
+                                'paddingTop', 'paddingBottom',
+                                'paddingLeft', 'paddingRight'),
+                        wantsTransformed);
 
-                elemBox.atPut('top',
-                    elemBox.at('top') +
-                        (offsets.at('borderTopWidth') +
-                            offsets.at('paddingTop')));
+            elemBox.atPut('top',
+                elemBox.at('top') +
+                    (offsets.at('borderTopWidth') +
+                        offsets.at('paddingTop')));
 
-                elemBox.atPut('right',
-                    elemBox.at('right') -
-                        (offsets.at('borderRightWidth') +
-                            offsets.at('paddingRight')));
+            elemBox.atPut('right',
+                elemBox.at('right') -
+                    (offsets.at('borderRightWidth') +
+                        offsets.at('paddingRight')));
 
-                elemBox.atPut('bottom',
-                    elemBox.at('bottom') -
-                        (offsets.at('borderBottomWidth') +
-                            offsets.at('paddingBottom')));
+            elemBox.atPut('bottom',
+                elemBox.at('bottom') -
+                    (offsets.at('borderBottomWidth') +
+                        offsets.at('paddingBottom')));
 
-                elemBox.atPut('left',
-                    elemBox.at('left') +
-                        (offsets.at('borderLeftWidth') +
-                            offsets.at('paddingLeft')));
+            elemBox.atPut('left',
+                elemBox.at('left') +
+                    (offsets.at('borderLeftWidth') +
+                        offsets.at('paddingLeft')));
 
-                elemBox.atPut('height',
-                    elemBox.at('height') -
-                        (offsets.at('borderBottomWidth') +
-                            offsets.at('paddingBottom')));
+            elemBox.atPut('height',
+                elemBox.at('height') -
+                    (offsets.at('borderBottomWidth') +
+                        offsets.at('paddingBottom')));
 
-                elemBox.atPut('width',
-                    elemBox.at('width') -
-                        (offsets.at('borderLeftWidth') +
-                            offsets.at('paddingLeft')));
+            elemBox.atPut('width',
+                elemBox.at('width') -
+                    (offsets.at('borderLeftWidth') +
+                        offsets.at('paddingLeft')));
 
-                break;
+            break;
 
         case TP.PADDING_BOX:
 
-                //  TP.PADDING_BOX means we inset the border from all
-                //  sides.
-                offsets = TP.elementGetStyleValuesInPixels(
-                            anElement,
-                            TP.ac('borderTopWidth', 'borderBottomWidth',
-                                    'borderLeftWidth', 'borderRightWidth'),
-                            wantsTransformed);
+            //  TP.PADDING_BOX means we inset the border from all
+            //  sides.
+            offsets = TP.elementGetStyleValuesInPixels(
+                        anElement,
+                        TP.ac('borderTopWidth', 'borderBottomWidth',
+                                'borderLeftWidth', 'borderRightWidth'),
+                        wantsTransformed);
 
-                elemBox.atPut('top',
-                    elemBox.at('top') + offsets.at('borderTopWidth'));
+            elemBox.atPut('top',
+                elemBox.at('top') + offsets.at('borderTopWidth'));
 
-                elemBox.atPut('right',
-                    elemBox.at('right') - offsets.at('borderRightWidth'));
+            elemBox.atPut('right',
+                elemBox.at('right') - offsets.at('borderRightWidth'));
 
-                elemBox.atPut('bottom',
-                    elemBox.at('bottom') - offsets.at('borderBottomWidth'));
+            elemBox.atPut('bottom',
+                elemBox.at('bottom') - offsets.at('borderBottomWidth'));
 
-                elemBox.atPut('left',
-                    elemBox.at('left') + offsets.at('borderLeftWidth'));
+            elemBox.atPut('left',
+                elemBox.at('left') + offsets.at('borderLeftWidth'));
 
-                elemBox.atPut('height',
-                    elemBox.at('height') - offsets.at('borderBottomWidth'));
+            elemBox.atPut('height',
+                elemBox.at('height') - offsets.at('borderBottomWidth'));
 
-                elemBox.atPut('width',
-                    elemBox.at('width') - offsets.at('borderLeftWidth'));
+            elemBox.atPut('width',
+                elemBox.at('width') - offsets.at('borderLeftWidth'));
 
-                break;
+            break;
 
         case TP.BORDER_BOX:
 
-                //  TP.BORDER_BOX means we do nothing
+            //  TP.BORDER_BOX means we do nothing
 
-                break;
+            break;
 
         case TP.MARGIN_BOX:
 
-                //  TP.MARGIN_BOX means we outset the margin from both ends.
-                offsets = TP.elementGetStyleValuesInPixels(
-                                anElement,
-                                TP.ac('marginTop', 'marginWidth',
-                                        'marginLeft', 'marginRight'),
-                                wantsTransformed);
+            //  TP.MARGIN_BOX means we outset the margin from both ends.
+            offsets = TP.elementGetStyleValuesInPixels(
+                            anElement,
+                            TP.ac('marginTop', 'marginWidth',
+                                    'marginLeft', 'marginRight'),
+                            wantsTransformed);
 
-                elemBox.atPut('top',
-                    elemBox.at('top') - offsets.at('marginTop'));
+            elemBox.atPut('top',
+                elemBox.at('top') - offsets.at('marginTop'));
 
-                elemBox.atPut('right',
-                    elemBox.at('right') + offsets.at('marginRight'));
+            elemBox.atPut('right',
+                elemBox.at('right') + offsets.at('marginRight'));
 
-                elemBox.atPut('bottom',
-                    elemBox.at('bottom') + offsets.at('marginBottom'));
+            elemBox.atPut('bottom',
+                elemBox.at('bottom') + offsets.at('marginBottom'));
 
-                elemBox.atPut('left',
-                    elemBox.at('left') - offsets.at('marginLeft'));
+            elemBox.atPut('left',
+                elemBox.at('left') - offsets.at('marginLeft'));
 
-                elemBox.atPut('height',
-                    elemBox.at('height') + offsets.at('marginBottom'));
+            elemBox.atPut('height',
+                elemBox.at('height') + offsets.at('marginBottom'));
 
-                elemBox.atPut('width',
-                    elemBox.at('width') + offsets.at('marginLeft'));
+            elemBox.atPut('width',
+                elemBox.at('width') + offsets.at('marginLeft'));
 
-                break;
+            break;
 
         default:
-                break;
+            break;
     }
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
@@ -3089,42 +3089,42 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
-                //  TP.CONTENT_BOX means we can have to add the border and
-                //  the padding
-                position += TP.elementGetBorderInPixels(anElement,
-                                                            wantsTransformed,
-                                                            TP.LEFT);
-                position += TP.elementGetPaddingInPixels(anElement,
-                                                            wantsTransformed,
-                                                            TP.LEFT);
-                break;
+            //  TP.CONTENT_BOX means we can have to add the border and
+            //  the padding
+            position += TP.elementGetBorderInPixels(anElement,
+                                                        wantsTransformed,
+                                                        TP.LEFT);
+            position += TP.elementGetPaddingInPixels(anElement,
+                                                        wantsTransformed,
+                                                        TP.LEFT);
+            break;
 
         case TP.PADDING_BOX:
 
-                //  TP.PADDING_BOX means we have to add the border
+            //  TP.PADDING_BOX means we have to add the border
 
-                position += TP.elementGetBorderInPixels(anElement,
-                                                            wantsTransformed,
-                                                            TP.LEFT);
-                break;
+            position += TP.elementGetBorderInPixels(anElement,
+                                                        wantsTransformed,
+                                                        TP.LEFT);
+            break;
 
         case TP.BORDER_BOX:
 
-                //  TP.BORDER_BOX means we do nothing.
+            //  TP.BORDER_BOX means we do nothing.
 
-                break;
+            break;
 
         case TP.MARGIN_BOX:
 
-                //  TP.MARGIN_BOX means we subtract the margin off of the
-                //  total
-                position -= TP.elementGetMarginInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.LEFT);
-                break;
+            //  TP.MARGIN_BOX means we subtract the margin off of the
+            //  total
+            position -= TP.elementGetMarginInPixels(anElement,
+                                                    wantsTransformed,
+                                                    TP.LEFT);
+            break;
 
         default:
-                break;
+            break;
     }
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
@@ -3183,42 +3183,42 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
-                //  TP.CONTENT_BOX means we can have to add the border and
-                //  the padding
-                position += TP.elementGetBorderInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.TOP);
-                position += TP.elementGetPaddingInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.TOP);
-                break;
+            //  TP.CONTENT_BOX means we can have to add the border and
+            //  the padding
+            position += TP.elementGetBorderInPixels(anElement,
+                                                    wantsTransformed,
+                                                    TP.TOP);
+            position += TP.elementGetPaddingInPixels(anElement,
+                                                    wantsTransformed,
+                                                    TP.TOP);
+            break;
 
         case TP.PADDING_BOX:
 
-                //  TP.PADDING_BOX means we have to add the border
+            //  TP.PADDING_BOX means we have to add the border
 
-                position += TP.elementGetBorderInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.TOP);
-                break;
+            position += TP.elementGetBorderInPixels(anElement,
+                                                    wantsTransformed,
+                                                    TP.TOP);
+            break;
 
         case TP.BORDER_BOX:
 
-                //  TP.BORDER_BOX means we do nothing.
+            //  TP.BORDER_BOX means we do nothing.
 
-                break;
+            break;
 
         case TP.MARGIN_BOX:
 
-                //  TP.MARGIN_BOX means we subtract the margin off of the
-                //  total
-                position -= TP.elementGetMarginInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.TOP);
-                break;
+            //  TP.MARGIN_BOX means we subtract the margin off of the
+            //  total
+            position -= TP.elementGetMarginInPixels(anElement,
+                                                    wantsTransformed,
+                                                    TP.TOP);
+            break;
 
         default:
-                break;
+            break;
     }
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
@@ -3282,54 +3282,54 @@ function(anElement, boxType, ancestor, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
-                //  TP.CONTENT_BOX means we can have to add the border and
-                //  the padding
-                xPosition += TP.elementGetBorderInPixels(anElement,
-                                                            TP.LEFT,
-                                                            wantsTransformed);
-                xPosition += TP.elementGetPaddingInPixels(anElement,
-                                                            TP.LEFT,
-                                                            wantsTransformed);
-                yPosition += TP.elementGetBorderInPixels(anElement,
-                                                            TP.TOP,
-                                                            wantsTransformed);
-                yPosition += TP.elementGetPaddingInPixels(anElement,
-                                                            TP.TOP,
-                                                            wantsTransformed);
-                break;
+            //  TP.CONTENT_BOX means we can have to add the border and
+            //  the padding
+            xPosition += TP.elementGetBorderInPixels(anElement,
+                                                        TP.LEFT,
+                                                        wantsTransformed);
+            xPosition += TP.elementGetPaddingInPixels(anElement,
+                                                        TP.LEFT,
+                                                        wantsTransformed);
+            yPosition += TP.elementGetBorderInPixels(anElement,
+                                                        TP.TOP,
+                                                        wantsTransformed);
+            yPosition += TP.elementGetPaddingInPixels(anElement,
+                                                        TP.TOP,
+                                                        wantsTransformed);
+            break;
 
         case TP.PADDING_BOX:
 
-                //  TP.PADDING_BOX means we have to add the border
+            //  TP.PADDING_BOX means we have to add the border
 
-                xPosition += TP.elementGetBorderInPixels(anElement,
-                                                            TP.LEFT,
-                                                            wantsTransformed);
-                yPosition += TP.elementGetBorderInPixels(anElement,
-                                                            TP.TOP,
-                                                            wantsTransformed);
-                break;
+            xPosition += TP.elementGetBorderInPixels(anElement,
+                                                        TP.LEFT,
+                                                        wantsTransformed);
+            yPosition += TP.elementGetBorderInPixels(anElement,
+                                                        TP.TOP,
+                                                        wantsTransformed);
+            break;
 
         case TP.BORDER_BOX:
 
-                //  TP.BORDER_BOX means we do nothing.
+            //  TP.BORDER_BOX means we do nothing.
 
-                break;
+            break;
 
         case TP.MARGIN_BOX:
 
-                //  TP.MARGIN_BOX means we subtract the margin off of the
-                //  total
-                xPosition -= TP.elementGetMarginInPixels(anElement,
-                                                            TP.LEFT,
-                                                            wantsTransformed);
-                yPosition -= TP.elementGetMarginInPixels(anElement,
-                                                            TP.TOP,
-                                                            wantsTransformed);
-                break;
+            //  TP.MARGIN_BOX means we subtract the margin off of the
+            //  total
+            xPosition -= TP.elementGetMarginInPixels(anElement,
+                                                        TP.LEFT,
+                                                        wantsTransformed);
+            yPosition -= TP.elementGetMarginInPixels(anElement,
+                                                        TP.TOP,
+                                                        wantsTransformed);
+            break;
 
         default:
-                break;
+            break;
     }
 
     if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
@@ -3777,62 +3777,62 @@ function(anElement, boxType, wantsTransformed) {
     switch (returnedBoxType) {
         case TP.CONTENT_BOX:
 
-                /* eslint-disable no-extra-parens */
+            /* eslint-disable no-extra-parens */
 
-                //  TP.CONTENT_BOX means we subtract both the border and the
-                //  padding from both ends.
-                widthVal -=
-                    (TP.elementGetPaddingInPixels(anElement,
-                                                  TP.LEFT,
-                                                  wantsTransformed) +
-                        TP.elementGetBorderInPixels(anElement,
-                                                     TP.LEFT,
-                                                     wantsTransformed));
+            //  TP.CONTENT_BOX means we subtract both the border and the
+            //  padding from both ends.
+            widthVal -=
+                (TP.elementGetPaddingInPixels(anElement,
+                                              TP.LEFT,
+                                              wantsTransformed) +
+                    TP.elementGetBorderInPixels(anElement,
+                                                 TP.LEFT,
+                                                 wantsTransformed));
 
-                widthVal -=
-                    (TP.elementGetPaddingInPixels(anElement,
-                                                  TP.RIGHT,
-                                                  wantsTransformed) +
-                        TP.elementGetBorderInPixels(anElement,
-                                                     TP.RIGHT,
-                                                     wantsTransformed));
+            widthVal -=
+                (TP.elementGetPaddingInPixels(anElement,
+                                              TP.RIGHT,
+                                              wantsTransformed) +
+                    TP.elementGetBorderInPixels(anElement,
+                                                 TP.RIGHT,
+                                                 wantsTransformed));
 
-                /* eslint-enable no-extra-parens */
+            /* eslint-enable no-extra-parens */
 
-                break;
+            break;
 
         case TP.PADDING_BOX:
 
-                //  TP.PADDING_BOX means we subtract the border from both
-                //  ends.
-                widthVal -= TP.elementGetBorderInPixels(anElement,
-                                                        TP.LEFT,
-                                                        wantsTransformed);
-                widthVal -= TP.elementGetBorderInPixels(anElement,
-                                                        TP.RIGHT,
-                                                        wantsTransformed);
+            //  TP.PADDING_BOX means we subtract the border from both
+            //  ends.
+            widthVal -= TP.elementGetBorderInPixels(anElement,
+                                                    TP.LEFT,
+                                                    wantsTransformed);
+            widthVal -= TP.elementGetBorderInPixels(anElement,
+                                                    TP.RIGHT,
+                                                    wantsTransformed);
 
-                break;
+            break;
 
         case TP.BORDER_BOX:
 
-                //  TP.BORDER_BOX means we do nothing
+            //  TP.BORDER_BOX means we do nothing
 
-                break;
+            break;
 
         case TP.MARGIN_BOX:
 
-                //  TP.MARGIN_BOX means we add the margin from both ends.
-                widthVal += TP.elementGetMarginInPixels(anElement,
-                                                        TP.LEFT,
-                                                        wantsTransformed);
-                widthVal += TP.elementGetMarginInPixels(anElement,
-                                                        TP.RIGHT,
-                                                        wantsTransformed);
-                break;
+            //  TP.MARGIN_BOX means we add the margin from both ends.
+            widthVal += TP.elementGetMarginInPixels(anElement,
+                                                    TP.LEFT,
+                                                    wantsTransformed);
+            widthVal += TP.elementGetMarginInPixels(anElement,
+                                                    TP.RIGHT,
+                                                    wantsTransformed);
+            break;
 
         default:
-                break;
+            break;
     }
 
     return widthVal;
@@ -5841,7 +5841,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
             returnNode = anElement.lastChild;
 
-        break;
+            break;
 
         default:
             break;
@@ -6380,7 +6380,7 @@ function(anElement) {
                         //  it here to conform to TIBET coding standards).
                         attrValue = TP.elementGetStyleObj(
                                         anElem).cssText.toLowerCase();
-                    break;
+                        break;
 
                     case 'class':
 
@@ -6388,28 +6388,39 @@ function(anElement) {
                         //  attribute value of the 'class' attribute is to
                         //  grab its 'className' property.
                         attrValue = anElem.className;
-                    break;
+
+                        break;
 
                     case 'http-equiv':
+
                         attrValue = anElem.httpEquiv;
-                    break;
+
+                        break;
 
                     case 'name':
+
                         attrValue = anElem.name;
-                    break;
+
+                        break;
 
                     case 'for':
+
                         attrValue = anElem.htmlFor;
-                    break;
+
+                        break;
 
                     case 'xmlns':
+
                         hasXMLNS = true;
-                    break;
+
+                        break;
 
                     case 'lang':
                     case 'xml:lang':
+
                         hasLang = true;
-                    break;
+
+                        break;
 
                     //  These attributes need a value in XHTML because
                     //  they're 'singular' in HTML (i.e. checked="checked")
@@ -6419,8 +6430,10 @@ function(anElement) {
                     case 'multiple':
                     case 'nowrap':
                     case 'disabled':
+
                         attrValue = attrName;
-                    break;
+
+                        break;
 
                     default:
 
@@ -6441,7 +6454,8 @@ function(anElement) {
                         } catch (e) {
                             continue;
                         }
-                    break;
+
+                        break;
                 }
 
                 //  If no attribute value was supplied, then we merely set
@@ -6527,7 +6541,7 @@ function(anElement) {
                         xhtmlResult.push(nonElementNode.nodeValue);
                     }
 
-                break;
+                    break;
 
                 case Node.COMMENT_NODE:
 
@@ -6540,7 +6554,7 @@ function(anElement) {
                     //  trailing comment characters.
                     xhtmlResult.push('<!--' + commentText + '-->');
 
-                break;
+                    break;
 
                 default:
                     break;
@@ -7240,16 +7254,22 @@ function(aString, aDocument) {
 
         switch (div.childNodes.length) {
             case 0:
+
                 node = doc.createTextNode(str);
-            break;
+
+                break;
 
             case 1:
+
                 node = TP.nodeDetach(div.firstChild);
-            break;
+
+                break;
 
             default:
+
                 node = TP.nodeListAsFragment(doc.childNodes);
-            break;
+
+                break;
         }
     }
 

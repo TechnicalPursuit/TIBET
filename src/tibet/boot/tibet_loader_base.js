@@ -4306,7 +4306,10 @@ TP.boot.$documentFromStringCommon = function(aString) {
 
         //  don't log, we use this call in logging - but go ahead and output to
         //  the browser console
+
+        /* eslint-disable no-console */
         console.log(errorMatchResults);
+        /* eslint-enable no-console */
 
         return null;
     }
@@ -4342,7 +4345,9 @@ TP.boot.$documentFromStringIE = function(aString, prohibitDTD) {
 
         //  don't log, we use this call in logging - but go ahead and output to
         //  the browser console
+        /* eslint-disable no-console */
         console.log(parseErrorObj);
+        /* eslint-enable no-console */
 
         return null;
     }
@@ -5725,7 +5730,9 @@ TP.boot.$phantomReporter = function(entry, options) {
         //  TODO: this may not be needed. Found a "flush" issue in the code
         //  specific to the TP.shell() command's failure hook that may fix it
         //  in which case we can remove this line.
+        /* eslint-disable no-console */
         console.log('');    //  force a flush of the console.
+        /* eslint-enable no-console */
 
         return;
     }
@@ -8464,40 +8471,63 @@ TP.boot.$$configureOverrides = function(options, activate) {
         //  Two key steps here are launch() params and URL values. URL values
         //  come second (so we can honor boot.no_url_args from launch()) but do
         //  outrank launch parameters when they exist so we just map over.
-        keys.forEach(function(key) {
-            var value = options[key];
+        keys.forEach(
+                function(key) {
+                    var value;
 
-            if (Object.prototype.toString.call(value) === '[object Object]') {
-                Object.keys(value).forEach(function(subkey) {
-                    var name = key + '.' + subkey;
+                    value = options[key];
 
-                    overrides[name] = value[subkey];
+                    if (Object.prototype.toString.call(value) ===
+                        '[object Object]') {
+                        Object.keys(value).forEach(
+                                function(subkey) {
+                                    var name;
+
+                                    name = key + '.' + subkey;
+
+                                    overrides[name] = value[subkey];
+                                });
+                    } else {
+                        overrides[key] = value;
+                    }
                 });
-            } else {
-                overrides[key] = value;
-            }
-        });
     }
 
     //  Set the actual configuration values for anything we've been provided
-    keys.forEach(function(key) {
-        var value = options[key];
+    keys.forEach(
+            function(key) {
+                var value;
 
-        if (Object.prototype.toString.call(value) === '[object Object]') {
-            Object.keys(value).forEach(function(subkey) {
-                var name = key + '.' + subkey;
+                value = options[key];
 
-                TP.boot.$stdout('Overriding cfg for: ' + name + ' with: \'' +
-                    value[subkey] + '\'', TP.DEBUG);
+                if (Object.prototype.toString.call(value) ===
+                    '[object Object]') {
 
-                TP.sys.setcfg(name, value[subkey], false, true);
+                    Object.keys(value).forEach(
+                            function(subkey) {
+                                var name;
+
+                                name = key + '.' + subkey;
+
+                                TP.boot.$stdout(
+                                    'Overriding cfg for: ' + name +
+                                    ' with: \'' +
+                                    value[subkey] + '\'',
+                                    TP.DEBUG);
+
+                                TP.sys.setcfg(
+                                        name, value[subkey], false, true);
+                            });
+                } else {
+
+                    TP.boot.$stdout(
+                        'Overriding cfg for: ' + key + ' with: \'' +
+                        value + '\'',
+                        TP.DEBUG);
+
+                    TP.sys.setcfg(key, value, false, true);
+                }
             });
-        } else {
-            TP.boot.$stdout('Overriding cfg for: ' + key + ' with: \'' +
-                value + '\'', TP.DEBUG);
-            TP.sys.setcfg(key, value, false, true);
-        }
-    });
 
     TP.boot.$$argsDone = activate;
 

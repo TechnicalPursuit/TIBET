@@ -143,31 +143,31 @@ function(aRequest) {
 
                 TP.httpGet(url, aRequest);
 
-            break;
+                break;
 
             case 'write':
 
                 TP.httpPut(url, aRequest);
 
-            break;
+                break;
 
             case 'remove':
 
                 TP.httpDelete(url, aRequest);
 
-            break;
+                break;
 
             case 'copy':
 
                 TP.webdavCopy(url, aRequest);
 
-            break;
+                break;
 
             case 'move':
 
                 TP.webdavMove(url, aRequest);
 
-            break;
+                break;
 
             //      Collection management
 
@@ -175,13 +175,13 @@ function(aRequest) {
 
                 TP.webdavMkCol(url, aRequest);
 
-            break;
+                break;
 
             case 'listcoll':
 
                 TP.webdavPropFind(url, aRequest);
 
-            break;
+                break;
 
             //      Property management
 
@@ -189,31 +189,31 @@ function(aRequest) {
 
                 TP.webdavGetProperty(url, aRequest);
 
-            break;
+                break;
 
             case 'getprops':
 
                 TP.webdavGetAllProperties(url, aRequest);
 
-            break;
+                break;
 
             case 'setprops':
 
                 TP.webdavPropPatch(url, aRequest);
 
-            break;
+                break;
 
             case 'setprop':
 
                 TP.webdavSetProperty(url, aRequest);
 
-            break;
+                break;
 
             case 'deleteprops':
 
                 TP.webdavPropPatch(url, aRequest);
 
-            break;
+                break;
 
             //      Lock management
 
@@ -221,19 +221,19 @@ function(aRequest) {
 
                 TP.webdavLock(url, aRequest);
 
-            break;
+                break;
 
             case 'unlock':
 
                 TP.webdavUnlock(url, aRequest);
 
-            break;
+                break;
 
             default:
 
                 aRequest.fail('Unrecognized action');
 
-            break;
+                break;
         }
     } catch (e) {
         aRequest.atPut('object', e);

@@ -1291,38 +1291,38 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                            anElement,
-                                            'borderTopWidth',
-                                            wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                        anElement,
+                                        'borderTopWidth',
+                                        wantsTransformed);
+                    break;
 
                 case TP.RIGHT:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                            anElement,
-                                            'borderRightWidth',
-                                            wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                        anElement,
+                                        'borderRightWidth',
+                                        wantsTransformed);
+                    break;
 
                 case TP.BOTTOM:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                            anElement,
-                                            'borderBottomWidth',
-                                            wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                        anElement,
+                                        'borderBottomWidth',
+                                        wantsTransformed);
+                    break;
 
                 case TP.LEFT:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                            anElement,
-                                            'borderLeftWidth',
-                                            wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                        anElement,
+                                        'borderLeftWidth',
+                                        wantsTransformed);
+                    break;
 
                 default:
-                        break;
+                    break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
@@ -1434,7 +1434,7 @@ TP.hc(
                     break;
 
                 default:
-                        break;
+                    break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
@@ -1503,38 +1503,38 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'marginTop',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'marginTop',
+                                            wantsTransformed);
+                    break;
 
                 case TP.RIGHT:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'marginRight',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'marginRight',
+                                            wantsTransformed);
+                    break;
 
                 case TP.BOTTOM:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'marginBottom',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'marginBottom',
+                                            wantsTransformed);
+                    break;
 
                 case TP.LEFT:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'marginLeft',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'marginLeft',
+                                            wantsTransformed);
+                    break;
 
                 default:
-                        break;
+                    break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
@@ -1649,7 +1649,7 @@ TP.hc(
                     break;
 
                 default:
-                        break;
+                    break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
@@ -1821,38 +1821,38 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'paddingTop',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'paddingTop',
+                                            wantsTransformed);
+                    break;
 
                 case TP.RIGHT:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'paddingRight',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'paddingRight',
+                                            wantsTransformed);
+                    break;
 
                 case TP.BOTTOM:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'paddingBottom',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'paddingBottom',
+                                            wantsTransformed);
+                    break;
 
                 case TP.LEFT:
 
-                        valueInPixels = TP.elementGetStyleValueInPixels(
-                                                anElement,
-                                                'paddingLeft',
-                                                wantsTransformed);
-                        break;
+                    valueInPixels = TP.elementGetStyleValueInPixels(
+                                            anElement,
+                                            'paddingLeft',
+                                            wantsTransformed);
+                    break;
 
                 default:
-                        break;
+                    break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.
@@ -1966,7 +1966,7 @@ TP.hc(
                     break;
 
                 default:
-                        break;
+                    break;
             }
         } catch (e) {
             //  valueInPixels is already set to 0. Nothing to do here.

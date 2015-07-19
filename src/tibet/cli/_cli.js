@@ -212,6 +212,7 @@ CLI._package = null;
  * Methods here provide simple coloring to match the level of the log message.
  */
 
+/* eslint-disable no-console */
 CLI.log = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
@@ -280,6 +281,7 @@ CLI.success = function(msg) {
     }
     console.info(chalk.green(msg));
 };
+/* eslint-enable no-console */
 
 
 //  ---
@@ -419,7 +421,9 @@ CLI.blend = function(target, source) {
  */
 CLI.canRun = function(CmdType) {
 
-    var context = CmdType.CONTEXT;
+    var context;
+
+    context = CmdType.CONTEXT;
 
     // Simple case if the context is "anywhere".
     if (context === CLI.CONTEXTS.ANY) {
@@ -751,10 +755,12 @@ CLI.isInitialized = function() {
  */
 CLI.logItems = function(aList) {
 
-    var limit = this.CHARS_PER_LINE,
+    var limit,
         buffer,
         line,
         cmd;
+
+    limit = this.CHARS_PER_LINE;
 
     buffer = '';
     if (aList && aList.length > 0) {

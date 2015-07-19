@@ -145,10 +145,10 @@ function(aRequest) {
             params.atPutIfAbsent('source', TP.join('TPI-TIBET-' +
                 TP.sys.$version.root));
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();
@@ -319,14 +319,14 @@ function(aRequest) {
             //  No headers for 'login' - we're actually trying to get the
             //  auth token... :-)
 
-        break;
+            break;
 
         default:
 
             headers.atPut('Authorization',
                             'GoogleLogin auth=' + this.get('authToken'));
 
-        break;
+            break;
     }
 
     return headers;
@@ -381,7 +381,7 @@ function(aRequest) {
             return TP.HTTP_POST;
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();

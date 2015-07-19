@@ -106,10 +106,10 @@ function(aRequest) {
             //  Google Contacts.
             params.atPut('service', 'cp');
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();
@@ -134,7 +134,7 @@ function(aRequest) {
                                             aRequest.at('userEmail') +
                                             '/full';
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();
@@ -160,7 +160,7 @@ function(aRequest) {
             return TP.HTTP_GET;
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();

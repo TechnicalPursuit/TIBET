@@ -430,7 +430,7 @@ function() {
 
         default:
 
-        break;
+            break;
     }
 
     return this;
@@ -733,25 +733,25 @@ function(aMapType) {
 
             ourMap.setMapType(tpIFrame.get('YAHOO_MAP_REG'));
 
-        break;
+            break;
 
         case mapTypeConstants.at('SATELLITE'):
 
             ourMap.setMapType(tpIFrame.get('YAHOO_MAP_SAT'));
 
-        break;
+            break;
 
         case mapTypeConstants.at('HYBRID'):
 
             ourMap.setMapType(tpIFrame.get('YAHOO_MAP_HYB'));
 
-        break;
+            break;
 
         default:
 
             ourMap.setMapType(tpIFrame.get('YAHOO_MAP_REG'));
 
-        break;
+            break;
     }
 
     return this;

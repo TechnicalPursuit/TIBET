@@ -640,9 +640,9 @@ function(aPrompt, aCSSClass) {
         cursorRange = consoleInput.getCursor();
 
         range = {
-                    from: {line: cursorRange.line, ch: cursorRange.ch},
-                    to: {line: cursorRange.line, ch: cursorRange.ch + 1}
-                };
+                from: {line: cursorRange.line, ch: cursorRange.ch},
+                to: {line: cursorRange.line, ch: cursorRange.ch + 1}
+            };
 
         marker = this.generatePromptMarkAt(range, cssClass, promptStr);
         this.set('currentPromptMarker', marker);
@@ -1388,7 +1388,11 @@ function(uniqueID, dataRecord) {
 
     if (!TP.isElement(cellGroupElem = doc.getElementById(uniqueID))) {
 
-        console.log('Couldn\'t find out cell for: ' + uniqueID);
+        TP.ifError() ?
+                TP.error(
+                    'Couldn\'t find out cell for: ' + uniqueID,
+                            TP.LOG) : 0;
+
         return this;
     }
 

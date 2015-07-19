@@ -173,6 +173,7 @@ Cmd.prototype.execute = function() {
 
         str = '';
 
+        /* eslint-disable no-console */
         req = http.request(options, function(res) {
 
             res.setEncoding('utf8');
@@ -221,6 +222,7 @@ Cmd.prototype.execute = function() {
         });
 
         req.end();
+        /* eslint-disable no-console */
     } else {
 
         msg = library.split('+')[0];

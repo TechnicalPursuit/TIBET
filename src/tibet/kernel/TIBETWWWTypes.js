@@ -617,7 +617,9 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var info = this.get('info');
+    var info;
+
+    info = this.get('info');
 
     info.addAll(
         TP.hc(
@@ -1413,7 +1415,9 @@ function() {
     //                              earlier. NB: No two namespaces should
     //                              have the same number.
 
-    var info = this.get('info');
+    var info;
+
+    info = this.get('info');
 
     info.addAll(
         TP.hc(

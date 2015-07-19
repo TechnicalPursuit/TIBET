@@ -1058,7 +1058,7 @@ function(aString, replaceSpaces) {
                         return '&quot;';
 
                     default:
-                    break;
+                        break;
                 }
             });
 
@@ -1159,7 +1159,7 @@ function(aString, replaceSpaces) {
                             return '&quot;';
 
                         default:
-                        break;
+                            break;
                     }
                 });
 

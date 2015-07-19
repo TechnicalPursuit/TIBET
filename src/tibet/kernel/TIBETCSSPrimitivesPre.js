@@ -321,12 +321,13 @@ function(aMatrix) {
         return aMatrix;
     }
 
-    matrix = [
-                [aMatrix[0], aMatrix[1], 0, 0],
-                [aMatrix[2], aMatrix[3], 0, 0],
-                [0, 0, 1, 0],
-                [aMatrix[4], aMatrix[5], 0, 1]
-            ];
+    matrix =
+        [
+            [aMatrix[0], aMatrix[1], 0, 0],
+            [aMatrix[2], aMatrix[3], 0, 0],
+            [0, 0, 1, 0],
+            [aMatrix[4], aMatrix[5], 0, 1]
+        ];
 
     return matrix;
 });
@@ -364,12 +365,13 @@ function(cssStr, wants2DMatrix) {
     matrixValues = cssStr.match(/matrix3?d?\(([^\)]+)\)/i)[1].split(',');
 
     if (matrixValues.length === 6) {
-        matrixValues = [
-                    matrixValues[0], matrixValues[1], 0, 0,
-                    matrixValues[2], matrixValues[3], 0, 0,
-                    0, 0, 1, 0,
-                    matrixValues[4], matrixValues[5], 0, 1
-                ];
+        matrixValues =
+            [
+                matrixValues[0], matrixValues[1], 0, 0,
+                matrixValues[2], matrixValues[3], 0, 0,
+                0, 0, 1, 0,
+                matrixValues[4], matrixValues[5], 0, 1
+            ];
     }
 
     matrix = [];
@@ -407,7 +409,13 @@ function(a, b) {
      * @returns {Array} An Array of Arrays representing the multiplied matrix.
      */
 
-    var r = [], i, j, k, t;
+    var r,
+        i,
+        j,
+        k,
+        t;
+
+    r = [];
 
     for (i = 0; i < a.length; i++) {
         for (j = 0; j < b[0].length; j++) {
@@ -441,7 +449,11 @@ function(m/*, tx, ty, tz*/) {
      * @returns {Array} An Array of Arrays representing the translated matrix.
      */
 
-    var i, j, r = [];
+    var i,
+        j,
+        r;
+
+    r = [];
 
     for (i = 0; i < 4; i++) {
         r[i] = [];

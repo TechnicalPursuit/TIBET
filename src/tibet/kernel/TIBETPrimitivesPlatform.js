@@ -1073,76 +1073,76 @@ TP.hc(
         switch (aNode.nodeType) {
             case Node.ELEMENT_NODE:
 
-                    //  If its an element, try to see if its an HTML element
-                    //  based on its tag name.
-                    if (TP.isString(domName = TP.HTML_DOM_NAMES.at(
-                            TP.elementGetLocalName(aNode).toLowerCase()))) {
-                        str += domName;
-                    } else {
-                        str += 'Element';
-                    }
+                //  If its an element, try to see if its an HTML element
+                //  based on its tag name.
+                if (TP.isString(domName = TP.HTML_DOM_NAMES.at(
+                        TP.elementGetLocalName(aNode).toLowerCase()))) {
+                    str += domName;
+                } else {
+                    str += 'Element';
+                }
 
-                    break;
+                break;
 
             case Node.ATTRIBUTE_NODE:
 
-                    str += 'Attr';
-                    break;
+                str += 'Attr';
+                break;
 
             case Node.DOCUMENT_NODE:
 
-                    str += 'XMLDocument';
-                    break;
+                str += 'XMLDocument';
+                break;
 
             case Node.TEXT_NODE:
 
-                    str += 'Text';
-                    break;
+                str += 'Text';
+                break;
 
             case Node.CDATA_SECTION_NODE:
 
-                    str += 'CDATASection';
-                    break;
+                str += 'CDATASection';
+                break;
 
             case Node.ENTITY_REFERENCE_NODE:
 
-                    str += 'EntityReference';
-                    break;
+                str += 'EntityReference';
+                break;
 
             case Node.ENTITY_NODE:
 
-                    str += 'Entity';
-                    break;
+                str += 'Entity';
+                break;
 
             case Node.PROCESSING_INSTRUCTION_NODE:
 
-                    str += 'ProcessingInstruction';
-                    break;
+                str += 'ProcessingInstruction';
+                break;
 
             case Node.COMMENT_NODE:
 
-                    str += 'Comment';
-                    break;
+                str += 'Comment';
+                break;
 
             case Node.DOCUMENT_TYPE_NODE:
 
-                    str += 'DocumentType';
-                    break;
+                str += 'DocumentType';
+                break;
 
             case Node.DOCUMENT_FRAGMENT_NODE:
 
-                    str += 'DocumentFragment';
-                    break;
+                str += 'DocumentFragment';
+                break;
 
             case Node.NOTATION_NODE:
 
-                    str += 'Notation';
-                    break;
+                str += 'Notation';
+                break;
 
             default:
 
-                    str += 'Node';
-                    break;
+                str += 'Node';
+                break;
         }
 
         str += ']';
@@ -1184,76 +1184,76 @@ TP.hc(
         switch (aNode.nodeType) {
             case Node.ELEMENT_NODE:
 
-                    //  If its an element, try to see if its an HTML element
-                    //  based on its tag name.
-                    if (TP.isString(domName = TP.HTML_DOM_NAMES.at(
-                            TP.elementGetLocalName(aNode).toLowerCase()))) {
-                        str += domName;
-                    } else {
-                        str += 'Element';
-                    }
+                //  If its an element, try to see if its an HTML element
+                //  based on its tag name.
+                if (TP.isString(domName = TP.HTML_DOM_NAMES.at(
+                        TP.elementGetLocalName(aNode).toLowerCase()))) {
+                    str += domName;
+                } else {
+                    str += 'Element';
+                }
 
-                    break;
+                break;
 
             case Node.ATTRIBUTE_NODE:
 
-                    str += 'Attr';
-                    break;
+                str += 'Attr';
+                break;
 
             case Node.DOCUMENT_NODE:
 
-                    str += 'XMLDocument';
-                    break;
+                str += 'XMLDocument';
+                break;
 
             case Node.TEXT_NODE:
 
-                    str += 'Text';
-                    break;
+                str += 'Text';
+                break;
 
             case Node.CDATA_SECTION_NODE:
 
-                    str += 'CDATASection';
-                    break;
+                str += 'CDATASection';
+                break;
 
             case Node.ENTITY_REFERENCE_NODE:
 
-                    str += 'EntityReference';
-                    break;
+                str += 'EntityReference';
+                break;
 
             case Node.ENTITY_NODE:
 
-                    str += 'Entity';
-                    break;
+                str += 'Entity';
+                break;
 
             case Node.PROCESSING_INSTRUCTION_NODE:
 
-                    str += 'ProcessingInstruction';
-                    break;
+                str += 'ProcessingInstruction';
+                break;
 
             case Node.COMMENT_NODE:
 
-                    str += 'Comment';
-                    break;
+                str += 'Comment';
+                break;
 
             case Node.DOCUMENT_TYPE_NODE:
 
-                    str += 'DocumentType';
-                    break;
+                str += 'DocumentType';
+                break;
 
             case Node.DOCUMENT_FRAGMENT_NODE:
 
-                    str += 'DocumentFragment';
-                    break;
+                str += 'DocumentFragment';
+                break;
 
             case Node.NOTATION_NODE:
 
-                    str += 'Notation';
-                    break;
+                str += 'Notation';
+                break;
 
             default:
 
-                    str += 'Node';
-                    break;
+                str += 'Node';
+                break;
         }
 
         str += ']';

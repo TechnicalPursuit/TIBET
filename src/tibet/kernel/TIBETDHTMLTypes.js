@@ -707,7 +707,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.TOP_RIGHT:
 
@@ -718,7 +718,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.RIGHT:
 
@@ -730,7 +730,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.BOTTOM_RIGHT:
 
@@ -741,7 +741,7 @@ function() {
                             elemBox.at('height') -
                             startY;
 
-            break;
+                break;
 
             case TP.BOTTOM:
 
@@ -753,7 +753,7 @@ function() {
                             elemBox.at('height') -
                             startY;
 
-            break;
+                break;
 
             case TP.BOTTOM_LEFT:
 
@@ -764,7 +764,7 @@ function() {
                             elemBox.at('height') -
                             startY;
 
-            break;
+                break;
 
             case TP.LEFT:
 
@@ -776,7 +776,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.TOP_LEFT:
 
@@ -787,10 +787,10 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             default:
-            break;
+                break;
         }
 
         /* eslint-enable no-extra-parens */
@@ -1956,7 +1956,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.TOP_RIGHT:
 
@@ -1967,7 +1967,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.RIGHT:
 
@@ -1979,7 +1979,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.BOTTOM_RIGHT:
 
@@ -1990,7 +1990,7 @@ function() {
                             elemBox.at('height') -
                             startY;
 
-            break;
+                break;
 
             case TP.BOTTOM:
 
@@ -2002,7 +2002,7 @@ function() {
                             elemBox.at('height') -
                             startY;
 
-            break;
+                break;
 
             case TP.BOTTOM_LEFT:
 
@@ -2013,7 +2013,7 @@ function() {
                             elemBox.at('height') -
                             startY;
 
-            break;
+                break;
 
             case TP.LEFT:
 
@@ -2025,7 +2025,7 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             case TP.TOP_LEFT:
 
@@ -2036,10 +2036,10 @@ function() {
                             startY -
                             borderYOffset;
 
-            break;
+                break;
 
             default:
-            break;
+                break;
         }
 
         /* eslint-enable no-extra-parens */
@@ -2108,56 +2108,56 @@ function() {
 
             offsetY = offsetY - topDiff;
 
-        break;
+            break;
 
         case TP.TOP_RIGHT:
 
             offsetX = elemBox.at('width') - rightDiff;
             offsetY = offsetY - topDiff;
 
-        break;
+            break;
 
         case TP.RIGHT:
 
             offsetX = elemBox.at('width') - rightDiff;
 
-        break;
+            break;
 
         case TP.BOTTOM_RIGHT:
 
             offsetX = elemBox.at('width') - rightDiff;
             offsetY = elemBox.at('height') - bottomDiff;
 
-        break;
+            break;
 
         case TP.BOTTOM:
 
             offsetY = elemBox.at('height') - bottomDiff;
 
-        break;
+            break;
 
         case TP.BOTTOM_LEFT:
 
             offsetX = offsetX - leftDiff;
             offsetY = elemBox.at('height') - bottomDiff;
 
-        break;
+            break;
 
         case TP.LEFT:
 
             offsetX = offsetX - leftDiff;
 
-        break;
+            break;
 
         case TP.TOP_LEFT:
 
             offsetX = offsetX - leftDiff;
             offsetY = offsetY - topDiff;
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     //  Create a TP.core.Point and use it for the offset point.
@@ -2262,7 +2262,7 @@ function(aSignal) {
 
             styleObj.height = dimensionY + 'px';
 
-        break;
+            break;
 
         case TP.TOP_RIGHT:
 
@@ -2285,7 +2285,7 @@ function(aSignal) {
 
             styleObj.width = computedX + 'px';
 
-        break;
+            break;
 
         case TP.RIGHT:
 
@@ -2297,7 +2297,7 @@ function(aSignal) {
 
             styleObj.width = computedX + 'px';
 
-        break;
+            break;
 
         case TP.BOTTOM_RIGHT:
 
@@ -2313,7 +2313,7 @@ function(aSignal) {
 
             styleObj.height = computedY + 'px';
 
-        break;
+            break;
 
         case TP.BOTTOM:
 
@@ -2325,7 +2325,7 @@ function(aSignal) {
 
             styleObj.height = computedY + 'px';
 
-        break;
+            break;
 
         case TP.BOTTOM_LEFT:
 
@@ -2348,7 +2348,7 @@ function(aSignal) {
 
             styleObj.height = computedY + 'px';
 
-        break;
+            break;
 
         case TP.LEFT:
 
@@ -2367,7 +2367,7 @@ function(aSignal) {
 
             styleObj.width = dimensionX + 'px';
 
-        break;
+            break;
 
         case TP.TOP_LEFT:
 
@@ -2397,10 +2397,10 @@ function(aSignal) {
 
             styleObj.width = dimensionX + 'px';
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return;
@@ -3050,47 +3050,47 @@ function() {
         switch (corner) {
             case TP.TOP:
 
-            break;
+                break;
 
             case TP.TOP_RIGHT:
 
                 offsetX = elemBox.at('left') + elemBox.at('width') - startX;
 
-            break;
+                break;
 
             case TP.RIGHT:
 
                 offsetX = elemBox.at('left') + elemBox.at('width') - startX;
 
-            break;
+                break;
 
             case TP.BOTTOM_RIGHT:
 
                 offsetX = elemBox.at('left') + elemBox.at('width') - startX;
                 offsetY = elemBox.at('top') + elemBox.at('height') - startY;
 
-            break;
+                break;
 
             case TP.BOTTOM:
 
                 offsetY = elemBox.at('top') + elemBox.at('height') - startY;
 
-            break;
+                break;
 
             case TP.BOTTOM_LEFT:
 
                 offsetY = elemBox.at('top') + elemBox.at('height') - startY;
 
-            break;
+                break;
 
             case TP.LEFT:
-            break;
+                break;
 
             case TP.TOP_LEFT:
-            break;
+                break;
 
             default:
-            break;
+                break;
         }
     }
 
@@ -4167,9 +4167,9 @@ TP.lang.Object.defineSubtype('TP.core.DragTracker');
 //  ---
 
 TP.core.DragTracker.Type.defineConstant('VEND_ACCEPT',
-    function(domainObj, computeObj, mouseEvent) {
-        //  Returns true if the vend and accept attributes are a match.
-    });
+function(domainObj, computeObj, mouseEvent) {
+    //  Returns true if the vend and accept attributes are a match.
+});
 
 
 //  ---

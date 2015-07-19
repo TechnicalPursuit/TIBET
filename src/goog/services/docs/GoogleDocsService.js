@@ -104,16 +104,16 @@ function(aRequest) {
             //  for Google Docs.
             params.atPut('service', 'writely');
 
-        break;
+            break;
 
         case 'downloadDoc':
 
             params.atPut('docId', aRequest.at('docId'));
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();
@@ -172,10 +172,10 @@ function(aRequest) {
             aRequest.atPut('body', bodyData);
             aRequest.atPut('mimetype', TP.MP_RELATED_ENCODED);
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();
@@ -204,7 +204,7 @@ function(aRequest) {
             return 'http://docs.google.com/feeds/download/documents/Export';
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();
@@ -235,7 +235,7 @@ function(aRequest) {
             return TP.HTTP_POST;
 
         default:
-        break;
+            break;
     }
 
     return this.callNextMethod();

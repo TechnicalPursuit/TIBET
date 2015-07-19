@@ -1207,7 +1207,7 @@ function(focusedTPElem, moveAction) {
                 computedGroup = TP.byId(nextGroupName, win);
             }
 
-        break;
+            break;
 
         case TP.FIRST_IN_PREVIOUS_GROUP:
 
@@ -1231,7 +1231,7 @@ function(focusedTPElem, moveAction) {
                 computedGroup = TP.byId(prevGroupName, win);
             }
 
-        break;
+            break;
 
         case TP.FOLLOWING:
 
@@ -1305,7 +1305,7 @@ function(focusedTPElem, moveAction) {
                 }
             }
 
-        break;
+            break;
 
         case TP.PRECEDING:
 
@@ -3287,7 +3287,7 @@ function(aTransformRecord) {
             str += 'rotate(' +
                     transformArgs + 'deg)';
 
-        break;
+            break;
 
         case TP.SKEW:
 
@@ -3296,7 +3296,7 @@ function(aTransformRecord) {
                     'skewY(' +
                     transformArgs.last() + 'deg)';
 
-        break;
+            break;
 
         case TP.SCALE:
 
@@ -3305,7 +3305,7 @@ function(aTransformRecord) {
                     'scaleY(' +
                     transformArgs.last() + ')';
 
-        break;
+            break;
 
         case TP.TRANSLATE:
 
@@ -3313,10 +3313,10 @@ function(aTransformRecord) {
                     transformArgs.first() + 'px) ' +
                     'translateY(' +
                     transformArgs.last() + 'px)';
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return str;

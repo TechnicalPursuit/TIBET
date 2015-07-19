@@ -7329,7 +7329,7 @@ function() {
                                                     $$result.asString());
                         }
 
-                    break;
+                        break;
                 }
 
                 return;

@@ -977,7 +977,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             theValue = TP.elementGetStyleValueInPixels(targetElement,
                                                         'fontSize');
 
-        break;
+            break;
 
         case 'lineHeight':
 
@@ -987,7 +987,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             theValue = TP.elementGetStyleValueInPixels(targetElement,
                                                         'fontSize');
 
-        break;
+            break;
 
         case 'verticalAlign':
 
@@ -996,7 +996,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             targetElement = anElement;
             theValue = TP.elementGetStyleValueInPixels(targetElement,
                                                         'lineHeight');
-        break;
+            break;
 
         case 'height':
         case 'minHeight':
@@ -1024,7 +1024,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             }
 
             theValue = targetElement.offsetHeight;
-        break;
+            break;
 
         case 'width':
         case 'minWidth':
@@ -1067,7 +1067,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             }
 
             theValue = targetElement.offsetWidth;
-        break;
+            break;
 
         case 'wordSpacing':
 
@@ -1075,7 +1075,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
             //  TODO: Do this
 
-        break;
+            break;
 
         default:
 
@@ -2088,27 +2088,47 @@ function(selectorStr) {
      *     method.
      */
 
-    var PERIOD_CHR = '.',
-        COLON_CHR = ':',
-        LEFT_PAREN_CHR = '(',
-        RIGHT_PARENT_CHR = ')',
-        LEFT_ANGLEBRACKET_CHR = '<',
-        RIGHT_ANGLEBRACKET_CHR = '>',
-        HASH_CHR = '#',
-        ASTERISK_CHR = '*',
-        EQUAL_CHR = '=',
-        HYPHEN_CHR = '-',
-        EXCLAMATION_CHR = '!',
-        LEFT_SQUAREBRACKET_CHR = '[',
-        RIGHT_SQUAREBRACKET_CHR = ']',
-        ATTR_TILDE_CHAR = '~',
-        VERTICAL_BAR_CHR = '|',
-        PLUS_CHAR = '+',
-        CFLEX_CHR = '^',
-        DOLLAR_CHR = '$',
-        ESC_CHR = '\\',
+    var PERIOD_CHR,
+        COLON_CHR,
+        LEFT_PAREN_CHR,
+        RIGHT_PARENT_CHR,
+        LEFT_ANGLEBRACKET_CHR,
+        RIGHT_ANGLEBRACKET_CHR,
+        HASH_CHR,
+        ASTERISK_CHR,
+        EQUAL_CHR,
+        HYPHEN_CHR,
+        EXCLAMATION_CHR,
+        LEFT_SQUAREBRACKET_CHR,
+        RIGHT_SQUAREBRACKET_CHR,
+        ATTR_TILDE_CHAR,
+        VERTICAL_BAR_CHR,
+        PLUS_CHAR,
+        CFLEX_CHR,
+        DOLLAR_CHR,
+        ESC_CHR,
 
         parseRecord;
+
+    PERIOD_CHR = '.';
+    COLON_CHR = ':';
+    LEFT_PAREN_CHR = '(';
+    RIGHT_PARENT_CHR = ')';
+    LEFT_ANGLEBRACKET_CHR = '<';
+    RIGHT_ANGLEBRACKET_CHR = '>';
+    HASH_CHR = '#';
+    ASTERISK_CHR = '*';
+    EQUAL_CHR = '=';
+    HYPHEN_CHR = '-';
+    EXCLAMATION_CHR = '!';
+    LEFT_SQUAREBRACKET_CHR = '[';
+    RIGHT_SQUAREBRACKET_CHR = ']';
+    ATTR_TILDE_CHAR = '~';
+    VERTICAL_BAR_CHR = '|';
+    PLUS_CHAR = '+';
+    CFLEX_CHR = '^';
+    DOLLAR_CHR = '$';
+    ESC_CHR = '\\';
 
     parseRecord = {};
 
@@ -2798,14 +2818,14 @@ function(strSelectorText, strictPseudos) {
                                 case 'after':
                                 case 'selection':
 
-                                simpleSelectorEntry.atPut(
+                                    simpleSelectorEntry.atPut(
                                                 'pseudoElement',
                                                 lastMatch.toLowerCase());
 
-                                break;
+                                    break;
 
                                 default:
-                                break;
+                                    break;
                             }
                         } else {
                             //  Otherwise, we're not 'matching strictly', so

@@ -118,6 +118,7 @@ Cmd.prototype.HELP =
  * Command argument parsing options.
  * @type {Object}
  */
+/* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['major', 'minor', 'patch', 'build', 'check',
@@ -138,6 +139,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         }
     },
     Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 
 /**
@@ -349,9 +351,11 @@ Cmd.prototype.phaseOne = function() {
 
     cmd = 'git fetch --dry-run';
     result = this.shexec(cmd);
+    /* eslint-disable no-extra-parens */
     if ((result.output.slice(0, -1).length > 0) && !this.options.local) {
         throw new Error('Cannot release from out-of-date local branch.');
     }
+    /* eslint-enable no-extra-parens */
 
     //  ---
     //  Verify the branch isn't "dirty".
@@ -657,7 +661,7 @@ Cmd.prototype.phaseThree = function(meta) {
     }
 
     commands.forEach(function(cmd) {
-        var result;
+        var res;
 
         if (release.options['dry-run']) {
             release.warn('dry-run. bypassing ' + cmd);
@@ -665,11 +669,11 @@ Cmd.prototype.phaseThree = function(meta) {
             release.log('executing ' + cmd);
 // TODO: uncomment when ready to release/debug.
             release.warn('did not really do that. commented out.');
-//        result = release.shexec(cmd);
+//        res = release.shexec(cmd);
         }
 
-        if (result && result.output.slice(0, -1)) {
-            release.info(result.output);
+        if (res && res.output.slice(0, -1)) {
+            release.info(res.output);
         }
     });
 
@@ -700,7 +704,7 @@ Cmd.prototype.phaseThree = function(meta) {
     }
 
     commands.forEach(function(cmd) {
-        var result;
+        var res;
 
         if (release.options['dry-run']) {
             release.warn('dry-run. bypassing ' + cmd);
@@ -708,11 +712,11 @@ Cmd.prototype.phaseThree = function(meta) {
             release.log('executing ' + cmd);
 // TODO: uncomment when ready to release/debug.
             release.warn('did not really do that. commented out.');
-//        result = release.shexec(cmd);
+//        res = release.shexec(cmd);
         }
 
-        if (result && result.output.slice(0, -1)) {
-            release.info(result.output);
+        if (res && res.output.slice(0, -1)) {
+            release.info(res.output);
         }
     });
 

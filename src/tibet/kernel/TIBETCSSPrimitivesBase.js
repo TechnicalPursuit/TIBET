@@ -1057,7 +1057,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
                                                     wantsTransformed);
                 }
 
-            break;
+                break;
 
             case 'initial':
                 //  TODO: This is a CSS3 value - what to do here?
@@ -1076,18 +1076,18 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
                     switch (aValue) {
                         case 'thin':
                             results = 2;
-                        break;
+                            break;
 
                         case 'medium':
                             results = 4;
-                        break;
+                            break;
 
                         case 'thick':
                             results = 6;
-                        break;
+                            break;
 
                         default:
-                        break;
+                            break;
                     }
 
                     return TP.isTrue(wantsTransformed) ?
@@ -1130,34 +1130,34 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
                 results = pixelsPerPoint * numericPart;
 
-            break;
+                break;
 
             case 'in':
 
                 results = pixelsPerPoint * numericPart * 72;
 
-            break;
+                break;
 
             case 'pc':
 
                 results = pixelsPerPoint * numericPart * 12;
 
-            break;
+                break;
 
             case 'mm':
 
                 results = pixelsPerPoint * (numericPart / (7.2 / 2.54));
 
-            break;
+                break;
 
             case 'cm':
 
                 results = pixelsPerPoint * (numericPart / (72 / 2.54));
 
-            break;
+                break;
 
             default:
-            break;
+                break;
         }
 
         return TP.isTrue(wantsTransformed) ?

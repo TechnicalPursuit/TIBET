@@ -102,7 +102,7 @@ function() {
             var uiBoot,
                 tsh,
                 triggerKey,
-                console;
+                consoleService;
 
             uiBoot = TP.win('UIBOOT');
             tsh = TP.core.TSH.getDefaultInstance();
@@ -110,7 +110,7 @@ function() {
             //  Grab the trigger key from the pref.
             triggerKey = TP.sys.cfg('tdc.toggle_key');
 
-            console = TP.core.ConsoleService.construct(
+            consoleService = TP.core.ConsoleService.construct(
                 'SystemConsole',
                 TP.hc('consoleWindow', uiBoot,
                         'consoleModel', tsh,
@@ -120,7 +120,7 @@ function() {
             TP.byId('UIROOT', top, false).focus();
 
             //  Focus the input cell to be nice to the user :-).
-            console.focusInputCell();
+            consoleService.focusInputCell();
         };
 
         //  Initiate the startup/config sequence after another 50ms delay. This

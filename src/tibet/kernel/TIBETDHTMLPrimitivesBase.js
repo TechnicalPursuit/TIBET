@@ -1485,7 +1485,9 @@ function(anElement) {
     // normalizes the length of the passed point to 1
 
     normalize = function(val) {
-        var l = length(val);
+        var l;
+
+        l = length(val);
 
         return l ? [val[0] / l, val[1] / l] : [0, 0];
     };

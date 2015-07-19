@@ -74,7 +74,9 @@ Cmd.prototype.USAGE = 'tibet quickstart';
  */
 Cmd.prototype.execute = function() {
 
-    var str =
+    var str;
+
+    str =
 '\nWelcome to TIBET! This quickstart content is intended to get you up and running\n' +
 'with a minimum of overhead so we\'ll be working with a limited set of commands\n' +
 'and using their default options. Once you\'re done, check out the development wiki\n' +

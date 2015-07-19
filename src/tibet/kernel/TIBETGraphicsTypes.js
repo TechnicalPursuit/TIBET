@@ -2577,13 +2577,13 @@ function(aString) {
             newObj = null;
         } else {
             newObj = TP.core.Matrix.construct({
-                                        xx: parseFloat(vals.at(1)),
-                                        yx: parseFloat(vals.at(2)),
-                                        xy: parseFloat(vals.at(3)),
-                                        yy: parseFloat(vals.at(4)),
-                                        dx: parseFloat(vals.at(5)),
-                                        dy: parseFloat(vals.at(6))
-                                    });
+                xx: parseFloat(vals.at(1)),
+                yx: parseFloat(vals.at(2)),
+                xy: parseFloat(vals.at(3)),
+                yy: parseFloat(vals.at(4)),
+                dx: parseFloat(vals.at(5)),
+                dy: parseFloat(vals.at(6))
+            });
         }
     }
 
@@ -3046,14 +3046,15 @@ function(anObj) {
     var data,
         newObj;
 
-    data = {
+    data =
+        {
             xx: anObj[0][0],
             xy: anObj[0][1],
             yx: anObj[1][0],
             yy: anObj[1][1],
             dx: anObj[0][2],
             dy: anObj[1][2]
-            };
+        };
 
     newObj = this.construct(data);
 
@@ -4124,12 +4125,13 @@ function(red, green, blue, alpha) {
             }
         } else {
             //  Got handed four Numbers.
-            newData = {
+            newData =
+                {
                     r: red.min(255).max(0),
                     g: green.min(255).max(0),
                     b: blue.min(255).max(0),
                     a: TP.ifInvalid(alpha, 1.0).min(1).max(0)
-            };
+                };
         }
     } else {
         //  Got nothing - set everything to 0.
@@ -5467,7 +5469,7 @@ function(anAngle) {
             x2 = '100%';
             y2 = '0%';
 
-        break;
+            break;
 
         case 45:
 
@@ -5476,7 +5478,7 @@ function(anAngle) {
             x2 = '100%';
             y2 = '100%';
 
-        break;
+            break;
 
         case 90:
 
@@ -5485,7 +5487,7 @@ function(anAngle) {
             x2 = '0%';
             y2 = '100%';
 
-        break;
+            break;
 
         case 135:
 
@@ -5494,7 +5496,7 @@ function(anAngle) {
             x2 = '0%';
             y2 = '100%';
 
-        break;
+            break;
 
         case 180:
 
@@ -5503,7 +5505,7 @@ function(anAngle) {
             x2 = '0%';
             y2 = '0%';
 
-        break;
+            break;
 
         case 225:
 
@@ -5512,7 +5514,7 @@ function(anAngle) {
             x2 = '0%';
             y2 = '0%';
 
-        break;
+            break;
 
         case 270:
 
@@ -5521,7 +5523,7 @@ function(anAngle) {
             x2 = '0%';
             y2 = '0%';
 
-        break;
+            break;
 
         case 315:
 
@@ -5530,11 +5532,10 @@ function(anAngle) {
             x2 = '100%';
             y2 = '0%';
 
-        break;
+            break;
 
         default:
-
-        break;
+            break;
     }
 
     //  Note the use of the '$set' version here to avoid recursion right
@@ -7045,7 +7046,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', segmentArgs.at(i - 1));
             trackingPoint.set('absolute', true);
 
-        break;
+            break;
 
         case 'H':
 
@@ -7058,7 +7059,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('x', segmentArgs.at(i - 1));
             trackingPoint.set('absolute', true);
 
-        break;
+            break;
 
         case 'V':
 
@@ -7071,7 +7072,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', segmentArgs.at(i - 1));
             trackingPoint.set('absolute', true);
 
-        break;
+            break;
 
         case 'A':
 
@@ -7085,7 +7086,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', segmentArgs.at(i - 1));
             trackingPoint.set('absolute', true);
 
-        break;
+            break;
 
         case 'm':
 
@@ -7114,7 +7115,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', y);
             trackingPoint.set('absolute', false);
 
-        break;
+            break;
 
         case 'l':
         case 't':
@@ -7133,7 +7134,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', y);
             trackingPoint.set('absolute', false);
 
-        break;
+            break;
 
         case 'h':
 
@@ -7149,7 +7150,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('x', x);
             trackingPoint.set('absolute', false);
 
-        break;
+            break;
 
         case 'v':
 
@@ -7165,7 +7166,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', y);
             trackingPoint.set('absolute', false);
 
-        break;
+            break;
 
         case 'c':
 
@@ -7192,7 +7193,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', y);
             trackingPoint.set('absolute', false);
 
-        break;
+            break;
 
         case 's':
         case 'q':
@@ -7216,7 +7217,7 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', y);
             trackingPoint.set('absolute', false);
 
-        break;
+            break;
 
         case 'a':
 
@@ -7234,11 +7235,10 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
             trackingPoint.set('y', y);
             trackingPoint.set('absolute', false);
 
-        break;
+            break;
 
         default:
-
-        break;
+            break;
     }
 
     return this;

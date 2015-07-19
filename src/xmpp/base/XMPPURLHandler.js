@@ -105,7 +105,7 @@ function(targetURI, aRequest) {
                     'node', window.unescape(uriparams.atIfInvalid(
                                 'node', queryDict.at('node'))));
 
-        break;
+            break;
 
         case 'disco':
 
@@ -116,7 +116,7 @@ function(targetURI, aRequest) {
 
             //  xmpp:infohost.com?disco;request=info
 
-        break;
+            break;
 
         case 'invite':
 
@@ -127,7 +127,7 @@ function(targetURI, aRequest) {
 
             //  xmpp:chat.infohost.com?invite;jid=foorat@infohost.com;password=foo
 
-        break;
+            break;
 
         case 'join':
 
@@ -136,7 +136,7 @@ function(targetURI, aRequest) {
 
             //  xmpp:chat.infohost.com?join;password=foo
 
-        break;
+            break;
 
         case 'message':
 
@@ -166,7 +166,7 @@ function(targetURI, aRequest) {
                             'id', queryDict.at('id')),
                     'type', 'chat');
 
-        break;
+            break;
 
         case 'pubsub':
 
@@ -194,7 +194,7 @@ function(targetURI, aRequest) {
 
                     //  No additional parameters
 
-                break;
+                    break;
 
                 case 'unsubscribe':
 
@@ -204,7 +204,7 @@ function(targetURI, aRequest) {
 
                     //  No additional parameters
 
-                break;
+                    break;
 
                 case 'publish':
 
@@ -217,7 +217,7 @@ function(targetURI, aRequest) {
                         'payload', uriparams.atIfInvalid(
                             'payload', queryDict.at('payload')));
 
-                break;
+                    break;
 
                 case 'retract':
 
@@ -230,7 +230,7 @@ function(targetURI, aRequest) {
                         'itemID', uriparams.atIfInvalid(
                             'itemID', queryDict.at('itemID')));
 
-                break;
+                    break;
 
                 case 'delete':
 
@@ -241,7 +241,7 @@ function(targetURI, aRequest) {
 
                     //  No additional parameters
 
-                break;
+                    break;
 
                 default:
 
@@ -250,7 +250,7 @@ function(targetURI, aRequest) {
                     return this;
             }
 
-        break;
+            break;
 
         case 'recvfile':
 
@@ -262,7 +262,7 @@ function(targetURI, aRequest) {
 
             //  xmpp:infohost.com?recvfile;name=/path/to/file
 
-        break;
+            break;
 
         case 'register':
 
@@ -272,7 +272,7 @@ function(targetURI, aRequest) {
             //  xmpp:infohost.com?register
 
 
-        break;
+            break;
 
         case 'remove':
 
@@ -285,7 +285,7 @@ function(targetURI, aRequest) {
                     'name', uriparams.atIfInvalid(
                             'name', queryDict.at('name')));
 
-        break;
+            break;
 
         case 'roster':
 
@@ -302,7 +302,7 @@ function(targetURI, aRequest) {
                     'group', uriparams.atIfInvalid(
                             'group', queryDict.at('group')));
 
-        break;
+            break;
 
         case 'sendfile':
 
@@ -310,7 +310,7 @@ function(targetURI, aRequest) {
 
             //  xmpp:infohost.com?sendfile
 
-        break;
+            break;
 
         case 'subscribe':
 
@@ -320,7 +320,7 @@ function(targetURI, aRequest) {
 
             requestParams.atPut('toJID', targetURI.get('path'));
 
-        break;
+            break;
 
         case 'unregister':
 
@@ -331,7 +331,7 @@ function(targetURI, aRequest) {
 
             //  xmpp:infohost.com?unregister
 
-        break;
+            break;
 
         case 'unsubscribe':
 
@@ -341,7 +341,7 @@ function(targetURI, aRequest) {
 
             requestParams.atPut('toJID', targetURI.get('path'));
 
-        break;
+            break;
 
         case 'presence':
 
@@ -357,7 +357,7 @@ function(targetURI, aRequest) {
                     'status', window.unescape(uriparams.atIfInvalid(
                             'status', queryDict.at('status'))));
 
-        break;
+            break;
 
         default:
 
@@ -484,7 +484,7 @@ function(targetURI, aRequest) {
 
             uriparams.atPut('node', content);
 
-        break;
+            break;
 
         case 'message':
 
@@ -496,7 +496,7 @@ function(targetURI, aRequest) {
 
             uriparams.atPut('body', content);
 
-        break;
+            break;
 
         case 'presence':
 
@@ -508,7 +508,7 @@ function(targetURI, aRequest) {
 
             uriparams.atPut('status', content);
 
-        break;
+            break;
 
         case 'publish':
 
@@ -520,10 +520,10 @@ function(targetURI, aRequest) {
 
             uriparams.atPut('payload', content);
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     //  Now that we've extracted whatever 'content value' the URI had and

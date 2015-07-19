@@ -1727,20 +1727,20 @@ function(aValue, elementProperty) {
 
                     val = TP.nodeGetTextContent(labelElem);
                 }
-            break;
+                break;
 
             case 'id':
                 val = item.id;
-            break;
+                break;
 
             case 'index':
                 val = i;
-            break;
+                break;
 
             case 'value':
             default:
                 val = item.value;
-            break;
+                break;
         }
 
         //  NOTE that we don't clear ones that don't match, we just add the
@@ -2426,20 +2426,20 @@ function(aValue, elementProperty) {
 
                     val = TP.nodeGetTextContent(labelElem);
                 }
-            break;
+                break;
 
             case 'id':
                 val = item.id;
-            break;
+                break;
 
             case 'index':
                 val = i;
-            break;
+                break;
 
             case 'value':
             default:
                 val = item.value;
-            break;
+                break;
         }
 
         //  NOTE that we don't clear ones that don't match, we just add the
@@ -3608,20 +3608,20 @@ function(aValue, optionProperty) {
         switch (aspect) {
             case 'label':
                 val = TP.nodeGetTextContent(elementArray.at(i));
-            break;
+                break;
 
             case 'id':
                 val = item.id;
-            break;
+                break;
 
             case 'index':
                 val = i;
-            break;
+                break;
 
             case 'value':
             default:
                 val = item.value;
-            break;
+                break;
         }
 
         //  NOTE that we don't clear ones that don't match, we just add the
@@ -4285,20 +4285,20 @@ function(aValue, optionProperty) {
         switch (aspect) {
             case 'label':
                 val = TP.nodeGetTextContent(elementArray.at(i));
-            break;
+                break;
 
             case 'id':
                 val = item.id;
-            break;
+                break;
 
             case 'index':
                 val = i;
-            break;
+                break;
 
             case 'value':
             default:
                 val = item.value;
-            break;
+                break;
         }
 
         //  NOTE that we don't clear ones that don't match, we just add the

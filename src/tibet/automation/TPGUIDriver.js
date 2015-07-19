@@ -1475,7 +1475,7 @@ function(target, type, args, callback, currentElement) {
 
             syn.click(evtArgs, finalTarget, callback);
 
-        break;
+            break;
 
         case 'dblclick':
 
@@ -1483,7 +1483,7 @@ function(target, type, args, callback, currentElement) {
 
             syn.dblclick(evtArgs, finalTarget, callback);
 
-        break;
+            break;
 
         case 'rightclick':
 
@@ -1491,7 +1491,7 @@ function(target, type, args, callback, currentElement) {
 
             syn.rightClick(evtArgs, finalTarget, callback);
 
-        break;
+            break;
 
         case 'key':
 
@@ -1499,7 +1499,7 @@ function(target, type, args, callback, currentElement) {
 
             syn.key(evtArgs, finalTarget, callback);
 
-        break;
+            break;
 
         case 'keys':
 
@@ -1507,7 +1507,7 @@ function(target, type, args, callback, currentElement) {
 
             syn.type(evtArgs, finalTarget, callback);
 
-        break;
+            break;
 
         case 'mousedown':
 
@@ -1520,7 +1520,7 @@ function(target, type, args, callback, currentElement) {
 
             callback();
 
-        break;
+            break;
 
         case 'mouseup':
 
@@ -1533,7 +1533,7 @@ function(target, type, args, callback, currentElement) {
 
             callback();
 
-        break;
+            break;
 
         case 'keydown':
 
@@ -1546,7 +1546,7 @@ function(target, type, args, callback, currentElement) {
 
             callback();
 
-        break;
+            break;
 
         case 'keyup':
 
@@ -1559,7 +1559,7 @@ function(target, type, args, callback, currentElement) {
 
             callback();
 
-        break;
+            break;
 
         case 'sendevent':
 
@@ -1570,10 +1570,10 @@ function(target, type, args, callback, currentElement) {
 
             callback();
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return this;

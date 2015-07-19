@@ -7376,7 +7376,9 @@ function(propertyName, methodBody) {
      * @returns {Object} The receiver.
      */
 
-    var proto = this[TP.INSTC].prototype;
+    var proto;
+
+    proto = this[TP.INSTC].prototype;
 
     Object.defineProperty(proto, propertyName, {get: methodBody});
 
@@ -7398,7 +7400,9 @@ function(propertyName, methodBody) {
      * @returns {Object} The receiver.
      */
 
-    var proto = this[TP.INSTC].prototype;
+    var proto;
+
+    proto = this[TP.INSTC].prototype;
 
     Object.defineProperty(proto, propertyName, {set: methodBody});
 
@@ -7420,7 +7424,9 @@ function(propertyName, methodBody) {
      * @returns {Object} The receiver.
      */
 
-    var proto = this[TP.TYPEC].prototype;
+    var proto;
+
+    proto = this[TP.TYPEC].prototype;
 
     Object.defineProperty(proto, propertyName, {get: methodBody});
 
@@ -7442,7 +7448,9 @@ function(propertyName, methodBody) {
      * @returns {Object} The receiver.
      */
 
-    var proto = this[TP.TYPEC].prototype;
+    var proto;
+
+    proto = this[TP.TYPEC].prototype;
 
     Object.defineProperty(proto, propertyName, {set: methodBody});
 
@@ -8028,7 +8036,7 @@ function(aspectName, facetName) {
                 facetValue = TP.isEmpty(this.get(aspectName));
             }
 
-        break;
+            break;
 
         case TP.VALID:
 
@@ -8056,7 +8064,7 @@ function(aspectName, facetName) {
             facetValue = this.getType().validateConstraintsOn(
                                                     val, facetSetting);
 
-        break;
+            break;
 
         default:
 
@@ -8076,7 +8084,7 @@ function(aspectName, facetName) {
                 facetValue = facetSetting;
             }
 
-        break;
+            break;
     }
 
     return facetValue;

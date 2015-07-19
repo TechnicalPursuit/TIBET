@@ -491,7 +491,7 @@ function() {
 
         default:
 
-        break;
+            break;
     }
 
     return this;
@@ -757,25 +757,25 @@ function(aMapType) {
 
             ourMap.setMapType(tpIFrame.get('G_NORMAL_MAP'));
 
-        break;
+            break;
 
         case mapTypeConstants.at('SATELLITE'):
 
             ourMap.setMapType(tpIFrame.get('G_SATELLITE_MAP'));
 
-        break;
+            break;
 
         case mapTypeConstants.at('HYBRID'):
 
             ourMap.setMapType(tpIFrame.get('G_HYBRID_MAP'));
 
-        break;
+            break;
 
         default:
 
             ourMap.setMapType(tpIFrame.get('G_NORMAL_MAP'));
 
-        break;
+            break;
     }
 
     return this;

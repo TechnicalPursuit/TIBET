@@ -3983,14 +3983,14 @@ function(aRequest) {
                         }
 
                         TP.boot.$sourceImport(src, null, file, null, true);
-                    break;
+                        break;
 
                     case 'css':
 
                         TP.documentStyleHrefReload(TP.sys.uidoc(true),
                                                     url.getLocation());
 
-                    break;
+                        break;
 
                     case 'xhtml':
                     case 'xml':
@@ -4009,12 +4009,12 @@ function(aRequest) {
 
                         TP.windowRefreshContentFrom(TP.sys.uiwin(true), file);
 
-                    break;
+                        break;
 
                     default:
                         aRequest.fail(
                             'No action known for files with extension: ' + ext);
-                    return;
+                        return;
                 }
 
 

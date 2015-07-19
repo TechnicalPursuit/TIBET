@@ -35,7 +35,7 @@ function(anObject) {
      */
 
     var pair,
-                func;
+        func;
 
     if (TP.notValid(anObject)) {
         return;
@@ -48,13 +48,13 @@ function(anObject) {
 
         if (TP.canInvoke(anObject, 'getPairs')) {
             func = function(item) {
-                 // if we're not on the first iteration bail out
-                 if (!func.atStart()) {
-                     return TP.BREAK;
-                 }
+                // if we're not on the first iteration bail out
+                if (!func.atStart()) {
+                    return TP.BREAK;
+                }
 
-                 return true;
-             };
+                return true;
+            };
 
             pair = anObject.getPairs(func).first();
         }

@@ -131,7 +131,7 @@ function(aRequest) {
                     request.complete(TP.json2js(TP.js2json(resp)));
                 });
 
-        break;
+            break;
 
         case 'deleteItem':
 
@@ -188,7 +188,7 @@ function(aRequest) {
                         });
                 });
 
-        break;
+            break;
 
         case 'retrieveItem':
 
@@ -216,7 +216,7 @@ function(aRequest) {
                     request.complete(TP.json2js(TP.js2json(resp)));
                 });
 
-        break;
+            break;
 
         case 'retrieveItemInfo':
 
@@ -254,7 +254,7 @@ function(aRequest) {
                     request.complete(resultData);
                 });
 
-        break;
+            break;
 
         case 'retrieveDBInfo':
 
@@ -273,7 +273,7 @@ function(aRequest) {
                     request.complete(TP.json2js(TP.js2json(resp)));
                 });
 
-        break;
+            break;
 
         case 'createItem':
 
@@ -366,7 +366,7 @@ function(aRequest) {
                     });
             }
 
-        break;
+            break;
 
         case 'updateOrCreateItem':
 
@@ -470,10 +470,10 @@ function(aRequest) {
                     });
             }
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     return this;

@@ -1,4 +1,5 @@
 {
+    "extends": "eslint:recommended",
     "env": {
         "browser": true,
         "node": true
@@ -10,6 +11,7 @@
         "self": false
     },
     "rules": {
+        "array-bracket-spacing": [1, "never"],
         "brace-style": [2, "1tbs", { "allowSingleLine": true }],
         "camelcase": 0,
         "comma-style": 1,
@@ -19,7 +21,8 @@
         "dot-location": [1, "object"],
         "eol-last": 0,
         "guard-for-in": 2,
-        "indent": 2,
+        "indent": [2, 4, {"indentSwitchCase": true}],
+        "init-declarations": [2, "never"],
         "linebreak-style": 2,
         "max-len": [0, 80, 4],
         "newline-after-var": [1, always],
@@ -34,10 +37,11 @@
         "no-self-compare": 2,
         "no-shadow": 2,
         "no-throw-literal": 2,
+        "no-useless-call": 2,
         "no-unused-expressions": 0,
         "no-unused-vars": [1, {"vars": "all", "args": "none"}],
         "no-underscore-dangle": 0,
-        "no-wrap-func": 1,
+        "object-curly-spacing": [1, "never"],
         "one-var": 1,
         "operator-linebreak": 1,
         "quotes": [2, "single"],
@@ -48,10 +52,9 @@
         "space-after-keywords": [1, "always"],
         "space-before-blocks": [1, "always"],
         "space-before-function-paren": [1, "never"],
-        "space-in-brackets": [1, "never"],
         "space-in-parens": [1, "never"],
         "space-unary-ops": [1, { "words": true, "nonwords": false }],
-        "spaced-line-comment": [0, "always"],
+        "spaced-comment": [0, "always"],
         "strict": 0,
         "wrap-iife": [1, "outside"],
         "vars-on-top": 1

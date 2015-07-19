@@ -1295,14 +1295,15 @@ TP.NEVER_PREFIXED_ATTRS = ['id'];
 
 //  A list of queries for elements that can be focused without a 'tabindex'
 //  attribute, plus the query for any element that has a tabindex.
-TP.FOCUSABLE_QUERIES = [
-    'a[href]',
-    'input:not([disabled])',
-    'select:not([disabled])',
-    'textarea:not([disabled])',
-    'button:not([disabled])',
-    'iframe:not([disabled])',
-    '*[tabindex]'
+TP.FOCUSABLE_QUERIES =
+    [
+        'a[href]',
+        'input:not([disabled])',
+        'select:not([disabled])',
+        'textarea:not([disabled])',
+        'button:not([disabled])',
+        'iframe:not([disabled])',
+        '*[tabindex]'
     ];
 
 //  ---

@@ -192,7 +192,7 @@ function(aRequest) {
 
             needsFlush = true;
 
-        break;
+            break;
 
         case 'deleteItem':
 
@@ -221,7 +221,7 @@ function(aRequest) {
 
             needsFlush = true;
 
-        break;
+            break;
 
         case 'retrieveItem':
 
@@ -232,7 +232,7 @@ function(aRequest) {
                 }
             }
 
-        break;
+            break;
 
         case 'retrieveItemInfo':
 
@@ -243,7 +243,7 @@ function(aRequest) {
                         '_date_modified', resultData.at('_date_modified'));
             }
 
-        break;
+            break;
 
         case 'retrieveDBInfo':
 
@@ -257,7 +257,7 @@ function(aRequest) {
                 resultData.atPut('rows', rowData);
             }
 
-        break;
+            break;
 
         case 'createItem':
 
@@ -297,7 +297,7 @@ function(aRequest) {
                 needsFlush = true;
             }
 
-        break;
+            break;
 
         case 'updateItem':
 
@@ -333,10 +333,10 @@ function(aRequest) {
             //  return value.
             resultData = TP.hc('ok', true, '_id', id);
 
-        break;
+            break;
 
         default:
-        break;
+            break;
     }
 
     if (needsFlush) {
