@@ -117,7 +117,7 @@ function(aRequest) {
         case 'deleteDB':
 
             theDB.destroy(
-                function(err) {
+                function(err, resp) {
 
                     //  There was an error - fail the request.
                     if (TP.isValid(err)) {
@@ -128,7 +128,7 @@ function(aRequest) {
                                 err);
                     }
 
-                    request.complete();
+                    request.complete(TP.json2js(TP.js2json(resp)));
                 });
 
         break;
