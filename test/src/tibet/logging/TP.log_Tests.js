@@ -74,8 +74,9 @@ function() {
     });
 
     this.it('only creates one root logger', function(test, options) {
-        var root2 = TP.log.Manager.getRootLogger();
+        var root2;
 
+        root2 = TP.log.Manager.getRootLogger();
         test.assert.isIdenticalTo(root, root2);
     });
 
@@ -148,8 +149,9 @@ function() {
     });
 
     this.it('top-level logger parent is root logger', function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy');
+        var logger;
 
+        logger = TP.log.Manager.getLogger('foofy');
         test.assert.isIdenticalTo(logger.getParent(), root);
     });
 
@@ -236,8 +238,9 @@ function() {
     });
 
     this.it('primary loggers inherit parent/root level', function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy');
+        var logger;
 
+        logger = TP.log.Manager.getLogger('foofy');
         test.assert.isIdenticalTo(root.getLevel(), logger.getLevel());
     });
 
@@ -255,7 +258,9 @@ function() {
     });
 
     this.it('computes whether logging is enabled properly', function(test, options) {
-        var logger = TP.log.Manager.getLogger('foofy');
+        var logger;
+
+        logger = TP.log.Manager.getLogger('foofy');
 
         test.assert.isTrue(logger.isEnabled(TP.log.ALL), 'All');
         test.assert.isTrue(logger.isEnabled(TP.log.INFO), 'Info');
