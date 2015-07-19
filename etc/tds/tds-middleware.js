@@ -9,6 +9,8 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/* eslint no-console:0 */
+
 (function() {
 
     'use strict';
@@ -98,8 +100,6 @@
      * @returns {Package} The package instance.
      */
     TDS.initPackage = function(options) {
-        var json;
-
         if (this._package) {
             return this._package;
         }
@@ -114,7 +114,9 @@
      * @returns {Boolean} true to skip logging the current request.
      */
     TDS.logFilter = function(req, res) {
-        var url = TDS.getcfg('tds.watch.uri');
+        var url;
+
+        url = TDS.getcfg('tds.watch.uri');
 
         // Don't log repeated calls to the watcher URL.
         if (req.path.indexOf(url) !== -1) {
@@ -375,7 +377,7 @@
 
             //  Return a function with a persistent handle to the original
             //  response. We can use this to send out events at any time.
-            return function (name, data, id) {
+            return function(name, data, id) {
                 var sseId;
 
                 sseId = id || (new Date()).getTime();

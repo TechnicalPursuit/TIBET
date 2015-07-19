@@ -11,7 +11,7 @@
 /* global AssertionFailed:true
 */
 
-/* eslint-disable new-cap */
+/* eslint-disable new-cap, init-declarations */
 
 /**
  * Sample tests built specifically to exercise all the different ways a test
@@ -117,7 +117,9 @@ function() {
     this.it('fails async via timeout', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
+                /* eslint-disable */
                 console.log('# say something to keep idle timer happy');
+                /* eslint-enable */
             }, 3000);
             setTimeout(function() {
                 test.pass();

@@ -23,7 +23,7 @@
  * the default timeout * 2 or 10 seconds by default.
  */
 
-/*eslint no-eval:0*/
+/*eslint no-eval:0, no-console:0*/
 /*global phantom:false, require:false*/
 (function(root) {
 
@@ -896,7 +896,9 @@
         ready = false;
         start = new Date().getTime();
         interval = setInterval(function() {
-            var now = new Date().getTime();
+            var now;
+
+            now = new Date().getTime();
 
             /* eslint-disable no-extra-parens */
             if ((now - start < timeout) && !ready) {

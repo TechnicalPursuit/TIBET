@@ -13,7 +13,7 @@
 //  ========================================================================
 
 /* global describe, it */
-/*eslint indent:0*/
+/*eslint indent:0, init-declarations:0*/
 var expect,
     CLI;
 
