@@ -8,6 +8,8 @@
  */
 //  ========================================================================
 
+/*eslint indent:0*/
+
 TP.$templateParser.parse.describe('parse',
 function() {
 

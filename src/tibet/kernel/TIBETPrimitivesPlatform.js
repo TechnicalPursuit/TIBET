@@ -1036,6 +1036,7 @@ TP.hc(
     'gecko',
     function() {
         //  This is a no-op for Gecko.
+        return;
     },
     'trident',
     function(aNode) {

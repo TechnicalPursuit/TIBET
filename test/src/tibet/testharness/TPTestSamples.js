@@ -62,9 +62,9 @@ function() {
 
 Array.Inst.describe('slice (syntax error in describe())',
 function() {
-        /* eslint-disable */
-        foo = thiswontwork;     // jshint ignore:line
-        /* eslint-enable */
+    /* eslint-disable */
+    foo = thiswontwork;     // jshint ignore:line
+    /* eslint-enable */
     this.it('slices and dices', function(test, options) {
     });
 });

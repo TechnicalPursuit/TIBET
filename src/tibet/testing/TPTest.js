@@ -2737,6 +2737,7 @@ function(options) {
     return promise.then(
         function(obj) {
             //  TODO: break?
+            return;
         },
         function(err) {
             if (err instanceof AssertionFailed) {

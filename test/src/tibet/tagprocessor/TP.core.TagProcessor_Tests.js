@@ -26,11 +26,9 @@ function() {
 
     if (!TP.isType(tagType = TP.sys.getTypeByName('TP.test.nochange'))) {
         tagType = TP.core.ElementNode.defineSubtype('test.nochange');
-        tagType.Type.defineMethod(
-            'allNodesTransform',
-            function(aRequest) {
-                //  This method does nothing on this tag type
-            });
+        tagType.Type.defineMethod('allNodesTransform', function(aRequest) {
+            //  This method does nothing on this tag type
+        });
     }
 
     return tagType;

@@ -21,7 +21,7 @@
         "dot-location": [1, "object"],
         "eol-last": 0,
         "guard-for-in": 2,
-        "indent": [0, 4, {"indentSwitchCase": true}],
+        "indent": [2, 4, {"indentSwitchCase": true}],
         "init-declarations": [2, "never"],
         "linebreak-style": 2,
         "max-len": [0, 80, 4],
