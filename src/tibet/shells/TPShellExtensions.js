@@ -1154,7 +1154,11 @@ function(aRequest, cmdType) {
             if (/!/.test(pipe)) {
                 result = null;
                 subrequest.atPut('crud', crud);
-                obj.save(subrequest);
+                if (subrequest.at('verb') === TP.HTTP_DELETE) {
+                    obj.nuke(subrequest);
+                } else {
+                    obj.save(subrequest);
+                }
             } else {
                 //  Save is synchronous for all URI types since it's a
                 //  "local save" to the URI's internal cache unless a commit
