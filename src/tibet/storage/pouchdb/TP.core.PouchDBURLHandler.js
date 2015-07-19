@@ -218,6 +218,8 @@ function(targetURI, aRequest) {
         queryDict,
         securePW,
 
+        verb,
+
         cmdAction,
         content,
 
@@ -269,10 +271,23 @@ function(targetURI, aRequest) {
         securePW = queryDict.at('securePW');
     }
 
+    verb = request.at('verb');
+
+    //  If we weren't given a verb, try to 'do the right thing' here. If a valid
+    //  resource ID wasn't supplied, then use POST (which PouchDB will interpret
+    //  as an indication to generate the ID). Otherwise, use PUT.
+    if (TP.notValid(verb)) {
+        if (TP.notValid(resourceID)) {
+            verb = TP.HTTP_POST;
+        } else {
+            verb = TP.HTTP_PUT;
+        }
+    }
+
     //  If the user forces a POST, then we go ahead and configure the request to
     //  be 'createItem' - otherwise, we specify 'updateOrCreateItem' and let the
     //  service object handle the case where an item needs to be created.
-    if (request.at('verb') === TP.HTTP_POST) {
+    if (verb === TP.HTTP_POST) {
 
         requestParams = TP.hc(
                         'action', 'createItem',
