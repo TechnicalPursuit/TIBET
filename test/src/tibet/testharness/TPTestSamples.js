@@ -11,8 +11,6 @@
 /* global AssertionFailed:true
 */
 
-/* eslint-disable new-cap, init-declarations */
-
 /**
  * Sample tests built specifically to exercise all the different ways a test
  * could pass, fail, or error out. A rough version of tests for the
@@ -54,7 +52,7 @@ function() {
     });
 
     this.it('errors implicitly via syntax or other error', function(test, options) {
-        /* eslint-disable */
+        /* eslint-disable no-undef */
         foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
     });
@@ -62,7 +60,7 @@ function() {
 
 Array.Inst.describe('slice (syntax error in describe())',
 function() {
-    /* eslint-disable */
+    /* eslint-disable no-undef */
     foo = thiswontwork;     // jshint ignore:line
     /* eslint-enable */
     this.it('slices and dices', function(test, options) {
@@ -72,7 +70,7 @@ function() {
 Array.Inst.describe('slice (syntax error in it())',
 function() {
     this.it('makes julienne fries (syntax error)', function(test, options) {
-        /* eslint-disable */
+        /* eslint-disable no-undef */
         foo = thiswontwork;     // jshint ignore:line
         /* eslint-enable */
     });
@@ -117,9 +115,9 @@ function() {
     this.it('fails async via timeout', function(test, options) {
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
-                /* eslint-disable */
+                /* eslint-disable no-console */
                 console.log('# say something to keep idle timer happy');
-                /* eslint-enable */
+                /* eslint-enable no-console */
             }, 3000);
             setTimeout(function() {
                 test.pass();
@@ -222,7 +220,9 @@ function() {
 TP.core.Resource.Inst.describe('getTriggerSignals',
 function() {
     this.it('wastes time', function() {
-        var test = this;
+        var test;
+
+        test = this;
 
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
@@ -232,7 +232,9 @@ function() {
         });
     });
     this.it('wastes more time', function() {
-        var test = this;
+        var test;
+
+        test = this;
 
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
@@ -242,7 +244,9 @@ function() {
         });
     });
     this.it('wastes more and more time', function() {
-        var test = this;
+        var test;
+
+        test = this;
 
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
@@ -252,7 +256,9 @@ function() {
         });
     });
     this.it('wastes some more time', function() {
-        var test = this;
+        var test;
+
+        test = this;
 
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
@@ -262,7 +268,9 @@ function() {
         });
     });
     this.it('wastes yet more time', function() {
-        var test = this;
+        var test;
+
+        test = this;
 
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {
@@ -272,7 +280,9 @@ function() {
         });
     });
     this.it('should trigger suite timeout', function() {
-        var test = this;
+        var test;
+
+        test = this;
 
         return TP.extern.Promise.construct(function(resolver, rejector) {
             setTimeout(function() {

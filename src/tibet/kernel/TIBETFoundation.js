@@ -1702,11 +1702,11 @@ function() {
         arr = TP.ac();
         type = this;
         /* jshint boss:true */
-        /* eslint-disable */
+        /* eslint-disable no-cond-assign */
         while (type = type[TP.SUPER]) {
             arr.push(type);
         }
-        /* eslint-enable */
+        /* eslint-enable no-cond-assign */
         /* jshint boss:false */
 
         this[TP.ANCESTORS] = arr;
@@ -1753,11 +1753,11 @@ function() {
         arr = TP.ac();
         type = this;
         /* jshint boss:true */
-        /* eslint-disable */
+        /* eslint-disable no-cond-assign */
         while (type = type[TP.SUPER]) {
             arr.push(type.getName());
         }
-        /* eslint-enable */
+        /* eslint-enable no-cond-assign */
         /* jshint boss:false */
 
         this[TP.ANCESTOR_NAMES] = arr;

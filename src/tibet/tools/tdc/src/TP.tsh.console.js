@@ -194,13 +194,13 @@ function() {
                                         inputElem,
                                         false);
 
-        /* eslint-disable */
+        /* eslint-disable no-extra-parens */
         // Fork this part so we don't see the unstyled input cell during UI
         // switching to UIROOT etc.
         (function() {
             newElem.parentNode.style.visibility = 'visible';
         }).fork();
-        /* eslint-enable */
+        /* eslint-enable no-extra-parens */
     }
 
     //  Manually add the stylesheet

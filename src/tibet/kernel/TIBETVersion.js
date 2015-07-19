@@ -7,14 +7,14 @@
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
 
-/* eslint-disable */
-
 (function() {
-    var release = TP.sys.release;   // jshint ignore:line
+    var release;
+
+    release = TP.sys.release;   // jshint ignore:line
 
     //  --- latest.js start ---
     /* jshint ignore:start */
-    /* eslint-disable */
+    /* eslint-disable quote-props,quotes */
     release({
         "describe": "3.0.0-1211-g1bc74d52d2-dirty",
         "major": "5",
@@ -28,6 +28,7 @@
         "time": "1415983971567",
         "semver": "v5.0.0-dev.7+g1bc74d52d2.1211.1415983971567"
     });
+    /* eslint-enable quote-props,quotes */
     /* jshint ignore:end */
     //  --- latest.js end ---
 

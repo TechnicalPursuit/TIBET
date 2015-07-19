@@ -8,8 +8,6 @@
  */
 //  ========================================================================
 
-/*eslint indent:0*/
-
 TP.$templateParser.parse.describe('parse',
 function() {
 
@@ -28,14 +26,14 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'Hi there '
-               ],
-               [
-                  'value',
-                  'firstName'
-               ]
+                [
+                    'text',
+                    'Hi there '
+                ],
+                [
+                    'value',
+                    'firstName'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -51,34 +49,34 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'Hi there '
-               ],
-               [
-                  'value',
-                  'firstName'
-               ],
-               [
-                  'text',
-                  ' '
-               ],
-               [
-                  'value',
-                  'lastName'
-               ],
-               [
-                  'text',
-                  '. You are '
-               ],
-               [
-                  'value',
-                  'age'
-               ],
-               [
-                  'text',
-                  ' years old'
-               ]
+                [
+                    'text',
+                    'Hi there '
+                ],
+                [
+                    'value',
+                    'firstName'
+                ],
+                [
+                    'text',
+                    ' '
+                ],
+                [
+                    'value',
+                    'lastName'
+                ],
+                [
+                    'text',
+                    '. You are '
+                ],
+                [
+                    'value',
+                    'age'
+                ],
+                [
+                    'text',
+                    ' years old'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -94,14 +92,14 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The element with a bar attribute is: '
-               ],
-               [
-                  'value',
-                  './*[@bar]'
-               ]
+                [
+                    'text',
+                    'The element with a bar attribute is: '
+                ],
+                [
+                    'value',
+                    './*[@bar]'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -117,14 +115,14 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'hi: '
-               ],
-               [
-                  'value',
-                  'foo .% escapedHTML'
-               ]
+                [
+                    'text',
+                    'hi: '
+                ],
+                [
+                    'value',
+                    'foo .% escapedHTML'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -140,22 +138,22 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The second item is: '
-               ],
-               [
-                  'value',
-                  '1'
-               ],
-               [
-                  'text',
-                  ' and the other two are: '
-               ],
-               [
-                  'value',
-                  'data[0,2]'
-               ]
+                [
+                    'text',
+                    'The second item is: '
+                ],
+                [
+                    'value',
+                    '1'
+                ],
+                [
+                    'text',
+                    ' and the other two are: '
+                ],
+                [
+                    'value',
+                    'data[0,2]'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -171,34 +169,34 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'Hi there '
-               ],
-               [
-                  'value',
-                  'firstName'
-               ],
-               [
-                  'text',
-                  ' '
-               ],
-               [
-                  'value',
-                  'lastName'
-               ],
-               [
-                  'text',
-                  '. Your phone number is '
-               ],
-               [
-                  'value',
-                  'phone .% @{@@@-@@@@}'
-               ],
-               [
-                  'text',
-                  '.'
-               ]
+                [
+                    'text',
+                    'Hi there '
+                ],
+                [
+                    'value',
+                    'firstName'
+                ],
+                [
+                    'text',
+                    ' '
+                ],
+                [
+                    'value',
+                    'lastName'
+                ],
+                [
+                    'text',
+                    '. Your phone number is '
+                ],
+                [
+                    'value',
+                    'phone .% @{@@@-@@@@}'
+                ],
+                [
+                    'text',
+                    '.'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -214,34 +212,34 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'Hi there '
-               ],
-               [
-                  'value',
-                  'firstName'
-               ],
-               [
-                  'text',
-                  ' '
-               ],
-               [
-                  'value',
-                  'lastName'
-               ],
-               [
-                  'text',
-                  '. Your salary is '
-               ],
-               [
-                  'value',
-                  'salary .% $#{#,###.00}'
-               ],
-               [
-                  'text',
-                  '.'
-               ]
+                [
+                    'text',
+                    'Hi there '
+                ],
+                [
+                    'value',
+                    'firstName'
+                ],
+                [
+                    'text',
+                    ' '
+                ],
+                [
+                    'value',
+                    'lastName'
+                ],
+                [
+                    'text',
+                    '. Your salary is '
+                ],
+                [
+                    'value',
+                    'salary .% $#{#,###.00}'
+                ],
+                [
+                    'text',
+                    '.'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -257,14 +255,14 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The content as XML-RPC is: '
-               ],
-               [
-                  'value',
-                  'value .% TP.core.XMLRPCNode'
-               ]
+                [
+                    'text',
+                    'The content as XML-RPC is: '
+                ],
+                [
+                    'value',
+                    'value .% TP.core.XMLRPCNode'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -280,14 +278,14 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The element with a bar attribute is: '
-               ],
-               [
-                  'value',
-                  './*[@bar].%String'
-               ]
+                [
+                    'text',
+                    'The element with a bar attribute is: '
+                ],
+                [
+                    'value',
+                    './*[@bar].%String'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -303,14 +301,14 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The list is '
-               ],
-               [
-                  'value',
-                  'value .%* html:ul'
-               ]
+                [
+                    'text',
+                    'The list is '
+                ],
+                [
+                    'value',
+                    'value .%* html:ul'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -327,18 +325,18 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  '{foo:'
-               ],
-               [
-                  'value',
-                  'x'
-               ],
-               [
-                  'text',
-                  '}'
-               ]
+                [
+                    'text',
+                    '{foo:'
+                ],
+                [
+                    'value',
+                    'x'
+                ],
+                [
+                    'text',
+                    '}'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -363,14 +361,14 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The name of the element with a bar attribute is: '
-               ],
-               [
-                  'value',
-                  './*[@bar] .% It really is: {{localName .% {{fetchit .% formatit}}}}'
-               ]
+                [
+                    'text',
+                    'The name of the element with a bar attribute is: '
+                ],
+                [
+                    'value',
+                    './*[@bar] .% It really is: {{localName .% {{fetchit .% formatit}}}}'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -387,48 +385,48 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'Hi there '
-               ],
-               [
-                  'with',
-                  'data',
-                  [
-                     [
-                        'text',
-                        ' '
-                     ],
-                     [
-                        'value',
-                        'firstName'
-                     ],
-                     [
-                        'text',
-                        ' '
-                     ],
-                     [
-                        'value',
-                        'lastName'
-                     ],
-                     [
-                        'text',
-                        ' '
-                     ]
-                  ]
-               ],
-               [
-                  'text',
-                  '. You are '
-               ],
-               [
-                  'value',
-                  'age'
-               ],
-               [
-                  'text',
-                  ' years old'
-               ]
+                [
+                    'text',
+                    'Hi there '
+                ],
+                [
+                    'with',
+                    'data',
+                    [
+                        [
+                            'text',
+                            ' '
+                        ],
+                        [
+                            'value',
+                            'firstName'
+                        ],
+                        [
+                            'text',
+                            ' '
+                        ],
+                        [
+                            'value',
+                            'lastName'
+                        ],
+                        [
+                            'text',
+                            ' '
+                        ]
+                    ]
+                ],
+                [
+                    'text',
+                    '. You are '
+                ],
+                [
+                    'value',
+                    'age'
+                ],
+                [
+                    'text',
+                    ' years old'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -445,40 +443,40 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'Hello '
-               ],
-               [
-                  'value',
-                  'world'
-               ],
-               [
-                  'text',
-                  '. '
-               ],
-               [
-                  'with',
-                  './*[@bar]',
-                  [
-                     [
-                        'text',
-                        'First name is: '
-                     ],
-                     [
-                        'value',
-                        'firstName'
-                     ],
-                     [
-                        'text',
-                        ' and last name is: '
-                     ],
-                     [
-                        'value',
-                        'lastName'
-                     ]
-                  ]
-               ]
+                [
+                    'text',
+                    'Hello '
+                ],
+                [
+                    'value',
+                    'world'
+                ],
+                [
+                    'text',
+                    '. '
+                ],
+                [
+                    'with',
+                    './*[@bar]',
+                    [
+                        [
+                            'text',
+                            'First name is: '
+                        ],
+                        [
+                            'value',
+                            'firstName'
+                        ],
+                        [
+                            'text',
+                            ' and last name is: '
+                        ],
+                        [
+                            'value',
+                            'lastName'
+                        ]
+                    ]
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -495,41 +493,41 @@ function() {
 
         correctRep =
             [
-               [
-                  'if',
-                  'foo',
-                  [
-                     [
-                        'text',
-                        '<li>'
-                     ],
-                     [
-                        'value',
-                        'goo'
-                     ],
-                     [
-                        'text',
-                        '</li><li>'
-                     ],
-                     [
-                        'value',
-                        'moo'
-                     ],
-                     [
-                        'text',
-                        '</li>'
-                     ]
-                  ],
-                  null
-               ],
-               [
-                  'text',
-                  '</ul> and then there\'s: '
-               ],
-               [
-                  'value',
-                  'foo.bar.moo'
-               ]
+                [
+                    'if',
+                    'foo',
+                    [
+                        [
+                            'text',
+                            '<li>'
+                        ],
+                        [
+                            'value',
+                            'goo'
+                        ],
+                        [
+                            'text',
+                            '</li><li>'
+                        ],
+                        [
+                            'value',
+                            'moo'
+                        ],
+                        [
+                            'text',
+                            '</li>'
+                        ]
+                    ],
+                    null
+                ],
+                [
+                    'text',
+                    '</ul> and then there\'s: '
+                ],
+                [
+                    'value',
+                    'foo.bar.moo'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -546,40 +544,40 @@ function() {
 
         correctRep =
             [
-               [
-                  'for',
-                  'foo',
-                  [
-                     [
-                        'text',
-                        '<li>'
-                     ],
-                     [
-                        'value',
-                        'goo'
-                     ],
-                     [
-                        'text',
-                        '</li><li>'
-                     ],
-                     [
-                        'value',
-                        'moo'
-                     ],
-                     [
-                        'text',
-                        '</li>'
-                     ]
-                  ]
-               ],
-               [
-                  'text',
-                  '</ul> and then there\'s: '
-               ],
-               [
-                  'value',
-                  'foo.bar.moo'
-               ]
+                [
+                    'for',
+                    'foo',
+                    [
+                        [
+                            'text',
+                            '<li>'
+                        ],
+                        [
+                            'value',
+                            'goo'
+                        ],
+                        [
+                            'text',
+                            '</li><li>'
+                        ],
+                        [
+                            'value',
+                            'moo'
+                        ],
+                        [
+                            'text',
+                            '</li>'
+                        ]
+                    ]
+                ],
+                [
+                    'text',
+                    '</ul> and then there\'s: '
+                ],
+                [
+                    'value',
+                    'foo.bar.moo'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -596,43 +594,43 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'Hello '
-               ],
-               [
-                  'value',
-                  'world'
-               ],
-               [
-                  'text',
-                  '. '
-               ],
-               [
-                  'for',
-                  {
-                     args: 'a,b',
-                     data: 'words'
-                  },
-                  [
-                     [
-                        'value',
-                        'a'
-                     ],
-                     [
-                        'text',
-                        ' is at: '
-                     ],
-                     [
-                        'value',
-                        'b'
-                     ],
-                     [
-                        'text',
-                        ' '
-                     ]
-                  ]
-               ]
+                [
+                    'text',
+                    'Hello '
+                ],
+                [
+                    'value',
+                    'world'
+                ],
+                [
+                    'text',
+                    '. '
+                ],
+                [
+                    'for',
+                    {
+                        args: 'a,b',
+                        data: 'words'
+                    },
+                    [
+                        [
+                            'value',
+                            'a'
+                        ],
+                        [
+                            'text',
+                            ' is at: '
+                        ],
+                        [
+                            'value',
+                            'b'
+                        ],
+                        [
+                            'text',
+                            ' '
+                        ]
+                    ]
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -649,10 +647,10 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The year is: \\{{value .% YYYY\\}}'
-               ]
+                [
+                    'text',
+                    'The year is: \\{{value .% YYYY\\}}'
+                ]
             ];
 
         test.assert.isEqualTo(
@@ -669,18 +667,18 @@ function() {
 
         correctRep =
             [
-               [
-                  'text',
-                  'The year is: \\{{value .% '
-               ],
-               [
-                  'value',
-                  '\\{{some\\}}'
-               ],
-               [
-                  'text',
-                  '\\}}'
-               ]
+                [
+                    'text',
+                    'The year is: \\{{value .% '
+                ],
+                [
+                    'value',
+                    '\\{{some\\}}'
+                ],
+                [
+                    'text',
+                    '\\}}'
+                ]
             ];
 
         test.assert.isEqualTo(

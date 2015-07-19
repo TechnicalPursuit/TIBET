@@ -7,14 +7,14 @@
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
 
-/* eslint-disable */
-
 (function() {
-    var release = TP.sys.release;   // jshint ignore:line
+    var release;
+
+    release = TP.sys.release;   // jshint ignore:line
 
     //  --- latest.js start ---
     /* jshint ignore:start */
-    /* eslint-disable */
+    /* eslint-disable quote-props,quotes */
     release({
         "describe": "{{describe}}",
         "major": "{{major}}",
@@ -28,6 +28,7 @@
         "time": "{{time}}",
         "semver": "{{semver}}"
     });
+    /* eslint-enable quote-props,quotes */
     /* jshint ignore:end */
     //  --- latest.js end ---
 
