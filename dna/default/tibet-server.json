@@ -1,6 +1,8 @@
 {
     "//": "TIBET server configuration file.",
     "default": {
+        "port": 1407,
+        "pouch": "pouch"
     },
     "development": {
         "use": {
