@@ -5584,7 +5584,7 @@ function() {
         this.get('drivers').atPut('shell', shellDriver);
 
         //  'this' refers to the suite here.
-        this.then(
+        suite.then(
             function() {
                 var now,
 
@@ -5917,7 +5917,7 @@ function() {
     this.after(function(suite, options) {
 
         //  'this' refers to the suite here.
-        this.then(
+        suite.then(
             function() {
                 var pouchPromise,
                     promise;

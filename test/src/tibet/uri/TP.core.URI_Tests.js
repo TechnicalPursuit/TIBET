@@ -1435,7 +1435,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            this.then(
+            suite.then(
                 function() {
                     var now,
 
@@ -1671,7 +1671,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            this.then(
+            suite.then(
                 function() {
                     var pouchPromise,
                         promise;
@@ -2411,7 +2411,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            this.then(
+            suite.then(
                 function() {
                     var now,
 
@@ -2648,7 +2648,7 @@ function() {
         function(suite, options) {
 
             //  'this' refers to the suite here.
-            this.then(
+            suite.then(
                 function() {
                     var pouchPromise,
                         promise;
