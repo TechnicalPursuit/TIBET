@@ -3691,6 +3691,7 @@ function(varargs) {
         allTraits,
 
         mainTypeTarget,
+        resolutions,
 
         len,
         i,
@@ -3700,7 +3701,11 @@ function(varargs) {
 
         traitType,
         traitTypeTarget,
-        traitProps;
+        traitProps,
+
+        propName,
+        entry,
+        desc;
 
     inImmediateMode = false;
 
@@ -3761,6 +3766,10 @@ function(varargs) {
     //  ---
 
     mainTypeTarget = this.getPrototype();
+    if (TP.notValid(resolutions = this.$get('$traitsTypeResolutions'))) {
+        resolutions = TP.hc();
+        this.$set('$traitsTypeResolutions', resolutions);
+    }
 
     /* eslint-disable no-loop-func */
     len = allTraits.getSize();
@@ -3783,18 +3792,35 @@ function(varargs) {
         len2 = traitProps.getSize();
         for (j = 0; j < len2; j++) {
 
-            if (mainTypeTarget[traitProps[j]] ===
-                traitTypeTarget[traitProps[j]]) {
+            propName = traitProps[j];
+
+            //  If the slots have the exact same value, then they're pointing at
+            //  exactly the same object - just exit here.
+            if (mainTypeTarget[propName] === traitTypeTarget[propName]) {
                 continue;
             }
 
-            //  Install a trait trap on the main type 'type prototype' for the
-            //  property found on the trait type.
+            //  If there's already an ECMA5 'getter' at that slot and it has a
+            //  'finalVal', slot then clear it.
+            desc = Object.getOwnPropertyDescriptor(this, propName);
+            if (desc && desc.get && desc.get.finalVal) {
+                desc.get.finalVal = undefined;
+            }
+
+            //  Since we're adding another 1...n trait types, if an entry exists
+            //  for this property, we need to make sure to clear any previously
+            //  computed resolution value.
+            if (TP.isValid(entry = resolutions.at(propName))) {
+                entry.removeKey('resolvesToType');
+            }
+
+            //  Install a trait trap on the main type 'type prototype' for
+            //  the property found on the trait type.
             this.$installTraitTrap(
                             mainTypeTarget,
-                            traitProps[j],
+                            propName,
                             TP.TYPE_TRACK,
-                            mainTypeTarget[traitProps[j]],
+                            mainTypeTarget[propName],
                             inImmediateMode);
         }
     }
@@ -3805,6 +3831,10 @@ function(varargs) {
     //  ---
 
     mainTypeTarget = this.getInstPrototype();
+    if (TP.notValid(resolutions = this.$get('$traitsInstResolutions'))) {
+        resolutions = TP.hc();
+        this.$set('$traitsInstResolutions', resolutions);
+    }
 
     /* eslint-disable no-loop-func */
     len = allTraits.getSize();
@@ -3827,18 +3857,35 @@ function(varargs) {
         len2 = traitProps.getSize();
         for (j = 0; j < len2; j++) {
 
-            if (mainTypeTarget[traitProps[j]] ===
-                traitTypeTarget[traitProps[j]]) {
+            propName = traitProps[j];
+
+            //  If the slots have the exact same value, then they're pointing at
+            //  exactly the same object - just exit here.
+            if (mainTypeTarget[propName] === traitTypeTarget[propName]) {
                 continue;
             }
 
-            //  Install a trait trap on the main type 'instance prototype' for
+            //  If there's already an ECMA5 'getter' at that slot and it has a
+            //  'finalVal', slot then clear it.
+            desc = Object.getOwnPropertyDescriptor(this, propName);
+            if (desc && desc.get && desc.get.finalVal) {
+                desc.get.finalVal = undefined;
+            }
+
+            //  Since we're adding another 1...n trait types, if an entry exists
+            //  for this property, we need to make sure to clear any previously
+            //  computed resolution value.
+            if (TP.isValid(entry = resolutions.at(propName))) {
+                entry.removeKey('resolvesToType');
+            }
+
+            //  Install a trait trap on the main type 'type prototype' for
             //  the property found on the trait type.
             this.$installTraitTrap(
                             mainTypeTarget,
-                            traitProps[j],
+                            propName,
                             TP.INST_TRACK,
-                            mainTypeTarget[traitProps[j]],
+                            mainTypeTarget[propName],
                             inImmediateMode);
         }
     }
@@ -4776,7 +4823,10 @@ function(propertyName, resolution, resolutionOption) {
 
     var resolutions,
         populateResolutionType,
-        entry;
+        entry,
+
+        desc,
+        prevValue;
 
     //  Because we're executing this in the context of the 'instance prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
@@ -4815,11 +4865,34 @@ function(propertyName, resolution, resolutionOption) {
         entry.atPut('resolvesToType', aType);
     };
 
-    //  If there's no entry for the supplied property name, then make one.
-    if (TP.notValid(entry = resolutions.at(propertyName))) {
-        entry = TP.hc('propName', propertyName);
-        resolutions.atPut(propertyName, entry);
+    //  If this property already had a resolutions entry, then we get any
+    //  previous value that would've gotten computed.
+    if (TP.isValid(resolutions.at(propertyName))) {
+
+        TP.$$no_exec_trait_resolution = true;
+        prevValue = this[propertyName];
+        TP.$$no_exec_trait_resolution = false;
+
+        //  If there's already an ECMA5 'getter' at that slot and it has a
+        //  'finalVal', slot then clear it.
+        desc = Object.getOwnPropertyDescriptor(this, propertyName);
+        if (desc && desc.get && desc.get.finalVal) {
+            desc.get.finalVal = undefined;
+        }
+
+        //  Re-install the trait trap. Note that if the trait hasn't really been
+        //  resolved and therefore the trap still exists, this method will just
+        //  return and the trap won't be installed again.
+        this[TP.OWNER].$installTraitTrap(
+                        this,
+                        propertyName,
+                        TP.INST_TRACK);
     }
+
+    //  Generate a completely new entry for the property - this effectively
+    //  clears any existing for the property.
+    entry = TP.hc('propName', propertyName);
+    resolutions.atPut(propertyName, entry);
 
     if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
 
@@ -4834,9 +4907,7 @@ function(propertyName, resolution, resolutionOption) {
         //  The option is a Function, which means that it will be executed once
         //  and the result will be used as the value.
         entry.atPut('resolverFunction', resolutionOption);
-        TP.$$no_exec_trait_resolution = true;
-        entry.atPut('initialValue', this[propertyName]);
-        TP.$$no_exec_trait_resolution = false;
+        entry.atPut('initialValue', prevValue);
 
         //  Install a trap to execute our resolver Function
         this[TP.OWNER].$installTraitTrap(
@@ -4875,9 +4946,7 @@ function(propertyName, resolution, resolutionOption) {
             //  TP.AFTER option
             populateResolutionType(entry, resolution);
 
-            TP.$$no_exec_trait_resolution = true;
-            entry.atPut('initialValue', this[propertyName]);
-            TP.$$no_exec_trait_resolution = false;
+            entry.atPut('initialValue', prevValue);
 
             entry.atPut('aroundFlag', resolutionOption);
 
@@ -4994,7 +5063,10 @@ function(propertyName, resolution, resolutionOption) {
 
     var resolutions,
         populateResolutionType,
-        entry;
+        entry,
+
+        desc,
+        prevValue;
 
     //  Because we're executing this in the context of the 'type prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
@@ -5033,11 +5105,34 @@ function(propertyName, resolution, resolutionOption) {
         entry.atPut('resolvesToType', aType);
     };
 
-    //  If there's no entry for the supplied property name, then make one.
-    if (TP.notValid(entry = resolutions.at(propertyName))) {
-        entry = TP.hc('propName', propertyName);
-        resolutions.atPut(propertyName, entry);
+    //  If this property already had a resolutions entry, then we get any
+    //  previous value that would've gotten computed.
+    if (TP.isValid(resolutions.at(propertyName))) {
+
+        TP.$$no_exec_trait_resolution = true;
+        prevValue = this[propertyName];
+        TP.$$no_exec_trait_resolution = false;
+
+        //  If there's already an ECMA5 'getter' at that slot and it has a
+        //  'finalVal', slot then clear it.
+        desc = Object.getOwnPropertyDescriptor(this, propertyName);
+        if (desc && desc.get && desc.get.finalVal) {
+            desc.get.finalVal = undefined;
+        }
+
+        //  Re-install the trait trap. Note that if the trait hasn't really been
+        //  resolved and therefore the trap still exists, this method will just
+        //  return and the trap won't be installed again.
+        this[TP.OWNER].$installTraitTrap(
+                        this,
+                        propertyName,
+                        TP.TYPE_TRACK);
     }
+
+    //  Generate a completely new entry for the property - this effectively
+    //  clears any existing for the property.
+    entry = TP.hc('propName', propertyName);
+    resolutions.atPut(propertyName, entry);
 
     if (TP.isType(resolution) && TP.notValid(resolutionOption)) {
 
@@ -5052,9 +5147,7 @@ function(propertyName, resolution, resolutionOption) {
         //  The option is a Function, which means that it will be executed once
         //  and the result will be used as the value.
         entry.atPut('resolverFunction', resolutionOption);
-        TP.$$no_exec_trait_resolution = true;
-        entry.atPut('initialValue', this[propertyName]);
-        TP.$$no_exec_trait_resolution = false;
+        entry.atPut('initialValue', prevValue);
 
         //  Install a trap to execute our resolver Function
         this[TP.OWNER].$installTraitTrap(
@@ -5093,9 +5186,7 @@ function(propertyName, resolution, resolutionOption) {
             //  TP.AFTER option
             populateResolutionType(entry, resolution);
 
-            TP.$$no_exec_trait_resolution = true;
-            entry.atPut('initialValue', this[propertyName]);
-            TP.$$no_exec_trait_resolution = false;
+            entry.atPut('initialValue', prevValue);
 
             entry.atPut('aroundFlag', resolutionOption);
 

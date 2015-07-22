@@ -25,6 +25,7 @@ TP.OOTests = TP.lang.Object.construct();
 TP.OOTests.defineAttribute('circleEqualsCount');
 TP.OOTests.defineAttribute('colorEqualsCount');
 TP.OOTests.defineAttribute('colorGetRGBCount');
+TP.OOTests.defineAttribute('rgbDataGetRGBCount');
 TP.OOTests.defineAttribute('differsCount');
 TP.OOTests.defineAttribute('greaterCount');
 TP.OOTests.defineAttribute('smallerCount');
@@ -232,7 +233,11 @@ function() {
 
     //  Now define an additional trait for RGBData
     TP.lang.Object.defineSubtype('test.RGBData');
-    TP.test.RGBData.Inst.defineMethod('getRgb', function() {});
+    TP.test.RGBData.Inst.defineMethod('getRgb', function() {
+        TP.OOTests.set(
+            'rgbDataGetRGBCount',
+                TP.OOTests.get('rgbDataGetRGBCount') + 1);
+    });
 });
 
 //  ------------------------------------------------------------------------
@@ -5598,6 +5603,224 @@ function() {
             val,
             correctVal,
             TP.sc('The count for "dimensionedQuadrangleEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - method traits - add more trait types', function(test, options) {
+
+        var obj,
+
+            val,
+            correctVal;
+
+        //  ---
+
+        //  Rhombus Definition
+        TP.lang.Object.defineSubtype('test.Rhombus');
+
+        TP.test.Rhombus.addTraits(TP.test.Magnitude, TP.test.Color);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Rhombus.Inst.defineMethod('smaller', function() {});
+
+        obj = TP.test.Rhombus.construct();
+
+        //  Because we have a resolved an implementation of 'getRgb' (from
+        //  TP.test.Color via the autoresolver), the slot should return a method
+        //  object.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Rhombus" should be a method'));
+
+        //  ---
+
+        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.OOTests.set('rgbDataGetRGBCount', 0);
+
+        obj.getRgb();
+
+        //  This should've kicked the color count
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  But not the rgbData count - we haven't added that trait yet.
+        val = TP.OOTests.get('rgbDataGetRGBCount');
+        correctVal = 0;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "rgbDataGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Now add TP.test.RGBData as another trait type.
+        TP.test.Rhombus.addTraits(TP.test.RGBData);
+
+        //  ---
+
+        //  Because the auto-resolver will (using the C3 algorithm) choose
+        //  TP.test.Color as it did above, for this test we need to manually
+        //  re-resolve the conflict in favor of TP.test.RGBData
+        TP.test.Rhombus.Inst.resolveTrait('getRgb', TP.test.RGBData);
+
+        //  ---
+
+        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.OOTests.set('rgbDataGetRGBCount', 0);
+
+        //  We should now have a resolved an implementation of 'getRgb' from
+        //  TP.test.RGBData via the autoresolver.
+        obj.getRgb();
+
+        //  This should not have kicked the color count
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 0;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  But it should've kicked the rgbData count
+        val = TP.OOTests.get('rgbDataGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "rgbDataGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance addTraits - method traits - re-resolve trait', function(test, options) {
+
+        var obj,
+
+            val,
+            correctVal;
+
+        //  Turn off auto resolution here
+        TP.sys.setcfg('oo.$$traits_autoresolve', false);
+
+        //  ---
+
+        //  Nonagon Definition
+        TP.lang.Object.defineSubtype('test.Nonagon');
+
+        //  We pick up 'equals' (TP.REQUIRED) & 'differs' from TP.test.Equality
+        //  by way of TP.test.Magnitude and 'smaller' (TP.REQUIRED), 'greater' &
+        //  'between' from TP.test.Magnitude directly. We also picked up a real
+        //  implementation of 'equals' from TP.test.Color.
+        //  But now we have a conflict over 'getRgb' between TP.test.Color and
+        //  TP.test.RGBData
+        TP.test.Nonagon.addTraits(
+            TP.test.Magnitude, TP.test.Color, TP.test.RGBData);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.Nonagon.Inst.defineMethod('smaller', function() {});
+
+        //  If an instance is made at this point, there will be no
+        //  implementation for 'getRgb' since it is conflicted between
+        //  'TP.test.RGBData' and 'TP.test.Color'.
+
+        //  Construct an instance. Because 'getRgb' is now conflicted between
+        //  TP.test.RGBData and TP.test.Color, this should return an object
+        //  where 'getRgb' is undefined.
+        obj = TP.test.Nonagon.construct();
+
+        test.refute.isDefined(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Nonagon" should not be defined'));
+
+        //  ---
+
+        //  Resolve the conflict in favor of TP.test.Color
+        TP.test.Nonagon.Inst.resolveTrait('getRgb', TP.test.Color);
+
+        //  Test again. Because we've now resolved an implementation of 'getRgb'
+        //  the slot should return a method object.
+        test.assert.isMethod(
+            obj.getRgb,
+            TP.sc('The "getRgb" method on "TP.test.Nonagon" should be a method'));
+
+        //  ---
+
+        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.OOTests.set('rgbDataGetRGBCount', 0);
+
+        obj.getRgb();
+
+        //  This should've kicked the color count
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  But not the rgbData count
+        val = TP.OOTests.get('rgbDataGetRGBCount');
+        correctVal = 0;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "rgbDataGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Re-resolve the conflict in favor of TP.test.RGBData
+        TP.test.Nonagon.Inst.resolveTrait('getRgb', TP.test.RGBData);
+
+        //  ---
+
+        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.OOTests.set('rgbDataGetRGBCount', 0);
+
+        obj.getRgb();
+
+        //  This should not have kicked the color count
+        val = TP.OOTests.get('colorGetRGBCount');
+        correctVal = 0;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "colorGetRGBCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  But it should've kicked the rgbData count
+        val = TP.OOTests.get('rgbDataGetRGBCount');
+        correctVal = 1;
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "rgbDataGetRGBCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
     });
