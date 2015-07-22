@@ -4260,7 +4260,7 @@ function(target, name, value, track, owner) {
     /**
      * @method defineAttributeSlot
      * @summary Defines an attribute, tracking all necessary metadata.
-     * @description Note that the 'value' property can either take an initial
+     * @description Note that the 'value' parameter can either take an initial
      *     object value or a property descriptor. That property descriptor can
      *     any fields, but here are the ones that TIBET standardizes:
      *

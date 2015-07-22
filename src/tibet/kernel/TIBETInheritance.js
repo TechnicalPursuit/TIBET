@@ -1691,6 +1691,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
             if (hasOrigin) {
 
+                //  Specific origin, specific state, short name
                 fName = sigType.getHandlerName(orgid, aSignal, state, false);
                 if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
@@ -1698,6 +1699,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                     return handler;
                 }
 
+                //  Specific origin, specific state, full name
                 fName = sigType.getHandlerName(orgid, aSignal, state, true);
                 if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
@@ -1705,6 +1707,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                     return handler;
                 }
 
+                //  Specific origin, no specific state, short name
                 fName = sigType.getHandlerName(orgid, aSignal, null, false);
                 if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
@@ -1712,6 +1715,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                     return handler;
                 }
 
+                //  Specific origin, no specific state, full name
                 fName = sigType.getHandlerName(orgid, aSignal, null, true);
                 if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
@@ -1720,6 +1724,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                 }
             }
 
+            //  No specific origin, specific state, short name
             fName = sigType.getHandlerName(null, aSignal, state, false);
             if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
@@ -1727,6 +1732,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                 return handler;
             }
 
+            //  No specific origin, specific state, full name
             fName = sigType.getHandlerName(null, aSignal, state, true);
             if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
@@ -1734,6 +1740,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                 return handler;
             }
 
+            //  No specific origin, no specific state, short name
             fName = sigType.getHandlerName(null, aSignal, null, false);
             if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
@@ -1741,6 +1748,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                 return handler;
             }
 
+            //  No specific origin, no specific state, full name
             fName = sigType.getHandlerName(null, aSignal, null, true);
             if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
@@ -1754,11 +1762,11 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
             return;
         }
 
-        //  If the signal is spoofed, then we want all of the signal names based on
-        //  type, including the one for the actual type of the signal. This is
-        //  because the *signal* name of the signal will be the spoofed name,
-        //  whereas the *type* name of the signal will be it's real concrete type
-        //  and we want that to be considered as well.
+        //  If the signal is spoofed, then we want all of the signal names based
+        //  on type, including the one for the actual type of the signal. This
+        //  is because the *signal* name of the signal will be the spoofed name,
+        //  whereas the *type* name of the signal will be it's real concrete
+        //  type and we want that to be considered as well.
         if (aSignal.isSpoofed()) {
             if (dontTraverseSpoofs) {
                 handlers.atPut(key, TP.NO_RESULT);

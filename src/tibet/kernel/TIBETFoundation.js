@@ -2592,7 +2592,7 @@ function(aHandlerName, aHandler) {
      * @method defineHandler
      * @summary Defines a new event handler, essentially a method with a very
      *     specific naming convention. Handler names are always defined in the
-     *     format: handle{Signal}[From{Origin}][When{State] which allows the
+     *     format: handle{Signal}[From{Origin}][When{State}] which allows the
      *     system to dispatch based on signal, source, and state. This method
      *     validates the handler name and then registers the method via
      *     defineMethod if the name follows proper conventions.
