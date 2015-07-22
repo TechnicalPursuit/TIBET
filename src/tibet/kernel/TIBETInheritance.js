@@ -4133,15 +4133,8 @@ function(traitType, propName, track) {
     //  If the property already has an entry, then check to see if this trait is
     //  represented in its list of sources. If it is, then this trait/property
     //  combination is already represented.
-    if (TP.isValid(entry)) {
+    if (TP.isValid(entry) && TP.notEmpty(sources = entry.at('sourceTypes'))) {
 
-        //  If the trait resolution entry already has a 'local value' used to
-        //  resolve the trait, exit here.
-        if (entry.hasKey('definedValue')) {
-            return this;
-        }
-
-        sources = entry.at('sourceTypes');
         if (sources.indexOf(traitType) !== TP.NOT_FOUND) {
             return this;
         }
@@ -4181,16 +4174,20 @@ function(traitType, propName, track) {
         //  trait type to the list of sources and mark the property as
         //  conflicted.
         sources.push(traitType);
+
     } else {
+
+        //  Might have a real entry that had a 'definedValue' slot
+        entry = TP.ifInvalid(entry, TP.hc());
 
         //  If the property is defined on the main type, then populate the
         //  'sourceTypes' with the type objects computed from the main type
         //  target and the trait type target.
         if (TP.isDefined(mainTypeTarget[actualPropName])) {
 
-            entry = TP.hc(
-                'propName', actualPropName,
-                'sourceTypes',
+            entry.atPut('propName', actualPropName);
+
+            entry.atPut('sourceTypes',
                 TP.ac(computeOwningType(mainTypeTarget, actualPropName),
                         computeOwningType(traitTypeTarget, actualPropName)));
 
@@ -4198,9 +4195,8 @@ function(traitType, propName, track) {
 
             //  Otherwise just populate the 'sourceTypes' with the type object
             //  computed from the trait type target.
-            entry = TP.hc(
-                'propName', actualPropName,
-                'sourceTypes',
+            entry.atPut('propName', actualPropName);
+            entry.atPut('sourceTypes',
                 TP.ac(computeOwningType(traitTypeTarget, actualPropName)));
         }
 
@@ -5178,11 +5174,6 @@ function(propName, track) {
     if (TP.isValid(entry) && entry.hasKey('aliasedFrom')) {
         actualPropName = entry.at('aliasedFrom');
         entry = resolutions.at(actualPropName);
-    } else if (TP.isValid(entry) && entry.hasKey('definedValue')) {
-        return this.$populateTraitedSlot(entry,
-                                            propName,
-                                            mainTypeTarget,
-                                            track);
     } else {
         actualPropName = propName;
     }
@@ -5253,8 +5244,9 @@ function(propName, track) {
         }
     }
 
-    //  No valid resolution? Exit here.
-    if (TP.notValid(resolution)) {
+    //  No valid resolution and we're not resolving with a defined value?
+    //  Exit here.
+    if (TP.notValid(resolution) && !entry.hasKey('definedValue')) {
         return;
     }
 
