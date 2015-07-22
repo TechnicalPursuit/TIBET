@@ -2738,6 +2738,36 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('getRealFunction',
+function(anObj) {
+
+    /**
+     * @method getRealFunction
+     * @summary Returns any 'underlying' Function object that the supplied
+     *     Function is standing in for.
+     * @description Some functionality in TIBET will install 'wrappers' around
+     *     functions / methods and then hook the original function onto a
+     *     special property of the wrapper. This call will return the original
+     *     Function object that got wrapped.
+     * @param {Object} anObj The object to return the original Function for.
+     * @returns {Function} The 'real' function, which could be an original
+     *     Function that got wrapped or the supplied object if it isn't a
+     *     wrapper for something else.
+     */
+
+    if (TP.isDefined(anObj.$realFunc)) {
+        return anObj.$realFunc;
+    }
+
+    if (TP.isDefined(anObj.$resolutionMethod)) {
+        return anObj.$resolutionMethod;
+    }
+
+    return anObj;
+}, null, 'TP.getRealFunction');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isPlainObject',
 function(anObj) {
 
