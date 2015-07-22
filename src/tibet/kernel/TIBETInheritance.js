@@ -4530,6 +4530,7 @@ function(entry, installName, targetObject, track) {
         mainType,
 
         dispatchFunc,
+        realFunc,
 
         resolutionType,
 
