@@ -4769,7 +4769,7 @@ function(propertyName, resolution, resolutionOption) {
 
         var sourceTypes;
 
-        sourceTypes = entry.at('sourceTypes');
+        sourceTypes = anEntry.at('sourceTypes');
         if (!TP.isArray(sourceTypes)) {
             sourceTypes = TP.ac(aType);
             entry.atPut('sourceTypes', sourceTypes);
@@ -4987,7 +4987,7 @@ function(propertyName, resolution, resolutionOption) {
 
         var sourceTypes;
 
-        sourceTypes = entry.at('sourceTypes');
+        sourceTypes = anEntry.at('sourceTypes');
         if (!TP.isArray(sourceTypes)) {
             sourceTypes = TP.ac(aType);
             entry.atPut('sourceTypes', sourceTypes);
