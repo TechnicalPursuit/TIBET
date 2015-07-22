@@ -4502,7 +4502,8 @@ function() {
 TP.OOTests.describe('Inheritance - addTraits',
 function() {
 
-    var shouldThrowSetting;
+    var shouldThrowSetting,
+        autoResolveSetting;
 
     this.before(
         function() {
@@ -4517,6 +4518,15 @@ function() {
 
             shouldThrowSetting = TP.sys.shouldThrowExceptions();
             TP.sys.shouldThrowExceptions(false);
+
+            autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
+        });
+
+    this.afterEach(
+        function() {
+
+            //  Set auto resolution back to its prior setting here
+            TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
         });
 
     //  ---
@@ -4642,9 +4652,7 @@ function() {
 
     this.it('TIBET instance addTraits - conflicted method traits - simple manual resolution', function(test, options) {
 
-        var autoResolveSetting,
-
-            obj,
+        var obj,
 
             val,
             correctVal,
@@ -4652,7 +4660,6 @@ function() {
             inlineCount;
 
         //  Turn off auto resolution here
-        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
         TP.sys.setcfg('oo.$$traits_autoresolve', false);
 
         //  ---
@@ -4789,20 +4796,13 @@ function() {
             TP.sc('The count for the inline count',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
-
-        //  ---
-
-        //  Set auto resolution back to its prior setting here
-        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
     });
 
     //  ---
 
     this.it('TIBET instance addTraits - conflicted method traits - complex manual resolution', function(test, options) {
 
-        var autoResolveSetting,
-
-            obj,
+        var obj,
 
             val,
             correctVal,
@@ -4810,7 +4810,6 @@ function() {
             inlineCount;
 
         //  Turn off auto resolution here
-        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
         TP.sys.setcfg('oo.$$traits_autoresolve', false);
 
         //  ---
@@ -5164,11 +5163,6 @@ function() {
             TP.sc('The count for "colorGetRGBCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
-
-        //  ---
-
-        //  Set auto resolution back to its prior setting here
-        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
     });
 
     //  ---
@@ -5232,8 +5226,12 @@ function() {
 
             dimensionEqualsCount,
             anotherDimensionEqualsCount,
+            anotherMagnitudeEqualsCount,
+
             dimensionedSquareEqualsCount,
             dimensionedCircleEqualsCount,
+            dimensionedTriangleEqualsCount,
+            dimensionedQuadrangleEqualsCount,
 
             val,
             correctVal;
@@ -5257,6 +5255,19 @@ function() {
             this.callNextMethod();
 
             anotherDimensionEqualsCount = 1;
+        });
+
+        //  Make a subtype of TP.test.Magnitude and supply an implementation of
+        //  'equals'
+        TP.test.Magnitude.defineSubtype('test.AnotherMagnitude');
+
+        //  Define an 'equals' method on it - calling 'up' to its supertype
+        TP.test.AnotherMagnitude.Inst.defineMethod('equals', function() {
+
+            //  No sense in having callNextMethod() here - no implementation
+            //  exists higher than us.
+
+            anotherMagnitudeEqualsCount = 1;
         });
 
         //  ---
@@ -5364,7 +5375,7 @@ function() {
 
         //  ---
         //  callNextMethod() from a method on the main type 'up' to one of its
-        //  trait types, but
+        //  trait types, but renaming it to 'equalsCircle'
         //  ---
 
         //  DimensionedCircle Definition
@@ -5446,6 +5457,149 @@ function() {
             TP.sc('The count for "circleEqualsCount"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
+
+        //  ---
+        //  callNextMethod() from a method given as an alternate value on the
+        //  resolveTrait() call 'up' to the main type.
+        //  ---
+
+        //  DimensionedTriangle Definition
+        TP.lang.Object.defineSubtype('test.DimensionedTriangle');
+
+        TP.test.DimensionedTriangle.addTraits(
+                TP.test.Magnitude, TP.test.AnotherDimension);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.DimensionedTriangle.Inst.defineMethod('smaller', function() {});
+
+        //  Define an 'equals' method on it - calling 'up' to the traited type
+        TP.test.DimensionedTriangle.Inst.resolveTrait('equals', function() {
+
+            this.callNextMethod();
+
+            dimensionedTriangleEqualsCount = 1;
+        });
+
+        obj = TP.test.DimensionedTriangle.construct();
+
+        //  Set the test counts and invoke the method
+        dimensionEqualsCount = 0;
+        anotherDimensionEqualsCount = 0;
+        dimensionedTriangleEqualsCount = 0;
+
+        obj.equals();
+
+        val = dimensionEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = anotherDimensionEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "anotherDimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = dimensionedTriangleEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionedTriangleEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  ---
+        //  callNextMethod() from a method on the main type 'up' to one of its
+        //  trait types but executing the one on TP.test.DimensionedQuadrangle.
+        //  ---
+
+        //  DimensionedQuadrangle Definition
+        TP.lang.Object.defineSubtype('test.DimensionedQuadrangle');
+
+        TP.test.DimensionedQuadrangle.addTraits(
+                TP.test.AnotherMagnitude, TP.test.AnotherDimension);
+
+        //  Satisfies 'smaller' from TP.test.Magnitude
+        TP.test.DimensionedQuadrangle.Inst.defineMethod('smaller', function() {});
+
+        //  Define an 'equals' method on it - calling 'up' to the traited type
+        TP.test.DimensionedQuadrangle.Inst.defineMethod('equals', function() {
+
+            this.callNextMethod();
+
+            dimensionedQuadrangleEqualsCount = 1;
+        });
+
+        //  Resolve the conflict in favor of TP.test.Color, but executing the
+        //  one on TP.test.Hexagon first.
+        TP.test.DimensionedQuadrangle.Inst.resolveTrait(
+                                'equals', TP.test.AnotherMagnitude, TP.BEFORE);
+
+        obj = TP.test.DimensionedQuadrangle.construct();
+
+        //  Set the test counts and invoke the method
+        dimensionEqualsCount = 0;
+        anotherDimensionEqualsCount = 0;
+        anotherMagnitudeEqualsCount = 0;
+        dimensionedQuadrangleEqualsCount = 0;
+
+        obj.equals();
+
+        //  These should be 0 - we resolved 'up' the other side of the chain -
+        //  the 'TP.test.AnotherMagnitude' side.
+
+        val = dimensionEqualsCount;
+        correctVal = 0;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        val = anotherDimensionEqualsCount;
+        correctVal = 0;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "anotherDimensionEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  This one should be 1 - we resolved 'up' its side of the chain.
+        val = anotherMagnitudeEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "anotherMagnitudeEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
+
+        //  This one should be 1 - it's our own method
+        val = dimensionedQuadrangleEqualsCount;
+        correctVal = 1;
+
+        this.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The count for "dimensionedQuadrangleEqualsCount"',
+                    ' should be: ', correctVal,
+                    ' not: ', val, '.'));
     });
 
     //  ---
@@ -5480,15 +5634,12 @@ function() {
 
     this.it('TIBET instance addTraits - conflicted attribute traits - simple manual resolution', function(test, options) {
 
-        var autoResolveSetting,
-
-            obj,
+        var obj,
 
             val,
             correctVal;
 
         //  Turn off auto resolution here
-        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
         TP.sys.setcfg('oo.$$traits_autoresolve', false);
 
         //  ---
@@ -5571,26 +5722,18 @@ function() {
             TP.sc('The count for "doesDiffer"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
-
-        //  ---
-
-        //  Set auto resolution back to its prior setting here
-        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
     });
 
     //  ---
 
     this.it('TIBET instance addTraits - conflicted attribute traits - complex manual resolution', function(test, options) {
 
-        var autoResolveSetting,
-
-            obj,
+        var obj,
 
             val,
             correctVal;
 
         //  Turn off auto resolution here
-        autoResolveSetting = TP.sys.cfg('oo.$$traits_autoresolve');
         TP.sys.setcfg('oo.$$traits_autoresolve', false);
 
         //  ---
@@ -5678,11 +5821,6 @@ function() {
             TP.sc('The count for "doesDiffer"',
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
-
-        //  ---
-
-        //  Set auto resolution back to its prior setting here
-        TP.sys.setcfg('oo.$$traits_autoresolve', autoResolveSetting);
     });
 
     //  ---
