@@ -3526,8 +3526,19 @@ function(target, targetPropName, track, initialValue, wantsImmediate) {
      * @returns {TP.lang.RootObject} The receiver.
      */
 
-    var traitTrapGetter,
+    var desc,
+
+        traitTrapGetter,
         traitTrapSetter;
+
+    //  If we have a descriptor and it has a getter and that getter has a slot
+    //  named 'targetPropName', then this trap has already been installed.
+    if ((desc = Object.getOwnPropertyDescriptor(target, targetPropName)) &&
+            desc.get &&
+            desc.get.targetPropName) {
+
+        return this;
+    }
 
     //  Define a Function that will be used as an E5 getter on the slot. This
     //  function will perform trait resolution.
