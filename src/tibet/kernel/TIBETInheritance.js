@@ -3427,8 +3427,9 @@ function(anInterface, anObject) {
  *
  *      1. In keeping with the pseudo-classical nature of inheritance in TIBET,
  *      rather than traits being 'instance based', they are type based. That is,
- *      traits are 'inherited' through both the Type side and Instance side of
- *      a type hierarchy.
+ *      traits are not programmed per-instance but are 'inherited' through both
+ *      the Type side and Instance side of a type hierarchy. This happens with
+ *      either 'type' of property - attribute or method.
  *
  *      2. Conflicted trait resolution can happen either manually or
  *      automatically:
