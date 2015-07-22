@@ -4551,6 +4551,29 @@ function(entry, installName, targetObject, track) {
         } else {
             //  The resolution is a Method - install it as the method
             dispatchFunc = targetObject.defineMethod(installName, resolution);
+
+            //  Get the 'real function' (in case a callee patch was installed)
+            realFunc = TP.getRealFunction(dispatchFunc);
+
+            //  If a '$$nextfunc' wasn't wired onto the dispatching method, then
+            //  go ahead and grab the 'resolving type' here and wire its
+            //  implementation of the method on as the 'next most specific
+            //  method'.
+            if (!TP.isCallable(realFunc.$$nextfunc)) {
+
+                resolutionType = entry.at('resolvesToType');
+
+                if (TP.isType(resolutionType)) {
+
+                    if (track === TP.INST_TRACK) {
+                        resolutionTypeVal = resolutionType.Inst[propName];
+                    } else {
+                        resolutionTypeVal = resolutionType.Type[propName];
+                    }
+
+                    realFunc.$$nextfunc = resolutionTypeVal;
+                }
+            }
         }
     } else {
 
