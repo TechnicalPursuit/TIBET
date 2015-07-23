@@ -1421,7 +1421,7 @@ function(signame) {
         return newparts.join('__');
     }
 
-    if (/^TP\.(.+)/.test(signame)) {
+    if (/^(TP|APP)\.(.+)/.test(signame)) {
         return signame;
     } else if (/\.(.+)/.test(signame)) {
         return 'TP.' + signame;
