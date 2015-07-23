@@ -1795,7 +1795,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
             if (TP.isType(sigType = TP.sys.getTypeByName(sigTypeNames.at(i)))) {
 
-                //  Note here how we do *not* supply aSignal as the third
+                //  Note here how we do *not* supply aSignal as the second
                 //  parameter to these methods... we want to use just the signal
                 //  type's signal name, not any override supplied by the aSignal
                 //  instance.
