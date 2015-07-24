@@ -14,34 +14,34 @@
 
 //  ------------------------------------------------------------------------
 
-// Create a singleton object we can hang tests off since reflection and
-// inheritance testing ranges across a broad range of objects including
-// namespace objects (TP for example) which don't current inherit/support
-// the testing API. This is an example of "detached test definition".
+//  Create a singleton object we can hang tests off since reflection and
+//  inheritance testing ranges across a broad range of objects including
+//  namespace objects (TP for example) which don't current inherit/support the
+//  testing API. This is an example of "detached test definition".
 
-TP.OOTests = TP.lang.Object.construct();
+TP.test.OOTester = TP.lang.Object.construct();
 
 //  Local attributes used for traits testing
-TP.OOTests.defineAttribute('circleEqualsCount');
-TP.OOTests.defineAttribute('colorEqualsCount');
-TP.OOTests.defineAttribute('colorGetRGBCount');
-TP.OOTests.defineAttribute('rgbDataGetRGBCount');
-TP.OOTests.defineAttribute('differsCount');
-TP.OOTests.defineAttribute('greaterCount');
-TP.OOTests.defineAttribute('smallerCount');
-TP.OOTests.defineAttribute('betweenCount');
+TP.test.OOTester.defineAttribute('circleEqualsCount');
+TP.test.OOTester.defineAttribute('colorEqualsCount');
+TP.test.OOTester.defineAttribute('colorGetRGBCount');
+TP.test.OOTester.defineAttribute('rgbDataGetRGBCount');
+TP.test.OOTester.defineAttribute('differsCount');
+TP.test.OOTester.defineAttribute('greaterCount');
+TP.test.OOTester.defineAttribute('smallerCount');
+TP.test.OOTester.defineAttribute('betweenCount');
 
-TP.OOTests.defineAttribute('passedAddTraitsFrom1');
-TP.OOTests.defineAttribute('passedAddTraitsFrom2');
-TP.OOTests.defineAttribute('passedAddTraitsFrom3');
-TP.OOTests.defineAttribute('passedAddTraitsFrom4');
-TP.OOTests.defineAttribute('passedAddTraitsFrom5');
-TP.OOTests.defineAttribute('passedAddTraitsFrom6');
-TP.OOTests.defineAttribute('passedAddTraitsFrom7');
+TP.test.OOTester.defineAttribute('passedAddTraitsFrom1');
+TP.test.OOTester.defineAttribute('passedAddTraitsFrom2');
+TP.test.OOTester.defineAttribute('passedAddTraitsFrom3');
+TP.test.OOTester.defineAttribute('passedAddTraitsFrom4');
+TP.test.OOTester.defineAttribute('passedAddTraitsFrom5');
+TP.test.OOTester.defineAttribute('passedAddTraitsFrom6');
+TP.test.OOTester.defineAttribute('passedAddTraitsFrom7');
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.defineMethod('commonBefore',
+TP.test.OOTester.defineMethod('commonBefore',
 function() {
 
     var animalType,
@@ -155,9 +155,9 @@ function() {
     //  is mixed into supply an implementation of that method
     TP.test.Equality.Inst.defineMethod('equals', TP.REQUIRED);
     TP.test.Equality.Inst.defineMethod('differs', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'differsCount',
-            TP.OOTests.get('differsCount') + 1);
+            TP.test.OOTester.get('differsCount') + 1);
         this.equals();
     });
 
@@ -171,14 +171,14 @@ function() {
 
     TP.test.Magnitude.Inst.defineMethod('smaller', TP.REQUIRED);
     TP.test.Magnitude.Inst.defineMethod('greater', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'greaterCount',
-            TP.OOTests.get('greaterCount') + 1);
+            TP.test.OOTester.get('greaterCount') + 1);
     });
     TP.test.Magnitude.Inst.defineMethod('between', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'betweenCount',
-            TP.OOTests.get('betweenCount') + 1);
+            TP.test.OOTester.get('betweenCount') + 1);
         this.smaller();
     });
 
@@ -198,16 +198,16 @@ function() {
 
     //  Satisfies 'equals' from TP.test.Equality
     TP.test.Circle.Inst.defineMethod('equals', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'circleEqualsCount',
-                TP.OOTests.get('circleEqualsCount') + 1);
+                TP.test.OOTester.get('circleEqualsCount') + 1);
     });
 
     //  Satisfies 'smaller' from TP.test.Magnitude
     TP.test.Circle.Inst.defineMethod('smaller', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'smallerCount',
-                TP.OOTests.get('smallerCount') + 1);
+                TP.test.OOTester.get('smallerCount') + 1);
         this.greater();
     });
 
@@ -219,14 +219,14 @@ function() {
     TP.test.Color.Inst.defineAttribute('doesDiffer', false);
 
     TP.test.Color.Inst.defineMethod('getRgb', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'colorGetRGBCount',
-                TP.OOTests.get('colorGetRGBCount') + 1);
+                TP.test.OOTester.get('colorGetRGBCount') + 1);
     });
     TP.test.Color.Inst.defineMethod('equals', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'colorEqualsCount',
-                TP.OOTests.get('colorEqualsCount') + 1);
+                TP.test.OOTester.get('colorEqualsCount') + 1);
     });
 
     //  ---
@@ -234,15 +234,15 @@ function() {
     //  Now define an additional trait for RGBData
     TP.lang.Object.defineSubtype('test.RGBData');
     TP.test.RGBData.Inst.defineMethod('getRgb', function() {
-        TP.OOTests.set(
+        TP.test.OOTester.set(
             'rgbDataGetRGBCount',
-                TP.OOTests.get('rgbDataGetRGBCount') + 1);
+                TP.test.OOTester.get('rgbDataGetRGBCount') + 1);
     });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.defineMethod('commonAfter',
+TP.test.OOTester.defineMethod('commonAfter',
 function() {
 
     var metadata;
@@ -304,12 +304,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getTypeName',
+TP.test.OOTester.describe('Reflection - getTypeName',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -419,18 +419,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getSupertype',
+TP.test.OOTester.describe('Reflection - getSupertype',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -573,18 +573,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getSupertypeName',
+TP.test.OOTester.describe('Reflection - getSupertypeName',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -727,18 +727,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getSupertypes',
+TP.test.OOTester.describe('Reflection - getSupertypes',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -871,18 +871,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getSupertypeNames',
+TP.test.OOTester.describe('Reflection - getSupertypeNames',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -1028,18 +1028,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getSubtypes',
+TP.test.OOTester.describe('Reflection - getSubtypes',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -1311,18 +1311,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getSubtypeNames',
+TP.test.OOTester.describe('Reflection - getSubtypeNames',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -1594,18 +1594,428 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Reflection - getPropertyScope',
+TP.test.OOTester.describe('Reflection - getMethod',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
+        });
+
+    //  ---
+
+    this.it('TIBET type getMethod()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = TP.test.Domesticated.getMethod('needsLeash', TP.TYPE_TRACK);
+        test.assert.isMethod(val);
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = TP.test.Domesticated.Type.getMethod('needsLeash');
+        test.assert.isMethod(val);
+    });
+
+    //  ---
+
+    this.it('TIBET instance getMethod()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = TP.test.Domesticated.getMethod('visitVet', TP.INST_TRACK);
+        test.assert.isMethod(val);
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = TP.test.Domesticated.Inst.getMethod('visitVet');
+        test.assert.isMethod(val);
+    });
+
+    //  ---
+
+    this.it('native type getMethod()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = Array.getMethod('isArray', TP.TYPE_TRACK);
+        test.assert.isMethod(val);
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = Array.Type.getMethod('isArray');
+        test.assert.isMethod(val);
+    });
+
+    //  ---
+
+    this.it('native instance getMethod()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = Array.getMethod('join', TP.INST_TRACK);
+        test.assert.isMethod(val);
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = Array.Inst.getMethod('join');
+        test.assert.isMethod(val);
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            TP.test.OOTester.commonAfter();
+        });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.OOTester.describe('Reflection - getMethods',
+function() {
+
+    this.before(
+        function() {
+            TP.test.OOTester.commonBefore();
+        });
+
+    //  ---
+
+    this.it('TIBET type getMethods()', function(test, options) {
+
+        var obj,
+
+            methods,
+
+            correctVal,
+            val;
+
+        obj = TP.test.Domesticated;
+
+        methods = TP.interface(obj.getPrototype(), 'known_methods');
+        correctVal = methods.getSize();
+
+        //  Default the target by supplying the track
+        methods = obj.getMethods(TP.TYPE_TRACK);
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of type methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Default the track by supplying the target
+        methods = obj.getPrototype().getMethods();
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of type methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('TIBET instance getMethods()', function(test, options) {
+
+        var obj,
+
+            methods,
+
+            correctVal,
+            val;
+
+        obj = TP.test.Domesticated;
+
+        methods = TP.interface(obj.getInstPrototype(), 'known_methods');
+        correctVal = methods.getSize();
+
+        //  Default the target by supplying the track
+        methods = obj.getMethods(TP.INST_TRACK);
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of instance methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Default the track by supplying the target
+        methods = obj.getInstPrototype().getMethods();
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of instance methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('native type getMethods()', function(test, options) {
+
+        var obj,
+
+            methods,
+
+            correctVal,
+            val;
+
+        obj = Array;
+
+        methods = TP.interface(obj.getPrototype(), 'known_methods');
+        correctVal = methods.getSize();
+
+        //  Default the target by supplying the track
+        methods = obj.getMethods(TP.TYPE_TRACK);
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of type methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Default the track by supplying the target
+        methods = obj.getPrototype().getMethods();
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of type methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.it('native instance getMethods()', function(test, options) {
+
+        var obj,
+
+            methods,
+
+            correctVal,
+            val;
+
+        obj = Array;
+
+        methods = TP.interface(obj.getInstPrototype(), 'known_methods');
+        correctVal = methods.getSize();
+
+        //  Default the target by supplying the track
+        methods = obj.getMethods(TP.INST_TRACK);
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of instance methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+
+        //  ---
+
+        //  Default the track by supplying the target
+        methods = obj.getInstPrototype().getMethods();
+        val = methods.getSize();
+
+        test.assert.isEqualTo(
+            val,
+            correctVal,
+            TP.sc('The number of instance methods for: ', TP.name(obj),
+                    ' should be: ', TP.name(correctVal),
+                    ' not: ', val, '.'));
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            TP.test.OOTester.commonAfter();
+        });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.OOTester.describe('Reflection - getMethodInfoFor',
+function() {
+
+    this.before(
+        function() {
+            TP.test.OOTester.commonBefore();
+        });
+
+    //  ---
+
+    this.it('TIBET type getMethodInfoFor()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = TP.test.Domesticated.getMethodInfoFor('needsLeash', TP.TYPE_TRACK);
+        test.assert.isEqualTo(val.at('owner'),
+                                TP.test.Domesticated);
+        test.assert.isEqualTo(val.at('name'),
+                                'needsLeash');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.TYPE_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'TP.test.Domesticated.Type.needsLeash');
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = TP.test.Domesticated.Type.getMethodInfoFor('needsLeash');
+        test.assert.isEqualTo(val.at('owner'),
+                                TP.test.Domesticated);
+        test.assert.isEqualTo(val.at('name'),
+                                'needsLeash');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.TYPE_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'TP.test.Domesticated.Type.needsLeash');
+    });
+
+    //  ---
+
+    this.it('TIBET instance getMethodInfoFor()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = TP.test.Domesticated.getMethodInfoFor('visitVet', TP.INST_TRACK);
+        test.assert.isEqualTo(val.at('owner'),
+                                TP.test.Domesticated);
+        test.assert.isEqualTo(val.at('name'),
+                                'visitVet');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.INST_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'TP.test.Domesticated.Inst.visitVet');
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = TP.test.Domesticated.Inst.getMethodInfoFor('visitVet');
+        test.assert.isEqualTo(val.at('owner'),
+                                TP.test.Domesticated);
+        test.assert.isEqualTo(val.at('name'),
+                                'visitVet');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.INST_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'TP.test.Domesticated.Inst.visitVet');
+    });
+
+    //  ---
+
+    this.it('native type getMethodInfoFor()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = Array.getMethodInfoFor('isArray', TP.TYPE_TRACK);
+        test.assert.isEqualTo(val.at('owner'),
+                                Array);
+        test.assert.isEqualTo(val.at('name'),
+                                'isArray');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.TYPE_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'Array.Type.isArray');
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = Array.Type.getMethodInfoFor('isArray');
+        test.assert.isEqualTo(val.at('owner'),
+                                Array);
+        test.assert.isEqualTo(val.at('name'),
+                                'isArray');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.TYPE_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'Array.Type.isArray');
+    });
+
+    //  ---
+
+    this.it('native instance getMethodInfoFor()', function(test, options) {
+
+        var val;
+
+        //  Default the target by supplying the track
+        val = Array.getMethodInfoFor('join', TP.INST_TRACK);
+        test.assert.isEqualTo(val.at('owner'),
+                                Array);
+        test.assert.isEqualTo(val.at('name'),
+                                'join');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.INST_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'Array.Inst.join');
+
+        //  ---
+
+        //  Default the track by supplying the target
+        val = Array.Inst.getMethodInfoFor('join');
+        test.assert.isEqualTo(val.at('owner'),
+                                Array);
+        test.assert.isEqualTo(val.at('name'),
+                                'join');
+        test.assert.isEqualTo(val.at('track'),
+                                TP.INST_TRACK);
+        test.assert.isEqualTo(val.at('display'),
+                                'Array.Inst.join');
+    });
+
+    //  ---
+
+    this.after(
+        function() {
+            TP.test.OOTester.commonAfter();
+        });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.OOTester.describe('Reflection - getPropertyScope',
+function() {
+
+    this.before(
+        function() {
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -2856,7 +3266,7 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
@@ -2870,12 +3280,12 @@ function() {
 
 //  defaults: attributes: true, methods: false, hidden: false, scope: unique
 
-TP.OOTests.describe('Reflection - getInterface',
+TP.test.OOTester.describe('Reflection - getInterface',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -3406,7 +3816,6 @@ function() {
             TP.sc('There were remaining properties when querying for: "',
                     filter,
                     '" these are: [', val.join(','), '].'));
-
     });
 
     //  ---
@@ -3563,18 +3972,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Inheritance - defineAttribute',
+TP.test.OOTester.describe('Inheritance - defineAttribute',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -3854,18 +4263,18 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Inheritance - defineMethod',
+TP.test.OOTester.describe('Inheritance - defineMethod',
 function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
         });
 
     //  ---
@@ -4290,19 +4699,19 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
         });
 });
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Inheritance - callNextMethod',
+TP.test.OOTester.describe('Inheritance - callNextMethod',
 function() {
 
     this.before(
         function() {
 
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
 
             //  ---
 
@@ -4426,7 +4835,7 @@ function() {
 
             var metadata;
 
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
 
             //  Custom types
             delete TP.test.FooType;
@@ -4444,7 +4853,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Inheritance - C3 linearization',
+TP.test.OOTester.describe('Inheritance - C3 linearization',
 function() {
 
     this.before(
@@ -4504,7 +4913,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.OOTests.describe('Inheritance - addTraits',
+TP.test.OOTester.describe('Inheritance - addTraits',
 function() {
 
     var shouldThrowSetting,
@@ -4512,14 +4921,14 @@ function() {
 
     this.before(
         function() {
-            TP.OOTests.commonBefore();
+            TP.test.OOTester.commonBefore();
 
             //  Reset our counters
-            TP.OOTests.set('circleEqualsCount', 0);
-            TP.OOTests.set('greaterCount', 0);
-            TP.OOTests.set('smallerCount', 0);
-            TP.OOTests.set('differsCount', 0);
-            TP.OOTests.set('betweenCount', 0);
+            TP.test.OOTester.set('circleEqualsCount', 0);
+            TP.test.OOTester.set('greaterCount', 0);
+            TP.test.OOTester.set('smallerCount', 0);
+            TP.test.OOTester.set('differsCount', 0);
+            TP.test.OOTester.set('betweenCount', 0);
 
             shouldThrowSetting = TP.sys.shouldThrowExceptions();
             TP.sys.shouldThrowExceptions(false);
@@ -4583,7 +4992,7 @@ function() {
         //  once.
         obj.equals();
 
-        val = TP.OOTests.get('circleEqualsCount');
+        val = TP.test.OOTester.get('circleEqualsCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -4598,7 +5007,7 @@ function() {
         //  Invoke a method 'traited in' from another type
         obj.greater();
 
-        val = TP.OOTests.get('greaterCount');
+        val = TP.test.OOTester.get('greaterCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -4613,7 +5022,7 @@ function() {
         //  Invoke a regular method that invokes a 'traited in' method
         obj.smaller();
 
-        val = TP.OOTests.get('smallerCount');
+        val = TP.test.OOTester.get('smallerCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -4628,7 +5037,7 @@ function() {
         //  Invoke a 'traited in' method that invokes a regular method
         obj.differs();
 
-        val = TP.OOTests.get('differsCount');
+        val = TP.test.OOTester.get('differsCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -4642,7 +5051,7 @@ function() {
 
         //  'differs' also called the 'equals' regular method - it's count
         //  should now be 2.
-        val = TP.OOTests.get('circleEqualsCount');
+        val = TP.test.OOTester.get('circleEqualsCount');
         correctVal = 2;
 
         test.assert.isEqualTo(
@@ -4713,11 +5122,11 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
 
         obj.getRgb();
 
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -4776,12 +5185,12 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
 
         obj.getRgb();
 
         //  We should *not* have invoked the 'getRgb' method on TP.test.Color
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 0;
 
         test.assert.isEqualTo(
@@ -4865,14 +5274,14 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
 
         //  Call it using the new name we gave it above.
         obj.getRgbData();
 
         //  We should have invoked the 'getRgb' method on TP.test.Color, even
         //  though we called it 'getRgbData'.
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -4919,7 +5328,7 @@ function() {
             TP.sc('The "getRgb" method on "TP.test.Hexagon" should be a method'));
 
         //  Set the test count and invoke the method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
         inlineCount = 0;
 
         //  Execute it.
@@ -4938,7 +5347,7 @@ function() {
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 0;
 
         test.assert.isEqualTo(
@@ -4963,7 +5372,7 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
         inlineCount = 0;
 
         //  Execute it.
@@ -4972,7 +5381,7 @@ function() {
         //  Both inline count and colorGetRGBCount should be 1
 
         //  We should have invoked the 'getRgb' method on TP.test.Color
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -5030,7 +5439,7 @@ function() {
             TP.sc('The "getRgb" method on "TP.test.Pentagon" should be a method'));
 
         //  Set the test count and invoke the method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
         inlineCount = 0;
 
         //  Execute it.
@@ -5049,7 +5458,7 @@ function() {
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 0;
 
         test.assert.isEqualTo(
@@ -5074,14 +5483,14 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
         inlineCount = 0;
 
         //  Execute it.
         obj.getRgb();
 
         //  We should have invoked the 'getRgb' method on TP.test.Color
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -5155,11 +5564,11 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
 
         obj.getRgb();
 
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -5208,11 +5617,11 @@ function() {
         //  ---
 
         //  Set the test count and invoke the 'resolved' method
-        TP.OOTests.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
 
         obj.getRgb();
 
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -5413,7 +5822,7 @@ function() {
         dimensionEqualsCount = 0;
         anotherDimensionEqualsCount = 0;
         dimensionedCircleEqualsCount = 0;
-        TP.OOTests.set('circleEqualsCount', 0);
+        TP.test.OOTester.set('circleEqualsCount', 0);
 
         obj.equalsCircle();
 
@@ -5453,7 +5862,7 @@ function() {
                     ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
-        val = TP.OOTests.get('circleEqualsCount');
+        val = TP.test.OOTester.get('circleEqualsCount');
         correctVal = 1;
 
         this.assert.isEqualTo(
@@ -5637,13 +6046,13 @@ function() {
 
         //  ---
 
-        TP.OOTests.set('colorGetRGBCount', 0);
-        TP.OOTests.set('rgbDataGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('rgbDataGetRGBCount', 0);
 
         obj.getRgb();
 
         //  This should've kicked the color count
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -5654,7 +6063,7 @@ function() {
                     ' not: ', val, '.'));
 
         //  But not the rgbData count - we haven't added that trait yet.
-        val = TP.OOTests.get('rgbDataGetRGBCount');
+        val = TP.test.OOTester.get('rgbDataGetRGBCount');
         correctVal = 0;
 
         test.assert.isEqualTo(
@@ -5678,15 +6087,15 @@ function() {
 
         //  ---
 
-        TP.OOTests.set('colorGetRGBCount', 0);
-        TP.OOTests.set('rgbDataGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('rgbDataGetRGBCount', 0);
 
         //  We should now have a resolved an implementation of 'getRgb' from
         //  TP.test.RGBData via the autoresolver.
         obj.getRgb();
 
         //  This should not have kicked the color count
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 0;
 
         test.assert.isEqualTo(
@@ -5697,7 +6106,7 @@ function() {
                     ' not: ', val, '.'));
 
         //  But it should've kicked the rgbData count
-        val = TP.OOTests.get('rgbDataGetRGBCount');
+        val = TP.test.OOTester.get('rgbDataGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -5763,13 +6172,13 @@ function() {
 
         //  ---
 
-        TP.OOTests.set('colorGetRGBCount', 0);
-        TP.OOTests.set('rgbDataGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('rgbDataGetRGBCount', 0);
 
         obj.getRgb();
 
         //  This should've kicked the color count
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -5780,7 +6189,7 @@ function() {
                     ' not: ', val, '.'));
 
         //  But not the rgbData count
-        val = TP.OOTests.get('rgbDataGetRGBCount');
+        val = TP.test.OOTester.get('rgbDataGetRGBCount');
         correctVal = 0;
 
         test.assert.isEqualTo(
@@ -5797,13 +6206,13 @@ function() {
 
         //  ---
 
-        TP.OOTests.set('colorGetRGBCount', 0);
-        TP.OOTests.set('rgbDataGetRGBCount', 0);
+        TP.test.OOTester.set('colorGetRGBCount', 0);
+        TP.test.OOTester.set('rgbDataGetRGBCount', 0);
 
         obj.getRgb();
 
         //  This should not have kicked the color count
-        val = TP.OOTests.get('colorGetRGBCount');
+        val = TP.test.OOTester.get('colorGetRGBCount');
         correctVal = 0;
 
         test.assert.isEqualTo(
@@ -5814,7 +6223,7 @@ function() {
                     ' not: ', val, '.'));
 
         //  But it should've kicked the rgbData count
-        val = TP.OOTests.get('rgbDataGetRGBCount');
+        val = TP.test.OOTester.get('rgbDataGetRGBCount');
         correctVal = 1;
 
         test.assert.isEqualTo(
@@ -6089,7 +6498,7 @@ function() {
 
     this.after(
         function() {
-            TP.OOTests.commonAfter();
+            TP.test.OOTester.commonAfter();
 
             TP.sys.shouldThrowExceptions(shouldThrowSetting);
         });
