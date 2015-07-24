@@ -1718,7 +1718,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of type methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
         //  ---
@@ -1731,7 +1731,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of type methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
     });
 
@@ -1759,7 +1759,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of instance methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
         //  ---
@@ -1772,7 +1772,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of instance methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
     });
 
@@ -1800,7 +1800,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of type methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
         //  ---
@@ -1813,7 +1813,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of type methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
     });
 
@@ -1841,7 +1841,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of instance methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
 
         //  ---
@@ -1854,7 +1854,7 @@ function() {
             val,
             correctVal,
             TP.sc('The number of instance methods for: ', TP.name(obj),
-                    ' should be: ', TP.name(correctVal),
+                    ' should be: ', correctVal,
                     ' not: ', val, '.'));
     });
 
