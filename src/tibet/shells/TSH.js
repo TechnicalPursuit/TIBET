@@ -3410,6 +3410,8 @@ function(aRequest) {
     for (i = 0; i < len; i++) {
         ref = input.at(i);
 
+        ref = TP.uriExpandPath(ref);
+
         options = TP.boot.$$loadpaths.grep(ref);
         if (TP.isEmpty(options)) {
             //  a file we've never seen before
