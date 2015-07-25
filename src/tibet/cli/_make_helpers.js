@@ -21,7 +21,7 @@ var CLI,
     fs,
     sh,
     path,
-    Q,
+    Promise,
     zlib,
     helpers;
 
@@ -31,7 +31,7 @@ fs = require('fs');
 hb = require('handlebars');
 sh = require('shelljs');
 path = require('path');
-Q = require('q');
+Promise = require('bluebird');
 zlib = require('zlib');
 
 
@@ -103,7 +103,7 @@ helpers.rollup = function(make, options) {
         minify = false;
     }
 
-    deferred = Q.defer();
+    deferred = Promise.pending();
 
     root = options.root || options.config;
 
@@ -162,7 +162,7 @@ helpers.rollup = function(make, options) {
     if (options.zip) {
         file = file + '.gz';
         make.log('creating zipped output in ' + file);
-        return Q.denodeify(zlib.gzip)(result.output).then(
+        return Promise.promisify(zlib.gzip)(result.output).then(
             function(zipresult) {
                 try {
                     fs.writeFileSync(file, zipresult);
@@ -224,7 +224,7 @@ helpers.template = function(make, options) {
     target = CLI.expandPath(options.target);
     data = options.data;
 
-    deferred = Q.defer();
+    deferred = Promise.pending();
 
     make.verbose('Processing file: ' + source);
     try {

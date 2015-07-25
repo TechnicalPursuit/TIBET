@@ -17,13 +17,13 @@
 'use strict';
 
 var CLI,
-    Q,
+    Promise,
     Parent,
     Cmd;
 
 
 CLI = require('./_cli');
-Q = require('q');
+Promise = require('bluebird');
 
 
 //  ---
@@ -65,7 +65,7 @@ Cmd.prototype.HELP =
 
 'This command supports lightweight commands in the form of functions, much\n' +
 'like Grunt or Gulp. There\'s no dependency checking or true \'make\'-like \n' +
-'functionality but the makefile.js code does leverage Q-style Promises to\n' +
+'functionality but the makefile.js code does leverage JavaScript Promises to\n' +
 'coordinate tasks and their interactions, particularly when calling tasks\n' +
 'within tasks and when dealing with asynchronous tasks. This makes it a bit\n' +
 'more predictable and consistent than some other task management options.\n\n' +
@@ -226,7 +226,7 @@ Cmd.prototype.getProjectName = function() {
 
 
 /**
- * Wraps individual target functions in functions returning Q-style Promise
+ * Wraps individual target functions in functions returning JavaScript Promise
  * instances. The resulting task function invocations can be chained via then().
  * The function wrappers also have a resolve() and reject() wrapper placed on
  * them so they can easily invoke the appropriate call on completion of their
@@ -281,7 +281,7 @@ Cmd.prototype.prepTargets = function(targets) {
                     }
 
                     /* eslint-disable new-cap */
-                    promise = Q.Promise(function(resolver, rejector) {
+                    promise = new Promise(function(resolver, rejector) {
                         var timer;
 
                         // TODO: replace with Promise-based timeout() call.
