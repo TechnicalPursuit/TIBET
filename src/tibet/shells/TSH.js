@@ -2251,6 +2251,8 @@ function(aRequest) {
     var methods,
         results,
         checklib,
+        filter,
+        pattern,
         tags,
         aliases,
         keys,
@@ -2311,7 +2313,15 @@ function(aRequest) {
 
     fileDict = TP.hc();
 
-    checklib = this.getArgument(aRequest, 'tsh:checklib', false);
+    checklib = this.getArgument(aRequest, 'tsh:tibet', false);
+
+    filter = this.getArgument(aRequest, 'tsh:filter', false);
+    if (TP.notEmpty(filter)) {
+        filter = filter.unquoted();
+        if (/^\/.*\/$/.test(filter)) {
+            pattern = RegExp.construct(filter);
+        }
+    }
 
     methods = TP.sys.getMetadata('methods');
     methods.perform(function(item) {
@@ -2343,6 +2353,20 @@ function(aRequest) {
         if (TP.isFalse(checklib)) {
             if (TP.boot.$uriInTIBETFormat(file).startsWith('~lib')) {
                 return;
+            }
+        }
+
+        if (TP.notEmpty(filter)) {
+            if (TP.isValid(pattern)) {
+                //  Regular expression as filter.
+                if (!pattern.match(file)) {
+                    return;
+                }
+            } else {
+                //  Normal text string as filter.
+                if (!TP.boot.$uriInTIBETFormat(file).contains(filter)) {
+                    return;
+                }
             }
         }
 
