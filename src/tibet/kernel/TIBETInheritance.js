@@ -9727,25 +9727,25 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('method',
-function(target, name, track) {
+function(aTarget, name, aTrack) {
 
     /**
      * @method method
      * @summary Returns the named method on the target, if it exists. Note that
      *     none of the parameters are defaulted. To get default values use the
-     *     getMethod() message on the target object which ultimately relies on
+     *     getMethod() method on the target object which ultimately relies on
      *     this call.
-     * @param {Object} target The object to try to locate the method on.
+     * @param {Object} aTarget The object to try to locate the method on.
      * @param {String} name The method name to locate.
-     * @param {String} track The track to locate the method on.
+     * @param {String} aTrack The track to locate the method on.
      * @returns {Function} The Function object representing the method.
      */
 
     var method;
 
-    method = target[name];
+    method = aTarget[name];
     if (TP.isMethod(method)) {
-        if (TP.notEmpty(track) && method[TP.TRACK] === track) {
+        if (TP.notEmpty(aTrack) && method[TP.TRACK] === aTrack) {
             return method;
         }
     }
@@ -9756,36 +9756,50 @@ function(target, name, track) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('methods',
-function(target, track) {
+function(aTarget, aTrack) {
 
     /**
      * @method methods
      * @summary Returns the Array of methods on the target. The list of methods
-     *     is the result of invoking
-     * @param {Object} target The object to try to locate the methods on.
-     * @param {String} track The track to locate the method on.
-     * @returns {Array} An Array of Function objects representing the methods.
+     *     is the result of getting the 'known_methods' interface on the
+     *     supplied target.
+     * @param {Object} aTarget The object to try to locate the methods on.
+     * @param {String} aTrack The track to locate the method on.
+     * @returns {Function[]} An Array of Function objects representing the
+     *     methods.
      */
 
-    var names,
+    var target,
+
+        names,
         methods;
 
-    names = TP.interface(target, 'methods');
+    target = aTarget;
+
+    if (TP.isType(target)) {
+        if (aTrack === TP.TYPE_TRACK) {
+            target = target.getPrototype();
+        } else if (aTrack === TP.INST_TRACK) {
+            target = target.getInstPrototype();
+        }
+    }
+
+    //  NB: We go after all 'known_methods', including private ones, and up the
+    //  prototype chain.
+    names = TP.interface(target, 'known_methods');
 
     methods = names.collect(
-        function(name) {
+                function(name) {
 
-            var method;
+                    var method;
 
-            method = target[name];
-            if (TP.isMethod(method)) {
-                if (TP.notEmpty(track) && method[TP.TRACK] === track) {
-                    return method;
-                }
-            }
+                    method = target[name];
+                    if (TP.isMethod(method)) {
+                        return method;
+                    }
 
-            return;
-        });
+                    return;
+                });
 
     return methods.compact();
 });
@@ -9804,17 +9818,36 @@ function(aName, aTrack) {
      * @returns {Function} The Function object representing the method.
      */
 
-    var track;
+    var target,
+        track;
 
-    if (TP.isEmpty(track = aTrack)) {
-        if (TP.isPrototype(this)) {
+    target = this;
+    track = aTrack;
+
+    //  If this is a type, then we check the track to determine the target
+    if (TP.isType(target)) {
+        if (aTrack === TP.TYPE_TRACK) {
+            target = target.getPrototype();
+        } else if (aTrack === TP.INST_TRACK) {
+            target = target.getInstPrototype();
+        } else {
+            //  It's a type - the default track is TP.TYPE_LOCAL_TRACK
+            track = TP.TYPE_LOCAL_TRACK;
+        }
+    } else if (TP.isPrototype(target) && TP.isEmpty(track)) {
+        if (TP.name(target).endsWith('.Type')) {
+            track = TP.TYPE_TRACK;
+        } else if (TP.name(target).endsWith('.Inst')) {
             track = TP.INST_TRACK;
         } else {
             track = TP.LOCAL_TRACK;
         }
+    } else if (TP.isEmpty(track)) {
+        //  It's a plain instance - the default track is TP.LOCAL_TRACK
+        track = TP.LOCAL_TRACK;
     }
 
-    return TP.method(this, aName, track);
+    return TP.method(target, aName, track);
 });
 
 //  ------------------------------------------------------------------------
@@ -9830,17 +9863,36 @@ function(aTrack) {
      * @returns {Array} An Array of Function objects representing the methods.
      */
 
-    var track;
+    var target,
+        track;
 
-    if (TP.isEmpty(track = aTrack)) {
-        if (TP.isPrototype(this)) {
+    target = this;
+    track = aTrack;
+
+    //  If this is a type, then we check the track to determine the target
+    if (TP.isType(target)) {
+        if (aTrack === TP.TYPE_TRACK) {
+            target = target.getPrototype();
+        } else if (aTrack === TP.INST_TRACK) {
+            target = target.getInstPrototype();
+        } else {
+            //  It's a type - the default track is TP.TYPE_LOCAL_TRACK
+            track = TP.TYPE_LOCAL_TRACK;
+        }
+    } else if (TP.isPrototype(target) && TP.isEmpty(track)) {
+        if (TP.name(target).endsWith('.Type')) {
+            track = TP.TYPE_TRACK;
+        } else if (TP.name(target).endsWith('.Inst')) {
             track = TP.INST_TRACK;
         } else {
             track = TP.LOCAL_TRACK;
         }
+    } else if (TP.isEmpty(track)) {
+        //  It's a plain instance - the default track is TP.LOCAL_TRACK
+        track = TP.LOCAL_TRACK;
     }
 
-    return TP.methods(this, track);
+    return TP.methods(target, track);
 });
 
 //  ------------------------------------------------------------------------
@@ -9857,38 +9909,48 @@ function(aName, aTrack) {
      * @returns {Function} The Function object representing the method.
      */
 
-    var owner,
+    var target,
         track,
+
         method;
+
+    target = this;
+    track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
     if (this === TP.FunctionProto) {
-        owner = Function;
+        target = Function;
         track = TP.ifEmpty(aTrack, TP.INST_TRACK);
     } else if (TP.isType(this)) {
-        //  If it is one of the 'Big 8' constructor Functions, then it's a
-        //  'type local' method.
-        owner = this;
-        track = TP.ifEmpty(aTrack, TP.TYPE_TRACK);
 
-        //  Types can be tricky, particularly in terms of defaulting whether
-        //  something was added as a type method or a type local method. We
-        //  check both options here, preferring type methods over type locals.
-        method = TP.method(owner, aName, track);
-        if (TP.notValid(method)) {
-            track = TP.ifEmpty(aTrack, TP.TYPE_LOCAL_TRACK);
-            return TP.method(owner, aName, track);
+        if (aTrack === TP.INST_TRACK) {
+            target = target.getInstPrototype();
+        } else {
+
+            //  Track wasn't the TP.INST_TRACK
+
+            //  Types can be tricky, particularly in terms of defaulting whether
+            //  something was added as a type method or a type local method. We
+            //  check both options here, preferring type methods over type
+            //  local methods.
+
+            track = TP.TYPE_TRACK;
+            method = TP.method(target, aName, track);
+            if (TP.isValid(method)) {
+                return method;
+            }
+
+            track = TP.TYPE_LOCAL_TRACK;
         }
     } else {
         //  Otherwise, it can be considered to be a 'local' method of the
         //  receiving Function object (which is usually a plain, anonymous
         //  Function).
-        owner = this;
         track = TP.ifEmpty(aTrack, TP.LOCAL_TRACK);
     }
 
-    return TP.method(owner, aName, track);
+    return TP.method(target, aName, track);
 });
 
 //  ------------------------------------------------------------------------
@@ -9904,151 +9966,55 @@ function(aTrack) {
      * @returns {Array} An Array of Function objects representing the methods.
      */
 
-    var owner,
+    var target,
         track,
         methods;
+
+    target = this;
+    track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
     if (this === TP.FunctionProto) {
-        owner = Function;
+        target = Function;
         track = TP.ifEmpty(aTrack, TP.INST_TRACK);
     } else if (TP.isType(this)) {
-        //  If it is one of the 'Big 8' constructor Functions, then it's a
-        //  'type local' method.
-        owner = this;
 
-        track = TP.ifEmpty(aTrack, TP.TYPE_TRACK);
-        methods = TP.methods(owner, track);
-        track = TP.ifEmpty(aTrack, TP.TYPE_LOCAL_TRACK);
-        methods.addAll(TP.methods(owner, track));
+        if (aTrack === TP.INST_TRACK) {
+            target = target.getInstPrototype();
+        } else {
 
-        return methods;
+            //  Track wasn't the TP.INST_TRACK
+
+            //  Types can be tricky, particularly in terms of defaulting whether
+            //  something was added as a type method or a type local method. We
+            //  check both options here, preferring type methods over type
+            //  local methods.
+
+            track = TP.TYPE_TRACK;
+            methods = TP.methods(target, track);
+
+            if (TP.isEmpty(methods)) {
+                track = TP.TYPE_LOCAL_TRACK;
+                methods = TP.methods(target, track);
+            }
+
+            return methods;
+        }
     } else {
         //  Otherwise, it can be considered to be a 'local' method of the
         //  receiving Function object (which is usually a plain, anonymous
         //  Function).
-        owner = this;
         track = TP.ifEmpty(aTrack, TP.LOCAL_TRACK);
     }
 
-    return TP.methods(owner, track);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getMethod',
-function(aName, aTrack) {
-
-    /**
-     * @method getMethod
-     * @summary Returns the named method, if it exists.
-     * @param {String} aName The method name to locate.
-     * @param {String} aTrack The track to locate the method on. This is an
-     *     optional parameter.
-     * @returns {Function} The Function object representing the method.
-     */
-
-    var owner,
-        track;
-
-    if (TP.isPrototype(this)) {
-        owner = this[TP.OWNER];
-        track = TP.ifEmpty(aTrack, TP.TYPE_TRACK);
-    } else {
-        owner = this;
-        track = TP.ifEmpty(aTrack, TP.TYPE_LOCAL_TRACK);
-    }
-
-    return TP.method(owner, aName, track);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getMethods',
-function(aTrack) {
-
-    /**
-     * @method getMethods
-     * @summary Returns an Array of methods for the receiver.
-     * @param {String} aTrack The track to locate the methods on. This is an
-     *     optional parameter.
-     * @returns {Array} An Array of Function objects representing the methods.
-     */
-
-    var owner,
-        track;
-
-    if (TP.isPrototype(this)) {
-        owner = this[TP.OWNER];
-        track = TP.ifEmpty(aTrack, TP.TYPE_TRACK);
-    } else {
-        owner = this;
-        track = TP.ifEmpty(aTrack, TP.TYPE_LOCAL_TRACK);
-    }
-
-    return TP.methods(owner, track);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Inst.defineMethod('getMethod',
-function(aName, aTrack) {
-
-    /**
-     * @method getMethod
-     * @summary Returns the named method, if it exists.
-     * @param {String} aName The method name to locate.
-     * @param {String} aTrack The track to locate the method on. This is an
-     *     optional parameter.
-     * @returns {Function} The Function object representing the method.
-     */
-
-    var owner,
-        track;
-
-    if (TP.isPrototype(this)) {
-        owner = this[TP.OWNER];
-        track = TP.ifEmpty(aTrack, TP.INST_TRACK);
-    } else {
-        owner = this;
-        track = TP.ifEmpty(aTrack, TP.LOCAL_TRACK);
-    }
-
-    return TP.method(owner, aName, track);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Inst.defineMethod('getMethods',
-function(aTrack) {
-
-    /**
-     * @method getMethods
-     * @summary Returns an Array of methods for the receiver.
-     * @param {String} aTrack The track to locate the methods on. This is an
-     *     optional parameter.
-     * @returns {Array} An Array of Function objects representing the methods.
-     */
-
-    var owner,
-        track;
-
-    if (TP.isPrototype(this)) {
-        owner = this[TP.OWNER];
-        track = TP.ifEmpty(aTrack, TP.INST_TRACK);
-    } else {
-        owner = this;
-        track = TP.ifEmpty(aTrack, TP.LOCAL_TRACK);
-    }
-
-    return TP.methods(owner, track);
+    return TP.methods(target, track);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getMethodInfoFor',
-function(methodName) {
+function(aName, aTrack) {
 
     /**
      * @method getMethodInfoFor
@@ -10057,28 +10023,58 @@ function(methodName) {
      * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
-     * @param {String} methodName The method name to return information for.
+     * @param {String} aName The method name to return information for.
+     * @param {String} aTrack The track to locate the method on. This is an
+     *     optional parameter.
      * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 
-    var owner,
+    var target,
         track,
 
-        existingMethod,
+        owner,
+        method,
 
         name,
         display;
 
-    owner = this;
-    track = TP.LOCAL_TRACK;
+    target = this;
+    track = aTrack;
 
-    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
+    owner = this;
+
+    //  If this is a type, then we check the track to determine the target
+    if (TP.isType(target)) {
+        if (aTrack === TP.TYPE_TRACK) {
+            target = target.getPrototype();
+        } else if (aTrack === TP.INST_TRACK) {
+            target = target.getInstPrototype();
+        } else {
+            //  It's a type - the default track is TP.TYPE_LOCAL_TRACK
+            track = TP.TYPE_LOCAL_TRACK;
+        }
+    } else if (TP.isPrototype(target) && TP.isEmpty(track)) {
+        owner = target[TP.OWNER];
+
+        if (TP.name(target).endsWith('.Type')) {
+            track = TP.TYPE_TRACK;
+        } else if (TP.name(target).endsWith('.Inst')) {
+            track = TP.INST_TRACK;
+        } else {
+            track = TP.LOCAL_TRACK;
+        }
+    } else if (TP.isEmpty(track)) {
+        //  It's a plain instance - the default track is TP.LOCAL_TRACK
+        track = TP.LOCAL_TRACK;
+    }
+
+    if (!TP.isMethod(method = target.getMethod(aName, track))) {
         return null;
     }
 
-    name = existingMethod[TP.NAME];
-    display = existingMethod[TP.DISPLAY];
+    name = method[TP.NAME];
+    display = method[TP.DISPLAY];
 
     return TP.hc('owner', owner,
                     'name', name,
@@ -10089,7 +10085,7 @@ function(methodName) {
 //  ------------------------------------------------------------------------
 
 TP.FunctionProto.defineMethod('getMethodInfoFor',
-function(methodName) {
+function(aName, aTrack) {
 
     /**
      * @method getMethodInfoFor
@@ -10098,139 +10094,64 @@ function(methodName) {
      * @description This method returns a TP.core.Hash containing the method
      *     owner, name, track and display, under the keys 'owner', 'name',
      *     'track' and 'display', respectively
-     * @param {String} methodName The method name to return information for.
+     * @param {String} aName The method name to return information for.
+     * @param {String} aTrack The track to locate the method on. This is an
+     *     optional parameter.
      * @returns {TP.core.Hash} The hash containing the method information as
      *     described in the method comment.
      */
 
-    var owner,
+    var target,
         track,
 
-        existingMethod,
+        owner,
+        method,
+
         name,
         display;
+
+    target = this;
+    track = aTrack;
+
+    owner = this;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
     if (this === TP.FunctionProto) {
-        owner = Function;
-        track = TP.INST_TRACK;
+        target = Function;
+        track = TP.ifEmpty(aTrack, TP.INST_TRACK);
     } else if (TP.isType(this)) {
-        //  If it is one of the 'Big 8' constructor Functions, then it's a
-        //  'type local' method.
-        owner = this;
-        track = TP.TYPE_LOCAL_TRACK;
+
+        if (aTrack === TP.INST_TRACK) {
+            target = target.getInstPrototype();
+        } else {
+
+            //  Track wasn't the TP.INST_TRACK
+
+            //  Types can be tricky, particularly in terms of defaulting whether
+            //  something was added as a type method or a type local method. We
+            //  check both options here, preferring type methods over type
+            //  locals.
+
+            track = TP.TYPE_TRACK;
+            method = TP.method(target, aName, track);
+            if (TP.notValid(method)) {
+                track = TP.TYPE_LOCAL_TRACK;
+            }
+        }
     } else {
         //  Otherwise, it can be considered to be a 'local' method of the
         //  receiving Function object (which is usually a plain, anonymous
         //  Function).
-        owner = this;
-        track = TP.LOCAL_TRACK;
+        track = TP.ifEmpty(aTrack, TP.LOCAL_TRACK);
     }
 
-    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
+    if (!TP.isMethod(method = target.getMethod(aName, track))) {
         return null;
     }
 
-    name = existingMethod[TP.NAME];
-
-    display = existingMethod[TP.DISPLAY];
-
-    return TP.hc('owner', owner,
-                    'name', name,
-                    'track', track,
-                    'display', display);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getMethodInfoFor',
-function(methodName) {
-
-    /**
-     * @method getMethodInfoFor
-     * @summary Returns information for the method with the supplied name on
-     *     the receiver.
-     * @description This method returns a TP.core.Hash containing the method
-     *     owner, name, track and display, under the keys 'owner', 'name',
-     *     'track' and 'display', respectively
-     * @param {String} methodName The method name to return information for.
-     * @returns {TP.core.Hash} The hash containing the method information as
-     *     described in the method comment.
-     */
-
-    var owner,
-        track,
-
-        existingMethod,
-        name,
-        display;
-
-    //  Note that we need to install the spy method on to 'owner', which might
-    //  not necessarily be 'this'...
-    if (TP.isPrototype(this)) {
-        owner = this[TP.OWNER];
-        track = TP.TYPE_TRACK;
-    } else {
-        owner = this;
-        track = TP.TYPE_LOCAL_TRACK;
-    }
-
-    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
-        return null;
-    }
-
-    name = existingMethod[TP.NAME];
-
-    display = existingMethod[TP.DISPLAY];
-
-    return TP.hc('owner', owner,
-                    'name', name,
-                    'track', track,
-                    'display', display);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Inst.defineMethod('getMethodInfoFor',
-function(methodName) {
-
-    /**
-     * @method getMethodInfoFor
-     * @summary Returns information for the method with the supplied name on
-     *     the receiver.
-     * @description This method returns a TP.core.Hash containing the method
-     *     owner, name, track and display, under the keys 'owner', 'name',
-     *     'track' and 'display', respectively
-     * @param {String} methodName The method name to return information for.
-     * @returns {TP.core.Hash} The hash containing the method information as
-     *     described in the method comment.
-     */
-
-    var owner,
-        track,
-
-        existingMethod,
-        name,
-        display;
-
-    //  Note that we need to install the spy method on to 'owner', which might
-    //  not necessarily be 'this'...
-    if (TP.isPrototype(this)) {
-        owner = this[TP.OWNER];
-        track = TP.INST_TRACK;
-    } else {
-        owner = this;
-        track = TP.LOCAL_TRACK;
-    }
-
-    if (!TP.isMethod(existingMethod = owner.getMethod(methodName, track))) {
-        return null;
-    }
-
-    name = existingMethod[TP.NAME];
-
-    display = existingMethod[TP.DISPLAY];
+    name = method[TP.NAME];
+    display = method[TP.DISPLAY];
 
     return TP.hc('owner', owner,
                     'name', name,
