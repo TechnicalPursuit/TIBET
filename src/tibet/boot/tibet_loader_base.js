@@ -5585,11 +5585,6 @@ TP.boot.$consoleReporter = function(entry, options) {
     var msg,
         level;
 
-    //  Ignore attempts to log the entry to the console more than once.
-    if (entry && entry.usedConsole) {
-        return;
-    }
-
     TP.sys.setcfg('log.color.mode', 'console');
     msg = TP.boot.$$logReporter(entry,
         {separator: '\n', escape: false, console: true});
@@ -5628,8 +5623,6 @@ TP.boot.$consoleReporter = function(entry, options) {
         top.console.log(msg);
         break;
     }
-
-    entry.usedConsole = true;
 };
 
 //  ----------------------------------------------------------------------------
