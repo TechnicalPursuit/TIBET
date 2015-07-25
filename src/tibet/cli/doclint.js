@@ -62,10 +62,24 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
  * @type {String}
  */
 Cmd.prototype.HELP =
-'Runs the TSH :doclint command to validate function comment content.\n\n' +
+'Runs the TSH :doclint command to validate method comment content.\n\n' +
+
+'The doclint command uses TIBET reflection to find all methods in your\n' +
+'application and check their comment text for conformance to JSDoc3 and\n' +
+'TIBET comment standards. This check can be a part of an overall quality\n' +
+'pass which includes running `tibet lint` and `tibet test` on your code.\n\n' +
+
+'If you provide an optional string parameter it will be used as a filter\n' +
+'for filenames. Using a string which begins and ends with / will cause the\n' +
+'pattern to be treated as a regular expression for testing purposes.\n\n' +
+
+'Note that because it uses method reflection, not file lists, to drive\n' +
+'the checks when this command outputs file counts they represent the\n' +
+'number of unique files containing matching methods, not a full list\n' +
+'of project files. This can be disconcerting at first if you are used\n' +
+'to listings which are built by file-driven tools.' +
 
 '\n';
-
 
 /**
  * Command argument parsing options.
@@ -75,11 +89,9 @@ Cmd.prototype.HELP =
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['checklib', 'tap'],
+        'boolean': ['tibet'],
         'string': [],
-        'default': {
-            tap: true
-         }
+        'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
@@ -89,26 +101,11 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet doclint';
+    'tibet doclint [<pattern>]';
 
 //  ---
 //  Instance Methods
 //  ---
-
-/**
- * Performs any final processing of the argument list prior to execution.
- * @param {Array.<String>} arglist The argument list to finalize.
- * @returns {Array.<String>} The finalized argument list.
- */
-Cmd.prototype.finalizePhantomArglist = function(arglist) {
-
-    if (arglist.indexOf('--tap') === -1 &&
-            arglist.indexOf('--no-tap') === -1) {
-        arglist.push('--tap');
-    }
-
-    return arglist;
-};
 
 /**
  * Computes and returns the TIBET Shell script command line to be run.
@@ -116,32 +113,32 @@ Cmd.prototype.finalizePhantomArglist = function(arglist) {
  */
 Cmd.prototype.getScript = function() {
 
-    var target,
+    var filter,
         prefix;
 
-    if (CLI.notEmpty(this.options.target)) {
-        target = this.options.target;
+    if (CLI.notEmpty(this.options.filter)) {
+        filter = this.options.filter;
     } else {
         // The options._ object holds non-qualified parameters. [0] is the
-        // command name (tsh in this case). [1] should be the "target" to run.
-        target = this.options._[1];
+        // command name. [1] should be the "filter" if any.
+        filter = this.options._[1];
     }
 
     prefix = ':doclint ';
 
-    target = target || '';
-    if (target.length > 0 && target.indexOf(prefix) !== 0) {
-        //  Quote the target since it can contain separators etc.
-        target = prefix + '\'' + target + '\'';
+    filter = filter || '';
+    if (filter.length > 0 && filter.indexOf(prefix) !== 0) {
+        //  Quote the filter since it can contain separators etc.
+        filter = prefix + '--filter=' + '\'' + filter + '\'';
     } else {
-        target = prefix;
+        filter = prefix;
     }
 
-    if (this.options.checklib) {
-        target += '--checklib';
+    if (this.options.tibet) {
+        filter += ' --tibet';
     }
 
-    return target;
+    return filter;
 };
 
 
