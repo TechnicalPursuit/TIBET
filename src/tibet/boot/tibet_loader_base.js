@@ -7026,10 +7026,10 @@ TP.boot.hideUIRoot = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.showBootLog = function(reporter, level) {
+TP.sys.writeBootLog = function(level, reporter) {
 
     /**
-     * @method showBootLog
+     * @method writeBootLog
      * @summary Dump the bootlog to the current target location. By default this
      *     is directed to the consoleReporter.
      * @returns {null}

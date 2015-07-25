@@ -195,7 +195,7 @@ TP.boot.defineMethod('$uniqueNodeList', TP.boot.$uniqueNodeList);
 TP.boot.defineMethod('$importApplication', TP.boot.$importApplication);
 TP.boot.defineMethod('$importComponents', TP.boot.$importComponents);
 
-TP.sys.defineMethod('showBootLog', TP.sys.showBootLog);
+TP.sys.defineMethod('writeBootLog', TP.sys.writeBootLog);
 
 TP.boot.defineMethod('boot', TP.boot.boot);
 TP.boot.defineMethod('$config', TP.boot.$config);
