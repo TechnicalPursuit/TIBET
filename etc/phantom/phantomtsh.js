@@ -216,8 +216,9 @@
      * The command usage string.
      * @type {String}
      */
-    PhantomTSH.USAGE = 'phantomjs phantomtsh.js --script <script> ' +
-        '[--url <url>] [--profile <profile>] [--timeout <timeout>] [--help] [<flags>]';
+    PhantomTSH.USAGE = 'phantomjs phantomtsh.js [--script <script>] ' +
+        '[--url <url>] [--profile <profile>] [--timeout <timeout>] ' +
+        '[--help] [<flags>]';
 
 
     //  ---
@@ -235,6 +236,13 @@
      * @type {Array}
      */
     PhantomTSH.buffer = [];
+
+    /**
+     * Whether or not we're running in 'interactive mode'. If no script is
+     * supplied (via the '--script' argument), then we run in interactive mode.
+     * @type {Boolean}
+     */
+    PhantomTSH.interactive = false;
 
     /**
      * A date stamp for the last activity (logging typically) which was observed
@@ -359,8 +367,10 @@
      * @param {String} tshInput The TSH command line to execute.
      * @param {Boolean} pauseBeforeExec Whether or not to pause (using a
      *     'debugger' statement) before beginning execution of the shell script.
+     * @param {Boolean} interactiveMode Whether or not we're executing this
+     *     script in 'interactive mode'.
      */
-    PhantomTSH.exec = function(tshInput, pauseBeforeExec) {
+    PhantomTSH.exec = function(tshInput, pauseBeforeExec, interactiveMode) {
         var handler;
 
         handler = function(aSignal, stdioResults) {
@@ -475,6 +485,39 @@
         phantom.exit(0);
     };
 
+
+    /**
+     * Processes interactive input if we're in interactive mode.
+     */
+    PhantomTSH.interactiveInput = function() {
+
+        var validInput,
+            interactiveInputLine;
+
+        validInput = false;
+
+        //  While we don't have valid shell input, keep trying to get it.
+        while (!validInput) {
+
+            system.stdout.write('tsh>> ');
+            interactiveInputLine = system.stdin.readLine();
+
+            //  We should've read a whole line. If it all was was whitespace,
+            //  then we don't have valid input. But if there are real
+            //  non-whitespace characters, then set the flag to true.
+            if (interactiveInputLine.trim().length > 0) {
+                validInput = true;
+            }
+        }
+
+        //  Got good input - evaluate it.
+        if (validInput) {
+            PhantomTSH.page.evaluate(PhantomTSH.exec,
+                                        interactiveInputLine,
+                                        false,
+                                        true);
+        }
+    };
 
     /**
      * Logs a message, prefixing it as a TAP comment if in TAP mode.
@@ -698,8 +741,14 @@
             PhantomTSH.help();
         }
 
-        if (argv.usage || !argv.script) {
+        if (argv.usage) {
             PhantomTSH.usage();
+        }
+
+        if (!argv.script) {
+            PhantomTSH.interactive = true;
+        } else {
+            PhantomTSH.script = argv.script;
         }
 
         if (argv.level !== void 0) {
@@ -716,8 +765,6 @@
         if (PhantomTSH.argv.debug) {
             PhantomTSH.log(JSON.stringify(argv));
         }
-
-        PhantomTSH.script = argv.script;
 
         PhantomTSH.url = argv.url || PhantomTSH.DEFAULT_URL;
         PhantomTSH.url = fs.absolute(PhantomTSH.url);
@@ -825,38 +872,46 @@
         var pauseBeforeExec,
             now;
 
-        PhantomTSH.lastActivity = new Date().getTime();
-
-        //  If the CLI command that invoked this passed along a remote debugging
-        //  port, then the user wants to debug this session, so we pause with a
-        //  'debugger' statement per the PhantomJS instructions. Note here how
-        //  we do *not* install an 'exit' timer, as its indeterminate how long
-        //  it will take the user to configure their debugger to take over from
-        //  here.
-        if (PhantomTSH.argv['remote-debug-port']) {
-            pauseBeforeExec = true;
-
-            /* eslint-disable no-debugger */
-            debugger;
-            /* eslint-enable no-debugger */
+        //  If the interactive mode is on (i.e. no script was supplied)
+        if (PhantomTSH.interactive) {
+            //  Call the method to process interactive input
+            PhantomTSH.interactiveInput();
         } else {
-            //  Otherwise, we're running in a regular context, which means we
-            //  set up a timer.
-            pauseBeforeExec = false;
+            PhantomTSH.lastActivity = new Date().getTime();
 
-            PhantomTSH.timer = setInterval(function() {
-                now = new Date().getTime();
-                if (now - PhantomTSH.lastActivity > PhantomTSH.timeout) {
-                    clearInterval(PhantomTSH.timer);
-                    PhantomTSH.exit(PhantomTSH.color('Operation timed out.', 'red'),
-                        PhantomTSH.ERROR);
-                }
-            }, 250);
+            //  If the CLI command that invoked this passed along a remote
+            //  debugging port, then the user wants to debug this session, so we
+            //  pause with a 'debugger' statement per the PhantomJS instructions.
+            //  Note here how we do *not* install an 'exit' timer, as its
+            //  indeterminate how long it will take the user to configure their
+            //  debugger to take over from here.
+            if (PhantomTSH.argv['remote-debug-port']) {
+                pauseBeforeExec = true;
+
+                /* eslint-disable no-debugger */
+                debugger;
+                /* eslint-enable no-debugger */
+            } else {
+                //  Otherwise, we're running in a regular context, which means we
+                //  set up a timer.
+                pauseBeforeExec = false;
+
+                PhantomTSH.timer = setInterval(function() {
+                    now = new Date().getTime();
+                    if (now - PhantomTSH.lastActivity > PhantomTSH.timeout) {
+                        clearInterval(PhantomTSH.timer);
+                        PhantomTSH.exit(
+                            PhantomTSH.color('Operation timed out.', 'red'),
+                            PhantomTSH.ERROR);
+                    }
+                }, 250);
+            }
+
+            PhantomTSH.page.evaluate(PhantomTSH.exec,
+                                        PhantomTSH.script,
+                                        pauseBeforeExec,
+                                        false);
         }
-
-        PhantomTSH.page.evaluate(PhantomTSH.exec,
-                                    PhantomTSH.script,
-                                    pauseBeforeExec);
     };
 
 
@@ -973,7 +1028,9 @@
         var results,
             code;
 
-        PhantomTSH.lastActivity = new Date().getTime();
+        if (!PhantomTSH.interactive) {
+            PhantomTSH.lastActivity = new Date().getTime();
+        }
 
         if (!data) {
             PhantomTSH.exit(PhantomTSH.color('Failed: ', 'red') +
@@ -981,39 +1038,49 @@
         }
 
         try {
-            // Data should be a JSON string we can reconstitute.
+            //  Data should be a JSON string we can reconstitute.
             results = JSON.parse(data);
         } catch (e) {
-            // If we can't reconstitute from JSON we consider that failure.
+            //  If we can't reconstitute from JSON we consider that failure.
             PhantomTSH.exit(data, PhantomTSH.FAILURE);
         }
 
         code = PhantomTSH.SUCCESS;
 
-        results.forEach(function(item) {
-            if (!item) {
-                return;
-            }
-            switch (item.meta) {
-                case 'notify':
-                    PhantomTSH.log(PhantomTSH.color(item.data), 'yellow');
-                    break;
-                case 'stdin':
-                    PhantomTSH.log(PhantomTSH.color(item.data), 'magenta');
-                    break;
-                case 'stdout':
-                    PhantomTSH.log(PhantomTSH.color(item.data), 'white');
-                    break;
-                case 'stderr':
-                    PhantomTSH.log(PhantomTSH.color(item.data), 'red');
-                    code = PhantomTSH.FAILURE;
-                    break;
-                default:
-                    break;
-            }
-        });
+        results.forEach(
+            function(item) {
+                if (!item) {
+                    return;
+                }
+                switch (item.meta) {
+                    case 'notify':
+                        PhantomTSH.log(PhantomTSH.color(item.data), 'yellow');
+                        break;
+                    case 'stdin':
+                        PhantomTSH.log(PhantomTSH.color(item.data), 'magenta');
+                        break;
+                    case 'stdout':
+                        PhantomTSH.log(PhantomTSH.color(item.data), 'white');
+                        break;
+                    case 'stderr':
+                        PhantomTSH.log(PhantomTSH.color(item.data), 'red');
+                        code = PhantomTSH.FAILURE;
+                        break;
+                    default:
+                        break;
+                }
+            });
 
-        PhantomTSH.exit('', code);
+        if (PhantomTSH.interactive) {
+            //  Flush the buffer
+            console.log(PhantomTSH.buffer.join('\n'));
+            PhantomTSH.buffer.length = 0;
+
+            //  Call the method to process more interactive input
+            PhantomTSH.interactiveInput();
+        } else {
+            PhantomTSH.exit('', code);
+        }
     };
 
 
@@ -1045,9 +1112,11 @@
 
         PhantomTSH.lastMessage = '' + msg;
 
-        PhantomTSH.lastActivity = new Date().getTime();
+        if (!PhantomTSH.interactive) {
+            PhantomTSH.lastActivity = new Date().getTime();
+        }
 
-        // If we're doing TAP-complaint processing then redirect.
+        //  If we're doing TAP-complaint processing then redirect.
         if (PhantomTSH.argv.tap) {
             PhantomTSH.tap('' + msg);
         } else {
