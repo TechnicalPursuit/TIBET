@@ -51,8 +51,6 @@
   // Optimize some code when these features are not used.
   var sawReadOnlySpans = false, sawCollapsedSpans = false;
 
-  var placeWin;
-
   // EDITOR CONSTRUCTOR
 
   // A CodeMirror instance represents an editor. This is the object
@@ -180,7 +178,6 @@
     if (place) {
       if (place.appendChild) place.appendChild(d.wrapper);
       else place(d.wrapper);
-      placeWin = place.ownerDocument.defaultView;
     }
 
     // Current rendered range (may be bigger than the view window).
@@ -868,7 +865,7 @@
         }
         if (updateNumber) {
           removeChildren(lineView.lineNumber);
-          lineView.lineNumber.appendChild(placeWin.document.createTextNode(lineNumberFor(cm.options, lineN)));
+          lineView.lineNumber.appendChild(document.createTextNode(lineNumberFor(cm.options, lineN)));
         }
         cur = lineView.node.nextSibling;
       }
@@ -1460,9 +1457,9 @@
         "px; left: " + (e.clientX - 5) + "px; z-index: 1000; background: " +
         (ie ? "rgba(255, 255, 255, .05)" : "transparent") +
         "; outline: none; border-width: 0; outline: none; overflow: hidden; opacity: .05; filter: alpha(opacity=5);";
-      if (webkit) var oldScrollY = placeWin.scrollY; // Work around Chrome issue (#2712)
+      if (webkit) var oldScrollY = window.scrollY; // Work around Chrome issue (#2712)
       display.input.focus();
-      if (webkit) placeWin.scrollTo(null, oldScrollY);
+      if (webkit) window.scrollTo(null, oldScrollY);
       display.input.reset();
       // Adds "Select all" to context menu in FF
       if (!cm.somethingSelected()) te.value = input.prevInput = " ";
@@ -1614,7 +1611,7 @@
           var kludge = hiddenTextarea(), te = kludge.firstChild;
           cm.display.lineSpace.insertBefore(kludge, cm.display.lineSpace.firstChild);
           te.value = lastCopied.join("\n");
-          var hadFocus = placeWin.document.activeElement;
+          var hadFocus = document.activeElement;
           selectInput(te);
           setTimeout(function() {
             cm.display.lineSpace.removeChild(kludge);
@@ -1639,7 +1636,7 @@
     },
 
     showPrimarySelection: function() {
-      var sel = placeWin.getSelection(), prim = this.cm.doc.sel.primary();
+      var sel = window.getSelection(), prim = this.cm.doc.sel.primary();
       var curAnchor = domToPos(this.cm, sel.anchorNode, sel.anchorOffset);
       var curFocus = domToPos(this.cm, sel.focusNode, sel.focusOffset);
       if (curAnchor && !curAnchor.bad && curFocus && !curFocus.bad &&
@@ -1688,13 +1685,13 @@
     },
 
     rememberSelection: function() {
-      var sel = placeWin.getSelection();
+      var sel = window.getSelection();
       this.lastAnchorNode = sel.anchorNode; this.lastAnchorOffset = sel.anchorOffset;
       this.lastFocusNode = sel.focusNode; this.lastFocusOffset = sel.focusOffset;
     },
 
     selectionInEditor: function() {
-      var sel = placeWin.getSelection();
+      var sel = window.getSelection();
       if (!sel.rangeCount) return false;
       var node = sel.getRangeAt(0).commonAncestorContainer;
       return contains(this.div, node);
@@ -1725,14 +1722,14 @@
     },
 
     selectionChanged: function() {
-      var sel = placeWin.getSelection();
+      var sel = window.getSelection();
       return sel.anchorNode != this.lastAnchorNode || sel.anchorOffset != this.lastAnchorOffset ||
         sel.focusNode != this.lastFocusNode || sel.focusOffset != this.lastFocusOffset;
     },
 
     pollSelection: function() {
       if (!this.composing && !this.gracePeriod && this.selectionChanged()) {
-        var sel = placeWin.getSelection(), cm = this.cm;
+        var sel = window.getSelection(), cm = this.cm;
         this.rememberSelection();
         var anchor = domToPos(cm, sel.anchorNode, sel.anchorOffset);
         var head = domToPos(cm, sel.focusNode, sel.focusOffset);
@@ -2256,8 +2253,8 @@
 
   function prepareSelection(cm, primary) {
     var doc = cm.doc, result = {};
-    var curFragment = result.cursors = placeWin.document.createDocumentFragment();
-    var selFragment = result.selection = placeWin.document.createDocumentFragment();
+    var curFragment = result.cursors = document.createDocumentFragment();
+    var selFragment = result.selection = document.createDocumentFragment();
 
     for (var i = 0; i < doc.sel.ranges.length; i++) {
       if (primary === false && i == doc.sel.primIndex) continue;
@@ -2293,7 +2290,7 @@
   // Draws the given range as a highlighted selection
   function drawSelectionRange(cm, range, output) {
     var display = cm.display, doc = cm.doc;
-    var fragment = placeWin.document.createDocumentFragment();
+    var fragment = document.createDocumentFragment();
     var padding = paddingH(cm.display), leftSide = padding.left;
     var rightSide = Math.max(display.sizerWidth, displayWidth(cm) - display.sizer.offsetLeft) - padding.right;
 
@@ -2468,7 +2465,7 @@
   function paddingH(display) {
     if (display.cachedPaddingH) return display.cachedPaddingH;
     var e = removeChildrenAndAdd(display.measure, elt("pre", "x"));
-    var style = placeWin.getComputedStyle ? placeWin.getComputedStyle(e) : e.currentStyle;
+    var style = window.getComputedStyle ? window.getComputedStyle(e) : e.currentStyle;
     var data = {left: parseInt(style.paddingLeft), right: parseInt(style.paddingRight)};
     if (!isNaN(data.left) && !isNaN(data.right)) display.cachedPaddingH = data;
     return data;
@@ -2690,7 +2687,7 @@
   // Work around problem with bounding client rects on ranges being
   // returned incorrectly when zoomed on IE10 and below.
   function maybeUpdateRectForZooming(measure, rect) {
-    if (!placeWin.screen || screen.logicalXDPI == null ||
+    if (!window.screen || screen.logicalXDPI == null ||
         screen.logicalXDPI == screen.deviceXDPI || !hasBadZoomedRects(measure))
       return rect;
     var scaleX = screen.logicalXDPI / screen.deviceXDPI;
@@ -2722,8 +2719,8 @@
     cm.display.lineNumChars = null;
   }
 
-  function pageScrollX() { return placeWin.pageXOffset || (placeWin.document.documentElement || placeWin.document.body).scrollLeft; }
-  function pageScrollY() { return placeWin.pageYOffset || (placeWin.document.documentElement || placeWin.document.body).scrollTop; }
+  function pageScrollX() { return window.pageXOffset || (document.documentElement || document.body).scrollLeft; }
+  function pageScrollY() { return window.pageYOffset || (document.documentElement || document.body).scrollTop; }
 
   // Converts a {top, bottom, left, right} box from line-local
   // coordinates into another coordinate system. Context may be one of
@@ -2901,10 +2898,10 @@
       // Measure a bunch of lines, for browsers that compute
       // fractional heights.
       for (var i = 0; i < 49; ++i) {
-        measureText.appendChild(placeWin.document.createTextNode("x"));
+        measureText.appendChild(document.createTextNode("x"));
         measureText.appendChild(elt("br"));
       }
-      measureText.appendChild(placeWin.document.createTextNode("x"));
+      measureText.appendChild(document.createTextNode("x"));
     }
     removeChildrenAndAdd(display.measure, measureText);
     var height = measureText.offsetHeight / 50;
@@ -3524,7 +3521,7 @@
     }
     if (clickInGutter(cm, e)) return;
     var start = posFromMouse(cm, e);
-    placeWin.focus();
+    window.focus();
 
     switch (e_button(e)) {
     case 1:
@@ -3586,7 +3583,7 @@
           extendSelection(cm.doc, start);
         // Work around unexplainable focus problem in IE9 (#2127) and Chrome (#3081)
         if (webkit || ie && ie_version == 9)
-          setTimeout(function() {placeWin.document.body.focus(); display.input.focus();}, 20);
+          setTimeout(function() {document.body.focus(); display.input.focus();}, 20);
         else
           display.input.focus();
       }
@@ -3785,7 +3782,7 @@
     if (!pos || isReadOnly(cm)) return;
     // Might be a file drop, in which case we simply extract the text
     // and insert it.
-    if (files && files.length && placeWin.FileReader && placeWin.File) {
+    if (files && files.length && window.FileReader && window.File) {
       var n = files.length, text = Array(n), read = 0;
       var loadFile = function(file, i) {
         var reader = new FileReader;
@@ -4489,7 +4486,7 @@
 
     var display = cm.display, box = display.sizer.getBoundingClientRect(), doScroll = null;
     if (coords.top + box.top < 0) doScroll = true;
-    else if (coords.bottom + box.top > (placeWin.innerHeight || placeWin.document.documentElement.clientHeight)) doScroll = false;
+    else if (coords.bottom + box.top > (window.innerHeight || document.documentElement.clientHeight)) doScroll = false;
     if (doScroll != null && !phantom) {
       var scrollNode = elt("div", "\u200b", null, "position: absolute; top: " +
                            (coords.top - display.viewOffset - paddingTop(cm.display)) + "px; height: " +
@@ -4771,7 +4768,7 @@
   function findPosV(cm, pos, dir, unit) {
     var doc = cm.doc, x = pos.left, y;
     if (unit == "page") {
-      var pageSize = Math.min(cm.display.wrapper.clientHeight, placeWin.innerHeight || placeWin.document.documentElement.clientHeight);
+      var pageSize = Math.min(cm.display.wrapper.clientHeight, window.innerHeight || document.documentElement.clientHeight);
       y = pos.top + dir * (pageSize - (dir < 0 ? 1.5 : .5) * textHeight(cm.display));
     } else if (unit == "line") {
       y = dir > 0 ? pos.bottom + 3 : pos.top - 3;
@@ -4797,7 +4794,7 @@
 
   CodeMirror.prototype = {
     constructor: CodeMirror,
-    focus: function(){placeWin.focus(); this.display.input.focus();},
+    focus: function(){window.focus(); this.display.input.focus();},
 
     setOption: function(option, value) {
       var options = this.options, old = options[option];
@@ -5793,7 +5790,7 @@
     if (options.autofocus == null) {
       var hasFocus = activeElt();
       options.autofocus = hasFocus == textarea ||
-        textarea.getAttribute("autofocus") != null && hasFocus == placeWin.document.body;
+        textarea.getAttribute("autofocus") != null && hasFocus == document.body;
     }
 
     function save() {textarea.value = cm.getValue();}
@@ -6556,7 +6553,7 @@
     if (widget.height != null) return widget.height;
     var cm = widget.doc.cm;
     if (!cm) return 0;
-    if (!contains(placeWin.document.body, widget.node)) {
+    if (!contains(document.body, widget.node)) {
       var parentStyle = "position: relative;";
       if (widget.coverGutter)
         parentStyle += "margin-left: -" + cm.display.gutters.offsetWidth + "px;";
@@ -6861,18 +6858,18 @@
     var special = builder.cm.state.specialChars, mustWrap = false;
     if (!special.test(text)) {
       builder.col += text.length;
-      var content = placeWin.document.createTextNode(displayText);
+      var content = document.createTextNode(displayText);
       builder.map.push(builder.pos, builder.pos + text.length, content);
       if (ie && ie_version < 9) mustWrap = true;
       builder.pos += text.length;
     } else {
-      var content = placeWin.document.createDocumentFragment(), pos = 0;
+      var content = document.createDocumentFragment(), pos = 0;
       while (true) {
         special.lastIndex = pos;
         var m = special.exec(text);
         var skipped = m ? m.index - pos : text.length - pos;
         if (skipped) {
-          var txt = placeWin.document.createTextNode(displayText.slice(pos, pos + skipped));
+          var txt = document.createTextNode(displayText.slice(pos, pos + skipped));
           if (ie && ie_version < 9) content.appendChild(elt("span", [txt]));
           else content.appendChild(txt);
           builder.map.push(builder.pos, builder.pos + skipped, txt);
@@ -6942,7 +6939,7 @@
     if (widget) builder.map.push(builder.pos, builder.pos + size, widget);
     if (!ignoreWidget && builder.cm.display.input.needsContentAttribute) {
       if (!widget)
-        widget = builder.content.appendChild(placeWin.document.createElement("span"));
+        widget = builder.content.appendChild(document.createElement("span"));
       widget.setAttribute("cm-marker", marker.id);
     }
     if (widget) {
@@ -8229,24 +8226,23 @@
   // DOM UTILITIES
 
   function elt(tag, content, className, style) {
-    var e = placeWin.document.createElement(tag);
+    var e = document.createElement(tag);
     if (className) e.className = className;
     if (style) e.style.cssText = style;
-    if (typeof content == "string") e.appendChild(placeWin.document.createTextNode(content));
+    if (typeof content == "string") e.appendChild(document.createTextNode(content));
     else if (content) for (var i = 0; i < content.length; ++i) e.appendChild(content[i]);
     return e;
   }
 
-  placeWin = placeWin || window;
   var range;
-  if (placeWin.document.createRange) range = function(node, start, end, endNode) {
-    var r = placeWin.document.createRange();
+  if (document.createRange) range = function(node, start, end, endNode) {
+    var r = document.createRange();
     r.setEnd(endNode || node, end);
     r.setStart(node, start);
     return r;
   };
   else range = function(node, start, end) {
-    var r = placeWin.document.body.createTextRange();
+    var r = document.body.createTextRange();
     try { r.moveToElementText(node.parentNode); }
     catch(e) { return r; }
     r.collapse(true);
@@ -8276,12 +8272,12 @@
     } while (child = child.parentNode);
   };
 
-  function activeElt() { return placeWin.document.activeElement; }
+  function activeElt() { return document.activeElement; }
   // Older versions of IE throws unspecified error when touching
   // document.activeElement in some cases (during loading, in iframe)
   if (ie && ie_version < 11) activeElt = function() {
-    try { return placeWin.document.activeElement; }
-    catch(e) { return placeWin.document.body; }
+    try { return document.activeElement; }
+    catch(e) { return document.body; }
   };
 
   function classTest(cls) { return new RegExp("(^|\\s)" + cls + "(?:$|\\s)\\s*"); }
@@ -8311,8 +8307,8 @@
   // garbage collected.
 
   function forEachCodeMirror(f) {
-    if (!placeWin.document.body.getElementsByClassName) return;
-    var byClass = placeWin.document.body.getElementsByClassName("CodeMirror");
+    if (!document.body.getElementsByClassName) return;
+    var byClass = document.body.getElementsByClassName("CodeMirror");
     for (var i = 0; i < byClass.length; i++) {
       var cm = byClass[i].CodeMirror;
       if (cm) f(cm);
@@ -8355,7 +8351,7 @@
   function zeroWidthElement(measure) {
     if (zwspSupported == null) {
       var test = elt("span", "\u200b");
-      removeChildrenAndAdd(measure, elt("span", [test, placeWin.document.createTextNode("x")]));
+      removeChildrenAndAdd(measure, elt("span", [test, document.createTextNode("x")]));
       if (measure.firstChild.offsetHeight != 0)
         zwspSupported = test.offsetWidth <= 1 && test.offsetHeight > 2 && !(ie && ie_version < 8);
     }
@@ -8369,7 +8365,7 @@
   var badBidiRects;
   function hasBadBidiRects(measure) {
     if (badBidiRects != null) return badBidiRects;
-    var txt = removeChildrenAndAdd(measure, placeWin.document.createTextNode("A\u062eA"));
+    var txt = removeChildrenAndAdd(measure, document.createTextNode("A\u062eA"));
     var r0 = range(txt, 0, 1).getBoundingClientRect();
     if (!r0 || r0.left == r0.right) return false; // Safari returns null in some cases (#2780)
     var r1 = range(txt, 1, 2).getBoundingClientRect();
@@ -8396,7 +8392,7 @@
     return result;
   } : function(string){return string.split(/\r\n?|\n/);};
 
-  var hasSelection = placeWin.getSelection ? function(te) {
+  var hasSelection = window.getSelection ? function(te) {
     try { return te.selectionStart != te.selectionEnd; }
     catch(e) { return false; }
   } : function(te) {

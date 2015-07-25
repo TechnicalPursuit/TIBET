@@ -144,6 +144,7 @@ targets.build_deps = function(make) {
         targets.rollup_pouchdb).then(
         targets.rollup_q).then(
         targets.rollup_sinon).then(
+        targets.rollup_sprintf).then(
         targets.rollup_syn).then(
         targets.rollup_xpathjs).then(
         targets.rollup_xpath).then(
@@ -372,6 +373,23 @@ targets.rollup_sinon = function(make) {
     sh.exec('cp -f ./pkg/sinon.js ../../deps/sinon-tpi.js');
 
     targets.rollup_sinon.resolve();
+};
+
+/**
+ */
+targets.rollup_sprintf = function(make) {
+    var npmdir;
+
+    sh.exec('npm update sprintf.js');
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'sprintf-js'));
+    sh.exec('npm install -d');
+    sh.exec('grunt uglify');
+    sh.exec('cp -f ./src/sprintf.js ../../deps/sprintf-tpi.js');
+    sh.exec('cp -f ./dist/sprintf.min.js ../../deps/sprintf-tpi.min.js');
+
+    targets.rollup_sprintf.resolve();
 };
 
 /**
