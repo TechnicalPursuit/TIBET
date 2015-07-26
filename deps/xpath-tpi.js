@@ -1,4 +1,4 @@
-/*
+﻿/*
  * xpath.js
  *
  * An XPath 1.0 library for JavaScript.
@@ -20,7 +20,7 @@
  * Revision 19: November 29, 2005
  *   Nodesets now store their nodes in a height balanced tree, increasing
  *   performance for the common case of selecting nodes in document order,
- *   thanks to S閎astien Cramatte <contact (at) zeninteractif.com>.
+ *   thanks to Sébastien Cramatte <contact (at) zeninteractif.com>.
  *   AVL tree code adapted from Raimund Neumann <rnova (at) gmx.net>.
  *
  * Revision 18: October 27, 2005
@@ -32,7 +32,7 @@
  * Revision 17: October 25, 2005
  *   Some core XPath function fixes and a patch to avoid crashing certain
  *   versions of MSXML in PathExpr.prototype.getOwnerElement, thanks to
- *   S閎astien Cramatte <contact (at) zeninteractif.com>.
+ *   Sébastien Cramatte <contact (at) zeninteractif.com>.
  *
  * Revision 16: September 22, 2005
  *   Workarounds for some IE 5.5 deficiencies.
@@ -1777,6 +1777,7 @@ PathExpr.prototype.evaluate = function(c) {
 		for (var i = 0; i < this.locationPath.steps.length; i++) {
 			var step = this.locationPath.steps[i];
 			var newNodes = [];
+			var newLocalContext = [];
 			for (var j = 0; j < nodes.length; j++) {
 				xpc.contextNode = nodes[j];
 				switch (step.axis) {
@@ -1817,7 +1818,7 @@ PathExpr.prototype.evaluate = function(c) {
 					case Step.ATTRIBUTE:
 						// look at the attributes
 						pushed = false;
-												var nnm = xpc.contextNode.attributes;
+						var nnm = xpc.contextNode.attributes;
 						if (nnm != null) {
 							for (var k = 0; k < nnm.length; k++) {
 								var m = nnm.item(k);
@@ -1825,8 +1826,8 @@ PathExpr.prototype.evaluate = function(c) {
 									newNodes.push(m);
 									pushed = true;
 								}
-								}
 							}
+						}
 						// couldn't find the matching attribute - are we
 						// configured to 'create nodes'?
 						if (pushed == false && xpc.shouldCreateNodes == true) {
@@ -1850,6 +1851,8 @@ PathExpr.prototype.evaluate = function(c) {
 					case Step.CHILD:
 						// look at all child elements
 						pushed = false;
+						var pos = 0
+						var tmpContext = []
 						for (var m = xpc.contextNode.firstChild; m != null; m = m.nextSibling) {
 							if (step.nodeTest.matches(m, xpc)) {
 								if (xpc.shouldFlagNodes == true) {
@@ -1866,19 +1869,25 @@ PathExpr.prototype.evaluate = function(c) {
 											TP.elementFlagChange(
 													elem, TP.SELF, TP.CREATE);
 											newNodes.push(m);
+                                            //keep track of the element position between other matching siblings
+                                            tmpContext.push({contextPosition: ++pos});
 											pushed = true;
 										} else {
 											//  pretend node isn't there
 											pushed = false;
 										}
 									} else {
-								newNodes.push(m);
+								        newNodes.push(m);
+                                        //keep track of the element position between other matching siblings
+                                        tmpContext.push({contextPosition: ++pos});
 										pushed = true;
 									}
 								} else {
-									newNodes.push(m);
+                                    newNodes.push(m);
+                                    //keep track of the element position between other matching siblings
+                                    tmpContext.push({contextPosition: ++pos});
 									pushed = true;
-								}
+                                }
 							}
 						}
 
@@ -1954,8 +1963,16 @@ PathExpr.prototype.evaluate = function(c) {
 							}
 
 							newNodes.push(newNode);
+
                             pushed = true;
 						}
+
+						for (var k=0; k<tmpContext.length; k++) {
+							//track size of matching siblings
+							tmpContext[k].contextSize = pos
+							newLocalContext.push(tmpContext[k])
+						}
+
 						break;
 
 					case Step.DESCENDANT:
@@ -2008,7 +2025,7 @@ PathExpr.prototype.evaluate = function(c) {
 						} else {
 							st.unshift(xpc.contextNode.nextSibling);
 						}
-						for (var m = xpc.contextNode.parentNode; m != null && m.nodeType != 9 /*Node.DOCUMENT_NODE*/ && m !== xpc.virtualRoot; m = m.parentNode) {
+						for (var m = xpc.contextNode; m != null && m.nodeType != 9 /*Node.DOCUMENT_NODE*/ && m !== xpc.virtualRoot; m = m.parentNode) {
 							st.unshift(m.nextSibling);
 						}
 						do {
@@ -2281,13 +2298,18 @@ PathExpr.prototype.evaluate = function(c) {
                         checkedOnce = true;
                     }
 
-                    //  Test the predicate and add it to the node set that we're
-                    //  selecting, moving forward.
+                    //  wje (2015-07-26): For now we don't use this.
+					//if we keep track of the node original context then use it
+					//end goal is to always use original cotnext, now implemented just for CHILD axis
+					//var localCtx = newLocalContext.length>0?this.getLocalCtx(xpc, newLocalContext[k]):xpc
+					//if (this.predicateMatches(pred, localCtx)) {
 					if (this.predicateMatches(pred, xpc)) {
 						newNodes.push(xpc.contextNode);
+					} else {
 					}
 				}
 				nodes = newNodes;
+				//console.log(nodes.length)
 			}
 		}
 	}
@@ -2296,10 +2318,25 @@ PathExpr.prototype.evaluate = function(c) {
 	return ns;
 };
 
+PathExpr.prototype.getLocalCtx = function(xpc, localCtx, length) {
+	var res = new XPathContext();
+	res.variableResolver = xpc.variableResolver;
+	res.functionResolver = xpc.functionResolver;
+	res.namespaceResolver = xpc.namespaceResolver;
+	res.expressionContextNode = xpc.expressionContextNode;
+	res.virtualRoot = xpc.virtualRoot;
+	res.caseInsensitive = xpc.caseInsensitive;
+	res.contextNode = xpc.contextNode;
+	res.contextPosition = localCtx.contextPosition;
+	res.contextSize = localCtx.contextSize;
+	return res;
+};
+
 PathExpr.prototype.predicateMatches = function(pred, c) {
 	var res = pred.evaluate(c);
 	if (Utilities.instance_of(res, XNumber)) {
-		return c.contextPosition == res.numberValue();
+		var val = c.contextPosition == res.numberValue()
+		return val;
 	}
 	return res.booleanValue();
 };
@@ -3074,80 +3111,80 @@ function AVLTree(n) {
 
 AVLTree.prototype.init = function(n) {
 	this.left = null;
-	this.right = null;
+    this.right = null;
 	this.node = n;
 	this.depth = 1;
 };
 
 AVLTree.prototype.balance = function() {
-	var ldepth = this.left  == null ? 0 : this.left.depth;
-	var rdepth = this.right == null ? 0 : this.right.depth;
+    var ldepth = this.left  == null ? 0 : this.left.depth;
+    var rdepth = this.right == null ? 0 : this.right.depth;
 
 	if (ldepth > rdepth + 1) {
-		// LR or LL rotation
-		var lldepth = this.left.left  == null ? 0 : this.left.left.depth;
-		var lrdepth = this.left.right == null ? 0 : this.left.right.depth;
+        // LR or LL rotation
+        var lldepth = this.left.left  == null ? 0 : this.left.left.depth;
+        var lrdepth = this.left.right == null ? 0 : this.left.right.depth;
 
-		if (lldepth < lrdepth) {
-			// LR rotation consists of a RR rotation of the left child
-			this.left.rotateRR();
-			// plus a LL rotation of this node, which happens anyway
-		}
-		this.rotateLL();
-	} else if (ldepth + 1 < rdepth) {
-		// RR or RL rorarion
+        if (lldepth < lrdepth) {
+            // LR rotation consists of a RR rotation of the left child
+            this.left.rotateRR();
+            // plus a LL rotation of this node, which happens anyway
+        }
+        this.rotateLL();
+    } else if (ldepth + 1 < rdepth) {
+        // RR or RL rorarion
 		var rrdepth = this.right.right == null ? 0 : this.right.right.depth;
 		var rldepth = this.right.left  == null ? 0 : this.right.left.depth;
 
-		if (rldepth > rrdepth) {
-			// RR rotation consists of a LL rotation of the right child
-			this.right.rotateLL();
-			// plus a RR rotation of this node, which happens anyway
-		}
-		this.rotateRR();
-	}
+        if (rldepth > rrdepth) {
+            // RR rotation consists of a LL rotation of the right child
+            this.right.rotateLL();
+            // plus a RR rotation of this node, which happens anyway
+        }
+        this.rotateRR();
+    }
 };
 
 AVLTree.prototype.rotateLL = function() {
-	// the left side is too long => rotate from the left (_not_ leftwards)
-	var nodeBefore = this.node;
-	var rightBefore = this.right;
-	this.node = this.left.node;
-	this.right = this.left;
-	this.left = this.left.left;
-	this.right.left = this.right.right;
-	this.right.right = rightBefore;
-	this.right.node = nodeBefore;
-	this.right.updateInNewLocation();
-	this.updateInNewLocation();
+    // the left side is too long => rotate from the left (_not_ leftwards)
+    var nodeBefore = this.node;
+    var rightBefore = this.right;
+    this.node = this.left.node;
+    this.right = this.left;
+    this.left = this.left.left;
+    this.right.left = this.right.right;
+    this.right.right = rightBefore;
+    this.right.node = nodeBefore;
+    this.right.updateInNewLocation();
+    this.updateInNewLocation();
 };
 
 AVLTree.prototype.rotateRR = function() {
-	// the right side is too long => rotate from the right (_not_ rightwards)
-	var nodeBefore = this.node;
-	var leftBefore = this.left;
-	this.node = this.right.node;
-	this.left = this.right;
-	this.right = this.right.right;
-	this.left.right = this.left.left;
-	this.left.left = leftBefore;
-	this.left.node = nodeBefore;
-	this.left.updateInNewLocation();
-	this.updateInNewLocation();
+    // the right side is too long => rotate from the right (_not_ rightwards)
+    var nodeBefore = this.node;
+    var leftBefore = this.left;
+    this.node = this.right.node;
+    this.left = this.right;
+    this.right = this.right.right;
+    this.left.right = this.left.left;
+    this.left.left = leftBefore;
+    this.left.node = nodeBefore;
+    this.left.updateInNewLocation();
+    this.updateInNewLocation();
 };
 
 AVLTree.prototype.updateInNewLocation = function() {
-	this.getDepthFromChildren();
+    this.getDepthFromChildren();
 };
 
 AVLTree.prototype.getDepthFromChildren = function() {
-	this.depth = this.node == null ? 0 : 1;
-	if (this.left != null) {
-		this.depth = this.left.depth + 1;
-	}
-	if (this.right != null && this.depth <= this.right.depth) {
-		this.depth = this.right.depth + 1;
-	}
+    this.depth = this.node == null ? 0 : 1;
+    if (this.left != null) {
+        this.depth = this.left.depth + 1;
+    }
+    if (this.right != null && this.depth <= this.right.depth) {
+        this.depth = this.right.depth + 1;
+    }
 };
 
 AVLTree.prototype.order = function(n1, n2) {
@@ -3195,38 +3232,38 @@ AVLTree.prototype.order = function(n1, n2) {
 
 AVLTree.prototype.add = function(n)  {
 	if (n === this.node) {
-		return false;
-	}
+        return false;
+    }
 
 	var o = this.order(n, this.node);
 
-	var ret = false;
-	if (o == -1) {
-		if (this.left == null) {
-			this.left = new AVLTree(n);
-			ret = true;
-		} else {
-			ret = this.left.add(n);
-			if (ret) {
-				this.balance();
-			}
-		}
-	} else if (o == 1) {
-		if (this.right == null) {
-			this.right = new AVLTree(n);
-			ret = true;
-		} else {
-			ret = this.right.add(n);
-			if (ret) {
-				this.balance();
-			}
-		}
-	}
+    var ret = false;
+    if (o == -1) {
+        if (this.left == null) {
+            this.left = new AVLTree(n);
+            ret = true;
+        } else {
+            ret = this.left.add(n);
+            if (ret) {
+                this.balance();
+            }
+        }
+    } else if (o == 1) {
+        if (this.right == null) {
+            this.right = new AVLTree(n);
+            ret = true;
+        } else {
+            ret = this.right.add(n);
+            if (ret) {
+                this.balance();
+            }
+        }
+    }
 
-	if (ret) {
-		this.getDepthFromChildren();
-	}
-	return ret;
+    if (ret) {
+        this.getDepthFromChildren();
+    }
+    return ret;
 };
 
 // XNodeSet //////////////////////////////////////////////////////////////////
@@ -3322,16 +3359,16 @@ XNodeSet.prototype.first = function() {
 
 	/*
 XNodeSet.prototype.add = function(n) {
-	var added;
-	if (this.tree == null) {
-		this.tree = new AVLTree(n);
-		added = true;
-	} else {
-		added = this.tree.add(n);
-	}
-	if (added) {
-		this.size++;
-	}
+    var added;
+    if (this.tree == null) {
+        this.tree = new AVLTree(n);
+        added = true;
+    } else {
+        added = this.tree.add(n);
+    }
+    if (added) {
+        this.size++;
+    }
 };
 	*/
 
@@ -3647,9 +3684,9 @@ VariableResolver.prototype.getVariable = function(vn, c) {
 	var parts = Utilities.splitQName(vn);
 	if (parts[0] != null) {
 		parts[0] = c.namespaceResolver.getNamespace(parts[0], c.expressionContextNode);
-		if (parts[0] == null) {
-			throw new Error("Cannot resolve QName " + fn);
-		}
+        if (parts[0] == null) {
+            throw new Error("Cannot resolve QName " + fn);
+        }
 	}
 	return this.getVariableWithName(parts[0], parts[1], c.expressionContextNode);
 };
@@ -3706,9 +3743,9 @@ FunctionResolver.prototype.addFunction = function(ns, ln, f) {
 
 FunctionResolver.prototype.getFunction = function(fn, c) {
 	var parts = Utilities.resolveQName(fn, c.namespaceResolver, c.contextNode, false);
-	if (parts[0] == null) {
-		throw new Error("Cannot resolve QName " + fn);
-	}
+    if (parts[0] == null) {
+        throw new Error("Cannot resolve QName " + fn);
+    }
 	return this.getFunctionWithName(parts[0], parts[1], c.contextNode);
 };
 
@@ -3755,7 +3792,7 @@ NamespaceResolver.prototype.getNamespace = function(prefix, n) {
 
 // Functions /////////////////////////////////////////////////////////////////
 
-Functions = new Object();
+var Functions = new Object();
 
 Functions.last = function() {
 	var c = arguments[0];
@@ -4126,7 +4163,7 @@ Functions.round = function() {
 
 // Utilities /////////////////////////////////////////////////////////////////
 
-Utilities = new Object();
+var Utilities = new Object();
 
 Utilities.splitQName = function(qn) {
 	var i = qn.indexOf(":");
