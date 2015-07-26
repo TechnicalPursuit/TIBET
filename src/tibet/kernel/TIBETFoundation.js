@@ -739,7 +739,7 @@ function() {
     //  this will use a common scheduler for everything.
     if (TP.isDefined(TP.extern.Promise)) {
 
-        TP.extern.Promise.resolve().then(func);
+        TP.extern.Promise.resolve(TP.extern.Promise.construct(func));
 
     } else if (window.MutationObserver) {
 
