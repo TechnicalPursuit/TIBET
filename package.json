@@ -49,7 +49,7 @@
     "chai": "*",
     "chalk": "*",
     "chokidar": "*",
-    "codemirror": "TechnicalPursuit/codemirror#5.2.0",
+    "codemirror": "TechnicalPursuit/codemirror",
     "csslint": "*",
     "d3": "TechnicalPursuit/d3",
     "diff": "*",
