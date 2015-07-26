@@ -54,7 +54,7 @@
     "d3": "TechnicalPursuit/d3",
     "diff": "*",
     "escodegen": "*",
-    "eslint": "*",
+    "eslint": "^1.0.0-rc-3",
     "esmangle": "*",
     "esprima": "*",
     "findit": "*",

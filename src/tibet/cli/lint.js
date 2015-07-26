@@ -82,6 +82,10 @@ Cmd.prototype.HELP =
 
 '--stop tells the linter to stop after the first file with errors.\n\n' +
 
+'The optional <filter> argument provides a string or regular expression\n' +
+'used to filter file names. If the filter begins and ends with / it is\n' +
+'treated as a regular expression for purposes of file filtering.\n\n' +
+
 '[package-opts] refers to valid options for a TIBET Package object.\n' +
 'These include --package, --config, --phase, --assets, etc.\n' +
 'The package#config defaults to ~app_cfg/app.xml and its default\n' +
@@ -113,7 +117,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['scan', 'stop', 'all', 'list', 'nodes', 'reset',
             'csslint', 'eslint', 'jsonlint', 'xmllint', 'quiet'],
         'string': ['esconfig', 'esrules', 'esignore', 'cssconfig',
-            'package', 'config', 'phase'],
+            'package', 'config', 'phase', 'filter'],
         'default': {
             cssslint: true,
             eslint: true,
@@ -144,7 +148,7 @@ Cmd.prototype.XML_EXTENSIONS = ['atom', 'gpx', 'kml', 'rdf', 'rss', 'svg',
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet lint [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]';
+    'tibet lint [<filter>] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]';
 
 
 //  ---
@@ -338,6 +342,8 @@ Cmd.prototype.execute = function() {
 Cmd.prototype.executeForEach = function(list) {
 
     var cmd,
+        filter,
+        pattern,
         files;
 
     cmd = this;
@@ -347,6 +353,22 @@ Cmd.prototype.executeForEach = function(list) {
         json: [],
         xml: []
     };
+
+    if (CLI.notEmpty(this.options.filter)) {
+        filter = this.options.filter;
+    } else {
+        // The options._ object holds non-qualified parameters. [0] is the
+        // command name. [1] should be the "filter" if any.
+        filter = this.options._[1];
+    }
+
+console.log('filter: ' + filter);
+
+    if (CLI.notEmpty(filter)) {
+        if (/^\/.*\/$/.test(filter.trim())) {
+            pattern = new RegExp(filter.slice(1, -1));
+        }
+    }
 
     try {
         list.forEach(function(item) {
@@ -368,6 +390,21 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
             if (src) {
+                //  Filter files based on input pattern/filter data.
+                if (CLI.notEmpty(filter)) {
+                    if (CLI.notEmpty(pattern)) {
+                        if (!pattern.test(src)) {
+                            cmd.verbose('skipping filtered file: ' + src);
+                            return;
+                        }
+                    } else {
+                        if (src.indexOf(filter) === -1) {
+                            cmd.verbose('skipping filtered file: ' + src);
+                            return;
+                        }
+                    }
+                }
+
                 // Skip minified files regardless of their type.
                 if (src.match(/\.min\./)) {
                     cmd.verbose('skipping minified file: ' + src);
