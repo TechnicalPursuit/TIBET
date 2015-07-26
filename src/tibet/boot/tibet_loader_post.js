@@ -992,13 +992,13 @@ TP.boot.$$removeUIHandler = function(anObject, eventName) {
 //  ------------------------------------------------------------------------
 
 TP.boot.$$addMutationSource = function(aDocument) {
-    TP.core.MutationSignalSource.addObserverFor(aDocument);
+    TP.core.MutationSignalSource.watchDocument(aDocument);
 };
 
 //  ------------------------------------------------------------------------
 
 TP.boot.$$removeMutationSource = function(aDocument) {
-    TP.core.MutationSignalSource.removeObserverFor(aDocument);
+    TP.core.MutationSignalSource.unwatchDocument(aDocument);
 };
 
 //  ------------------------------------------------------------------------
