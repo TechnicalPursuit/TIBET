@@ -37,8 +37,8 @@
         <![CDATA[
         Promise[TP.NAME] = 'Promise';
         TP.extern.Promise = Promise;
-        TP.extern.Promise.construct = function(fn) {
-            return new Promise(fn);
+        TP.extern.Promise.construct = function(resolver, rejector) {
+            return new Promise(resolver, rejector);
         };
         ]]>
     </script>

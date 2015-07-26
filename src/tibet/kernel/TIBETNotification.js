@@ -7493,11 +7493,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationSignalSource.Type.defineMethod('addObserverFor',
+TP.core.MutationSignalSource.Type.defineMethod('watchDocument',
 function(aDocument) {
 
     /**
-     * @method addObserverFor
+     * @method watchDocument
      * @summary Sets up observations for mutation on the document provided.
      * @param {Document} aDocument The document to register a Mutation Observer
      *     on.
@@ -7554,11 +7554,11 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationSignalSource.Type.defineMethod('removeObserverFor',
+TP.core.MutationSignalSource.Type.defineMethod('unwatchDocument',
 function(aDocument) {
 
     /**
-     * @method removeObserverFor
+     * @method unwatchDocument
      * @summary Removes mutation observation for the document provided.
      * @param {Document} aDocument The document to remove a Mutation Observer
      *     from.

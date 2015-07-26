@@ -142,7 +142,6 @@ targets.build_deps = function(make) {
         targets.rollup_jxon).then(
         targets.rollup_less).then(
         targets.rollup_pouchdb).then(
-        targets.rollup_q).then(
         targets.rollup_sinon).then(
         targets.rollup_sprintf).then(
         targets.rollup_syn).then(
@@ -342,22 +341,6 @@ targets.rollup_pouchdb = function(make) {
     sh.exec('cp -f dist/pouchdb.min.js ../../deps/pouchdb-tpi.min.js');
 
     targets.rollup_pouchdb.resolve();
-};
-
-/**
- */
-targets.rollup_q = function(make) {
-    var npmdir;
-
-    sh.exec('npm update q');
-
-    npmdir = path.join(__dirname, 'node_modules');
-    sh.cd(path.join(npmdir, 'q'));
-    sh.exec('npm install -d');
-    sh.exec('cp -f q.js  ../../deps/q-tpi.js');
-    sh.exec('cp -f q.min.js  ../../deps/q-tpi.min.js');
-
-    targets.rollup_q.resolve();
 };
 
 /**
