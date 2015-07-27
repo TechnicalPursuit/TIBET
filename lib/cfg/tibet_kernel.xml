@@ -66,9 +66,24 @@
         if="boot.unminified" unless="linting"/>
     <script>
         <![CDATA[
-        TP.sprintf = sprintf;
+        TP.$$sprintf = window.sprintf;
+        TP.definePrimitive('sprintf', function() {
+            try {
+                return TP.$$sprintf.apply(TP, arguments);
+            } catch (e) {
+                TP.raise(TP, 'InvalidSubstitution', e);
+            }
+        });
         delete window.sprintf;
-        TP.vsprintf = vsprintf;
+
+        TP.$$vsprintf = window.vsprintf;
+        TP.definePrimitive('vsprintf', function() {
+            try {
+                return TP.$$vsprintf.apply(TP, arguments);
+            } catch (e) {
+                TP.raise(TP, 'InvalidSubstitution', e);
+            }
+        });
         delete window.vsprintf;
         ]]>
     </script>
