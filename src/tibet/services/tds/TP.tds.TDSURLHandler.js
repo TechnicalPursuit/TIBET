@@ -26,30 +26,60 @@ TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('initialize',
-function() {
+TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalSourceType',
+function(aURI) {
 
     /**
-     * @method initialize
-     * @summary Performs one-time type initialization.
+     * @method getWatcherSignalSourceType
+     * @summary Returns the TIBET type of the watcher signal source. Typically,
+     *     this is one of the prebuilt TIBET watcher types, like
+     *     TP.core.SSESignalSource for Server-Sent Event sources.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.core.SSESignalSource} The type that will be instantiated to
+     *     make a watcher for the supplied URI.
      */
 
-    //  We use the SSE signal source as our watcher signal source type.
-    this.set('watcherSignalSourceType', 'TP.core.SSESignalSource');
+    return TP.core.SSESignalSource;
+});
 
-    //  The signal source URI to use to watch notifications from the TDS is the
-    //  app root followed by the cfg variable that the TDS itself is using to
-    //  publish changes to.
-    this.set('watcherSignalSourceURI',
-                TP.uc(TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-                                        TP.sys.cfg('tds.watch.uri'))));
+//  ------------------------------------------------------------------------
 
-    //  The signal that this object (yes, the type itself) will be observing
-    //  from the watcher and that the watcher will signal when it needs to
-    //  notify of a change.
-    this.set('watcherSignalType', 'TP.sig.TDSFileChangeSignal');
+TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalType',
+function(aURI) {
 
-    return;
+    /**
+     * @method getWatcherSignalType
+     * @summary Returns the TIBET type of the watcher signal. This will be the
+     *     signal that the signal source sends when it wants to notify URIs of
+     *     changes.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.sig.TDSFileChangeSignal} The type that will be instantiated
+     *     to construct new signals that notify observers that the *remote*
+     *     version of the supplied URI's resource has changed.
+     */
+
+    return TP.sig.TDSFileChangeSignal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tds.TDSURLHandler.Type.defineMethod('getWatcherURI',
+function(aURI) {
+
+    /**
+     * @method getWatcherURI
+     * @summary Returns the URI to the resource that acts as a watcher to watch
+     *     for changes to the resource of the supplied URI.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.core.URI} A URI pointing to the resource that will notify
+     *     TIBET when the supplied URI's resource changes.
+     */
+
+    return TP.uc(TP.uriJoinPaths(
+                    TP.sys.cfg('path.app_root'), TP.sys.cfg('tds.watch.uri')));
 });
 
 //  ------------------------------------------------------------------------
