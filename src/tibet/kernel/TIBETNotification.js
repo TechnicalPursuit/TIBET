@@ -8287,71 +8287,81 @@ function() {
 
     //  Set up the event listener that will trigger when the connection is
     //  opened.
-    eventSource.onopen = function(evt) {
-        var payload;
+    eventSource.addEventListener(
+        'open',
+        function(evt) {
+            var payload;
 
-        payload = TP.hc(
-                    'url', eventSource.url,
-                    'withCredentials', eventSource.withCredentials,
-                    'readyState', eventSource.readyState
-                    );
+            payload = TP.hc(
+                        'url', eventSource.url,
+                        'withCredentials', eventSource.withCredentials,
+                        'readyState', eventSource.readyState
+                        );
 
-        this.signal('TP.sig.SourceOpen', payload);
+            this.signal('TP.sig.SourceOpen', payload);
 
-        return;
-    }.bind(this);
+            return;
+        }.bind(this),
+        false);
 
     //  Set up the event listener that will trigger when there is a *generic*
     //  message (i.e. one with no custom event type - those are registered as
     //  custom handlers).
-    eventSource.onmessage = function(evt) {
-        var payload;
+    eventSource.addEventListener(
+        'message',
+        function(evt) {
+            var payload;
 
-        payload = TP.hc(
-                    'origin', evt.origin,
-                    'data', evt.data,
-                    'lastEventId', evt.lastEventId,
-                    'source', evt.source
-                    );
+            payload = TP.hc(
+                        'origin', evt.origin,
+                        'data', evt.data,
+                        'lastEventId', evt.lastEventId,
+                        'sourceURL', eventSource.url
+                        );
 
-        this.signal('TP.sig.SourceDataReceived', payload);
+            this.signal('TP.sig.SourceDataReceived', payload);
 
-        return;
-    }.bind(this);
+            return;
+        }.bind(this),
+        false);
 
     //  Set up the event listener that will trigger when there is an error.
-    eventSource.onerror = function(evt) {
-        var payload;
+    eventSource.addEventListener(
+        'error',
+        function(evt) {
+            var payload;
 
-        //  If the readyState is set to EventSource.CLOSED, then the browser
-        //  is 'failing the connection'. In this case, we signal a
-        //  'TP.sig.SourceClosed' and return.
-        if (eventSource.readyState === EventSource.CLOSED) {
+            //  If the readyState is set to EventSource.CLOSED, then the browser
+            //  is 'failing the connection'. In this case, we signal a
+            //  'TP.sig.SourceClosed' and return.
+            if (eventSource.readyState === EventSource.CLOSED) {
+                this.closeConnection();
+                return;
+            }
+
+            //  If the readyState is set to EventSource.CONNECTING, then the
+            //  browser is trying to 'reestablish the connection'. In this case,
+            //  we signal a 'TP.sig.SourceReconnecting' and return.
+            if (eventSource.readyState === EventSource.CONNECTING) {
+
+                this.signal('TP.sig.SourceReconnecting', payload);
+                return;
+            }
+
+            //  Otherwise, there was truly some sort of error, so we signal
+            //  'TP.sig.SourceError' with some information
+            payload = TP.hc(
+                        'url', eventSource.url,
+                        'withCredentials', eventSource.withCredentials,
+                        'readyState', eventSource.readyState
+                        );
+
+            this.signal('TP.sig.SourceError', payload);
+
             this.closeConnection();
             return;
-        }
-
-        //  If the readyState is set to EventSource.CONNECTING, then the
-        //  browser is trying to 'reestablish the connection'. In this case,
-        //  we signal a 'TP.sig.SourceReconnecting' and return.
-        if (eventSource.readyState === EventSource.CONNECTING) {
-            this.raise('ConnectionError');
-            this.closeConnection();
-            return;
-        }
-
-        //  Otherwise, there was truly some sort of error, so we signal
-        //  'TP.sig.SourceError' with some information
-        payload = TP.hc(
-                    'url', eventSource.url,
-                    'withCredentials', eventSource.withCredentials,
-                    'readyState', eventSource.readyState
-                    );
-
-        this.signal('TP.sig.EventSourceError', payload);
-        this.closeConnection();
-        return;
-    }.bind(this);
+        }.bind(this),
+        false);
 
     return this;
 });
