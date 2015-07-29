@@ -3094,7 +3094,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('getSubURIs',
-function() {
+function(onlySecondaries) {
 
     /**
      * @method getSubURIs
@@ -3102,6 +3102,8 @@ function() {
      *     URIs which point to the same primary resource as the receiver, but
      *     also have a secondary resource pointed to by a fragment. If the
      *     receiver has a secondary resource itself, it returns null.
+     * @param {Boolean} [onlySecondaries=false] Whether or not to only include
+     *     secondary resources (i.e. those with a hash)
      * @returns {Array} An Array of TP.core.URI objects corresponding to the
      *     'sub URI's of the receiver.
      */
@@ -3130,8 +3132,15 @@ function() {
 
         matcher = TP.rc('^' + matchLoc);
     } else {
-        //  Construct a RegExp looking for our location followed by a hash.
-        matcher = TP.rc('^' + loc + '#');
+        if (onlySecondaries) {
+            //  Construct a RegExp starting by looking for our location
+            //  followed by a hash.
+            matcher = TP.rc('^' + loc + '#');
+        } else {
+            //  Construct a RegExp starting by looking for our location
+            //  followed by anything.
+            matcher = TP.rc('^' + loc + '.*');
+        }
     }
 
     //  Get all of the registered URIs
