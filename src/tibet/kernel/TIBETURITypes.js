@@ -2957,6 +2957,20 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getRoot',
+function() {
+
+    /**
+     * @method getRoot
+     * @summary Returns the root of the receiver.
+     * @returns {String} The receiver's root.
+     */
+
+    return TP.uriRoot(this.getLocation());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$getResultContent',
 function(aRequest, aResult, aResource) {
 
