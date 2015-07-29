@@ -6004,8 +6004,19 @@ function() {
      * @returns {TP.core.URI} The receiver.
      */
 
+    var subURIs;
+
     this.isLoaded(false);
     this.$changed();
+
+    //  Make sure to let subURIs know too.
+    if (TP.notEmpty(subURIs = this.getSubURIs())) {
+        subURIs.forEach(
+                function(aURI) {
+                    aURI.isLoaded(false);
+                    aURI.$changed();
+                });
+    }
 
     return this;
 });
