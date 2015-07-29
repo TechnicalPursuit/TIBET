@@ -5285,6 +5285,31 @@ function(url) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URL.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the path portions as an Array
+     * @returns {String[]} An Array of Strings comprising the parts of the path.
+     */
+
+    var path;
+
+    if (TP.isEmpty(path = this.getPath())) {
+        return TP.ac();
+    }
+
+    //  There isn't always a leading slash... see getPath()
+    if (path.charAt(0) === '/') {
+        path = path.slice(1);
+    }
+
+    return path.split('/');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URL.Inst.defineMethod('getRelativePath',
 function(secondPath, filePath) {
 
