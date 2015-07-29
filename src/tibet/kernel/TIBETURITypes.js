@@ -5027,6 +5027,9 @@ TP.core.URL.Inst.defineAttribute('lastRequest');
 //  (i.e. the native XHR or WebSocket object)
 TP.core.URL.Inst.defineAttribute('lastCommObj');
 
+//  whether or not we should autorefresh from a changed remote resource
+TP.core.URL.Inst.defineAttribute('autoRefresh');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -6033,16 +6036,22 @@ function() {
      * @returns {Boolean} Whether or not the resource auto-refreshes.
      */
 
-    var ext;
+    var autoRefresh,
+        ext;
 
-    //  By default CSS, XHTML and LESS resources auto refresh.
+    //  First, see if we have an explicit value for autoRefresh
+    if (TP.notDefined(autoRefresh = this.get('autoRefresh'))) {
 
-    ext = this.getExtension();
-    if (/(css|xhtml|less)/.test(ext)) {
-        return true;
+        //  By default CSS, XHTML and LESS resources auto refresh.
+        ext = this.getExtension();
+        if (/(css|xhtml|less)/.test(ext)) {
+            return true;
+        }
+
+        return false;
     }
 
-    return false;
+    return autoRefresh;
 });
 
 //  ------------------------------------------------------------------------
