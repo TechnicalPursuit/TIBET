@@ -5039,6 +5039,9 @@ TP.core.URL.Inst.defineAttribute('lastRequest');
 //  (i.e. the native XHR or WebSocket object)
 TP.core.URL.Inst.defineAttribute('lastCommObj');
 
+//  whether or not the URI is being watched for change
+TP.core.URL.Inst.defineAttribute('watched');
+
 //  whether or not we should autorefresh from a changed remote resource
 TP.core.URL.Inst.defineAttribute('autoRefresh');
 
@@ -6087,12 +6090,17 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @returns {TP.sig.Response|null} The request's response object.
      */
 
     var request,
         url,
         handler;
+
+    //  If this URL is already being watched, then just exit
+    if (TP.isTrue(this.get('watched'))) {
+        return null;
+    }
 
     request = this.constructRequest(aRequest);
 
@@ -6102,6 +6110,8 @@ function(aRequest) {
 
     request.atPut('operation', 'watch');
     handler = url.map(this, request);
+
+    this.set('watched', true);
 
     return handler.watch(url, request);
 });
@@ -6118,12 +6128,17 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} The request's response object.
+     * @returns {TP.sig.Response|null} The request's response object.
      */
 
     var request,
         url,
         handler;
+
+    //  If this URL is already not being watched, then just exit
+    if (TP.notTrue(this.get('watched'))) {
+        return null;
+    }
 
     request = this.constructRequest(aRequest);
 
@@ -6133,6 +6148,8 @@ function(aRequest) {
 
     request.atPut('operation', 'unwatch');
     handler = url.map(this, request);
+
+    this.set('watched', false);
 
     return handler.unwatch(url, request);
 });
