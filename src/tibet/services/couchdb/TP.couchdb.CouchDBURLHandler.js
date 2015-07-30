@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tds.TDSURLHandler}
+ * @type {TP.couchdb.CouchDBURLHandler}
  * @summary A subtype of HTTPURLHandler that manages URLs coming from the TDS.
  *     The TDS can provide change notifications about the URLs it manages and
  *     this type can then dispatch those changes into the TIBET change
@@ -18,15 +18,15 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.defineSubtype('tds.TDSURLHandler');
+TP.core.HTTPURLHandler.defineSubtype('couchdb.CouchDBURLHandler');
 
-TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
+TP.couchdb.CouchDBURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalSourceType',
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSignalSourceType',
 function(aURI) {
 
     /**
@@ -45,7 +45,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalType',
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSignalType',
 function(aURI) {
 
     /**
@@ -55,17 +55,18 @@ function(aURI) {
      *     changes.
      * @param {TP.core.URI} aURI The URI representing the resource to be
      *     watched.
-     * @returns {TP.sig.TDSFileChangeSignal} The type that will be instantiated
-     *     to construct new signals that notify observers that the *remote*
-     *     version of the supplied URI's resource has changed.
+     * @returns {TP.sig.RemoteURLChangeSignal} The type that will be
+     *     instantiated to construct new signals that notify observers that the
+     *     *remote* version of the supplied URI's resource has changed. At this
+     *     level, this returns the common supertype of all such signals.
      */
 
-    return TP.sig.TDSFileChangeSignal;
+    return TP.sig.CouchDBChangeSignal;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('getWatcherURI',
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherURI',
 function(aURI) {
 
     /**
@@ -78,31 +79,47 @@ function(aURI) {
      *     TIBET when the supplied URI's resource changes.
      */
 
-    return TP.uc(TP.uriJoinPaths(
-                    TP.sys.cfg('path.app_root'), TP.sys.cfg('tds.watch.uri')));
+    var pathParts,
+        watcherLoc;
+
+    //  We grab the URI's path parts
+    pathParts = aURI.getPathParts();
+
+    //  Join together the URI's root, the first path part (which, for CouchDB)
+    //  is the database name, and the standard 'changes feed' portion.
+    watcherLoc = TP.ac(aURI.getRoot(),
+                        pathParts.first(),
+                        '_changes?feed=eventsource').join('/');
+
+    if (!TP.isURI(watcherLoc)) {
+        return null;
+    }
+
+    return TP.uc(watcherLoc);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('handleTDSFileChangeSignal',
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('handleCouchDBChangeSignal',
 function(aSignal) {
 
     /**
-     * @method handleTDSFileChangeSignal
+     * @method handleCouchDBChangeSignal
      * @summary Handles when a TDS-managed resource has changed.
-     * @param {TP.sig.TDSFileChangeSignal} aSignal The signal indicating that a
+     * @param {TP.sig.CouchDBChangeSignal} aSignal The signal indicating that a
      *     TDS-managed resource has changed.
-     * @returns {TP.tds.TDSURLHandler} The receiver.
+     * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
      */
 
     var payload,
         data,
 
+        signalSourceURL,
+
         path,
         origin,
 
-        fileName,
-
+        urlLoc,
         url;
 
     //  Make sure that the system is currently configured to process remote
@@ -122,11 +139,18 @@ function(aSignal) {
         return;
     }
 
-    //  If we can't determine the file path we can't take action in any case.
-    path = data.at('path');
-    if (TP.isEmpty(path)) {
+    //  For CouchDB, we observe at a database-level, so we want the database
+    //  URL.
+    signalSourceURL = TP.uc(payload.at('sourceURL'));
+    if (!TP.isURI(signalSourceURL)) {
         return;
     }
+
+    //  Get the path and slice off from the first slash to where the '/_changes'
+    //  portion starts. This will give us our database name - the database that
+    //  changed.
+    path = signalSourceURL.getPath();
+    path = path.slice(1, path.indexOf('/_changes'));
 
     //  The origin comes from the SSE data and will be server URL, minus the
     //  actual file path.
@@ -136,11 +160,11 @@ function(aSignal) {
     path = path.asString().stripEnclosingQuotes();
 
     //  Join the two together to form the full URL path
-    fileName = TP.uriJoinPaths(origin, path);
+    urlLoc = TP.uriJoinPaths(origin, path);
 
     //  If we can successfully create a URL from the data, then process the
     //  change.
-    if (TP.isURI(url = TP.uc(fileName))) {
+    if (TP.isURI(url = TP.uc(urlLoc))) {
         TP.core.URI.processRemoteResourceChange(url);
     }
 
@@ -148,15 +172,10 @@ function(aSignal) {
 });
 
 //  =======================================================================
-//  TP.sig.TDSFileChangeSignal
+//  TP.sig.CouchDBChangeSignal
 //  ========================================================================
 
-TP.sig.RemoteURLChangeSignal.defineSubtype('TDSFileChangeSignal');
-
-//  We configure our NATIVE_NAME to the same SSE-level event that the TDS is
-//  configured to send.
-TP.sig.TDSFileChangeSignal.Type.defineConstant('NATIVE_NAME',
-    TP.sys.cfg('tds.watch.event'));
+TP.sig.RemoteURLChangeSignal.defineSubtype('CouchDBChangeSignal');
 
 //  ------------------------------------------------------------------------
 //  end

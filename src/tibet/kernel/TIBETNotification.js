@@ -8186,7 +8186,9 @@ function(signalTypes) {
      *     custom 'event' (as specified by the 'event:' tag in the received
      *     data), we look at the signals being registered and if they have a
      *     'NATIVE_NAME' slot, we use that to register a handler with our
-     *     private EventSource object to broadcast the signal.
+     *     private EventSource object under that event name. If they don't have
+     *     a 'NATIVE_NAME' slot, then we register a handler under the 'message'
+     *     event name.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
      * @exception TP.sig.InvalidSource
@@ -8213,53 +8215,50 @@ function(signalTypes) {
     //  custom handler registered for them.
     signalTypes.perform(
         function(aSignalType) {
-            var customName,
+            var eventName,
                 signalName,
 
                 handlerFunc;
 
-            //  If the signal type has a NATIVE_NAME slot, then register a
-            //  custom handler using that value as the event name.
-            if (TP.notEmpty(customName = aSignalType.NATIVE_NAME)) {
+            eventName = TP.ifEmpty(aSignalType.NATIVE_NAME, 'message');
 
-                //  If there's already a handler registered for this native
-                //  event type then just return here. We don't want multiple
-                //  handlers for the same native event.
-                if (handlerRegistry.hasKey(customName)) {
-                    return;
+            //  If there's already a handler registered for this native
+            //  event type then just return here. We don't want multiple
+            //  handlers for the same native event.
+            if (handlerRegistry.hasKey(eventName)) {
+                return;
+            }
+
+            signalName = aSignalType.getSignalName();
+
+            handlerFunc = function(evt) {
+                var payload,
+                    data;
+
+                try {
+                    data = TP.json2js(evt.data);
+                } catch (e) {
+                    data = evt.data;
                 }
 
-                signalName = aSignalType.getSignalName();
+                payload = TP.hc(
+                            'origin', evt.origin,
+                            'data', data,
+                            'lastEventId', evt.lastEventId,
+                            'sourceURL', eventSource.url
+                            );
 
-                handlerFunc = function(evt) {
-                    var payload,
-                        data;
+                thisArg.signal(signalName, payload);
 
-                    try {
-                        data = TP.json2js(evt.data);
-                    } catch (e) {
-                        data = evt.data;
-                    }
+                return;
+            };
 
-                    payload = TP.hc(
-                                'origin', evt.origin,
-                                'data', data,
-                                'lastEventId', evt.lastEventId,
-                                'source', evt.source
-                                );
+            //  Put it in the handler registry in case we went to unregister
+            //  it interactively later.
+            handlerRegistry.atPut(eventName, handlerFunc);
 
-                    thisArg.signal(signalName, payload);
-
-                    return;
-                };
-
-                //  Put it in the handler registry in case we went to unregister
-                //  it interactively later.
-                handlerRegistry.atPut(customName, handlerFunc);
-
-                //  Add the custom event listener to the event source.
-                eventSource.addEventListener(customName, handlerFunc, false);
-            }
+            //  Add the custom event listener to the event source.
+            eventSource.addEventListener(eventName, handlerFunc, false);
         });
 
     return this;
@@ -8288,71 +8287,81 @@ function() {
 
     //  Set up the event listener that will trigger when the connection is
     //  opened.
-    eventSource.onopen = function(evt) {
-        var payload;
+    eventSource.addEventListener(
+        'open',
+        function(evt) {
+            var payload;
 
-        payload = TP.hc(
-                    'url', eventSource.url,
-                    'withCredentials', eventSource.withCredentials,
-                    'readyState', eventSource.readyState
-                    );
+            payload = TP.hc(
+                        'url', eventSource.url,
+                        'withCredentials', eventSource.withCredentials,
+                        'readyState', eventSource.readyState
+                        );
 
-        this.signal('TP.sig.SourceOpen', payload);
+            this.signal('TP.sig.SourceOpen', payload);
 
-        return;
-    }.bind(this);
+            return;
+        }.bind(this),
+        false);
 
     //  Set up the event listener that will trigger when there is a *generic*
     //  message (i.e. one with no custom event type - those are registered as
     //  custom handlers).
-    eventSource.onmessage = function(evt) {
-        var payload;
+    eventSource.addEventListener(
+        'message',
+        function(evt) {
+            var payload;
 
-        payload = TP.hc(
-                    'origin', evt.origin,
-                    'data', evt.data,
-                    'lastEventId', evt.lastEventId,
-                    'source', evt.source
-                    );
+            payload = TP.hc(
+                        'origin', evt.origin,
+                        'data', evt.data,
+                        'lastEventId', evt.lastEventId,
+                        'sourceURL', eventSource.url
+                        );
 
-        this.signal('TP.sig.SourceDataReceived', payload);
+            this.signal('TP.sig.SourceDataReceived', payload);
 
-        return;
-    }.bind(this);
+            return;
+        }.bind(this),
+        false);
 
     //  Set up the event listener that will trigger when there is an error.
-    eventSource.onerror = function(evt) {
-        var payload;
+    eventSource.addEventListener(
+        'error',
+        function(evt) {
+            var payload;
 
-        //  If the readyState is set to EventSource.CLOSED, then the browser
-        //  is 'failing the connection'. In this case, we signal a
-        //  'TP.sig.SourceClosed' and return.
-        if (eventSource.readyState === EventSource.CLOSED) {
+            //  If the readyState is set to EventSource.CLOSED, then the browser
+            //  is 'failing the connection'. In this case, we signal a
+            //  'TP.sig.SourceClosed' and return.
+            if (eventSource.readyState === EventSource.CLOSED) {
+                this.closeConnection();
+                return;
+            }
+
+            //  If the readyState is set to EventSource.CONNECTING, then the
+            //  browser is trying to 'reestablish the connection'. In this case,
+            //  we signal a 'TP.sig.SourceReconnecting' and return.
+            if (eventSource.readyState === EventSource.CONNECTING) {
+
+                this.signal('TP.sig.SourceReconnecting', payload);
+                return;
+            }
+
+            //  Otherwise, there was truly some sort of error, so we signal
+            //  'TP.sig.SourceError' with some information
+            payload = TP.hc(
+                        'url', eventSource.url,
+                        'withCredentials', eventSource.withCredentials,
+                        'readyState', eventSource.readyState
+                        );
+
+            this.signal('TP.sig.SourceError', payload);
+
             this.closeConnection();
             return;
-        }
-
-        //  If the readyState is set to EventSource.CONNECTING, then the
-        //  browser is trying to 'reestablish the connection'. In this case,
-        //  we signal a 'TP.sig.SourceReconnecting' and return.
-        if (eventSource.readyState === EventSource.CONNECTING) {
-            this.raise('ConnectionError');
-            this.closeConnection();
-            return;
-        }
-
-        //  Otherwise, there was truly some sort of error, so we signal
-        //  'TP.sig.SourceError' with some information
-        payload = TP.hc(
-                    'url', eventSource.url,
-                    'withCredentials', eventSource.withCredentials,
-                    'readyState', eventSource.readyState
-                    );
-
-        this.signal('TP.sig.EventSourceError', payload);
-        this.closeConnection();
-        return;
-    }.bind(this);
+        }.bind(this),
+        false);
 
     return this;
 });

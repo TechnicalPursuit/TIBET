@@ -15,6 +15,8 @@
     <config ref="webdav"/>
     <config ref="xmlrpc"/>
 
+    <config ref="couchdb"/>
+
     <config ref="tds"/>
 </config>
 
@@ -51,6 +53,10 @@
     <script src="xmlrpc/TPXMLRPCRequest.js"/>
     <script src="xmlrpc/TPXMLRPCResponse.js"/>
     <script src="xmlrpc/TPXMLRPCService.js"/>
+</config>
+
+<config id="couchdb">
+    <script src="couchdb/TP.couchdb.CouchDBURLHandler.js"/>
 </config>
 
 <config id="tds">

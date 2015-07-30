@@ -360,8 +360,8 @@ TP.core.TSH.Inst.defineAttribute('testVerbose', false);
 //  additional information presented when a shell of this type starts up
 TP.core.TSH.Inst.defineAttribute('introduction', null);
 
-//  whether or not the :sourceFS command should happen automatically
-TP.core.TSH.Inst.defineAttribute('autoReload');
+//  whether or not we're watching changes to remote resources
+TP.core.TSH.Inst.defineAttribute('remoteWatch');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -3928,194 +3928,147 @@ function(aRequest) {
 //  FILE SYSTEM WATCH
 //  ------------------------------------------------------------------------
 
-TP.sig.RemoteSourceSignal.defineSubtype('FileChangeEvent');
-
-TP.sig.FileChangeEvent.Type.defineConstant('NATIVE_NAME',
-    TP.sys.cfg('tds.watch.event'));
-
-TP.sig.FileChangeEvent.Type.defineAttribute('pending', TP.hc());
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeChangeFS',
+TP.core.TSH.Inst.defineMethod('executeListChangedRemotes',
 function(aRequest) {
 
-    var dict;
+    var resourceHash;
 
-    dict = TP.sig.FileChangeEvent.get('pending');
+    resourceHash = TP.core.URI.get('changedResources');
 
-    aRequest.stdout(TP.str(dict));
+    aRequest.stdout(TP.str(resourceHash));
 
     aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeSourceFS',
+TP.core.TSH.Inst.defineMethod('executeForceRemoteRefresh',
 function(aRequest) {
 
-    var dict,
-        files,
-        loaded;
+    TP.core.URI.refreshChangedURIs();
 
-    dict = TP.sig.FileChangeEvent.get('pending');
+    aRequest.stdout('Remote refreshing complete');
 
-    loaded = TP.ac();
-    files = dict.getKeys();
+    aRequest.complete();
+});
 
-    files.perform(
-        function(file) {
+//  ------------------------------------------------------------------------
 
-            var flag,
+TP.core.TSH.Inst.defineMethod('executeToggleRemoteWatch',
+function(aRequest) {
 
-                url,
-                src,
+    var currentlyProcessing,
 
-                debug,
+        watchSources,
+        args;
 
-                ext;
+    currentlyProcessing = TP.sys.cfg('uri.process_remote_changes');
+    watchSources = TP.sys.cfg('uri.remote_watch_sources');
+    watchSources.convert(
+                function(aLocation) {
+                    return TP.uriExpandPath(aLocation);
+                });
 
-            try {
-                flag = TP.sys.shouldLogCodeChanges();
-                TP.sys.shouldLogCodeChanges(false);
+    //  Then, if a URI was supplied, we add it to the 'uri.remote_watch_sources'
+    //  Array.
+    args = this.getArgument(aRequest, 'ARGV');
+    if (TP.notEmpty(args)) {
 
-                aRequest.stdout('Reloading source from: ' + file);
+        args.forEach(
+            function(argLoc) {
+                var argURI,
+                    deletedCount;
 
-                url = TP.uc(file);
-                if (TP.notValid(url)) {
+                argURI = TP.uc(argLoc);
+                deletedCount = watchSources.remove(argURI.getLocation());
 
-                    aRequest.fail('Couldn\'t create URL from: ' + file);
-
-                    return;
+                //  Didn't find it - add the argument's URI string value.
+                if (deletedCount === 0) {
+                    watchSources.push(argURI.getLocation());
                 }
-
-                debug = TP.sys.shouldUseDebugger();
-                TP.sys.shouldUseDebugger(false);
-
-                ext = url.getExtension();
-
-                url.isLoaded(false);
-
-                switch (ext) {
-                    case 'js':
-                        if (TP.notValid(
-                            src = url.getContent(
-                                    TP.hc('refresh', true, 'async', false)))) {
-
-                            aRequest.fail(
-                                    'Couldn\'t load source from: ' + file);
-
-                            return;
-                        }
-
-                        TP.boot.$sourceImport(src, null, file, null, true);
-                        break;
-
-                    case 'css':
-
-                        TP.documentStyleHrefReload(TP.sys.uidoc(true),
-                                                    url.getLocation());
-
-                        break;
-
-                    case 'xhtml':
-                    case 'xml':
-
-                    /*
-                        if (TP.notValid(
-                            src = url.getContent(
-                                    TP.hc('refresh', true, 'async', false)))) {
-
-                            aRequest.fail(
-                                    'Couldn\'t load source from: ' + file);
-
-                            return;
-                        }
-                    */
-
-                        TP.windowRefreshContentFrom(TP.sys.uiwin(true), file);
-
-                        break;
-
-                    default:
-                        aRequest.fail(
-                            'No action known for files with extension: ' + ext);
-                        return;
-                }
-
-
-                loaded.push(file);
-            } catch (e) {
-                aRequest.fail(
-                    TP.ec(e, 'Source failed to exec: ' + file));
-                return;
-            } finally {
-                TP.sys.shouldLogCodeChanges(flag);
-                TP.sys.shouldUseDebugger(debug);
-            }
-        });
-
-    //  Prune any files we were able to load. Others remain, in theory so they
-    //  can be repaired and loaded.
-    loaded.perform(
-            function(file) {
-                dict.removeKey(file);
             });
 
+        //  If watch sources is not empty, turn the flag on, otherwise turn it
+        //  off
+        if (TP.notEmpty(watchSources)) {
+            TP.sys.setcfg('uri.process_remote_changes', true);
+        } else {
+            TP.sys.setcfg('uri.process_remote_changes', false);
+        }
+    } else if (TP.notEmpty(watchSources)) {
+        //  If we have watch sources, but the flag is already true, then we turn
+        //  it off
+        if (TP.isTrue(currentlyProcessing)) {
+            TP.sys.setcfg('uri.process_remote_changes', false);
+        } else {
+            TP.sys.setcfg('uri.process_remote_changes', true);
+        }
+    } else {
+        //  watch sources was empty, so we just turn the flag off.
+        TP.sys.setcfg('uri.process_remote_changes', false);
+    }
+
+    //  Note here how we go after the stored value - we might have changed it
+    //  above.
+    if (TP.isTrue(TP.sys.cfg('uri.process_remote_changes'))) {
+        aRequest.stdout('Remote URI change monitoring active for: ' +
+                        watchSources);
+    } else {
+        aRequest.stdout('Remote URI change monitoring inactive');
+    }
+
+    return aRequest.complete();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeToggleReportChangedRemotes',
+function(aRequest) {
+
+    var resourceHash,
+        handler;
+
+    resourceHash = TP.core.URI.get('changedResources');
+
+    handler = function(aSignal) {
+                var str,
+                    req;
+
+                str = TP.sc('Resource change: ') + resourceHash.asJSONSource();
+
+                req = TP.sig.UserOutputRequest.construct(
+                            TP.hc('output', str,
+                                    // TODO: alter this class to get attention
+                                    'cssClass', 'inbound_announce',
+                                    'cmdAsIs', true,
+                                    'cmdBox', false,
+                                    'cmdRecycle', true));
+
+                req.fire(this);
+            }.bind(this);
+
+    if (this.get('remoteWatch')) {
+
+        //  Toggle off
+
+        this.ignore(resourceHash, 'Change', handler);
+
+        this.set('remoteWatch', false);
+
+        aRequest.stdout('Remote resource change monitoring ended.');
+
+    } else {
+
+        //  Toggle on
+
+        this.observe(resourceHash, 'Change', handler);
+
+        this.set('remoteWatch', true);
+
+        aRequest.stdout('Remote resource change monitoring active.');
+    }
+
     aRequest.complete();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeWatchFS',
-function(aRequest) {
-    var watcher,
-        url;
-
-    if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-                                TP.sys.cfg('tds.watch.uri'));
-
-        watcher = TP.core.SSESignalSource.construct(url);
-        this.set('watcherSSESource', watcher);
-    }
-
-    this.observe(watcher, 'TP.sig.FileChangeEvent');
-
-    aRequest.stdout('File system change monitoring active.');
-
-    //  If the '--auto' flag was specified, then we're 'auto refreshing'.
-    if (TP.notEmpty(this.getArgument(aRequest, 'tsh:auto', null, true))) {
-        this.set('autoReload', true);
-    }
-
-    return aRequest.complete();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeUnwatchFS',
-function(aRequest) {
-    var watcher,
-        url;
-
-    // TODO: why? if we are 'unwatching' what is the construct() process doing
-    // for us? Shouldn't there be a 'getInstance' or something instead?
-    if (TP.notValid(watcher = this.get('watcherSSESource'))) {
-        url = TP.uriJoinPaths(TP.sys.cfg('path.app_root'),
-                                TP.sys.cfg('tds.watch.uri'));
-
-        watcher = TP.core.SSESignalSource.construct(url);
-    }
-
-    this.ignore(watcher, 'TP.sig.FileChangeEvent');
-
-    aRequest.stdout('File system change monitoring ended.');
-
-    //  Flip this to false, in case it was on.
-    this.set('autoReload', false);
-
-    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -4137,110 +4090,6 @@ function() {
     }
 
     return str;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('handleFileChangeEvent',
-function(aSignal) {
-
-    var payload,
-        data,
-        path,
-        count,
-        name,
-        str,
-        req,
-        dict;
-
-    //  If we can't determine the file name we can't take action in any case.
-    if (TP.notValid(payload = aSignal.getPayload())) {
-        return;
-    }
-
-    //  TODO: all kinds of alternatives here. We may want to queue them. We may
-    //  want to access a patch of the deltas. We may need to track ordering, or
-    //  to prompt the user when a series from a specific file ends and a new file
-    //  starts changing in case there are intra-file dependencies.
-
-    //  Add tracking data on the file that changed.
-    dict = aSignal.getType().get('pending');
-
-    data = payload.at('data');
-    if (TP.notValid(data)) {
-        return;
-    }
-
-    if (TP.canInvoke(data, 'at')) {
-        path = data.at('path');
-    } else {
-        path = data.path;
-    }
-
-    if (TP.isEmpty(path)) {
-        return;
-    }
-
-    name = path.asString().stripEnclosingQuotes();
-    name = TP.uriJoinPaths(TP.sys.cfg('tds.watch.root'), name);
-
-    count = dict.at(name);
-    if (TP.notValid(count)) {
-        //  Notify on the first change of each file.
-        str = 'File system change: ' + name;
-        req = TP.sig.UserOutputRequest.construct(
-                    TP.hc('output', str,
-                            // TODO: alter this class to get attention
-                            'cssClass', 'inbound_announce',
-                            'cmdAsIs', true,
-                            'cmdBox', false,
-                            'cmdRecycle', true));
-        req.fire(this);
-
-        count = 1;
-    } else {
-        count += 1;
-    }
-    dict.atPut(name, count);
-
-    //  If autoReload is on, then fire a command to the shell to auto reload
-    if (this.get('autoReload')) {
-        TP.shell(TP.hc('cmdSrc', ':sourceFS',
-                        'cmdEcho', false,
-                        'cmdHistory', false,
-                        'cmdSilent', false));
-    }
-
-    return this;
-
-/*
-    req = TP.sig.UserInputRequest.construct(
-        TP.hc('query', 'username:', 'default', name, 'async', true));
-
-    //  response comes as a TP.sig.UserInput signal, so add a local handler
-    req.defineMethod(
-        'handleUserInput',
-        function(aSignal) {
-
-            var req,
-                res,
-                responder;
-
-            //  do this so the triggering request clears the queue
-            if (TP.isValid(responder =
-                            aSignal.getRequest().get('responder'))) {
-                aSignal.getRequestID().signal('TP.sig.RequestCompleted');
-            }
-
-            res = aSignal.getResult();
-
-            // TODO...
-            ...
-    });
-
-    return this;
-*/
-
 });
 
 //  ------------------------------------------------------------------------
