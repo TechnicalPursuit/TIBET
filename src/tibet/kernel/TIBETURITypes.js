@@ -1524,7 +1524,7 @@ function(aURI) {
 
     resourceHash = TP.core.URI.get('changedResources');
 
-    if (aURI.shouldAutoRefresh()) {
+    if (aURI.get('autoRefresh')) {
         aURI.refreshFromRemoteResource();
     } else {
         if (!resourceHash.containsKey(aURI.getLocation())) {
@@ -4022,11 +4022,11 @@ function(aRequest, aResult, aResource) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('shouldAutoRefresh',
+TP.core.URI.Inst.defineMethod('getAutoRefresh',
 function() {
 
     /**
-     * @method shouldAutoRefresh
+     * @method getAutoRefresh
      * @summary Returns whether or not the URI 'auto refreshes' from its remote
      *     resource when it gets notified that that content has changed.
      * @returns {Boolean} Whether or not the resource auto-refreshes.
@@ -6038,11 +6038,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('shouldAutoRefresh',
+TP.core.URL.Inst.defineMethod('getAutoRefresh',
 function() {
 
     /**
-     * @method shouldAutoRefresh
+     * @method getAutoRefresh
      * @summary Returns whether or not the URI 'auto refreshes' from its remote
      *     resource when it gets notified that that content has changed.
      * @returns {Boolean} Whether or not the resource auto-refreshes.
@@ -6051,16 +6051,24 @@ function() {
     var autoRefresh,
         ext;
 
-    //  First, see if we have an explicit value for autoRefresh
-    if (TP.notDefined(autoRefresh = this.get('autoRefresh'))) {
+    //  See if we have an explicit value for autoRefresh - note the use of
+    //  $get() to avoid endless recursion. If we don't have one, then we have
+    //  intelligent defaults for URLs with certain extensions.
+    if (TP.notDefined(autoRefresh = this.$get('autoRefresh'))) {
 
         //  By default CSS, XHTML and LESS resources auto refresh.
         ext = this.getExtension();
         if (/(css|xhtml|less)/.test(ext)) {
-            return true;
+            autoRefresh = true;
+        } else {
+            autoRefresh = false;
         }
+    }
 
-        return false;
+    //  If autoRefresh is true, then watch the URL. Note that this call just
+    //  returns if the URL is already configured to watch.
+    if (autoRefresh) {
+        this.watch();
     }
 
     return autoRefresh;
