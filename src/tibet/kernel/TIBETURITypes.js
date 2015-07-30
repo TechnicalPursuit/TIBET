@@ -156,7 +156,7 @@ TP.core.URI.Type.defineAttribute(
 
 //  holder for URIs that have had their remote resources changed but that
 //  haven't been refreshed.
-TP.core.URI.Type.defineAttribute('resourceChangedQueue', TP.ac());
+TP.core.URI.Type.defineAttribute('changedResources', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -1519,11 +1519,23 @@ function(aURI) {
      * @returns {TP.meta.core.URI} The receiver.
      */
 
+    var resourceHash,
+        count;
+
+    resourceHash = TP.core.URI.get('changedResources');
+
     if (aURI.shouldAutoRefresh()) {
         aURI.refreshFromRemoteResource();
     } else {
-        TP.core.URI.get('resourceChangedQueue').push(aURI);
-        TP.core.URI.get('resourceChangedQueue').unique();
+        if (!resourceHash.containsKey(aURI.getLocation())) {
+            resourceHash.atPut(aURI.getLocation(),
+                                TP.hc('count', 1, 'targetURI', aURI));
+        } else {
+            count = resourceHash.at(aURI.getLocation()).at('count');
+            resourceHash.at(aURI.getLocation()).atPut('count', count + 1);
+
+            resourceHash.changed();
+        }
     }
 
     return this;
@@ -1541,16 +1553,16 @@ function() {
      * @returns {TP.meta.core.URI} The receiver.
      */
 
-    var queue;
+    var resourceHash;
 
-    queue = TP.core.URI.get('resourceChangedQueue');
+    resourceHash = TP.core.URI.get('changedResources');
 
-    queue.forEach(
-        function(entry) {
-            entry.refreshFromRemoteResource();
+    resourceHash.perform(
+        function(kvPair) {
+            kvPair.last().at('targetURI').refreshFromRemoteResource();
         });
 
-    queue.empty();
+    resourceHash.empty();
 
     return this;
 });
