@@ -3954,7 +3954,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeToggleRemoteRefresh',
+TP.core.TSH.Inst.defineMethod('executeToggleRemoteWatch',
 function(aRequest) {
 
     var currentlyProcessing,
@@ -4022,7 +4022,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeToggleRemoteWatch',
+TP.core.TSH.Inst.defineMethod('executeToggleReportChangedRemotes',
 function(aRequest) {
 
     var resourceHash,
@@ -4031,21 +4031,21 @@ function(aRequest) {
     resourceHash = TP.core.URI.get('changedResources');
 
     handler = function(aSignal) {
-                    var str,
-                        req;
+                var str,
+                    req;
 
-                    str = TP.sc('Resource change: ') + resourceHash.asJSONSource();
+                str = TP.sc('Resource change: ') + resourceHash.asJSONSource();
 
-                    req = TP.sig.UserOutputRequest.construct(
-                                TP.hc('output', str,
-                                        // TODO: alter this class to get attention
-                                        'cssClass', 'inbound_announce',
-                                        'cmdAsIs', true,
-                                        'cmdBox', false,
-                                        'cmdRecycle', true));
+                req = TP.sig.UserOutputRequest.construct(
+                            TP.hc('output', str,
+                                    // TODO: alter this class to get attention
+                                    'cssClass', 'inbound_announce',
+                                    'cmdAsIs', true,
+                                    'cmdBox', false,
+                                    'cmdRecycle', true));
 
-                    req.fire(this);
-                }.bind(this);
+                req.fire(this);
+            }.bind(this);
 
     if (this.get('remoteWatch')) {
 
