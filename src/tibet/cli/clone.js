@@ -187,20 +187,26 @@ Cmd.prototype.execute = function() {
 
     if (options.dna) {
 
-        // Try to resolve as an absolute reference.
-        dna = options.dna;
-        if (!sh.test('-e', dna)) {
+        // If the dna reference doesn't include either a / or dot indicating a
+        // path then we work strictly from the TIBET dna directory choices.
+        if (/\.|\//.test(options.dna)) {
 
-            // Try to resolve as a relative reference.
-            dna = path.join(process.cwd(), options.dna);
+            // Try to resolve as an absolute reference.
             if (!sh.test('-e', dna)) {
 
-                // Try to resolve as pre-built library dna.
-                dna = path.join(module.filename, this.DNA_ROOT, options.dna);
+                // Try to resolve as a relative reference.
+                dna = path.join(process.cwd(), options.dna);
                 if (!sh.test('-e', dna)) {
                     this.error('Unable to locate dna: ' + options.dna);
                     return 1;
                 }
+            }
+        } else {
+            // Try to resolve as pre-built library dna.
+            dna = path.join(module.filename, this.DNA_ROOT, options.dna);
+            if (!sh.test('-e', dna)) {
+                this.error('Unable to locate dna: ' + options.dna);
+                return 1;
             }
         }
     } else {
@@ -289,7 +295,9 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
-    params = CLI.blend({appname: appname, dna: dna}, options);
+    //  NOTE that we don't use the full path for the dna reference here to avoid
+    //  embedding real paths in the output.
+    params = CLI.blend({appname: appname, dna: options.dna}, options);
 
     //  ---
     //  Process templated content to inject appname.

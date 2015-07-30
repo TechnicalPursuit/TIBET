@@ -6,11 +6,8 @@
         "indexpage": "~app/index.html"
     },
     "path": {
+        "app_npm": "~/node_modules",
         "app_root": "~/attachments",
-        "lib_root": "~/node_modules/tibet"
-    },
-    "boot": {
-        "profile": "standard.xml"
+        "lib_root": "~/TIBET-INF/tibet"
     }
 }
-

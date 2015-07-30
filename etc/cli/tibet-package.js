@@ -14,7 +14,7 @@
 //  ========================================================================
 
 /*global TP:true*/
-/*eslint no-console:0*/
+/*eslint no-console:0, indent:0*/
 
 (function() {
 
@@ -887,7 +887,8 @@
 
             if (isEmpty(aConfig)) {
                 if (notValid(this.config)) {
-                    this.config = this.getcfg('config') || this.getDefaultConfig(doc);
+                    this.config = this.getcfg('config') ||
+                        this.getDefaultConfig(doc);
                 }
                 config = this.config;
             } else {
@@ -1157,8 +1158,8 @@
         moduleDir = module.filename.slice(0, module.filename.lastIndexOf('/'));
 
         // Our file checks are looking for the library so we need to leverage the
-        // standard boot settings for tibet_dir, tibet_inf, and tibet_lib just as the
-        // boot system would.
+        // standard boot settings for tibet_dir, tibet_inf, and tibet_lib just as
+        // the boot system would.
 
         if (this.options && this.options.tibet_dir) {
             tibet_dir = this.options.tibet_dir;
@@ -1207,7 +1208,8 @@
             // NOTE node_modules does not float with app_root, it's always found at
             // the application head.
             if (tibet_dir === 'node_modules') {
-                checks.unshift([this.getAppHead(), path.join(tibet_dir, tibet_lib)]);
+                checks.unshift([this.getAppHead(),
+                    path.join(tibet_dir, tibet_lib)]);
             } else {
                 checks.unshift([app_root, path.join(tibet_dir, tibet_lib)]);
             }
@@ -2052,7 +2054,8 @@
 
             if (isEmpty(aConfig)) {
                 if (notValid(this.config)) {
-                    this.config = this.getcfg('config') || this.getDefaultConfig(doc);
+                    this.config = this.getcfg('config') ||
+                        this.getDefaultConfig(doc);
                 }
                 config = this.config;
             } else {

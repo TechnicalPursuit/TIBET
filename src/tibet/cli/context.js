@@ -81,10 +81,13 @@ Cmd.prototype.USAGE = 'tibet context';
 Cmd.prototype.execute = function() {
     var context,
         text,
+        cfg,
         doc,
         parser,
+        result,
         configs;
 
+    result = 0;
     parser = new dom.DOMParser();
 
     context = {};
@@ -104,7 +107,14 @@ Cmd.prototype.execute = function() {
         CLI.getcfg('boot.default_package') ||
         CLI.PACKAGE_FILE;
 
-    text = sh.cat(CLI.expandPath(context.boot.package));
+    cfg = CLI.expandPath(context.boot.package);
+    if (sh.test('-f', cfg)) {
+        text = sh.cat(cfg);
+    } else {
+        this.error('Unable to locate boot.package: ' + cfg);
+        result = 1;
+    }
+
     if (text) {
         doc = parser.parseFromString(text);
         configs = doc.getElementsByTagName('config');
@@ -119,6 +129,8 @@ Cmd.prototype.execute = function() {
     }
 
     this.info(beautify(JSON.stringify(context)));
+
+    return result;
 };
 
 

@@ -11,18 +11,16 @@ Here is where you would add CSS stylesheets, etc.
   xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
 <head>
-<title>{{appname}}</title>
 
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
 
-<link rel="stylesheet" type="text/css" href="../css/master.css"/>
+<title>{{appname}}</title>
 
-<script src="../node_modules/tibet/lib/src/tibet_hook.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../styles/tibet.css"/>
+<link rel="stylesheet" type="text/css" href="../../../styles/app.css"/>
+
+<script src="../../../TIBET-INF/tibet/lib/src/tibet_hook.min.js"></script>
 
 </head>
-<body>
-
-    <{{appname}}:app xmlns:{{appname}}="urn:app:{{appname}}"/>
-
-</body>
+<{{appname}}:app xmlns:{{appname}}="urn:app:{{appname}}"/>
 </html>
