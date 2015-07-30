@@ -65,7 +65,7 @@
   <!--  different system uri catalog for a manager than public user -->
   <uri name="tibet:///~lib_cfg/uris.xml"
     uri="tibet:///~lib_cfg/mgr_uris.xml"
-    tibet:role="Manager" />
+    tibet:role="Manager"/>
 
   <!--  mapping a server file to a type when we're running offline -->
   <uri name="http://www.technicalpursuit.com/dat/test_data.xml"
@@ -78,7 +78,7 @@
 
   <!--  mapping a handler type for a specific URI -->
   <uri name="tibet:///~app_dat/tricky.xml"
-    tibet:urihandler="TrickyURIHandler" />
+    tibet:urihandler="TrickyURIHandler"/>
 
   <!--  mapping a browserUI-specific URI (XSLT namespace workaround) -->
   <uri name="tibet:///~app_xsl/tp_nodetree.xsl"
@@ -119,32 +119,32 @@
 
   <!-- look in another catalog -->
   <delegateURI uriStartString="http://www.delegated.com"
-    catalog="~lib_dat/uris_delegated.xml" />
+    catalog="~lib_dat/uris_delegated.xml"/>
 
   <!-- rely on the specified type (sample only)  -->
   <delegateURI tibet:uriMatchString="http://s3.amazonaws.com.*"
-    tibet:urihandler="TP.amz.AmazonS3Handler" />
+    tibet:urihandler="TP.amz.AmazonS3Handler"/>
 
   <delegateURI tibet:uriMatchString="https://sdb.amazonaws.com.*"
-    tibet:urihandler="TP.amz.AmazonSimpleDBHandler" />
+    tibet:urihandler="TP.amz.AmazonSimpleDBHandler"/>
 
   <delegateURI tibet:uriMatchString="http://demo.sabredav.org.*"
-    tibet:urihandler="TP.core.WebDAVHandler" />
+    tibet:urihandler="TP.core.WebDAVHandler"/>
 
   <delegateURI tibet:uriMatchString="http://docs.google.com.*"
-    tibet:urihandler="TP.goog.GoogleDocsHandler" />
+    tibet:urihandler="TP.goog.GoogleDocsHandler"/>
 
   <delegateURI tibet:uriMatchString="ws://.*:10081"
-    tibet:urihandler="TP.test.WSEchoHandler" />
+    tibet:urihandler="TP.test.WSEchoHandler"/>
 
   <delegateURI tibet:uriMatchString="http://localhost:1407.*"
-    tibet:urihandler="TP.tds.TDSURLHandler" />
+    tibet:urihandler="TP.tds.TDSURLHandler"/>
 
   <delegateURI tibet:uriMatchString="http://127.0.0.1:1407.*"
-    tibet:urihandler="TP.tds.TDSURLHandler" />
+    tibet:urihandler="TP.tds.TDSURLHandler"/>
 
   <delegateURI uriStartString="jsonp://ajax.googleapis.com/ajax/services/search/web"
-    tibet:contenttype="TP.goog.GoogleSearchData" />
+    tibet:contenttype="TP.goog.GoogleSearchData"/>
 
   <!-- Generic mapping for all JSONP content not otherwise mapped -->
   <delegateURI uriStartString="jsonp://"
