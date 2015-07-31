@@ -3988,24 +3988,24 @@ function(aRequest) {
                 }
             });
 
-        //  If watch sources is not empty, turn the flag on, otherwise turn it
-        //  off
+        //  If watch sources is not empty, activate any watchers, otherwise
+        //  deactivate any active ones.
         if (TP.notEmpty(watchSources)) {
-            TP.sys.setcfg('uri.process_remote_changes', true);
+            TP.core.RemoteURLWatchHandler.activateWatchers();
         } else {
-            TP.sys.setcfg('uri.process_remote_changes', false);
+            TP.core.RemoteURLWatchHandler.deactivateWatchers();
         }
     } else if (TP.notEmpty(watchSources)) {
-        //  If we have watch sources, but the flag is already true, then we turn
-        //  it off
+        //  If we have watch sources, but the flag is already true, then we
+        //  deactivate any active watchers.
         if (TP.isTrue(currentlyProcessing)) {
-            TP.sys.setcfg('uri.process_remote_changes', false);
+            TP.core.RemoteURLWatchHandler.deactivateWatchers();
         } else {
-            TP.sys.setcfg('uri.process_remote_changes', true);
+            TP.core.RemoteURLWatchHandler.activateWatchers();
         }
     } else {
-        //  watch sources was empty, so we just turn the flag off.
-        TP.sys.setcfg('uri.process_remote_changes', false);
+        //  watch sources was empty, so we just deactivate any active watchers.
+        TP.core.RemoteURLWatchHandler.deactivateWatchers();
     }
 
     //  Note here how we go after the stored value - we might have changed it

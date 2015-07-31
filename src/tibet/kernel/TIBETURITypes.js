@@ -10476,11 +10476,99 @@ TP.core.URIHandler.defineSubtype('RemoteURLWatchHandler');
 //  ------------------------------------------------------------------------
 
 //  A dictionary of URL root watchers managed by this handler, keyed by the
-//  root URL string.
-TP.core.RemoteURLWatchHandler.Type.defineAttribute('watchers');
+//  root URL string. Note how this is a TYPE_LOCAL attribute.
+TP.core.RemoteURLWatchHandler.defineAttribute('watchers');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('activateWatchers',
+function() {
+
+    /**
+     * @method activateWatchers
+     * @summary Activates any registered remote URL watchers.
+     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     */
+
+    var watchers;
+
+    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+
+    //  Iterate over all of the watchers and observe them.
+    watchers.perform(
+            function(kvPair) {
+                var watcherEntry,
+
+                    signalSource,
+                    signalTarget,
+                    signalType;
+
+                watcherEntry = kvPair.last();
+
+                signalSource = watcherEntry.at('signalSource');
+
+                if (TP.isValid(signalSource)) {
+
+                    signalTarget = watcherEntry.at('signalTarget');
+                    signalType = watcherEntry.at('signalType');
+
+                    //  Observe the source for the signal type.
+                    signalTarget.observe(signalSource, signalType);
+                }
+
+            }.bind(this));
+
+    TP.sys.setcfg('uri.process_remote_changes', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('deactivateWatchers',
+function() {
+
+    /**
+     * @method deactivateWatchers
+     * @summary Deactivates any registered remote URL watchers.
+     * @returns {TP.core.RemoteURLWatchHandler} The receiver.
+     */
+
+    var watchers;
+
+    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+
+    //  Iterate over all of the watchers and ignore them.
+    watchers.perform(
+            function(kvPair) {
+                var watcherEntry,
+
+                    signalSource,
+                    signalTarget,
+                    signalType;
+
+                watcherEntry = kvPair.last();
+
+                signalSource = watcherEntry.at('signalSource');
+
+                if (TP.isValid(signalSource)) {
+
+                    signalType = watcherEntry.at('signalType');
+                    signalTarget = watcherEntry.at('signalTarget');
+
+                    //  Ignore the source for the signal type.
+                    signalTarget.ignore(signalSource, signalType);
+                }
+
+            }.bind(this));
+
+    TP.sys.setcfg('uri.process_remote_changes', false);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.RemoteURLWatchHandler.Type.defineMethod('watch',
@@ -10569,9 +10657,9 @@ function(targetURI, aRequest) {
     //      }
 
     //  If we don't have a hash of watchers, create one.
-    if (TP.notValid(watchers = this.get('watchers'))) {
+    if (TP.notValid(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
         watchers = TP.hc();
-        this.set('watchers', watchers);
+        TP.core.RemoteURLWatchHandler.set('watchers', watchers);
 
         //  Note how we also observe TP.sys for AppShutdown so that we can
         //  try to shut down our watcher sources when we terminate.
@@ -10627,9 +10715,8 @@ function(targetURI, aRequest) {
             return response;
         }
 
-        //  Observe the source for the signal type. We also stash away the
-        //  signal type for future 'ignore'ing.
-        this.observe(signalSource, signalType);
+        //  Stash away the signal target and type
+        watcherEntry.atPut('signalTarget', this);
         watcherEntry.atPut('signalType', signalType);
     }
 
@@ -10712,17 +10799,15 @@ function(aSignal) {
 
     var watchers;
 
-    //  If we don't have a hash of watchers, there's nothing to do, so just
-    //  return here.
-    if (TP.notValid(watchers = this.get('watchers'))) {
-        return this;
-    }
+    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
 
     //  Iterate over all of the watchers and ignore them.
     watchers.perform(
             function(kvPair) {
                 var watcherEntry,
+
                     signalSource,
+                    signalTarget,
                     signalType;
 
                 watcherEntry = kvPair.last();
@@ -10731,10 +10816,11 @@ function(aSignal) {
 
                 if (TP.isValid(signalSource)) {
 
+                    signalTarget = watcherEntry.at('signalTarget');
                     signalType = watcherEntry.at('signalType');
 
                     //  Ignore the source for the signal type.
-                    this.ignore(signalSource, signalType);
+                    signalTarget.ignore(signalSource, signalType);
                 }
             }.bind(this));
 
@@ -10767,17 +10853,14 @@ function(targetURI, aRequest) {
         watcherURI,
 
         watcherEntry,
-        watchedURLs,
-
-        signalSource,
-        signalType;
+        watchedURLs;
 
     request = targetURI.constructRequest(aRequest);
     response = request.constructResponse();
 
     //  If we don't have a hash of watchers, there's nothing to do, so just
     //  return here.
-    if (TP.notValid(watchers = this.get('watchers'))) {
+    if (TP.notValid(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
         return response;
     }
 
@@ -10799,17 +10882,6 @@ function(targetURI, aRequest) {
     //  NB: We remove the targetURI from the collection of watched URIs before
     //  we test the collection.
     watchedURLs.remove(targetURI.getLocation());
-
-    //  No more URIs to observe? Ignore the source - note that this may also
-    //  cause the source to shut down any notification machinery it has.
-    if (TP.isEmpty(watchedURLs)) {
-
-        signalSource = watcherEntry.at('signalSource');
-        signalType = watcherEntry.at('signalType');
-
-        //  Ignore the source for the signal type.
-        this.ignore(signalSource, signalType);
-    }
 
     return response;
 });
