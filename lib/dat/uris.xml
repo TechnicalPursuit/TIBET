@@ -147,9 +147,9 @@
     tibet:contenttype="TP.goog.GoogleSearchData"/>
 
   <!-- Mapping for CouchDB servers running on the default port of 5984 -->
-  <delegateURI tibet:uriMatchString="http://.*:5984.*"
+  <!-- delegateURI tibet:uriMatchString="http://.*:5984.*"
     tibet:contenttype="TP.core.JSONContent"
-    tibet:urihandler="TP.couchdb.CouchDBURLHandler"/>
+    tibet:urihandler="TP.couchdb.CouchDBURLHandler"/ -->
 
   <!-- Generic mapping for all JSONP content not otherwise mapped -->
   <delegateURI uriStartString="jsonp://"

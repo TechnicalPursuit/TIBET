@@ -20,6 +20,9 @@ node_modules/tibet/lib/media/boot/nojs.png
 node_modules/tibet/lib/styles/normalize.css
 node_modules/tibet/lib/styles/tibet_normalize.css
 node_modules/tibet/lib/styles/tibet_reset.css
+node_modules/tibet/lib/styles/tibet_content.css
+node_modules/tibet/lib/styles/tibet_framing.css
+node_modules/tibet/lib/styles/tibet_boot.css
 node_modules/tibet/lib/styles/tibet.css
 
 node_modules/tibet/lib/media/boot/dark_fiber.png
@@ -39,7 +42,7 @@ node_modules/tibet/lib/dat/uris_delegated.xml
 node_modules/tibet/lib/dat/uris_next.xml
 node_modules/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 
-node_modules/tibet/lib/json/html401_strict.json
+node_modules/tibet/lib/schema/html401_strict.json
 node_modules/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
 
 node_modules/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
@@ -48,25 +51,25 @@ node_modules/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
 
 # --- don't cache multiple copies of TIBET, only the desired one(s)
 
-## node_modules/tibet/lib/src/tibet_init.js
+## node_modules/tibet/lib/src/tibet_loader.js
 ## node_modules/tibet/lib/src/tibet_hook.js
 ## node_modules/tibet/lib/src/tibet_base.js
 ## node_modules/tibet/lib/src/tibet_full.js
 ## node_modules/tibet/lib/src/tibet_developer.js
 
-## node_modules/tibet/lib/src/tibet_init.js.gz
+## node_modules/tibet/lib/src/tibet_loader.js.gz
 ## node_modules/tibet/lib/src/tibet_hook.js.gz
 ## node_modules/tibet/lib/src/tibet_base.js.gz
 ## node_modules/tibet/lib/src/tibet_full.js.gz
 ## node_modules/tibet/lib/src/tibet_developer.js.gz
 
-node_modules/tibet/lib/src/tibet_init.min.js
+node_modules/tibet/lib/src/tibet_loader.min.js
 node_modules/tibet/lib/src/tibet_hook.min.js
 node_modules/tibet/lib/src/tibet_base.min.js
 node_modules/tibet/lib/src/tibet_full.min.js
 node_modules/tibet/lib/src/tibet_developer.min.js
 
-## node_modules/tibet/lib/src/tibet_init.min.js.gz
+## node_modules/tibet/lib/src/tibet_loader.min.js.gz
 ## node_modules/tibet/lib/src/tibet_hook.min.js.gz
 ## node_modules/tibet/lib/src/tibet_base.min.js.gz
 ## node_modules/tibet/lib/src/tibet_full.min.js.gz
@@ -78,8 +81,9 @@ CACHE:
 
 tibet.json
 
-html/UIROOT.xhtml
-html/UIBOOT.xhtml
+TIBET-INF/xhtml/UIROOT.xhtml
+TIBET-INF/xhtml/UIBOOT.xhtml
+TIBET-INF/xhtml/home.xhtml
 
 styles/app.css
 

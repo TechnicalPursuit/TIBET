@@ -47,6 +47,7 @@
     <script>
         <![CDATA[
         TP.extern.jxon = JXON;
+        delete window.JXON;
         ]]>
     </script>
 
@@ -54,9 +55,38 @@
     <script>
         <![CDATA[
         TP.extern.forge = forge;
+        delete window.forge;
         ]]>
     </script>
     <script src="TIBETCryptoPost.js"/>
+
+    <script src="~lib_deps/sprintf-tpi.min.js"
+        unless="boot.unminified linting" no-minify="true"/>
+    <script src="~lib_deps/sprintf-tpi.js"
+        if="boot.unminified" unless="linting"/>
+    <script>
+        <![CDATA[
+        TP.$$sprintf = window.sprintf;
+        TP.definePrimitive('sprintf', function() {
+            try {
+                return TP.$$sprintf.apply(TP, arguments);
+            } catch (e) {
+                TP.raise(TP, 'InvalidSubstitution', e);
+            }
+        });
+        delete window.sprintf;
+
+        TP.$$vsprintf = window.vsprintf;
+        TP.definePrimitive('vsprintf', function() {
+            try {
+                return TP.$$vsprintf.apply(TP, arguments);
+            } catch (e) {
+                TP.raise(TP, 'InvalidSubstitution', e);
+            }
+        });
+        delete window.vsprintf;
+        ]]>
+    </script>
 
     <!--    KERNEL STAGE 3, OO/EVENT CORE -->
 

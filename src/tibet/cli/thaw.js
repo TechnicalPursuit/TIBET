@@ -131,7 +131,8 @@ Cmd.prototype.execute = function() {
     this.log('updating embedded lib_root references...');
 
     list = sh.find('.').filter(function(fname) {
-        return !fname.match('node_modules') && !fname.match('TIBET-INF');
+        return !fname.match('node_modules/tibet') &&
+            !fname.match('TIBET-INF/tibet');
     });
     list = sh.grep('-l', 'TIBET-INF/tibet', list);
 

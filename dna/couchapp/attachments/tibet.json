@@ -5,9 +5,6 @@
         "dna": "{{dna}}"
     },
     "path": {
-      "app_inf": "~app/TIBET-INF"
-    },
-    "boot": {
-        "profile": "standard.xml"
+        "lib_root": "~app/TIBET-INF/tibet"
     }
 }

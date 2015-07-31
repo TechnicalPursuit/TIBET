@@ -92,7 +92,7 @@ Cmd.prototype.HELP =
 'TIBET source code but does have a performance impact.\n\n';
 
 'Using \ttibet freeze\' without parameters will freeze the current copy\n' +
-'of tibet_base.min.js along with the init and hook files needed to boot.\n\n';
+'of tibet_base.min.js along with the load and hook files needed to boot.\n\n';
 
 
 /**
@@ -313,13 +313,13 @@ Cmd.prototype.execute = function() {
                 }
             }
 
-            // Never prune any remaining hook or init file.
-            if (/_hook\./.test(fname) || /_init\./.test(fname)) {
+            // Never prune any remaining hook or loader file.
+            if (/_hook\./.test(fname) || /_loader\./.test(fname)) {
                 return;
             }
 
             // Note that when raw is specified no copies of bundled code are
-            // kept, only the hook and init files which are always pulled from
+            // kept, only the hook and loader files which are always pulled from
             // bundles. (NOTE phantom-based commands retain tibet_developer).
             if (cmd.options.raw) {
                 sh.rm('-f', path.join(srcroot, fname));
@@ -336,7 +336,8 @@ Cmd.prototype.execute = function() {
     this.log('updating embedded lib_root references...');
 
     list = sh.find('.').filter(function(fname) {
-        return !fname.match('node_modules') && !fname.match('TIBET-INF');
+        return !fname.match('node_modules/tibet') &&
+            !fname.match('TIBET-INF/tibet');
     });
     list = sh.grep('-l', 'node_modules/tibet', list);
 
