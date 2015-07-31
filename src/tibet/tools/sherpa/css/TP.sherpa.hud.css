@@ -56,6 +56,13 @@ div#toggleLog {
     transition: height .5s;
 }
 
+.south {
+
+    /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
+        the console output */
+    z-index: 27500;
+}
+
 .east, .west {
 
     transition: width .5s;
