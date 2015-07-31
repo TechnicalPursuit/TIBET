@@ -6057,7 +6057,7 @@ function() {
     //  See if we have an explicit value for autoRefresh - note the use of
     //  $get() to avoid endless recursion. If we don't have one, then we have
     //  intelligent defaults for URLs with certain extensions.
-    if (TP.notDefined(autoRefresh = this.$get('autoRefresh'))) {
+    if (TP.isNull(autoRefresh = this.$get('autoRefresh'))) {
 
         //  By default CSS, XHTML and LESS resources auto refresh.
         ext = this.getExtension();
