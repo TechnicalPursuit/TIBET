@@ -147,13 +147,13 @@
     tibet:contenttype="TP.goog.GoogleSearchData"/>
 
   <!-- Mapping for CouchDB servers running on the default port of 5984 -->
-  <!-- delegateURI tibet:uriMatchString="http://.*:5984.*"
+  <delegateURI tibet:uriMatchString="http://.*:5984.*\/[^.]*$"
     tibet:contenttype="TP.core.JSONContent"
-    tibet:urihandler="TP.couchdb.CouchDBURLHandler"/ -->
+    tibet:urihandler="TP.couchdb.CouchDBURLHandler"/>
 
   <!-- Generic mapping for all JSONP content not otherwise mapped -->
   <delegateURI uriStartString="jsonp://"
-    tibet:contenttype="TP.core.JSONContent" />
+    tibet:contenttype="TP.core.JSONContent"/>
 
   <!--
   The XML Catalog nextCatalog element lets you create composite catalogs
@@ -163,7 +163,7 @@
   them at the end in the order you'd like them searched seems like the
   best practice though.
   -->
-  <nextCatalog catalog="tibet:///~lib_dat/uris_next.xml" />
+  <nextCatalog catalog="tibet:///~lib_dat/uris_next.xml"/>
 
 </catalog>
 
