@@ -7615,6 +7615,8 @@ function(aMutationRecord) {
 
         args,
 
+        stopAncestor,
+
         addedNodes,
         removedNodes,
 
@@ -7639,6 +7641,7 @@ function(aMutationRecord) {
 
     switch (mutationType) {
         case 'attributes':
+
             fname = 'mutationChangedAttribute';
 
             if (!TP.isElement(targetNode = aMutationRecord.target)) {
@@ -7671,6 +7674,20 @@ function(aMutationRecord) {
             break;
 
         case 'childList':
+
+            stopAncestor = TP.nodeDetectAncestor(
+                    targetNode,
+                    function(anAncestor) {
+                        return TP.elementHasAttribute(
+                                    anAncestor,
+                                    'tibet:nomutationtracking',
+                                    true);
+                    });
+
+            if (TP.isElement(stopAncestor)) {
+                break;
+            }
+
             if (!TP.isEmpty(aMutationRecord.addedNodes) &&
                     !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
                 addedNodes = TP.ac(addedNodes);

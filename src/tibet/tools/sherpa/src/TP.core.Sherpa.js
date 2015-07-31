@@ -330,6 +330,8 @@ function() {
     consoleOutTPElem = worldTPElem.createSlotElement('SherpaConsoleSlot');
     */
 
+    sherpaSouthDrawer.setAttribute('tibet:nomutationtracking', true);
+
     return this;
 });
 
