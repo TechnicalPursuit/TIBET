@@ -272,7 +272,7 @@ function(data) {
     /**
      * @method init
      * @summary Returns a newly constructed Object from inbound JSON content.
-     * @param {Object} data The string to use for data.
+     * @param {Object} data The data to use for this content.
      * @returns {TP.core.Content} A new instance.
      */
 
@@ -845,6 +845,21 @@ function() {
 TP.core.Content.defineSubtype('core.JSONContent');
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('jsoncc',
+function(data) {
+
+    /**
+     * @method jsoncc
+     * @summary Returns a newly initialized JSONContent instance.
+     * @param {Object} data The data to use for this content.
+     * @returns {TP.core.JSONContent} The new instance.
+     */
+
+    return TP.core.JSONContent.construct(data);
+});
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -1200,6 +1215,21 @@ function(aFlag) {
 //  ------------------------------------------------------------------------
 
 TP.core.Content.defineSubtype('core.XMLContent');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('xmlcc',
+function(data) {
+
+    /**
+     * @method xmlcc
+     * @summary Returns a newly initialized XMLContent instance.
+     * @param {Object} data The data to use for this content.
+     * @returns {TP.core.XMLContent} The new instance.
+     */
+
+    return TP.core.XMLContent.construct(data);
+});
 
 //  ------------------------------------------------------------------------
 //  Type Methods
