@@ -40,14 +40,11 @@ function(aRequest) {
         tpElem,
 
         namedHref,
-        namedURI,
 
         children,
         cdatas,
 
         resourceStr,
-
-        resultType,
 
         thisTPDoc,
         loadedHandler;
@@ -65,7 +62,7 @@ function(aRequest) {
     if (TP.notEmpty(elem.childNodes)) {
 
         if (TP.notEmpty(namedHref = tpElem.getAttribute('name'))) {
-            if (!TP.isURI(namedURI = TP.uc(namedHref))) {
+            if (!TP.isURI(TP.uc(namedHref))) {
                 //  Raise an exception
                 return this.raise('TP.sig.InvalidURI');
             }
@@ -88,11 +85,6 @@ function(aRequest) {
             //  The string we'll use is from the first CDATA.
             resourceStr = TP.nodeGetTextContent(cdatas.first());
 
-            //  If we can determine that it's JSON data, then we get a result
-            //  type using the TP.JSON_ENCODED MIME type.
-            if (TP.isJSONString(resourceStr)) {
-                resultType = tpElem.getResultType(TP.JSON_ENCODED);
-            }
         } else {
             //  Otherwise, if the first child element is an XML element
             children = TP.nodeGetChildElements(elem);
@@ -101,55 +93,24 @@ function(aRequest) {
 
                 //  Stringify the XML.
                 resourceStr = TP.str(children.first());
-
-                //  Get a result type using the TP.XML_ENCODED MIME type.
-                resultType = tpElem.getResultType(TP.XML_ENCODED);
             }
-        }
-
-        //  If a result type couldn't be determined, then just use String.
-        if (!TP.isType(resultType)) {
-            resultType = String;
         }
 
         //  Get this element's document wrapper.
         thisTPDoc = TP.wrap(elem).getDocument();
 
         //  Define a handler that waits for this element to be completely loaded
-        //  into the page and then signals from the named URI that it's content
-        //  has changed (this allows page-level bindings to be set up before the
-        //  notifications go out that their data has changed).
+        //  into the page and then calls setContent() (which signals from the
+        //  named URI that it's content has changed). This allows page-level
+        //  bindings to be set up before the notifications go out that their
+        //  data has changed.
+
         loadedHandler =
             function(aSig) {
-                var newResource;
 
                 loadedHandler.ignore(thisTPDoc, 'TP.sig.DOMContentLoaded');
-                newResource = resultType.construct();
 
-                //  If the new resource is a content object of some sort (highly
-                //  likely) then it should respond to 'setData' so set its data
-                //  to the resource String (the content object type will convert
-                //  it to the proper type).
-                if (TP.canInvoke(newResource, 'setData')) {
-                    newResource.setData(resourceStr);
-                }
-
-                //  If the named URI has existing data, then we signal
-                //  'TP.sig.UIDataDestruct'.
-                if (TP.notEmpty(namedURI.getResource())) {
-                    tpElem.signal('TP.sig.UIDataDestruct');
-                }
-
-                //  Set the resource to the new resource (causing any observers
-                //  of the URI to get notified of a change) and signal
-                //  'TP.sig.UIDataConstruct'.
-                namedURI.setResource(
-                            newResource, TP.hc('observeResource', true));
-                tpElem.signal('TP.sig.UIDataConstruct');
-
-                //  Signal 'TP.sig.DOMReady' for consistency with other elements
-                //  that signal this when their 'dynamic content' is resolved.
-                tpElem.signal('TP.sig.DOMReady');
+                tpElem.setContent(resourceStr);
             };
 
         //  Tell the handler to observe this element's document wrapper.
@@ -209,6 +170,7 @@ function(aRequest) {
 
         namedURI.unregister();
 
+        //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
         TP.wrap(elem).signal('TP.sig.UIDataDestruct');
     }
 
@@ -293,6 +255,75 @@ function(mimeType) {
     }
 
     return tibetType;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.data.Inst.defineMethod('setContent',
+function(aContentObject, aRequest) {
+
+    /**
+     * @method setContent
+     * @summary Sets the content of the receiver's native DOM counterpart to
+     *     the value supplied.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {null}
+     */
+
+    var namedHref,
+        namedURI,
+
+        mimeType,
+        resultType,
+
+        newResource;
+
+    this.callNextMethod();
+
+    if (TP.notEmpty(namedHref = this.getAttribute('name'))) {
+        if (!TP.isURI(namedURI = TP.uc(namedHref))) {
+            //  Raise an exception
+            return this.raise('TP.sig.InvalidURI');
+        }
+    }
+
+    if (TP.isEmpty(mimeType = this.getAttribute('type'))) {
+        mimeType = TP.ietf.Mime.guessMIMEType(aContentObject);
+    }
+
+    resultType = this.getResultType(mimeType);
+
+    //  If a result type couldn't be determined, then just use String.
+    if (!TP.isType(resultType)) {
+        resultType = String;
+    }
+
+    newResource = resultType.construct();
+
+    //  If the new resource is a content object of some sort (highly likely)
+    //  then it should respond to 'setData' so set its data to the resource
+    //  String (the content object type will convert it to the proper type).
+    if (TP.canInvoke(newResource, 'setData')) {
+        newResource.setData(aContentObject);
+    }
+
+    //  If the named URI has existing data, then we signal
+    //  'TP.sig.UIDataDestruct'.
+    if (TP.notEmpty(namedURI.getResource())) {
+        this.signal('TP.sig.UIDataDestruct');
+    }
+
+    //  Set the resource to the new resource (causing any observers of the URI
+    //  to get notified of a change) and signal 'TP.sig.UIDataConstruct'.
+    namedURI.setResource(newResource, TP.hc('observeResource', true));
+    this.signal('TP.sig.UIDataConstruct');
+
+    //  Signal 'TP.sig.DOMReady' for consistency with other elements that signal
+    //  this when their 'dynamic content' is resolved.
+    this.signal('TP.sig.DOMReady');
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
