@@ -1386,14 +1386,24 @@ function(uniqueID, dataRecord) {
 
     doc = consoleOutput.getNativeDocument();
 
+    //  If we can't find the output cell that this output was using before
+    //  (sometimes outputs like to reuse the same cell - i.e. logging), then
+    //  attempt to recreate it.
     if (!TP.isElement(cellGroupElem = doc.getElementById(uniqueID))) {
 
-        TP.ifError() ?
-                TP.error(
-                    'Couldn\'t find out cell for: ' + uniqueID,
-                            TP.LOG) : 0;
+        //  Note here how we pass in no output data - we'll fill that in below.
+        this.createOutputEntry(uniqueID, TP.hc());
 
-        return this;
+        //  If we still couldn't create the cell, then notify with an error
+        //  message and bail out.
+        if (!TP.isElement(cellGroupElem = doc.getElementById(uniqueID))) {
+            TP.ifError() ?
+                    TP.error(
+                        'Couldn\'t find out cell for: ' + uniqueID,
+                                TP.LOG) : 0;
+
+            return this;
+        }
     }
 
     outputText = dataRecord.at('output');
