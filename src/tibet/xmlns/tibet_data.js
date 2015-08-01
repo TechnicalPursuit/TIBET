@@ -91,6 +91,13 @@ function(aRequest) {
 
             if (TP.isXMLNode(children.first())) {
 
+                if (children.getSize() > 1) {
+                    //  Raise an exception
+                    return this.raise(
+                            'TP.sig.InvalidNode',
+                            'tibet:data elements do not support fragments');
+                }
+
                 //  Stringify the XML.
                 resourceStr = TP.str(children.first());
             }
