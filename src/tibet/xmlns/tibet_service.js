@@ -18,6 +18,10 @@
 
 TP.core.UIElementNode.defineSubtype('tibet.service');
 
+//  NB: 'href' for us is a URI attribute, but it's *not* a 'reloadable' URI
+//  attribute - we handle reloading specially for this tag.
+TP.tibet.service.Type.set('uriAttrs', TP.ac('href'));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
