@@ -3534,13 +3534,20 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    srcPath = this.get('srcPath');
+
+    //  If the path is empty or just '.', then that's the shortcut to just
+    //  return the target object itself.
+    if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
+        return targetObj;
+    }
+
     //  If we don't have a valid XPath representation of ourself, then try to
     //  build one.
     if (TP.notValid(xmlPath = this.get('$xmlPath'))) {
 
         //  Grab ourself as an XPath - if we're a templated path, we get 'fully
         //  realized' here.
-        srcPath = this.get('srcPath');
         if (TP.regex.HAS_ACP.test(srcPath)) {
 
             //  Grab the arguments and slice the first one off (we're not going
@@ -4173,6 +4180,13 @@ function(targetObj, varargs) {
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
     srcPath = this.get('srcPath');
+
+    //  If the path is empty or just '.', then that's the shortcut to just
+    //  return the target object itself.
+    if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
+        return targetObj;
+    }
+
     path = srcPath;
 
     if (TP.regex.HAS_ACP.test(path)) {
@@ -4181,12 +4195,6 @@ function(targetObj, varargs) {
         args = TP.args(arguments, 1);
 
         path = path.transform(args);
-    }
-
-    //  If the path is just '.', then that's the shortcut to just return the
-    //  target object itself.
-    if (TP.regex.ONLY_PERIOD.test(path)) {
-        return targetObj;
     }
 
     //  Trigger the actual 'get' mechanism, tracking addresses as we go.
@@ -4605,6 +4613,13 @@ function(targetObj, varargs) {
     //  Fill in any templated expressions in the path (which must be numeric
     //  positions) with data from the passed arguments.
     srcPath = this.get('srcPath');
+
+    //  If the path is empty or just '.', then that's the shortcut to just
+    //  return the target object itself.
+    if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
+        return targetObj;
+    }
+
     path = srcPath;
 
     if (TP.regex.HAS_ACP.test(path)) {
@@ -6035,6 +6050,12 @@ function(targetObj, varargs) {
     }
 
     srcPath = this.get('srcPath');
+
+    //  If the path is empty or just '.', then that's the shortcut to just
+    //  return the target object itself.
+    if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
+        return targetObj;
+    }
 
     executedPaths = TP.core.AccessPath.$getExecutedPaths().atPutIfAbsent(
                     TP.id(targetObj),
