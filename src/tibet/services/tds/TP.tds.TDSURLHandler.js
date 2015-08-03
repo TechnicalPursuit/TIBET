@@ -78,8 +78,16 @@ function(aURI) {
      *     TIBET when the supplied URI's resource changes.
      */
 
-    return TP.uc(TP.uriJoinPaths(
-                    TP.sys.cfg('path.app_root'), TP.sys.cfg('tds.watch.uri')));
+    var watcherURI;
+
+    watcherURI =  TP.uc(TP.uriJoinPaths(
+                            TP.sys.cfg('path.app_root'),
+                            TP.sys.cfg('tds.watch.uri')));
+
+    //  Make sure to switch *off* refreshing for the watcher URI itself
+    watcherURI.set('shouldRefresh', false);
+
+    return watcherURI;
 });
 
 //  ------------------------------------------------------------------------
