@@ -6024,17 +6024,23 @@ function() {
 
     var subURIs;
 
-    this.isLoaded(false);
-    this.$changed();
+    if (TP.notFalse(this.get('shouldRefresh'))) {
+        this.isLoaded(false);
+    }
 
     //  Make sure to let subURIs know too.
     if (TP.notEmpty(subURIs = this.getSubURIs())) {
+
         subURIs.forEach(
                 function(aURI) {
-                    aURI.isLoaded(false);
-                    aURI.$changed();
+                    if (TP.notFalse(aURI.get('shouldRefresh'))) {
+                        aURI.isLoaded(false);
+                    }
                 });
     }
+
+    //  NB: The $changed() call will also let subURIs know.
+    this.$changed();
 
     return this;
 });
