@@ -12277,8 +12277,8 @@ function(aValue, shouldSignal) {
      *     is changed. The type of node and input can alter how this actually is
      *     done. See the setContent call for more information.
      * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. If false changes
-     *     are not signaled. Defaults to this.shouldSignalChange().
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
      * @returns {TP.core.Node} The receiver.
      */
 
