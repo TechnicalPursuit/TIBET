@@ -18,6 +18,10 @@
 
 TP.core.UIElementNode.defineSubtype('tibet.service');
 
+//  NB: 'href' for us is a URI attribute, but it's *not* a 'reloadable' URI
+//  attribute - we handle reloading specially for this tag.
+TP.tibet.service.Type.set('uriAttrs', TP.ac('href'));
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -53,13 +57,6 @@ function(aRequest) {
 
     return;
 });
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The current href value.
-TP.tibet.service.Inst.defineAttribute('$hrefValue');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -150,42 +147,21 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('getAttrHref',
-function() {
-
-    /**
-     * @method getAttrHref
-     * @summary Returns the current 'href' value, which may be an attribute or a
-     *     value resolved from a binding.
-     * @returns {String} The current 'href' value for the receiver.
-     */
-
-    var val;
-
-    if (TP.notEmpty(val = this.get('$hrefValue'))) {
-        return val;
-    }
-
-    return this.$getAttribute('href');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.tibet.service.Inst.defineMethod('setAttrHref',
-function(hrefVal) {
+function(anHref) {
 
     /**
      * @method setAttrHref
      * @summary Sets the 'href' value for the receiver. This will normally be
      *     triggered by the data binding machinery if the attribute is data
      *     bound.
-     * @param {String} hrefVal The value to set the 'href' to.
-     * @returns {TP.tibet.service} The receiver.
+     * @param {String} anHref The value to set the 'href' to.
      */
 
-    this.set('$hrefValue', hrefVal, false);
+    this.$setAttribute('href', anHref);
 
-    return this;
+    //  setting an attribute returns void according to the spec
+    return;
 });
 
 //  ------------------------------------------------------------------------

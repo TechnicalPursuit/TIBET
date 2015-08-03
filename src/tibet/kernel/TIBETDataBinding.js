@@ -2729,6 +2729,8 @@ function(aNode, aResource, pathValues, anIndex, repeatResource) {
         textNode,
         text,
 
+        parts,
+
         template,
 
         vals,
@@ -2762,8 +2764,12 @@ function(aNode, aResource, pathValues, anIndex, repeatResource) {
 
         text = TP.nodeGetTextContent(textNode);
 
-        if (TP.regex.HAS_ACP.test(text)) {
-            template = text;
+        TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
+        parts = TP.regex.BINDING_STATEMENT_EXTRACT.exec(text);
+
+        if (TP.notEmpty(parts) && parts.getSize() > 1) {
+
+            template = '{{' + parts.at(1) + '}}';
 
             if (!TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(template) &&
                 isXMLResource &&

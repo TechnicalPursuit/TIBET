@@ -161,7 +161,7 @@ function(aSrc) {
     this.$setAttribute('href', aSrc);
 
     //  reload from the content found at the src.
-    this.reloadFromAttrSrc();
+    this.reloadFromAttrSrc(aSrc);
 
     //  setting an attribute returns void according to the spec
     return;

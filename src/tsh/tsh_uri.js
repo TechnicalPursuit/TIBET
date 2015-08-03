@@ -192,6 +192,18 @@ function(aRequest) {
             case 'tsh:noencode':
                 params.atPut('noencode', TP.bc(value));
                 break;
+            case 'tsh:autorefresh':
+                if (!TP.isBoolean(value = TP.bc(value))) {
+                    value = true;
+                }
+                url.set('autoRefresh', value);
+                break;
+            case 'tsh:watch':
+                url.watch();
+                break;
+            case 'tsh:unwatch':
+                url.unwatch();
+                break;
             default:
 
                 //  We don't process 'tsh:' arguments beyond the ones handled

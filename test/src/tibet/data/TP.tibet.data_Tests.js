@@ -110,9 +110,13 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
 
+                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.then(
                     function() {
-                        test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                        test.assert.didSignal(dataTPElem,
+                                                'TP.sig.UIDataDestruct');
                     });
             },
             function(error) {
@@ -145,9 +149,13 @@ function() {
 
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
 
+                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.then(
                     function() {
-                        test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                        test.assert.didSignal(dataTPElem,
+                                                'TP.sig.UIDataDestruct');
                     });
             },
             function(error) {
@@ -178,11 +186,16 @@ function() {
 
                 dataResource = srcURI.getResource();
 
-                test.assert.isMemberOf(dataResource, TP.test.DataTestMarkupEmployee);
+                test.assert.isMemberOf(dataResource,
+                                        TP.test.DataTestMarkupEmployee);
 
+                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.then(
                     function() {
-                        test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                        test.assert.didSignal(dataTPElem,
+                                                'TP.sig.UIDataDestruct');
                     });
             },
             function(error) {
@@ -213,11 +226,16 @@ function() {
 
                 dataResource = srcURI.getResource();
 
-                test.assert.isMemberOf(dataResource, TP.test.DataTestJSONEmployee);
+                test.assert.isMemberOf(dataResource,
+                                        TP.test.DataTestJSONEmployee);
 
+                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
                 test.then(
                     function() {
-                        test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                        test.assert.didSignal(dataTPElem,
+                                                'TP.sig.UIDataDestruct');
                     });
             },
             function(error) {
@@ -225,6 +243,159 @@ function() {
                                             loadURI.getLocation()));
             });
     });
+
+    //  ---
+
+    this.it('No specific result type - XML content then resetting via setContent()', function(test, options) {
+
+        loadURI = TP.uc('~lib_tst/src/tibet/data/Data1.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource;
+
+                dataTPElem = TP.byId('Data1',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data1_person');
+
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource();
+
+                //  We loaded with XML, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.XMLContent);
+
+                //  ---
+
+                //  Reset the metrics we're tracking.
+                TP.signal.reset();
+
+                //  Now set the content to other XML on the fly.
+                dataTPElem.setContent('<data><randomXML/></data>');
+
+                //  The element should've thrown these signals.
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource();
+
+                //  We've now reloaded with (more) XML, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.XMLContent);
+
+                //  ---
+
+                //  Reset the metrics we're tracking.
+                TP.signal.reset();
+
+                //  Now set the content to JSON on the fly.
+                dataTPElem.setContent('{"foo":["1st","2nd",{"hi":"there"}]}');
+
+                //  The element should've thrown these signals.
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource();
+
+                //  We've now reloaded with JSON, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.JSONContent);
+
+                //  ---
+
+                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
+                test.then(
+                    function() {
+                        test.assert.didSignal(dataTPElem,
+                                                'TP.sig.UIDataDestruct');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('No specific result type - JSON content then resetting via setContent()', function(test, options) {
+
+        loadURI = TP.uc('~lib_tst/src/tibet/data/Data2.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function(result) {
+                var dataTPElem,
+                    srcURI,
+                    dataResource;
+
+                dataTPElem = TP.byId('Data2',
+                                        test.getDriver().get('windowContext'));
+                srcURI = TP.uc('urn:tibet:Data2_person');
+
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource();
+
+                //  We loaded with JSON, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.JSONContent);
+
+                //  ---
+
+                //  Reset the metrics we're tracking.
+                TP.signal.reset();
+
+                //  Now set the content to other JSON on the fly.
+                dataTPElem.setContent('{"foo":["1st","2nd",{"hi":"there"}]}');
+
+                //  The element should've thrown these signals.
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource();
+
+                //  We've now reloaded with (more) JSON, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.JSONContent);
+
+                //  ---
+
+                //  Reset the metrics we're tracking.
+                TP.signal.reset();
+
+                //  Now set the content to XML on the fly.
+                dataTPElem.setContent('<data><randomXML/></data>');
+
+                //  The element should've thrown these signals.
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
+                test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
+
+                dataResource = srcURI.getResource();
+
+                //  We've now reloaded with XML, so test that here.
+                test.assert.isMemberOf(dataResource, TP.core.XMLContent);
+
+                //  ---
+
+                //  NB: By then()ing this, it gets invoked *after* this test's
+                //  afterEach() method, which unloads the URI and which should
+                //  cause the tibet:data tag to send 'TP.sig.UIDataDestruct'.
+                test.then(
+                    function() {
+                        test.assert.didSignal(dataTPElem,
+                                                'TP.sig.UIDataDestruct');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
 });
 
 //  ========================================================================

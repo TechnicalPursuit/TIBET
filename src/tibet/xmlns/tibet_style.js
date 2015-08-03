@@ -40,7 +40,9 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem;
+        tpElem,
+
+        href;
 
     this.callNextMethod();
 
@@ -56,11 +58,11 @@ function(aRequest) {
 
         tpElem.reloadFromContent();
 
-    } else if (TP.notEmpty(TP.elementGetAttribute(elem, 'href', true))) {
+    } else if (TP.notEmpty(href = TP.elementGetAttribute(elem, 'href', true))) {
 
         //  Otherwise, if our 'href' attribute isn't empty, then we reload from
         //  the content that can be found at the end of the URI contained there.
-        tpElem.reloadFromAttrHref();
+        tpElem.reloadFromAttrHref(href);
 
     } else {
 
@@ -180,7 +182,7 @@ function(lessLoc, lessText) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.style.Inst.defineMethod('reloadFromAttrHref',
-function() {
+function(anHref) {
 
     /**
      * @method reloadFromAttrHref
@@ -199,18 +201,17 @@ function() {
         newStyleElem,
         existingStyleElem,
 
-        href,
         ext,
         hrefURI,
         hrefLocation,
         fetchRequest,
         newHref;
 
-    if (TP.notEmpty(href = this.getAttribute('href'))) {
+    if (TP.notEmpty(anHref)) {
 
-        ext = TP.uriExtension(href);
+        ext = TP.uriExtension(anHref);
 
-        hrefURI = TP.uc(href);
+        hrefURI = TP.uc(anHref);
         hrefLocation = hrefURI.getLocation();
 
         switch (ext) {
@@ -413,7 +414,7 @@ function(anHref) {
     this.$setAttribute('href', anHref);
 
     //  reload from the content found at the href.
-    this.reloadFromAttrHref();
+    this.reloadFromAttrHref(anHref);
 
     //  setting an attribute returns void according to the spec
     return;

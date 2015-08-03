@@ -10595,6 +10595,8 @@ function(targetURI, aRequest) {
         foundWatchSource,
         i,
 
+        activateImmediately,
+
         watchers,
         watcherEntry,
         signalSource,
@@ -10656,6 +10658,8 @@ function(targetURI, aRequest) {
     //              }
     //      }
 
+    activateImmediately = false;
+
     //  If we don't have a hash of watchers, create one.
     if (TP.notValid(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
         watchers = TP.hc();
@@ -10676,8 +10680,16 @@ function(targetURI, aRequest) {
     //  Make sure that we have an entry for the watcher URI's location.
     watcherLoc = watcherURI.getLocation();
     if (TP.notValid(watcherEntry = watchers.at(watcherLoc))) {
+
         watcherEntry = TP.hc('signalSource', null, 'watchedURLs', TP.ac());
         watchers.atPut(watcherLoc, watcherEntry);
+
+        //  If we're processing remote changes right now, then we need to
+        //  activate this new watcher immediately. Set the flag and the code at
+        //  the end of this method will do that.
+        if (TP.isTrue(TP.sys.cfg('uri.process_remote_changes'))) {
+            activateImmediately = true;
+        }
     }
 
     //  If the watcher entry doesn't already have a signal source, go ahead and
@@ -10718,6 +10730,12 @@ function(targetURI, aRequest) {
         //  Stash away the signal target and type
         watcherEntry.atPut('signalTarget', this);
         watcherEntry.atPut('signalType', signalType);
+    }
+
+    //  If we created a new watcher that is supposed to be activated
+    //  immediately, then do so.
+    if (activateImmediately) {
+        this.observe(signalSource, signalType);
     }
 
     return response;
