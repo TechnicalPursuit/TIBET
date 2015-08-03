@@ -13,7 +13,6 @@
 
 <config id="developer" if="boot.phasetwo">
     <config ref="base"/>
-    <package src="~lib_cfg/tdc.xml" config="standard" unless="linting"/>
 </config>
 
 <config id="app_img">
