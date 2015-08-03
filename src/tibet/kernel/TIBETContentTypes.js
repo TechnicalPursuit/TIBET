@@ -4308,6 +4308,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  notification mechanism
     thisType.startChangedAddress(srcPath);
 
+    //  If the path is something like '[0]', then slice off the brackets to
+    //  just produce '0'.
+    if (TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
+        path = path.slice(1, -1);
+    }
+
     //  If we're doing a TP.UPDATE, but we're replacing something that has
     //  structure (i.e. it's not just a scalar value), then we change to
     //  registering a TP.DELETE, followed by a TP.CREATE for that.
