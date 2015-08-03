@@ -6084,6 +6084,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URL.Inst.defineMethod('setAutoRefresh',
+function(shouldAutoRefresh) {
+
+    /**
+     * @method setAutoRefresh
+     * @summary Sets whether or not the URI 'auto refreshes' from its remote
+     *     resource when it gets notified that that content has changed.
+     * @param {Boolean} shouldAutoRefresh Whether or not the resource should
+     *     auto-refresh.
+     * @returns {TP.core.URL} The receiver.
+     */
+
+    //  Note the use of $set() to avoid endless recursion.
+    this.$set('autoRefresh', shouldAutoRefresh);
+
+    //  If autoRefresh is true, then watch the URL. Note that this call just
+    //  returns if the URL is already configured to watch. Also note how we do
+    //  *not* assume to unwatch() if autoRefresh is set to false (i.e. this is a
+    //  one-way behavior).
+    if (shouldAutoRefresh) {
+        this.watch();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URL.Inst.defineMethod('watch',
 function(aRequest) {
 
