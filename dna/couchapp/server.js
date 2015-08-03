@@ -136,7 +136,7 @@
     requireDir = require('require-dir');
     routes = requireDir('./routes');
 
-    TDS = require('tibet/etc/tds/tds-middleware');
+    TDS = require('tibet/etc/tds/tds-couch');
     io = require('socket.io');
     PouchDB = require('pouchdb');
 
@@ -287,6 +287,9 @@
     if (TDS.cfg('tds.use.webdav') === true) {
         app.use(TDS.cfg('tds.webdav.uri'), TDS.webdav());
     }
+
+    //  Activate the CouchDB integration layer.
+    TDS.couchdb();
 
     //  ---
     //  Server Fallbacks
