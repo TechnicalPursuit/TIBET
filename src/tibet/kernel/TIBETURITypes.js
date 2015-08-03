@@ -5042,6 +5042,9 @@ TP.core.URL.Inst.defineAttribute('lastCommObj');
 //  whether or not the URI is being watched for change
 TP.core.URL.Inst.defineAttribute('watched');
 
+//  whether or not the URI should refresh. The default is true.
+TP.core.URL.Inst.defineAttribute('shouldRefresh');
+
 //  whether or not we should autorefresh from a changed remote resource
 TP.core.URL.Inst.defineAttribute('autoRefresh');
 
@@ -6072,12 +6075,8 @@ function() {
         } else {
             autoRefresh = false;
         }
-    }
 
-    //  If autoRefresh is true, then watch the URL. Note that this call just
-    //  returns if the URL is already configured to watch.
-    if (autoRefresh) {
-        this.watch();
+        this.set('autoRefresh', autoRefresh);
     }
 
     return autoRefresh;
