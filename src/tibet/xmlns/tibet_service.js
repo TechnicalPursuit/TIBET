@@ -368,11 +368,15 @@ function() {
 
             var errorRecord;
 
-            //  TODO: This is a bit hackish and assumes that the request was an
-            //  HTTP request.
-            errorRecord = TP.hc(
-                'code', thisArg.$getHTTPRequestStatusCode(this),
-                'text', thisArg.$getHTTPRequestResponseText(this));
+            if (TP.isKindOf(this, TP.sig.HTTPRequest)) {
+                //  TODO: This is a bit hackish and assumes that the request was
+                //  an HTTP request.
+                errorRecord = TP.hc(
+                    'code', thisArg.$getHTTPRequestStatusCode(this),
+                    'text', thisArg.$getHTTPRequestResponseText(this));
+            } else {
+                errorRecord = TP.hc();
+            }
 
             thisArg.signal('TP.sig.UIDataFailed', errorRecord);
         });
