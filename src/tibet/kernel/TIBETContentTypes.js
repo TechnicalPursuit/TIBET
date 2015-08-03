@@ -4203,7 +4203,7 @@ function(targetObj, varargs) {
 
     //  NB: We use the original source path to register with the address change
     //  notification mechanism
-    this.getType().startObservedAddress(path);
+    this.getType().startObservedAddress(srcPath);
 
     //  If the path is something like '[0]', then slice off the brackets to
     //  just produce '0'.
@@ -4324,8 +4324,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  'changed' message later with additional information. We also pass a
     //  second 'false' to avoid warnings on undeclared attributes.
 
-    targetObj.defineAttribute(srcPath);
-    retVal = targetObj.set(srcPath, attributeValue, false);
+    targetObj.defineAttribute(path);
+    retVal = targetObj.set(path, attributeValue, false);
 
     thisType.endChangedAddress();
 
