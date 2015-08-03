@@ -167,7 +167,7 @@ Cmd.prototype.execute = function() {
             // Ensure npm install is run once we're sure the things that
             // need to be 'npm link'd into place have been. If we don't
             // do this last it'll just fail.
-            cmd.log('installing additional dependencies via `npm install`.');
+            cmd.log('installing dependencies via `npm install`, be patient.');
 
             child.exec('npm install', function(err, stdout, stderr) {
                 if (err) {
