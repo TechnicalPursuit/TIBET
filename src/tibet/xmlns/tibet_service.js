@@ -147,6 +147,66 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.service.Inst.defineMethod('handleValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles notification of a change.
+     * @description This is triggered if we're watching the remote resource
+     *     referenced by our 'href'.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     */
+
+    this.trigger();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineMethod('setAttrAutorefresh',
+function(refreshValue) {
+
+    /**
+     * @method setAttrAutorefresh
+     * @summary Sets the 'autorefresh' value for the receiver.
+     * @param {String} refreshValue
+     */
+
+    var href,
+        uri,
+        val;
+
+    this.$setAttribute('autorefresh', refreshValue);
+
+    //  Make sure that a main href is available and a URI can be created from
+    //  it.
+    if (TP.notEmpty(href = this.getAttribute('href'))) {
+        if (!TP.isURI(uri = TP.uc(href))) {
+            //  Raise an exception
+            return this.raise('TP.sig.InvalidURI');
+        }
+    } else {
+        //  Raise an exception
+        return this;
+    }
+
+    val = TP.bc(refreshValue);
+    uri.set('autoRefresh', val);
+
+    if (val) {
+        this.observe(uri, 'TP.sig.ValueChange');
+    } else {
+        this.ignore(uri, 'TP.sig.ValueChange');
+    }
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.service.Inst.defineMethod('setAttrHref',
 function(anHref) {
 
