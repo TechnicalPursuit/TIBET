@@ -80,22 +80,41 @@ function(aURI) {
      */
 
     var pathParts,
-        watcherLoc;
+
+        watcherLoc,
+        watcherURI;
 
     //  We grab the URI's path parts
     pathParts = aURI.getPathParts();
 
-    //  Join together the URI's root, the first path part (which, for CouchDB)
-    //  is the database name, and the standard 'changes feed' portion.
-    watcherLoc = TP.ac(aURI.getRoot(),
-                        pathParts.first(),
-                        '_changes?feed=eventsource').join('/');
+    //  If there are no path parts, or the first part is '_all_dbs', then the
+    //  supplied URI is referencing the server itself. Therefore, set up a
+    //  watcher on the '_db_updates' feed.
+    if (TP.isEmpty(pathParts) || pathParts.first() === '_all_dbs') {
+        watcherLoc = TP.ac(aURI.getRoot(),
+                            '_db_updates?feed=eventsource').join('/');
+    } else {
+        //  Otherwise, we are observing database-level changes, so we set up a
+        //  watcher on that database's '_changes' feed.
+
+        //  Join together the URI's root, the first path part (which, for
+        //  CouchDB) is the database name, and the standard 'changes feed'
+        //  portion.
+        watcherLoc = TP.ac(aURI.getRoot(),
+                            pathParts.first(),
+                            '_changes?feed=eventsource').join('/');
+    }
 
     if (!TP.isURI(watcherLoc)) {
         return null;
     }
 
-    return TP.uc(watcherLoc);
+    watcherURI = TP.uc(watcherLoc);
+
+    //  Make sure to switch *off* refreshing for the watcher URI itself
+    watcherURI.set('shouldRefresh', false);
+
+    return watcherURI;
 });
 
 //  ------------------------------------------------------------------------
@@ -117,6 +136,8 @@ function(aSignal) {
         signalSourceURL,
 
         path,
+        changesPathIndex,
+
         origin,
 
         urlLoc,
@@ -146,18 +167,28 @@ function(aSignal) {
         return;
     }
 
-    //  Get the path and slice off from the first slash to where the '/_changes'
-    //  portion starts. This will give us our database name - the database that
-    //  changed.
     path = signalSourceURL.getPath();
-    path = path.slice(1, path.indexOf('/_changes'));
+
+    //  Slice off the portion of the path from the first slash to where the
+    //  '/_changes' portion starts. This will give us our database name - the
+    //  database that changed. If there is no '/_changes' portion, then this
+    //  must be an observation on the '_db_updates' feed, so we just set the
+    //  path to the empty String.
+    changesPathIndex = path.indexOf('/_changes');
+    if (changesPathIndex !== TP.NOT_FOUND) {
+
+        path = path.slice(1, changesPathIndex);
+
+        //  Strip any enclosing quotes from the path.
+        path = path.asString().stripEnclosingQuotes();
+
+    } else {
+        path = '';
+    }
 
     //  The origin comes from the SSE data and will be server URL, minus the
     //  actual file path.
     origin = payload.at('origin').asString();
-
-    //  Strip any enclosing quotes from the path.
-    path = path.asString().stripEnclosingQuotes();
 
     //  Join the two together to form the full URL path
     urlLoc = TP.uriJoinPaths(origin, path);
@@ -165,10 +196,108 @@ function(aSignal) {
     //  If we can successfully create a URL from the data, then process the
     //  change.
     if (TP.isURI(url = TP.uc(urlLoc))) {
+
         TP.core.URI.processRemoteResourceChange(url);
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('watch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method watch
+     * @summary Watches for changes to the URLs remote resource, if the server
+     *     that is supplying the remote resource notifies us when the URL has
+     *     changed.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var pathParts,
+
+        watchedLoc,
+        watchedURI;
+
+    //  We grab the URI's path parts
+    pathParts = targetURI.getPathParts();
+
+    //  If the URI has more than 1 'path parts', then it's a database or a
+    //  URL under the database. We join the root and the first path part to
+    //  point to the database (which is where we'll observe changes) to form the
+    //  'watched URI'
+    if (pathParts.getSize() > 1) {
+        watchedLoc = TP.ac(targetURI.getRoot(), pathParts.first()).join('/');
+        watchedURI = TP.uc(watchedLoc);
+
+        //  Set our watched URI's 'autoRefresh' setting to that of the target
+        //  URI.
+        watchedURI.set('autoRefresh', targetURI.get('autoRefresh'));
+    } else if (pathParts.first() === '_all_dbs') {
+        //  Otherwise, if the first path part is '_all_dbs', then we'll be
+        //  using the '_db_updates' feed, so we just use the root URI as the
+        //  'watched URI'
+        watchedURI = TP.uc(targetURI.getRoot());
+
+        //  Set our watched URI's 'autoRefresh' setting to that of the target
+        //  URI.
+        watchedURI.set('autoRefresh', targetURI.get('autoRefresh'));
+    } else {
+
+        //  Otherwise, just use the target URI as the 'watched URI'
+        watchedURI = targetURI;
+    }
+
+    return this.callNextMethod(watchedURI, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('unwatch',
+function(targetURI, aRequest) {
+
+    /**
+     * @method unwatch
+     * @summary Removes any watches for changes to the URLs remote resource. See
+     *     this type's 'watch' method for more information.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var pathParts,
+
+        unwatchedLoc,
+        unwatchedURI;
+
+    //  We grab the URI's path parts
+    pathParts = targetURI.getPathParts();
+
+    //  If the URI has more than 1 'path parts', then it's a database or a
+    //  URL under the database. We join the root and the first path part to
+    //  point to the database (which is where we'll observe changes) to form the
+    //  'unwatched URI'
+    if (pathParts.getSize() > 1) {
+        unwatchedLoc = TP.ac(targetURI.getRoot(), pathParts.first()).join('/');
+        unwatchedURI = TP.uc(unwatchedLoc);
+    } else if (pathParts.first() === '_all_dbs') {
+        //  Otherwise, if the first path part is '_all_dbs', then we'll be
+        //  using the '_db_updates' feed, so we just use the root URI as the
+        //  'unwatched URI'
+        unwatchedURI = TP.uc(targetURI.getRoot());
+    } else {
+
+        //  Otherwise, just use the target URI as the 'unwatched URI'
+        unwatchedURI = targetURI;
+    }
+
+    return this.callNextMethod(unwatchedURI, aRequest);
 });
 
 //  =======================================================================
