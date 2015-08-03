@@ -10494,7 +10494,9 @@ function() {
 
     var watchers;
 
-    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+    if (TP.isEmpty(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
+        return this;
+    }
 
     //  Iterate over all of the watchers and observe them.
     watchers.perform(
@@ -10538,7 +10540,9 @@ function() {
 
     var watchers;
 
-    watchers = TP.core.RemoteURLWatchHandler.get('watchers');
+    if (TP.isEmpty(watchers = TP.core.RemoteURLWatchHandler.get('watchers'))) {
+        return this;
+    }
 
     //  Iterate over all of the watchers and ignore them.
     watchers.perform(
