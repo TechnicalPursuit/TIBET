@@ -2809,7 +2809,7 @@ TP.regex.NON_SIMPLE_PATH = /[|@#:\/&=><\.\[\(]/;
 //  JSON path
 //  ---
 
-TP.regex.JSON_POINTER = /json\((.+)\)/;
+TP.regex.JSON_POINTER = /json\((.*)\)/;
 
 //  Not strictly true, but virtually every JSONPath example seen in the wild
 //  begins with '$.' and it's a great way to disambiguate. Note here that we
@@ -2820,7 +2820,7 @@ TP.regex.JSON_PATH = /^\$\.+/;
 //  TIBET path
 //  ---
 
-TP.regex.TIBET_POINTER = /tibet\((.+)\)/;
+TP.regex.TIBET_POINTER = /tibet\((.*)\)/;
 
 //  Forms of TIBETan access paths can include words separated by periods ('.'),
 //  brackets ('[]') with either string or numeric indexes and brackets with
@@ -2838,9 +2838,9 @@ TP.regex.SIMPLE_NUMERIC_PATH = /^\[(\d+)\]$/;
 //  ---
 
 //  TIBET extensions that can be used in *node* paths
-TP.regex.XTENSION_POINTER = /css\((.+)\)/;
+TP.regex.XTENSION_POINTER = /css\((.*)\)/;
 
-TP.regex.CSS_POINTER = /css\((.+)\)/;
+TP.regex.CSS_POINTER = /css\((.*)\)/;
 
 //  Detect @[anything] as whole
 TP.regex.ATTRIBUTE = /^@\w+$/;
@@ -2869,10 +2869,10 @@ TP.regex.ID_HAS_NS = /:/g;                              //  needs reset
 TP.regex.IDREFS = /(.*) (.*)/;
 TP.regex.ID_POINTER = /(xpointer|xpath1)\(id\(["'](.+)["']\)\)/;
 
-TP.regex.XPOINTER = /(xpointer|xpath1|element)\((.+)\)/;
+TP.regex.XPOINTER = /(xpointer|xpath1|element)\((.*)\)/;
 
 TP.regex.ELEMENT_PATH = /[#@\/\\.\\[\\(]/;
-TP.regex.ELEMENT_POINTER = /element\((.+)\)/;
+TP.regex.ELEMENT_POINTER = /element\((.*)\)/;
 
 TP.regex.XPATH_HAS_ID = /id\((.+)\)/;
 
@@ -2884,7 +2884,7 @@ TP.regex.XPATH_HAS_SCALAR_CONVERSION = /^(?:string|number|boolean)\((.+)\)$/;
 TP.regex.XPATH_PATH = /^(\/|@|\.[\/\.]|[^\\.]\((.*)\))|(ancestor|ancestor-or-self|attribute|child|descendant|descendant-or-self|following|following-sibling|namespace|parent|preceding|preceding-sibling|self)::/;
 /* eslint-enable max-len */
 
-TP.regex.XPATH_POINTER = /(xpointer|xpath1)\((.+)\)/;
+TP.regex.XPATH_POINTER = /(xpointer|xpath1)\((.*)\)/;
 
 TP.regex.XPATH_DEFAULTNS = new RegExp(
         '\\$def:((' + TP.XML_NAMECHAR + ')+)', 'g');    //  needs reset
