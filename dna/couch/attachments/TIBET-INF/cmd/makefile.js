@@ -70,11 +70,11 @@
         db_name = make.CLI.getcfg('couch.db_name') || make.getProjectName();
         db_app = make.CLI.getcfg('couch.app_name') || 'app';
 
-        result = make.prompt.question('Database url [' + db_url + '] ? ');
+        result = make.prompt.question('CouchDB base [' + db_url + '] ? ');
         if (result && result.length > 0) {
             db_url = result;
         }
-        make.log('using database url \'' + db_url + '\'.');
+        make.log('using base url \'' + db_url + '\'.');
 
         result = make.prompt.question('Database name [' + db_name + '] ? ');
         if (result && result.length > 0) {
@@ -204,7 +204,7 @@
                     return;
                 }
 
-                make.log('database created.');
+                make.log('database ready at ' + db_url + '/' + db_name);
                 targets.createdb.resolve();
             });
     };
@@ -239,7 +239,7 @@
         db_app = params.db_app;
 
         doc_name = '_design/' + db_app;
-        doc_url = db_url + '/' + doc_name;
+        doc_url = db_url + '/' + db_name + '/' + doc_name;
 
         //  Helper function when the document doesn't exist yet.
         insertAll = function(files) {
@@ -274,7 +274,7 @@
                         item.data.length + ' bytes.');
                 });
 
-                make.log('pushing document content: ' + doc_url);
+                //make.log('pushing document content: ' + doc_url);
 
                 // TODO: copy the tibet.json from the top level into the
                 // attachments directory but remove 'attachments' from the
@@ -303,7 +303,8 @@
                             return;
                         }
 
-                        make.log('application pushed.');
+                        make.log('application loaded at ' + doc_url +
+                            '/index.html');
                         resolve();
                     });
             });
@@ -506,7 +507,7 @@
                             file_name = files[index];
                             att_name = couchAttachment(file_name);
 
-                            make.log(result.value() + ': ' + att_name);
+                            //make.log(result.value() + ': ' + att_name);
 
                             //  Existing attachments will have been read already
                             //  to compare digests. We can reuse that data.
@@ -563,6 +564,8 @@
                         });
 
                     }, attachments[0]).then(function(summary) {
+                        make.log('application updated at ' + doc_url +
+                            '/index.html');
                         resolve();
                     },
                     function(error) {
