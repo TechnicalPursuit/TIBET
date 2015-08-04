@@ -338,12 +338,16 @@
                         return str ? str + '|' + escaper(item) : escaper(item);
                     }, '');
 
+                    pattern += '|node_modules';
+
                     try {
                         pattern = new RegExp(pattern);
                     } catch (e) {
                         return console.log('Error creating RegExp: ' +
                             e.message);
                     }
+                } else {
+                    pattern = /node_modules/;
                 }
 
                 //  TODO: let URI parameters override the event name to send.

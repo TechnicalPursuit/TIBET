@@ -6,5 +6,12 @@
     },
     "path": {
         "lib_root": "~app/TIBET-INF/tibet"
+    },
+    "couch": {
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "port": 5984,
+        "db_name": "d2d",
+        "app_name": "app"
     }
 }

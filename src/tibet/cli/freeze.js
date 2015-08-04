@@ -234,6 +234,14 @@ Cmd.prototype.execute = function() {
         return 1;
     }
 
+    this.log('freezing library dependencies...');
+    sh.cp('-R', path.join(app_npm, 'tibet', 'deps'), infroot);
+    err = sh.error();
+    if (err) {
+        this.error('Error cloning tibet/deps: ' + err);
+        return 1;
+    }
+
     this.log('freezing runtime library resources...');
     sh.cp('-R', path.join(app_npm, 'tibet', 'etc'), infroot);
     err = sh.error();
@@ -256,14 +264,6 @@ Cmd.prototype.execute = function() {
         err = sh.error();
         if (err) {
             this.error('Error cloning tibet/test: ' + err);
-            return 1;
-        }
-
-        this.log('freezing library dependencies...');
-        sh.cp('-R', path.join(app_npm, 'tibet', 'deps'), infroot);
-        err = sh.error();
-        if (err) {
-            this.error('Error cloning tibet/deps: ' + err);
             return 1;
         }
     } else {

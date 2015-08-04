@@ -85,7 +85,7 @@
     "sprintf.js": "TechnicalPursuit/sprintf.js",
     "syn": "TechnicalPursuit/syn",
     "xmldom": "*",
-    "xpath": "TechnicalPursuit/xpath",
+    "xpath": "TechnicalPursuit/xpath.js",
     "xpathjs": "TechnicalPursuit/xpathjs"
   },
   "devDependencies": {},

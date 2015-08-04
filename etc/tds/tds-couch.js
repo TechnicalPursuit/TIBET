@@ -224,11 +224,14 @@
         })
 
         feed.on('error', function(err) {
-            console.error('Follow always retries on errors; must be serious.');
-            throw err;
-        })
+            console.error(err);
+        });
 
-        feed.follow();
+        try {
+            feed.follow();
+        } catch (e) {
+            console.error(e.message);
+        }
 
         //  ---
         //  File-To-CouchDB
@@ -295,6 +298,9 @@
                 //  If an attachment was encoded this will contain the approach.
                 //  TODO: support encodings other than gzip.
                 if (encoding === 'gzip') {
+
+                    //  TODO: see pushdb logic for snappy compression version.
+                    //  It matches the digest consistently where zlib doesn't.
                     zlib.gzip(data, function(err, zipped) {
                         if (err) {
                             reject(err);
@@ -397,6 +403,7 @@
                     //  Data comes in the form of an array with doc and status
                     //  so find the doc one.
                     doc = response.filter(function(item) {
+                        //  TODO: couch.app_name
                         return item._id === '_design/app';
                     })[0];
 
@@ -420,6 +427,7 @@
 
                         type = mime.lookup(path.extname(file).slice(1));
 
+                        //  TODO: couch.app_name
                         db.attachment.insert('_design/app', name, data,
                                 type, {rev: rev}, function(err, body) {
 

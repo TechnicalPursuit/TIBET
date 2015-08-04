@@ -137,6 +137,9 @@ Cmd.prototype.execute = function() {
     try {
         cmd = this;
 
+        // Associate a CLI instance for use by targets.
+        this.CLI = CLI;
+
         start = new Date();
 
         // NOTE the use of then() here since our task prep makes each task into
