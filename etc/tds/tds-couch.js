@@ -58,6 +58,7 @@
             ignore,
             pattern,
             ready,
+            inserting,
 
             applyChanges,
 
@@ -110,17 +111,17 @@
 
                 switch (item.action) {
                     case 'added':
-                        console.log('CouchApp added: ' + item.name);
+                        console.log('CouchDB change: insert ' + item.name);
                         //  Fetch the CouchDB content and write to the FS in the
                         //  proper fully-qualified path location.
                         break;
                     case 'changed':
-                        console.log('CouchApp changed: ' + item.name);
+                        console.log('CouchDB change: update ' + item.name);
                         //  Fetch the CouchDB content and write to the FS in the
                         //  proper fully-qualified path location.
                         break;
                     case 'deleted':
-                        console.log('CouchApp removed: ' + item.name);
+                        console.log('CouchDB change: delete ' + item.name);
                         //  Not going to do this here. fs.unlink tho.
                         break;
                     default:
@@ -343,7 +344,7 @@
             pattern = '**/*';
         }
 
-        //  Configure a watcher instance for the couchapp root.
+        //  Configure a watcher instance for the CouchDB watch root.
         watcher = new gaze.Gaze(pattern, {
             cwd: root
         });
@@ -383,12 +384,15 @@
          * is added as attachments to the current application design document.
          * @param {String} file The name of the file to add as a full path.
          */
-        dbAdd = function(file) {
+        dbAdd = function(file, quiet) {
             var name;
 
             name = couchAttachmentName(file, root);
 
-            console.log('fetching ' + name + ' doc._rev for CRUD process');
+            if (!quiet) {
+                console.log('Host FS change: insert ' + name);
+            }
+            //console.log('fetching ' + name + ' doc._rev for CRUD insert');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -410,11 +414,14 @@
                     rev = doc._rev;
 
                     if (doc._attachments[name]) {
-                        dbUpdate(file).then(
+                        inserting = true;
+                        dbUpdate(file, true).then(
                             function(result) {
+                                inserting = false;
                                 resolve(result);
                             },
                             function(err) {
+                                inserting = false;
                                 reject(err);
                             });
                         return;
@@ -423,9 +430,11 @@
                     readFile(file).then(function(data) {
                         var type;
 
-                        console.log('read:\n' + data);
+                        //console.log('read:\n' + data);
 
                         type = mime.lookup(path.extname(file).slice(1));
+
+                        console.log('Inserting attachment ' + name);
 
                         //  TODO: couch.app_name
                         db.attachment.insert('_design/app', name, data,
@@ -457,12 +466,15 @@
          * is updated in CouchDB.
          * @param {String} file The name of the file to update as a full path.
          */
-        dbUpdate = function(file) {
+        dbUpdate = function(file, quiet) {
             var name;
 
             name = couchAttachmentName(file, root);
 
-            console.log('fetching ' + name + ' doc._rev for CRUD process');
+            if (!quiet) {
+                console.log('Host FS change: update ' + name);
+            }
+            //console.log('fetching ' + name + ' doc._rev for CRUD update');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -484,39 +496,54 @@
                     })[0];
 
                     rev = doc._rev;
-                    console.log('document revision: ' + rev);
+                    //console.log('document revision: ' + rev);
 
                     att = doc._attachments[name];
                     if (!att) {
-                        console.log('Unable to find attachment: ' + name);
-                        reject('No attachment');
-                        return;
+                        if (!inserting) {
+                            dbAdd(file, true).then(
+                                function(result) {
+                                    resolve(result);
+                                },
+                                function(err) {
+                                    reject(err);
+                                });
+                            return;
+                        } else {
+                            console.log('Unable to find attachment: ' + name);
+                            reject('No attachment');
+                            return;
+                        }
                     }
 
                     //  Read the file content in preparation for a push.
-                    console.log('reading attachment data');
+                    //console.log('reading attachment data');
                     readFile(file).then(function(data) {
                         var type;
 
-                        console.log('read:\n' + data);
-                        console.log('computing file system checksum digest');
+                        //console.log('read:\n' + data);
+                        //console.log('computing file system checksum digest');
 
                         couchDigest(data, att.encoding).then(function(digest) {
 
-                            console.log('comparing attachment digest ' + digest);
+                            //console.log('comparing attachment digest ' + digest);
 
                             if (digest === att.digest) {
-                                console.log('' + file +
-                                    ' digest values match. Skipping push.');
+                                //console.log(couchAttachmentName(file) +
+                                //' digest values match. Skipping push.');
                                 resolve();
                                 return;
                             }
 
-                            console.log(
-                                'digest ' + digest + ' and ' + att.digest +
-                                ' differ. Pushing data to CouchDB.');
+                            //console.log(couchAttachmentName(file) +
+                            //' digest values differ. Pushing to CouchDB.');
+                            //console.log(
+                                //'digest ' + digest + ' and ' + att.digest +
+                                //' differ. Pushing data to CouchDB.');
 
                             type = mime.lookup(path.extname(file).slice(1));
+
+                            console.log('Updating attachment ' + name);
 
                             db.attachment.insert('_design/app', name, data,
                                     type, {rev: rev}, function(err, body) {
@@ -542,12 +569,15 @@
         /**
          *
          */
-        dbRemove = function(file) {
+        dbRemove = function(file, quiet) {
             var name;
 
             name = couchAttachmentName(file, root);
 
-            console.log('fetching ' + name + ' doc._rev for CRUD process');
+            if (!quiet) {
+                console.log('Host FS change: remove ' + name);
+            }
+            //console.log('fetching ' + name + ' doc._rev for CRUD remove');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -573,6 +603,8 @@
                         return;
                     }
 
+                    console.log('Removing attachment ' + name);
+
                     db.attachment.destroy('_design/app', name, {rev: rev},
                             function(err, body) {
 
@@ -582,8 +614,8 @@
                             return;
                         }
 
-                        console.log('deleted ' + file);
-                        //console.log(beautify(JSON.stringify(body)));
+                        //console.log('deleted ' + file);
+                        console.log(beautify(JSON.stringify(body)));
 
                         resolve();
                     });
