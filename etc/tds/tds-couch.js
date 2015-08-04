@@ -101,7 +101,7 @@
          * @param {Array.<Object>} list The list of changes to process.
          */
         applyChanges = function(list) {
-            console.log('CouchDB changes:\n' + beautify(JSON.stringify(list)));
+            //console.log('CouchDB changes:\n' + beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
                 var fullpath;
@@ -136,7 +136,7 @@
         //  NOTE the value here has to be large enough to avoid problems with
         //  initial connection or a fatal error is thrown by follow(). For
         //  example, 100ms is often too low even on a local dev machine.
-        feed.heartbeat = 200;   //  milliseconds
+        feed.heartbeat = 500;   //  milliseconds
 
         /**
          * Filters potential changes feed entries before triggering on(change).
@@ -185,8 +185,8 @@
                 //  more likely that we need to verify revpos values between
                 //  baseline and current, not just a single revpos.
 
-                console.log('CouchDB change:\n' +
-                    beautify(JSON.stringify(change)));
+                //console.log('CouchDB change:\n' +
+                    //beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
                 basepos = baserev.slice(0, 2);
@@ -528,7 +528,6 @@
                                 }
 
                                 console.log(beautify(JSON.stringify(body)));
-
                                 resolve();
                             });
                         });
@@ -584,7 +583,7 @@
                         }
 
                         console.log('deleted ' + file);
-                        console.log(beautify(JSON.stringify(body)));
+                        //console.log(beautify(JSON.stringify(body)));
 
                         resolve();
                     });
