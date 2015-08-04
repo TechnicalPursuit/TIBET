@@ -8,6 +8,7 @@
     "cookie-parser": "*",
     "csurf": "*",
     "helmet": "*",
+    "js-beautify": "*",
     "express": "*",
     "express-pouchdb": "*",
     "express-session": "*",

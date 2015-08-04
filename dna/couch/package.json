@@ -13,6 +13,7 @@
     "express-pouchdb": "*",
     "express-session": "*",
     "helmet": "*",
+    "js-beautify": "*",
     "mime-types": "^2.1.4",
     "minimist": "*",
     "morgan": "*",
