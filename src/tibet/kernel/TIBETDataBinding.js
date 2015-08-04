@@ -2406,6 +2406,7 @@ function(aSignal) {
 
         template,
         updatePath,
+        updateAspect,
         index,
         repeatResource,
 
@@ -2431,6 +2432,7 @@ function(aSignal) {
 
     //  Copy the rest of the expandos placed on the text node by the repeat
     //  machinery.
+    updateAspect = textNode.updateAspect;
     template = textNode.template;
     index = textNode.index;
     repeatResource = textNode.repeatResource;
@@ -2446,6 +2448,7 @@ function(aSignal) {
     editor.addEventListener('change',
             handler = function() {
                 var newText,
+                    resource,
                     params,
 
                     newTextNode;
@@ -2455,8 +2458,13 @@ function(aSignal) {
                 //  Remove the 'change' listener handler.
                 this.removeEventListener('change', handler, false);
 
-                //  If there was a template, then execute it against the new
-                //  text value obtained from the editor.
+                //  Update the underlying text value in the model
+                resource = TP.uc(updatePath).getResource();
+                resource.set(updateAspect, newText);
+
+                //  If there was a template, then execute it against the model.
+                //  This will produce a 'new' new text value that we can use for
+                //  our text node value.
                 if (template) {
 
                     //  Iterating context
@@ -2469,7 +2477,7 @@ function(aSignal) {
                         '$INDEX', index,
                         '$#', index);
 
-                    newText = template.transform(newText, params);
+                    newText = template.transform(resource, params);
                 }
 
                 newTextNode = editor.ownerDocument.createTextNode(newText);
@@ -2477,6 +2485,7 @@ function(aSignal) {
                 //  Cache values from the old text node
                 newTextNode.template = template;
                 newTextNode.updatePath = updatePath;
+                newTextNode.updateAspect = updateAspect;
                 newTextNode.index = index;
                 newTextNode.repeatResource = repeatResource;
 
@@ -2485,9 +2494,6 @@ function(aSignal) {
                                     newTextNode,
                                     editor,
                                     false);
-
-                //  Update the underlying text value in the model
-                TP.uc(updatePath).setResource(newText);
             },
             false);
 });
@@ -2874,6 +2880,7 @@ function(aNode, aResource, pathValues, anIndex, repeatResource) {
             //  Cache values used by a possible editor
             textNode.template = template;
             textNode.updatePath = path;
+            textNode.updateAspect = parts.at(1);
             textNode.index = index;
             textNode.repeatResource = repeatResource;
 
