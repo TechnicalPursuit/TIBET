@@ -63,6 +63,7 @@
         path,               // The path module.
         port,               // Port to listen on.
         PouchDB,            // PouchDB interface.
+        project,            // Project name.
         requireDir,         // Directory loader.
         router,             // Express route processor.
         routes,             // Loaded route handlers.
@@ -332,10 +333,11 @@
 
     http.createServer(app).listen(port);
 
-    env = argv.env.charAt(0).toUpperCase() + argv.env.slice(1);
+    env = argv.env;
+    project = TDS.cfg('npm.name') || '';
 
     version = TDS.cfg('tibet.version') || '';
-    console.log(env + ' TIBET Data Server ' +
+    console.log(project + ' (' + env + ') TDS ' +
             (version ? version + ' ' : '') +
             'running at http://127.0.0.1' +
         (port === 80 ? '' : ':' + port));
