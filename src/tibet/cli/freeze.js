@@ -106,6 +106,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['minify', 'raw', 'all', 'zipped'],
         'string': ['tibet'],
         'default': {
+            all: true,
             minify: true,
             tibet: 'base'
         }
@@ -247,6 +248,14 @@ Cmd.prototype.execute = function() {
         err = sh.error();
         if (err) {
             this.error('Error cloning tibet/src: ' + err);
+            return 1;
+        }
+
+        this.log('freezing raw library tests...');
+        sh.cp('-R', path.join(app_npm, 'tibet', 'test'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/test: ' + err);
             return 1;
         }
 

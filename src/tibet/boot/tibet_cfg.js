@@ -1172,12 +1172,16 @@
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
+    TP.sys.setcfg('tds.watch.ignore', null);
     TP.sys.setcfg('tds.watch.root', '~app');
     TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
 
     TP.sys.setcfg('tds.webdav.root', '~app_src');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
+    TP.sys.setcfg('couch.app.root', 'attachments');
+    TP.sys.setcfg('couch.watch.ignore', null);
+    TP.sys.setcfg('couch.watch.root', '~app');
 
     //  ---
     //  tsh processing

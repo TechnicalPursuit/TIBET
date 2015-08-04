@@ -137,12 +137,6 @@
   <delegateURI tibet:uriMatchString="ws://.*:10081"
     tibet:urihandler="TP.test.WSEchoHandler"/>
 
-  <delegateURI tibet:uriMatchString="http://localhost:1407.*"
-    tibet:urihandler="TP.tds.TDSURLHandler"/>
-
-  <delegateURI tibet:uriMatchString="http://127.0.0.1:1407.*"
-    tibet:urihandler="TP.tds.TDSURLHandler"/>
-
   <delegateURI uriStartString="jsonp://ajax.googleapis.com/ajax/services/search/web"
     tibet:contenttype="TP.goog.GoogleSearchData"/>
 
@@ -150,6 +144,12 @@
   <delegateURI tibet:uriMatchString="http://.*:5984.*\/[^.]*$"
     tibet:contenttype="TP.core.JSONContent"
     tibet:urihandler="TP.couchdb.CouchDBURLHandler"/>
+
+  <delegateURI tibet:uriMatchString="http://localhost.*"
+    tibet:urihandler="TP.tds.TDSURLHandler"/>
+
+  <delegateURI tibet:uriMatchString="http://127.0.0.1.*"
+    tibet:urihandler="TP.tds.TDSURLHandler"/>
 
   <!-- Generic mapping for all JSONP content not otherwise mapped -->
   <delegateURI uriStartString="jsonp://"
