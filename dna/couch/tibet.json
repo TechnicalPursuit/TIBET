@@ -14,7 +14,7 @@
         "scheme": "http",
         "host": "127.0.0.1",
         "port": 5984,
-        "db_name": "d2d",
+        "db_name": "{{appname}}",
         "app_name": "app"
     }
 }
