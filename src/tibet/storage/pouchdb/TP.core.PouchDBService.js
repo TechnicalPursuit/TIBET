@@ -114,6 +114,16 @@ function(aRequest) {
 
     switch (request.at('action')) {
 
+        case 'createDB':
+
+            //  The 'new TP.extern.PouchDB(dbName)' statement above creates a
+            //  database if it didn't already exist. So we just exit here.
+
+            //  Mirror what CouchDB returns here.
+            request.complete('{"ok":true}');
+
+            break;
+
         case 'listDBs':
 
             if (TP.isValid(TP.extern.PouchDB.allDbs)) {

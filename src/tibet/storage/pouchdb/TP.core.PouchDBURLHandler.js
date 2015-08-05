@@ -88,9 +88,9 @@ function(targetURI, aRequest) {
             action = 'retrieveItem';
         }
     } else {
-        request.fail('Can\'t compute a load action for: ' + TP.str(targetURI));
-
-        return response;
+        //  Note that this merely creates a database if it doesn't exist and
+        //  returns - no harm done.
+        action = 'createDB';
     }
 
     if (TP.isValid(queryDict = targetURI.get('queryDict'))) {
