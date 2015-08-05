@@ -543,9 +543,15 @@ function(anObject, optFormat) {
 
         obj = anObject;
 
-        return '<span class="sherpa_pp String">' +
-                this.runJSModeOn(obj) +
-                '</span>';
+        if (TP.isJSONString(obj)) {
+            return '<span class="sherpa_pp String">' +
+                    this.runJSONModeOn(obj) +
+                    '</span>';
+        } else {
+            return '<span class="sherpa_pp String">' +
+                    this.runJSModeOn(obj) +
+                    '</span>';
+        }
     }
 });
 
