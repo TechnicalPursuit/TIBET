@@ -529,7 +529,7 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    if (TP.regex.CONTAINS_ELEM_MARKUP.test(anObject)) {
+    if (TP.regex.STARTS_WITH_ELEM_MARKUP.test(anObject)) {
         if (TP.isValid(optFormat)) {
             optFormat.atPut('cmdAsIs', true);
         }
