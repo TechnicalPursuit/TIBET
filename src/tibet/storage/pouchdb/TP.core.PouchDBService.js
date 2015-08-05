@@ -432,7 +432,6 @@ function(aRequest) {
                             //  Make sure to convert it to a POJO before handing
                             //  it to PouchDB.
                             data = data.asObject();
-
                         } else {
 
                             //  Otherwise, we grab the response, which is the
@@ -440,9 +439,22 @@ function(aRequest) {
                             //  copy any new data from the passed in data over
                             //  to it.
                             data.getKeys().forEach(
-                                    function(aKey) {
-                                        resp[aKey] = data.at(aKey);
-                                    });
+                                function(aKey) {
+
+                                    //  This is done this way because JSONifying
+                                    //  nulls and undefineds don't cause the
+                                    //  desired values for PouchDB. Nulls should
+                                    //  just be null and undefineds should be
+                                    //  omitted.
+                                    if (TP.isNull(data.at(aKey))) {
+                                        resp[aKey] = null;
+                                    } else if (!TP.isDefined(aKey)) {
+                                        //  empty
+                                    } else {
+                                        resp[aKey] = TP.json2js(
+                                            TP.js2json(data.at(aKey)), false);
+                                    }
+                                });
 
                             //  Make the new data be that data.
                             data = resp;
