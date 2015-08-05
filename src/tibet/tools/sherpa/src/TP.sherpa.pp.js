@@ -665,56 +665,9 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_core_JSONContent',
 function(anObject, optFormat) {
 
-    var str,
-        level,
-        tabSpaces;
-
     if (TP.isValid(TP.extern.CodeMirror)) {
-        str = '';
-        level = 0;
-        tabSpaces = 4;
-        TP.extern.CodeMirror.runMode(
-            anObject.asString(),
-            {
-                name: 'application/ld+json'
-            },
-            function(text, style) {
-
-                //  Collapse a brace followed by a comma with a brace coming
-                //  next to a single line
-                if (text === '{' && str.slice(-7) === '},<br/>') {
-                    str = str.slice(0, -5) + '&#160;';
-                } else if (str.slice(-5) === '<br/>') {
-                    //  Otherwise, if we're starting a new line, 'tab in' the
-                    //  proper number of spaces.
-                    str += '&#160;'.times(level * tabSpaces);
-                }
-
-                if (style) {
-                    str += '<span class="cm-' + style + '">' +
-                             text.asEscapedXML() +
-                             '</span>';
-                } else {
-                    if (text === '{' || text === '[') {
-                        level++;
-                        str += text + '<br/>';
-                    }
-                    if (text === '}' || text === ']') {
-                        level--;
-                        str += '<br/>' +
-                                '&#160;'.times(level * tabSpaces) + text;
-                    }
-                    if (text === ':') {
-                        str += '&#160;' + text + '&#160;';
-                    }
-                    if (text === ',') {
-                        str += text + '<br/>';
-                    }
-                }
-            });
-
         return '<span class="sherpa_pp TP_core_JSONContent">' +
-                str +
+                    this.runJSONModeOn(anObject) +
                 '</span>';
     } else {
         return '<span class="sherpa_pp TP_core_JSONContent">' +
@@ -1019,6 +972,65 @@ function(anObject) {
                 str += text.asEscapedXML();
             }
         });
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.pp.Type.defineMethod('runJSONModeOn',
+function(anObject) {
+
+    var str,
+        level,
+        tabSpaces;
+
+    if (TP.isValid(TP.extern.CodeMirror)) {
+
+        str = '';
+        level = 0;
+        tabSpaces = 4;
+
+        TP.extern.CodeMirror.runMode(
+            anObject.asString(),
+            {
+                name: 'application/ld+json'
+            },
+            function(text, style) {
+
+                //  Collapse a brace followed by a comma with a brace coming
+                //  next to a single line
+                if (text === '{' && str.slice(-7) === '},<br/>') {
+                    str = str.slice(0, -5) + '&#160;';
+                } else if (str.slice(-5) === '<br/>') {
+                    //  Otherwise, if we're starting a new line, 'tab in' the
+                    //  proper number of spaces.
+                    str += '&#160;'.times(level * tabSpaces);
+                }
+
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text.asEscapedXML() +
+                             '</span>';
+                } else {
+                    if (text === '{' || text === '[') {
+                        level++;
+                        str += text + '<br/>';
+                    }
+                    if (text === '}' || text === ']') {
+                        level--;
+                        str += '<br/>' +
+                                '&#160;'.times(level * tabSpaces) + text;
+                    }
+                    if (text === ':') {
+                        str += '&#160;' + text + '&#160;';
+                    }
+                    if (text === ',') {
+                        str += text + '<br/>';
+                    }
+                }
+            });
+    }
 
     return str;
 });
