@@ -338,7 +338,7 @@
                         return str ? str + '|' + escaper(item) : escaper(item);
                     }, '');
 
-                    pattern += '|node_modules';
+                    pattern += '|\\.git';
 
                     try {
                         pattern = new RegExp(pattern);
@@ -347,7 +347,7 @@
                             e.message);
                     }
                 } else {
-                    pattern = /node_modules/;
+                    pattern = /\.git/;
                 }
 
                 //  TODO: let URI parameters override the event name to send.
