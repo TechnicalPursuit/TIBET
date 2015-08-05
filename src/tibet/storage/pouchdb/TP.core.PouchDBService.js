@@ -452,6 +452,8 @@ function(aRequest) {
                                         resp[aKey] = null;
                                     } else if (!TP.isDefined(aKey)) {
                                         //  empty
+                                    } else if (aKey === '_rev') {
+                                        //  empty
                                     } else {
                                         resp[aKey] = TP.json2js(
                                             TP.js2json(data.at(aKey)), false);
