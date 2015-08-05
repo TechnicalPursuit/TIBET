@@ -128,7 +128,7 @@ function(aRequest) {
                                 err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(resp)));
+                    request.complete(TP.js2json(resp));
                 });
 
             break;
@@ -184,7 +184,7 @@ function(aRequest) {
 
                             //  We succeeded! Complete the request with the
                             //  response from PouchDB.
-                            request.complete(TP.json2js(TP.js2json(resp2)));
+                            request.complete(TP.js2json(resp2));
                         });
                 });
 
@@ -213,7 +213,7 @@ function(aRequest) {
                             err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(resp)));
+                    request.complete(TP.js2json(resp));
                 });
 
             break;
@@ -251,7 +251,7 @@ function(aRequest) {
                         'date_created', resultData.at('date_created'),
                         'date_modified', resultData.at('date_modified'));
 
-                    request.complete(resultData);
+                    request.complete(TP.js2json(resultData));
                 });
 
             break;
@@ -270,7 +270,7 @@ function(aRequest) {
                             err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(resp)));
+                    request.complete(TP.js2json(resp));
                 });
 
             break;
@@ -280,6 +280,7 @@ function(aRequest) {
             //  Convert the object into a TP.core.Hash and then into a plain
             //  Object.
             data = body.asHash();
+
             dateStamp = TP.dc().asNumber();
 
             data.atPut('date_created', dateStamp);
@@ -309,7 +310,7 @@ function(aRequest) {
 
                         //  We succeeded! Complete the request with the
                         //  response from PouchDB.
-                        request.complete(TP.json2js(TP.js2json(resp)));
+                        request.complete(TP.js2json(resp));
                     });
 
             } else {
@@ -361,7 +362,7 @@ function(aRequest) {
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.json2js(TP.js2json(resp2)));
+                                request.complete(TP.js2json(resp2));
                             });
                     });
             }
@@ -382,6 +383,7 @@ function(aRequest) {
                 //  Convert the object into a TP.core.Hash and then into a plain
                 //  Object.
                 data = body.asHash();
+
                 data.atPut('_id', id);
 
                 theDB.get(
@@ -477,7 +479,7 @@ function(aRequest) {
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.json2js(TP.js2json(resp2)));
+                                request.complete(TP.js2json(resp2));
                             });
                     });
             }
