@@ -992,6 +992,62 @@ function(aStep) {
 
 //  ------------------------------------------------------------------------
 
+Array.Inst.defineMethod('asObject',
+function() {
+
+    /**
+     * @method asObject
+     * @summary Returns a 'plain JavaScript object' version of the receiver -
+     *     and makes sure that any nested content is also converted to its plain
+     *     JavaScript equivalent.
+     * @returns {Object} The receiver - and its content - as plain JavaScript
+     *     objects.
+     */
+
+    var len,
+
+        obj,
+
+        i,
+
+        val;
+
+    //  If this flag is set to true, that means that we're already trying to
+    //  format this object as part of larger object set and we may have an
+    //  endless recursion problem if there are circular references and we
+    //  let this formatting operation proceed. Therefore, we just return the
+    //  'recursion' format of the object.
+    if (this.conversion_asObject) {
+        return TP.recursion(this);
+    }
+
+    //  Set the recursion flag so that we don't endless recurse when
+    //  producing circular representations of this object and its members.
+    this.conversion_asObject = true;
+
+    len = this.getSize();
+
+    obj = [];
+
+    for (i = 0; i < len; i++) {
+        val = this.at(i);
+
+        //  Make sure to recurse in so that we end up with plain Object versions
+        //  of all values.
+        if (TP.canInvoke(val, 'asObject')) {
+            val = val.asObject();
+        }
+        obj[i] = val;
+    }
+
+    //  We're done - we can set the recursion flag back off.
+    this.conversion_asObject = false;
+
+    return obj;
+});
+
+//  ------------------------------------------------------------------------
+
 Array.Inst.defineMethod('asRange',
 function() {
 
@@ -4861,10 +4917,11 @@ function() {
 
     /**
      * @method asObject
-     * @summary Returns a 'plain JavaScript object' version of the receiver - in
-     *     this case an array of key/value pairs. For example
-     *     TP.hc('a',1,'b',2).asObject() returns the equivalent of {a: 1, b: 2}.
-     * @returns {Object} The receiver as an Object.
+     * @summary Returns a 'plain JavaScript object' version of the receiver -
+     *     and makes sure that any nested content is also converted to its plain
+     *     JavaScript equivalent.
+     * @returns {Object} The receiver - and its content - as plain JavaScript
+     *     objects.
      */
 
     var keys,
