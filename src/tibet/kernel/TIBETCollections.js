@@ -3474,8 +3474,16 @@ function() {
      * @returns {TP.core.Hash} The receiver converted into a TP.core.Hash.
      */
 
+    var str;
+
     //  Make sure to '.toString()' this to get the primitive value.
-    return TP.hc('value', this.toString());
+    str = this.toString();
+
+    if (TP.isJSONString(str)) {
+        return TP.json2js(str);
+    } else {
+        return TP.hc('value', str);
+    }
 });
 
 //  ------------------------------------------------------------------------
