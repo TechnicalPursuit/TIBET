@@ -77,7 +77,9 @@ function(targetURI, aRequest) {
 
     resourceID = targetURI.get('resourceID');
 
-    if (request.at('verb') === TP.HTTP_HEAD) {
+    if (dbName === '_all_dbs') {
+        action = 'listDBs';
+    } else if (request.at('verb') === TP.HTTP_HEAD) {
         action = 'retrieveItemInfo';
     } else if (TP.isValid(resourceID)) {
         if (resourceID === '_all_docs') {

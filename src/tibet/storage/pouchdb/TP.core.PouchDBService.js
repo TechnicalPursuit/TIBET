@@ -114,6 +114,31 @@ function(aRequest) {
 
     switch (request.at('action')) {
 
+        case 'listDBs':
+
+            if (TP.isValid(TP.extern.PouchDB.allDbs)) {
+                TP.extern.PouchDB.allDbs(
+                    function(err, resp) {
+
+                        //  There was an error - fail the request.
+                        if (TP.isValid(err)) {
+                            return request.fail(
+                                    TP.sc('Trying to list all databases',
+                                            ' but had an error: ',
+                                            TP.str(err)),
+                                    err);
+                        }
+
+                        request.complete(TP.js2json(resp));
+                    });
+            } else {
+                return request.fail(
+                        TP.sc('Trying to list all databases but the',
+                                ' pouch-db-alldbs plugin isn\'t loaded'));
+            }
+
+            break;
+
         case 'deleteDB':
 
             theDB.destroy(
