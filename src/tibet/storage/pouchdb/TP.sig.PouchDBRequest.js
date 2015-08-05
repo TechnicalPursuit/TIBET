@@ -115,5 +115,103 @@ TP.sig.PouchDBRequest.Type.defineAttribute('responseType',
                                         'TP.sig.PouchDBResponse');
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.PouchDBRequest.Inst.defineMethod('failJob',
+function(aFaultString, aFaultCode, aFaultStack) {
+
+    /**
+     * @method failJob
+     * @summary Fails the PouchDB request
+     * @param {String} aFaultString A text description of the reason for the
+     *     failure.
+     * @param {Object} aFaultCode A reason for the failure.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
+     * @returns {TP.sig.PouchDBRequest}
+     */
+
+    var url,
+        uri;
+
+    url = this.at('uri');
+    if (TP.isURI(url)) {
+        uri = TP.uc(url);
+        if (TP.isURI(uri)) {
+            uri.isLoaded(false);
+            uri.isDirty(true);
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.PouchDBRequest.Inst.defineMethod('cancelJob',
+function(aFaultString, aFaultCode) {
+
+    /**
+     * @method cancelJob
+     * @summary Cancels the PouchDB request
+     * @param {String} aFaultString A text description of the reason for the
+     *     cancellation.
+     * @param {Object} aFaultCode A reason for the cancellation.
+     * @returns {TP.sig.PouchDBRequest}
+     */
+
+    var url,
+        uri;
+
+    url = this.at('uri');
+    if (TP.isURI(url)) {
+        uri = TP.uc(url);
+        if (TP.isURI(uri)) {
+            uri.isLoaded(false);
+            uri.isDirty(true);
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.PouchDBRequest.Inst.defineMethod('completeJob',
+function(aResult) {
+
+    /**
+     * @method completeJob
+     * @summary Completes the request, peforming any wrapup that might be
+     *     necessary to ensure proper capture of the result data.
+     * @param {Object} aResult An optional object to set as the result of the
+     *     request.
+     * @returns {TP.sig.PouchDBRequest}
+     */
+
+    var url,
+        uri,
+        data;
+
+    url = this.at('uri');
+    if (TP.isURI(url)) {
+        uri = TP.uc(url);
+        if (TP.isURI(uri)) {
+            data = uri.updateResourceCache(this);
+
+            uri.isLoaded(true);
+            uri.isDirty(false);
+        }
+    }
+
+    data = data || aResult;
+    this.set('result', data);
+
+    return this.callNextMethod(data);
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

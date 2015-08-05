@@ -99,7 +99,8 @@ function(targetURI, aRequest) {
                     'action', action,
                     'dbName', dbName,
                     'securePW', securePW,
-                    'id', resourceID);
+                    'id', resourceID,
+                    'uri', targetURI.getLocation());
 
     //  Construct and initialize a TP.sig.PouchDBRequest
     loadRequest = TP.sig.PouchDBRequest.construct(requestParams);
@@ -173,7 +174,8 @@ function(targetURI, aRequest) {
                     'action', action,
                     'dbName', dbName,
                     'securePW', securePW,
-                    'id', resourceID);
+                    'id', resourceID,
+                    'uri', targetURI.getLocation());
 
     //  Construct and initialize a TP.sig.PouchDBRequest
     nukeRequest = TP.sig.PouchDBRequest.construct(requestParams);
@@ -293,7 +295,8 @@ function(targetURI, aRequest) {
                         'action', 'createItem',
                         'dbName', dbName,
                         'securePW', securePW,
-                        'body', content);
+                        'body', content,
+                        'uri', targetURI.getLocation());
     } else {
 
         if (TP.notValid(resourceID)) {
@@ -307,7 +310,8 @@ function(targetURI, aRequest) {
                         'dbName', dbName,
                         'securePW', securePW,
                         'id', resourceID,
-                        'body', content);
+                        'body', content,
+                        'uri', targetURI.getLocation());
     }
 
     //  Construct and initialize a TP.sig.PouchDBRequest
