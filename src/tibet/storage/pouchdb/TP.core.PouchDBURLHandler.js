@@ -433,11 +433,13 @@ function(targetURI, aRequest) {
                             //  Signal a 'TP.sig.ValueChange' from the URI,
                             //  using the computed action and supplying a new
                             //  value.
+                            //  Note that the value for TP.NEWVAL should give us
+                            //  the value that the other service calls do. See
+                            //  the TP.core.PouchDBService type.
                             uri.$changed(
                                 'value',
                                 action,
-                                TP.hc(TP.NEWVAL,
-                                        TP.json2js(TP.js2json(change.doc))));
+                                TP.hc(TP.NEWVAL, TP.js2json(change.doc)));
                         }
                     });
 
