@@ -5632,7 +5632,8 @@ function() {
 
                 var obj;
 
-                obj = testResult.at('body');
+                //  The test result is a TP.core.JSONContent object
+                obj = testResult.get('data').at('body');
 
                 test.assert.isTrue(
                     obj.hasKey('firstName'),
@@ -5660,7 +5661,7 @@ function() {
 
                 TP.uc(locStr).unregister();
             });
-    });
+    }).only();
 
     //  ---
 
@@ -5679,13 +5680,18 @@ function() {
             inputVal,
             function(testResult) {
 
+                var obj;
+
+                //  The test result is a TP.core.JSONContent object
+                obj = testResult.get('data');
+
                 test.assert.isTrue(
-                    testResult.hasKey('date_created'),
+                    obj.hasKey('date_created'),
                     TP.sc('Expected that result would have a key of',
                             ' \'date_created\' and it doesn\'t'));
 
                 test.assert.isTrue(
-                    testResult.hasKey('date_modified'),
+                    obj.hasKey('date_modified'),
                     TP.sc('Expected that result would have a key of',
                             ' \'date_modified\' and it doesn\'t'));
 
@@ -5710,19 +5716,24 @@ function() {
             inputVal,
             function(testResult) {
 
+                var obj;
+
+                //  The test result is a TP.core.JSONContent object
+                obj = testResult.get('data');
+
                 test.assert.isTrue(
-                    testResult.hasKey('total_rows'),
+                    obj.hasKey('total_rows'),
                     TP.sc('Expected that result would have a key of \'total_rows\' and',
                             ' it doesn\'t'));
 
                 test.assert.isEqualTo(
-                        testResult.at('total_rows'),
-                        1,
-                        TP.sc('Expected: ', '1',
-                                ' and got instead: ', testResult.at('total_rows'), '.'));
+                    obj.at('total_rows'),
+                    1,
+                    TP.sc('Expected: ', '1',
+                            ' and got instead: ', testResult.at('total_rows'), '.'));
 
                 test.assert.isTrue(
-                    testResult.hasKey('rows'),
+                    obj.hasKey('rows'),
                     TP.sc('Expected that result would have a key of \'rows\' and',
                             ' it doesn\'t'));
 
@@ -5752,8 +5763,13 @@ function() {
             test,
             inputVal,
             function(testResult) {
+                var obj;
+
+                //  The test result is a TP.core.JSONContent object
+                obj = testResult.get('data');
+
                 test.assert.isValid(
-                    testResult.at('ok'),
+                    obj.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
             });
 
@@ -5763,28 +5779,32 @@ function() {
                     test,
                     'pouchdb://pouch_test/author_info' + ' -refresh',
                     function(testResult) {
+                        var obj;
+
+                        //  The test result is a TP.core.JSONContent object
+                        obj = testResult.get('data');
 
                         test.assert.isTrue(
-                            testResult.hasKey('firstName'),
+                            obj.hasKey('firstName'),
                             TP.sc('Expected that result would have a key of \'firstName\' and',
                                     ' it doesn\'t'));
 
                         test.assert.isEqualTo(
-                            testResult.at('firstName'),
+                            obj.at('firstName'),
                             'November',
                             TP.sc('Expected: ', '"November"',
                                     ' and got instead: ', testResult.at('firstName'), '.'));
 
                         test.assert.isTrue(
-                            testResult.hasKey('lastName'),
+                            obj.hasKey('lastName'),
                             TP.sc('Expected that result would have a key of \'lastName\' and',
                                     ' it doesn\'t'));
 
                         test.assert.isEqualTo(
-                                testResult.at('lastName'),
-                                'Jones',
-                                TP.sc('Expected: ', '"Jones"',
-                                        ' and got instead: ', testResult.at('lastName'), '.'));
+                            obj.at('lastName'),
+                            'Jones',
+                            TP.sc('Expected: ', '"Jones"',
+                                    ' and got instead: ', testResult.at('lastName'), '.'));
 
                         TP.uc(locStr).unregister();
                     });
@@ -5815,12 +5835,17 @@ function() {
         shellDriver.execShellTest(
             test,
             inputVal,
-            function(saveResult) {
+            function(testResult) {
+                var obj;
+
+                //  The test result is a TP.core.JSONContent object
+                obj = testResult.get('data');
+
                 test.assert.isValid(
-                    saveResult.at('ok'),
+                    obj.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
-                saveID = saveResult.at('id');
+                saveID = obj.at('id');
             });
 
         test.then(
@@ -5829,28 +5854,32 @@ function() {
                     test,
                     'pouchdb://pouch_test/' + saveID + ' -refresh',
                     function(testResult) {
+                        var obj;
+
+                        //  The test result is a TP.core.JSONContent object
+                        obj = testResult.get('data');
 
                         test.assert.isTrue(
-                            testResult.hasKey('firstName'),
+                            obj.hasKey('firstName'),
                             TP.sc('Expected that result would have a key of \'firstName\' and',
                                     ' it doesn\'t'));
 
                         test.assert.isEqualTo(
-                                testResult.at('firstName'),
-                                'John',
-                                TP.sc('Expected: ', '"John"',
-                                        ' and got instead: ', testResult.at('firstName'), '.'));
+                            obj.at('firstName'),
+                            'John',
+                            TP.sc('Expected: ', '"John"',
+                                    ' and got instead: ', testResult.at('firstName'), '.'));
 
                         test.assert.isTrue(
-                            testResult.hasKey('lastName'),
+                            obj.hasKey('lastName'),
                             TP.sc('Expected that result would have a key of \'lastName\' and',
                                     ' it doesn\'t'));
 
                         test.assert.isEqualTo(
-                                testResult.at('lastName'),
-                                'Smith',
-                                TP.sc('Expected: ', '"Smith"',
-                                        ' and got instead: ', testResult.at('lastName'), '.'));
+                            obj.at('lastName'),
+                            'Smith',
+                            TP.sc('Expected: ', '"Smith"',
+                                    ' and got instead: ', testResult.at('lastName'), '.'));
 
                         TP.uc(locStr).unregister();
                     });
@@ -5877,8 +5906,13 @@ function() {
             test,
             inputVal,
             function(testResult) {
+                var obj;
+
+                //  The test result is a TP.core.JSONContent object
+                obj = testResult.get('data');
+
                 test.assert.isValid(
-                    testResult.at('ok'),
+                    obj.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
                 TP.uc(locStr).unregister();
@@ -5904,8 +5938,13 @@ function() {
             test,
             inputVal,
             function(testResult) {
+                var obj;
+
+                //  The test result is a TP.core.JSONContent object
+                obj = testResult.get('data');
+
                 test.assert.isValid(
-                    testResult.at('ok'),
+                    obj.at('ok'),
                     TP.sc('Expected a result with an \'ok\' property'));
 
                 TP.uc(locStr).unregister();

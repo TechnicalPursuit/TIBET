@@ -1492,7 +1492,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult().at('body');
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data').at('body');
 
                         test.assert.isTrue(
                             result.hasKey('firstName'),
@@ -1567,7 +1568,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isTrue(
                             result.hasKey('date_created'),
@@ -1628,7 +1630,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isTrue(
                             result.hasKey('total_rows'),
@@ -2465,7 +2468,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
@@ -2516,7 +2520,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
@@ -2566,7 +2571,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
@@ -2617,7 +2623,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
