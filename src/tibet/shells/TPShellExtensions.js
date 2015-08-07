@@ -1245,6 +1245,11 @@ function(aRequest, cmdType) {
 
         default:
 
+            if (subrequest.at('verb') === TP.HTTP_DELETE) {
+                obj.nuke(subrequest);
+                break;
+            }
+
             //  trigger the fetch sequence, relying on the subrequest's
             //  handlers to update the request appropriately.
             obj.getResource(subrequest);
