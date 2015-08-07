@@ -443,7 +443,7 @@ function(targetURI, aRequest) {
 
         //  We keep a count of the number of times this watcher is used for a
         //  particular database. When it's 0, this watcher will be canceled.
-        watcher._watcherCount = 0;
+        watcher._watcherCount = 1;
     } else {
 
         //  There was already a watcher for this database, but we need to
