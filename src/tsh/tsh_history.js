@@ -157,7 +157,7 @@ function(aRequest) {
     req.defineMethod('failJob',
         function(aFaultString, aFaultCode, aFaultStack) {
 
-            return aRequest.fail(aFaultString, aFaultCode);
+            return aRequest.fail(aFaultString, aFaultCode, aFaultStack);
         });
 
     //  run that baby!

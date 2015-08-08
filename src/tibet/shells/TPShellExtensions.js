@@ -1067,6 +1067,11 @@ function(aRequest, cmdType) {
                     this.$wrapupJob('Failed', TP.FAILED, aFaultString,
                                     aFaultCode);
                     return aRequest.fail(aFaultString, aFaultCode);
+                case 3:
+                    this.$wrapupJob('Failed', TP.FAILED, aFaultString,
+                                    aFaultCode,
+                                    aFaultStack);
+                    return aRequest.fail(aFaultString, aFaultCode);
                 default:
                     this.$wrapupJob('Failed', TP.FAILED);
                     return aRequest.fail();

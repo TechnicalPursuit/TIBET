@@ -168,7 +168,8 @@ function(aRequest) {
 
                 return aRequest.fail(
                         TP.ifInvalid(aFaultString, 'TP.ev.script failed.'),
-                        TP.ifInvalid(aFaultCode, TP.FAILED));
+                        TP.ifInvalid(aFaultCode, TP.FAILED),
+                        aFaultStack);
             });
 
         //  Configure STDIO that any nested command operations will output to

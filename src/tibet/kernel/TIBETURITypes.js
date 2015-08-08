@@ -3642,12 +3642,12 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
         function(aFaultString, aFaultCode, aFaultStack) {
 
             if (TP.canInvoke(thisref, failureFName)) {
-                thisref[failureFName](aFaultString, aFaultCode);
+                thisref[failureFName](aFaultString, aFaultCode, aFaultStack);
             }
 
             //  if there was an original request fail it too.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultString, aFaultCode);
+                aRequest.fail(aFaultString, aFaultCode, aFaultStack);
             }
         });
 
@@ -4180,7 +4180,7 @@ function(aDataSource, aRequest) {
             function(aFaultString, aFaultCode, aFaultStack) {
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode);
+                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
                 }
             });
 
@@ -5207,7 +5207,7 @@ function(aRequest) {
             function(aFaultString, aFaultCode, aFaultStack) {
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode);
+                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
                 }
             });
 
@@ -5454,7 +5454,7 @@ function(aRequest, filterResult) {
             function(aFaultString, aFaultCode, aFaultStack) {
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode);
+                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
                 }
             });
 
@@ -5862,7 +5862,7 @@ function(aRequest) {
 
             //  Inform any originally inbound request of our status.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultString, aFaultCode);
+                aRequest.fail(aFaultString, aFaultCode, aFaultStack);
             }
         });
 
@@ -10012,7 +10012,7 @@ function(targetURI, aRequest) {
                 targetURI.isDirty(true);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode);
+                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
                 }
             });
 
@@ -10097,7 +10097,7 @@ function(targetURI, aRequest) {
             function(aFaultString, aFaultCode, aFaultStack) {
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode);
+                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
                 }
             });
 
@@ -10207,7 +10207,7 @@ function(targetURI, aRequest) {
             function(aFaultString, aFaultCode, aFaultStack) {
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode);
+                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
                 }
             });
 

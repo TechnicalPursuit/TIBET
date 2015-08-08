@@ -172,7 +172,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
         len = arr.getSize();
         for (i = 0; i < len; i++) {
             try {
-                arr.at(i)(this, aFaultString, aFaultCode);
+                arr.at(i)(this, aFaultString, aFaultCode, aFaultStack);
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Error running failure hook.'),
