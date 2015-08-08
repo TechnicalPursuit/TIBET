@@ -297,7 +297,10 @@ Cmd.prototype.execute = function() {
 
     //  NOTE that we don't use the full path for the dna reference here to avoid
     //  embedding real paths in the output.
-    params = CLI.blend({appname: appname, dna: options.dna}, options);
+    params = CLI.blend({
+        appname: appname,
+        dna: dna.slice(dna.lastIndexOf(path.sep) + 1)
+    }, options);
 
     //  ---
     //  Process templated content to inject appname.
