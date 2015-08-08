@@ -4,7 +4,7 @@
     name="{{appname}}" default="base" basedir="~app_cfg">
 
 <config id="properties" if="boot.phase_one">
-    <property name="tibet.sherpa" value="true"/>
+    <property name="sherpa.enabled" value="true"/>
     <property name="debug.use_debugger" value="true"/>
     <property name="log.bootcfg" value="true"/>
     <property name="log.bootenv" value="true"/>

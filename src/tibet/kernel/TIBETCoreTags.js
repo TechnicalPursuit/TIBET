@@ -453,7 +453,7 @@ function(wantsSherpa) {
     //  If the system is configured to run the sherpa, then push its tag into
     //  the list for consideration.
     sherpaOk = TP.ifInvalid(wantsSherpa, true);
-    if (TP.sys.cfg('tibet.sherpa') === true && sherpaOk) {
+    if (TP.sys.cfg('sherpa.enabled') === true && sherpaOk) {
         opts.unshift('tibet:sherpa');
     }
 
@@ -499,7 +499,7 @@ function(aRequest) {
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then exit here - the Sherpa does some special things to
     //  the 'tibet:root' tag.
-    if (TP.sys.cfg('tibet.sherpa') === true &&
+    if (TP.sys.cfg('sherpa.enabled') === true &&
         TP.isType(TP.sys.getTypeByName('TP.core.Sherpa'))) {
         return;
     }
@@ -560,7 +560,7 @@ function(aRequest) {
 
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then turn the receiver into a 'tibet:sherpa' tag.
-    if (TP.sys.cfg('tibet.sherpa') === true &&
+    if (TP.sys.cfg('sherpa.enabled') === true &&
         TP.isType(TP.sys.getTypeByName('TP.core.Sherpa'))) {
 
         //  Make sure that we have an element to work from.

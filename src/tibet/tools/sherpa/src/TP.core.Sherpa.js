@@ -35,16 +35,17 @@ function(aName) {
         sherpaSetupFunc;
 
     //  If the Sherpa isn't configured to start, then exit here.
-    if (!TP.sys.cfg('tibet.sherpa')) {
+    if (!TP.sys.cfg('sherpa.enabled')) {
         return this;
     }
 
-    //  Otherwise, clear the 'boot.toggle_key' flag. We don't want the boot log
-    //  to be toggled. We'll be handling all of that.
-    TP.sys.setcfg('boot.toggle_key', null);
-
     //  Register our toggle key handler to finish Sherpa setup.
     toggleKey = TP.sys.cfg('sherpa.toggle_key');
+    if (TP.isEmpty(toggleKey)) {
+        TP.error('Sherpa is enabled but no toggle key defined.');
+        return this;
+    }
+
     if (!toggleKey.startsWith('TP.sig.')) {
         toggleKey = 'TP.sig.' + toggleKey;
     }
