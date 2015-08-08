@@ -333,6 +333,9 @@ function() {
 
     sherpaSouthDrawer.setAttribute('tibet:nomutationtracking', true);
 
+    TP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
+    TP.getLogger(TP.TEST_LOG).addAppender(TP.log.SherpaAppender.construct());
+
     return this;
 });
 
