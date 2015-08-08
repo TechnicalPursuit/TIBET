@@ -335,11 +335,13 @@
 
     env = argv.env;
     project = TDS.cfg('npm.name') || '';
+    project += ' ' + TDS.cfg('npm.version') || '0.0.1';
 
     version = TDS.cfg('tibet.version') || '';
-    console.log(project + ' (' + env + ') TDS ' +
-            (version ? version + ' ' : '') +
-            'running at http://127.0.0.1' +
+
+    console.log(project + ' (' + env + ') running on ' +
+            'TIBET ' + (version ? version + ' ' : '') +
+            'at http://127.0.0.1' +
         (port === 80 ? '' : ':' + port));
 
     //  uncomment to view final route configuration

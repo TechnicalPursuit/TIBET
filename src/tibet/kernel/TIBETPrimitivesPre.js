@@ -11779,13 +11779,6 @@ function(release, meta) {
         data,
         semver;
 
-    // Return cached value if possible.
-    if (TP.isEmpty(release)) {
-        if (TP.notEmpty(TP.sys.$versionString)) {
-            return TP.sys.$versionString;
-        }
-    }
-
     // Default data to the current kernel's stored version info.
     data = TP.hc(TP.ifInvalid(release, TP.sys.$version));
 
@@ -11803,11 +11796,12 @@ function(release, meta) {
         str += data.at('suffix');
 
         str += '.';
-        str += data.at('increment');
+        str += TP.ifEmpty(data.at('increment'), 0);
     }
 
+    semver = data.at('semver');
+
     if (TP.isTrue(meta)) {
-        semver = data.at('semver');
 
         if (TP.notEmpty(data.at('phash'))) {
             str += '+g';
@@ -11820,7 +11814,7 @@ function(release, meta) {
             } else {
                 str += '+';
             }
-            str += data.at('time');
+            str += data.at('commits');
         }
 
         if (TP.notEmpty(data.at('time'))) {
@@ -11833,7 +11827,7 @@ function(release, meta) {
             str += data.at('time');
         }
     } else {
-        semver = data.at('semver').split('+')[0];
+        semver = semver.split('+')[0];
     }
 
     // A sanity check...
@@ -11841,10 +11835,6 @@ function(release, meta) {
         // Hmmm. Computation should be the same.
         TP.error('Version string mismatch. source -> ' + data.at('semver') +
             ' !== ' + str + ' <- computed.');
-    }
-
-    if (TP.isEmpty(release)) {
-        TP.sys.$versionString = str;
     }
 
     return str;
