@@ -2488,6 +2488,8 @@ TP.regex.XML_IDREF = new RegExp(
 TP.regex.IS_ELEM_MARKUP = new RegExp(
         '^(\\s)*<' + TP.XML_NAME + '>(\\s)*' + '([\\s\\S]*)' + '>(\\s)*$');
 
+TP.regex.STARTS_WITH_ELEM_MARKUP = new RegExp(
+                        '^' + TP.CONTAINS_ELEM_MARKUP_DEF);
 TP.regex.CONTAINS_ELEM_MARKUP = new RegExp(TP.CONTAINS_ELEM_MARKUP_DEF);
 
 TP.regex.HAS_ELEMENT = /<\/|\/>/;

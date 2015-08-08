@@ -1492,7 +1492,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult().at('body');
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data').at('body');
 
                         test.assert.isTrue(
                             result.hasKey('firstName'),
@@ -1567,7 +1568,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isTrue(
                             result.hasKey('date_created'),
@@ -1628,7 +1630,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isTrue(
                             result.hasKey('total_rows'),
@@ -2405,10 +2408,17 @@ function() {
 TP.core.PouchDBURL.Inst.describe('setResource',
 function() {
 
-    var testDb;
+    var testDb,
+        destroySucceeded;
 
     this.before(
         function(suite, options) {
+
+            //  We set this to false here, but to true if the test containing
+            //  the database destroy() succeeds, such that we don't try to call
+            //  destroy() twice (once in that test and once in the after()
+            //  code).
+            destroySucceeded = false;
 
             //  'this' refers to the suite here.
             suite.then(
@@ -2465,7 +2475,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
@@ -2516,7 +2527,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
@@ -2566,7 +2578,8 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
@@ -2617,11 +2630,16 @@ function() {
 
                         var result;
 
-                        result = aResponse.getResult();
+                        //  The result is a TP.core.JSONContent object.
+                        result = aResponse.getResult().get('data');
 
                         test.assert.isValid(
                             result.at('ok'),
                             TP.sc('Expected a result with an \'ok\' property'));
+
+                        //  Set this flag to true now that we've successfully
+                        //  destroy()ed the database.
+                        destroySucceeded = true;
 
                         resolver();
                     });
@@ -2640,7 +2658,7 @@ function() {
 
                 url.nuke(pouchRequest);
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -2653,7 +2671,9 @@ function() {
                     var pouchPromise,
                         promise;
 
-                    pouchPromise = testDb.destroy();
+                    if (!destroySucceeded) {
+                        pouchPromise = testDb.destroy();
+                    }
 
                     promise = TP.extern.Promise.resolve(pouchPromise);
 

@@ -155,6 +155,10 @@
   <delegateURI uriStartString="jsonp://"
     tibet:contenttype="TP.core.JSONContent"/>
 
+  <!-- Generic mapping for all PouchDB content not otherwise mapped -->
+  <delegateURI uriStartString="pouchdb://"
+    tibet:contenttype="TP.core.JSONContent"/>
+
   <!--
   The XML Catalog nextCatalog element lets you create composite catalogs
   by listing additional catalog files to check. This lets you modularize

@@ -59,8 +59,10 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Instance Attributes
 //  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineAttribute('status');
 
 //  ------------------------------------------------------------------------
 //  TEMPORARY METHODS
@@ -90,6 +92,8 @@ function(aRequest) {
                                     getResponseText();
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.tibet.service.Inst.defineMethod('getResultType',
@@ -233,7 +237,7 @@ function() {
      * @method trigger
      * @summary This method causes the receiver to perform it's 'action'. In
      * this case, sending data to a remote URI endpoint.
-     * @returns {TP.tibet.data} The receiver.
+     * @returns {TP.tibet.service} The receiver.
      */
 
     var href,

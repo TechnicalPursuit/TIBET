@@ -114,6 +114,41 @@ function(aRequest) {
 
     switch (request.at('action')) {
 
+        case 'createDB':
+
+            //  The 'new TP.extern.PouchDB(dbName)' statement above creates a
+            //  database if it didn't already exist. So we just exit here.
+
+            //  Mirror what CouchDB returns here.
+            request.complete('{"ok":true}');
+
+            break;
+
+        case 'listDBs':
+
+            if (TP.isValid(TP.extern.PouchDB.allDbs)) {
+                TP.extern.PouchDB.allDbs(
+                    function(err, resp) {
+
+                        //  There was an error - fail the request.
+                        if (TP.isValid(err)) {
+                            return request.fail(
+                                    TP.sc('Trying to list all databases',
+                                            ' but had an error: ',
+                                            TP.str(err)),
+                                    err);
+                        }
+
+                        request.complete(TP.js2json(resp));
+                    });
+            } else {
+                return request.fail(
+                        TP.sc('Trying to list all databases but the',
+                                ' pouch-db-alldbs plugin isn\'t loaded'));
+            }
+
+            break;
+
         case 'deleteDB':
 
             theDB.destroy(
@@ -128,7 +163,7 @@ function(aRequest) {
                                 err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(resp)));
+                    request.complete(TP.js2json(resp));
                 });
 
             break;
@@ -184,7 +219,7 @@ function(aRequest) {
 
                             //  We succeeded! Complete the request with the
                             //  response from PouchDB.
-                            request.complete(TP.json2js(TP.js2json(resp2)));
+                            request.complete(TP.js2json(resp2));
                         });
                 });
 
@@ -213,7 +248,7 @@ function(aRequest) {
                             err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(resp)));
+                    request.complete(TP.js2json(resp));
                 });
 
             break;
@@ -251,7 +286,7 @@ function(aRequest) {
                         'date_created', resultData.at('date_created'),
                         'date_modified', resultData.at('date_modified'));
 
-                    request.complete(resultData);
+                    request.complete(TP.js2json(resultData));
                 });
 
             break;
@@ -270,7 +305,7 @@ function(aRequest) {
                             err);
                     }
 
-                    request.complete(TP.json2js(TP.js2json(resp)));
+                    request.complete(TP.js2json(resp));
                 });
 
             break;
@@ -280,6 +315,7 @@ function(aRequest) {
             //  Convert the object into a TP.core.Hash and then into a plain
             //  Object.
             data = body.asHash();
+
             dateStamp = TP.dc().asNumber();
 
             data.atPut('date_created', dateStamp);
@@ -309,7 +345,7 @@ function(aRequest) {
 
                         //  We succeeded! Complete the request with the
                         //  response from PouchDB.
-                        request.complete(TP.json2js(TP.js2json(resp)));
+                        request.complete(TP.js2json(resp));
                     });
 
             } else {
@@ -361,7 +397,7 @@ function(aRequest) {
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.json2js(TP.js2json(resp2)));
+                                request.complete(TP.js2json(resp2));
                             });
                     });
             }
@@ -382,6 +418,7 @@ function(aRequest) {
                 //  Convert the object into a TP.core.Hash and then into a plain
                 //  Object.
                 data = body.asHash();
+
                 data.atPut('_id', id);
 
                 theDB.get(
@@ -432,7 +469,6 @@ function(aRequest) {
                             //  Make sure to convert it to a POJO before handing
                             //  it to PouchDB.
                             data = data.asObject();
-
                         } else {
 
                             //  Otherwise, we grab the response, which is the
@@ -440,9 +476,24 @@ function(aRequest) {
                             //  copy any new data from the passed in data over
                             //  to it.
                             data.getKeys().forEach(
-                                    function(aKey) {
-                                        resp[aKey] = data.at(aKey);
-                                    });
+                                function(aKey) {
+
+                                    //  This is done this way because JSONifying
+                                    //  nulls and undefineds don't cause the
+                                    //  desired values for PouchDB. Nulls should
+                                    //  just be null and undefineds should be
+                                    //  omitted.
+                                    if (TP.isNull(data.at(aKey))) {
+                                        resp[aKey] = null;
+                                    } else if (!TP.isDefined(aKey)) {
+                                        //  empty
+                                    } else if (aKey === '_rev') {
+                                        //  empty
+                                    } else {
+                                        resp[aKey] = TP.json2js(
+                                            TP.js2json(data.at(aKey)), false);
+                                    }
+                                });
 
                             //  Make the new data be that data.
                             data = resp;
@@ -465,7 +516,7 @@ function(aRequest) {
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.json2js(TP.js2json(resp2)));
+                                request.complete(TP.js2json(resp2));
                             });
                     });
             }

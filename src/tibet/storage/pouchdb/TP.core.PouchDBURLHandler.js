@@ -77,7 +77,9 @@ function(targetURI, aRequest) {
 
     resourceID = targetURI.get('resourceID');
 
-    if (request.at('verb') === TP.HTTP_HEAD) {
+    if (dbName === '_all_dbs') {
+        action = 'listDBs';
+    } else if (request.at('verb') === TP.HTTP_HEAD) {
         action = 'retrieveItemInfo';
     } else if (TP.isValid(resourceID)) {
         if (resourceID === '_all_docs') {
@@ -86,9 +88,9 @@ function(targetURI, aRequest) {
             action = 'retrieveItem';
         }
     } else {
-        request.fail('Can\'t compute a load action for: ' + TP.str(targetURI));
-
-        return response;
+        //  Note that this merely creates a database if it doesn't exist and
+        //  returns - no harm done.
+        action = 'createDB';
     }
 
     if (TP.isValid(queryDict = targetURI.get('queryDict'))) {
@@ -99,7 +101,8 @@ function(targetURI, aRequest) {
                     'action', action,
                     'dbName', dbName,
                     'securePW', securePW,
-                    'id', resourceID);
+                    'id', resourceID,
+                    'uri', targetURI.getLocation());
 
     //  Construct and initialize a TP.sig.PouchDBRequest
     loadRequest = TP.sig.PouchDBRequest.construct(requestParams);
@@ -173,7 +176,8 @@ function(targetURI, aRequest) {
                     'action', action,
                     'dbName', dbName,
                     'securePW', securePW,
-                    'id', resourceID);
+                    'id', resourceID,
+                    'uri', targetURI.getLocation());
 
     //  Construct and initialize a TP.sig.PouchDBRequest
     nukeRequest = TP.sig.PouchDBRequest.construct(requestParams);
@@ -293,7 +297,8 @@ function(targetURI, aRequest) {
                         'action', 'createItem',
                         'dbName', dbName,
                         'securePW', securePW,
-                        'body', content);
+                        'body', content,
+                        'uri', targetURI.getLocation());
     } else {
 
         if (TP.notValid(resourceID)) {
@@ -307,7 +312,8 @@ function(targetURI, aRequest) {
                         'dbName', dbName,
                         'securePW', securePW,
                         'id', resourceID,
-                        'body', content);
+                        'body', content,
+                        'uri', targetURI.getLocation());
     }
 
     //  Construct and initialize a TP.sig.PouchDBRequest
@@ -427,17 +433,19 @@ function(targetURI, aRequest) {
                             //  Signal a 'TP.sig.ValueChange' from the URI,
                             //  using the computed action and supplying a new
                             //  value.
+                            //  Note that the value for TP.NEWVAL should give us
+                            //  the value that the other service calls do. See
+                            //  the TP.core.PouchDBService type.
                             uri.$changed(
                                 'value',
                                 action,
-                                TP.hc(TP.NEWVAL,
-                                        TP.json2js(TP.js2json(change.doc))));
+                                TP.hc(TP.NEWVAL, TP.js2json(change.doc)));
                         }
                     });
 
         //  We keep a count of the number of times this watcher is used for a
         //  particular database. When it's 0, this watcher will be canceled.
-        watcher._watcherCount = 0;
+        watcher._watcherCount = 1;
     } else {
 
         //  There was already a watcher for this database, but we need to

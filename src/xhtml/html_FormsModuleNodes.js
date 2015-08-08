@@ -1190,15 +1190,6 @@ TP.html.Focused.defineSubtype('input');
 //  can't construct concrete instances of this
 TP.html.input.isAbstract(true);
 
-TP.html.input.Type.set('bidiAttrs', TP.ac('value'));
-
-TP.html.input.Type.set('booleanAttrs',
-        TP.ac('autofocus', 'defaultChecked', 'checked', 'disabled',
-                'formNoValidate', 'indeterminate', 'multiple',
-                'readOnly', 'required', 'willValidate'));
-
-TP.html.input.Type.set('uriAttrs', TP.ac('src', 'usemap'));
-
 TP.html.input.addTraits(TP.core.EmptyElementNode);
 
 TP.html.input.Type.resolveTraits(
@@ -1213,6 +1204,15 @@ TP.html.input.Inst.resolveTraits(
 TP.html.input.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
+
+TP.html.input.Type.set('bidiAttrs', TP.ac('value'));
+
+TP.html.input.Type.set('booleanAttrs',
+        TP.ac('autofocus', 'defaultChecked', 'checked', 'disabled',
+                'formNoValidate', 'indeterminate', 'multiple',
+                'readOnly', 'required', 'willValidate'));
+
+TP.html.input.Type.set('uriAttrs', TP.ac('src', 'usemap'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -4610,11 +4610,6 @@ function(aValue, shouldSignal) {
 
 TP.html.Focused.defineSubtype('textarea');
 
-TP.html.textarea.Type.set('bidiAttrs', TP.ac('value'));
-
-TP.html.textarea.Type.set('booleanAttrs',
-        TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
-
 TP.html.textarea.addTraits(TP.html.textUtilities);
 
 TP.html.textarea.Type.resolveTraits(
@@ -4624,6 +4619,11 @@ TP.html.textarea.Type.resolveTraits(
 TP.html.textarea.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
+
+TP.html.textarea.Type.set('bidiAttrs', TP.ac('value'));
+
+TP.html.textarea.Type.set('booleanAttrs',
+        TP.ac('autofocus', 'disabled', 'readOnly', 'required', 'willValidate'));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

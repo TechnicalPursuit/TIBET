@@ -340,6 +340,16 @@ targets.rollup_pouchdb = function(make) {
     sh.exec('cp -f dist/pouchdb.js ../../deps/pouchdb-tpi.js');
     sh.exec('cp -f dist/pouchdb.min.js ../../deps/pouchdb-tpi.min.js');
 
+    //  The PouchDB '_all_dbs' plugin
+
+    sh.cd(path.join(npmdir, 'pouchdb'));
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'pouchdb-all-dbs'));
+    sh.exec('npm install -d');
+    sh.exec('cp -f dist/pouchdb.all-dbs.js ../../deps/pouchdb.all-dbs-tpi.js');
+    sh.exec('cp -f dist/pouchdb.all-dbs.min.js ../../deps/pouchdb.all-dbs-tpi.min.js');
+
     targets.rollup_pouchdb.resolve();
 };
 
