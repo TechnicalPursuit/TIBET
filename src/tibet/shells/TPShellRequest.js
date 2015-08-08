@@ -159,7 +159,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.ShellRequest.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode, anException) {
+function(aFaultString, aFaultCode, aFaultStack) {
 
     /**
      * @method fail
@@ -170,8 +170,9 @@ function(aFaultString, aFaultCode, anException) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {TP.sig.Exception|String} anException An optional exception to
-     *     raise.
+     * @param {Array} aFaultStack An optional parameter that will contain an
+     *     Array of Arrays of information derived from the JavaScript stack when
+     *     the fault occurred.
      * @returns {TP.BREAK}
      */
 
@@ -179,9 +180,8 @@ function(aFaultString, aFaultCode, anException) {
         return;
     }
 
-    if (TP.isValid(anException)) {
-        this.raise(anException, TP.ifInvalid(aFaultString, aFaultCode));
-    }
+    //  TODO: anException should be drawn from the 3rd parameter
+    //this.raise(anException, TP.ifInvalid(aFaultString, aFaultCode));
 
     this.callNextMethod();
 

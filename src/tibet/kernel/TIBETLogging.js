@@ -833,7 +833,9 @@ function(anAppender) {
 
     var appenders;
 
-    if (TP.notValid(appenders = this.get('appenders'))) {
+    //  Make sure to use $get() here to only get our local appenders, not any of
+    //  our parent's appenders.
+    if (TP.notValid(appenders = this.$get('appenders'))) {
         appenders = TP.ac();
         this.set('appenders', appenders);
     }
@@ -855,25 +857,32 @@ function() {
      * @returns {Array<.TP.log.Appender>} The appender list.
      */
 
-    var parent,
-        appenders;
+    var appenders,
+
+        parent,
+        parentAppenders;
+
+    appenders = this.$get('appenders');
 
     if (!this.inheritsAppenders()) {
-        return this.$get('appenders');
+        return appenders;
     }
 
     if (TP.notValid(parent = this.getParent())) {
         return;
     }
 
-    appenders = parent.getAppenders();
-    if (TP.notEmpty(this.$get('appenders')) && TP.notEmpty(appenders)) {
-        appenders = this.$get('appenders').concat(appenders);
-    } else {
-        appenders = TP.ifInvalid(this.$get('appenders'), appenders);
+    parentAppenders = parent.getAppenders();
+
+    if (TP.isEmpty(parentAppenders)) {
+        return appenders;
     }
 
-    return appenders;
+    if (TP.isEmpty(appenders)) {
+        return parentAppenders.copy();
+    }
+
+    return parentAppenders.concat(appenders);
 });
 
 //  ----------------------------------------------------------------------------
@@ -1619,10 +1628,11 @@ function(anEntry) {
      *     processed in virtually any fashion as a result. The default format is
      *     whatever is produced by TP.str() which relies on the Entry type.
      * @param {TP.log.Entry} anEntry The entry to format.
-     * @returns {Object} The formatted output. Can be String, Node, etc.
+     * @returns {TP.core.Hash} A hash of output containing at least one key,
+     *     'content'.
      */
 
-    return TP.str(anEntry);
+    return TP.hc('content', TP.str(anEntry));
 });
 
 //  ============================================================================
@@ -3263,7 +3273,7 @@ function(anEntry) {
 
     // Format the little critter...
     layout = this.getLayout();
-    content = layout.layout(anEntry);
+    content = layout.layout(anEntry).at('content');
 
     try {
         top.console[writer](content);
@@ -3302,7 +3312,8 @@ function(anEntry) {
      * @summary Formats an entry. The default output format for top.console is:
      *     {ms} - {level} {logger} - {string}
      * @param {TP.log.Entry} anEntry The entry to format.
-     * @returns {Object} The formatted output. Can be String, Node, etc.
+     * @returns {TP.core.Hash} A hash of output containing at least one key,
+     *     'content'.
      */
 
     var str,
@@ -3333,7 +3344,7 @@ function(anEntry) {
         }
     }
 
-    return str;
+    return TP.hc('content', str);
 });
 
 //  ============================================================================
@@ -3358,7 +3369,8 @@ function(anEntry) {
      * @summary Formats an entry. The default output format for top.console is:
      *     {ms} - {level} {logger} - {string}
      * @param {TP.log.Entry} anEntry The entry to format.
-     * @returns {Object} The formatted output. Can be String, Node, etc.
+     * @returns {TP.core.Hash} A hash of output containing at least one key,
+     *     'content'.
      */
 
     var str,
@@ -3377,7 +3389,7 @@ function(anEntry) {
         str = str.trim();
     }
 
-    return str;
+    return TP.hc('content', str);
 });
 
 //  ============================================================================
@@ -3444,7 +3456,7 @@ function(anEntry) {
         content;
 
     layout = this.getLayout();
-    content = layout.layout(anEntry);
+    content = layout.layout(anEntry).at('content');
 
     top.console.log(content);
 
@@ -3459,7 +3471,7 @@ function(anEntry) {
     var logger,
         appender;
 
-    logger = TP.log.Manager.getLogger(TP.CHANGE_LOG);
+    logger = TP.getLogger(TP.CHANGE_LOG);
     appender = TP.log.ChangeLogAppender.construct();
 
     logger.inheritsAppenders(false);
@@ -3549,8 +3561,12 @@ function(anEntry) {
 
     var name,
         writer,
+
         layout,
+        results,
         content,
+        asIs,
+
         stdio;
 
     // Try to find a matching console API method to our level name. If we find
@@ -3582,7 +3598,10 @@ function(anEntry) {
 
     // Format the little critter...
     layout = this.getLayout();
-    content = layout.layout(anEntry);
+
+    results = layout.layout(anEntry);
+    content = results.at('content');
+    asIs = results.at('cmdAsIs');
 
     // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
@@ -3592,7 +3611,7 @@ function(anEntry) {
             top.console.log(content);
         }
     } else {
-        TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', true));
+        TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
     }
 
     return this;
@@ -3606,7 +3625,7 @@ function(anEntry) {
     var logger,
         appender;
 
-    logger = TP.log.Manager.getLogger(TP.TEST_LOG);
+    logger = TP.getLogger(TP.TEST_LOG);
 
     appender = TP.log.TestLogAppender.construct();
 

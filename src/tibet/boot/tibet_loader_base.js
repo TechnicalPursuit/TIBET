@@ -1528,7 +1528,7 @@ TP.sys.getHomeURL = function(checkSession) {
 
     homeURL = homeURL || TP.sys.cfg('project.home_page');
 
-    if (TP.sys.cfg('tibet.sherpa')) {
+    if (TP.sys.cfg('sherpa.enabled')) {
         homeURL = homeURL || TP.sys.cfg('path.sherpa_screen_0');
     }
 

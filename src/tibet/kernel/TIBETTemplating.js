@@ -245,7 +245,7 @@ function(tokenList, templateName, sourceVarNames) {
             //  No format - just the value 'formatted' as a String
             retVal = '(TP.format(TP.ifInvalid(arg, ' +
                                         '\'{{' + argName + '}}\'),' +
-                                ' "' + 'String' + '", " "))';
+                                ' "' + 'String' + '"))';
         }
 
         return retVal;
