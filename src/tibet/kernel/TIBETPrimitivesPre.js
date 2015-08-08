@@ -2047,26 +2047,26 @@ TP.defineSlot = function(target, name, value, type, track, desc) {
             //  as a 'constant', a value should've been supplied and we supply
             //  that to the defineProperty() call.
             Object.defineProperty(
-                    target,
-                    name,
-                    {
-                        writable: desc.writable !== false,
-                        enumerable: desc.enumerable !== false,
-                        configurable: desc.configurable !== false,
-                        value: value
-                    });
+                target,
+                name,
+                {
+                    writable: desc.writable !== false,
+                    enumerable: desc.enumerable !== false,
+                    configurable: desc.configurable !== false,
+                    value: value
+                });
         } else {
             //  We send in a different object to make sure that if 'get' or
             //  'set' was defined on the supplied descriptor that it won't be
             //  forwarded.
             Object.defineProperty(
-                    target,
-                    name,
-                    {
-                        writable: desc.writable !== false,
-                        enumerable: desc.enumerable !== false,
-                        configurable: desc.configurable !== false
-                    });
+                target,
+                name,
+                {
+                    writable: desc.writable !== false,
+                    enumerable: desc.enumerable !== false,
+                    configurable: desc.configurable !== false
+                });
 
             //  Try to set the value if its real.
             if (value !== undefined) {

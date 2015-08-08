@@ -386,11 +386,11 @@ function(targetURI, aRequest) {
     if (TP.notValid(watcher = watchers.at(dbName))) {
 
         watcher = theDB.changes(
-                        {
-                            since: 'now',
-                            live: true,
-                            include_docs: true
-                        });
+            {
+                since: 'now',
+                live: true,
+                include_docs: true
+            });
         watchers.atPut(dbName, watcher);
 
         //  Configure the 'change' event on the watcher to signal a URI change

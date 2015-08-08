@@ -93,28 +93,28 @@ function() {
     editorObj.setOption('autofocus', true);
 
     editorObj.setOption(
-            'extraKeys',
-            {
-                //  NB: These should match keys that are used by the console in
-                //  TP.sherpa.ConsoleService
-                'Shift-Enter': function() { return true; },
+        'extraKeys',
+        {
+            //  NB: These should match keys that are used by the console in
+            //  TP.sherpa.ConsoleService
+            'Shift-Enter': function() { return true; },
 
-                'Shift-Up': function() {return true; },
-                'Shift-Right': function() {return true; },
-                'Shift-Down': function() {return true; },
-                'Shift-Left': function() {return true; },
+            'Shift-Up': function() {return true; },
+            'Shift-Right': function() {return true; },
+            'Shift-Down': function() {return true; },
+            'Shift-Left': function() {return true; },
 
-                'Shift-Alt-Up': function() {return true; },
-                'Shift-Alt-Right': function() {return true; },
-                'Shift-Alt-Down': function() {return true; },
-                'Shift-Alt-Left': function() {return true; },
+            'Shift-Alt-Up': function() {return true; },
+            'Shift-Alt-Right': function() {return true; },
+            'Shift-Alt-Down': function() {return true; },
+            'Shift-Alt-Left': function() {return true; },
 
-                'Shift-Backspace': function() {return true; },
+            'Shift-Backspace': function() {return true; },
 
-                'Shift-Esc': function() {return true; },
+            'Shift-Esc': function() {return true; },
 
-                'Ctrl-Enter': function() {return true; }
-            });
+            'Ctrl-Enter': function() {return true; }
+        });
 
     consoleInputTPElem.setEditorEventHandler('viewportChange',
             function() {
@@ -640,9 +640,9 @@ function(aPrompt, aCSSClass) {
         cursorRange = consoleInput.getCursor();
 
         range = {
-                from: {line: cursorRange.line, ch: cursorRange.ch},
-                to: {line: cursorRange.line, ch: cursorRange.ch + 1}
-            };
+            from: {line: cursorRange.line, ch: cursorRange.ch},
+            to: {line: cursorRange.line, ch: cursorRange.ch + 1}
+        };
 
         marker = this.generatePromptMarkAt(range, cssClass, promptStr);
         this.set('currentPromptMarker', marker);

@@ -344,24 +344,24 @@ TP.sys.release[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 //  ------------------------------------------------------------------------
 
 TP.sys.$keywords =
-            [
-                'break', 'case', 'catch', 'continue', 'default',
-                'delete', 'do', 'else', 'false', 'finally', 'for',
-                'function', 'if', 'in', 'instanceof', 'new', 'null',
-                'return', 'switch', 'this', 'throw', 'true', 'try',
-                'typeof', 'var', 'void', 'while', 'with'
-            ];
+    [
+        'break', 'case', 'catch', 'continue', 'default',
+        'delete', 'do', 'else', 'false', 'finally', 'for',
+        'function', 'if', 'in', 'instanceof', 'new', 'null',
+        'return', 'switch', 'this', 'throw', 'true', 'try',
+        'typeof', 'var', 'void', 'while', 'with'
+    ];
 
 TP.sys.$reservedwords =
-            [
-                'abstract', 'boolean', 'byte', 'char', 'class',
-                'const', 'debugger', 'double', 'enum', 'export',
-                'extends', 'final', 'float', 'goto', 'implements',
-                'import', 'int', 'interface', 'long', 'native',
-                'package', 'private', 'protected', 'public',
-                'short', 'static', 'super', 'synchronized',
-                'throws', 'transient', 'volatile'
-            ];
+    [
+        'abstract', 'boolean', 'byte', 'char', 'class',
+        'const', 'debugger', 'double', 'enum', 'export',
+        'extends', 'final', 'float', 'goto', 'implements',
+        'import', 'int', 'interface', 'long', 'native',
+        'package', 'private', 'protected', 'public',
+        'short', 'static', 'super', 'synchronized',
+        'throws', 'transient', 'volatile'
+    ];
 
 //  The complete list of global slots found at a low-level, with no filtering,
 //  by the system. This is configured by the boot system and finalized once the
@@ -381,129 +381,129 @@ TP.sys.$noDNUs = ['toJSON'];
 //  URIError
 //  Math, JSON
 TP.sys.$ecmaglobals =
-            [
-                'decodeURI',
-                'decodeURIComponent',
-                'encodeURI',
-                'encodeURIComponent',
-                'escape',               //  Non-normative
-                'eval',
-                'NaN',
-                'Infinity',
-                'parseInt',
-                'parseFloat',
-                'isNaN',
-                'isFinite',
-                'unescape'              //  Non-normative
-            ];
+    [
+        'decodeURI',
+        'decodeURIComponent',
+        'encodeURI',
+        'encodeURIComponent',
+        'escape',               //  Non-normative
+        'eval',
+        'NaN',
+        'Infinity',
+        'parseInt',
+        'parseFloat',
+        'isNaN',
+        'isFinite',
+        'unescape'              //  Non-normative
+    ];
 
 //  additional 'non Window' globals
 TP.sys.$systemglobals =
-            [
-                'applicationCache',
-                'clearInterval',
-                'clearTimeout',
-                'console',
-                'localStorage',
-                'performance',
-                'postMessage',
-                'setTimeout',
-                'setInterval'
-            ];
+    [
+        'applicationCache',
+        'clearInterval',
+        'clearTimeout',
+        'console',
+        'localStorage',
+        'performance',
+        'postMessage',
+        'setTimeout',
+        'setInterval'
+    ];
 
 //  these are slots based on DOM Level 0 - which is implemented by most user
 //  agents
 TP.sys.$windowglobals =
-            [
-                'alert',
-                'addEventListener',
-                'back',
-                'blur',
-                'close',
-                'closed',
-                'confirm',
-                'content',
-                'document',
-                'find',
-                'focus',
-                'forward',
-                'frameElement',
-                'frames',
-                'fullScreen',
-                'getComputedStyle',
-                'getDefaultComputedStyle',
-                'getSelection',
-                'history',
-                'home',
-                'innerHeight',
-                'innerWidth',
-                'length',
-                'location',
-                'matchMedia',
-                'moveBy',
-                'moveTo',
-                'name',
-                'navigator',
-                'onabort',
-                'onbeforeunload',
-                'onblur',
-                'onchange',
-                'onclick',
-                'oncontextmenu',
-                'ondevicelight',
-                'ondevicemotion',
-                'ondeviceorientation',
-                'ondeviceproximity',
-                'onerror',
-                'onfocus',
-                'onhashchange',
-                'onkeydown',
-                'onkeypress',
-                'onkeyup',
-                'onload',
-                'onmousedown',
-                'onmouseenter',
-                'onmouseleave',
-                'onmousemove',
-                'onmouseout',
-                'onmouseover',
-                'onmouseup',
-                'onpopstate',
-                'onreset',
-                'onresize',
-                'onscroll',
-                'onselect',
-                'onsubmit',
-                'onunload',
-                'onuserproximity',
-                'open',
-                'openDialog',
-                'opener',
-                'outerHeight',
-                'outerWidth',
-                'pageXOffset',
-                'pageYOffset',
-                'parent',
-                'print',
-                'prompt',
-                'removeEventListener',
-                'resizeBy',
-                'resizeTo',
-                'screen',
-                'scroll',
-                'scrollBy',
-                'scrollTo',
-                'scrollX',
-                'scrollY',
-                'self',
-                'sessionStorage',
-                'showModalDialog',
-                'sizeToContent',
-                'status',
-                'stop',
-                'top',
-                'window'
-            ];
+    [
+        'alert',
+        'addEventListener',
+        'back',
+        'blur',
+        'close',
+        'closed',
+        'confirm',
+        'content',
+        'document',
+        'find',
+        'focus',
+        'forward',
+        'frameElement',
+        'frames',
+        'fullScreen',
+        'getComputedStyle',
+        'getDefaultComputedStyle',
+        'getSelection',
+        'history',
+        'home',
+        'innerHeight',
+        'innerWidth',
+        'length',
+        'location',
+        'matchMedia',
+        'moveBy',
+        'moveTo',
+        'name',
+        'navigator',
+        'onabort',
+        'onbeforeunload',
+        'onblur',
+        'onchange',
+        'onclick',
+        'oncontextmenu',
+        'ondevicelight',
+        'ondevicemotion',
+        'ondeviceorientation',
+        'ondeviceproximity',
+        'onerror',
+        'onfocus',
+        'onhashchange',
+        'onkeydown',
+        'onkeypress',
+        'onkeyup',
+        'onload',
+        'onmousedown',
+        'onmouseenter',
+        'onmouseleave',
+        'onmousemove',
+        'onmouseout',
+        'onmouseover',
+        'onmouseup',
+        'onpopstate',
+        'onreset',
+        'onresize',
+        'onscroll',
+        'onselect',
+        'onsubmit',
+        'onunload',
+        'onuserproximity',
+        'open',
+        'openDialog',
+        'opener',
+        'outerHeight',
+        'outerWidth',
+        'pageXOffset',
+        'pageYOffset',
+        'parent',
+        'print',
+        'prompt',
+        'removeEventListener',
+        'resizeBy',
+        'resizeTo',
+        'screen',
+        'scroll',
+        'scrollBy',
+        'scrollTo',
+        'scrollX',
+        'scrollY',
+        'self',
+        'sessionStorage',
+        'showModalDialog',
+        'sizeToContent',
+        'status',
+        'stop',
+        'top',
+        'window'
+    ];
 
 //  Any remaining globally-accessible slots will be placed by the finalization
 //  code into a structure under TP.sys.$extraglobals. Slots that you might see
@@ -732,16 +732,16 @@ TP.META_TYPE_OWNER.getName = function() {return 'MetaType'; };
 TP.META_TYPE_OWNER.meta_methods = {};
 
 TP.META_TYPE_TARGETS =
-            [
-                Array,
-                Boolean,
-                Date,
-                Function,
-                Number,
-                Object,
-                RegExp,
-                String
-            ];
+    [
+        Array,
+        Boolean,
+        Date,
+        Function,
+        Number,
+        Object,
+        RegExp,
+        String
+    ];
 
 TP.META_INST_OWNER = {};
 TP.META_INST_OWNER[TP.ID] = 'MetaInst';
@@ -754,15 +754,15 @@ TP.META_INST_OWNER.common_methods = {};
 
 //  NB: We leave TP.ObjectProto out of this list on purpose.
 TP.META_INST_TARGETS =
-            [
-                TP.ArrayProto,
-                TP.BooleanProto,
-                TP.DateProto,
-                TP.FunctionProto,
-                TP.NumberProto,
-                TP.RegExpProto,
-                TP.StringProto
-            ];
+    [
+        TP.ArrayProto,
+        TP.BooleanProto,
+        TP.DateProto,
+        TP.FunctionProto,
+        TP.NumberProto,
+        TP.RegExpProto,
+        TP.StringProto
+    ];
 
 //  attribute name prefixes
 TP.PUBLIC = '';

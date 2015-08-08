@@ -3178,11 +3178,11 @@ function(stepNames, endName) {
             startGetter.realMethod = chainMethod;
 
             Object.defineProperty(
-                    proto,
-                    stepNames.at(i),
-                    {
-                        get: startGetter
-                    });
+                proto,
+                stepNames.at(i),
+                {
+                    get: startGetter
+                });
         }());
 
         //  The second step is to install a getter on the Function object itself
@@ -3228,11 +3228,11 @@ function(stepNames, endName) {
             stepGetter.realMethod = endMethod;
 
             Object.defineProperty(
-                    chainMethod,
-                    endName,
-                    {
-                        get: stepGetter
-                    });
+                chainMethod,
+                endName,
+                {
+                    get: stepGetter
+                });
         }());
     }
     /* eslint-enable no-loop-func */

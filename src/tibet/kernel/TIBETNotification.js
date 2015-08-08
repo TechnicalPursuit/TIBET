@@ -7539,13 +7539,13 @@ function(aDocument) {
                     }.bind(this));
 
     observer.observe(
-            aDocument,
-            {
-                childList: true,
-                subtree: true,
-                attributes: false,
-                attributeOldValue: false
-            });
+        aDocument,
+        {
+            childList: true,
+            subtree: true,
+            attributes: false,
+            attributeOldValue: false
+        });
 
     this.get('observers').atPut(TP.id(aDocument), observer);
 

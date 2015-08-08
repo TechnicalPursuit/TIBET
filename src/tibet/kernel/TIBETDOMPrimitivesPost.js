@@ -690,11 +690,11 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  blew away the Mutation Observer registration.
     if (TP.isElement(docElem) && awakenContent) {
         TP.core.MutationSignalSource.handleMutationEvent(
-                {
-                    type: 'childList',
-                    target: docElem,
-                    removedNodes: TP.ac(docElem)
-                });
+            {
+                type: 'childList',
+                target: docElem,
+                removedNodes: TP.ac(docElem)
+            });
     }
 
     //  Clear out the document's existing content.

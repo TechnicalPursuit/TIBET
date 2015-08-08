@@ -3949,14 +3949,14 @@ function() {
     data = this.$get('data');
 
     newData =
-            {
-                xx: data.xx,
-                xy: data.yx,
-                yx: data.xy,
-                yy: data.yy,
-                dx: 0,
-                dy: 0
-            };
+        {
+            xx: data.xx,
+            xy: data.yx,
+            yx: data.xy,
+            yy: data.yy,
+            dx: 0,
+            dy: 0
+        };
 
     this.$set('data', newData);
 

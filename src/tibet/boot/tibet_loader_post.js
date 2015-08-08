@@ -708,90 +708,90 @@ TP.boot.installPatches = function(aWindow) {
             i;
 
         proxy = {
-                target: this.target,
-                $$target: this.$$target,
+            target: this.target,
+            $$target: this.$$target,
 
-                //  Never use the $$ version of currentTarget...
-                currentTarget: this.currentTarget,
+            //  Never use the $$ version of currentTarget...
+            currentTarget: this.currentTarget,
 
-                relatedTarget: this.relatedTarget,
-                $$relatedTarget: this.$$relatedTarget,
+            relatedTarget: this.relatedTarget,
+            $$relatedTarget: this.$$relatedTarget,
 
-                type: this.type,
-                $$type: this.$$type,
+            type: this.type,
+            $$type: this.$$type,
 
-                timeStamp: this.timeStamp,
-                $$timestamp: this.$$timestamp,
+            timeStamp: this.timeStamp,
+            $$timestamp: this.$$timestamp,
 
-                clientX: this.clientX,
-                $$clientX: this.$$clientX,
-                clientY: this.clientY,
-                $$clientY: this.$$clientY,
-                $$clientPt: this.$$clientPt,
+            clientX: this.clientX,
+            $$clientX: this.$$clientX,
+            clientY: this.clientY,
+            $$clientY: this.$$clientY,
+            $$clientPt: this.$$clientPt,
 
-                offsetX: this.offsetX,
-                $$offsetX: this.$$offsetX,
-                offsetY: this.offsetY,
-                $$offsetY: this.$$offsetY,
-                $$offsetPt: this.$$offsetPt,
+            offsetX: this.offsetX,
+            $$offsetX: this.$$offsetX,
+            offsetY: this.offsetY,
+            $$offsetY: this.$$offsetY,
+            $$offsetPt: this.$$offsetPt,
 
-                view: this.view,
-                $$view: this.$$view,
+            view: this.view,
+            $$view: this.$$view,
 
-                pageX: this.pageX,
-                $$pageX: this.$$pageX,
-                pageY: this.pageY,
-                $$pageY: this.$$pageY,
-                $$pagePt: this.$$pagePt,
+            pageX: this.pageX,
+            $$pageX: this.$$pageX,
+            pageY: this.pageY,
+            $$pageY: this.$$pageY,
+            $$pagePt: this.$$pagePt,
 
-                resolvedTarget: this.resolvedTarget,
-                $$_resolvedTarget: this.$$_resolvedTarget,
+            resolvedTarget: this.resolvedTarget,
+            $$_resolvedTarget: this.$$_resolvedTarget,
 
-                screenX: this.screenX,
-                $$screenX: this.$$screenX,
-                screenY: this.screenY,
-                $$screenY: this.$$screenY,
-                $$screenPt: this.$$screenPt,
+            screenX: this.screenX,
+            $$screenX: this.$$screenX,
+            screenY: this.screenY,
+            $$screenY: this.$$screenY,
+            $$screenPt: this.$$screenPt,
 
-                $$transPt: this.$$transPt,
+            $$transPt: this.$$transPt,
 
-                //  Never use the non-$$ version of keyCode...
-                $$keyCode: this.$$keyCode,
+            //  Never use the non-$$ version of keyCode...
+            $$keyCode: this.$$keyCode,
 
-                altKey: this.altKey,
-                $$altKey: this.$$altKey,
-                ctrlKey: this.ctrlKey,
-                $$ctrlKey: this.$$ctrlKey,
-                shiftKey: this.shiftKey,
-                $$shiftKey: this.$$shiftKey,
+            altKey: this.altKey,
+            $$altKey: this.$$altKey,
+            ctrlKey: this.ctrlKey,
+            $$ctrlKey: this.$$ctrlKey,
+            shiftKey: this.shiftKey,
+            $$shiftKey: this.$$shiftKey,
 
-                //  Never use the $$ version of metaKey...
-                metaKey: this.metaKey,
+            //  Never use the $$ version of metaKey...
+            metaKey: this.metaKey,
 
-                button: this.button,
-                $$button: this.$$button,
+            button: this.button,
+            $$button: this.$$button,
 
-                wheelDelta: this.wheelDelta,
-                $$wheelDelta: this.$$wheelDelta,
+            wheelDelta: this.wheelDelta,
+            $$wheelDelta: this.$$wheelDelta,
 
-                //  Specific to Mozilla/Webkit
-                charCode: this.charCode,
+            //  Specific to Mozilla/Webkit
+            charCode: this.charCode,
 
-                //  Specific to Mozilla
-                which: this.which,
+            //  Specific to Mozilla
+            which: this.which,
 
-                //  Specific to IE
-                cancelBubble: this.cancelBubble,
-                returnValue: this.returnValue,
+            //  Specific to IE
+            cancelBubble: this.cancelBubble,
+            returnValue: this.returnValue,
 
-                //  Special TIBET-an flags placed on events
-                $captured: this.$captured,
-                $dragdistance: this.$dragdistance,
-                $normalized: this.$normalized,
-                $notSignaled: this.$notSignaled,
-                $unicodeCharCode: this.$unicodeCharCode,
-                $computedName: this.$computedName
-            };
+            //  Special TIBET-an flags placed on events
+            $captured: this.$captured,
+            $dragdistance: this.$dragdistance,
+            $normalized: this.$normalized,
+            $notSignaled: this.$notSignaled,
+            $unicodeCharCode: this.$unicodeCharCode,
+            $computedName: this.$computedName
+        };
 
         //  Now, copy all keys that are on the prototype that we don't know
         //  about.
