@@ -2408,10 +2408,17 @@ function() {
 TP.core.PouchDBURL.Inst.describe('setResource',
 function() {
 
-    var testDb;
+    var testDb,
+        destroySucceeded;
 
     this.before(
         function(suite, options) {
+
+            //  We set this to false here, but to true if the test containing
+            //  the database destroy() succeeds, such that we don't try to call
+            //  destroy() twice (once in that test and once in the after()
+            //  code).
+            destroySucceeded = false;
 
             //  'this' refers to the suite here.
             suite.then(
@@ -2630,6 +2637,10 @@ function() {
                             result.at('ok'),
                             TP.sc('Expected a result with an \'ok\' property'));
 
+                        //  Set this flag to true now that we've successfully
+                        //  destroy()ed the database.
+                        destroySucceeded = true;
+
                         resolver();
                     });
 
@@ -2647,7 +2658,7 @@ function() {
 
                 url.nuke(pouchRequest);
             });
-    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+    });
 
     //  ---
 
@@ -2660,7 +2671,9 @@ function() {
                     var pouchPromise,
                         promise;
 
-                    pouchPromise = testDb.destroy();
+                    if (!destroySucceeded) {
+                        pouchPromise = testDb.destroy();
+                    }
 
                     promise = TP.extern.Promise.resolve(pouchPromise);
 
