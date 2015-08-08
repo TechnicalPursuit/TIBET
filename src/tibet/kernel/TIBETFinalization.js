@@ -388,15 +388,21 @@ function() {
      * @summary Loads the 'ui root' window with the initial content.
      */
 
-    var rootLoc,
+    var inPhantom,
+
+        rootLoc,
         rootURI,
         rootName,
         rootWindow,
 
+        sherpaEnabled,
         hasBootToggle,
+
         request,
         toggleKey,
         bootframe;
+
+    inPhantom = TP.sys.cfg('boot.context') === 'phantomjs';
 
     rootLoc = TP.uriJoinPaths('~boot_xhtml', TP.sys.cfg('project.root_page'));
 
@@ -458,7 +464,7 @@ function() {
         //  NOTE that we don't have logic here. Formerly we'd trigger app start
         //  signaling here but we have to let that happen via either the
         //  tibet:root or tibet:sherpa tag processing for proper sequencing.
-        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        if (inPhantom) {
             TP.signal('TP.sys', 'AppWillStart');
         }
     });
@@ -483,8 +489,10 @@ function() {
     //  configured 'boot toggle' key, then set up an observation that will cause
     //  that key to toggle between the boot log and the application's user
     //  interface.
+    sherpaEnabled = TP.sys.cfg('sherpa.enabled') === true;
     hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_key'));
-    if (TP.sys.cfg('boot.context') !== 'phantomjs' && hasBootToggle) {
+
+    if (!inPhantom && !sherpaEnabled && hasBootToggle) {
 
         //  No hook file in the boot screen so we initialize manually.
         bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
