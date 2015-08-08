@@ -1619,10 +1619,11 @@ function(anEntry) {
      *     processed in virtually any fashion as a result. The default format is
      *     whatever is produced by TP.str() which relies on the Entry type.
      * @param {TP.log.Entry} anEntry The entry to format.
-     * @returns {Object} The formatted output. Can be String, Node, etc.
+     * @returns {TP.core.Hash} A hash of output containing at least one key,
+     *     'content'.
      */
 
-    return TP.str(anEntry);
+    return TP.hc('content', TP.str(anEntry));
 });
 
 //  ============================================================================
@@ -3263,7 +3264,7 @@ function(anEntry) {
 
     // Format the little critter...
     layout = this.getLayout();
-    content = layout.layout(anEntry);
+    content = layout.layout(anEntry).at('content');
 
     try {
         top.console[writer](content);
@@ -3302,7 +3303,8 @@ function(anEntry) {
      * @summary Formats an entry. The default output format for top.console is:
      *     {ms} - {level} {logger} - {string}
      * @param {TP.log.Entry} anEntry The entry to format.
-     * @returns {Object} The formatted output. Can be String, Node, etc.
+     * @returns {TP.core.Hash} A hash of output containing at least one key,
+     *     'content'.
      */
 
     var str,
@@ -3333,7 +3335,7 @@ function(anEntry) {
         }
     }
 
-    return str;
+    return TP.hc('content', str);
 });
 
 //  ============================================================================
@@ -3358,7 +3360,8 @@ function(anEntry) {
      * @summary Formats an entry. The default output format for top.console is:
      *     {ms} - {level} {logger} - {string}
      * @param {TP.log.Entry} anEntry The entry to format.
-     * @returns {Object} The formatted output. Can be String, Node, etc.
+     * @returns {TP.core.Hash} A hash of output containing at least one key,
+     *     'content'.
      */
 
     var str,
@@ -3377,7 +3380,7 @@ function(anEntry) {
         str = str.trim();
     }
 
-    return str;
+    return TP.hc('content', str);
 });
 
 //  ============================================================================
@@ -3444,7 +3447,7 @@ function(anEntry) {
         content;
 
     layout = this.getLayout();
-    content = layout.layout(anEntry);
+    content = layout.layout(anEntry).at('content');
 
     top.console.log(content);
 
@@ -3549,8 +3552,12 @@ function(anEntry) {
 
     var name,
         writer,
+
         layout,
+        results,
         content,
+        asIs,
+
         stdio;
 
     // Try to find a matching console API method to our level name. If we find
@@ -3582,7 +3589,10 @@ function(anEntry) {
 
     // Format the little critter...
     layout = this.getLayout();
-    content = layout.layout(anEntry);
+
+    results = layout.layout(anEntry);
+    content = results.at('content');
+    asIs = results.at('cmdAsIs');
 
     // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
@@ -3592,7 +3602,7 @@ function(anEntry) {
             top.console.log(content);
         }
     } else {
-        TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', true));
+        TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
     }
 
     return this;
