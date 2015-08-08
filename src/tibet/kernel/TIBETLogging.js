@@ -833,7 +833,9 @@ function(anAppender) {
 
     var appenders;
 
-    if (TP.notValid(appenders = this.get('appenders'))) {
+    //  Make sure to use $get() here to only get our local appenders, not any of
+    //  our parent's appenders.
+    if (TP.notValid(appenders = this.$get('appenders'))) {
         appenders = TP.ac();
         this.set('appenders', appenders);
     }
@@ -855,25 +857,32 @@ function() {
      * @returns {Array<.TP.log.Appender>} The appender list.
      */
 
-    var parent,
-        appenders;
+    var appenders,
+
+        parent,
+        parentAppenders;
+
+    appenders = this.$get('appenders');
 
     if (!this.inheritsAppenders()) {
-        return this.$get('appenders');
+        return appenders;
     }
 
     if (TP.notValid(parent = this.getParent())) {
         return;
     }
 
-    appenders = parent.getAppenders();
-    if (TP.notEmpty(this.$get('appenders')) && TP.notEmpty(appenders)) {
-        appenders = this.$get('appenders').concat(appenders);
-    } else {
-        appenders = TP.ifInvalid(this.$get('appenders'), appenders);
+    parentAppenders = parent.getAppenders();
+
+    if (TP.isEmpty(parentAppenders)) {
+        return appenders;
     }
 
-    return appenders;
+    if (TP.isEmpty(appenders)) {
+        return parentAppenders.copy();
+    }
+
+    return parentAppenders.concat(appenders);
 });
 
 //  ----------------------------------------------------------------------------
