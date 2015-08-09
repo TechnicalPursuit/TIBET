@@ -2636,11 +2636,8 @@ function(options) {
             //  in case we hit bottom or had a stack overflow, or for any other
             //  reason didn't get an Error but failed for some reason.
             $STATUS = TP.SUCCESS;
+
             maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
-            if ($STATUS === TP.FAILED) {
-                $STATUS = TP.SUCCESS;
-                throw new Error();
-            }
 
             //  Now, check to see if there is an internal promise.
 
@@ -2672,6 +2669,12 @@ function(options) {
                             }
                         });
                 } else {
+
+                    if ($STATUS === TP.FAILED) {
+                        $STATUS = TP.SUCCESS;
+                        throw new Error();
+                    }
+
                     //  Otherwise, just pass the test.
                     testcase.pass();
                 }
