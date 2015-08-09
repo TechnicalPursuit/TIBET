@@ -33,7 +33,7 @@ TP.sig.WebSocketRequest.Type.defineAttribute('responseType',
 //  ------------------------------------------------------------------------
 
 TP.sig.WebSocketRequest.Inst.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method failJob
@@ -42,9 +42,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A text description of the reason for the
      *     failure.
      * @param {Object} aFaultCode A reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.sig.WebSocketRequest} The receiver.
      */
 
@@ -89,7 +88,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.sig.WebSocketRequest.Inst.defineMethod('cancelJob',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancelJob
@@ -98,6 +97,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A text description of the reason for the
      *     cancellation.
      * @param {Object} aFaultCode A reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.sig.WebSocketRequest} The receiver.
      */
 
@@ -216,7 +217,7 @@ function(aSignal) {
     this.set('faultCode', code);
 
     if (TP.isValid(faultCode = this.getFaultCode())) {
-        this.fail(this.getFaultText(), faultCode);
+        this.fail(this.getFaultText(), faultCode, this.getFaultInfo());
     } else {
         result = aSignal.getResult();
         if (TP.isValid(result)) {

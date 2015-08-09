@@ -119,7 +119,7 @@ TP.sig.PouchDBRequest.Type.defineAttribute('responseType',
 //  ------------------------------------------------------------------------
 
 TP.sig.PouchDBRequest.Inst.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method failJob
@@ -127,9 +127,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A text description of the reason for the
      *     failure.
      * @param {Object} aFaultCode A reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.sig.PouchDBRequest}
      */
 
@@ -151,7 +150,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.sig.PouchDBRequest.Inst.defineMethod('cancelJob',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancelJob
@@ -159,6 +158,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A text description of the reason for the
      *     cancellation.
      * @param {Object} aFaultCode A reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.sig.PouchDBRequest}
      */
 

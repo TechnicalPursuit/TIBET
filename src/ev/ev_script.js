@@ -130,7 +130,7 @@ function(aRequest) {
         shell = aRequest.at('cmdShell');
 
         req.defineMethod('cancelJob',
-            function(aFaultString, aFaultCode) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
 
                 //  Make sure to unset the variable on the shell that contains
                 //  the signal that fired us.
@@ -138,8 +138,9 @@ function(aRequest) {
                 shell.unsetVariable('TARGET');
 
                 return aRequest.cancel(
-                    TP.ifInvalid(aFaultString, 'TP.ev.script cancelled.'),
-                     TP.ifInvalid(aFaultCode, TP.FAILED));
+                        TP.ifInvalid(aFaultString, 'TP.ev.script cancelled.'),
+                        TP.ifInvalid(aFaultCode, TP.CANCELLED),
+                        aFaultInfo);
             });
 
         req.defineMethod('completeJob',
@@ -159,7 +160,7 @@ function(aRequest) {
             });
 
         req.defineMethod('failJob',
-            function(aFaultString, aFaultCode, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
 
                 //  Make sure to unset the variable on the shell that contains
                 //  the signal that fired us.
@@ -169,7 +170,7 @@ function(aRequest) {
                 return aRequest.fail(
                         TP.ifInvalid(aFaultString, 'TP.ev.script failed.'),
                         TP.ifInvalid(aFaultCode, TP.FAILED),
-                        aFaultStack);
+                        aFaultInfo);
             });
 
         //  Configure STDIO that any nested command operations will output to

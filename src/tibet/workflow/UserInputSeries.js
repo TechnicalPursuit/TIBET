@@ -135,7 +135,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.UserInputSeries.Inst.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method failJob
@@ -147,9 +147,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString Description of the error.
      * @param {Object} aFaultCode A code providing additional information on
      *     what went wrong.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.sig.UserInputSeries} The receiver.
      */
 
@@ -172,7 +171,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
         len = arr.getSize();
         for (i = 0; i < len; i++) {
             try {
-                arr.at(i)(this, aFaultString, aFaultCode, aFaultStack);
+                arr.at(i)(this, aFaultString, aFaultCode, aFaultInfo);
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Error running failure hook.'),
@@ -326,7 +325,7 @@ function(aFunction) {
 //  ------------------------------------------------------------------------
 
 TP.sig.UserInputSeries.Inst.defineMethod('cancelJob',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancelJob
@@ -338,6 +337,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString Description of the error.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.sig.UserInputSeries} The receiver.
      */
 
@@ -360,7 +361,7 @@ function(aFaultString, aFaultCode) {
         len = arr.getSize();
         for (i = 0; i < len; i++) {
             try {
-                arr.at(i)(this, aFaultString, aFaultCode);
+                arr.at(i)(this, aFaultString, aFaultCode, aFaultInfo);
             } catch (e) {
                 TP.ifError() ?
                     TP.error(TP.ec(e, 'Error running cancellation hook.'),

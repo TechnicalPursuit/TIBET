@@ -3639,15 +3639,26 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
         });
 
     subrequest.defineMethod('failJob',
-        function(aFaultString, aFaultCode, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultInfo) {
+
+            var info,
+                subrequests;
+
+            info = TP.hc(aFaultInfo);
+            if (TP.isValid(subrequests = info.at('subrequests'))) {
+                subrequests.push(subrequest);
+            } else {
+                subrequests = TP.ac(subrequest);
+                info.atPut('subrequests', subrequests);
+            }
 
             if (TP.canInvoke(thisref, failureFName)) {
-                thisref[failureFName](aFaultString, aFaultCode, aFaultStack);
+                thisref[failureFName](aFaultString, aFaultCode, info);
             }
 
             //  if there was an original request fail it too.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                aRequest.fail(aFaultString, aFaultCode, info);
             }
         });
 
@@ -4177,10 +4188,21 @@ function(aDataSource, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultString, aFaultCode, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
+
+                var info,
+                    subrequests;
+
+                info = TP.hc(aFaultInfo);
+                if (TP.isValid(subrequests = info.at('subrequests'))) {
+                    subrequests.push(subrequest);
+                } else {
+                    subrequests = TP.ac(subrequest);
+                    info.atPut('subrequests', subrequests);
+                }
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                    aRequest.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -5204,10 +5226,21 @@ function(aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultString, aFaultCode, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
+
+                var info,
+                    subrequests;
+
+                info = TP.hc(aFaultInfo);
+                if (TP.isValid(subrequests = info.at('subrequests'))) {
+                    subrequests.push(subrequest);
+                } else {
+                    subrequests = TP.ac(subrequest);
+                    info.atPut('subrequests', subrequests);
+                }
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                    aRequest.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -5451,10 +5484,21 @@ function(aRequest, filterResult) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultString, aFaultCode, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
+
+                var info,
+                    subrequests;
+
+                info = TP.hc(aFaultInfo);
+                if (TP.isValid(subrequests = info.at('subrequests'))) {
+                    subrequests.push(subrequest);
+                } else {
+                    subrequests = TP.ac(subrequest);
+                    info.atPut('subrequests', subrequests);
+                }
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                    aRequest.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -5826,9 +5870,11 @@ function(aRequest) {
 
                     if (request.didFail()) {
                         aRequest.fail(request.getFaultText(),
-                                      request.getFaultCode());
+                                      request.getFaultCode(),
+                                      request.getFaultInfo());
                         subrequest.fail(request.getFaultText(),
-                                      request.getFaultCode());
+                                          request.getFaultCode(),
+                                          request.getFaultInfo());
                         return;
                     }
 
@@ -5858,11 +5904,22 @@ function(aRequest) {
             });
 
     subrequest.defineMethod('failJob',
-        function(aFaultString, aFaultCode, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultInfo) {
+
+            var info,
+                subrequests;
+
+            info = TP.hc(aFaultInfo);
+            if (TP.isValid(subrequests = info.at('subrequests'))) {
+                subrequests.push(subrequest);
+            } else {
+                subrequests = TP.ac(subrequest);
+                info.atPut('subrequests', subrequests);
+            }
 
             //  Inform any originally inbound request of our status.
             if (TP.canInvoke(aRequest, 'fail')) {
-                aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                aRequest.fail(aFaultString, aFaultCode, info);
             }
         });
 
@@ -9998,7 +10055,18 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultString, aFaultCode, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
+
+                var info,
+                    subrequests;
+
+                info = TP.hc(aFaultInfo);
+                if (TP.isValid(subrequests = info.at('subrequests'))) {
+                    subrequests.push(subrequest);
+                } else {
+                    subrequests = TP.ac(subrequest);
+                    info.atPut('subrequests', subrequests);
+                }
 
                 //  update the target's header and content information, in
                 //  that order so that any content change signaling happens
@@ -10012,7 +10080,7 @@ function(targetURI, aRequest) {
                 targetURI.isDirty(true);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                    aRequest.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -10094,10 +10162,21 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultString, aFaultCode, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
+
+                var info,
+                    subrequests;
+
+                info = TP.hc(aFaultInfo);
+                if (TP.isValid(subrequests = info.at('subrequests'))) {
+                    subrequests.push(subrequest);
+                } else {
+                    subrequests = TP.ac(subrequest);
+                    info.atPut('subrequests', subrequests);
+                }
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                    aRequest.fail(aFaultString, aFaultCode, info);
                 }
             });
 
@@ -10204,10 +10283,21 @@ function(targetURI, aRequest) {
 
     subrequest.defineMethod(
             'failJob',
-            function(aFaultString, aFaultCode, aFaultStack) {
+            function(aFaultString, aFaultCode, aFaultInfo) {
+
+                var info,
+                    subrequests;
+
+                info = TP.hc(aFaultInfo);
+                if (TP.isValid(subrequests = info.at('subrequests'))) {
+                    subrequests.push(subrequest);
+                } else {
+                    subrequests = TP.ac(subrequest);
+                    info.atPut('subrequests', subrequests);
+                }
 
                 if (TP.canInvoke(aRequest, 'fail')) {
-                    aRequest.fail(aFaultString, aFaultCode, aFaultStack);
+                    aRequest.fail(aFaultString, aFaultCode, info);
                 }
             });
 

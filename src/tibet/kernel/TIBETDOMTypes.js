@@ -9176,7 +9176,9 @@ function(aRequest, replaceNode, alternateNode) {
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
-            aRequest.fail(request.getFaultText(), request.getFaultCode());
+            aRequest.fail(request.getFaultText(),
+                            request.getFaultCode(),
+                            request.getFaultInfo());
             return;
         }
     }
@@ -9551,7 +9553,9 @@ function(aRequest) {
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
-            aRequest.fail(request.getFaultText(), request.getFaultCode());
+            aRequest.fail(request.getFaultText(),
+                            request.getFaultCode(),
+                            request.getFaultInfo());
             return;
         }
 
