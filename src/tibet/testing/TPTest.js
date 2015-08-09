@@ -481,7 +481,8 @@ function(target, options) {
         params,
         keys,
         suitelist,
-        shouldThrowSetting,
+        throwExceptions,
+        throwHandlers,
         shouldLogSetting,
         promise,
         exclusives,
@@ -638,11 +639,14 @@ function(target, options) {
     //  case will cause TIBET to throw an Error and then the test case will be
     //  considered to be in 'error'.
 
-    shouldThrowSetting = TP.sys.shouldThrowExceptions();
+    throwExceptions = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
 
     shouldLogSetting = TP.sys.shouldLogStack();
     TP.sys.shouldLogStack(true);
+
+    throwHandlers = TP.sys.shouldThrowHandlers();
+    TP.sys.shouldThrowHandlers(true);
 
     /* eslint-disable handle-callback-err */
 
@@ -670,12 +674,14 @@ function(target, options) {
 
     return promise.then(
             function(obj) {
-                TP.sys.shouldThrowExceptions(shouldThrowSetting);
+                TP.sys.shouldThrowHandlers(throwHandlers);
+                TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 summarize();
             },
             function(err) {
-                TP.sys.shouldThrowExceptions(shouldThrowSetting);
+                TP.sys.shouldThrowHandlers(throwHandlers);
+                TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 summarize();
             });
