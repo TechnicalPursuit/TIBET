@@ -64,6 +64,10 @@ function(aRequest) {
 
     target = shell.getArgument(aRequest, 'ARG0');
 
+    if (TP.notEmpty(target)) {
+        target = target.unquoted();
+    }
+
     suiteName = shell.getArgument(aRequest, 'tsh:suite',
         shell.getArgument(aRequest, 'ARG1'));
 
