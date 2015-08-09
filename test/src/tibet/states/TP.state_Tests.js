@@ -373,8 +373,7 @@ function() {
 
     this.it('accepts looped start and final state',
     function(test, options) {
-        var params,
-            called;
+        var called;
 
         machine.defineState(null, 'idle');
         machine.defineState('idle', 'busy');
@@ -383,7 +382,6 @@ function() {
         called = 0;
         machine.defineMethod('transition', function(details) {
             called += 1;
-            params = details;
             //  NOTE we have to still set the state on the first pass or the
             //  second pass won't process correctly since we won't have actually
             //  transitioned in a concrete sense.
