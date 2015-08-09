@@ -142,17 +142,16 @@ function(aRequest) {
             if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
 
                 obj.Type.runTestSuites(options).then(function() {
-                        obj.Inst.runTestSuites(options);
-                    }).then(function() {
-                        obj.runTestSuites(options);
-                    }).then(
-                    function(result) {
-                        // TODO: should we pass non-null results?
-                        aRequest.complete();
-                    },
-                    function(error) {
-                        aRequest.fail(error);
-                    }
+                            return obj.Inst.runTestSuites(options);
+                        }).then(function() {
+                            return obj.runTestSuites(options);
+                        }).then(function(result) {
+                            // TODO: should we pass non-null results?
+                            aRequest.complete();
+                        },
+                        function(error) {
+                            aRequest.fail(error);
+                        }
                 );
                 return;
             }
