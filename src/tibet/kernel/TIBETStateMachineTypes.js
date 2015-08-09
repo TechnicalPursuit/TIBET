@@ -1127,6 +1127,18 @@ function(signalOrParams) {
         stateCount = 0;
 
         len = stateTargets.getSize();
+
+        //  If this is not a 'final only' state, then disqualify transitioning
+        //  to a deactivated state. Require explicit deactivation instead.
+        if (len > 1) {
+            stateTargets = stateTargets.filter(
+                            function(target) {
+                                return target.first() !== null;
+                            });
+        }
+
+        //  Make sure to refetch len in case we filtered some out.
+        len = stateTargets.getSize();
         for (i = 0; i < len; i++) {
 
             stateName = stateTargets.at(i).first();
