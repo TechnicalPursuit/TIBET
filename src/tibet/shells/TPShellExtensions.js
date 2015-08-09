@@ -1019,7 +1019,7 @@ function(aRequest, cmdType) {
     subrequest.atPut('cmdAction', aRequest.at('cmdAction'));
 
     subrequest.defineMethod('cancelJob',
-        function(aFaultString, aFaultCode) {
+        function(aFaultString, aFaultCode, aFaultInfo) {
 
             switch (arguments.length) {
                 case 1:
@@ -1029,6 +1029,12 @@ function(aRequest, cmdType) {
                     this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString,
                                     aFaultCode);
                     return aRequest.cancel(aFaultString, aFaultCode);
+                case 3:
+                    this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString,
+                                    aFaultCode, aFaultInfo);
+                    return aRequest.cancel(aFaultString,
+                                            aFaultCode,
+                                            aFaultInfo);
                 default:
                     this.$wrapupJob('Cancelled', TP.CANCELLED);
                     return aRequest.cancel();
@@ -1057,7 +1063,7 @@ function(aRequest, cmdType) {
         });
 
     subrequest.defineMethod('failJob',
-        function(aFaultString, aFaultCode, aFaultStack) {
+        function(aFaultString, aFaultCode, aFaultInfo) {
 
             switch (arguments.length) {
                 case 1:
@@ -1070,8 +1076,10 @@ function(aRequest, cmdType) {
                 case 3:
                     this.$wrapupJob('Failed', TP.FAILED, aFaultString,
                                     aFaultCode,
-                                    aFaultStack);
-                    return aRequest.fail(aFaultString, aFaultCode);
+                                    aFaultInfo);
+                    return aRequest.fail(aFaultString,
+                                            aFaultCode,
+                                            aFaultInfo);
                 default:
                     this.$wrapupJob('Failed', TP.FAILED);
                     return aRequest.fail();

@@ -177,14 +177,27 @@ function(aString, aShell, aRequest, asTokens) {
 
                 req.defineMethod(
                     'cancel',
-                    function(aFaultString, aFaultCode) {
+                    function(aFaultString, aFaultCode, aFaultInfo) {
+
+                        var info,
+                            subrequests;
+
+                        info = TP.hc(aFaultInfo);
+                        if (TP.isValid(subrequests = info.at('subrequests'))) {
+                            subrequests.push(req);
+                        } else {
+                            subrequests = TP.ac(req);
+                            info.atPut('subrequests', subrequests);
+                        }
+
                         return aRequest.cancel(
                             TP.ifInvalid(
                                     aFaultString,
                                     TP.sc('History request cancelled.')),
                             TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILED));
+                                    TP.FAILED),
+                            info);
                     });
 
                 req.defineMethod(
@@ -200,7 +213,18 @@ function(aString, aShell, aRequest, asTokens) {
 
                 req.defineMethod(
                     'fail',
-                    function(aFaultString, aFaultCode) {
+                    function(aFaultString, aFaultCode, aFaultInfo) {
+
+                        var info,
+                            subrequests;
+
+                        info = TP.hc(aFaultInfo);
+                        if (TP.isValid(subrequests = info.at('subrequests'))) {
+                            subrequests.push(req);
+                        } else {
+                            subrequests = TP.ac(req);
+                            info.atPut('subrequests', subrequests);
+                        }
 
                         return aRequest.fail(
                             new Error(
@@ -209,7 +233,8 @@ function(aString, aShell, aRequest, asTokens) {
                                     TP.sc('History request failed.'))),
                             TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILED));
+                                    TP.FAILED),
+                            info);
                     });
 
                 aShell.handleShellRequest(req);
@@ -274,7 +299,18 @@ function(aString, aShell, aRequest, asTokens) {
 
                     req.defineMethod(
                         'cancel',
-                        function(aFaultString, aFaultCode) {
+                        function(aFaultString, aFaultCode, aFaultInfo) {
+
+                            var info,
+                                subrequests;
+
+                            info = TP.hc(aFaultInfo);
+                            if (TP.isValid(subrequests = info.at('subrequests'))) {
+                                subrequests.push(req);
+                            } else {
+                                subrequests = TP.ac(req);
+                                info.atPut('subrequests', subrequests);
+                            }
 
                             return aRequest.cancel(
                                 TP.ifInvalid(
@@ -282,7 +318,8 @@ function(aString, aShell, aRequest, asTokens) {
                                     TP.sc('Aliased request cancelled.')),
                                 TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILED));
+                                    TP.FAILED),
+                                info);
                         });
 
                     req.defineMethod(
@@ -298,7 +335,18 @@ function(aString, aShell, aRequest, asTokens) {
 
                     req.defineMethod(
                         'fail',
-                        function(aFaultString, aFaultCode) {
+                        function(aFaultString, aFaultCode, aFaultInfo) {
+
+                            var info,
+                                subrequests;
+
+                            info = TP.hc(aFaultInfo);
+                            if (TP.isValid(subrequests = info.at('subrequests'))) {
+                                subrequests.push(req);
+                            } else {
+                                subrequests = TP.ac(req);
+                                info.atPut('subrequests', subrequests);
+                            }
 
                             return aRequest.fail(
                                 new Error(
@@ -308,7 +356,8 @@ function(aString, aShell, aRequest, asTokens) {
                                         this.at('cmd'))),
                                 TP.ifInvalid(
                                     aFaultCode,
-                                    TP.FAILED));
+                                    TP.FAILED),
+                                info);
                         });
 
                     req.defineMethod(

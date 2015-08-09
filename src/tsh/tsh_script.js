@@ -2917,7 +2917,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sig.TSHRunRequest.Inst.defineMethod('cancel',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancel
@@ -2928,12 +2928,21 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.BREAK}
      */
+
+    var str,
+        faultCode,
+
+        info;
 
     if (this.isCompleting() || this.didComplete()) {
         return;
     }
+
+    faultCode = TP.ifEmpty(aFaultCode, TP.CANCELLED);
 
     if (arguments.length > 0 && TP.notTrue(this.at('cmdSilent'))) {
         switch (arguments.length) {
@@ -2941,7 +2950,29 @@ function(aFaultString, aFaultCode) {
                 this.stderr(aFaultString);
                 break;
             case 2:
-                this.stderr(aFaultString, aFaultCode);
+                if (TP.isError(aFaultString)) {
+                    // Try to keep messaging consistent...
+                    str = faultCode + ': ' + aFaultString.message;
+                    aFaultString.message = str;
+                    this.stderr(aFaultString);
+                } else {
+                    str = faultCode + ': ' + aFaultString;
+                    this.stderr(str);
+                }
+                break;
+            case 3:
+                info = TP.hc(aFaultInfo);
+                if (info.at('error')) {
+                    // Try to keep messaging consistent...
+                    str = faultCode + ': ' +
+                            info.at('error').message +
+                            ' ' + aFaultString;
+                    info.at('error').message = str;
+                    this.stderr(info.at('error'));
+                } else {
+                    str = faultCode + ': ' + aFaultString;
+                    this.stderr(str);
+                }
                 break;
             default:
                 break;
@@ -2987,7 +3018,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.TSHRunRequest.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode, anException) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method fail
@@ -2998,20 +3029,21 @@ function(aFaultString, aFaultCode, anException) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {TP.sig.Exception|String} anException An optional exception to
-     *     raise.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the error.
      * @returns {TP.BREAK}
      */
 
-    var str;
+    var str,
+        faultCode,
+
+        info;
 
     if (this.isCompleting() || this.didComplete()) {
         return;
     }
 
-    if (TP.isValid(anException)) {
-        this.raise(anException, TP.ifInvalid(aFaultString, aFaultCode));
-    }
+    faultCode = TP.ifEmpty(aFaultCode, TP.FAILED);
 
     if (arguments.length > 0 && TP.notTrue(this.at('cmdSilent'))) {
         switch (arguments.length) {
@@ -3021,11 +3053,25 @@ function(aFaultString, aFaultCode, anException) {
             case 2:
                 if (TP.isError(aFaultString)) {
                     // Try to keep messaging consistent...
-                    str = aFaultCode + ': ' + aFaultString.message;
+                    str = faultCode + ': ' + aFaultString.message;
                     aFaultString.message = str;
                     this.stderr(aFaultString);
                 } else {
-                    str = aFaultCode + ': ' + aFaultString;
+                    str = faultCode + ': ' + aFaultString;
+                    this.stderr(str);
+                }
+                break;
+            case 3:
+                info = TP.hc(aFaultInfo);
+                if (info.at('error')) {
+                    // Try to keep messaging consistent...
+                    str = faultCode + ': ' +
+                            info.at('error').message +
+                            ' ' + aFaultString;
+                    info.at('error').message = str;
+                    this.stderr(info.at('error'));
+                } else {
+                    str = faultCode + ': ' + aFaultString;
                     this.stderr(str);
                 }
                 break;

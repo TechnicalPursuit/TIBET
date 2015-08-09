@@ -36,10 +36,6 @@ function(anEntry) {
     //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
 
-    if (arglist.at(0).errorObj) {
-        return TP.hc('content', arglist.at(0).errorObj, 'cmdAsIs', false);
-    }
-
     return TP.hc('content', arglist.at(0), 'cmdAsIs', false);
 });
 

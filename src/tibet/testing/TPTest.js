@@ -212,8 +212,11 @@ function(options) {
      */
 
     this.$set('result', null);
+
     this.$set('faultCode', null);
     this.$set('faultText', null);
+    this.$set('faultInfo', null);
+
     this.$set('statusCode', null);
     this.$set('statusText', null);
 
@@ -1997,19 +2000,20 @@ TP.test.Case.Inst.defineAttribute('$rejector');
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('errorJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * Internal method for handling errors thrown by test functions.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the error.
      */
 
-    var msg;
+    var msg,
+
+        info;
 
     //  NOTE that even though we had an error we still resolve, not reject. This
     //  allows other test cases to continue to be processed.
@@ -2024,10 +2028,12 @@ function(aFaultString, aFaultCode, aFaultStack) {
         msg += '.';
     }
 
-    if (TP.isValid(aFaultStack)) {
-        TP.sys.logTest(msg + '\n' + aFaultStack.join('\n'));
-    } else {
-        TP.sys.logTest(msg);
+    TP.sys.logTest(msg);
+
+    info = TP.hc(aFaultInfo);
+
+    if (TP.isError(info.at('error'))) {
+        TP.sys.logTest(info.at('error'));
     }
 
     return this;
@@ -2061,19 +2067,19 @@ function(anObj) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * Internal method for handling notifications of test failures.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      */
 
-    var msg;
+    var msg,
+        info;
 
     //  NOTE that even though we had a failure we still resolve, not reject.
     //  This allows other test cases to continue to be processed in the same
@@ -2081,17 +2087,6 @@ function(aFaultString, aFaultCode, aFaultStack) {
     this.$resolve();
 
     this.set('msend', Date.now());
-
-    /*
-    if (TP.isValid(aFaultStack)) {
-        msg = 'not ok - ' + this.getCaseName() +
-            (aFaultString ? ': ' + aFaultString : '') + '.\n' +
-            aFaultStack.join('\n');
-    } else {
-        msg = 'not ok - ' + this.getCaseName() +
-            (aFaultString ? ': ' + aFaultString : '') + '.';
-    }
-    */
 
     if (this.isTodo()) {
         msg += ' # TODO ';
@@ -2102,8 +2097,10 @@ function(aFaultString, aFaultCode, aFaultStack) {
 
     TP.sys.logTest(msg);
 
-    if (TP.isArray(aFaultStack)) {
-        TP.sys.logTest(aFaultStack);
+    info = TP.hc(aFaultInfo);
+
+    if (TP.isError(info.at('error'))) {
+        TP.sys.logTest(info.at('error'));
     }
 
     return this;
@@ -2131,7 +2128,7 @@ function(aResponse) {
 
     return this.fail(req.getFaultText(),
                         req.getFaultCode(),
-                        req.getFaultStack());
+                        req.getFaultInfo());
 });
 
 //  ------------------------------------------------------------------------

@@ -443,7 +443,7 @@ function(stepParameters) {
 //  ------------------------------------------------------------------------
 
 TP.core.Monitor.Inst.defineMethod('cancel',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancel
@@ -451,10 +451,12 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the cancellation.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.core.Monitor} The receiver.
      */
 
-    this.getJob().cancel(aFaultString, aFaultCode);
+    this.getJob().cancel(aFaultString, aFaultCode, aFaultInfo);
 
     return this;
 });
@@ -480,7 +482,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.core.Monitor.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode, anException) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method fail
@@ -488,12 +490,12 @@ function(aFaultString, aFaultCode, anException) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {TP.sig.Exception|String} anException An optional exception to
-     *     raise.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.core.Monitor} The receiver.
      */
 
-    this.getJob().fail(aFaultString, aFaultCode, anException);
+    this.getJob().fail(aFaultString, aFaultCode, aFaultInfo);
 
     return this;
 });

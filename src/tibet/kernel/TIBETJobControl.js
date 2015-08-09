@@ -44,7 +44,7 @@ TP.core.JobStatus.Inst.defineAttribute('result');
 
 TP.core.JobStatus.Inst.defineAttribute('faultCode');
 TP.core.JobStatus.Inst.defineAttribute('faultText');
-TP.core.JobStatus.Inst.defineAttribute('faultStack');
+TP.core.JobStatus.Inst.defineAttribute('faultInfo');
 
 TP.core.JobStatus.Inst.defineAttribute('statusCode');
 TP.core.JobStatus.Inst.defineAttribute('statusText');
@@ -52,21 +52,28 @@ TP.core.JobStatus.Inst.defineAttribute('statusText');
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('checkFaultArguments',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method checkFaultArguments
      * @summary Checks the arguments and returns a hash containing updated and
      *     properly defaulted fault code and fault string values.
      * @param {String} aFaultString A string description of the fault.
-     * @param {Object} aFaultCode A code providing additional information on the
-     *     reason for the cancellation.
+     * @param {Object|Error} aFaultCode A code providing additional information
+     *     on the reason for the cancellation or failure.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.core.Hash} A hash containing 'code' and 'text' keys.
      */
 
-    var hash;
+    var hash,
+
+        info;
 
     hash = TP.hc();
+
+    info = TP.hc(aFaultInfo);
+    hash.atPut('info', info);
 
     if (TP.isError(aFaultCode)) {
         hash.atPut('code', TP.ERRORED);
@@ -75,7 +82,7 @@ function(aFaultString, aFaultCode) {
         } else {
             hash.atPut('text', aFaultString);
         }
-        hash.atPut('stack', TP.getStackInfo(aFaultCode));
+        info.atPut('error', aFaultCode);
     } else if (TP.isNumber(aFaultCode)) {
         hash.atPut('code', aFaultCode);
         hash.atPut('text', aFaultString);
@@ -389,7 +396,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('cancel',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancel
@@ -400,12 +407,16 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
     var hash,
+
         code,
-        text;
+        text,
+        info;
 
     //  avoid issues with perhaps calling this more than once
     if (this.isCompleting() || this.didComplete()) {
@@ -417,17 +428,21 @@ function(aFaultString, aFaultCode) {
     this.set('result', undefined);
     this.set('statusCode', TP.CANCELLING);
 
-    hash = this.checkFaultArguments(aFaultString,
-        TP.ifUndefined(aFaultCode, TP.CANCELLED));
+    hash = this.checkFaultArguments(
+                    aFaultString,
+                    TP.ifUndefined(aFaultCode, TP.CANCELLED),
+                    aFaultInfo);
 
     code = hash.at('code');
     text = hash.at('text');
+    info = hash.at('info');
 
     this.set('faultCode', code);
     this.set('faultText', text);
+    this.set('faultInfo', info);
 
     try {
-        this.cancelJob(text, code);
+        this.cancelJob(text, code, info);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -442,7 +457,7 @@ function(aFaultString, aFaultCode) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('cancelJob',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancelJob
@@ -451,6 +466,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
@@ -531,7 +548,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('error',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method error
@@ -539,6 +556,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the error.
      * @param {Object} aFaultCode A code providing additional information on
      *     specific nature of the error. Often an exception or Error object.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the error.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
@@ -546,7 +565,7 @@ function(aFaultString, aFaultCode) {
 
         code,
         text,
-        stack;
+        info;
 
     //  avoid issues with perhaps calling this more than once
     if (this.isCompleting() || this.didComplete()) {
@@ -556,19 +575,21 @@ function(aFaultString, aFaultCode) {
     this.set('result', undefined);
     this.set('statusCode', TP.ERRORING);
 
-    hash = this.checkFaultArguments(aFaultString,
-                                    TP.ifUndefined(aFaultCode, TP.ERRORED));
+    hash = this.checkFaultArguments(
+                    aFaultString,
+                    TP.ifUndefined(aFaultCode, TP.ERRORED),
+                    aFaultInfo);
 
     code = hash.at('code');
     text = hash.at('text');
-    stack = hash.at('stack');
+    info = hash.at('info');
 
     this.set('faultCode', code);
     this.set('faultText', text);
-    this.set('faultStack', stack);
+    this.set('faultInfo', info);
 
     try {
-        this.errorJob(text, code, stack);
+        this.errorJob(text, code, info);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -583,7 +604,7 @@ function(aFaultString, aFaultCode) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('errorJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method errorJob
@@ -592,9 +613,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the error.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the error.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
@@ -604,7 +624,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method fail
@@ -615,9 +635,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
@@ -625,7 +644,10 @@ function(aFaultString, aFaultCode, aFaultStack) {
 
         code,
         text,
-        stack;
+
+        info,
+
+        error;
 
     //  avoid issues with perhaps calling this more than once
     if (this.isCompleting() || this.didComplete()) {
@@ -635,32 +657,32 @@ function(aFaultString, aFaultCode, aFaultStack) {
     this.set('result', undefined);
     this.set('statusCode', TP.FAILING);
 
-    hash = this.checkFaultArguments(aFaultString,
-                                    TP.ifUndefined(aFaultCode, TP.FAILED));
+    hash = this.checkFaultArguments(
+                    aFaultString,
+                    TP.ifUndefined(aFaultCode, TP.FAILED),
+                    aFaultInfo);
 
     code = hash.at('code');
     text = hash.at('text');
 
-    if (TP.notValid(stack = aFaultStack)) {
-        //  If aFaultCode wasn't an Error object, then the 'stack' property of
-        //  the hash will not be populated. Try to populate it here.
-        if (!TP.isError(aFaultCode)) {
-            try {
-                throw new Error('Stack Trace');
-            } catch (e) {
-                stack = TP.getStackInfo(e);
-            }
-        } else {
-            stack = hash.at('stack');
+    info = TP.hc(aFaultInfo);
+
+    if (!TP.isError(error = info.at('error'))) {
+        try {
+            throw new Error();
+        } catch (e) {
+            error = e;
         }
+
+        info.atPut('error', error);
     }
 
     this.set('faultCode', code);
     this.set('faultText', text);
-    this.set('faultStack', stack);
+    this.set('faultInfo', info);
 
     try {
-        this.failJob(text, code, stack);
+        this.failJob(text, code, info);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Job completion error.'),
@@ -675,7 +697,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobStatus.Inst.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method failJob
@@ -684,9 +706,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.core.JobStatus} The receiver.
      */
 
@@ -714,22 +735,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JobStatus.Inst.defineMethod('getFaultStack',
+TP.core.JobStatus.Inst.defineMethod('getFaultInfo',
 function() {
 
     /**
-     * @method getFaultStack
-     * @summary Returns the fault stack of the receiver.
-     * @returns {Array} An Array of Arrays that contain information derived
-     *     from the JavaScript stack when the fault occurred.
+     * @method getFaultInfo
+     * @summary Returns the fault info of the receiver.
+     * @returns {TP.core.Hash} A hash that will contain additional information
+     *     about the failure.
      */
 
 // TODO: direct slot access?
-    if (TP.notDefined(this.faultStack)) {
-        this.getType().Inst.defineAttribute('faultStack');
+    if (TP.notDefined(this.faultInfo)) {
+        this.getType().Inst.defineAttribute('faultInfo');
     }
 
-    return this.$get('faultStack');
+    return this.$get('faultInfo');
 });
 
 //  ------------------------------------------------------------------------
@@ -3556,7 +3577,7 @@ function(aChild) {
 //  ------------------------------------------------------------------------
 
 TP.core.JobGroup.Inst.defineMethod('cancel',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancel
@@ -3569,10 +3590,12 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.core.JobGroup} The receiver.
      */
 
-    this.$performOverChildren('cancel', aFaultString, aFaultCode);
+    this.$performOverChildren('cancel', aFaultString, aFaultCode, aFaultInfo);
 
     if (TP.isValid(aFaultCode)) {
         //  note we don't signal change here
@@ -3582,6 +3605,11 @@ function(aFaultString, aFaultCode) {
     if (TP.isString(aFaultString)) {
         //  note we don't signal change here
         this.set('faultText', aFaultString);
+    }
+
+    if (TP.isValid(aFaultInfo)) {
+        //  note we don't signal change here
+        this.set('faultInfo', aFaultInfo);
     }
 
     this.set('statusCode', TP.CANCELLED);
@@ -3620,8 +3648,50 @@ function(aResult) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JobGroup.Inst.defineMethod('error',
+function(aFaultString, aFaultCode, aFaultInfo) {
+
+    /**
+     * @method error
+     * @summary Tells the receiver there was an error in job processing.
+     * @description If the receiver has specific behavior to implement it should
+     *     override this method, but be sure to set the status to TP.ERRORING
+     *     during any processing and TP.ERRORED after processing is complete.
+     *     The default implementation simply sets the status to TP.ERRORED.
+     * @param {String} aFaultString A string description of the error.
+     * @param {Object} aFaultCode A code providing additional information on
+     *     specific nature of the error. Often an exception or Error object.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the error.
+     * @returns {TP.core.JobGroup} The receiver.
+     */
+
+    this.$performOverChildren('error', aFaultString, aFaultCode, aFaultInfo);
+
+    if (TP.isValid(aFaultCode)) {
+        //  note we don't signal change here
+        this.set('faultCode', aFaultCode);
+    }
+
+    if (TP.isString(aFaultString)) {
+        //  note we don't signal change here
+        this.set('faultText', aFaultString);
+    }
+
+    if (TP.isValid(aFaultInfo)) {
+        //  note we don't signal change here
+        this.set('faultInfo', aFaultInfo);
+    }
+
+    this.set('statusCode', TP.ERRORED);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JobGroup.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method fail
@@ -3634,13 +3704,12 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.core.JobGroup} The receiver.
      */
 
-    this.$performOverChildren('fail', aFaultString, aFaultCode, aFaultStack);
+    this.$performOverChildren('fail', aFaultString, aFaultCode, aFaultInfo);
 
     if (TP.isValid(aFaultCode)) {
         //  note we don't signal change here
@@ -3652,9 +3721,9 @@ function(aFaultString, aFaultCode, aFaultStack) {
         this.set('faultText', aFaultString);
     }
 
-    if (TP.isValid(aFaultStack)) {
+    if (TP.isValid(aFaultInfo)) {
         //  note we don't signal change here
-        this.set('faultStack', aFaultStack);
+        this.set('faultInfo', aFaultInfo);
     }
 
     this.set('statusCode', TP.FAILED);

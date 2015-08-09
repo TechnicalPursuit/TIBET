@@ -1267,9 +1267,8 @@ TP.sig.Request.Inst.defineAttribute('faultCode', null);
 //  the fault/failure message, providing a textual message about a failure.
 TP.sig.Request.Inst.defineAttribute('faultText');
 
-//  the fault/failure stack, providing an Array of stack information about where
-//  the failure occurred
-TP.sig.Request.Inst.defineAttribute('faultStack');
+//  the fault/failure info, providing additional information about a failure.
+TP.sig.Request.Inst.defineAttribute('faultInfo');
 
 //  if the current signal is part of a thread of messages the threadID
 //  should be set to the requestID of the initial (root) signal.
@@ -1521,9 +1520,10 @@ function(anOrigin, aPayload, aPolicy) {
     //  clear status code back to original
     this.set('statusCode', TP.READY);
 
-    //  clear failure/fault code back to original
+    //  clear failure/fault code/text/info back to original
     this.set('faultCode', null);
     this.set('faultText', null);
+    this.set('faultInfo', null);
 
     this.callNextMethod();
 
@@ -2173,7 +2173,7 @@ function(aChildRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('$cancelJoin',
-function(aChildRequest, aFaultString, aFaultCode) {
+function(aChildRequest, aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method $cancelJoin
@@ -2184,6 +2184,8 @@ function(aChildRequest, aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.sig.Request} The receiver.
      */
 
@@ -2195,6 +2197,7 @@ function(aChildRequest, aFaultString, aFaultCode) {
     //  propagate child results upward
     this.$set('faultText', aChildRequest.getFaultText(), false);
     this.$set('faultCode', aChildRequest.getFaultCode(), false);
+    this.$set('faultInfo', aChildRequest.getFaultInfo(), false);
 
     //  don't push empty values into the argument list or we risk creating
     //  'undefined' as one of the values inappropriately.
@@ -2203,6 +2206,8 @@ function(aChildRequest, aFaultString, aFaultCode) {
             return this.cancel(aFaultString);
         case 3:
             return this.cancel(aFaultString, aFaultCode);
+        case 4:
+            return this.cancel(aFaultString, aFaultCode, aFaultInfo);
         default:
             return this.cancel();
     }
@@ -2288,7 +2293,7 @@ function(aChildRequest, aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('$failJoin',
-function(aChildRequest, aFaultString, aFaultCode, aFaultStack) {
+function(aChildRequest, aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method $failJoin
@@ -2299,9 +2304,8 @@ function(aChildRequest, aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.sig.Request} The receiver.
      */
 
@@ -2313,7 +2317,7 @@ function(aChildRequest, aFaultString, aFaultCode, aFaultStack) {
     //  propagate child results upward
     this.$set('faultText', aChildRequest.getFaultText(), false);
     this.$set('faultCode', aChildRequest.getFaultCode(), false);
-    this.$set('faultStack', aChildRequest.getFaultStack(), false);
+    this.$set('faultInfo', aChildRequest.getFaultInfo(), false);
 
     //  don't push empty values into the argument list or we risk creating
     //  'undefined' as one of the values inappropriately.
@@ -2323,7 +2327,7 @@ function(aChildRequest, aFaultString, aFaultCode, aFaultStack) {
         case 3:
             return this.fail(aFaultString, aFaultCode);
         case 4:
-            return this.fail(aFaultString, aFaultCode, aFaultStack);
+            return this.fail(aFaultString, aFaultCode, aFaultInfo);
         default:
             return this.fail();
     }
@@ -2635,7 +2639,7 @@ function(aRequest, aState, childJoin) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('cancelJob',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancelJob
@@ -2644,6 +2648,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.sig.Request} The receiver.
      */
 
@@ -2659,7 +2665,7 @@ function(aFaultString, aFaultCode) {
     for (i = 0; i < len; i++) {
         //  NOTE that this won't do anything if the job already cancelled so
         //  we shouldn't see looping or extra overhead here.
-        joins.at(i).cancel(aFaultString, aFaultCode);
+        joins.at(i).cancel(aFaultString, aFaultCode, aFaultInfo);
     }
 
     //  don't push empty values into the argument list or we risk creating
@@ -2670,6 +2676,9 @@ function(aFaultString, aFaultCode) {
         case 2:
             return this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString,
                                     aFaultCode);
+        case 3:
+            return this.$wrapupJob('Cancelled', TP.CANCELLED, aFaultString,
+                                    aFaultCode, aFaultInfo);
         default:
             return this.$wrapupJob('Cancelled', TP.CANCELLED);
     }
@@ -2705,7 +2714,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method failJob
@@ -2714,9 +2723,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.sig.Request} The receiver.
      */
 
@@ -2732,7 +2740,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
     for (i = 0; i < len; i++) {
         //  NOTE that this won't do anything if the job already cancelled so
         //  we shouldn't see looping or extra overhead here.
-        joins.at(i).cancel(aFaultString, aFaultCode);
+        joins.at(i).cancel(aFaultString, aFaultCode, aFaultInfo);
     }
 
     //  don't push empty values into the argument list or we risk creating
@@ -2745,8 +2753,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
                                     aFaultCode);
         case 3:
             return this.$wrapupJob('Failed', TP.FAILED, aFaultString,
-                                    aFaultCode,
-                                    aFaultStack);
+                                    aFaultCode, aFaultInfo);
         default:
             return this.$wrapupJob('Failed', TP.FAILED);
     }
@@ -2755,7 +2762,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('$wrapupJob',
-function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
+function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
 
     /**
      * @method $wrapupJob
@@ -2774,9 +2781,8 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
      *     non-failure state and a fault string when in a failure state.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.sig.Request} The receiver.
      */
 
@@ -2957,7 +2963,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
                     case 5:
                         ancestor.$failJoin(this, aResultOrFault,
                                                 aFaultCode,
-                                                aFaultStack);
+                                                aFaultInfo);
                         break;
                     default:
                         ancestor.$failJoin(this);
@@ -2971,6 +2977,11 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultStack) {
                     case 4:
                         ancestor.$cancelJoin(this, aResultOrFault,
                                                     aFaultCode);
+                        break;
+                    case 5:
+                        ancestor.$cancelJoin(this, aResultOrFault,
+                                                    aFaultCode,
+                                                    aFaultInfo);
                         break;
                     default:
                         ancestor.$cancelJoin(this);
@@ -3060,7 +3071,7 @@ function(aRequest, aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Response.Inst.defineMethod('cancelJob',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancelJob
@@ -3069,6 +3080,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.sig.Response} The receiver.
      */
 
@@ -3076,7 +3089,7 @@ function(aFaultString, aFaultCode) {
 
     request = this.get('request');
     if (TP.canInvoke(request, 'cancelJob')) {
-        return request.cancelJob(aFaultString, aFaultCode);
+        return request.cancelJob(aFaultString, aFaultCode, aFaultInfo);
     }
 
     return;
@@ -3115,7 +3128,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Response.Inst.defineMethod('failJob',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method failJob
@@ -3124,9 +3137,8 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode An optional object to set as the fault code.
      *     Usually a String or Number instance.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.sig.Response} The receiver.
      */
 
@@ -3134,7 +3146,7 @@ function(aFaultString, aFaultCode, aFaultStack) {
 
     request = this.get('request');
     if (TP.canInvoke(request, 'failJob')) {
-        return request.failJob(aFaultString, aFaultCode, aFaultStack);
+        return request.failJob(aFaultString, aFaultCode, aFaultInfo);
     }
 
     return;
@@ -3255,21 +3267,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Response.Inst.defineMethod('getFaultStack',
+TP.sig.Response.Inst.defineMethod('getFaultInfo',
 function() {
 
     /**
-     * @method getFaultStack
-     * @summary Returns the fault stack (array of stack frame information) of
-     *     the receiver.
-     * @returns {Array} An Array of stack frame descriptions.
+     * @method getFaultInfo
+     * @summary Returns the fault info of the receiver.
+     * @returns {TP.core.Hash} A hash that will contain additional information
+     *     about the failure.
      */
 
     var request;
 
     request = this.get('request');
-    if (TP.canInvoke(request, 'getFaultStack')) {
-        return request.getFaultStack();
+    if (TP.canInvoke(request, 'getFaultInfo')) {
+        return request.getFaultInfo();
     }
 
     return;
@@ -3590,7 +3602,8 @@ function(onFulfilled, onRejected) {
                         //  Go ahead and run the onRejected
                         handlerValue = onRejected(
                             TP.hc('faultText', aResponse.getFaultText(),
-                                'faultCode', aResponse.getFaultCode()));
+                                    'faultCode', aResponse.getFaultCode(),
+                                    'faultInfo', aResponse.getFaultInfo()));
 
                         //  If we get a 'promise' back as the handler value
                         //  (promises are just Responses), then get it's request
@@ -3610,7 +3623,8 @@ function(onFulfilled, onRejected) {
                             //  No value was returned - just fail the new
                             //  request.
                             newReq.fail(aResponse.getFaultText(),
-                                        aResponse.getFaultCode());
+                                        aResponse.getFaultCode(),
+                                        aResponse.getFaultInfo());
                         }
                     } catch (e) {
                         //  The onRejected handler threw an exception - fail the
@@ -3622,7 +3636,9 @@ function(onFulfilled, onRejected) {
             } else {
                 //  No onRejected handler - fail the new request, passing along
                 //  the fault code and fault text of this response.
-                newReq.fail(aResponse.getFaultText(), aResponse.getFaultCode());
+                newReq.fail(aResponse.getFaultText(),
+                            aResponse.getFaultCode(),
+                            aResponse.getFaultInfo());
             }
         });
 

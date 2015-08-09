@@ -116,7 +116,7 @@ TP.sig.ShellRequest.Inst.defineAttribute('$tagtime');
 //  ------------------------------------------------------------------------
 
 TP.sig.ShellRequest.Inst.defineMethod('cancel',
-function(aFaultString, aFaultCode) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method cancel
@@ -127,6 +127,8 @@ function(aFaultString, aFaultCode) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the cancellation.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the cancellation.
      * @returns {TP.BREAK}
      */
 
@@ -159,7 +161,7 @@ function(aResult) {
 //  ------------------------------------------------------------------------
 
 TP.sig.ShellRequest.Inst.defineMethod('fail',
-function(aFaultString, aFaultCode, aFaultStack) {
+function(aFaultString, aFaultCode, aFaultInfo) {
 
     /**
      * @method fail
@@ -170,18 +172,14 @@ function(aFaultString, aFaultCode, aFaultStack) {
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
      *     reason for the failure.
-     * @param {Array} aFaultStack An optional parameter that will contain an
-     *     Array of Arrays of information derived from the JavaScript stack when
-     *     the fault occurred.
+     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
+     *     additional information about the failure.
      * @returns {TP.BREAK}
      */
 
     if (this.isCompleting() || this.didComplete()) {
         return;
     }
-
-    //  TODO: anException should be drawn from the 3rd parameter
-    //this.raise(anException, TP.ifInvalid(aFaultString, aFaultCode));
 
     this.callNextMethod();
 
