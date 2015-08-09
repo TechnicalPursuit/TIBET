@@ -182,7 +182,7 @@ Cmd.prototype.getScript = function() {
     target = target || '';
 
     if (target.length > 0 && target.indexOf(prefix) !== 0) {
-        target = ' ' + prefix + '\'' + target + '\'';
+        target = prefix + ' \'' + target + '\'';
     } else {
         target = prefix;
     }
@@ -190,20 +190,20 @@ Cmd.prototype.getScript = function() {
     if (CLI.notEmpty(this.options.suite)) {
         target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
     } else if (target === prefix) {
-        target += ' --all';
+        target += ' -all';
     }
 
-    if (CLI.isValid(this.options.selftest)) {
-        target += ' --ignore_only';
+    if (this.options.selftest) {
+        target += ' -ignore_only';
     } else {
         ignore = this.options['ignore-only'];
         if (ignore === true) {
-            target += ' --ignore_only';
+            target += ' -ignore_only';
         }
 
         ignore = this.options['ignore-skip'];
         if (ignore === true) {
-            target += ' --ignore_skip';
+            target += ' -ignore_skip';
         }
     }
 
