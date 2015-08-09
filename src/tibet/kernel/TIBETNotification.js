@@ -4945,6 +4945,11 @@ aSigEntry, checkTarget) {
                 TP.ec(e, TP.join('Problem executing handlers for: ',
                                 TP.str(aSignal))),
                 TP.SIGNAL_LOG) : 0;
+
+        //  If we're throwing handlers, then rethrow the Error object.
+        if (TP.sys.shouldThrowHandlers()) {
+            throw e;
+        }
     } finally {
         //  "pop" the signal stack, throwing away the last signal
         //  and making the current signal the one at the end of the
