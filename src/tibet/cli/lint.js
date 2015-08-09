@@ -362,8 +362,6 @@ Cmd.prototype.executeForEach = function(list) {
         filter = this.options._[1];
     }
 
-console.log('filter: ' + filter);
-
     if (CLI.notEmpty(filter)) {
         if (/^\/.*\/$/.test(filter.trim())) {
             pattern = new RegExp(filter.slice(1, -1));
