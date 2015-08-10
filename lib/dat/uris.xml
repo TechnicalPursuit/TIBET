@@ -140,9 +140,17 @@
   <delegateURI uriStartString="jsonp://ajax.googleapis.com/ajax/services/search/web"
     tibet:contenttype="TP.goog.GoogleSearchData"/>
 
-  <!-- Mapping for CouchDB servers running on the default port of 5984 -->
-  <delegateURI tibet:uriMatchString="http://.*:5984.*\/[^.]*$"
+  <!-- Mapping for CouchDB servers running on the default port of 5984 whose
+       URLs have *no* extension (so they are not attachments in a TIBETan
+       CouchApp) -->
+  <delegateURI tibet:uriMatchString="http://.*:5984.*\/[^\?]*$"
     tibet:contenttype="TP.core.JSONContent"
+    tibet:urihandler="TP.couchdb.CouchDBURLHandler"/>
+
+  <!-- Mapping for CouchDB servers running on the default port of 5984 whose
+       URLs may have an extension (and therefore may be attachments in a TIBETan
+       CouchApp), but never with a URL query-->
+  <delegateURI tibet:uriMatchString="http://.*:5984[^\?]*$"
     tibet:urihandler="TP.couchdb.CouchDBURLHandler"/>
 
   <delegateURI tibet:uriMatchString="http://localhost.*"
