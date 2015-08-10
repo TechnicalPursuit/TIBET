@@ -1370,13 +1370,41 @@ function(aRequest) {
      * @param {TP.sig.Request} aRequest The shell request being processed.
      */
 
-    var obj;
+    var input,
+        obj,
+        result,
+
+        maybeURI;
+
+    if (TP.isEmpty(input = aRequest.stdin())) {
+        return aRequest.fail('No content');
+    }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
         return aRequest.fail('No command instance');
     }
 
-    return obj.getDocument().getType().cmdSetContent(aRequest);
+    //  stdin is always an Array, so we want the first item.
+    result = input.at(0);
+
+    if (TP.isKindOf(result, TP.core.XHTMLDocumentNode)) {
+        maybeURI = result.get('uri');
+    } else {
+        maybeURI = result;
+    }
+
+    //  If we were able to get a URI, then use it in a TP.go2() call to get
+    //  proper push/history state management.
+    if (TP.isURI(maybeURI)) {
+        TP.go2(maybeURI, obj.getNativeWindow());
+
+        //  Return separately for consistency with this API vs. TP.go2() API
+        //  which returns false.
+        return;
+    } else {
+        //  Otherwise, the input wasn't a URI, so forward it on to our document.
+        return obj.getDocument().getType().cmdSetContent(aRequest);
+    }
 });
 
 //  ------------------------------------------------------------------------

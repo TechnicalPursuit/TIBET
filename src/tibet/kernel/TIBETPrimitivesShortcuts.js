@@ -2672,7 +2672,8 @@ function(aURIOrRoute, linkContext) {
     }
 
     if (TP.notValid(context = linkContext)) {
-        context = TP.sys.getUICanvas();
+        //  NB: We go after the native Window here to match this call's API.
+        context = TP.sys.getUICanvas(true);
     }
 
     if (!TP.isWindow(context)) {
