@@ -307,6 +307,8 @@ TP.boot.LOG_ENTRY_LEVEL = 2;
 TP.boot.LOG_ENTRY_PAYLOAD = 3;
 TP.boot.LOG_ENTRY_DELTA = 4;
 
+TP.BOOT_LOG = 'boot';
+
 //  the actual buffer size used. the log.level setting is used as a starting
 //  point but adjusted based on log level to balance speed with user-feedback.
 //  Initialized to null awaiting first computation based on log.buffer_size.

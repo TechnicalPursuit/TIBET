@@ -2199,27 +2199,36 @@ function(argList, aLogLevel) {
      */
 
     var args,
-        last,
+        marker,
         logger,
         level;
 
     args = TP.args(argList);
 
     if (args.length > 1) {
-        last = args.last();
-        if (TP.isString(last)) {
-            if (TP.log.Manager.exists(last)) {
-                logger = TP.log.Manager.getLogger(last);
+        marker = args.first();
+        if (TP.isString(marker)) {
 
+            if (TP.log.Manager.exists(marker)) {
+                logger = TP.log.Manager.getLogger(marker);
+            } else if (TP.log.Manager.exists('APP.' + marker)) {
+                logger = APP.getLogger(marker);
+            } else if (TP.log.Manager.exists('TP.' + marker)) {
+                logger = TP.getLogger(marker);
+            }
+
+            if (TP.isValid(logger)) {
                 //  NOTE we trim off that argument so we don't log it below.
-                args = args.slice(0, -1);
+                args = args.slice(1);
+            } else {
+                logger = APP.getDefaultLogger();
             }
         }
+    } else {
+        logger = APP.getDefaultLogger();
     }
 
-    logger = TP.ifInvalid(logger, TP.getDefaultLogger());
     level = TP.isString(aLogLevel) ? TP.log[aLogLevel] : aLogLevel;
-
     level = TP.ifInvalid(level, TP.log.INFO);
 
     logger.$logArglist(level, args);
