@@ -452,7 +452,9 @@ function(aFilter) {
 
     var filters;
 
-    if (TP.notValid(filters = this.get('filters'))) {
+    //  Make sure to use $get() here to only get our local filters, not any of
+    //  our parent's filters.
+    if (TP.notValid(filters = this.$get('filters'))) {
         filters = TP.ac();
         this.set('filters', filters);
     }
@@ -847,6 +849,50 @@ function(anAppender) {
 
 //  ----------------------------------------------------------------------------
 
+TP.log.Logger.Inst.defineMethod('clearAppenders',
+function() {
+
+    /**
+     * @method clearAppenders
+     * @summary Removes any local appenders from the receiver. If this logger
+     *     inherits parent appenders those are unaffected.
+     * @returns {TP.log.Logger} The receiver.
+     */
+
+    var appenders;
+
+    appenders = this.$get('appenders');
+    if (TP.isValid(appenders)) {
+        appenders.length = 0;
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Logger.Inst.defineMethod('clearFilters',
+function() {
+
+    /**
+     * @method clearFilters
+     * @summary Removes any local filters from the receiver. If this logger
+     *     inherits parent filters those are unaffected.
+     * @returns {TP.log.Logger} The receiver.
+     */
+
+    var filters;
+
+    filters = this.$get('filters');
+    if (TP.isValid(filters)) {
+        filters.length = 0;
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.log.Logger.Inst.defineMethod('getAppenders',
 function() {
 
@@ -897,25 +943,32 @@ function() {
      * @returns {Array<.TP.log.Filter>} The filter list.
      */
 
-    var parent,
-        filters;
+    var filters,
+
+        parent,
+        parentFilters;
+
+    filters = this.$get('filters');
 
     if (!this.inheritsFilters()) {
-        return this.$get('filters');
+        return filters;
     }
 
     if (TP.notValid(parent = this.getParent())) {
         return;
     }
 
-    filters = parent.getFilters();
-    if (TP.notEmpty(this.$get('filters')) && TP.notEmpty(filters)) {
-        filters = this.$get('filters').concat(filters);
-    } else {
-        filters = TP.ifInvalid(this.$get('filters'), filters);
+    parentFilters = parent.getFilters();
+
+    if (TP.isEmpty(parentFilters)) {
+        return filters;
     }
 
-    return filters;
+    if (TP.isEmpty(filters)) {
+        return parentFilters.copy();
+    }
+
+    return parentFilters.concat(filters);
 });
 
 //  ----------------------------------------------------------------------------
