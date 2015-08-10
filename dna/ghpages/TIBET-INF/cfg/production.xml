@@ -4,7 +4,7 @@
     name="{{appname}}" default="base" basedir="~app_cfg">
 
 <config id="base">
-    <script src="~lib_build/tibet_base.min.js" if="boot.phaseone"/>
+    <script src="~app_build/tibet_base.min.js" if="boot.phaseone"/>
     <script src="~app_build/app_base.min.js" if="boot.phasetwo"/>
 </config>
 
