@@ -5866,6 +5866,7 @@ function(aRequest) {
                     //  Force XMLBase and TIBET src attributes.
                     thisref.$setPrimaryResource(resource);
 
+                    //  TODO: THIS IS WRONG...
                     result = TP.process(resource, request);
 
                     if (request.didFail()) {
