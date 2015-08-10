@@ -78,20 +78,6 @@ function() {
         loadRequest.atPut(
             TP.ONLOAD,
             function(evt) {
-                var win,
-                    appElem;
-
-                win = evt.defaultView;
-                if (TP.isValid(win)) {
-                    appElem = TP.nodeGetElementsByTagName(
-                            win.document.documentElement,
-                            TP.tibet.root.computeAppTagTypeName(false)).first();
-                }
-
-                if (TP.isElement(appElem)) {
-                    TP.wrap(appElem).compile();
-                }
-
                 //  Once the home page loads we need to signal the UI is
                 //  "ready" so the remaining startup logic can proceed.
                 TP.signal('TP.sys', 'AppWillStart');
@@ -115,6 +101,7 @@ function() {
     }
 
     /*
+     * TODO: BILL
     this.getNativeDocument().defaultView.onresize =
         function() {
             this.setView(this.get('viewRect'));
