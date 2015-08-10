@@ -12,6 +12,24 @@
  */
 
 //  ========================================================================
+//  TP Primitives
+//  ========================================================================
+
+
+TP.sys.defineMethod('hasSherpa', function() {
+
+    /**
+     * @method hasSherpa
+     * @summary Returns true if the current codebase has sherpa.enabled set to
+     *     true and has loaded the Sherpa core type.
+     * @return {Boolean} True if the Sherpa truly is configured and available.
+     */
+
+    return TP.sys.cfg('sherpa.enabled') === true &&
+        TP.isType(TP.sys.getTypeByName('TP.core.Sherpa'));
+});
+
+//  ========================================================================
 //  TP.core.CustomTag
 //  ========================================================================
 
@@ -453,7 +471,7 @@ function(wantsSherpa) {
     //  If the system is configured to run the sherpa, then push its tag into
     //  the list for consideration.
     sherpaOk = TP.ifInvalid(wantsSherpa, true);
-    if (TP.sys.cfg('sherpa.enabled') === true && sherpaOk) {
+    if (TP.sys.hasSherpa() && sherpaOk) {
         opts.unshift('tibet:sherpa');
     }
 
@@ -499,8 +517,7 @@ function(aRequest) {
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then exit here - the Sherpa does some special things to
     //  the 'tibet:root' tag.
-    if (TP.sys.cfg('sherpa.enabled') === true &&
-        TP.isType(TP.sys.getTypeByName('TP.core.Sherpa'))) {
+    if (TP.sys.hasSherpa()) {
         return;
     }
 
@@ -560,8 +577,7 @@ function(aRequest) {
 
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then turn the receiver into a 'tibet:sherpa' tag.
-    if (TP.sys.cfg('sherpa.enabled') === true &&
-        TP.isType(TP.sys.getTypeByName('TP.core.Sherpa'))) {
+    if (TP.sys.hasSherpa()) {
 
         //  Make sure that we have an element to work from.
         if (!TP.isElement(elem = aRequest.at('node'))) {

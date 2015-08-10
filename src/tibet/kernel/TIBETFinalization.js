@@ -395,7 +395,6 @@ function() {
         rootName,
         rootWindow,
 
-        sherpaEnabled,
         hasBootToggle,
 
         request,
@@ -489,10 +488,9 @@ function() {
     //  configured 'boot toggle' key, then set up an observation that will cause
     //  that key to toggle between the boot log and the application's user
     //  interface.
-    sherpaEnabled = TP.sys.cfg('sherpa.enabled') === true;
     hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_key'));
 
-    if (!inPhantom && !sherpaEnabled && hasBootToggle) {
+    if (!inPhantom && !TP.sys.hasSherpa() && hasBootToggle) {
 
         //  No hook file in the boot screen so we initialize manually.
         bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
