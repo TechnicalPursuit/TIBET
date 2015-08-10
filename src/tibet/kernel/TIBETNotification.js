@@ -24,8 +24,7 @@ quickly, see the workflow module for more information.
 
 /* JSHint checking */
 
-/* global $handled:true,
-          $signal_stack:true,
+/* global $signal_stack:true,
           EventSource:false
 */
 
@@ -2390,6 +2389,12 @@ function(anError, aMessage) {
 });
 
 //  ------------------------------------------------------------------------
+//  Type Local Attributes
+//  ------------------------------------------------------------------------
+
+TP.sig.Exception.defineAttribute('$handled', false);
+
+//  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
@@ -2910,7 +2915,7 @@ function(aFlag) {
 
     //  set global handled flag so other external processing can see that
     //  we've been properly managed. the result for an
-    $handled = true;
+    this.getType().set('handled', true);
 
     return this.callNextMethod();
 });
@@ -7428,15 +7433,15 @@ function(anOrigin, anException, aPayload) {
     //  signal is going to be processed. The TP.EXCEPTION_FIRING policy
     //  performs a list-oriented process which stops when the signal is
     //  "handled" at a particular exception.
-    $handled = false;
+    TP.sig.Exception.set('handled', false);
     TP.signal(orig, exceptions, aPayload, TP.EXCEPTION_FIRING);
 
     //  if the type's handled flag is still false then we throw a real error
-    if (TP.sys.shouldThrowExceptions() && !$handled) {
+    if (TP.sys.shouldThrowExceptions() && !TP.sig.Exception.get('handled')) {
         //  one issue is that we want assertion throwing managed by its own
         //  flag so we do a secondary check here
         if (aSignal.getSignalName() !== 'AssertionFailed') {
-            $handled = true;
+            TP.sig.Exception.set('handled', true);
             str = aSignal.asString();
             if (TP.isValid(aPayload)) {
                 str += ' - ' + TP.str(aPayload);
