@@ -553,7 +553,6 @@ TP.sys.defineGlobal('$signal', null);           //  current Signal instance
 TP.sys.defineGlobal('$signal_stack', null);     //  stack of signal instances
 
 //  process support variables
-TP.sys.defineGlobal('$handled', true);         //  was last exception handled?
 TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is
                                                //  success in some form)
 
