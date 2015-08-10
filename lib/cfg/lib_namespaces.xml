@@ -156,7 +156,6 @@
     <script src="xctrls/xctrls_Element.js"/>
     <script src="xctrls/xctrls_FramedElement.js"/>
     <script src="xctrls/xctrls_MultiItemElement.js"/>
-    <script src="xctrls/xctrls_D3Element.js"/>
 
     <script src="xctrls/xctrls_label/xctrls_label.js"/>
 
