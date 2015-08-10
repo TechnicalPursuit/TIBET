@@ -9,7 +9,7 @@ var gulp = require('gulp');
 
 // Canonical default task.
 gulp.task('default', function() {
-  console.log('TIBET gulp fallback active.');
+    console.log('TIBET gulp fallback active.');
 });
 
 // 'tibet gulp' runs this :)
