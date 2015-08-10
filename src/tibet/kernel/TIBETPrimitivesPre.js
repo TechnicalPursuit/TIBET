@@ -5983,12 +5983,22 @@ function(varargs) {
      * @returns {String} A new instance.
      */
 
-    var newStr;
+    var arr,
+        str;
 
-    newStr = TP.ac(arguments);
+    switch (arguments.length) {
+        case 0:
+            return '';
+        case 1:
+            str = '' + varargs;
+            break;
+        default:
+            arr = TP.ac(arguments);
+            str = arr.join(' ');
+            break;
+    }
 
-    //  This should cause 'toString' to be called on each item in the Array.
-    return newStr.join('');
+    return TP.msg.at(str) || str;
 });
 
 //  ------------------------------------------------------------------------

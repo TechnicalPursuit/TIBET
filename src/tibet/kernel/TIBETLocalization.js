@@ -820,14 +820,17 @@ function(aString, sourceLocale, forceRefresh) {
     lang = this.getISOKey();
 
     if (!source || !lang || source === lang) {
-        return str;
+        //  Always allow for simple TP.msg.FOO keys even in same language.
+        return TP.msg.at(str) || str;
     }
 
     //  get the string representation of our translation map
     map = this.$getStringXMLString(forceRefresh);
     if (TP.notValid(map)) {
         //  apparently we don't have a string bundle to work with
-        return str;
+
+        //  simpler case (non-tmx) is TP.msg lookups.
+        return TP.msg.at(str) || str;
     }
 
     //  regex tests are fastest to see if we need to look deeper. if the
@@ -835,7 +838,8 @@ function(aString, sourceLocale, forceRefresh) {
     key = str;
     try {
         if (TP.notTrue(TP.rc(key).test(map))) {
-            return str;
+            //  Always allow for simple TP.msg.FOO keys even in same language.
+            return TP.msg.at(str) || str;
         }
     } catch (e) {
         //  typical case here is something the regex parser thinks isn't
@@ -871,10 +875,10 @@ function(aString, sourceLocale, forceRefresh) {
             seg = TP.nodeEvaluateXPath(xml, xp, TP.FIRST_NODE, false);
 
             if (TP.notValid(seg)) {
-                return str;
+                return TP.msg.at(str) || str;
             }
         } else {
-            return str;
+            return TP.msg.at(str) || str;
         }
     }
 
@@ -906,7 +910,7 @@ function(aString, sourceLocale, forceRefresh) {
         return str;
     }
 
-    return str;
+    return TP.msg.at(str) || str;
 });
 
 //  ------------------------------------------------------------------------

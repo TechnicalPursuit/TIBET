@@ -1729,6 +1729,28 @@ TP.RETURN_NEW = function(key, orig, knew) { return knew; };
 TP.RETURN_TOSTRING = function() { return this.toString(); };
 
 //  ------------------------------------------------------------------------
+//  STRING LOCALIZATION / MAPPING
+//  ------------------------------------------------------------------------
+
+TP.defineNamespace('TP.msg');
+
+TP.msg.$lookups = Object.create(null);
+
+if (Object.defineProperty) {
+    Object.defineProperty(TP.msg, 'at', {
+        value: function(aKey) {return this.$lookups[aKey]; },
+        enumerable: true
+    });
+    Object.defineProperty(TP.msg, 'atPut', {
+        value: function(aKey, aValue) {this.$lookups[aKey] = aValue; },
+        enumerable: true
+    });
+} else {
+    TP.msg.at = function(aKey) {return this.$lookups[aKey]; };
+    TP.msg.atPut = function(aKey, aValue) {this.$lookups[aKey] = aValue; };
+}
+
+//  ------------------------------------------------------------------------
 //  SORT FUNCTIONS
 //  ------------------------------------------------------------------------
 
