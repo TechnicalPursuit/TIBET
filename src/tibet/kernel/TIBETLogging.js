@@ -801,13 +801,18 @@ function(aName) {
      * @returns {TP.log.Logger} The new logger instance.
      */
 
+    var level;
+
     this.callNextMethod();
 
     //  We have some special setup for the root logger to ensure it acts as a
     //  proper backstop for level and parent searching.
     if (this.$get('name') === TP.log.Manager.ROOT_LOGGER_NAME) {
 
-        this.set('level', TP.log.Level.getLevel('info'));
+        level = TP.sys.cfg('log.level') || TP.sys.cfg('boot.level') || 'info';
+        level = level.toLowerCase();
+
+        this.set('level', TP.log.Level.getLevel(level));
 
         //  The root doesn't inherit anything.
         this.set('additiveAppenders', false);
