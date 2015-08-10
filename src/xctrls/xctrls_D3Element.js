@@ -19,7 +19,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.UIElementNode.defineSubtype('D3Element');
+TP.xctrls.Element.defineSubtype('D3Element');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
