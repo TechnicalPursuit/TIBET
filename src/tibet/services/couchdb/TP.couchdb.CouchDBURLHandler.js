@@ -81,6 +81,8 @@ function(aURI) {
 
     var pathParts,
 
+        changesFeedLoc,
+
         watcherLoc,
         watcherURI;
 
@@ -97,12 +99,21 @@ function(aURI) {
         //  Otherwise, we are observing database-level changes, so we set up a
         //  watcher on that database's '_changes' feed.
 
+        //  If we're observing changes on a design document, then we want the
+        //  changes feed to include docs
+        if (pathParts.at(1) === '_design') {
+            changesFeedLoc = '_changes?feed=eventsource&include_docs=true';
+        } else {
+            //  Otherwise, we don't want docs
+            changesFeedLoc = '_changes?feed=eventsource';
+        }
+
         //  Join together the URI's root, the first path part (which, for
         //  CouchDB) is the database name, and the standard 'changes feed'
         //  portion.
         watcherLoc = TP.ac(aURI.getRoot(),
                             pathParts.first(),
-                            '_changes?feed=eventsource').join('/');
+                            changesFeedLoc).join('/');
     }
 
     if (!TP.isURI(watcherLoc)) {
@@ -133,6 +144,13 @@ function(aSignal) {
     var payload,
         data,
 
+        doc,
+        attachments,
+        rawRev,
+        rev,
+
+        entry,
+
         signalSourceURL,
 
         path,
@@ -160,38 +178,69 @@ function(aSignal) {
         return;
     }
 
-    //  For CouchDB, we observe at a database-level, so we want the database
-    //  URL.
-    signalSourceURL = TP.uc(payload.at('sourceURL'));
-    if (!TP.isURI(signalSourceURL)) {
-        return;
-    }
+    //  If there was a property named 'doc' in the data and it has a property
+    //  named '_attachments', then we're observing a design document.
+    if (TP.isValid(doc = data.at('doc')) &&
+        TP.isValid(attachments = doc.at('_attachments'))) {
 
-    path = signalSourceURL.getPath();
+        //  Grab the '_rev' number
+        rawRev = data.at('doc').at('_rev')
+        rev = rawRev.slice(0, rawRev.indexOf('-')).asNumber();
 
-    //  Slice off the portion of the path from the first slash to where the
-    //  '/_changes' portion starts. This will give us our database name - the
-    //  database that changed. If there is no '/_changes' portion, then this
-    //  must be an observation on the '_db_updates' feed, so we just set the
-    //  path to the empty String.
-    changesPathIndex = path.indexOf('/_changes');
-    if (changesPathIndex !== TP.NOT_FOUND) {
+        //  Iterate over all of the attachments and grab the one whose 'revpos'
+        //  matches the rev number that changed.
+        entry = attachments.detect(
+                    function(kvPair) {
+                        if (kvPair.last().at('revpos') === rev) {
+                            return true;
+                        }
+                        return false
+                    });
 
-        path = path.slice(1, changesPathIndex);
-
-        //  Strip any enclosing quotes from the path.
-        path = path.asString().stripEnclosingQuotes();
+        //  If we successfully found one, then the first item in it's key/value
+        //  pair was the URL that changed.
+        if (TP.isValid(entry)) {
+            urlLoc = TP.uriJoinPaths(TP.uc('~app').getLocation(),
+                                        entry.first());
+        }
 
     } else {
-        path = '';
+        //  Otherwise, these changes came from a changes feed monitoring pure
+        //  data, not the URLs making up a CouchApp.
+
+        //  For CouchDB, we observe at a database-level, so we want the database
+        //  URL.
+        signalSourceURL = TP.uc(payload.at('sourceURL'));
+        if (!TP.isURI(signalSourceURL)) {
+            return;
+        }
+
+        path = signalSourceURL.getPath();
+
+        //  Slice off the portion of the path from the first slash to where the
+        //  '/_changes' portion starts. This will give us our database name -
+        //  the database that changed. If there is no '/_changes' portion, then
+        //  this must be an observation on the '_db_updates' feed, so we just
+        //  set the path to the empty String.
+        changesPathIndex = path.indexOf('/_changes');
+        if (changesPathIndex !== TP.NOT_FOUND) {
+
+            path = path.slice(1, changesPathIndex);
+
+            //  Strip any enclosing quotes from the path.
+            path = path.asString().stripEnclosingQuotes();
+
+        } else {
+            path = '';
+        }
+
+        //  The origin comes from the SSE data and will be server URL, minus the
+        //  actual file path.
+        origin = payload.at('origin').asString();
+
+        //  Join the two together to form the full URL path
+        urlLoc = TP.uriJoinPaths(origin, path);
     }
-
-    //  The origin comes from the SSE data and will be server URL, minus the
-    //  actual file path.
-    origin = payload.at('origin').asString();
-
-    //  Join the two together to form the full URL path
-    urlLoc = TP.uriJoinPaths(origin, path);
 
     //  If we can successfully create a URL from the data, then process the
     //  change.
