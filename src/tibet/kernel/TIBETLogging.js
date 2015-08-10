@@ -2866,7 +2866,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.CSS_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.CSS_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -2900,7 +2900,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.INFERENCE_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.INFERENCE_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -2966,7 +2966,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.IO_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.IO_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -3001,7 +3001,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.JOB_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.JOB_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -3034,7 +3034,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.KEY_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.KEY_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -3069,7 +3069,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.LINK_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.LINK_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -3102,7 +3102,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.MOUSE_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.MOUSE_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -3135,7 +3135,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.SECURITY_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.SECURITY_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -3170,7 +3170,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject.get('message'), TP.SIGNAL_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.SIGNAL_LOG, anObject.get('message')), aLogLevel);
 
     return true;
 });
@@ -3203,7 +3203,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.TRANSFORM_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.TRANSFORM_LOG, anObject), aLogLevel);
 
     return true;
 });
@@ -3366,8 +3366,8 @@ function(anEntry) {
 
     /**
      * @method layout
-     * @summary Formats an entry. The default output format for top.console is:
-     *     {ms} - {level} {logger} - {string}
+     * @summary Formats an entry using only the argument list, no timestamp,
+     *     level, or other information.
      * @param {TP.log.Entry} anEntry The entry to format.
      * @returns {TP.core.Hash} A hash of output containing at least one key,
      *     'content'.
@@ -3414,7 +3414,7 @@ function(anObject, aLogLevel) {
         return false;
     }
 
-    TP.sys.$$log(TP.ac(anObject, TP.CHANGE_LOG), TP.SYSTEM);
+    TP.sys.$$log(TP.ac(TP.CHANGE_LOG, anObject), TP.SYSTEM);
 
     return true;
 });
@@ -3519,7 +3519,7 @@ function(anObject, aLogLevel) {
      * @returns {Boolean} True if the logging operation succeeded.
      */
 
-    TP.sys.$$log(TP.ac(anObject, TP.TEST_LOG), aLogLevel);
+    TP.sys.$$log(TP.ac(TP.TEST_LOG, anObject), aLogLevel);
 
     return true;
 });
