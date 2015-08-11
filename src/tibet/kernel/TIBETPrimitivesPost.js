@@ -2369,6 +2369,10 @@ function(anObject, assignIfAbsent) {
         }
 
         localID = obj.name;
+        if (localID && !localID.isJSIdentifier()) {
+            localID = '';
+            assign = true;
+        }
 
         //  no name and assign was true? generate the next available one and
         //  use it
