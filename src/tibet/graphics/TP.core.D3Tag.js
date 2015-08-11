@@ -24,7 +24,12 @@ TP.core.D3Tag.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 /**
- * @type {String} The CSS-compatible selector for this element.
+ * @type {d3.selection} The data-bound selection set from D3.
+ */
+TP.core.D3Tag.defineAttribute('boundSelection');
+
+/**
+ * @type {d3.selection} The root selection for the element from D3.
  */
 TP.core.D3Tag.defineAttribute('selection');
 
@@ -63,7 +68,7 @@ function(aValue) {
     /**
      */
 
-    this.set('data', aValue.get('data'));
+    this.set('data', this.d3GetValue(aValue));
 
     this.render();
 });
@@ -118,6 +123,7 @@ function() {
 
     boundSelection = this.get('boundSelection');
 
+    //  TODO: use 'child tag name' here?
     boundSelection.enter().append('xhtml:div').text(function(d) {
         return d;
     });
@@ -133,6 +139,7 @@ function() {
      * @summary
      */
 
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -162,7 +169,18 @@ function() {
      * @summary
      */
 
+    return;
+});
 
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('d3GetValue',
+function(aValue) {
+
+    /**
+     */
+
+    return aValue.get('data') || aValue;
 });
 
 //  ------------------------------------------------------------------------
@@ -179,6 +197,7 @@ function(root) {
 
     node = this.getNativeNode();
 
+    //  TODO: use 'selector' here?
     this.set('selection', TP.extern.d3.select(node).selectAll('div'));
 });
 
