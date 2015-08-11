@@ -8,7 +8,7 @@
     "path": {
         "app_npm": "~/node_modules",
         "app_root": "~/attachments",
-        "lib_root": "~/TIBET-INF/tibet"
+        "lib_root": "~app/TIBET-INF/tibet"
     },
     "escodegen": {
         "format": {
