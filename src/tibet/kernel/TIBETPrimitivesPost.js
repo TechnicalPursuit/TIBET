@@ -2574,8 +2574,7 @@ function(anObject) {
     } catch (e) {
         TP.ifError() ?
             TP.error(
-                TP.ec(e, 'Error retrieving object name.'),
-                TP.LOG) : 0;
+                TP.ec(e, 'Error retrieving object name.')) : 0;
     }
 
     return;

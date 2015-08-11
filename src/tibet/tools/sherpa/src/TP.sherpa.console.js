@@ -1399,8 +1399,7 @@ function(uniqueID, dataRecord) {
         if (!TP.isElement(cellGroupElem = doc.getElementById(uniqueID))) {
             TP.ifError() ?
                     TP.error(
-                        'Couldn\'t find out cell for: ' + uniqueID,
-                                TP.LOG) : 0;
+                        'Couldn\'t find out cell for: ' + uniqueID) : 0;
 
             return this;
         }

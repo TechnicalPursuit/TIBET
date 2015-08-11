@@ -767,8 +767,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                             TP.error(
                                 TP.ec(
                                     e, 'TP.sig.DOMContentLoaded handler' +
-                                        ' generated error.'),
-                                TP.LOG) : 0;
+                                        ' generated error.')) : 0;
                     }
                 }
             }
@@ -825,8 +824,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                 TP.ifWarn() ?
                     TP.warn(
                         'Couldn\'t find existing script element with URL: ' +
-                                                                    scriptURL,
-                        TP.LOG) : 0;
+                        scriptURL) : 0;
             }
 
             //  Make sure to increment the count for the next pass!
@@ -2220,8 +2218,7 @@ function(aString, defaultNS, shouldReport) {
 
     if (TP.isFragment(node)) {
         TP.ifWarn() ?
-            TP.warn('Multiple nodes created. Creating first element.',
-                        TP.LOG) : 0;
+            TP.warn('Multiple nodes created. Creating first element.') : 0;
 
         //  The fragment may have a text node as its first child - we want
         //  the first one that's an Element.
@@ -4624,8 +4621,8 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     } catch (e) {
         TP.ifError() ?
             TP.error(
-                TP.ec(e, 'TP.sig.DOMContentLoaded handler generated error.'),
-                TP.LOG) : 0;
+                TP.ec(e, 'TP.sig.DOMContentLoaded handler generated error.')) :
+                0;
     }
 
     //  Return the new element.
@@ -4733,8 +4730,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         TP.ifError() ?
             TP.error(
                 TP.ec(
-                    e, 'TP.sig.DOMContentLoaded handler generated error.'),
-                TP.LOG) : 0;
+                    e, 'TP.sig.DOMContentLoaded handler generated error.')) : 0;
     }
 
     //  Return the new element.
@@ -4835,8 +4831,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         TP.ifError() ?
             TP.error(
                 TP.ec(e,
-                        'TP.sig.DOMContentLoaded handler generated error.'),
-                TP.LOG) : 0;
+                    'TP.sig.DOMContentLoaded handler generated error.')) : 0;
     }
 
     //  Return the new element.
@@ -5251,8 +5246,7 @@ function(aNode, newNode, shouldAwake) {
             } else if (childContent.childNodes.length > 1) {
                 TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
-                                TP.str(childContent),
-                            TP.LOG) : 0;
+                                TP.str(childContent)) : 0;
             }
 
             childContent = firstElement;
@@ -5288,8 +5282,7 @@ function(aNode, newNode, shouldAwake) {
         targetNode.appendChild(importedContent);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'appendChild generated error.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'appendChild generated error.')) : 0;
 
         return;
     }
@@ -5851,8 +5844,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
             } else if (childContent.childNodes.length > 1) {
                 TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
-                                TP.str(childContent),
-                            TP.LOG) : 0;
+                                TP.str(childContent)) : 0;
             }
 
             return TP.nodeAppendChild(aNode, firstElement, shouldAwake);
@@ -5895,8 +5887,7 @@ function(aNode, newNode, insertionPointNode, shouldAwake) {
         //  of children.
         targetNode.insertBefore(importedContent, insertionPointNode);
     } catch (e) {
-        TP.ifError() ? TP.error(TP.ec(e, 'insertBefore generated error.'),
-                        TP.LOG) : 0;
+        TP.ifError() ? TP.error(TP.ec(e, 'insertBefore generated error.')) : 0;
 
         return;
     }
@@ -6365,8 +6356,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
             } else if (childContent.childNodes.length > 1) {
                 TP.ifWarn() && TP.sys.cfg('log.node_discarded') ?
                     TP.warn('Discarding nodes from fragment: ' +
-                                TP.str(childContent),
-                            TP.LOG) : 0;
+                                TP.str(childContent)) : 0;
             }
 
             childContent = firstElement;
@@ -6404,8 +6394,7 @@ function(aNode, newNode, oldNode, shouldAwake) {
         //  number of children.
         targetNode.replaceChild(importedContent, oldNode);
     } catch (e) {
-        TP.ifError() ? TP.error(TP.ec(e, 'replaceChild generated error.'),
-                        TP.LOG) : 0;
+        TP.ifError() ? TP.error(TP.ec(e, 'replaceChild generated error.')) : 0;
         return;
     }
 
@@ -7626,8 +7615,7 @@ function(aNode, anIndex) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(
-                    TP.ec(e, 'Error retrieving child element at: ' + ind),
-                    TP.LOG) : 0;
+                    TP.ec(e, 'Error retrieving child element at: ' + ind)) : 0;
         }
     }
 
@@ -7702,8 +7690,7 @@ function(aNode) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(
-                    TP.ec(e, 'Error retrieving child elements'),
-                    TP.LOG) : 0;
+                    TP.ec(e, 'Error retrieving child elements')) : 0;
         }
     }
 
@@ -8031,8 +8018,7 @@ function(aNode, attrName, attrValue, breadthFirst) {
                 TP.ifError() ?
                     TP.error(
                         TP.ec(e, 'Error getting descendant elements' +
-                                    ' by attribute: ' + attrName),
-                        TP.LOG) : 0;
+                                    ' by attribute: ' + attrName)) : 0;
             }
 
             return false;
@@ -8139,8 +8125,7 @@ function(aNode, attrPrefix, attrValue, breadthFirst) {
                 TP.ifError() ?
                     TP.error(
                         TP.ec(e, 'Error getting descendant elements' +
-                                    ' by attribute prefix: ' + attrPrefix),
-                        TP.LOG) : 0;
+                                    ' by attribute prefix: ' + attrPrefix)) : 0;
             }
 
             return false;
@@ -8955,8 +8940,7 @@ function(aNode, attrName, attrValue) {
                     TP.ifError() ?
                         TP.error(
                             TP.ec(e, 'Error getting first element child' +
-                                        ' by attribute: ' + attrName),
-                            TP.LOG) : 0;
+                                        ' by attribute: ' + attrName)) : 0;
                 }
 
                 return false;
@@ -9393,8 +9377,7 @@ function(aNode, attrName, attrValue) {
                     TP.ifError() ?
                         TP.error(
                             TP.ec(e, 'Error getting first element' +
-                                        ' by attribute: ' + attrName),
-                            TP.LOG) : 0;
+                                        ' by attribute: ' + attrName)) : 0;
                 }
 
                 return false;
@@ -10040,8 +10023,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                 if (count > max) {
                     TP.ifWarn() ?
                         TP.warn('Traversal terminated at' +
-                                    ' content.max_traversal elements.',
-                                TP.LOG) : 0;
+                                    ' content.max_traversal elements.') : 0;
 
                     break;
                 }
@@ -10090,8 +10072,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                         TP.nodeIsDetached(currentNode, rootNode)) {
                         TP.ifWarn() && TP.sys.cfg('log.node_detachment') ?
                             TP.warn('Traversal node detached: ' +
-                                        TP.str(currentNode, false),
-                                    TP.LOG) : 0;
+                                        TP.str(currentNode, false)) : 0;
 
                         return;
                     }
@@ -10247,8 +10228,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
             if (count > max) {
                 TP.ifWarn() ?
                     TP.warn('Traversal terminated at' +
-                                ' content.max_traversal elements.',
-                            TP.LOG) : 0;
+                                ' content.max_traversal elements.') : 0;
 
                 break;
             }
@@ -10297,8 +10277,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                     TP.nodeIsDetached(currentNode, rootNode)) {
                     TP.ifWarn() && TP.sys.cfg('log.node_detachment') ?
                         TP.warn('Traversal node detached: ' +
-                                    TP.str(currentNode, false),
-                                TP.LOG) : 0;
+                                    TP.str(currentNode, false)) : 0;
 
                     return;
                 }
@@ -10361,8 +10340,7 @@ function(aNode, enterFunc, exitFunc, contentFunc, includeRoot) {
                 } else if (TP.isValid(ret)) {
                     TP.ifWarn() ?
                         TP.warn('Unrecognized traversal return value: ' +
-                                    ret,
-                                TP.LOG) : 0;
+                            ret) : 0;
                 }
             }
 

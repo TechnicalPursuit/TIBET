@@ -41,7 +41,7 @@
  *     'jsonp://ajax.googleapis.com/ajax/services/search/web', 'uriparams',
  *     TP.hc('q', 'football', 'v', '1.0'), 'callbackFunc', function(result) {
  *
- *     TP.info('Result: ' + TP.json(result), TP.LOG); } );
+ *     TP.info('Result: ' + TP.json(result)); } );
  *
  *     // JSON data retrieved via the JSONP transport mechanism - with //
  *     different callback parameter name than 'callback' (some // services don't
@@ -64,18 +64,18 @@
  *     'uriparams', TP.hc('q', 'devo', 'rpp', '15'), 'callbackFunc',
  *     function(result) {
  *
- *     TP.info('Result: ' + TP.json(result), TP.LOG); } );
+ *     TP.info('Result: ' + TP.json(result)); } );
  *
  *     Package and fire the request:
  *
  *     jsonReq = TP.sig.JSONRequest.construct(requestParams);
  *     jsonReq.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
- *     TP.info('Success! Result: ' + TP.json(aResponse.getResult()), TP.LOG
+ *     TP.info('Success! Result: ' + TP.json(aResponse.getResult())
  *     ); }); jsonReq.defineMethod('handleRequestFailed',
  *     function(aResponse) {
  *
- *     TP.info('Failure... Result: ' + aResponse.getFaultText(), TP.LOG
+ *     TP.info('Failure... Result: ' + aResponse.getFaultText()
  *     ); }); jsonReq.fire();
  */
 

@@ -74,7 +74,7 @@ function(anElement, aName, aURI) {
 
             TP.ifWarn() ?
                 TP.warn('Template not found in CDATA block for: ' +
-                        this.asString(), TP.LOG) : 0;
+                        this.asString()) : 0;
         }
     }
 

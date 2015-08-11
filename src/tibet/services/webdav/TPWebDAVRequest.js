@@ -161,7 +161,7 @@
  *     davReq = TP.sig.WebDAVRequest.construct(requestParams);
  *     davReq.defineMethod('handleRequestSucceeded',
  *              function(aResponse) {
- *                  TP.info(aResponse.getResult(), TP.LOG);
+ *                  TP.info(aResponse.getResult());
  *              });
  *     davReq.fire();
  */

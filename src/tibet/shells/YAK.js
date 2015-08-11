@@ -1668,16 +1668,14 @@ function(aSignal) {
 
     if (TP.notValid(aSignal) || TP.notValid(args = aSignal.getPayload())) {
         TP.ifWarn() ?
-            TP.warn('Invalid signal data for TP.sig.XMPPInput event.',
-                    TP.LOG) : 0;
+            TP.warn('Invalid signal data for TP.sig.XMPPInput event.') : 0;
 
         return;
     }
 
     if (TP.notValid(node = args.at('node'))) {
         TP.ifWarn() ?
-            TP.warn('Missing stanza data for TP.sig.XMPPInput event.',
-                    TP.LOG) : 0;
+            TP.warn('Missing stanza data for TP.sig.XMPPInput event.') : 0;
 
         return;
     }

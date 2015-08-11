@@ -174,8 +174,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
                 arr.at(i)(this, aFaultString, aFaultCode, aFaultInfo);
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error running failure hook.'),
-                                TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Error running failure hook.')) : 0;
             }
         }
     }
@@ -364,8 +363,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
                 arr.at(i)(this, aFaultString, aFaultCode, aFaultInfo);
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error running cancellation hook.'),
-                                TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Error running cancellation hook.')) : 0;
             }
         }
     }
@@ -415,8 +413,7 @@ function(aResult) {
                 arr.at(i)(this);
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error running success hook.'),
-                                TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Error running success hook.')) : 0;
             }
         }
     }
@@ -463,8 +460,7 @@ function(anOrigin, aPayload, aPolicy) {
     arr = this.get('queries').at(0);
     if (TP.notValid(arr)) {
         TP.ifWarn() ?
-            TP.warn('No queries for TP.sig.UserInputSeries.',
-                    TP.LOG) : 0;
+            TP.warn('No queries for TP.sig.UserInputSeries.') : 0;
 
         return;
     }
@@ -486,8 +482,7 @@ function(anOrigin, aPayload, aPolicy) {
                     qry(this.getLastReply(), this).asString() : qry);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error executing query generator.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error executing query generator.')) : 0;
 
         this.atPut('query', qry);
     }
@@ -498,8 +493,7 @@ function(anOrigin, aPayload, aPolicy) {
                     def(this.getLastReply(), this).asString() : def);
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error executing default generator.'),
-                            TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error executing default generator.')) : 0;
 
             this.atPut('default', def);
         }
@@ -622,8 +616,7 @@ function(aSignal) {
             valid = func(res, this);
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error executing validator.'),
-                            TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error executing validator.')) : 0;
 
             valid = false;
         }
@@ -703,8 +696,7 @@ function(aSignal) {
                     qry(this.getLastReply(), this).asString() : qry);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error executing query generator.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error executing query generator.')) : 0;
 
         this.atPut('query', qry);
     }
@@ -715,8 +707,7 @@ function(aSignal) {
                     def(this.getLastReply(), this).asString() : def);
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error executing default generator.'),
-                            TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error executing default generator.')) : 0;
 
             this.atPut('default', def);
         }

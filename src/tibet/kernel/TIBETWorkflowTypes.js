@@ -622,8 +622,7 @@ function(aSignal) {
             return handler.apply(this, arguments);
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error in handler: ' + TP.str(handler)),
-                            TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error in handler: ' + TP.str(handler))) : 0;
 
             return;
         }
@@ -1684,8 +1683,7 @@ function() {
     if (TP.notValid(type)) {
         TP.ifWarn() ?
             TP.warn('Unable to locate response type: ' + typename +
-                    '. Defaulting to TP.sig.Response.',
-                    TP.LOG) : 0;
+                    '. Defaulting to TP.sig.Response.') : 0;
 
         return TP.sig.Response;
     }
@@ -1818,8 +1816,7 @@ function(aSignal) {
             return handler.apply(this, arguments);
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error in handler: ' + TP.str(handler)),
-                            TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error in handler: ' + TP.str(handler))) : 0;
 
             return;
         }
@@ -4455,8 +4452,7 @@ function(resourceID, aSignal) {
             inst = this.construct(id, aSignal);
         } catch (e) {
             TP.ifWarn() ?
-                TP.warn(TP.ec(e, 'Couldn\'t construct default instance: '),
-                        TP.LOG) : 0;
+                TP.warn(TP.ec(e, 'Couldn\'t construct default instance: ')) : 0;
 
             if (TP.isValid(aSignal)) {
                 //  can't construct an instance...have to let some other
@@ -7093,9 +7089,10 @@ function(anEvent) {
             this.set('direction', 'back');
         }
 
+        this.set('index', index + offset);
+
         //  Clear the offset so we don't reuse it by accident.
         this.set('offset', null);
-        this.set('index', index + offset);
 
         return this.get('index');
     }
@@ -7642,8 +7639,7 @@ function(srcText, options) {
                     if (TP.notEmpty(error)) {
                         TP.ifError() ?
                             TP.error('Error processing LESSCSS: ' +
-                                                            TP.str(error),
-                                        TP.LOG) : 0;
+                                TP.str(error)) : 0;
                         return;
                     }
 

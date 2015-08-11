@@ -1645,8 +1645,7 @@ TP.PHash = function() {
                                 ' (', TP.tname(this), ')',
                             TP.tname(this) === 'Window' ?
                                 TP.sc(' -- Possible unbound function') :
-                                ''),
-                        TP.LOG) : 0;
+                                '')) : 0;
         }
 
         try {
@@ -2142,8 +2141,7 @@ function(target, name, value, track, desc, display, owner) {
         } else {
             TP.ifError() ?
                 TP.error('Invalid method body for ' +
-                            'TP.defineMethodSlot: ' + name,
-                            TP.LOG) : 0;
+                            'TP.defineMethodSlot: ' + name) : 0;
         }
 
         return;
@@ -2349,8 +2347,7 @@ function(name, bodyOrConditionals, desc, display, owner) {
     if (!bodyOrConditionals) {
         TP.ifError() ?
             TP.error('Invalid method body or conditionals for ' +
-                        'TP.definePrimitive: ' + name,
-                        TP.LOG) : 0;
+                        'TP.definePrimitive: ' + name) : 0;
         return;
     }
 
@@ -4301,8 +4298,7 @@ function(target, name, value, track, owner) {
             //  empty
         } else {
             TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
-                TP.warn('Ignoring duplicate attribute definition: ' + name,
-                        TP.LOG) : 0;
+                TP.warn('Ignoring duplicate attribute definition: ' + name) : 0;
             return target[name];
         }
     }
@@ -4363,8 +4359,7 @@ function(target, name, value, track, owner) {
     // warning during source operations during development.
     if (target && TP.owns(target, name)) {
         TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
-            TP.warn('Ignoring duplicate constant definition: ' + name,
-                    TP.LOG) : 0;
+            TP.warn('Ignoring duplicate constant definition: ' + name) : 0;
 
         return target[name];
     }
@@ -4427,8 +4422,7 @@ function(functionBodyOrTests) {
     if (TP.$$DEBUG && !functionBodyOrTests) {
         TP.ifError() ?
             TP.error('Invalid function body or object for ' +
-                        'TP.runConditionalFunction: ' + functionBodyOrTests,
-                        TP.LOG) : 0;
+                'TP.runConditionalFunction: ' + functionBodyOrTests) : 0;
 
         return;
     }
@@ -4478,8 +4472,7 @@ function(functionBodyOrTests) {
     if (!TP.isCallable(theFunc)) {
         TP.ifError() ?
             TP.error('Invalid function body or object for ' +
-                        'TP.runConditionalFunction: ' + functionBodyOrTests,
-                        TP.LOG) : 0;
+                'TP.runConditionalFunction: ' + functionBodyOrTests) : 0;
 
         return;
     }
@@ -4787,8 +4780,7 @@ function(aPrefix) {
         try {
             this.$$oid = TP.sys.constructOID(prefix);
         } catch (e) {
-            TP.ifError() ? TP.error(TP.ec(e, 'Could not obtain OID'),
-                                    TP.LOG) : 0;
+            TP.ifError() ? TP.error(TP.ec(e, 'Could not obtain OID')) : 0;
         }
     } else if (this.$$oid === this.getPrototype().$$oid && !TP.isNode(this)) {
         //  watch out for TP.FunctionProto :). Endless recursion is possible if
@@ -7341,8 +7333,7 @@ function(anObject, aKey, aDefault) {
         return val;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Could not default invalid key: ' + aKey),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Could not default invalid key: ' + aKey)) : 0;
     }
 
     return TP.isCallable(aDefault) ? aDefault(aKey) : aDefault;
@@ -7397,8 +7388,7 @@ function(anObject, aKey, aDefault) {
         return val;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Could not default null key: ' + aKey),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Could not default null key: ' + aKey)) : 0;
     }
 
     return TP.isCallable(aDefault) ? aDefault(aKey) : aDefault;
@@ -7453,8 +7443,7 @@ function(anObject, aKey, aDefault) {
         return val;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Could not default undefined key: ' + aKey),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Could not default undefined key: ' + aKey)) : 0;
     }
 
     return TP.isCallable(aDefault) ? aDefault(aKey) : aDefault;
@@ -9159,8 +9148,7 @@ function(anObj) {
         try {
             return anObj.getSize() === 0;
         } catch (e) {
-            TP.ifError() ? TP.error(TP.ec(e, 'Could not obtain size'),
-                                    TP.LOG) : 0;
+            TP.ifError() ? TP.error(TP.ec(e, 'Could not obtain size')) : 0;
         }
     }
 

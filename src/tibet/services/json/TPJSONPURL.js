@@ -30,7 +30,7 @@
  *     jsonRequest.defineMethod('handleRequestSucceeded', function(aRequest) {
  *
  *     TP.ifInfo() ? TP.info('The results are: ' +
- *     TP.str(aRequest.getResult()), TP.LOG): 0; });
+ *     TP.str(aRequest.getResult())): 0; });
  *
  *     // OR Fetch the content and ignore the URL cache, going to the // data
  *     source each time. myJSONPURL.getResourceText(jsonRequest);

@@ -111,7 +111,7 @@
  *     simpleDBReq.defineMethod(
  *              'handleRequestSucceeded',
  *              function(aResponse) {
- *                  TP.info(aResponse.getResult(), TP.LOG);
+ *                  TP.info(aResponse.getResult());
  *              });
  *     simpleDBReq.fire();
  */

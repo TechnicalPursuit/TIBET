@@ -1078,8 +1078,7 @@ function(newMethodText) {
 
     if (TP.notValid(TP.extern.JsDiff)) {
         TP.ifWarn() ?
-            TP.warn('Unable to generate method patch. JsDiff not loaded.',
-                    TP.LOG) : 0;
+            TP.warn('Unable to generate method patch. JsDiff not loaded.') : 0;
         return;
     }
 
@@ -1087,8 +1086,8 @@ function(newMethodText) {
     path = TP.objectGetSourcePath(this);
     if (TP.isEmpty(path)) {
         TP.ifWarn() ?
-            TP.warn('Unable to generate method patch. Source path not found.',
-                    TP.LOG) : 0;
+            TP.warn('Unable to generate method patch. Source path not found.') :
+            0;
         return;
     }
 
@@ -1101,8 +1100,8 @@ function(newMethodText) {
 
     if (TP.isEmpty(content)) {
         TP.ifWarn() ?
-            TP.warn('Unable to generate method patch. Source text not found.',
-                    TP.LOG) : 0;
+            TP.warn('Unable to generate method patch. Source text not found.') :
+            0;
         return;
     }
 
@@ -1118,8 +1117,8 @@ function(newMethodText) {
     match = content.match(matcher);
     if (TP.notValid(match)) {
         TP.ifWarn() ?
-            TP.warn('Unable to generate method patch. Method index not found.',
-                    TP.LOG) : 0;
+            TP.warn('Unable to generate method patch. Method index not found.'):
+            0;
         return null;
     }
 
@@ -2196,7 +2195,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
             TP.fatal(str);
         } else {
             //  Uncaught errors are severe relative to those we raise/catch.
-            TP.ifSevere() ? TP.severe(str, TP.LOG) : 0;
+            TP.ifSevere() ? TP.severe(str) : 0;
         }
     } catch (e) {
         //  don't let log errors trigger recursion, but don't bury them either.
@@ -3069,8 +3068,7 @@ function(aFilter) {
 
         if (TP.notValid(params = TP.SLOT_FILTERS[filter])) {
             TP.ifWarn() ?
-                TP.warn('Invalid reflection filter: ' + filter,
-                        TP.LOG) : 0;
+                TP.warn('Invalid reflection filter: ' + filter) : 0;
 
             return TP.ac();
         }
@@ -3091,8 +3089,7 @@ function(aFilter) {
     //  if the filter is bogus we can just bail out
     if (!attrs && !methods) {
         TP.ifWarn() ?
-            TP.warn('Invalid reflection filter: ' + filter,
-                    TP.LOG) : 0;
+            TP.warn('Invalid reflection filter: ' + filter) : 0;
 
         return TP.ac();
     }
@@ -3106,8 +3103,7 @@ function(aFilter) {
         //  leverage hasOwnProperty to avoid too much overhead, otherwise we
         //  consider this a performance warning issue.
         TP.ifWarn() && TP.sys.cfg('log.scans') ?
-            TP.warn('Scanning ' + filter + ' on ' + this,
-                    TP.LOG) : 0;
+            TP.warn('Scanning ' + filter + ' on ' + this) : 0;
     }
 
     /* jshint forin:true */

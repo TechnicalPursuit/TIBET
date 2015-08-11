@@ -375,14 +375,18 @@ function(aURI) {
      */
 
     var url,
+        urlParams,
         home,
-        homeParts;
+        homeParts,
+        params;
 
     //  For our expansion testing and history tracking we want a fully-expanded
     //  and normalized version of the URL here.
     url = TP.str(aURI);
     url = TP.uriExpandPath(url);
     url = decodeURIComponent(url);
+
+    urlParams = TP.uriFragmentParameters(url, true);
 
     //  The pushState handlers in TIBET don't push homepage URLs directly, they
     //  always short to '/' or the launch URL. We need to actually setLocation
@@ -408,9 +412,11 @@ function(aURI) {
         //  Have to add any launch parameters here as well or the rewrite will
         //  cause our reboot trigger on boot parameters to fire.
         if (TP.isEmpty(homeParts.at('fragmentParams'))) {
-            homeParts.atPut('fragmentParams',
-                            TP.uriFragmentParameters(
-                                TP.sys.getLaunchURL(), true));
+
+            params = TP.ifEmpty(urlParams,
+                TP.uriFragmentParameters(TP.sys.getLaunchURL(), true));
+
+            homeParts.atPut('fragmentParams', params);
         }
 
         url = TP.uriCompose(homeParts);

@@ -208,8 +208,7 @@ function(aRequest) {
         } catch (e) {
             //  First we log an error.
             TP.ifError() ?
-                TP.error(TP.ec(e, 'TP.ev.script creation error.'),
-                    TP.LOG) : 0;
+                TP.error(TP.ec(e, 'TP.ev.script creation error.')) : 0;
 
             return aRequest.fail(
                 TP.join('Error creating TP.ev.script function: ',

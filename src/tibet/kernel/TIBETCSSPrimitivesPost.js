@@ -2218,8 +2218,7 @@ function(selectorStr) {
 
                         TP.ifWarn() ?
                             TP.warn('\'\\\' encountered - ' +
-                                        'unknown resolution',
-                                    TP.LOG) : 0;
+                                        'unknown resolution') : 0;
                     }
 
                     break;
@@ -2241,8 +2240,7 @@ function(selectorStr) {
                     tokenRetVal = TP.SELECTOR_UNKNOWN;
 
                     TP.ifWarn() ?
-                        TP.warn('\'<\' encountered - unknown resolution',
-                                TP.LOG) : 0;
+                        TP.warn('\'<\' encountered - unknown resolution') : 0;
 
                     break;
 
@@ -2283,8 +2281,7 @@ function(selectorStr) {
                     tokenRetVal = TP.SELECTOR_UNKNOWN;
 
                     TP.ifWarn() ?
-                        TP.warn('\'-\' encountered - unknown resolution',
-                                TP.LOG) : 0;
+                        TP.warn('\'-\' encountered - unknown resolution') : 0;
                     break;
 
                 case EXCLAMATION_CHR:
@@ -2333,8 +2330,7 @@ function(selectorStr) {
 
                         TP.ifWarn() ?
                             TP.warn('Standalone \'|\' encountered -' +
-                                        ' unknown resolution',
-                                    TP.LOG) : 0;
+                                        ' unknown resolution') : 0;
                     }
 
                     break;
@@ -2358,8 +2354,7 @@ function(selectorStr) {
 
                         TP.ifWarn() ?
                             TP.warn('Standalone \'^\' encountered' +
-                                    ' - unknown resolution',
-                                    TP.LOG) : 0;
+                                    ' - unknown resolution') : 0;
                     }
 
                     break;
@@ -2377,8 +2372,7 @@ function(selectorStr) {
 
                         TP.ifWarn() ?
                             TP.warn('Standalone \'$\' encountered' +
-                                    ' - unknown resolution',
-                                    TP.LOG) : 0;
+                                    ' - unknown resolution') : 0;
                     }
 
                     break;
@@ -2386,8 +2380,7 @@ function(selectorStr) {
                 default:
 
                     TP.ifWarn() ?
-                        TP.warn('Unknown token encountered: ' + nextChar,
-                                    TP.LOG) : 0;
+                        TP.warn('Unknown token encountered: ' + nextChar) : 0;
 
                     break;
             }
@@ -2673,8 +2666,7 @@ function(strSelectorText, strictPseudos) {
                             TP.ifWarn() ?
                                 TP.warn('Unrecognized attribute' +
                                                 ' operator: ' +
-                                                currentToken,
-                                            TP.LOG) : 0;
+                                                currentToken) : 0;
 
                             break;
                     }
@@ -2874,8 +2866,7 @@ function(strSelectorText, strictPseudos) {
 
             default:
                 TP.ifWarn() ?
-                    TP.warn('Unknown token encountered: ' + currentToken,
-                                TP.LOG) : 0;
+                    TP.warn('Unknown token encountered: ' + currentToken) : 0;
 
                 break;
         }

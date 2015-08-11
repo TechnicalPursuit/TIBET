@@ -4348,7 +4348,7 @@ function(content) {
      */
 
     //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('alert: ' + content, TP.LOG) : 0;
+    TP.ifInfo() ? TP.info('alert: ' + content) : 0;
 
     return this;
 });
@@ -4383,7 +4383,7 @@ function(content) {
      */
 
     //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('help: ' + content, TP.LOG) : 0;
+    TP.ifInfo() ? TP.info('help: ' + content) : 0;
 
     return this;
 });
@@ -4401,7 +4401,7 @@ function(content) {
      */
 
     //  At this level, we just log out the content.
-    TP.ifInfo() ? TP.info('hint: ' + content, TP.LOG) : 0;
+    TP.ifInfo() ? TP.info('hint: ' + content) : 0;
 
     return this;
 });
@@ -4939,8 +4939,7 @@ function(aSignal) {
         TP.ifInfo() ?
             TP.info('Popped the focus stack. Stack now has:\n' +
                  $focus_stack.collect(
-                     function (item) {return item.asString()}).join('\n'),
-                TP.LOG) : 0;
+                     function (item) {return item.asString()}).join('\n')) : 0;
         */
     }
 
@@ -4965,8 +4964,7 @@ function(aSignal) {
         TP.ifInfo() ?
             TP.info('Pushed the focus stack. Stack now has:\n' +
                  $focus_stack.collect(
-                     function (item) {return item.asString()}).join('\n'),
-                TP.LOG) : 0;
+                     function (item) {return item.asString()}).join('\n')) : 0;
         */
     }
 

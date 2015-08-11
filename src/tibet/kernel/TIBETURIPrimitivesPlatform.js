@@ -784,8 +784,7 @@ TP.hc(
             //  file system access in Mozilla requires UniversalXPConnect
             try {
                 TP.ifInfo() && TP.sys.cfg('log.privilege_requests') ?
-                    TP.info('Privilege request at TP.$fileLoad',
-                        TP.LOG) : 0;
+                    TP.info('Privilege request at TP.$fileLoad') : 0;
 
                 netscape.security.PrivilegeManager.enablePrivilege(
                                                     'UniversalXPConnect');
@@ -862,7 +861,7 @@ TP.hc(
                 text = httpObj.responseText;
             } catch (e) {
                 msg = TP.sc('Unable to locate: ', path);
-                TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+                TP.ifInfo() ? TP.info(msg) : 0;
 
                 request.fail(msg);
 
@@ -962,7 +961,7 @@ TP.hc(
             //  directory and we should exit here.
             if (/cannot locate/.test(TP.str(e))) {
                 msg = TP.sc('Unable to locate: ', path);
-                TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+                TP.ifInfo() ? TP.info(msg) : 0;
 
                 request.fail(msg);
 
@@ -977,7 +976,7 @@ TP.hc(
             if (/System error: -2146697211/.test(TP.str(e)) &&
                     (httpObj.status === 2 || httpObj.status === 3)) {
                 msg = TP.sc('Unable to locate: ', path);
-                TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+                TP.ifInfo() ? TP.info(msg) : 0;
 
                 request.fail(msg);
 
@@ -1010,7 +1009,7 @@ TP.hc(
                         if (!fso.FileExists(fname)) {
                             msg = TP.sc('Unable to locate: ', fname);
                             TP.ifInfo() ?
-                                TP.info(msg, TP.LOG) : 0;
+                                TP.info(msg) : 0;
 
                             request.fail(msg);
 
@@ -1107,7 +1106,7 @@ TP.hc(
             //  It threw an exception, which means that it definitely didn't
             //  find it so we always return null if we get here.
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+            TP.ifInfo() ? TP.info(msg) : 0;
 
             request.fail(msg);
 
@@ -1121,7 +1120,7 @@ TP.hc(
         //  Safari 4.X - all platforms
         if (httpObj.status === 404) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+            TP.ifInfo() ? TP.info(msg) : 0;
 
             request.fail(msg);
 
@@ -1131,7 +1130,7 @@ TP.hc(
         //  Safari 4.X - Windows
         if (TP.sys.isWin() && httpObj.status === -1100) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+            TP.ifInfo() ? TP.info(msg) : 0;
 
             request.fail(msg);
 
@@ -1142,7 +1141,7 @@ TP.hc(
         if (TP.sys.isMac() &&
             (httpObj.status === -1100 || httpObj.status === 400)) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+            TP.ifInfo() ? TP.info(msg) : 0;
 
             request.fail(msg);
 
@@ -1152,7 +1151,7 @@ TP.hc(
         //  Safari 3.1 - Windows
         if (TP.sys.isWin() && httpObj.status === 1789378560) {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+            TP.ifInfo() ? TP.info(msg) : 0;
 
             request.fail(msg);
 
@@ -1226,7 +1225,7 @@ TP.hc(
             //  It threw an exception, which means that it definitely didn't
             //  find it so we always return null if we get here.
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+            TP.ifInfo() ? TP.info(msg) : 0;
 
             request.fail(msg);
 
@@ -1240,7 +1239,7 @@ TP.hc(
         //  Chrome workaround -- sigh.
         if (httpObj.status === 0 && httpObj.responseText === '') {
             msg = TP.sc('Unable to locate: ', path);
-            TP.ifInfo() ? TP.info(msg, TP.LOG) : 0;
+            TP.ifInfo() ? TP.info(msg) : 0;
 
             request.fail(msg);
 
@@ -2058,7 +2057,7 @@ TP.hc(
                     } catch (e) {
                         TP.ifError() ?
                             TP.error(
-                                TP.ec(e, 'Error deleting file'), TP.LOG) :
+                                TP.ec(e, 'Error deleting file')) :
                             0;
                     }
                 };
@@ -2192,15 +2191,13 @@ TP.hc(
                         loadFile = TP.uriInWebFormat(outFile);
 
                         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                            TP.trace('outFile: ' + loadFile,
-                                        TP.LOG) : 0;
+                            TP.trace('outFile: ' + loadFile) : 0;
 
                         output = TP.$fileLoad(loadFile);
 
                         loadFile = TP.uriInWebFormat(errFile);
                         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                            TP.trace('errFile: ' + loadFile,
-                                        TP.LOG) : 0;
+                            TP.trace('errFile: ' + loadFile) : 0;
 
                         errors = TP.$fileLoad(loadFile);
                     }
@@ -2539,14 +2536,14 @@ TP.hc(
                 } catch (e) {
                     TP.ifError() ?
                         TP.error(
-                            TP.ec(e, 'Error deleting file'), TP.LOG) :
+                            TP.ec(e, 'Error deleting file')) :
                         0;
                 }
             };
 
             try {
                 TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                    TP.trace(cmdline, TP.LOG) : 0;
+                    TP.trace(cmdline) : 0;
 
                 //  sync or not we'll be invoking TP.sig.IOCompleted when
                 //  done
@@ -2605,16 +2602,14 @@ TP.hc(
                     loadFile = TP.uriInWebFormat(outFile);
 
                     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                        TP.trace('outFile: ' + loadFile,
-                                    TP.LOG) : 0;
+                        TP.trace('outFile: ' + loadFile) : 0;
 
                     output = TP.$fileLoad(loadFile);
 
                     loadFile = TP.uriInWebFormat(errFile);
 
                     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                        TP.trace('errFile: ' + loadFile,
-                                    TP.LOG) : 0;
+                        TP.trace('errFile: ' + loadFile) : 0;
 
                     errors = TP.$fileLoad(loadFile);
                 }

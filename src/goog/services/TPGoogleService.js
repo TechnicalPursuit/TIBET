@@ -190,8 +190,7 @@ function(aSignal) {
                 if (responseText.indexOf('Email:') > 0 ||
                     TP.notEmpty(error)) {
                     TP.ifError() ?
-                        TP.error('Google login error: ' + responseText,
-                                    TP.LOG) : 0;
+                        TP.error('Google login error: ' + responseText) : 0;
                 } else {
                     if (TP.notEmpty(auth)) {
                         authToken = auth.at(1);

@@ -157,8 +157,7 @@ function(forceRefresh) {
             }
         } catch (e) {
             TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading vCards.'),
-                            TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
         }
 
         try {
@@ -177,8 +176,7 @@ function(forceRefresh) {
             }
         } catch (e) {
             TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading vCards.'),
-                            TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
         }
 
         if (TP.notValid(node)) {
@@ -189,8 +187,7 @@ function(forceRefresh) {
         TP.sys.$vcardXML = node;
     } catch (e) {
         TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading vCards.'),
-                        TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
     } finally {
         TP.sys.shouldLogRaise(flag);
     }
@@ -587,8 +584,7 @@ function(forceRefresh) {
             }
         } catch (e) {
             TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading keyrings.'),
-                            TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error loading keyrings.')) : 0;
         }
 
         try {
@@ -605,8 +601,7 @@ function(forceRefresh) {
             }
         } catch (e) {
             TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading keyrings.'),
-                            TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error loading keyrings.')) : 0;
         }
 
         if (TP.notValid(node)) {
@@ -1164,8 +1159,7 @@ function(aNode, aProcessor, aRequest) {
                 TP.error(TP.ec(e,
                         'Error in ' +
                         this.getTypeName().split('.').last() +
-                        ' for: ' + TP.str(node)),
-                    TP.LOG) : 0;
+                        ' for: ' + TP.str(node))) : 0;
         }
 
         //  The node that we got handed back was either identical to the node we

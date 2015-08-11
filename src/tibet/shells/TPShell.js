@@ -3183,8 +3183,7 @@ function(aRequest) {
         //  positional parameters collected, so it works like "auto-quoting"
         if (TP.notDefined(TP.sys.get('configuration').at(name))) {
             TP.ifWarn() ?
-                TP.warn('Unknown flag: ' + name,
-                        TP.LOG) : 0;
+                TP.warn('Unknown flag: ' + name) : 0;
         }
 
         TP.sys.setcfg(name, value);

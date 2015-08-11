@@ -155,7 +155,7 @@ function() {
             //  Force initialization of the root canvas id before any changes
             //  are made to the canvas setting by other operations.
             try {
-                TP.ifTrace() ? TP.trace(msg, TP.LOG) : 0;
+                TP.ifTrace() ? TP.trace(msg) : 0;
                 TP.boot.$displayStatus(msg);
                 name = TP.sys.getUIRootName();
                 if (TP.notValid(name)) {
@@ -163,7 +163,7 @@ function() {
                 }
             } catch (e) {
                 msg = 'Canvas Initialization Error';
-                TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
@@ -176,13 +176,13 @@ function() {
             //  Initialize type proxies for types we didn't load as a result
             //  of the boot manifest or through type initialization.
             try {
-                TP.ifTrace() ? TP.trace(msg, TP.LOG) : 0;
+                TP.ifTrace() ? TP.trace(msg) : 0;
                 TP.boot.$displayStatus(msg);
 
                 TP.sys.initializeTypeProxies();
             } catch (e) {
                 msg = 'Proxy Initialization Error';
-                TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
@@ -195,7 +195,7 @@ function() {
             //  Install native/non-native namespace support. this may also
             //  involve loading types
             try {
-                TP.ifTrace() ? TP.trace(msg, TP.LOG) : 0;
+                TP.ifTrace() ? TP.trace(msg) : 0;
                 TP.boot.$displayStatus(msg);
 
                 //  Two classes of namespace, internally supported and those
@@ -204,7 +204,7 @@ function() {
                 TP.core.Browser.installNonNativeNamespaces();
             } catch (e) {
                 msg = 'Namespace Initialization Error';
-                TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
@@ -216,7 +216,7 @@ function() {
 
             //  Bring in any locale that might be specified
             try {
-                TP.ifTrace() ? TP.trace(msg, TP.LOG) : 0;
+                TP.ifTrace() ? TP.trace(msg) : 0;
                 TP.boot.$displayStatus(msg);
 
                 if (TP.notEmpty(locale = TP.sys.cfg('tibet.locale'))) {
@@ -226,7 +226,7 @@ function() {
                         msg = 'Locale Initialization Error: ' +
                             locale + ' not found.';
                         TP.boot.$stderr(msg);
-                        TP.ifError() ? TP.error(msg, TP.LOG) : 0;
+                        TP.ifError() ? TP.error(msg) : 0;
 
                         //  set the default based on the current language
                         TP.sys.setLocale();
@@ -239,7 +239,7 @@ function() {
                 }
             } catch (e) {
                 msg = 'Locale Initialization Error';
-                TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
@@ -261,7 +261,7 @@ function() {
 
         msg = 'TIBET Initialization complete.';
 
-        TP.ifTrace() ? TP.trace(msg, TP.LOG) : 0;
+        TP.ifTrace() ? TP.trace(msg) : 0;
         TP.boot.$displayStatus(msg);
 
         // Ensure dependent code knows we're now fully initialized.
@@ -278,7 +278,7 @@ function() {
             TP.computeCommonSizes();
         } catch (e) {
             msg = 'UI metrics/size computations failed.';
-            TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
             TP.boot.$stderr(msg, e);
             // Fall through and take our chances the UI will display properly.
         }
@@ -324,7 +324,7 @@ function() {
     try {
         msg = 'Initializing TIBET types...';
 
-        TP.ifTrace() ? TP.trace(msg, TP.LOG) : 0;
+        TP.ifTrace() ? TP.trace(msg) : 0;
         TP.boot.$displayStatus(msg);
 
         // Trigger the first async sequence. The handlers take it from there.
@@ -332,7 +332,7 @@ function() {
 
     } catch (e) {
         msg = 'TIBET Type Initialization Error';
-        TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+        TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
         TP.boot.$stderr(msg, e, TP.FATAL);
     }
 
@@ -367,8 +367,7 @@ function() {
         TP.ifWarn() ?
             TP.warn('Unable to locate application controller type: ' +
                     typeName + '. ' +
-                    'Defaulting to TP.core.Application.',
-                    TP.LOG) : 0;
+                    'Defaulting to TP.core.Application.') : 0;
         appType = TP.sys.require('TP.core.Application');
     }
 
@@ -578,8 +577,7 @@ function(aURI) {
     str = url.getLocation();
     if (str.match(/tibet:/)) {
         TP.ifWarn() ?
-            TP.warn('Invalid termination URI provided: ' + aURI,
-                    TP.LOG) : 0;
+            TP.warn('Invalid termination URI provided: ' + aURI) : 0;
 
         //  didn't resolve properly, not a valid resource URI
         url = TP.uc(TP.sys.cfg('path.blank_page'));

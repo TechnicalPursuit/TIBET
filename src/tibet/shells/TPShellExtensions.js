@@ -306,8 +306,7 @@ function(aRequest) {
                 aRequest.stdout(result);
             } else {
                 TP.ifWarn() ?
-                    TP.warn('Splatting with non-collection content.',
-                            TP.LOG) : 0;
+                    TP.warn('Splatting with non-collection content.') : 0;
 
                 if (re.test(TP.str(content))) {
                     aRequest.stdout(TP.ac(content));
@@ -403,8 +402,7 @@ function(aRequest) {
                 aRequest.stdout(result);
             } else {
                 TP.ifWarn() ?
-                    TP.warn('Splatting with non-collection content.',
-                            TP.LOG) : 0;
+                    TP.warn('Splatting with non-collection content.') : 0;
 
                 aRequest.stdout(re.exec(TP.str(content)));
             }
@@ -498,8 +496,7 @@ function(aRequest) {
                 aRequest.stdout(result);
             } else {
                 TP.ifWarn() ?
-                    TP.warn('Splatting with non-collection content.',
-                            TP.LOG) : 0;
+                    TP.warn('Splatting with non-collection content.') : 0;
 
                 if (testfunc(content)) {
                     aRequest.stdout(content);
@@ -604,8 +601,7 @@ function(aRequest) {
                     break;
                 } else {
                     TP.ifWarn() ?
-                        TP.warn('Splatting with non-collection content.',
-                                TP.LOG) : 0;
+                        TP.warn('Splatting with non-collection content.') : 0;
 
                     aRequest.stdout(TP.ac(str.transform(content, params)));
                 }
@@ -637,8 +633,7 @@ function(aRequest) {
                     break;
                 } else {
                     TP.ifWarn() ?
-                        TP.warn('Splatting with non-collection content.',
-                                TP.LOG) : 0;
+                        TP.warn('Splatting with non-collection content.') : 0;
 
                     aRequest.stdout(TP.ac(func(content, str)));
                 }
@@ -830,8 +825,7 @@ function(aRequest) {
                 break;
             } else {
                 TP.ifWarn() ?
-                    TP.warn('Splatting with non-collection content.',
-                            TP.LOG) : 0;
+                    TP.warn('Splatting with non-collection content.') : 0;
 
                 aRequest.stdout(
                             TP.ac(obj.transform(content, aRequest)));

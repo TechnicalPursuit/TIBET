@@ -310,8 +310,7 @@ function() {
             } catch (e) {
                 TP.ifError() ?
                     TP.error('Couldn\'t process step function signal: ' +
-                                    signal.getSignalName(),
-                                TP.LOG) : 0;
+                                    signal.getSignalName()) : 0;
             }
         }
 

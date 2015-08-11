@@ -347,15 +347,14 @@ function(publishName) {
     msgReq.defineMethod(
         'handleRequestSucceeded',
         function(aResponse) {
-            TP.info(aResponse.getResponseText(), TP.LOG);
+            TP.info(aResponse.getResponseText());
         });
 
     msgReq.defineMethod(
         'handleRequestFailed',
         function(aResponse) {
             TP.ifError() ?
-                TP.error(aResponse.getResponseText(),
-                            TP.LOG) : 0;
+                TP.error(aResponse.getResponseText()) : 0;
         });
 
     msgReq.fire();
@@ -404,15 +403,14 @@ function(shareFlag, shareName) {
     msgReq.defineMethod(
         'handleRequestSucceeded',
         function(aResponse) {
-            TP.info(aResponse.getResponseText(), TP.LOG);
+            TP.info(aResponse.getResponseText());
         });
 
     msgReq.defineMethod(
         'handleRequestFailed',
         function(aResponse) {
             TP.ifError() ?
-                TP.error(aResponse.getResponseText(),
-                            TP.LOG) : 0;
+                TP.error(aResponse.getResponseText()) : 0;
         });
 
     msgReq.fire();

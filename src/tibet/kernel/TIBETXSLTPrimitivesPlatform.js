@@ -1026,8 +1026,7 @@ TP.hc(
                 } catch (e) {
                     TP.ifError() ?
                         TP.error(
-                            TP.ec(e, 'Error creating style document'), TP.LOG) :
-                        0;
+                            TP.ec(e, 'Error creating style document')) : 0;
                 }
             }
 
@@ -1088,8 +1087,7 @@ TP.hc(
                 } catch (e) {
                     TP.ifError() ?
                         TP.error(
-                            TP.ec(e, 'Error creating XSLT document'), TP.LOG) :
-                        0;
+                            TP.ec(e, 'Error creating XSLT document')) : 0;
                 }
             }
 

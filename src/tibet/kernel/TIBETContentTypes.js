@@ -6338,8 +6338,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         TP.ifWarn() ?
             TP.warn(TP.annotate(
                         this,
-                        'Unable to set value for path: ' + path),
-                    TP.LOG) : 0;
+                        'Unable to set value for path: ' + path)) : 0;
 
         return this;
     }
@@ -6626,8 +6625,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         TP.warn(TP.annotate(
                                     this,
                                     'Path probably points to scalar value.' +
-                                    ' Unable to set value.'),
-                                TP.LOG) : 0;
+                                    ' Unable to set value.')) : 0;
 
                     //  Make sure to put the 'shouldSignalDOMLoaded' flag back
                     //  to it's prior setting before exiting.
@@ -6645,8 +6643,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             TP.warn(TP.annotate(
                         this,
                         'Path probably points to scalar value.' +
-                        ' Unable to set value.'),
-                    TP.LOG) : 0;
+                        ' Unable to set value.')) : 0;
 
         //  Make sure to put the 'shouldSignalDOMLoaded' flag back to it's prior
         //  setting before exiting.
@@ -6890,8 +6887,7 @@ function(aNode, flagChanges) {
             TP.warn(TP.annotate(
                         this,
                         'Unable to obtain content to set for path: ' +
-                        path),
-                    TP.LOG) : 0;
+                        path)) : 0;
     } else {
         //  To be API compliant, we wrap the single Element in an Array
         content = TP.ac(content);
@@ -6937,8 +6933,7 @@ function(aNode, flagChanges) {
             TP.warn(TP.annotate(
                         this,
                         'Unable to obtain content to set for path: ' +
-                        path),
-                    TP.LOG) : 0;
+                        path)) : 0;
     }
 
     return content;
@@ -7034,8 +7029,7 @@ function(aNode, flagChanges) {
             TP.warn(TP.annotate(
                         this,
                         'Unable to obtain content to set for path: ' +
-                        path),
-                    TP.LOG) : 0;
+                        path)) : 0;
     }
 
     return content;
@@ -7873,8 +7867,7 @@ function(aTPNode, shouldSignal) {
                 TP.elementFlagChange(node, TP.SELF, TP.DELETE);
 
                 TP.ifTrace() && TP.$DEBUG ?
-                    TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                                TP.LOG) : 0;
+                    TP.trace('Node flagged: ' + TP.nodeAsString(node)) : 0;
             } else {
                 //  if we're not flagging then just rip it out of the DOM
                 TP.nodeRemoveChild(elem, node);
@@ -7952,8 +7945,7 @@ function(aNode, flagChanges) {
                 TP.warn(TP.annotate(
                             this,
                             'Unable to obtain content to set for path: ' +
-                            path),
-                        TP.LOG) : 0;
+                            path)) : 0;
 
             return TP.ac();
         }
@@ -8005,8 +7997,7 @@ function(aNode, flagChanges) {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(
                             this,
-                            'Unable to build content for path: ' + path),
-                        TP.LOG) : 0;
+                            'Unable to build content for path: ' + path)) : 0;
 
             return TP.ac();
         }
@@ -8191,8 +8182,7 @@ function(aFlag) {
                 TP.ifWarn() ?
                     TP.warn('Found non-native XPath constructs in XPath: ' +
                             path +
-                            '. Forcing XPath to use non native parser.',
-                            TP.LOG) : 0;
+                            '. Forcing XPath to use non native parser.') : 0;
 
                 this.set('isNative', false);
 
@@ -8273,8 +8263,7 @@ function(aPath, forceNative) {
                 TP.ifWarn() ?
                     TP.warn('Found non-native XPath constructs in XPath: ' +
                             aPath +
-                            '. Forcing XPath to use non native parser.',
-                            TP.LOG) : 0;
+                            '. Forcing XPath to use non native parser.') : 0;
             }
 
             pathType = false;

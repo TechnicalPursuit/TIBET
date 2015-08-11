@@ -22,7 +22,7 @@
  *     TP.hc('api_key', '67769adc70ee70b5f666167c9d3b11db', 'test','echo' ));
  *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
- *     TP.info(aResponse.getResult(), TP.LOG); });
+ *     TP.info(aResponse.getResult()); });
  *
  *     // activate the request:
  *

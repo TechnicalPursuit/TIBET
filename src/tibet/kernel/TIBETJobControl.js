@@ -445,8 +445,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         this.cancelJob(text, code, info);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Job completion error.'),
-                TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Job completion error.')) : 0;
     } finally {
         this.set('statusCode', TP.CANCELLED);
     }
@@ -515,8 +514,7 @@ function(aResult) {
         this.set('result', e);
 
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Job completion error.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Job completion error.')) : 0;
     } finally {
         //  have to check to see if we already have an failed or cancelled
         //  status since that means we can't set to a success status
@@ -592,8 +590,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         this.errorJob(text, code, info);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Job completion error.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Job completion error.')) : 0;
     } finally {
         this.set('statusCode', TP.ERRORED);
     }
@@ -685,8 +682,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         this.failJob(text, code, info);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Job completion error.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Job completion error.')) : 0;
     } finally {
         this.set('statusCode', TP.FAILED);
     }
@@ -1403,14 +1399,13 @@ function(anObjectArray, aMethodArray, aParamArray) {
                 result = target[invokerFunc.methodArray.at(idx)].apply(
                             target, invokerFunc.paramArray);
 
-                TP.ifInfo() ? TP.info(result, TP.LOG) : 0;
+                TP.ifInfo() ? TP.info(result) : 0;
 
                 //  Increment the method index to go on to the next method.
                 invokerFunc.methodIndex++;
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error in invocation.'),
-                                TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Error in invocation.')) : 0;
 
                 invokerFunc.stopTest = true;
             }
@@ -1723,8 +1718,7 @@ function() {
             }
         } catch (e1) {
             TP.ifError() ?
-                TP.error(TP.ec(e1, 'Error clearing scheduler.'),
-                    TP.LOG) : 0;
+                TP.error(TP.ec(e1, 'Error clearing scheduler.')) : 0;
         }
 
         if (TP.isValid(this.$timer)) {

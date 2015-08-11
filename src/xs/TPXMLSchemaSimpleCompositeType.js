@@ -149,10 +149,8 @@ function(aValue, listElem) {
         if (TP.notValid(anonSchemaElem = TP.nodeGetElementsByTagName(
                                         listElem, 'simpleType').first())) {
             TP.ifWarn() ?
-                TP.warn(TP.annotate(
-                            listElem,
-                            'Unable to locate base specification'),
-                        TP.LOG) : 0;
+                TP.warn(TP.annotate(listElem,
+                    'Unable to locate base specification')) : 0;
 
             return true;
         }
@@ -177,10 +175,8 @@ function(aValue, listElem) {
         type = TP.sys.require(typeName);
         if (TP.notValid(type)) {
             TP.ifWarn() ?
-                TP.warn(TP.annotate(
-                            listElem,
-                            'Unable to require() base type: ' + typeName),
-                        TP.LOG) : 0;
+                TP.warn(TP.annotate(listElem,
+                    'Unable to require() base type: ' + typeName)) : 0;
 
             return true;
         }
@@ -241,10 +237,8 @@ function(aValue, restrictionElem) {
     typeName = TP.elementGetAttribute(restrictionElem, 'base');
     if (TP.isEmpty(typeName)) {
         TP.ifWarn() ?
-            TP.warn(TP.annotate(
-                        restrictionElem,
-                        'Unable to locate base specification'),
-                    TP.LOG) : 0;
+            TP.warn(TP.annotate(restrictionElem,
+                'Unable to locate base specification')) : 0;
 
         return true;
     }
@@ -255,10 +249,8 @@ function(aValue, restrictionElem) {
     type = TP.sys.require(typeName);
     if (TP.notValid(type)) {
         TP.ifWarn() ?
-            TP.warn(TP.annotate(
-                        restrictionElem,
-                        'Unable to require() base type: ' + typeName),
-                    TP.LOG) : 0;
+            TP.warn(TP.annotate(restrictionElem,
+                'Unable to require() base type: ' + typeName)) : 0;
 
         return true;
     }
@@ -386,10 +378,8 @@ function(aValue, unionElem) {
         type = TP.sys.require(typeName);
         if (TP.notValid(type)) {
             TP.ifWarn() ?
-                TP.warn(TP.annotate(
-                            unionElem,
-                            'Unable to require() base type: ' + typeName),
-                        TP.LOG) : 0;
+                TP.warn(TP.annotate(unionElem,
+                    'Unable to require() base type: ' + typeName)) : 0;
 
             return true;
         }
@@ -403,10 +393,8 @@ function(aValue, unionElem) {
 
     if (TP.isEmpty(typeNames) && TP.isEmpty(anonSchemaElems)) {
         TP.ifWarn() ?
-            TP.warn(TP.annotate(
-                        unionElem,
-                        'Unable to locate base specification'),
-                    TP.LOG) : 0;
+            TP.warn(TP.annotate(unionElem,
+                'Unable to locate base specification')) : 0;
 
         return true;
     }

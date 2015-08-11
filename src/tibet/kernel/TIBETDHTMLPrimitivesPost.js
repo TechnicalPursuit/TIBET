@@ -8281,8 +8281,7 @@ function(aWindow) {
             TP.ifError() ?
                 TP.error(TP.ec(e, TP.join('Pageload function: ',
                                             TP.str(winLoadFuncs[i]),
-                                            ' generated error.')),
-                            TP.LOG) : 0;
+                                            ' generated error.'))) : 0;
         }
     }
 
@@ -8295,8 +8294,7 @@ function(aWindow) {
             TP.nodeAwakenContent(aWindow.document.documentElement);
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Window content awaken generated error.'),
-                            TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Window content awaken generated error.')) : 0;
         }
     }
 
@@ -8356,8 +8354,7 @@ function(aWindow) {
         TP.ifError() ?
             TP.error(
                 TP.ec(
-                    e, 'TP.sig.DOMContentLoaded handler generated error.'),
-                    TP.LOG) : 0;
+                    e, 'TP.sig.DOMContentLoaded handler generated error.')) : 0;
     }
 
     return;
@@ -8418,8 +8415,8 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
         TP.ifError() ?
             TP.error(
                 TP.ec(
-                    e, 'TP.sig.DOMContentUnloaded handler generated error.'),
-                    TP.LOG) : 0;
+                    e, 'TP.sig.DOMContentUnloaded handler generated error.')) :
+                    0;
     }
 
     //  close open windows if we're unloading the code frame

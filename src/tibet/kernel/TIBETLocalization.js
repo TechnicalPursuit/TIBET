@@ -143,8 +143,7 @@ function(aLocale, sourceLocale, forceRefresh) {
         //  object unlocalized.
 
         TP.ifWarn() ?
-            TP.warn('Couldn\'t find locale for: ' + locale,
-                    TP.LOG) : 0;
+            TP.warn('Couldn\'t find locale for: ' + locale) : 0;
 
         return this;
     }
@@ -1015,8 +1014,7 @@ function(forceRefresh) {
             }
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error retrieving TIBET strings.'),
-                    TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error retrieving TIBET strings.')) : 0;
         }
 
         if (TP.notValid(node)) {

@@ -150,7 +150,7 @@ function(aFilter, undefNotNull) {
             val = func(obj);
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error uniquing Array'), TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error uniquing Array')) : 0;
         }
 
         //  have to process null/undefined into string keys we can match
@@ -367,8 +367,7 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
                             ' (', TP.tname(this), ')',
                             TP.tname(this) === 'Window' ?
                                 TP.sc(' -- Possible unbound function') :
-                                ''),
-                    TP.LOG) : 0;
+                                '')) : 0;
     }
 
     op = TP.UPDATE;
@@ -1319,7 +1318,7 @@ function() {
         msg = TP.join('Error creating function: ',
                     TP.args(arguments).join(' :: '));
 
-        TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+        TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
 
         return null;
     }
@@ -1468,7 +1467,7 @@ function(pattern, flags) {
     } catch (e) {
         msg = TP.join('Error creating regex: ', restr);
 
-        TP.ifError() ? TP.error(TP.ec(e, msg), TP.LOG) : 0;
+        TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
 
         return null;
     }

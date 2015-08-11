@@ -1024,8 +1024,7 @@ isBubbling) {
             argsOrEvent.$$view = context;
         } catch (e) {
             TP.ifError() ?
-                TP.error(TP.ec(e, 'Error instrumenting event object.'),
-                    TP.LOG) : 0;
+                TP.error(TP.ec(e, 'Error instrumenting event object.')) : 0;
         }
     }
 
@@ -1175,8 +1174,7 @@ function(nativeEvt) {
         evtInfo.tibetTarget = sourceElement;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error instrumenting event object.'),
-                TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error instrumenting event object.')) : 0;
     }
 
     //  If we have a valid firing policy, use that policy to fire the signal

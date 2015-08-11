@@ -384,8 +384,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         //  might store away the observation and wait for an XMPP connection
         //  to come up and retry the observe.
         TP.ifWarn() ?
-            TP.warn('Remote subscription data not available',
-                    TP.LOG) : 0;
+            TP.warn('Remote subscription data not available') : 0;
 
         //  Note here how we return 'false', telling the main notification
         //  engine to *not* go ahead and process the observation.
@@ -645,8 +644,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         //  might store away the observation and wait for an XMPP connection
         //  to come up and retry the observe.
         TP.ifWarn() ?
-            TP.warn('Remote subscription data not available',
-                    TP.LOG) : 0;
+            TP.warn('Remote subscription data not available') : 0;
 
         //  Note here how we return 'false', telling the main notification
         //  engine to *not* go ahead and process the observation.

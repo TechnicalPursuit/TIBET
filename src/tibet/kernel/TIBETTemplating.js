@@ -721,8 +721,7 @@ function(aDataSource, transformParams) {
         } else {
             TP.ifError() ?
                 TP.error('Unable to compile formatting template: ' +
-                                str,
-                            TP.LOG) : 0;
+                                str) : 0;
             return;
         }
     } else if (TP.regex.SUBSTITUTION_STRING.test(str)) {
@@ -752,15 +751,13 @@ function(aDataSource, transformParams) {
             } else if (TP.notTrue(urnBuilt)) {
                 TP.ifError() ?
                     TP.error('Unable to locate formatting template URN: ' +
-                                    urn,
-                                TP.LOG) : 0;
+                                    urn) : 0;
                 return;
             }
         } else if (TP.notTrue(urnBuilt)) {
             TP.ifError() ?
                 TP.error('Invalid formatting template URN: ' +
-                                urn,
-                            TP.LOG) : 0;
+                                urn) : 0;
             return;
         }
     }

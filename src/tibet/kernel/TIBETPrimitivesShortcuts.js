@@ -1898,8 +1898,7 @@ function(elemOrId, anAspect, aValue, nodeContext) {
                 } catch (e) {
                     TP.ifError() ?
                         TP.error(
-                            TP.ec(e, 'Unable to set element: ' + obj),
-                                    TP.LOG) : 0;
+                            TP.ec(e, 'Unable to set element: ' + obj)) : 0;
                 }
             } else {
                 //  TODO:   warn?
@@ -1919,8 +1918,7 @@ function(elemOrId, anAspect, aValue, nodeContext) {
             } catch (e) {
                 TP.ifError() ?
                     TP.error(
-                        TP.ec(e, 'Unable to obtain element: ' + list),
-                                TP.LOG) : 0;
+                        TP.ec(e, 'Unable to obtain element: ' + list)) : 0;
             }
         } else {
             //  TODO:   warn?
@@ -2747,8 +2745,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
         return anObject[handlerName](aSignal);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Handler invocation error.'),
-                TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Handler invocation error.')) : 0;
     } finally {
         $signal_stack.pop();
     }

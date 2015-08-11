@@ -46,7 +46,7 @@
  *     TP.hc('uri','http://www.google.com'));
  *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
- *     TP.info(aResponse.getResult(), TP.LOG); }); request.fire();
+ *     TP.info(aResponse.getResult()); }); request.fire();
  *
  *     // request a standard page's content synchronously. The // interesting
  *     thing here is that the two approaches are // identical in terms of how
@@ -57,19 +57,18 @@
  *     'http://www.google.com', 'async', false));
  *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
  *
- *     TP.info(aResponse.getResult(), TP.LOG); }); request.fire();
+ *     TP.info(aResponse.getResult()); }); request.fire();
  *
  *     // request a standard page's content synchronously without // a callback
  *     method in place: request = TP.sig.RESTRequest.construct( TP.hc('uri',
  *     'http://www.google.com', 'async', false)); request.fire();
- *     TP.info(request.getResponse().getResult(), TP.LOG);
+ *     TP.info(request.getResponse().getResult());
  *
  *     // NOTE that if you have a specific service instance you // can trigger
  *     processing simply by asking the service to // handle the request. Note
  *     this example assumes sync:
  *
- *     response = TP.handle(service, request); TP.info(response.getResult(),
- *     TP.LOG);
+ *     response = TP.handle(service, request); TP.info(response.getResult());
  */
 
 //  ------------------------------------------------------------------------

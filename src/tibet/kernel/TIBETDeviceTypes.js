@@ -547,8 +547,7 @@ function() {
 
     if (TP.notValid(type)) {
         TP.ifError() ?
-                TP.error('Unable to install keyboard type: ' + name,
-                            TP.LOG) : 0;
+                TP.error('Unable to install keyboard type: ' + name) : 0;
 
         return;
     }
@@ -896,8 +895,7 @@ function(singletonName, normalizedEvent, aSignal) {
         //  build up a true signal from our template instance
         if (TP.notValid(signal = this.get(singletonName))) {
             TP.ifWarn() ?
-                TP.warn('Event singleton not found for: ' + singletonName,
-                        TP.LOG) : 0;
+                TP.warn('Event singleton not found for: ' + singletonName) : 0;
             return;
         }
 
@@ -2663,8 +2661,7 @@ function(singletonName, normalizedEvent, aSignal) {
         //  build up a true signal from our template instance
         if (TP.notValid(signal = this.get(singletonName))) {
             TP.ifWarn() ?
-                TP.warn('Event singleton not found for: ' + singletonName,
-                        TP.LOG) : 0;
+                TP.warn('Event singleton not found for: ' + singletonName) : 0;
 
             return;
         }
@@ -3208,8 +3205,7 @@ function(normalizedEvent) {
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
         TP.ifError() ?
-                TP.error('Unable to clear hover timeout',
-                            TP.LOG) : 0;
+                TP.error('Unable to clear hover timeout') : 0;
     }
 
     return;
@@ -3309,8 +3305,7 @@ function(normalizedEvent) {
         clearTimeout(this.$get('hoverRepeatTimer'));
     } catch (e) {
         TP.ifError() ?
-                TP.error('Unable to clear hover timeout',
-                            TP.LOG) : 0;
+                TP.error('Unable to clear hover timeout') : 0;
     }
 
     return;

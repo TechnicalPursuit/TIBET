@@ -6246,8 +6246,7 @@ function(anItem, aDataSource, aKeySource) {
     if (TP.notValid(theHandler)) {
         //  might be a bogus format where no key source or no key
         TP.ifWarn() ?
-            TP.warn('Format handler not found for: ' + anItem,
-                    TP.LOG) : 0;
+            TP.warn('Format handler not found for: ' + anItem) : 0;
 
         return aDataSource;
     }

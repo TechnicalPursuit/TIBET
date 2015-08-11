@@ -220,8 +220,7 @@ function(aRequest) {
 
     if (async && this.getType().isSyncOnly()) {
         TP.ifWarn() ?
-            TP.warn('Overriding async request for sync-only URI: ' + uri,
-                    TP.LOG) : 0;
+            TP.warn('Overriding async request for sync-only URI: ' + uri) : 0;
 
         async = false;
     }
@@ -236,8 +235,7 @@ function(aRequest) {
         }
 
         TP.ifWarn() ?
-            TP.warn('Overriding sync request for async-only URI: ' + uri,
-                    TP.LOG) : 0;
+            TP.warn('Overriding sync request for async-only URI: ' + uri) : 0;
 
         async = true;
     }

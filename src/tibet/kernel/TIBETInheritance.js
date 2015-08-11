@@ -202,8 +202,7 @@ function(name) {
         case 2:
             if (parts[0] === 'APP' || parts[0] === 'TP') {
                 TP.ifError() ?
-                    TP.error('Invalid namespace: ' + parts[0],
-                                TP.LOG) : 0;
+                    TP.error('Invalid namespace: ' + parts[0]) : 0;
                 return;
             }
 
@@ -6387,11 +6386,10 @@ function(aNote, aPrefix, anException) {
         }
 
         TP.ifWarn() ?
-            TP.warn(prefix + note + '\n\n' + stackInfo.join('\n'),
-                    TP.LOG) : 0;
+            TP.warn(prefix + note + '\n\n' + stackInfo.join('\n')) : 0;
     } else {
         TP.ifWarn() ?
-            TP.warn(prefix + note, TP.LOG) : 0;
+            TP.warn(prefix + note) : 0;
     }
 
     if (TP.notEmpty(anException)) {

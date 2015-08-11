@@ -208,8 +208,7 @@ function(anID, regOnly, nodeContext) {
             //  earlier) and no URI was able to be constructed
             TP.ifWarn() ?
                 TP.warn('Unable to construct URI for object reference: ' +
-                            id,
-                        TP.LOG) : 0;
+                            id) : 0;
 
             return;
         }
@@ -344,8 +343,7 @@ function(anID, regOnly, nodeContext) {
         } catch (e) {
             TP.ifError() ?
                 TP.error(TP.ec(e,
-                            'Error accessing window slot at: ' + id + '. '),
-                            TP.LOG) : 0;
+                    'Error accessing window slot at: ' + id + '. ')) : 0;
         }
     }
 
@@ -502,8 +500,7 @@ function(anObj, anID, forceRegistration, observeResource) {
     if (TP.regex.TIBET_URN.test(id)) {
         TP.ifError() ?
             TP.error('Trying to register object whose ID is already a URN: ' +
-                        id,
-                        TP.LOG) : 0;
+                        id) : 0;
 
         return false;
     }

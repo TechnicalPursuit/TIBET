@@ -302,8 +302,7 @@ function(targetUrl, openCallback) {
         function(closeEvt) {
 
             TP.ifInfo() ?
-                TP.info('The socket for: ' + targetUrl + ' just closed',
-                        TP.LOG) : 0;
+                TP.info('The socket for: ' + targetUrl + ' just closed') : 0;
 
             //  Clear the cached websocket object
             TP.uc(targetUrl).set('webSocketObj', null);
@@ -320,8 +319,7 @@ function(targetUrl, openCallback) {
                 request;
 
             TP.ifInfo() ?
-                TP.info('The socket for: ' + targetUrl + ' had an error',
-                        TP.LOG) : 0;
+                TP.info('The socket for: ' + targetUrl + ' had an error') : 0;
 
             //  Let the system know about an error
             TP.webSocketError(targetUrl,

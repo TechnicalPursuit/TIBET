@@ -43,8 +43,6 @@ TP.core.D3Tag.defineAttribute('selector');
 
 TP.core.D3Tag.Inst.defineMethod('render', function() {
 
-    //TP.elementSetContent(node, 'Hi Bill!!!');
-
     this.d3Select();
     this.d3Data();
 

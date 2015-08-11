@@ -89,14 +89,12 @@
  *
  *     req.defineMethod('handleRequestSucceeded',
  *          function(aResponse) {
- *              TP.info('Success! Result: ' + TP.json(aResponse.getResult()),
- *                      TP.LOG);
+ *              TP.info('Success! Result: ' + TP.json(aResponse.getResult()));
  *          });
  *
  *     req.defineMethod('handleRequestFailed',
  *          function(aResponse) {
- *              TP.info('Failure... Result: ' + TP.json(aResponse.getResult()),
- *                      TP.LOG);
+ *              TP.info('Failure... Result: ' + TP.json(aResponse.getResult()));
  *          });
  *
  *     req.fire();

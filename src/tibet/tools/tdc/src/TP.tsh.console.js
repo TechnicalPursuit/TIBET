@@ -1280,7 +1280,7 @@ function(aSignal) {
         arr,
         str;
 
-    //TP.info('fix TP.core.ConsoleService::handleDOMModifierKeyChange', TP.LOG);
+    //TP.info('fix TP.core.ConsoleService::handleDOMModifierKeyChange');
 
     evt = aSignal.getEvent();
 
@@ -1896,7 +1896,7 @@ function() {
      * @returns {TP.core.ConsoleService} The receiver.
      */
 
-    //TP.info('fix TP.core.ConsoleService::clearStatus', TP.LOG);
+    //TP.info('fix TP.core.ConsoleService::clearStatus');
 
     return this;
 /*
@@ -1921,7 +1921,7 @@ function(aSignal) {
      *     updated for.
      */
 
-    //TP.info('fix TP.core.ConsoleService::updateStatus', TP.LOG);
+    //TP.info('fix TP.core.ConsoleService::updateStatus');
 
     return this;
 /*
@@ -2316,8 +2316,7 @@ function(anError, aRequest) {
                         e,
                         TP.join('TP.core.ConsoleService.stderr(',
                                 TP.str(err), ') generated error.')
-                     ),
-                TP.LOG) : 0;
+                     )) : 0;
     }
 
     this.scrollToEnd();
@@ -2428,8 +2427,7 @@ function(anObject, aRequest) {
                         e,
                         TP.join('TP.core.ConsoleService.stdout(',
                                 TP.str(outObject), ') generated error.')
-                     ),
-                TP.LOG) : 0;
+                     )) : 0;
     }
 
     this.scrollToEnd();

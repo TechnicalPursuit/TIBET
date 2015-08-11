@@ -1213,8 +1213,7 @@ function(aRequest) {
         if (TP.notValid(phases)) {
             TP.ifWarn() ?
                 TP.warn('Invalid phase set in request: ' +
-                            aRequest.at('cmdPhases'),
-                        TP.LOG) : 0;
+                            aRequest.at('cmdPhases')) : 0;
 
             phases = this.getType().NOCACHE_PHASES;
         }
@@ -1414,8 +1413,7 @@ function(aRequest) {
     }
 
     TP.ifTrace() && TP.sys.cfg('log.tsh_phases') ?
-        TP.trace(Date.now() + ' TP.core.TSH ' + phase,
-                    TP.LOG) : 0;
+        TP.trace(Date.now() + ' TP.core.TSH ' + phase) : 0;
 
     //  the node we should process should be found in cmdNode. it can change
     //  between phases as replacement documents/nodes are built etc, but it
@@ -1482,9 +1480,7 @@ function(aRequest) {
                                             ' skipping: ' +
                                             TP.name(type) + ' ' +
                                             TP.nodeAsString(child,
-                                                            false,
-                                                            true),
-                                        TP.LOG) : 0;
+                                                false, true)) : 0;
 
                     //  don't reprocess. descend or continue.
                     if (TP.isElement(
@@ -1517,10 +1513,9 @@ function(aRequest) {
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
-                                        ' ctrl: ' + TP.name(type) +
-                                        ' ' +
-                                        TP.nodeAsString(child, false, true),
-                                    TP.LOG) : 0;
+                                ' ctrl: ' + TP.name(type) +
+                                ' ' +
+                                TP.nodeAsString(child, false, true)) : 0;
 
                     try {
                         result = type[funcName](aRequest);
@@ -1545,7 +1540,7 @@ function(aRequest) {
                     //  Not a Node, an Array or one of our constants...
                     message = 'No return value running: ' +
                                 TP.name(type) + '.' + funcName;
-                    TP.warn(message, TP.LOG);
+                    TP.warn(message);
                     */
                     //  Need to set both - we return result, but use retval in
                     //  tests below.
@@ -1646,12 +1641,10 @@ function(aRequest) {
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_skips') ?
                             TP.trace('TP.core.TSH ' + phase +
-                                            ' skipping: ' +
-                                            TP.name(type) + ' ' +
-                                            TP.nodeAsString(child,
-                                                            false,
-                                                            true),
-                                        TP.LOG) : 0;
+                                ' skipping: ' +
+                                TP.name(type) + ' ' +
+                                TP.nodeAsString(child,
+                                    false, true)) : 0;
             }
 
             return result;
@@ -1695,12 +1688,10 @@ function(aRequest) {
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_nodes') ?
                             TP.trace(Date.now() + ' TP.core.TSH ' + phase +
-                                            ' ctrl: ' + TP.name(type) +
-                                            ' ' +
-                                            TP.nodeAsString(child,
-                                                            false,
-                                                            true),
-                                        TP.LOG) : 0;
+                                ' ctrl: ' + TP.name(type) +
+                                ' ' +
+                                TP.nodeAsString(child,
+                                    false, true)) : 0;
 
                 try {
                     result = type[funcName](aRequest);
@@ -1772,12 +1763,10 @@ function(aRequest) {
                         TP.sys.cfg('log.tsh_phases') &&
                         TP.sys.cfg('log.tsh_phase_skips') ?
                             TP.trace('TP.core.TSH ' + phase +
-                                            ' skipping: ' +
-                                            TP.name(type) + ' ' +
-                                            TP.nodeAsString(child,
-                                                            false,
-                                                            true),
-                                        TP.LOG) : 0;
+                                ' skipping: ' +
+                                TP.name(type) + ' ' +
+                                TP.nodeAsString(child,
+                                    false, true)) : 0;
             }
 
             return result;

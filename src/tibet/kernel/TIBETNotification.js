@@ -7345,48 +7345,38 @@ function(anOrigin, anException, aPayload) {
 
             switch (level) {
                 case TP.TRACE:
-                    TP.trace(str, TP.LOG);
+                    TP.trace(str);
                     break;
                 case TP.INFO:
-                    TP.info(str, TP.LOG);
+                    TP.info(str);
                     break;
                 case TP.WARN:
                     TP.isValid(aPayload) ?
-                        TP.warn(TP.annotate(aPayload, str),
-                                TP.LOG) :
-                        TP.warn(str,
-                                TP.LOG);
+                        TP.warn(TP.annotate(aPayload, str)) :
+                        TP.warn(str);
                     break;
                 case TP.ERROR:
                     TP.isValid(aPayload) ?
-                        TP.error(TP.annotate(aPayload, str),
-                                TP.LOG) :
-                        TP.error(str,
-                                TP.LOG);
+                        TP.error(TP.annotate(aPayload, str)) :
+                        TP.error(str);
                     break;
                 case TP.SEVERE:
                     TP.isValid(aPayload) ?
-                        TP.severe(TP.annotate(aPayload, str),
-                                TP.LOG) :
-                        TP.severe(str,
-                                TP.LOG);
+                        TP.severe(TP.annotate(aPayload, str)) :
+                        TP.severe(str);
                     break;
                 case TP.FATAL:
                     TP.isValid(aPayload) ?
-                        TP.fatal(TP.annotate(aPayload, str),
-                                TP.LOG) :
-                        TP.fatal(str,
-                                TP.LOG);
+                        TP.fatal(TP.annotate(aPayload, str)) :
+                        TP.fatal(str);
                     break;
                 case TP.SYSTEM:
-                    TP.system(str, TP.LOG);
+                    TP.system(str);
                     break;
                 default:
                     TP.isValid(aPayload) ?
-                        TP.error(TP.annotate(aPayload, str),
-                                TP.LOG) :
-                        TP.error(str,
-                                TP.LOG);
+                        TP.error(TP.annotate(aPayload, str)) :
+                        TP.error(str);
                     break;
             }
         }

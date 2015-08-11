@@ -51,8 +51,7 @@ function() {
     name = '' + this;
 
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-        TP.trace('Faulting in \'' + name + '\'.',
-                    TP.LOG) : 0;
+        TP.trace('Faulting in \'' + name + '\'.') : 0;
 
     //  require the type, telling TIBET that we're doing this for a proxy
     type = TP.sys.require(name, null, true);
@@ -60,8 +59,7 @@ function() {
     if (!TP.isType(type)) {
         TP.ifError() ?
             TP.error('Faulting in \'' + name +
-                            '\' failed. Removing proxy.',
-                            TP.LOG) : 0;
+                            '\' failed. Removing proxy.') : 0;
 
         TP.sys.defineGlobal(name, null, true);
     }
@@ -199,8 +197,7 @@ function() {
     } catch (e) {
         TP.ifError() ?
             TP.error(
-                TP.ec(e, TP.join('Error constructing type proxy')), TP.LOG) :
-            0;
+                TP.ec(e, TP.join('Error constructing type proxy'))) : 0;
     }
 
     if (TP.isType(type)) {
@@ -229,8 +226,7 @@ function() {
     } catch (e) {
         TP.ifError() ?
             TP.error(
-                TP.ec(e, TP.join('Error converting type proxy')), TP.LOG) :
-            0;
+                TP.ec(e, TP.join('Error converting type proxy'))) : 0;
     }
 
     if (TP.isType(type)) {
@@ -401,15 +397,13 @@ function() {
             }
         } catch (e) {
             TP.ifError() ?
-                TP.error(
-                    TP.ec(e, TP.join('Error initializing ', id, ' type proxy')),
-                            TP.LOG) : 0;
+                TP.error(TP.ec(e,
+                    TP.join('Error initializing ', id, ' type proxy'))) : 0;
         }
     }
 
     TP.ifTrace() ?
-        TP.trace('Initialized ' + len + ' type proxies.',
-                    TP.LOG) : 0;
+        TP.trace('Initialized ' + len + ' type proxies.') : 0;
 
     return;
 });

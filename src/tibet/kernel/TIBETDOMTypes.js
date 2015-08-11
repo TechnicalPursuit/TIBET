@@ -2010,8 +2010,7 @@ function(preserveDeletes, preserveCrud) {
                 TP.ifError() ?
                     TP.error(
                         'Unable to load node filtering transform: \'' +
-                        url.getLocation(),
-                        TP.LOG) : 0;
+                        url.getLocation()) : 0;
             }
         }
     }
@@ -2149,8 +2148,7 @@ function(attributeName) {
         TP.ifError() ?
             TP.error(
                 TP.ec(e,
-                        'Error retrieving node property: ' + attributeName),
-                TP.LOG) : 0;
+                    'Error retrieving node property: ' + attributeName)) : 0;
     }
 
     if (TP.notValid(val)) {
@@ -2444,8 +2442,7 @@ function(aFlag) {
         if (aFlag && !TP.sys.shouldUseContentCheckpoints()) {
             TP.ifWarn() ?
                 TP.warn('Node transactions have been activated but ' +
-                            'content is not being checkpointed.',
-                        TP.LOG) : 0;
+                            'content is not being checkpointed.') : 0;
         }
     }
 
@@ -2926,8 +2923,7 @@ function(aValue, shouldSignal) {
         TP.ifError() ?
             TP.error(
                 TP.ec(e,
-                        'TP.sig.DOMContentLoaded handler generated error.'),
-                TP.LOG) : 0;
+                    'TP.sig.DOMContentLoaded handler generated error.')) : 0;
     }
 
     return this;
@@ -5013,8 +5009,7 @@ function(newContent, aRequest, shouldSignal) {
         TP.elementFlagChange(node, TP.SELF, TP.APPEND);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG) : 0;
+            TP.trace('Node flagged: ' + TP.nodeAsString(node)) : 0;
     }
 
     //  The primitive will have returned a native Node, but we need to
@@ -5306,8 +5301,7 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
         TP.elementFlagChange(node, TP.SELF, TP.INSERT);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG) : 0;
+            TP.trace('Node flagged: ' + TP.nodeAsString(node)) : 0;
     }
 
     //  The primitive will have returned a native Node, but we need to
@@ -5557,8 +5551,7 @@ function(newContent, aRequest, shouldSignal) {
         TP.elementFlagChange(node, TP.SELF, TP.UPDATE);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG) : 0;
+            TP.trace('Node flagged: ' + TP.nodeAsString(node)) : 0;
     }
 
     //  The primitive will have returned a native Node, but we need to
@@ -5784,8 +5777,7 @@ function(newContent, aRequest, shouldSignal) {
         TP.elementFlagChange(node, TP.SELF, TP.UPDATE);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG) : 0;
+            TP.trace('Node flagged: ' + TP.nodeAsString(node)) : 0;
     }
 
     //  The primitive will have returned a native Node, but we need to
@@ -7037,8 +7029,7 @@ function(toNode, beforeNode) {
         oldSize = node.childNodes.length;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error reading child nodes length.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error reading child nodes length.')) : 0;
     }
 
     retVal = TP.nodeCopyChildNodesTo(node, toNode, beforeNode);
@@ -7054,8 +7045,7 @@ function(toNode, beforeNode) {
         }
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error reading child nodes length.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error reading child nodes length.')) : 0;
     }
 
     return TP.wrap(retVal);
@@ -7089,8 +7079,7 @@ function(toNode, beforeNode) {
         oldSize = node.childNodes.length;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error reading child nodes length.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error reading child nodes length.')) : 0;
     }
 
     retVal = TP.nodeMoveChildNodesTo(node, toNode, beforeNode);
@@ -7106,8 +7095,7 @@ function(toNode, beforeNode) {
         }
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error reading child nodes length.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error reading child nodes length.')) : 0;
     }
 
     return TP.wrap(retVal);
@@ -7139,8 +7127,7 @@ function(aNode) {
         TP.elementFlagChange(child, TP.SELF, TP.DELETE);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('Node flagged: ' + TP.nodeAsString(child),
-                        TP.LOG) : 0;
+            TP.trace('Node flagged: ' + TP.nodeAsString(child)) : 0;
     } else {
         //  if we're not flagging then just rip it out of the DOM
         TP.nodeRemoveChild(node, child);
@@ -7676,8 +7663,7 @@ function() {
         TP.elementFlagChange(node, TP.SELF, TP.DELETE);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('Node flagged: ' + TP.nodeAsString(node),
-                        TP.LOG) : 0;
+            TP.trace('Node flagged: ' + TP.nodeAsString(node)) : 0;
     } else {
         //  if we're not flagging then just rip it out of the DOM
         TP.nodeEmptyContent(node);
@@ -8247,8 +8233,7 @@ function(anObject, anIndex, aPosition) {
                                         results[i], obj[j], position);
                     } catch (e) {
                         TP.ifError() ?
-                            TP.error(TP.ec(e, 'Error adding node at.'),
-                                        TP.LOG) : 0;
+                            TP.error(TP.ec(e, 'Error adding node at.')) : 0;
                     }
                 }
             } else {
@@ -8256,8 +8241,7 @@ function(anObject, anIndex, aPosition) {
                     TP.elementInsertContent(results[i], obj, position);
                 } catch (e) {
                     TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error adding node at.'),
-                                    TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error adding node at.')) : 0;
                 }
             }
         }
@@ -8655,8 +8639,7 @@ function(anIndex) {
         TP.elementFlagChange(child, TP.SELF, TP.DELETE);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('Node flagged: ' + TP.nodeAsString(child),
-                        TP.LOG) : 0;
+            TP.trace('Node flagged: ' + TP.nodeAsString(child)) : 0;
     } else {
         //  if we're not flagging then just rip it out of the DOM
         TP.nodeDetach(child);
@@ -12675,8 +12658,7 @@ function(aValue, formats) {
         }
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Formatting error.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Formatting error.')) : 0;
 
         value = aValue;
     }
@@ -12718,8 +12700,7 @@ function(aValue, formats) {
         return value;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Formatting error.'),
-                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Formatting error.')) : 0;
 
         value = aValue;
     }
@@ -12801,8 +12782,7 @@ function(aValue) {
                 }
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Validation error.'),
-                        TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Validation error.')) : 0;
 
                 //  don't let a coding error in a validator keep the UI from
                 //  allowing data submission
@@ -12823,8 +12803,7 @@ function(aValue) {
                 }
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Validation error.'),
-                        TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Validation error.')) : 0;
 
                 //  don't let a coding error in a validator keep the UI from
                 //  allowing data submission
@@ -15914,8 +15893,7 @@ function(aRequest, functionName) {
                 }
             } else {
                 TP.ifWarn() ?
-                    TP.warn('Splatting with non-collection content.',
-                            TP.LOG) : 0;
+                    TP.warn('Splatting with non-collection content.') : 0;
 
                 result = TP.ac(this[functionName](content, node, aRequest));
             }

@@ -3214,7 +3214,7 @@ function(aSignal) {
 TP.core.DNDResponder.Inst.defineMethod('handleTargetIn',
 function(aSignal) {
 
-    //TP.info('Signaled: ' + TP.str(aSignal), TP.LOG),
+    //TP.info('Signaled: ' + TP.str(aSignal)),
 
     var evtTargetTPElem,
 
@@ -3239,7 +3239,7 @@ function(aSignal) {
 TP.core.DNDResponder.Inst.defineMethod('handleTargetOut',
 function(aSignal) {
 
-    //TP.info('Signaled: ' + TP.str(aSignal), TP.LOG),
+    //TP.info('Signaled: ' + TP.str(aSignal)),
 
     var targetTPElem;
 

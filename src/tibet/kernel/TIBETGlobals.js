@@ -1659,7 +1659,7 @@ TP.LOG_ARGS = function() {
     var args;
 
     args = TP.args(arguments);
-    TP.ifTrace() ? TP.trace(args, TP.LOG) : 0;
+    TP.ifTrace() ? TP.trace(args) : 0;
 };
 
 TP.NOTIFY_ARGS = function() {

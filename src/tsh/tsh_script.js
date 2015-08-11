@@ -684,8 +684,7 @@ function(source, shell, sibling, request) {
                                  last.name !== 'reserved')) {
                                 TP.ifWarn() ?
                                     TP.warn('Missing attribute name in' +
-                                            ' tag input: ' + token.value,
-                                            TP.LOG) : 0;
+                                        ' tag input: ' + token.value) : 0;
 
                                 i += 1;
                                 token = arr[i];
@@ -777,8 +776,7 @@ function(source, shell, sibling, request) {
                                     //  that's a syntax error
                                     TP.ifWarn() ?
                                         TP.warn('Missing flag name in tag' +
-                                                    ' input: ' + source + '.',
-                                                TP.LOG) : 0;
+                                            ' input: ' + source + '.') : 0;
                                     break;
                                 }
                             }
@@ -816,8 +814,7 @@ function(source, shell, sibling, request) {
                                 if (!token) {
                                     TP.ifWarn() ?
                                         TP.warn('Unexpected end of CDATA' +
-                                                    ' input.',
-                                                TP.LOG) : 0;
+                                            ' input.') : 0;
 
                                     break;
                                 }
@@ -843,8 +840,7 @@ function(source, shell, sibling, request) {
                             if (!/^(~|\.|\/|{|%)/.test(token.value)) {
                                 TP.ifWarn() ?
                                     TP.warn('Unexpected operator in tag' +
-                                                ' input: ' + token.value,
-                                            TP.LOG) : 0;
+                                        ' input: ' + token.value) : 0;
                             }
 
                             chunk.length = 0;
@@ -888,8 +884,7 @@ function(source, shell, sibling, request) {
                             //  then we've got a bit of a problem.
                             TP.ifWarn() ?
                                 TP.warn('Unexpected end of prefixed' +
-                                            ' attribute.',
-                                        TP.LOG) : 0;
+                                    ' attribute.') : 0;
 
                             break;
                         }
@@ -1197,9 +1192,7 @@ function(source, shell, sibling, request) {
                                                 TP.sys.require(tagname))) {
                                         TP.ifWarn() ?
                                             TP.warn('Unable to find' +
-                                                        ' custom type ' +
-                                                        tagname,
-                                                    TP.LOG) : 0;
+                                                ' custom type ' + tagname) : 0;
                                     }
                                 }
 
@@ -1918,8 +1911,7 @@ function(aRequest) {
 
     if (TP.sys.cfg('log.tsh_execute')) {
         TP.ifTrace() ?
-            TP.trace('tsh_execute:\n' + TP.str(node),
-                        TP.LOG) : 0;
+            TP.trace('tsh_execute:\n' + TP.str(node)) : 0;
     }
 
     //  nested scripts have to handle their stdio with respect to the outer
@@ -1989,8 +1981,7 @@ function(aRequest) {
 
         if (TP.elementGetAttribute(root, 'subshell') === 'true') {
             TP.ifWarn() ?
-                TP.warn('Pure subshell not yet supported. Using block.',
-                        TP.LOG) : 0;
+                TP.warn('Pure subshell not yet supported. Using block.') : 0;
         }
 
         //  copy the children out of the loaded script node into the
@@ -2757,8 +2748,7 @@ function(src, shell, request) {
                     //  TODO
                 } else {
                     TP.ifWarn() ?
-                        TP.warn('Invalid syntax at: ' + token.value,
-                                TP.LOG) : 0;
+                        TP.warn('Invalid syntax at: ' + token.value) : 0;
 
                     i += 1;
                 }
@@ -2789,8 +2779,7 @@ function(src, shell, request) {
 
     if (TP.sys.cfg('log.tsh_xmlify')) {
         TP.ifTrace() ?
-            TP.trace('tsh_xmlify:\n' + str,
-                        TP.LOG) : 0;
+            TP.trace('tsh_xmlify:\n' + str) : 0;
     }
 
     return str;
@@ -3468,8 +3457,7 @@ function(aRequest) {
 
     if (TP.sys.cfg('log.tsh_run')) {
         TP.ifTrace() ?
-            TP.trace('tsh_run:\n' + TP.str(node),
-                        TP.LOG) : 0;
+            TP.trace('tsh_run:\n' + TP.str(node)) : 0;
     }
 
     //  capture the current command prefix for defaulting purposes.

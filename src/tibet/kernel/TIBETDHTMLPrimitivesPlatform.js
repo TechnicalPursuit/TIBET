@@ -514,8 +514,7 @@ TP.hc(
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
                     TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error configuring event.'),
-                                    TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error configuring event.')) : 0;
                 }
             });
 
@@ -738,8 +737,7 @@ TP.hc(
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
                     TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error configuring event.'),
-                                    TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error configuring event.')) : 0;
                 }
             });
 
@@ -951,8 +949,7 @@ TP.hc(
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
                     TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error configuring event.'),
-                                    TP.LOG) : 0;
+                        TP.error(TP.ec(e, 'Error configuring event.')) : 0;
                 }
             });
 

@@ -515,8 +515,7 @@ function() {
         return httpObj.status;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error retrieving status code.'),
-                                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error retrieving status code.')) : 0;
     }
 
     return;
@@ -544,8 +543,7 @@ function() {
         return httpObj.statusText;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error retrieving status text.'),
-                                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error retrieving status text.')) : 0;
     }
 
     return;
@@ -574,8 +572,7 @@ function() {
         text = httpObj.responseText;
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error retrieving response text.'),
-                                        TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error retrieving response text.')) : 0;
     }
 
     return text;

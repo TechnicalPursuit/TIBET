@@ -491,7 +491,7 @@ function(aSignal) {
 
     //this.show();
 
-    //TP.info('got to halo did focus', TP.LOG);
+    //TP.info('got to halo did focus');
 
     this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
 
@@ -505,7 +505,7 @@ function(aSignal) {
 
     //this.hide();
 
-    //TP.info('got to halo did blur', TP.LOG);
+    //TP.info('got to halo did blur');
 
     this.get('model').setVariable('HALO', null);
 
@@ -1624,8 +1624,7 @@ function(anError, aRequest) {
                         e,
                         TP.join('TP.sherpa.ConsoleService.stderr(',
                                 TP.str(err), ') generated error.')
-                     ),
-                TP.LOG) : 0;
+                     )) : 0;
     }
 
     this.get('$consoleGUI').scrollOutputToEnd();
@@ -1743,8 +1742,7 @@ function(anObject, aRequest) {
                         e,
                         TP.join('TP.sherpa.ConsoleService.stdout(',
                                 TP.str(outObject), ') generated error.')
-                     ),
-                TP.LOG) : 0;
+                     )) : 0;
     }
 
     this.get('$consoleGUI').scrollOutputToEnd();

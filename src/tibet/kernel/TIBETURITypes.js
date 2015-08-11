@@ -1010,8 +1010,7 @@ function(aURI) {
                 if (TP.notValid(re = TP.rc(str))) {
                     TP.ifWarn() ?
                         TP.warn('Invalid RegExp source: ' + str +
-                                    ' in URI catalog.',
-                                TP.LOG) : 0;
+                                    ' in URI catalog.') : 0;
 
                     continue;
                 }
@@ -1056,8 +1055,7 @@ function(aURI) {
                 if (TP.notValid(re = TP.rc(str))) {
                     TP.ifWarn() ?
                         TP.warn('Invalid RegExp source: ' + str +
-                                    ' in URI catalog.',
-                                TP.LOG) : 0;
+                                    ' in URI catalog.') : 0;
 
                     continue;
                 }
@@ -2695,16 +2693,14 @@ function() {
     } else {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace(this.getID() +
-                            ' has no Last-Updated information',
-                        TP.LOG) : 0;
+                            ' has no Last-Updated information') : 0;
         return;
     }
 
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace(this.getID() +
                         ' returning cached Last-Updated: ' +
-                        theDate,
-                    TP.LOG) : 0;
+                        theDate) : 0;
 
     this.$set('lastUpdated', theDate);
 
@@ -7851,8 +7847,7 @@ function(forceRefresh) {
             this.set('nestedURI', url);
         } else {
             TP.ifWarn() ?
-                TP.warn('Invalid URI specification: ' + path,
-                        TP.LOG) : 0;
+                TP.warn('Invalid URI specification: ' + path) : 0;
 
             return;
         }
@@ -8016,7 +8011,7 @@ function(aRequest, filterResult) {
             err = TP.join(TP.sc('Unable to locate window '), canvas,
                         TP.sc(' for URI: '), this.getPath());
 
-            TP.ifWarn() ? TP.warn(err, TP.LOG) : 0;
+            TP.ifWarn() ? TP.warn(err) : 0;
 
             request.fail(err);
 
@@ -8956,15 +8951,13 @@ function(aURI, aRequest) {
         if (TP.notEmpty(localurl)) {
             TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                 TP.trace('Found local cache \'' + localurl +
-                                '\' for uri: ' + url,
-                            TP.LOG) : 0;
+                                '\' for uri: ' + url) : 0;
 
             duration = item.at('tibet:duration');
             if (TP.notEmpty(duration)) {
                 TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
                     TP.trace('Found cache duration \'' + duration +
-                                    '\' for uri: ' + url,
-                                TP.LOG) : 0;
+                                    '\' for uri: ' + url) : 0;
 
                 updated = item.at('tibet:updated');
                 if (TP.notEmpty(updated)) {
@@ -9039,14 +9032,13 @@ function(aURI, aRequest) {
     if (TP.notValid(newuri)) {
         TP.ifWarn() && TP.$$DEBUG && TP.$$VERBOSE ?
             TP.warn('Invalid rewrite uri: ' +
-                        newurl + '. Using ' + url,
-                    TP.LOG) : 0;
+                        newurl + '. Using ' + url) : 0;
 
         uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
     } else {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-            TP.trace('Found rewrite uri \'' + newurl + '\' for uri: ' + url,
-                        TP.LOG) : 0;
+            TP.trace('Found rewrite uri \'' + newurl + '\' for uri: ' + url) :
+            0;
 
         uri = newuri;
     }
@@ -9176,8 +9168,7 @@ function(aURI, aRequest) {
     //  otherwise we'll continue to default
     if (TP.isEmpty(mapping)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-            TP.trace('Returning default handler type: TP.core.URIHandler',
-                        TP.LOG) : 0;
+            TP.trace('Returning default handler type: TP.core.URIHandler') : 0;
 
         return uri.$getDefaultHandler(aRequest);
     }
@@ -9185,19 +9176,16 @@ function(aURI, aRequest) {
     handler = TP.sys.require(mapping);
     if (TP.notValid(handler)) {
         TP.ifWarn() ?
-            TP.warn('Unable to load handler: ' + mapping,
-                    TP.LOG) : 0;
+            TP.warn('Unable to load handler: ' + mapping) : 0;
 
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-            TP.trace('Returning default handler type: TP.core.URIHandler',
-                        TP.LOG) : 0;
+            TP.trace('Returning default handler type: TP.core.URIHandler') : 0;
 
         return uri.$getDefaultHandler(aRequest);
     }
 
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-        TP.trace('Found mapping \'' + mapping + '\' for uri: ' + url,
-                    TP.LOG) : 0;
+        TP.trace('Found mapping \'' + mapping + '\' for uri: ' + url) : 0;
 
     //  went to some trouble to come up with this, so cache it for next time
     map.atPut('handlerType', handler);
@@ -9703,6 +9691,9 @@ function(aURI, aDirection) {
         TP.$$nested_loader = false;
 
         url = TP.uriExpandHome(url);
+
+        //  Normalize last as well so we can compare apples to apples.
+        last = TP.uriExpandHome(last);
     }
 
     //  No change? No work to do.

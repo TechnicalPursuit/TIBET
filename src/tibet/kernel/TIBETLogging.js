@@ -2335,7 +2335,7 @@ function(argList, aLogLevel) {
         return false;
     }
 
-    name = TP.ifInvalid(aLogName, TP.LOG);
+    name = TP.ifInvalid(aLogName);
     level = TP.ifInvalid(aLogLevel, TP.sys.getLogLevel());
     iserr = (level > TP.WARN) && (level < TP.SYSTEM);
 

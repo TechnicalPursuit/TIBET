@@ -86,8 +86,7 @@ function(forceRefresh) {
                 }
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading the TIBET URIs.'),
-                        TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Error loading the TIBET URIs.')) : 0;
             }
         }
 
@@ -103,8 +102,8 @@ function(forceRefresh) {
                 }
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading the TIBET URIs file.'),
-                        TP.LOG) : 0;
+                    TP.error(TP.ec(e, 'Error loading the TIBET URIs file.')) :
+                    0;
             }
 
             if (TP.notValid(node)) {
@@ -161,8 +160,7 @@ function(forceRefresh) {
         TP.sys.$uriSTR = TP.nodeAsString(node);
     } catch (e) {
         TP.ifError() ?
-            TP.error(TP.ec(e, 'Error retrieving the TIBET URI XML.'),
-                TP.LOG) : 0;
+            TP.error(TP.ec(e, 'Error retrieving the TIBET URI XML.')) : 0;
     }
 
     return TP.sys.$uriSTR;
@@ -456,8 +454,7 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
                 TP.info('Skipping package: ' + aPackageName + ' target: ' +
                         (TP.notValid(aTarget) ? 'default' : aTarget) +
                         ' import. ' + 'Target \'' +
-                        aTarget + '\' already imported.',
-                        TP.LOG) : 0;
+                        aTarget + '\' already imported.') : 0;
 
             return 0;
         }
@@ -466,8 +463,7 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
     TP.ifInfo() ?
         TP.info('Importing package: ' + aPackageName +
                 ' target: ' + (TP.notValid(aTarget) ? 'default' : aTarget) +
-                ' from file: ' + file,
-                TP.LOG) : 0;
+                ' from file: ' + file) : 0;
 
     //  NOTE the TP.boot reference here, which means boot code must exist
     return TP.boot.$importPackage(file, aTarget, aBaseDir, sync);

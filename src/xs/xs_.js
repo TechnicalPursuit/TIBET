@@ -66,8 +66,7 @@ function(aValue, aNode) {
     }
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace(TP.annotate(node, 'xs: validating: ' + aValue),
-                    TP.LOG) : 0;
+        TP.trace(TP.annotate(node, 'xs: validating: ' + aValue)) : 0;
 
     //  simple check is whether there's an xsi:type attribute and a type to
     //  handle it
@@ -75,22 +74,19 @@ function(aValue, aNode) {
                                                         'xsi:type',
                                                         true))) {
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('found xsi:type ' + typeName,
-                        TP.LOG) : 0;
+            TP.trace('found xsi:type ' + typeName) : 0;
 
         if (TP.isType(type = TP.sys.require(typeName))) {
             return type.validate(aValue, aNode);
         }
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('xsi:type ' + typeName + ' not available',
-                        TP.LOG) : 0;
+            TP.trace('xsi:type ' + typeName + ' not available') : 0;
     } else if (node.namespaceURI === TP.w3.Xmlns.XFORMS &&
                 TP.notEmpty(typeName =
                                 TP.elementGetAttribute(node, 'type'))) {
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('found xforms:type ' + typeName,
-                        TP.LOG) : 0;
+            TP.trace('found xforms:type ' + typeName) : 0;
 
         //  secondary check (HACK) is for xforms:model/type attributes
         if (TP.isType(type = TP.sys.require(typeName))) {
@@ -98,8 +94,7 @@ function(aValue, aNode) {
         }
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('xforms:type ' + typeName + ' not available',
-                        TP.LOG) : 0;
+            TP.trace('xforms:type ' + typeName + ' not available') : 0;
     }
 
     //  next question is can we find the type definition in a schema file
@@ -107,8 +102,7 @@ function(aValue, aNode) {
     //  node has a namespace or not so we know which attribute to go after
     if (TP.isEmpty(node.namespaceURI)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-            TP.trace('no namespace uri',
-                        TP.LOG) : 0;
+            TP.trace('no namespace uri') : 0;
 
         if (TP.isAttributeNode(attr = TP.nodeEvaluateXPath(
                 node,
@@ -119,8 +113,7 @@ function(aValue, aNode) {
         }
     } else {
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('namespace uri ' + node.namespaceURI,
-                        TP.LOG) : 0;
+            TP.trace('namespace uri ' + node.namespaceURI) : 0;
 
         if (TP.isAttributeNode(attr = TP.nodeEvaluateXPath(
                 node,
@@ -145,49 +138,42 @@ function(aValue, aNode) {
     }
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace('uri ' + url,
-                    TP.LOG) : 0;
+        TP.trace('uri ' + url) : 0;
 
     if (TP.notValid(tpuri = TP.uc(url))) {
         TP.ifWarn() ?
-            TP.warn('Unable to resolve XML Schema URI: ' + url,
-                    TP.LOG) : 0;
+            TP.warn('Unable to resolve XML Schema URI: ' + url) : 0;
 
         return true;
     }
 
     if (TP.notValid(schema = tpuri.getNativeNode(TP.hc('async', false)))) {
         TP.ifWarn() ?
-            TP.warn('Unable to load XML Schema from URI: ' + url,
-                    TP.LOG) : 0;
+            TP.warn('Unable to load XML Schema from URI: ' + url) : 0;
 
         return true;
     }
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace(TP.annotate(schema, 'Schema: '),
-                    TP.LOG) : 0;
+        TP.trace(TP.annotate(schema, 'Schema: ')) : 0;
 
     //  try to find an element-level type definition if we don't have one
     //  already from xsi:type information. once we have this we can find the
     //  type definition referenced via the element tag
     if (TP.isEmpty(typeName)) {
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('empty typename',
-                        TP.LOG) : 0;
+            TP.trace('empty typename') : 0;
 
         typeName = node.nodeName;
 
         path = '//*[name() = "xs:element" and @name="' + typeName + '"]';
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('using element path: ' + path,
-                        TP.LOG) : 0;
+            TP.trace('using element path: ' + path) : 0;
 
         list = TP.nodeEvaluateXPath(schema, path, TP.NODESET);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('element path found ' + list.length + ' nodes',
-                        TP.LOG) : 0;
+            TP.trace('element path found ' + list.length + ' nodes') : 0;
 
         switch (list.length) {
             case 0:
@@ -195,8 +181,7 @@ function(aValue, aNode) {
                 //  none found, can't process
                 TP.ifWarn() ?
                     TP.warn('Unable to find XML Schema element: ' +
-                                typeName + ' in XML Schema: ' + url,
-                            TP.LOG) : 0;
+                                typeName + ' in XML Schema: ' + url) : 0;
 
                 return true;
 
@@ -204,8 +189,7 @@ function(aValue, aNode) {
 
                 //  one and only one, so we can use the type attribute
                 TP.ifTrace() && TP.$DEBUG ?
-                    TP.trace('found: ' + TP.nodeAsString(list.at(0)),
-                                TP.LOG) : 0;
+                    TP.trace('found: ' + TP.nodeAsString(list.at(0))) : 0;
 
                 typeName = TP.elementGetAttribute(list.at(0), 'type');
 
@@ -225,29 +209,25 @@ function(aValue, aNode) {
                 //  now)
                 TP.ifWarn() ?
                     TP.warn('Unsupported multi-element schema definition' +
-                                ' found for: ' + typeName,
-                            TP.LOG) : 0;
+                                ' found for: ' + typeName) : 0;
 
                 return true;
         }
     }
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace('Looking up schema definition',
-                    TP.LOG) : 0;
+        TP.trace('Looking up schema definition') : 0;
 
     //  now we try to find a simpleType or complexType definition node
     path = '//*[name() = "xs:simpleType" and @name = "' + typeName + '"]';
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace('using simpleType path: ' + path,
-                    TP.LOG) : 0;
+        TP.trace('using simpleType path: ' + path) : 0;
 
     list = TP.nodeEvaluateXPath(schema, path, TP.NODESET);
 
     TP.ifTrace() && TP.$DEBUG ?
-        TP.trace('using simpleType path found ' + list.length + ' nodes',
-                    TP.LOG) : 0;
+        TP.trace('using simpleType path found ' + list.length + ' nodes') : 0;
 
     if (TP.isEmpty(list)) {
         path = '//*[name() = "xs:complexType" and @name = "' +
@@ -255,8 +235,7 @@ function(aValue, aNode) {
                 '"]';
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('using complexType path: ' + path,
-                        TP.LOG) : 0;
+            TP.trace('using complexType path: ' + path) : 0;
 
         list = TP.nodeEvaluateXPath(schema,
                 '//*[name() = "xs:complexType" and @name = "' +
@@ -265,15 +244,13 @@ function(aValue, aNode) {
                 TP.NODESET);
 
         TP.ifTrace() && TP.$DEBUG ?
-            TP.trace('using complex path found ' + list.length + ' nodes',
-                        TP.LOG) : 0;
+            TP.trace('using complex path found ' + list.length + ' nodes') : 0;
     }
 
     if (TP.isEmpty(list)) {
         TP.ifWarn() ?
             TP.warn('Unable to resolve XML Schema type: ' + typeName +
-                        ' in XML Schema: ' + url,
-                    TP.LOG) : 0;
+                        ' in XML Schema: ' + url) : 0;
 
         return true;
     }
@@ -281,8 +258,7 @@ function(aValue, aNode) {
     if (TP.notValid(type = TP.sys.require(list.at(0).nodeName))) {
         TP.ifWarn() ?
             TP.warn('Unable to load/require XML Schema type: ' + typeName +
-                        ' in XML Schema: ' + url,
-                    TP.LOG) : 0;
+                        ' in XML Schema: ' + url) : 0;
 
         return true;
     }

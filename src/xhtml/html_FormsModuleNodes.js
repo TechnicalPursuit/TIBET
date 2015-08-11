@@ -242,8 +242,7 @@ function() {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(
                             TP.nodeCloneNode(list[i]),
-                            'Unable to acquire wrapper.'),
-                        TP.LOG) : 0;
+                            'Unable to acquire wrapper.')) : 0;
 
             continue;
         }
@@ -291,8 +290,7 @@ function(aValue) {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(
                             TP.nodeCloneNode(list[i]),
-                            'Unable to acquire wrapper.'),
-                        TP.LOG) : 0;
+                            'Unable to acquire wrapper.')) : 0;
 
             continue;
         }
@@ -1005,8 +1003,8 @@ function(aPosition) {
         TP.ifError() ?
             TP.error(
                 TP.ec(e,
-                    'Error focusing element when setting cursor position.'),
-                TP.LOG) : 0;
+                    'Error focusing element when setting cursor position.')) :
+                    0;
     }
 
     //  According to the spec, the end index is one character *after* the
@@ -1039,8 +1037,7 @@ function() {
         TP.ifError() ?
             TP.error(
                 TP.ec(e,
-                    'Error focusing element when setting cursor to end.'),
-                TP.LOG) : 0;
+                    'Error focusing element when setting cursor to end.')) : 0;
     }
 
     TP.documentCollapseSelection(this.getNativeDocument());
@@ -1071,8 +1068,8 @@ function() {
         TP.ifError() ?
             TP.error(
                 TP.ec(e,
-                    'Error focusing element when setting cursor to start.'),
-                TP.LOG) : 0;
+                    'Error focusing element when setting cursor to start.')) :
+                    0;
     }
 
     TP.documentCollapseSelection(this.getNativeDocument(), true);
@@ -4086,10 +4083,7 @@ function(aSignal, anItemset) {
 
     if (!TP.canInvoke(content, 'injectInto')) {
         TP.ifWarn() ?
-            TP.warn(TP.annotate(
-                        this,
-                        'Itemset content not a collection.'),
-                    TP.LOG) : 0;
+            TP.warn(TP.annotate(this, 'Itemset content not a collection.')) : 0;
 
         return;
     }
@@ -4178,10 +4172,7 @@ function(aSignal) {
 
     if (!TP.canInvoke(content, 'perform')) {
         TP.ifWarn() ?
-            TP.warn(TP.annotate(
-                        this,
-                        'Itemset is not a collection.'),
-                    TP.LOG) : 0;
+            TP.warn(TP.annotate(this, 'Itemset is not a collection.')) : 0;
 
         return;
     }

@@ -425,8 +425,7 @@ TP.hc(
                                     ' certificate?';
                     }
 
-                    TP.ifWarn() ?
-                        TP.warn(estr, TP.LOG) : 0;
+                    TP.ifWarn() ? TP.warn(estr) : 0;
                 } else {
                     //  throw so the outer catch block can handle it
                     throw e2;
