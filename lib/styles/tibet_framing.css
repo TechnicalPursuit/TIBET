@@ -48,6 +48,7 @@ div {
 
 .drawer {
     position: absolute;
+    overflow: hidden;
 }
 
 #home, #center, #content {
