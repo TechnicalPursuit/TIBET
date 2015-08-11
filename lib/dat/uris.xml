@@ -143,7 +143,7 @@
   <!-- Mapping for CouchDB servers running on the default port of 5984 whose
        URLs have *no* extension (so they are not attachments in a TIBETan
        CouchApp) -->
-  <delegateURI tibet:uriMatchString="http://.*:5984.*\/[^\?]*$"
+  <delegateURI tibet:uriMatchString="http://.*:5984.*\/[^.\?]*$"
     tibet:contenttype="TP.core.JSONContent"
     tibet:urihandler="TP.couchdb.CouchDBURLHandler"/>
 
