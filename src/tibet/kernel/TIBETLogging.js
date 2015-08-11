@@ -2278,11 +2278,11 @@ function(argList, aLogLevel) {
             if (TP.isValid(logger)) {
                 //  NOTE we trim off that argument so we don't log it below.
                 args = args.slice(1);
-            } else {
-                logger = APP.getDefaultLogger();
             }
         }
-    } else {
+    }
+
+    if (TP.notValid(logger)) {
         logger = APP.getDefaultLogger();
     }
 
