@@ -82,8 +82,23 @@
             #splitRightButton {
                 background-image: url("@{ide_root}/media/v_split_right.svg");
             }
-            #fullScreenButton {
-                background-image: url("@{ide_root}/media/full_screen.svg");
+            #allConsoleScreenButton {
+                border: solid 1px black;
+                background-color: black;
+
+                width: 8px;
+                height: 8px;
+                margin-top: 3px;
+                margin-left: 3px;
+            }
+            #allWorldScreenButton {
+                border: solid 1px black;
+                background-color: white;
+
+                width: 8px;
+                height: 8px;
+                margin-top: 3px;
+                margin-left: 3px;
             }
         }
 
@@ -178,7 +193,8 @@
             <div id="splitTopButton" class="toolbarButton" mode="h_split_top"/>
             <div id="splitLeftButton" class="toolbarButton" mode="v_split_left"/>
             <div id="splitRightButton" class="toolbarButton" mode="v_split_right"/>
-            <div id="fullScreenButton" class="toolbarButton" mode="fullscreen"/>
+            <div id="allConsoleScreenButton" class="toolbarButton" mode="allconsole"/>
+            <div id="allWorldScreenButton" class="toolbarButton" mode="allworld"/>
         </div>
 
       </div>

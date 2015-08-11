@@ -27,6 +27,28 @@ sherpa|world {
     overflow: auto;
 }
 
+/* All world */
+
+#center.all-world #content {
+
+    top: 0px;
+    left: 0px;
+
+    width: 0px;
+    height: 0px;
+}
+
+/* All console */
+
+#center.all-content #content {
+
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 100%;
+}
+
 /* Vertical splitting */
 
 #center.v-split-left sherpa|world {

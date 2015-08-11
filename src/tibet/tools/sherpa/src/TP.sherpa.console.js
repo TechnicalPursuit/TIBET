@@ -477,6 +477,9 @@ function(aMode) {
     switch (aMode) {
         case 'h_split_bottom':
 
+            TP.elementRemoveClass(centerElem, 'all-console');
+            TP.elementRemoveClass(centerElem, 'all-world');
+
             TP.elementRemoveClass(centerElem, 'v-split-left');
             TP.elementRemoveClass(centerElem, 'v-split-right');
             TP.elementRemoveClass(centerElem, 'h-split-top');
@@ -486,6 +489,9 @@ function(aMode) {
             break;
 
         case 'h_split_top':
+
+            TP.elementRemoveClass(centerElem, 'all-console');
+            TP.elementRemoveClass(centerElem, 'all-world');
 
             TP.elementRemoveClass(centerElem, 'v-split-left');
             TP.elementRemoveClass(centerElem, 'v-split-right');
@@ -497,6 +503,9 @@ function(aMode) {
 
         case 'v_split_left':
 
+            TP.elementRemoveClass(centerElem, 'all-console');
+            TP.elementRemoveClass(centerElem, 'all-world');
+
             TP.elementRemoveClass(centerElem, 'h-split-top');
             TP.elementRemoveClass(centerElem, 'h-split-bottom');
             TP.elementRemoveClass(centerElem, 'v-split-right');
@@ -507,6 +516,9 @@ function(aMode) {
 
         case 'v_split_right':
 
+            TP.elementRemoveClass(centerElem, 'all-console');
+            TP.elementRemoveClass(centerElem, 'all-world');
+
             TP.elementRemoveClass(centerElem, 'h-split-top');
             TP.elementRemoveClass(centerElem, 'h-split-bottom');
             TP.elementRemoveClass(centerElem, 'v-split-left');
@@ -515,13 +527,30 @@ function(aMode) {
 
             break;
 
-        case 'fullscreen':
-        default:
+        case 'allworld':
+
+            TP.elementRemoveClass(centerElem, 'all-console');
 
             TP.elementRemoveClass(centerElem, 'v-split-left');
             TP.elementRemoveClass(centerElem, 'v-split-right');
             TP.elementRemoveClass(centerElem, 'h-split-top');
             TP.elementRemoveClass(centerElem, 'h-split-bottom');
+
+            TP.elementAddClass(centerElem, 'all-world');
+
+            break;
+
+        case 'allconsole':
+        default:
+
+            TP.elementRemoveClass(centerElem, 'all-world');
+
+            TP.elementRemoveClass(centerElem, 'v-split-left');
+            TP.elementRemoveClass(centerElem, 'v-split-right');
+            TP.elementRemoveClass(centerElem, 'h-split-top');
+            TP.elementRemoveClass(centerElem, 'h-split-bottom');
+
+            TP.elementAddClass(centerElem, 'all-console');
 
             break;
     }
