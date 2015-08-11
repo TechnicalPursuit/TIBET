@@ -10,6 +10,11 @@
         "app_root": "~/attachments",
         "lib_root": "~/TIBET-INF/tibet"
     },
+    "escodegen": {
+        "format": {
+            "compact": true
+        }
+    },
     "couch": {
         "scheme": "http",
         "host": "127.0.0.1",

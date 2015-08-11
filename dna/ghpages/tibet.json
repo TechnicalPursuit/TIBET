@@ -6,5 +6,10 @@
     },
     "boot": {
         "profile": "standard.xml"
+    },
+    "escodegen": {
+        "format": {
+            "compact": true
+        }
     }
 }
