@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+	<title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:style type="less" href="tibet_demos.less"/>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+	<h2>Pouch Demo #1</h2><br/>
+	<br/>
+
+    <!--Status: <span id="status" bind:in="content:
+         tibet://uicanvas#tibet((#dbProvider).status)"/> -->
+
+    <button onclick="TP.byId('dbProvider').trigger()">Refresh it!</button>
+
+    <div>Databases:</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody id="people" bind:repeat="urn:tibet:dbData#tibet()" bind:editable="true">
+            <tr>
+                <td>[[value .% upperCase]]</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <tibet:service id="dbProvider"
+                    href="pouchdb://_all_dbs"
+                    result="urn:tibet:dbData"/>
+
+</body>
+</html>

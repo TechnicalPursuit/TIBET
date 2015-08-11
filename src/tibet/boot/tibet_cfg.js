@@ -610,6 +610,8 @@
     TP.sys.setcfg('path.app_xsl', '~app_inf/xsl');
     TP.sys.setcfg('path.lib_xsl', '~lib_lib/xsl');
 
+    TP.sys.setcfg('path.lib_demo', '~lib/demo');
+
     //  app-only virtual paths
     TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
     TP.sys.setcfg('path.app_change', '~app_src/changes');
