@@ -107,7 +107,7 @@ function(aSignal) {
         data,
 
         path,
-        origin,
+        root,
 
         fileName,
 
@@ -136,15 +136,16 @@ function(aSignal) {
         return;
     }
 
-    //  The origin comes from the SSE data and will be server URL, minus the
-    //  actual file path.
-    origin = payload.at('origin').asString();
+    //  Get the root of our watch activity since all paths are provided relative
+    //  to the watch root.
+    root = TP.sys.cfg('tds.watch.root');
+    root = TP.uriExpandPath(root);
 
     //  Strip any enclosing quotes from the path.
     path = path.asString().stripEnclosingQuotes();
 
     //  Join the two together to form the full URL path
-    fileName = TP.uriJoinPaths(origin, path);
+    fileName = TP.uriJoinPaths(root, path);
 
     //  If we can successfully create a URL from the data, then process the
     //  change.
