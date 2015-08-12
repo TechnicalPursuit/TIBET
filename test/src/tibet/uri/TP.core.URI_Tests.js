@@ -449,6 +449,41 @@ function() {
 
     //  ---
 
+    this.it('TIBETURL: Retrieve TP.core.AttributeNode using TIBET-extended XPointer barename - extra slash', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas/#top_background@id').getResource(params).getNativeNode(),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false).getAttributeNode('id'),
+            TP.sc('tibet://uicanvas/#top_background@id should find the' +
+                    ' attribute with value "top_background" in the current UI' +
+                    ' canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.AttributeNode using TIBET-extended XPointer barename - extra tibet://uicanvas/', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.uc('tibet://uicanvas#top_background@id').getResource(params).getNativeNode(),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false).getAttributeNode('id'),
+            TP.sc('tibet://uicanvas#top_background@id should find the' +
+                    ' attribute with value "top_background" in the current UI' +
+                    ' canvas.'));
+    });
+
+    //  ---
+
+    this.it('TIBETURL: Retrieve TP.core.AttributeNode using TIBET-extended XPointer barename', function(test, options) {
+
+        test.assert.isIdenticalTo(
+            TP.uc('#top_background@id').getResource(params).getNativeNode(),
+            TP.byId('top_background', test.getDriver().get('windowContext'), false).getAttributeNode('id'),
+            TP.sc('#top_background@id should find the attribute with' +
+                    ' value "top_background" in the current UI canvas.'));
+    });
+
+    //  ---
+
     this.it('TIBETURL: Retrieve Element using XPointer barename and TP.DOM result type - extra slash', function(test, options) {
 
         var newParams;
