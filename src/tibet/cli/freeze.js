@@ -266,6 +266,14 @@ Cmd.prototype.execute = function() {
             this.error('Error cloning tibet/test: ' + err);
             return 1;
         }
+
+        this.log('freezing raw library demos...');
+        sh.cp('-R', path.join(app_npm, 'tibet', 'demo'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/demo: ' + err);
+            return 1;
+        }
     } else {
         this.log('freezing developer tool resources...');
         sh.mkdir('-p', path.join(infroot, 'src', 'tibet', 'tools'));
