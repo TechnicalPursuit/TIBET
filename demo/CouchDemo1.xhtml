@@ -38,7 +38,7 @@
              with the bind:repeat attribute that will pluck each named field out
              of each record as it iterates. Also, it is executed through a
              formatter that will upper case each value entry. -->
-        <tbody id="people" bind:repeat="urn:tibet:dbData#tibet()" bind:editable="true">
+        <tbody id="people" bind:repeat="urn:tibet:dbData#tibet()">
             <tr>
                 <td>[[value .% upperCase]]</td>
             </tr>

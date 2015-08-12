@@ -2878,11 +2878,13 @@ TP.regex.ATTRIBUTE_ALL = /^@\*/;
 //  Detect text() at end
 TP.regex.TEXT_NODE_ENDS = /\/text\(\)$/;
 
-//  Detect starts with #, followed by word characters
+//  Detect starts with #, followed by word characters. Also, TIBET's extension
+//  to barenames (a trailing '@expr') allows access to Attributes.
 TP.regex.BARENAME = new RegExp(
-                        '^#(' +
-                        '(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*' +
-                        ')$');
+                    '^#(' +
+                    '(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*' +
+                    '(@(' + TP.XML_NCNAME + ')(' + TP.XML_NCNAMECHAR + ')*)*' +
+                    ')$');
 
 TP.regex.DOCUMENT_ID = /#document$/;
 TP.regex.ELEMENT_ID = /(.*)#(.*)/;
