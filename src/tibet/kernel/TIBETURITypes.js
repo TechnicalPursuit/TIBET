@@ -3044,7 +3044,7 @@ function(aRequest, aResult, aResource) {
 
         if (TP.regex.DOCUMENT_ID.test(fragment) ||
                 TP.regex.BARENAME.test(fragment)) {
-            fragment = fragment;
+            //  empty
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
             //  Note that we don't worry about setting the path to collapse
             //  results here, since we collapse whatever we got below.
@@ -4007,7 +4007,7 @@ function(aRequest, aResult, aResource) {
 
         if (TP.regex.DOCUMENT_ID.test(fragment) ||
                 TP.regex.BARENAME.test(fragment)) {
-            fragment = fragment;
+            //  empty
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
             fragment = TP.apc(fragment, TP.hc('shouldCollapse', true));
             fragment.set('shouldMakeStructures',
