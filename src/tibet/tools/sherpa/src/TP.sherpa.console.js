@@ -871,6 +871,7 @@ function() {
     styleVals = TP.elementGetStyleValuesInPixels(
                     this.getNativeNode(),
                     TP.ac('borderTopWidth', 'borderBottomWidth',
+                            'marginTop', 'marginBottom',
                             'paddingTop', 'paddingBottom',
                             'bottom'));
 
@@ -882,6 +883,8 @@ function() {
                         editorHeight +
                         styleVals.at('borderTopWidth') +
                         styleVals.at('borderBottomWidth') +
+                        styleVals.at('marginTop') +
+                        styleVals.at('marginBottom') +
                         styleVals.at('paddingTop') +
                         styleVals.at('paddingBottom') +
                         styleVals.at('bottom'));
