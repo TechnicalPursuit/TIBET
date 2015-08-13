@@ -324,7 +324,6 @@ div {
 #center {
     border: 1px solid #666;
     background-color: #ddd;
-    min-width: 600px;
 
     overflow: hidden;
 
