@@ -2368,6 +2368,49 @@ function(aJoinKey) {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Request.Inst.defineMethod('getDescendantJoins',
+function(aJoinKey) {
+
+    /**
+     * @method getDescendantJoins
+     * @summary Returns the joined requests which will be checked during join
+     *     processing to see if the receiver 'hasJoined'.
+     * @param {String} aJoinKey The key to look up, which should be either the
+     *     TP.AND or TP.OR constant.
+     * @returns {Array} The current and-joined or or-joined requests.
+     */
+
+    var childJoins,
+
+        len,
+        i,
+
+        result;
+
+    if (TP.isEmpty(aJoinKey)) {
+        return this.raise('TP.sig.InvalidParameter', 'No valid join key.');
+    }
+
+    //  Get all of the child joins under a particular key (AND or OR)
+    childJoins = this.getChildJoins(aJoinKey);
+    len = childJoins.getSize();
+
+    //  Loop over them and recursively call this method on the found child
+    //  joins, concatenating them all up together into a single Array.
+    result = TP.ac();
+    if (TP.notEmpty(childJoins)) {
+        for (i = 0; i < len; i++) {
+            result = result.concat(
+                        childJoins.at(i),
+                        childJoins.at(i).getDescendantJoins(aJoinKey));
+        }
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Request.Inst.defineMethod('getJoins',
 function(aJoinKey, aRequest) {
 
