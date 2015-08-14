@@ -2601,6 +2601,9 @@ function(aHandlerName, aHandler) {
      */
 
     var name,
+        signame,
+        origin,
+        type,
         match;
 
     if (!TP.isString(aHandlerName)) {
@@ -2622,6 +2625,24 @@ function(aHandlerName, aHandler) {
 
     //  Throw out any handler cache, we just defined a new one.
     this.$set('$$handlers', null);
+
+    //  Build up signal name used to try to get a handle to a signal type.
+    signame = TP.ifInvalid(match[1], 'TP.ANY');
+    if (/\.sig\./.test(signame) || signame === 'TP.ANY') {
+        signame = signame;
+    } else {
+        signame = 'TP.sig.' + signame;
+    }
+
+    //  See if we need to observe in order to be notified...
+    type = TP.sys.getTypeByName(signame);
+    if (TP.isValid(type)) {
+        //  Responder signals don't need to register. All others do.
+        if (!TP.isKindOf(type, TP.sig.ResponderSignal)) {
+            origin = TP.ifInvalid(match[3], TP.ANY);
+            this.observe(origin, signame);
+        }
+    }
 
     // Simple method definition.
     this.defineMethod(name, aHandler);
