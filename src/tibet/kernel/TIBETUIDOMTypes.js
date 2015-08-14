@@ -2896,7 +2896,8 @@ function(attributeName, attributeValue, shouldSignal) {
 
         //  Now, in case anyone is bound to this attribute, wrap it, configure
         //  it to signal Change and send it.
-        attrTPNode = TP.wrap(TP.elementGetAttributeNode(node, attributeName));
+        attrTPNode = TP.wrap(
+                        TP.elementGetAttributeNode(node, attributeName, true));
         attrTPNode.shouldSignalChange(true);
         attrTPNode.changed('value', TP.UPDATE);
     }
