@@ -2256,6 +2256,20 @@ function(targetPhase, targetPhaseList) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('hasWindow',
+function() {
+
+    /**
+     * @method hasWindow
+     * @summary Returns whether or not the receiver is in a Window.
+     * @returns {Boolean} Whether or not the receiver is in a Window.
+     */
+
+    return TP.isWindow(this.getNativeWindow());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('identicalTo',
 function(aNode) {
 
