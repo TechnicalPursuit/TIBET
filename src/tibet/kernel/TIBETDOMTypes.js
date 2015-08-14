@@ -12958,6 +12958,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AttributeNode.Inst.defineMethod('getOwnerElement',
+function() {
+
+    /**
+     * @method getOwnerElement
+     * @summary Returns the receiver's owner element as a TP.core.ElementNode.
+     * @returns {TP.core.ElementNode} The owner element of the receiver.
+     */
+
+    return TP.wrap(TP.attributeGetOwnerElement(this.getNativeNode()));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AttributeNode.Inst.defineMethod('getTextContent',
 function() {
 
@@ -12972,6 +12986,32 @@ function() {
     node = this.getNativeNode();
 
     return node.value;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttributeNode.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For attribute nodes,
+     *     this calls 'setAttribute' with the attribute name on the owner
+     *     element.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.core.Node} The receiver.
+     */
+
+    var newValue;
+
+    newValue = this.produceValue(aValue);
+
+    return this.getOwnerElement().setAttribute(
+                                        this.getNativeNode().nodeName,
+                                        newValue);
+
 });
 
 //  ========================================================================
