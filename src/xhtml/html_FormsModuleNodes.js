@@ -2864,6 +2864,29 @@ function() {
     return false;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckbox.Inst.defineMethod('$generateSelectionHashFrom',
+function(aValue) {
+
+    /**
+     * @method $generateSelectionHashFrom
+     * @summary Returns a Hash that is driven off of the supplied value which
+     *     can then be used to set the receiver's selection.
+     * @returns {TP.core.Hash} A Hash that is populated with data from the
+     *     supplied value that can be used for manipulating the receiver's
+     *     selection.
+     */
+
+    //  If the value is just true, then populate a selection hash with the word
+    //  'on' in it.
+    if (aValue === true) {
+        return TP.hc('on', '');
+    }
+
+    return this.callNextMethod();
+});
+
 //  ========================================================================
 //  TP.html.inputEmail
 //  ========================================================================
