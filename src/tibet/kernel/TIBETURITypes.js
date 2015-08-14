@@ -3670,6 +3670,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     //  resource is async-only and potentially rewrote the value.
     async = this.rewriteRequestMode(subrequest);
     if (async) {
+        aRequest.andJoinChild(subrequest);
+
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
@@ -4213,6 +4215,8 @@ function(aDataSource, aRequest) {
     //  resource is async-only and potentially rewrote the value.
     async = this.rewriteRequestMode(subrequest);
     if (async) {
+        aRequest.andJoinChild(subrequest);
+
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
@@ -5250,6 +5254,8 @@ function(aRequest) {
     //  resource is async-only and potentially rewrote the value.
     async = this.rewriteRequestMode(subrequest);
     if (async) {
+        aRequest.andJoinChild(subrequest);
+
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
@@ -5520,6 +5526,8 @@ function(aRequest, filterResult) {
     }
 
     if (async) {
+        aRequest.andJoinChild(subrequest);
+
         //  if we have a response we must have done a refresh, otherwise
         //  we're working with whatever data we had cached. In that case we
         //  need to construct a response wrapping that value so we can fake
@@ -5929,6 +5937,8 @@ function(aRequest) {
     //  request mode on us.
     async = this.rewriteRequestMode(subrequest);
     if (async) {
+        aRequest.andJoinChild(subrequest);
+
         //  if we're async then the data may not be ready, we need to return
         //  a viable response object instead.
         if (TP.canInvoke(aRequest, 'constructResponse')) {
