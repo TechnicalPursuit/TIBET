@@ -2825,7 +2825,9 @@ function(attributeName, attributeValue, shouldSignal) {
         prefix,
         name,
 
-        url;
+        url,
+
+        attrTPNode;
 
     node = this.getNativeNode();
 
@@ -2891,6 +2893,12 @@ function(attributeName, attributeValue, shouldSignal) {
                             TP.elementGetAttribute(node, attributeName, true),
                             TP.NEWVAL,
                             attributeValue));
+
+        //  Now, in case anyone is bound to this attribute, wrap it, configure
+        //  it to signal Change and send it.
+        attrTPNode = TP.wrap(TP.elementGetAttributeNode(node, attributeName));
+        attrTPNode.shouldSignalChange(true);
+        attrTPNode.changed('value', TP.UPDATE);
     }
 
     //  setAttribute returns void according to the spec
