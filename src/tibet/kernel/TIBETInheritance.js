@@ -8363,9 +8363,16 @@ function(aspectName, facetName, facetValue, shouldSignal) {
 
     var funcName;
 
-    //  First, check to see if the receiver provides a 'custom setter' method
-    //  for this facet/aspect combination. Something like 'setSSNRequired'.
-    funcName = 'set' + aspectName.asStartUpper() + facetName.asStartUpper();
+    //  If both the aspect name and the facet name are 'value', then just look
+    //  for 'setValue' (not 'setValueValue' ;-) ).
+    if (aspectName === 'value' && facetName === 'value') {
+        funcName = 'setValue';
+    } else {
+        //  First, check to see if the receiver provides a 'custom setter'
+        //  method for this facet/aspect combination. Something like
+        //  'setSSNRequired'.
+        funcName = 'set' + aspectName.asStartUpper() + facetName.asStartUpper();
+    }
 
     if (TP.canInvoke(this, funcName)) {
         this[funcName](facetValue);
