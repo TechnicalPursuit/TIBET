@@ -2034,9 +2034,22 @@ function(anObject, assignIfAbsent) {
         elem = obj.parentNode;
 
         if (TP.isAttributeNode(obj)) {
-            globalID = '#xpath1(./@' + TP.attributeGetLocalName(obj) + ')';
             //  Reset the element here to the attribute's owner element.
             elem = TP.attributeGetOwnerElement(obj);
+
+            //  Grab the owner element's global ID and slice off from the
+            //  beginning through the '#'. This will give us the 'primary URI'.
+            globalID = TP.gid(elem, true);
+            globalID = globalID.slice(0, globalID.lastIndexOf('#'));
+
+            //  Construct an 'xpath1' XPointer that causes the traversal to the
+            //  Element and then down to the attribute.
+            globalID += '#xpath1(//*[@id=\'' + TP.lid(elem, true) + '\']' +
+                        '/@' + TP.attributeGetLocalName(obj) + ')';
+
+            //  Set elem to 'null' here as we've already computed the element's
+            //  ID and don't want further content.
+            elem = null;
         } else if (TP.isTextNode(obj)) {
             globalID = '#xpath1(./text()[contains(.,\'' +
                 TP.nodeGetTextContent(obj) + '\')])';
