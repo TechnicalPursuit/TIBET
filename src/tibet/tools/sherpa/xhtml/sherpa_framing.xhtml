@@ -179,7 +179,7 @@
         <div id="logLevelInfo" class="info"/>
 
         <!-- The markup used for command toolbar -->
-        <div id="SherpaConsoleCommandToolbar" pclass:hidden="true" tibet:handler="SherpaConsoleService">
+        <div id="SherpaConsoleCommandToolbar" pclass:hidden="true" tibet:ctrl="SherpaConsoleService">
             <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})"/>
             <div id="watchButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':toggleRemoteWatch'})"/>
         </div>
@@ -201,7 +201,7 @@
   </div>
 
   <div id="northeast" class="framing corner north east" pclass:hidden="true">
-    <div class="drawer"></div>
+    <div class="drawer" tibet:ctrl="TP.sherpa.ctrl"></div>
   </div>
 
   <div id="west" class="framing v-edge middle west" pclass:hidden="true">

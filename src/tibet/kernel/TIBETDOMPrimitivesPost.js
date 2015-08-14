@@ -5669,27 +5669,25 @@ function(aNode, joinChar) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeGetHandlerElement',
+TP.definePrimitive('nodeGetResponderElement',
 function(aNode) {
 
     /**
-     * @method nodeGetHandlerElement
-     * @summary Finds the 'handler' element for aNode and returns it. This is
+     * @method nodeGetResponderElement
+     * @summary Finds the 'responder' element for aNode and returns it. This is
      *     typically invoked by DOM elements during event processing which
-     *     requires them to find a handler to handle an event.
+     *     requires them to find a responder to handle an event.
      * @param {Node} aNode The DOM node to operate on.
      * @returns {Element} A valid element or null.
      */
 
     if (TP.isElement(aNode) &&
         (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
-            TP.elementHasAttribute(aNode, 'tibet:ctrl', true) ||
-            TP.elementHasAttribute(aNode, 'tibet:handler', true))) {
+            TP.elementHasAttribute(aNode, 'tibet:ctrl', true))) {
         return aNode;
     }
 
-    return TP.nodeGetFirstAncestorByAttribute(
-                            aNode, 'tibet:tag tibet:ctrl tibet:handler');
+    return TP.nodeGetFirstAncestorByAttribute(aNode, 'tibet:tag tibet:ctrl');
 });
 
 //  ------------------------------------------------------------------------
