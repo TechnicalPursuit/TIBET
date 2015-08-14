@@ -1918,12 +1918,30 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
      * @returns {Object} The handler function's results.
      */
 
-    var handlerFunc;
+    var handlerFunc,
+        target;
 
     handlerFunc = this.getHandler(
         aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
+
     if (TP.isCallable(handlerFunc)) {
         return handlerFunc.call(this, aSignal);
+    } else if (TP.isKindOf(this, TP.core.Node)) {
+        //  TODO: This is a hack to make binding to Nodes inside of a GUI page
+        //  (i.e. to an attribute of an actual visible Element). In this case,
+        //  when bindings are set up, the 'handleValue' handler is set up on the
+        //  URI, not the node itself. So we check for that here - is signal
+        //  handler for the supplied signal available on the URI? If so, we
+        //  execute it... *but within the context of 'this'* - which should be
+        //  that resource's URI.
+        if (this.hasWindow()) {
+            target = TP.uc(TP.gid(this));
+            handlerFunc = target.getHandler(
+                aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
+            if (TP.isCallable(handlerFunc)) {
+                return handlerFunc.call(this, aSignal);
+            }
+        }
     }
 
     return;
