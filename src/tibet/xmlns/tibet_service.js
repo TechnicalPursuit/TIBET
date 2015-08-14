@@ -55,6 +55,11 @@ function(aRequest) {
         tpElem.trigger();
     }
 
+    tpElem.setAttribute('statuscode', '');
+    tpElem.setAttribute('statustext', '');
+
+    tpElem.setAttribute('autorefresh', 'false');
+
     tpElem.shouldSignalChange(true);
 
     return;
