@@ -453,17 +453,18 @@ function() {
     request.defineMethod('handleRequestFailed',
         function(aResponse) {
 
-            var errorRecord;
+            var errorRecord,
 
-            if (TP.isKindOf(this, TP.sig.HTTPRequest)) {
-                //  TODO: This is a bit hackish and assumes that the request was
-                //  an HTTP request.
-                errorRecord = TP.hc(
-                    'code', thisArg.$getHTTPRequestStatusCode(this),
-                    'text', thisArg.$getHTTPRequestResponseText(this));
-            } else {
-                errorRecord = TP.hc();
-            }
+                statusCode,
+                statusText;
+
+            //  If this wasn't an HTTP request, these will return null.
+            statusCode = thisArg.$getHTTPRequestStatusCode(this);
+            statusText = thisArg.$getHTTPRequestStatusText(this);
+
+            //  TODO: This is a bit hackish and assumes that the request was
+            //  an HTTP request.
+            errorRecord = TP.hc('code', statusCode, 'text', statusText);
 
             thisArg.signal('TP.sig.UIDataFailed', errorRecord);
         });
