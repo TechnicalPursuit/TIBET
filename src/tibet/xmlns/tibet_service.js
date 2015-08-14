@@ -55,14 +55,15 @@ function(aRequest) {
         tpElem.trigger();
     }
 
+    tpElem.setAttribute('statuscode', '');
+    tpElem.setAttribute('statustext', '');
+
+    tpElem.setAttribute('autorefresh', 'false');
+
+    tpElem.shouldSignalChange(true);
+
     return;
 });
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineAttribute('status');
 
 //  ------------------------------------------------------------------------
 //  TEMPORARY METHODS
@@ -71,25 +72,47 @@ TP.tibet.service.Inst.defineAttribute('status');
 TP.tibet.service.Inst.defineMethod('$getHTTPRequestStatusCode',
 function(aRequest) {
 
+    var descendantJoins,
+
+        i,
+        join;
+
     //  TODO: A hack until we can get this fixed in request/response
 
-    return aRequest.getChildJoins(TP.AND).
-                                    first().
-                                    getResponse().
-                                    getResponseStatusCode();
+    descendantJoins = aRequest.getDescendantJoins(TP.AND);
+
+    for (i = 0; i < descendantJoins.getSize(); i++) {
+        join = descendantJoins.at(i);
+        if (TP.isKindOf(join, TP.sig.HTTPRequest)) {
+            return join.getResponse().getResponseStatusCode();
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('$getHTTPRequestResponseText',
+TP.tibet.service.Inst.defineMethod('$getHTTPRequestStatusText',
 function(aRequest) {
+
+    var descendantJoins,
+
+        i,
+        join;
 
     //  TODO: A hack until we can get this fixed in request/response
 
-    return aRequest.getChildJoins(TP.AND).
-                                    first().
-                                    getResponse().
-                                    getResponseText();
+    descendantJoins = aRequest.getDescendantJoins(TP.AND);
+
+    for (i = 0; i < descendantJoins.getSize(); i++) {
+        join = descendantJoins.at(i);
+        if (TP.isKindOf(join, TP.sig.HTTPRequest)) {
+            return join.getResponse().getResponseStatusText();
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -182,8 +205,6 @@ function(refreshValue) {
         uri,
         val;
 
-    this.$setAttribute('autorefresh', refreshValue);
-
     //  Make sure that a main href is available and a URI can be created from
     //  it.
     if (TP.notEmpty(href = this.getAttribute('href'))) {
@@ -204,6 +225,8 @@ function(refreshValue) {
     } else {
         this.ignore(uri, 'TP.sig.ValueChange');
     }
+
+    this.$setAttribute('autorefresh', val);
 
     //  setting an attribute returns void according to the spec
     return;
@@ -430,19 +453,34 @@ function() {
     request.defineMethod('handleRequestFailed',
         function(aResponse) {
 
-            var errorRecord;
+            var errorRecord,
 
-            if (TP.isKindOf(this, TP.sig.HTTPRequest)) {
-                //  TODO: This is a bit hackish and assumes that the request was
-                //  an HTTP request.
-                errorRecord = TP.hc(
-                    'code', thisArg.$getHTTPRequestStatusCode(this),
-                    'text', thisArg.$getHTTPRequestResponseText(this));
-            } else {
-                errorRecord = TP.hc();
-            }
+                statusCode,
+                statusText;
+
+            //  If this wasn't an HTTP request, these will return null.
+            statusCode = thisArg.$getHTTPRequestStatusCode(this);
+            statusText = thisArg.$getHTTPRequestStatusText(this);
+
+            //  TODO: This is a bit hackish and assumes that the request was
+            //  an HTTP request.
+            errorRecord = TP.hc('code', statusCode, 'text', statusText);
 
             thisArg.signal('TP.sig.UIDataFailed', errorRecord);
+        });
+
+    request.defineMethod('handleRequestCompleted',
+        function(aResponse) {
+
+            var statusCode,
+                statusText;
+
+            //  If this wasn't an HTTP request, these will return null.
+            statusCode = thisArg.$getHTTPRequestStatusCode(this);
+            statusText = thisArg.$getHTTPRequestStatusText(this);
+
+            thisArg.setAttribute('statuscode', statusCode);
+            thisArg.setAttribute('statustext', statusText);
         });
 
     dataWillSendSignal = this.signal('TP.sig.UIDataWillSend');
