@@ -7,6 +7,10 @@ HTML stub file */
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
+#south.center .drawer {
+    background: #3f3f3f;
+}
+
 sherpa|console {
 
     display: block;
@@ -27,9 +31,9 @@ sherpa|console {
     /* This should match TIBET's CONSOLE_TIER constant */
     z-index: 15000;
 
-    border: 1px solid #AAAAAA;
-    border-radius: 4px;
-    background: #444444;
+    /*border: 1px solid #AAAAAA;*/
+    border-radius: 3px;
+    background: #3f3f3f;
     padding: 1px;
     padding-bottom: 3px;
 
@@ -44,7 +48,7 @@ sherpa|console[pclass|hidden] {
 
 sherpa|console > xctrls|codeeditor {
 
-    border-radius: 5px;
+    border-radius: 3px;
 }
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
@@ -93,7 +97,7 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
     background-color: #3F3F3F;
 
     font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
-    font-size: 85%;
+    font-size: 92%;
 
     text-align: left;
 
@@ -128,6 +132,10 @@ span[name="inputEntry"] {
 
     min-height: -webkit-min-content;
     min-height: -moz-min-content;
+}
+
+#SherpaConsoleOutput .inputcell {
+    font-size: inherit;
 }
 
 .inputcell {
@@ -182,6 +190,9 @@ span[name="inputEntry"] {
     white-space: pre-wrap;
 }
 
+#SherpaConsoleOutput .outputcell {
+    font-size: inherit;
+}
 
 .outputcell {
     padding: 2px 0;
