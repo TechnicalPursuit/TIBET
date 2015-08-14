@@ -2347,23 +2347,23 @@ function(aJoinKey) {
     var joins,
         list;
 
+    if (TP.isEmpty(aJoinKey)) {
+        return this.raise('TP.sig.InvalidParameter', 'No valid join key.');
+    }
+
     joins = this.$get('childJoins');
     if (TP.notValid(joins)) {
         joins = TP.hc();
         this.$set('childJoins', joins);
     }
 
-    if (TP.notEmpty(aJoinKey)) {
-        list = joins.at(aJoinKey);
-        if (TP.notValid(list)) {
-            list = TP.ac();
-            joins.atPut(aJoinKey, list);
-        }
-
-        return list;
+    list = joins.at(aJoinKey);
+    if (TP.notValid(list)) {
+        list = TP.ac();
+        joins.atPut(aJoinKey, list);
     }
 
-    return joins;
+    return list;
 });
 
 //  ------------------------------------------------------------------------
@@ -2385,23 +2385,23 @@ function(aJoinKey, aRequest) {
     var joins,
         list;
 
+    if (TP.isEmpty(aJoinKey)) {
+        return this.raise('TP.sig.InvalidParameter', 'No valid join key.');
+    }
+
     joins = this.$get('peerJoins');
     if (TP.notValid(joins)) {
         joins = TP.hc();
         this.$set('peerJoins', joins);
     }
 
-    if (TP.isValid(aJoinKey)) {
-        list = joins.at(aJoinKey);
-        if (TP.notValid(list)) {
-            list = TP.ac();
-            joins.atPut(aJoinKey, list);
-        }
-
-        return list;
+    list = joins.at(aJoinKey);
+    if (TP.notValid(list)) {
+        list = TP.ac();
+        joins.atPut(aJoinKey, list);
     }
 
-    return joins;
+    return list;
 });
 
 //  ------------------------------------------------------------------------
@@ -2421,23 +2421,23 @@ function(aJoinKey) {
     var joins,
         list;
 
+    if (TP.isEmpty(aJoinKey)) {
+        return this.raise('TP.sig.InvalidParameter', 'No valid join key.');
+    }
+
     joins = this.$get('parentJoins');
     if (TP.notValid(joins)) {
         joins = TP.hc();
         this.$set('parentJoins', joins);
     }
 
-    if (TP.notEmpty(aJoinKey)) {
-        list = joins.at(aJoinKey);
-        if (TP.notValid(list)) {
-            list = TP.ac();
-            joins.atPut(aJoinKey, list);
-        }
-
-        return list;
+    list = joins.at(aJoinKey);
+    if (TP.notValid(list)) {
+        list = TP.ac();
+        joins.atPut(aJoinKey, list);
     }
 
-    return joins;
+    return list;
 });
 
 //  ------------------------------------------------------------------------
@@ -2624,6 +2624,8 @@ function(aRequest, aState, childJoin) {
     //  NOTE that when we're defining joins to check upon wrapup we are
     //  looking at our peers and parents in terms of other requests which
     //  should be notified.
+    //  TODO: These calls normally take TP.AND or TP.OR... is 'state' correct
+    //  here?
     list = TP.isTrue(childJoin) ? this.getParentJoins(state) :
                                 this.getJoins(state);
     list.push(aRequest);
@@ -2937,6 +2939,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     //  after checking for peer requests we also want to look for parent
     //  requests which care about either our exact status code (success vs.
     //  failure), or which care simply that we're done processing.
+
+    //  TODO: These calls normally take TP.AND or TP.OR... is 'state' correct
+    //  here?
     joins = this.getParentJoins(
                     TP.ifInvalid(aState, this.get('statusCode'))).addAll(
                             this.getParentJoins(TP.COMPLETED)).unique();
