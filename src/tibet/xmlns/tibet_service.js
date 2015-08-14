@@ -72,25 +72,47 @@ function(aRequest) {
 TP.tibet.service.Inst.defineMethod('$getHTTPRequestStatusCode',
 function(aRequest) {
 
+    var descendantJoins,
+
+        i,
+        join;
+
     //  TODO: A hack until we can get this fixed in request/response
 
-    return aRequest.getChildJoins(TP.AND).
-                                    first().
-                                    getResponse().
-                                    getResponseStatusCode();
+    descendantJoins = aRequest.getDescendantJoins(TP.AND);
+
+    for (i = 0; i < descendantJoins.getSize(); i++) {
+        join = descendantJoins.at(i);
+        if (TP.isKindOf(join, TP.sig.HTTPRequest)) {
+            return join.getResponse().getResponseStatusCode();
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('$getHTTPRequestResponseText',
+TP.tibet.service.Inst.defineMethod('$getHTTPRequestStatusText',
 function(aRequest) {
+
+    var descendantJoins,
+
+        i,
+        join;
 
     //  TODO: A hack until we can get this fixed in request/response
 
-    return aRequest.getChildJoins(TP.AND).
-                                    first().
-                                    getResponse().
-                                    getResponseText();
+    descendantJoins = aRequest.getDescendantJoins(TP.AND);
+
+    for (i = 0; i < descendantJoins.getSize(); i++) {
+        join = descendantJoins.at(i);
+        if (TP.isKindOf(join, TP.sig.HTTPRequest)) {
+            return join.getResponse().getResponseStatusText();
+        }
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
