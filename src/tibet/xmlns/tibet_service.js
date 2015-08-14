@@ -205,8 +205,6 @@ function(refreshValue) {
         uri,
         val;
 
-    this.$setAttribute('autorefresh', refreshValue);
-
     //  Make sure that a main href is available and a URI can be created from
     //  it.
     if (TP.notEmpty(href = this.getAttribute('href'))) {
@@ -227,6 +225,8 @@ function(refreshValue) {
     } else {
         this.ignore(uri, 'TP.sig.ValueChange');
     }
+
+    this.$setAttribute('autorefresh', val);
 
     //  setting an attribute returns void according to the spec
     return;
