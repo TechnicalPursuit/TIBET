@@ -3609,7 +3609,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     //  hold a this reference the functions below can close around.
     thisref = this;
 
-    subrequest.defineMethod('completeJob',
+    subrequest.defineMethod(
+        'completeJob',
         function(aResult) {
 
             var result;
@@ -3634,7 +3635,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
             }
         });
 
-    subrequest.defineMethod('failJob',
+    subrequest.defineMethod(
+        'failJob',
         function(aFaultString, aFaultCode, aFaultInfo) {
 
             var info,
