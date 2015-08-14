@@ -552,6 +552,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
      */
 
     var resource,
+
+        finalTarget,
+
         sourceAttr,
 
         facetName,
@@ -584,6 +587,12 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     if (TP.notValid(resource)) {
         return this.raise('TP.sig.InvalidResource',
             'No resource spec provided for bind.');
+    }
+
+    finalTarget = target;
+
+    if (TP.isKindOf(finalTarget, TP.core.TIBETURL)) {
+        finalTarget = finalTarget.getNestedURI();
     }
 
     //  Get the source attribute. If there is no source attribute, then use the
@@ -651,7 +660,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     //  Make sure that target object has a local method to handle the change
     methodName = 'handle' + TP.escapeTypeName(signalName);
 
-    if (TP.notValid(handler = target.getMethod(methodName))) {
+    if (TP.notValid(handler = finalTarget.getMethod(methodName))) {
 
         //  Define a handler function
         handler = function(aSignal) {
@@ -728,7 +737,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  with. This allows a set of source aspects to share a single change
         //  handler function.
         handler.$observationsMap = TP.hc();
-        target.defineMethod(methodName, handler);
+        finalTarget.defineMethod(methodName, handler);
     }
 
     if (facetName !== TP.ALL) {
@@ -772,9 +781,9 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     }
 
     //  Go ahead and make the observation.
-    target.observe(resource, signalName);
+    finalTarget.observe(resource, signalName);
 
-    return target;
+    return finalTarget;
 });
 
 //  ------------------------------------------------------------------------
