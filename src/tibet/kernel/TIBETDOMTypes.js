@@ -3795,6 +3795,62 @@ function() {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+//  NODE CHANGE TRACKING
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('shouldSignalChange',
+function(aFlag) {
+
+    /**
+     * @method shouldSignalChange
+     * @summary Defines whether the receiver should actively signal change
+     *     notifications.
+     * @description In general objects do not signal changes when no observers
+     *     exist. This flag is triggered by observe where the signal being
+     *     observed is a form of Change signal to "arm" the object for change
+     *     notification. You can also manipulate it during multi-step
+     *     manipulations to signal only when a series of changes has been
+     *     completed.
+     * @param {Boolean} aFlag true/false signaling status.
+     * @returns {Boolean} The current status.
+     */
+
+    //  NB: Because of all of the machinery around signaling and tracking
+    //  changes, it's best that this method is written to poke around at the
+    //  native node.
+
+    var natNode;
+
+    //  Notice here how we use the 'fast' native node get method to avoid any
+    //  sorts of recursion issues.
+    natNode = this.$$getNativeNodeFast();
+
+    if (TP.notValid(natNode)) {
+        return;
+    }
+
+    if (TP.isBoolean(aFlag)) {
+        if (TP.notTrue(aFlag)) {
+            delete natNode[TP.SHOULD_SIGNAL_CHANGE];
+
+            return false;
+        } else {
+            natNode[TP.SHOULD_SIGNAL_CHANGE] = true;
+
+            return true;
+        }
+    }
+
+    //  when suspended is true we always return false which allows an
+    //  override to succeed
+    if (natNode[TP.SHOULD_SUSPEND_SIGNALING] === true) {
+        return false;
+    }
+
+    return natNode[TP.SHOULD_SIGNAL_CHANGE] === true;
+});
+
 //  ========================================================================
 //  TP.core.CollectionNode
 //  ========================================================================
@@ -12332,60 +12388,6 @@ function(aFlag) {
 
     return TP.elementGetAttribute(natElem, 'tibet:shouldFlagChanges') ===
                     'true';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('shouldSignalChange',
-function(aFlag) {
-
-    /**
-     * @method shouldSignalChange
-     * @summary Defines whether the receiver should actively signal change
-     *     notifications.
-     * @description In general objects do not signal changes when no observers
-     *     exist. This flag is triggered by observe where the signal being
-     *     observed is a form of Change signal to "arm" the object for change
-     *     notification. You can also manipulate it during multi-step
-     *     manipulations to signal only when a series of changes has been
-     *     completed.
-     * @param {Boolean} aFlag true/false signaling status.
-     * @returns {Boolean} The current status.
-     */
-
-    //  NB: Because of all of the machinery around signaling and tracking
-    //  changes, it's best that this method is written to poke around at the
-    //  native element node.
-
-    var natElem;
-
-    //  Notice here how we use the 'fast' native node get method to avoid any
-    //  sorts of recursion issues.
-    natElem = this.$$getNativeNodeFast();
-
-    if (TP.notValid(natElem)) {
-        return;
-    }
-
-    if (TP.isBoolean(aFlag)) {
-        if (TP.notTrue(aFlag)) {
-            delete natElem[TP.SHOULD_SIGNAL_CHANGE];
-
-            return false;
-        } else {
-            natElem[TP.SHOULD_SIGNAL_CHANGE] = true;
-
-            return true;
-        }
-    }
-
-    //  when suspended is true we always return false which allows an
-    //  override to succeed
-    if (natElem[TP.SHOULD_SUSPEND_SIGNALING] === true) {
-        return false;
-    }
-
-    return natElem[TP.SHOULD_SIGNAL_CHANGE] === true;
 });
 
 //  ------------------------------------------------------------------------
