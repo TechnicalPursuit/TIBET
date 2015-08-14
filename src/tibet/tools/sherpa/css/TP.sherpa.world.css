@@ -56,7 +56,8 @@ sherpa|world {
 #center.v-split-left sherpa|world {
 
     left: 50%;
-    width: 50%;
+    right: 2px;
+    margin-left: 5px;
 }
 
 #center.v-split-left #content {
@@ -72,7 +73,8 @@ sherpa|world {
 #center.v-split-right #content {
 
     left: 50%;
-    width: 50%;
+    right: 0;
+    margin-left: 4px;
 }
 
 
@@ -81,7 +83,8 @@ sherpa|world {
 #center.h-split-top sherpa|world {
 
     top: 50%;
-    bottom: 0;
+    bottom: 2px;
+    margin-top: 5px;
 }
 
 #center.h-split-top #content {
@@ -98,5 +101,7 @@ sherpa|world {
 
     top: 50%;
     bottom: 0;
+    margin-top: 5px;
+}
 }
 
