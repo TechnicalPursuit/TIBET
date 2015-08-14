@@ -21,8 +21,14 @@
 
     <button onclick="TP.byId('loadProvider').trigger()">Refresh it!</button>
     <button onclick="TP.byId('saveProvider').trigger()">Save it!</button>
+	<br/>
 
-    Auto-refresh: <input type="checkbox" onclick="TP.byId('loadProvider').toggle('autorefresh')"/>
+    Auto-refresh: <input type="checkbox" bind:io="checked: tibet://uicanvas#loadProvider@autorefresh"/>
+	<br/>
+
+    Fetch status code: <span bind:in="value: tibet://uicanvas#loadProvider@statuscode"/>
+	<br/>
+    Fetch status text: <span bind:in="value: tibet://uicanvas#loadProvider@statustext"/>
 
 	<br/>
     <br/>
