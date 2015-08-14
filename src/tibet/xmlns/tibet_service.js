@@ -55,6 +55,8 @@ function(aRequest) {
         tpElem.trigger();
     }
 
+    tpElem.shouldSignalChange(true);
+
     return;
 });
 
