@@ -34,10 +34,10 @@ sherpa|console {
     /*border: 1px solid #AAAAAA;*/
     border-radius: 3px;
     background: #3f3f3f;
-    padding: 1px;
+    padding: 2px;
 
     text-align: left;
-    line-height: 1.0;
+    line-height: 1.2;
 }
 
 sherpa|console[pclass|hidden] {
