@@ -469,6 +469,20 @@ function() {
             thisArg.signal('TP.sig.UIDataFailed', errorRecord);
         });
 
+    request.defineMethod('handleRequestCompleted',
+        function(aResponse) {
+
+            var statusCode,
+                statusText;
+
+            //  If this wasn't an HTTP request, these will return null.
+            statusCode = thisArg.$getHTTPRequestStatusCode(this);
+            statusText = thisArg.$getHTTPRequestStatusText(this);
+
+            thisArg.setAttribute('statuscode', statusCode);
+            thisArg.setAttribute('statustext', statusText);
+        });
+
     dataWillSendSignal = this.signal('TP.sig.UIDataWillSend');
     if (dataWillSendSignal.shouldPrevent()) {
         //  TODO: Log a warning?
