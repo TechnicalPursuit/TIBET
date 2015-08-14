@@ -43,6 +43,8 @@
     <property name="path.TP.sherpa.hud.template" value="~ide_root/xhtml/TP.sherpa.hud.xhtml"/>
     <property name="path.TP.sherpa.hud.style" value="~ide_root/css/TP.sherpa.hud.css"/>
 
+    <script src="./src/TP.sherpa.ctrl.js"/>
+
     <script src="./src/TP.sherpa.world.js"/>
     <property name="path.TP.sherpa.world.style" value="~ide_root/css/TP.sherpa.world.css"/>
 

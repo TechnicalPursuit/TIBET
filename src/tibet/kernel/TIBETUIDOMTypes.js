@@ -2070,12 +2070,11 @@ function(aSignal, isCapturing) {
      * @method getNextResponder
      * @summary Returns the next responder as computed by the receiver.
      * @description The default implementation of this method is to check to see
-     *     if the receiver has defined a 'tibet:handler' attribute. If so, a
-     *     handler reference is derived from that. If it does not have this
-     *     attribute or a handler cannot be derived from that, then the
-     *     receiver's 'next closest ancestor handler element' (i.e. its closest
-     *     ancestor that has either a 'tibet:tag', a 'tibet:ctrl' or a
-     *     'tibet:handler' attribute) and TP.wrap() it.
+     *     if the receiver has defined a 'tibet:ctrl' attribute. If so, a
+     *     responder reference is derived from that. If it does not have this
+     *     attribute or a responder cannot be derived from that, then the
+     *     receiver's 'next closest ancestor responder' (i.e. its closest
+     *     ancestor that has either a 'tibet:ctrl' or 'tibet:tag').
      * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
      *     receiver is an appropriate responder.
      * @param {Boolean} isCapturing Whether or not the responder computation
@@ -2084,7 +2083,7 @@ function(aSignal, isCapturing) {
      * @returns {Object} The next responder as computed by the receiver.
      */
 
-    var handler,
+    var ctrl,
 
         node,
         parentNode,
@@ -2092,30 +2091,30 @@ function(aSignal, isCapturing) {
         frame,
         frameElem;
 
-    //  If we have a 'tibet:handler' attribute, then try to obtain an object
+    //  If we have a 'tibet:ctrl' attribute, then try to obtain an object
     //  reference from it. If that's valid, then use it - otherwise, move on.
-    if (this.hasAttribute('tibet:handler')) {
+    if (this.hasAttribute('tibet:ctrl')) {
 
-        handler = TP.bySystemId(this.getAttribute('tibet:handler'),
+        ctrl = TP.bySystemId(this.getAttribute('tibet:ctrl'),
                                 this.getNativeWindow());
 
-        if (TP.isValid(handler)) {
-            return handler;
+        if (TP.isValid(ctrl)) {
+            return ctrl;
         }
     }
 
     node = this.getNativeNode();
 
-    //  Check for a parent node or ancestor element handler we can wrap.
+    //  Check for a parent node or ancestor element responder we can wrap.
     parentNode = node.parentNode;
     if (TP.isElement(parentNode) &&
-            TP.isElement(handler = TP.nodeGetHandlerElement(parentNode))) {
+            TP.isElement(ctrl = TP.nodeGetResponderElement(parentNode))) {
 
-        return TP.wrap(handler);
+        return TP.wrap(ctrl);
     }
 
     //  Check for a containing iframe element we can leverage as a "screen". We
-    //  only return the iframe if it has a specific handler, otherwise we
+    //  only return the iframe if it has a specific responder, otherwise we
     //  continue searching upward from the iframe.
     elementWin = TP.nodeGetWindow(this.getNativeDocument());
 

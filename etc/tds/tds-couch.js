@@ -55,8 +55,6 @@
             baseline,
             db,
             root,
-            ignore,
-            pattern,
             ready,
             inserting,
 
@@ -74,8 +72,10 @@
             dbRename,
             dbUpdate,
 
+            ignore,
+            pattern,
             escaper,
-            watcher;
+            watchParams;
 
         readFile = Promise.promisify(fs.readFile);
         writeFile = Promise.promisify(fs.writeFile);
@@ -225,7 +225,13 @@
         })
 
         feed.on('error', function(err) {
-            console.error(err);
+            if (/EMFILE/.test(err)) {
+                console.error('Too many files open. Try increasing ulimit.');
+            } else {
+                console.error(err);
+            }
+
+            return true;
         });
 
         try {
@@ -316,70 +322,6 @@
         };
 
         /**
-         * Helper function for escaping regex metacharacters for patterns. NOTE
-         * that we need to take "ignore format" things like path/* and make it
-         * path/.* or the regex will fail.
-         */
-        escaper = function(str) {
-            return str.replace(
-                /\*/g, '\.\*').replace(
-                /\./g, '\\.').replace(
-                /\//g, '\\/');
-        };
-
-        //  Build a pattern we can use to test against ignore files.
-        ignore = TDS.getcfg('couch.watch.ignore');
-        if (ignore) {
-            pattern = ignore.reduce(function(str, item) {
-                return str ? str + '|' + escaper(item) : escaper(item);
-            }, '');
-
-            try {
-                pattern = new RegExp(pattern);
-            } catch (e) {
-                return console.log('Error creating RegExp: ' +
-                    e.message);
-            }
-        } else {
-            pattern = '**/*';
-        }
-
-        //  Configure a watcher instance for the CouchDB watch root.
-        watcher = new gaze.Gaze(pattern, {
-            cwd: root
-        });
-
-
-        /**
-         *
-         */
-        watcher.on('ready', function() {
-            ready = true;
-        })
-
-
-        /**
-         *
-         */
-        watcher.on('error', function(err) {
-            console.log(err);
-            console.log('closing down file watch for CouchDB');
-
-            watcher.close();
-        })
-
-
-        /**
-         *
-         */
-        watcher.on('nomatch', function(file) {
-            console.log('nomatch for gaze');
-
-            //  TODO:   watching an empty dir?
-        })
-
-
-        /**
          * Responds to notifications of new file additions. The resulting file
          * is added as attachments to the current application design document.
          * @param {String} file The name of the file to add as a full path.
@@ -457,7 +399,6 @@
             });
         };
 
-        watcher.on('added', dbAdd);
 
         /**
          * Responds to nofications of changed file content. The changed file is
@@ -563,8 +504,6 @@
             });
         };
 
-        watcher.on('changed', dbUpdate);
-
 
         /**
          *
@@ -623,8 +562,6 @@
             });
         };
 
-        watcher.on('deleted', dbRemove);
-
 
         /**
          *
@@ -633,7 +570,68 @@
             return dbAdd(newPath).then(dbRemove(oldPath));
         };
 
-        watcher.on('renamed', dbRename);
+
+        /**
+         * Helper function for escaping regex metacharacters for patterns. NOTE
+         * that we need to take "ignore format" things like path/* and make it
+         * path/.* or the regex will fail.
+         */
+        escaper = function(str) {
+            return str.replace(
+                /\*/g, '\.\*').replace(
+                /\./g, '\\.').replace(
+                /\//g, '\\/');
+        };
+
+        //  Build a pattern we can use to test against ignore files.
+        ignore = TDS.getcfg('couch.watch.ignore');
+        if (ignore) {
+            pattern = ignore.reduce(function(str, item) {
+                return str ? str + '|' + escaper(item) : escaper(item);
+            }, '');
+
+            try {
+                pattern = new RegExp(pattern);
+            } catch (e) {
+                return console.log('Error creating RegExp: ' +
+                    e.message);
+            }
+        } else {
+            pattern = '**/*';
+        }
+
+        //  TODO:   allow configuration of these parameters from tibet-server.
+        watchParams =  {
+            cwd: root,
+            mode: 'auto',
+            interval: 250,
+            debounceDelay:100
+        };
+
+        try {
+            //  Configure a watcher instance for the CouchDB watch root.
+            gaze(pattern, watchParams, function(err, watcher) {
+
+                if (err) {
+                    console.error(err);
+                    watcher.close();
+                    return;
+                }
+
+                watcher.on('added', dbAdd);
+                watcher.on('changed', dbUpdate);
+                watcher.on('deleted', dbRemove);
+                watcher.on('renamed', dbRename);
+            });
+        } catch (e) {
+            if (/EMFILE/.test(e.message)) {
+                console.error('Too many files open. Try increasing ulimit.');
+                return;
+            } else {
+                console.error(e.message);
+                return;
+            }
+        }
     };
 
     module.exports = TDS;

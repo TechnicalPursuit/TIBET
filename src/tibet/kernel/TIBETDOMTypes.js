@@ -10391,23 +10391,21 @@ function(aNode) {
      * @summary Returns the subtype to use for the node provided.
      * @description This method determines the 'TP wrapper' type for the
      *     supplied node by using the following logic cascade. 1. Checks for the
-     *     'tibet:ctrl' attribute on the node and attempts to obtain a type
-     *     matching that name. 2. Checks for the 'tibet:tag' attribute on
-     *     the node and attempts to obtain a type matching that name. 3. If
-     *     there is a 'tibet:tag' attribute and its exact type cannot be
-     *     found, it computes a name using that name and the suffix ':Element'
-     *     and attempts to obtain a type matching that name. 4. Obtains the
-     *     node's 'full name' (i.e. the name that the author used in the source
-     *     markup) and attempts to obtain a type matching that name. 5. Obtains
-     *     the node's 'canonical name' (i.e. if the node has a namespace, it
-     *     uses the canonical prefix for that namespace) and attempts to obtain
-     *     a type matching that name. 6. Obtains the node's 'canonical prefix'
-     *     (if the node has a namespace) and computes a name using that prefix
-     *     and the suffix ':Element' and attempts to obtain a type matching that
-     *     name. 7. Obtains the node's namespace URI (if the node has a
-     *     namespace) and checks with the XMLNS 'info' hash to see if there is a
-     *     'defaultNodeType' name registered under that namespace and attempts
-     *     to obtain a type matching that name.
+     *     'tibet:tag' attribute on the node and attempts to obtain a type
+     *     matching that name. 2. If there is a 'tibet:tag' attribute and its
+     *     exact type cannot be found, it computes a name using that name and
+     *     the suffix ':Element' and attempts to obtain a type matching that
+     *     name. 3. Obtains the node's 'full name' (i.e. the name that the
+     *     author used in the source markup) and attempts to obtain a type
+     *     matching that name. 4. Obtains the node's 'canonical name' (i.e. if
+     *     the node has a namespace, it uses the canonical prefix for that
+     *     namespace) and attempts to obtain a type matching that name. 5.
+     *     Obtains the node's 'canonical prefix' (if the node has a namespace)
+     *     and computes a name using that prefix and the suffix ':Element' and
+     *     attempts to obtain a type matching that name. 6. Obtains the node's
+     *     namespace URI (if the node has a namespace) and checks with the XMLNS
+     *     'info' hash to see if there is a 'defaultNodeType' name registered
+     *     under that namespace and attempts to obtain a matching type.
      * @param {Node} aNode The native node to wrap.
      * @returns {TP.lang.RootObject.<TP.core.ElementNode>} A TP.core.ElementNode
      *     subtype type object.
@@ -10428,21 +10426,6 @@ function(aNode) {
     //  node, then just return it.
     if (TP.isValid(type = aNode[TP.NODE_TYPE])) {
         return type;
-    }
-
-    //  ctrl is how we override the standard controller for a node even
-    //  when the tag points to a particular type. this allows us to
-    //  provide custom controllers on individual tags
-    if (TP.notEmpty(name = TP.elementGetAttribute(aNode,
-                                                    'tibet:ctrl',
-                                                    true))) {
-        last = name;
-        if (TP.isType(type = TP.sys.require(name))) {
-            //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
-
-            return type;
-        }
     }
 
     //  tag is how we can override the natural tag's lookup model
@@ -10530,11 +10513,11 @@ function(aNode) {
         return type;
     }
 
-    //  couldn't find either a tibet:ctrl, a tibet:tag or a type
-    //  that matches either the 'full name' given in the source or the
-    //  'canonical name' that is computed using the node's namespace's
-    //  'canonicalprefix', so we try is to see if the node has a native
-    //  namespace URI, and if so, we'll try 2 other approaches.
+    //  couldn't find either a tibet:tag or a type that matches either the 'full
+    //  name' given in the source or the 'canonical name' that is computed using
+    //  the node's namespace's 'canonicalprefix', so we try is to see if the
+    //  node has a native namespace URI, and if so, we'll try 2 other
+    //  approaches.
 
     if (TP.notEmpty(url = TP.nodeGetNSURI(aNode))) {
         if (TP.isValid(info = TP.w3.Xmlns.get('info').at(url))) {
