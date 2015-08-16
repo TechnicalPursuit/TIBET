@@ -634,10 +634,17 @@ function(target, options) {
 
     TP.sys.logTest((cases > 0 ? '1' : '0') + '..' + cases);
 
-    //  Capture the current setting of 'shouldThrowExceptions' and set it to
-    //  true. This is so that any raise()ing of TIBET exceptions in any test
-    //  case will cause TIBET to throw an Error and then the test case will be
-    //  considered to be in 'error'.
+    //  Capture the current setting of 'shouldThrowExceptions', 'shouldLogStack'
+    //  and 'shouldThrowHandlers' and set them to true. This is so that:
+
+    //      shouldThrowExceptions: any raise()ing of TIBET exceptions in any
+    //      test case will cause TIBET to throw an Error and then the test case
+    //      will be considered to be in 'error'.
+
+    //      shouldLogStack: when Errors are thrown, should the stack be logged?
+    //
+    //      shouldThrowHandlers: when event handlers throw an Error, should the
+    //      Error be thrown 'up' to callers higher in the stack.
 
     throwExceptions = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
@@ -674,15 +681,23 @@ function(target, options) {
 
     return promise.then(
             function(obj) {
-                TP.sys.shouldThrowHandlers(throwHandlers);
+
+                //  Restore settings of system error condition flags.
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
+                TP.sys.shouldThrowHandlers(throwHandlers);
+
+                //  Summarize output
                 summarize();
             },
             function(err) {
-                TP.sys.shouldThrowHandlers(throwHandlers);
+
+                //  Restore settings of system error condition flags.
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
+                TP.sys.shouldThrowHandlers(throwHandlers);
+
+                //  Summarize output
                 summarize();
             });
     /* eslint-enable handle-callback-err */
