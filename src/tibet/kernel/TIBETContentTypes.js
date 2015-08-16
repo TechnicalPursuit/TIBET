@@ -720,13 +720,14 @@ function(attributeName, attributeValue, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Content.Inst.defineMethod('setData',
-function(aDataObject) {
+function(aDataObject, shouldSignal) {
 
     /**
      * @method setData
      * @summary Sets the receiver's data object to the supplied object.
      * @param {Object} aDataObject The object to set the receiver's internal
      *     data to.
+     * @param {Boolean} [shouldSignal=false] Whether or not to signal change.
      * @returns {TP.core.Content} The receiver.
      */
 
@@ -747,7 +748,9 @@ function(aDataObject) {
         }
     }
 
-    this.changed('value', TP.UPDATE);
+    if (TP.notFalse(shouldSignal)) {
+        this.changed('value', TP.UPDATE);
+    }
 
     return this;
 });
@@ -3346,7 +3349,7 @@ function(targetObj, varargs) {
         //  Object data as an XML representation under the covers.
         targetObj.defineMethod(
             'setData',
-            function(aDataObject) {
+            function(aDataObject, shouldSignal) {
                 var rootObj,
                     tpValueDoc;
 
@@ -3360,7 +3363,7 @@ function(targetObj, varargs) {
 
                 //  Call 'up' to our super method to set the real underlying
                 //  'data' slot to our XML data.
-                this.callNextMethod(tpValueDoc);
+                this.callNextMethod(tpValueDoc, shouldSignal);
 
                 return this;
             });
@@ -3521,7 +3524,10 @@ function(targetObj, varargs) {
 
         //  Now that we've redefined setData(), push the current data back
         //  through it, causing the XML representation to be created.
-        targetObj.set('data', currentJSONData);
+
+        //  Note here how we pass 'false' to not signal change, since all we're
+        //  doing is a data conversion.
+        targetObj.set('data', currentJSONData, false);
 
         //  Now, retrieve the XML representation that is sitting in the actual
         //  'data' slot (using $get() to bypass the redefined getData() call
