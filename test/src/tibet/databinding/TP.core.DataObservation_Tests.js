@@ -442,8 +442,9 @@ function() {
         //  The value path results should have the path for jsonPath5
         test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
 
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+        //  And for the structural path result - we deleted the Array placed
+        //  there by the previous test.
+        test.assert.contains(structurePathResults, jsonPath5.get('srcPath'));
 
         //  And *not* for jsonPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
@@ -453,8 +454,9 @@ function() {
         //  The value path results should have the path for jsonPath3
         test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
 
-        //  But not for the structural path result
-        test.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+        //  And for the structural path result - we deleted the Array placed
+        //  there by the previous test.
+        test.assert.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And *not* for jsonPath2 for either set of results (it's too high up
         //  in the chain)
