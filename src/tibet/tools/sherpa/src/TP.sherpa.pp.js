@@ -163,7 +163,11 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    str = this.fromString(anObject.message);
+    if (TP.notEmpty(anObject.message)) {
+        str = this.fromString(anObject.message);
+    } else {
+        str = TP.sc('Error');
+    }
 
     if (TP.sys.shouldLogStack() &&
         TP.notEmpty(stackEntries = TP.getStackInfo(anObject))) {
