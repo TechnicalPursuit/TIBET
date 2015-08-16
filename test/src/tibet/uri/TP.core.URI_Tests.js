@@ -978,7 +978,7 @@ function() {
         this.refute.isDefined(
             TP.uc('tibet://fluffy/').getResource(params),
             TP.sc('tibet://fluffy/ should return undefined.'));
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');//  Crashes on PhantomJS
 
     //  ---
 

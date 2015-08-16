@@ -612,7 +612,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).skip(TP.sys.cfg('boot.context') === 'phantomjs');//  Crashes on PhantomJS
 
     this.it('partial file inclusion', function(test, options) {
 
