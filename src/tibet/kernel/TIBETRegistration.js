@@ -507,13 +507,6 @@ function(anObj, anID, forceRegistration, observeResource) {
 
     urn = TP.uc(TP.TIBET_URN_PREFIX + id);
 
-    //  First, let's see if there's an old object at a TIBET URN that happens to
-    //  be the exact same object as what we'll be setting this to. In this case,
-    //  we can just return and save signaling overhead.
-    if (TP.isValid(oldObj = urn.getResource()) && anObj === oldObj) {
-        return false;
-    }
-
     //  Create a TIBET URN to store the object - make sure to pass along the
     //  'observeResource' flag (which we default to true if one wasn't supplied)
     urn.setResource(
