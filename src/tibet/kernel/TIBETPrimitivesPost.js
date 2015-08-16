@@ -2037,15 +2037,22 @@ function(anObject, assignIfAbsent) {
             //  Reset the element here to the attribute's owner element.
             elem = TP.attributeGetOwnerElement(obj);
 
-            //  Grab the owner element's global ID and slice off from the
-            //  beginning through the '#'. This will give us the 'primary URI'.
-            globalID = TP.gid(elem, true);
-            globalID = globalID.slice(0, globalID.lastIndexOf('#'));
+            //  A detached AttributeNode won't have an Element as an owner
+            //  element... sometimes it has an empty Array - weird.
+            if (TP.isElement(elem)) {
+                //  Grab the owner element's global ID and slice off from the
+                //  beginning through the '#'. This will give us the 'primary
+                //  URI'.
+                globalID = TP.gid(elem, true);
+                globalID = globalID.slice(0, globalID.lastIndexOf('#'));
 
-            //  Construct an 'xpath1' XPointer that causes the traversal to the
-            //  Element and then down to the attribute.
-            globalID += '#xpath1(//*[@id=\'' + TP.lid(elem, true) + '\']' +
-                        '/@' + TP.attributeGetLocalName(obj) + ')';
+                //  Construct an 'xpath1' XPointer that causes the traversal to
+                //  the Element and then down to the attribute.
+                globalID += '#xpath1(//*[@id=\'' + TP.lid(elem, true) + '\']' +
+                            '/@' + TP.attributeGetLocalName(obj) + ')';
+            } else {
+                globalID = '#xpath1(./@' + TP.attributeGetLocalName(obj) + ')';
+            }
 
             //  Set elem to 'null' here as we've already computed the element's
             //  ID and don't want further content.
