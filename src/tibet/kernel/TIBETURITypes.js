@@ -4853,6 +4853,8 @@ function(aResource, aRequest) {
 
         hasID,
 
+        shouldSignalChange,
+
         subURIs,
         description,
         fragText,
@@ -4912,69 +4914,81 @@ function(aResource, aRequest) {
     //  clear any expiration computations
     this.expire(false);
 
-    //  Sub URIs are URIs that have the same primary resource as us, but also
-    //  have a fragment, indicating that they also have a secondary resource
-    //  pointed to by the fragment.
-    subURIs = this.getSubURIs();
-
-    if (TP.notEmpty(subURIs)) {
-
-        //  The 'action' here is TP.DELETE, since the entire resource got
-        //  changed. This very well may mean structural changes occurred and
-        //  the resource that the subURI pointed to doesn't even exist anymore.
-
-        //  The 'aspect' here is 'value' - because the 'entire value' of the
-        //  subURI itself has changed. We also include a 'path' for convenience,
-        //  so that observers can use that against the primary URI to obtain
-        //  this URI's value, if they wish.
-
-        //  The 'target' here is computed by running the fragment against
-        //  the resource.
-        description = TP.hc(
-                'action', TP.DELETE,
-                'aspect', 'value',
-                'facet', 'value',
-                'target', aResource,
-
-                //  NB: We supply the old resource and the fragment text
-                //  here for ease of obtaining values.
-                'oldTarget', resource
-                );
-
-        //  If we have sub URIs, then observers of them will be expecting to get
-        //  a TP.sig.StructureDelete with 'value' as the aspect that changed (we
-        //  swapped out the entire resource, so the values of those will have
-        //  definitely changed).
-        for (i = 0; i < subURIs.getSize(); i++) {
-
-            fragText = subURIs.at(i).getFragmentExpr();
-
-            description.atPut('path', fragText);
-
-            subURIs.at(i).signal('TP.sig.StructureDelete', description);
-
-            aResource.checkFacets(fragText);
-        }
+    //  If there's a valid request and it says to not signal change, then we
+    //  don't. Otherwise, our default is to signal change.
+    if (TP.isValid(aRequest)) {
+        shouldSignalChange = aRequest.atIfInvalid('signalChange', true);
+    } else {
+        shouldSignalChange = true;
     }
 
-    //  Now that we're done signaling the sub URIs, it's time to signal a
-    //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-    description = TP.hc(
-        'action', TP.UPDATE,
-        'aspect', 'value',
-        'facet', 'value',
+    if (shouldSignalChange) {
 
-        'path', this.getFragmentExpr(),
+        //  Sub URIs are URIs that have the same primary resource as us, but
+        //  also have a fragment, indicating that they also have a secondary
+        //  resource pointed to by the fragment.
+        subURIs = this.getSubURIs();
 
-        //  NB: We supply these values here for consistency with the 'no
-        //  subURIs logic' below.
-        'target', aResource,
-        'oldTarget', resource,
-        TP.OLDVAL, resource,
-        TP.NEWVAL, aResource
-        );
+        if (TP.notEmpty(subURIs)) {
 
-    this.signal('TP.sig.ValueChange', description);
+            //  The 'action' here is TP.DELETE, since the entire resource got
+            //  changed. This very well may mean structural changes occurred and
+            //  the resource that the subURI pointed to doesn't even exist
+            //  anymore.
+
+            //  The 'aspect' here is 'value' - because the 'entire value' of the
+            //  subURI itself has changed. We also include a 'path' for
+            //  convenience, so that observers can use that against the primary
+            //  URI to obtain this URI's value, if they wish.
+
+            //  The 'target' here is computed by running the fragment against
+            //  the resource.
+            description = TP.hc(
+                    'action', TP.DELETE,
+                    'aspect', 'value',
+                    'facet', 'value',
+                    'target', aResource,
+
+                    //  NB: We supply the old resource and the fragment text
+                    //  here for ease of obtaining values.
+                    'oldTarget', resource
+                    );
+
+            //  If we have sub URIs, then observers of them will be expecting to
+            //  get a TP.sig.StructureDelete with 'value' as the aspect that
+            //  changed (we swapped out the entire resource, so the values of
+            //  those will have definitely changed).
+            for (i = 0; i < subURIs.getSize(); i++) {
+
+                fragText = subURIs.at(i).getFragmentExpr();
+
+                description.atPut('path', fragText);
+
+                subURIs.at(i).signal('TP.sig.StructureDelete', description);
+
+                aResource.checkFacets(fragText);
+            }
+        }
+
+        //  Now that we're done signaling the sub URIs, it's time to signal a
+        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+        description = TP.hc(
+            'action', TP.UPDATE,
+            'aspect', 'value',
+            'facet', 'value',
+
+            'path', this.getFragmentExpr(),
+
+            //  NB: We supply these values here for consistency with the 'no
+            //  subURIs logic' below.
+            'target', aResource,
+            'oldTarget', resource,
+            TP.OLDVAL, resource,
+            TP.NEWVAL, aResource
+            );
+
+        this.signal('TP.sig.ValueChange', description);
+    }
 
     return this;
 });
