@@ -527,14 +527,7 @@ function(aSignal) {
     oldTarget = description.at('target');
     description.atPut('target', this);
 
-    //  If this object is registered and does *not* have a generated ID (but one
-    //  that was set by user code), then we want to signal using that ID.
-    //  Otherwise, we can signal from our private ID.
-    if (TP.sys.hasRegistered(this) && !this.hasGeneratedID()) {
-        originID = TP.TIBET_URN_PREFIX + this.getID();
-    } else {
-        originID = this.getID();
-    }
+    originID = this.getID();
 
     //  If we found any path aliases, then loop over them and dispatch
     //  using their aspect name.
