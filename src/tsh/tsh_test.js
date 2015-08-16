@@ -51,11 +51,11 @@ function(aRequest) {
         return;
     }
 
-    // Let the stdout/stderr routines have a hook to help them determine how to
-    // format output.
+    //  Let the stdout/stderr routines have a hook to help them determine how to
+    //  format output.
     aRequest.atPut('cmdTAP', true);
 
-    aRequest.stdout('');
+    aRequest.stdout('\n');
 
     shell = aRequest.at('cmdShell');
 
@@ -68,11 +68,13 @@ function(aRequest) {
         target = target.unquoted();
     }
 
-    suiteName = shell.getArgument(aRequest, 'tsh:suite',
-        shell.getArgument(aRequest, 'ARG1'));
+    suiteName = shell.getArgument(
+                        aRequest,
+                        'tsh:suite',
+                        shell.getArgument(aRequest, 'ARG1'));
 
     if (suiteName === true) {
-        // Only a single dash...syntax glitch...
+        //  Only a single dash...syntax glitch...
         suiteName = '';
     } else if (TP.notEmpty(suiteName)) {
         suiteName = suiteName.unquoted();
@@ -110,11 +112,11 @@ function(aRequest) {
 
     } else if (TP.isEmpty(target) && TP.notEmpty(suiteName)) {
 
-        aRequest.stdout('');
+        aRequest.stdout('\n');
 
         runner.runTargetSuites(null, options).then(
             function(result) {
-                // TODO: should we pass non-null results?
+                //  TODO: should we pass non-null results?
                 aRequest.complete();
             },
             function(error) {
@@ -135,12 +137,13 @@ function(aRequest) {
             return;
         }
 
-        // One sugar here is that if the receiver is a type object we can ask
-        // for it to run both Type and Inst tests by essentially running each of
-        // the likely targets.
+        //  One sugar here is that if the receiver is a type object we can ask
+        //  for it to run both Type and Inst tests by essentially running each
+        //  of the likely targets.
         if (TP.isType(obj)) {
             if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
 
+                //  Type first, then Inst, then Local
                 obj.Type.runTestSuites(options).then(function() {
                             return obj.Inst.runTestSuites(options);
                         }).then(function() {
@@ -157,11 +160,11 @@ function(aRequest) {
             }
         }
 
-        aRequest.stdout('');
+        aRequest.stdout('\n');
 
         obj.runTestSuites(options).then(
             function(result) {
-                // TODO: should we pass non-null results?
+                //  TODO: should we pass non-null results?
                 aRequest.complete();
             },
             function(error) {
