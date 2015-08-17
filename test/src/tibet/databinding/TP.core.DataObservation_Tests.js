@@ -667,7 +667,7 @@ function() {
     //  ---
 
     this.before(function() {
-        modelObj = TP.tpdoc('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
+        modelObj = TP.core.XMLContent.construct('<emp><lname valid="true">Edney</lname><age>47</age></emp>');
 
         valuePathResults = TP.ac();
         structurePathResults = TP.ac();

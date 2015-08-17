@@ -6137,7 +6137,9 @@ function(targetObj, varargs) {
      *     object using the receiver.
      */
 
-    var args,
+    var target,
+
+        args,
 
         srcPath,
 
@@ -6159,12 +6161,18 @@ function(targetObj, varargs) {
 
         interestedPath;
 
-    if (TP.notValid(targetObj)) {
+    target = targetObj;
+
+    if (TP.notValid(target)) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    if (TP.isKindOf(target, TP.core.XMLContent)) {
+        target = target.$get('data');
+    }
+
     //  This kind of path only works against XML
-    if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
+    if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
         return this.raise('TP.sig.InvalidNode');
     }
 
@@ -6173,11 +6181,11 @@ function(targetObj, varargs) {
     //  If the path is empty or just '.', then that's the shortcut to just
     //  return the target object itself.
     if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
-        return targetObj;
+        return target;
     }
 
     executedPaths = TP.core.AccessPath.$getExecutedPaths().atPutIfAbsent(
-                    TP.id(targetObj),
+                    TP.id(target),
                     TP.hc());
 
     executedPaths.atPut(srcPath, this);
@@ -6187,7 +6195,7 @@ function(targetObj, varargs) {
     path = this.get('srcPath');
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first one off (since it's the
-        //  targetObj, which we already have).
+        //  target, which we already have).
         args = TP.args(arguments, 1);
 
         path = path.transform(args);
@@ -6195,7 +6203,7 @@ function(targetObj, varargs) {
     this.set('$transformedPath', path);
 
     //  Make sure the target object is unwrapped
-    natTargetObj = TP.unwrap(targetObj);
+    natTargetObj = TP.unwrap(target);
 
     nodes = TP.nodeEvaluatePath(
                 natTargetObj, path, this.getPathType(), false);
@@ -6291,7 +6299,7 @@ function(targetObj, varargs) {
         return finalValue;
     }
 
-    return this.processFinalValue(nodes, targetObj);
+    return this.processFinalValue(nodes, target);
 });
 
 //  -----------------------------------------------------------------------
@@ -6315,7 +6323,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      * @returns {TP.core.XPathPath} The receiver.
      */
 
-    var args,
+    var target,
+
+        args,
         oldVal,
 
         newVal,
@@ -6362,20 +6372,26 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    target = targetObj;
+
+    if (TP.isKindOf(target, TP.core.XMLContent)) {
+        target = target.$get('data');
+    }
+
     //  This kind of path only works against XML
-    if (!TP.isNode(targetObj) && !TP.isKindOf(targetObj, TP.core.Node)) {
+    if (!TP.isNode(target) && !TP.isKindOf(target, TP.core.Node)) {
         return this.raise('TP.sig.InvalidPath');
     }
 
     if (TP.regex.HAS_ACP.test(this.get('srcPath'))) {
         //  Grab the arguments and slice the first three off (since they're
-        //  targetObj, attributeValue and shouldSignal which we already have).
+        //  target, attributeValue and shouldSignal which we already have).
         args = TP.args(arguments, 3);
 
-        args.unshift(targetObj);
+        args.unshift(target);
         oldVal = this.executeGet.apply(this, args);
     } else {
-        oldVal = this.executeGet(targetObj);
+        oldVal = this.executeGet(target);
     }
 
     newVal = attributeValue;
@@ -6402,7 +6418,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         }
     }
 
-    natTargetObj = TP.unwrap(targetObj);
+    natTargetObj = TP.unwrap(target);
 
     targetDoc = !TP.isDocument(natTargetObj) ?
                         TP.wrap(natTargetObj.ownerDocument) :
@@ -6421,7 +6437,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  to signal change (in which case we have to, in order to get the proper
     //  set of addresses) but we don't want to leave those flags around, so we
     //  set the 'leaveFlaggedChanges' to false to strip them out.
-    if (TP.wrap(targetObj).shouldFlagChanges()) {
+    if (TP.wrap(target).shouldFlagChanges()) {
         flagChanges = true;
         leaveFlaggedChanges = true;
     } else {
@@ -6432,7 +6448,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     path = this.get('srcPath');
     if (TP.regex.HAS_ACP.test(path)) {
         //  Grab the arguments and slice the first three off (since they're
-        //  targetObj, attributeValue and shouldSignal which we already have).
+        //  target, attributeValue and shouldSignal which we already have).
         args = TP.args(arguments, 3);
 
         path = path.transform(args);
@@ -6783,13 +6799,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                                     targetTPDoc.getID()))) {
                 executedPaths.perform(
                         function(pathEntry) {
-                            pathEntry.last().executeGet(targetObj);
+                            pathEntry.last().executeGet(target);
                         });
             }
         }
 
         //  Send the changed signal
-        this.sendChangedSignal(targetObj);
+        this.sendChangedSignal(target);
 
         if (mutatedStructure) {
             this.updateRegistrationsAfterSignaling(targetTPDoc);
