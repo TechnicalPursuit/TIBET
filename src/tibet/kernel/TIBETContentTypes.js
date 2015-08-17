@@ -2261,10 +2261,6 @@ function(targetObj) {
         return this;
     }
 
-    executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
-                            TP.id(targetObj));
-
-    invalidatedPaths = this.get('$invalidatedPaths');
     addressesToRemove = this.get('$addressesToRemove');
 
     //  Remove old addresses that are now no longer valid (since we signaled
@@ -2273,19 +2269,26 @@ function(targetObj) {
     //  repopulate this with addresses that are still valid.
     observedAddresses.removeKeys(addressesToRemove);
 
-    //  Remove the matching paths that were invalid from the executed paths.
-    //  Again, if we created structure, then executing the 'get' below will
-    //  repopulate this with paths that are still valid.
-    executedPaths.removeAll(invalidatedPaths);
+    executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                            TP.id(targetObj));
+    invalidatedPaths = this.get('$invalidatedPaths');
 
-    //  Now, we need to go through the invalidated paths and rerun their 'get'
-    //  to re-execute and re-register their path.
-    invalidatedPaths.perform(
-            function(aPath) {
-                TP.apc(aPath).executeGet(targetObj);
-            });
+    if (TP.notEmpty(invalidatedPaths)) {
+        //  Remove the matching paths that were invalid from the executed paths.
+        //  Again, if we created structure, then executing the 'get' below will
+        //  repopulate this with paths that are still valid.
+        executedPaths.removeAtAll(invalidatedPaths);
 
-    invalidatedPaths.empty();
+        //  Now, we need to go through the invalidated paths and rerun their
+        //  'get' to re-execute and re-register their path.
+        invalidatedPaths.perform(
+                function(aPath) {
+                    TP.apc(aPath).executeGet(targetObj);
+                });
+
+        invalidatedPaths.empty();
+    }
+
     addressesToRemove.empty();
 
     return this;
