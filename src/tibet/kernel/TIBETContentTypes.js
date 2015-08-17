@@ -6394,8 +6394,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  where it can't be appended
     attrValue = TP.isDocument(newVal) ? TP.elem(newVal) : newVal;
 
-    mutatedStructure = TP.isNode(attrValue);
-
     //  there are four primary variations we have to account for if we're
     //  going to get this correct: S-M, S-S, M-M, M-S. also, we have to keep
     //  in mind that we've got a second set of considerations about elements
@@ -6419,6 +6417,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         //  Finalize the set value.
         value = this.finalizeSetValue(content, value);
+        mutatedStructure = this.valueIsStructural(content, value);
 
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
@@ -6518,6 +6517,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             oldcontent = TP.nodeCloneNode(contentnode);
 
             value = this.finalizeSetValue(contentnode, value);
+            mutatedStructure = this.valueIsStructural(contentnode, value);
 
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
@@ -6793,6 +6793,25 @@ function(aNode, prevNode) {
     return TP.isCollectionNode(aNode) &&
                (TP.notEmpty(TP.nodeGetChildElements(aNode)) ||
                     TP.notEmpty(TP.nodeGetChildElements(prevNode)));
+});
+
+//  -----------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('valueIsStructural',
+function(content, value) {
+
+    /**
+     * @method valueIsStructural
+     * @summary Returns whether or not the value is considered 'structural', and
+     *     will therefore 'mutate structure' if it is used as the value to set
+     *     using the receiver.
+     * @param {content} Node The content node that the value was placed into.
+     * @param {value} Object The value to test.
+     * @returns {Boolean} Whether or not the value is considered to be
+     *     'structural'
+     */
+
+    return TP.isNode(value);
 });
 
 //  ========================================================================
