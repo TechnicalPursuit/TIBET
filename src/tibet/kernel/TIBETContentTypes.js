@@ -3330,6 +3330,11 @@ function(targetObj, varargs) {
                     if (TP.isValid(
                         result = TP.$xml2jsonObj(TP.unwrap(tpValueDoc)))) {
 
+                        //  Locally program a reference to ourself on the
+                        //  generated XML TP.core.Document.
+                        tpValueDoc.defineAttribute('$$realData');
+                        tpValueDoc.$set('$$realData', this);
+
                         //  NB: In our particular encoding of JS<->XML, we use
                         //  the 'rootObj' slot as a top-level value. See below.
                         return result.rootObj;
@@ -3356,6 +3361,11 @@ function(targetObj, varargs) {
                 //  automatically, but we want to have a well-known handle.
                 rootObj = {rootObj: aDataObject};
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
+
+                //  Locally program a reference to ourself on the generated XML
+                //  TP.core.Document.
+                tpValueDoc.defineAttribute('$$realData');
+                tpValueDoc.$set('$$realData', this);
 
                 //  Call 'up' to our super method to set the real underlying
                 //  'data' slot to our XML data.
@@ -3987,6 +3997,78 @@ function(templateArgs) {
                 }
 
                 return false;
+            });
+
+    xmlPath.defineMethod('updateRegistrationsAfterSignaling',
+            function(targetObj) {
+
+                var observedAddresses,
+
+                    executedPaths,
+
+                    invalidatedPaths,
+                    invalidInternalPaths,
+
+                    jsonObj,
+
+                    addressesToRemove;
+
+                observedAddresses =
+                    TP.core.AccessPath.$getObservedAddresses().at(
+                                        TP.id(targetObj));
+
+                if (TP.isEmpty(observedAddresses)) {
+                    return this;
+                }
+
+                addressesToRemove = this.get('$addressesToRemove');
+
+                //  Remove old addresses that are now no longer valid (since we
+                //  signaled them with a TP.DELETE). If we created structure as
+                //  well (i.e. replaced one tree with another tree), then
+                //  executing the 'get' below will repopulate this with
+                //  addresses that are still valid.
+                observedAddresses.removeKeys(addressesToRemove);
+
+                executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                                        TP.id(targetObj));
+
+                invalidatedPaths = this.get('$invalidatedPaths');
+
+                if (TP.notEmpty(invalidatedPaths)) {
+
+                    //  Copy the currently invalidated paths Array and convert
+                    //  the items in that Array to their XPath equivalent -
+                    //  that's what will be found in the executedPaths
+                    invalidInternalPaths = invalidatedPaths.copy();
+                    invalidInternalPaths.convert(
+                            function(aJSONPath) {
+                                return TP.core.JSONPath.asXPath(aJSONPath);
+                            });
+
+                    //  Remove the matching paths that were invalid from the
+                    //  executed paths. Again, if we created structure, then
+                    //  executing the 'get' below will repopulate this with
+                    //  paths that are still valid.
+                    executedPaths.removeAtAll(invalidInternalPaths);
+
+                    //  Grab the original JSON object that 'get's will be
+                    //  executed against. This is programmed as a local slot on
+                    //  the object itself in the code above.
+                    jsonObj = targetObj.get('$$realData');
+
+                    //  Now, we need to go through the invalidated paths and
+                    //  rerun their 'get' to re-execute and re-register their
+                    //  path.
+                    invalidatedPaths.perform(
+                            function(aPath) {
+                                TP.apc(aPath).executeGet(jsonObj);
+                            });
+
+                    invalidatedPaths.empty();
+                }
+
+                addressesToRemove.empty();
             });
 
     //  Cache our internal XPath representation, but only if we weren't a
