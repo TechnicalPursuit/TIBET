@@ -3933,6 +3933,28 @@ function(templateArgs) {
                 return val;
             });
 
+    xmlPath.defineMethod('valueIsStructural',
+            function(content, value) {
+                var typeAttr;
+
+                if (TP.isElement(content)) {
+                    typeAttr = content.getAttribute('type');
+
+                    switch (typeAttr) {
+                        case 'undefined':
+                        case 'null':
+                        case 'boolean':
+                        case 'number':
+                        case 'string':
+                            return false;
+                        default:
+                            break;
+                    }
+                }
+
+                return true;
+            });
+
     xmlPath.defineMethod('$updateOpsBecomeDeleteInsertOps',
             function(aNode, prevNode) {
 
