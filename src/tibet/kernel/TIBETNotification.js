@@ -8146,9 +8146,10 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  See if we have an observer count. If not, we use the value of 0.
+    //  See if we have an observer count. If not, we didn't have any observers,
+    //  so just return true
     if (TP.notValid(observerCount = this.get('observerCount'))) {
-        observerCount = 0;
+        return true;
     } else {
         observerCount -= 1;
     }
