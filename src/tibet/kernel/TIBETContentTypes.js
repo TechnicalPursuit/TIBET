@@ -3967,15 +3967,22 @@ function(templateArgs) {
                     return false;
                 }
 
-                //  Grab the 'type' for both the current and previous node - if
-                //  its not the same type, then return true to turn the 'update'
-                //  into a 'delete'/'insert'.
+                //  Grab the 'type' for both the current and previous node
                 currentType =
                     TP.elementGetAttribute(aNode, 'type', true);
                 prevType =
                     TP.elementGetAttribute(prevNode, 'type', true);
 
+                //  If its not the same type, then return true to turn the
+                //  'update' into a 'delete'/'insert'.
                 if (currentType !== prevType) {
+                    return true;
+                }
+
+                if (currentType === 'array' ||
+                    currentType === 'object' ||
+                    prevType === 'array' ||
+                    prevType === 'object') {
                     return true;
                 }
 
