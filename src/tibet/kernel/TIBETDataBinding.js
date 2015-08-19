@@ -2270,6 +2270,7 @@ function(aSignalOrHash) {
         shouldDefine,
         shouldDestroy,
 
+        oldObsLoc,
         oldObsURI,
 
         elem,
@@ -2293,7 +2294,7 @@ function(aSignalOrHash) {
     shouldDefine = info.atIfInvalid('shouldDefine', true);
     shouldDestroy = info.atIfInvalid('shouldDestroy', true);
 
-    oldObsURI = this.getAttribute('oldObsURI');
+    oldObsLoc = this.getAttribute('oldObsLoc');
 
     if (shouldDestroy) {
 
@@ -2315,8 +2316,9 @@ function(aSignalOrHash) {
         }
 
         //  Destroy the binding for the overall repeatValue
-        if (TP.notEmpty(oldObsURI)) {
-            this.destroyBinding('repeatValue', TP.uc(oldObsURI), 'value');
+        if (TP.notEmpty(oldObsLoc)) {
+            oldObsURI = TP.uc(oldObsLoc);
+            this.destroyBinding('repeatValue', oldObsURI, 'value');
         }
 
         //  If we're configured to be 'editable', then ignore the double click
@@ -2374,14 +2376,14 @@ function(aSignalOrHash) {
         //  on us, thereby invoking our 'setRepeatValue()' method below.
         this.defineBinding('repeatValue', obsURI, 'value');
 
-        this.setAttribute('oldObsURI', obsURI.asString());
+        this.setAttribute('oldObsLoc', obsURI.asString());
 
         //  If we have real resource data and either had an old URI or we're not
         //  a primary URI, then we won't have gotten notified from the main URI
         //  since it didn't change, but we did, so we need to manually call
         //  refresh.
         if (TP.notEmpty(obsURI.getResource()) &&
-            (TP.notEmpty(oldObsURI) || !obsURI.isPrimaryURI())) {
+            (TP.notEmpty(oldObsLoc) || !obsURI.isPrimaryURI())) {
 
             this.updateRepeat(obsURI.getResource());
         }
