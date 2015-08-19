@@ -8413,6 +8413,38 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('getWatched',
+function() {
+
+    /**
+     * @method getWatched
+     * @summary Returns whether the URI is watched or not. For TIBETURLs, this
+     *     passes through to the concrete URI's 'watched' property.
+     * @returns {Boolean} Whether or not the URI is watched.
+     */
+
+    return this.getNestedURI().get('watched');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('setWatched',
+function(shouldBeWatched) {
+
+    /**
+     * @method setWatched
+     * @summary Sets whether the URI is watched or not. For TIBETURLs, this
+     *     passes through to the concrete URI's 'watched' property.
+     * @param {Boolean} shouldBeWatched Whether the URI should be watched or
+     *     not.
+     * @returns {TP.core.TIBETURL} The receiver.
+     */
+
+    return this.getNestedURI().set('watched', shouldBeWatched);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
