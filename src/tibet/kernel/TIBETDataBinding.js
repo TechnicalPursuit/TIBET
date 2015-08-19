@@ -2528,6 +2528,7 @@ function(aResource) {
      */
 
     var repeatAttrVal,
+        repeatURI,
 
         elem,
 
@@ -2566,10 +2567,29 @@ function(aResource) {
 
     repeatAttrVal = this.getAttribute('bind:repeat');
 
-    //  If we weren't handed a resource, then create an empty Array and use
+    //  If we weren't handed a resource, then try to see if we can form a URI
+    //  from either our 'bind:repeat' attribute or 'oldObsLoc' attribute and use
     //  that.
     if (TP.notValid(repeatResource = aResource)) {
-        repeatResource = TP.ac();
+        if (TP.notEmpty(repeatAttrVal)) {
+            if (TP.isURI(repeatURI = TP.uc(repeatAttrVal))) {
+                repeatResource = repeatURI.getResource();
+            }
+        } else if (TP.notEmpty(repeatAttrVal =
+                                this.getAttribute('oldObsLoc'))) {
+            if (TP.isURI(repeatURI = TP.uc(repeatAttrVal))) {
+                repeatResource = repeatURI.getResource();
+            }
+        }
+    }
+
+    //  If we still couldn't get a valid resource, then just log a warning and
+    //  return.
+    if (TP.notValid(repeatResource)) {
+        TP.ifWarn() ?
+                TP.warn('Could not obtain a repeating resource') : 0;
+
+        return this;
     }
 
     //  If the resource we were handed wasn't an Array, then wrap the resource
