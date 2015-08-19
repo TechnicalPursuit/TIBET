@@ -13963,28 +13963,55 @@ function(newContent, aRequest, shouldSignal) {
     var loc,
         uri,
 
-        retVal;
+        retVal,
 
-    //  Grab our current location and ignore/unwatch the URI for the
-    //  ValueChange.
-    loc = this.getLocation();
-    uri = TP.uc(loc);
-
-    if (TP.isURI(uri)) {
-        this.ignore(uri, 'TP.sig.ValueChange');
-        uri.unwatch();
-    }
+        natWin,
+        unloadHandler;
 
     //  Call up to our supertype, which will set the location/content.
     retVal = this.callNextMethod();
 
-    //  Get the new location and observe/watch the URI for the ValueChange.
-    loc = this.getLocation();
-    uri = TP.uc(loc);
+    //  If the receiver is associated with a Window (i.e. it's being drawn into
+    //  a visible DOM), observe / ignore its content for change.
+    if (TP.isWindow(natWin = this.getNativeWindow())) {
 
-    if (TP.isURI(uri)) {
-        this.observe(uri, 'TP.sig.ValueChange');
-        uri.watch();
+        //  Get the new location and observe/watch the URI for the ValueChange.
+        loc = this.getLocation();
+        uri = TP.uc(loc);
+
+        if (TP.isURI(uri)) {
+            this.observe(uri, 'TP.sig.ValueChange');
+            uri.watch();
+        }
+
+        //  Set up an 'document unloaded' handler on the native window so when
+        //  the URI unloads from the window, it is unwatched and ignored for
+        //  ValueChange.
+        /* eslint-disable no-extra-parens */
+        unloadHandler = (function(aSig) {
+
+            var wasRegistered,
+                unloadURI;
+
+            unloadHandler.ignore(TP.gid(natWin), 'TP.sig.DocumentUnloaded');
+
+            wasRegistered = TP.core.URI.hasInstance(loc);
+            unloadURI = TP.uc(loc);
+
+            //  Grab our current location and ignore/unwatch the URI for the
+            //  ValueChange.
+            if (TP.isURI(unloadURI)) {
+                this.ignore(unloadURI, 'TP.sig.ValueChange');
+                unloadURI.unwatch();
+            }
+
+            if (!wasRegistered) {
+                unloadURI.unregister();
+            }
+        }.bind(this));
+        /* eslint-enable no-extra-parens */
+
+        unloadHandler.observe(TP.gid(natWin), 'TP.sig.DocumentUnloaded');
     }
 
     return retVal;
