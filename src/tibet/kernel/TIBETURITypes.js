@@ -7487,26 +7487,6 @@ function(parts) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('$parseSchemeSpecificPart',
-function(schemeSpecificString) {
-
-    /**
-     * @method $parseSchemeSpecificPart
-     * @summary Parses inbound URI string content in a fashion specific to the
-     *     scheme(s) being managed by the receiver.
-     * @param {String} schemeSpecificString A String containing the
-     *     "scheme-specific-part" of a URI.
-     * @returns {TP.core.Hash} The parsed URI 'components'.
-     */
-
-    //  TODO:   replace with logic from getID() and related parsing.
-    this.callNextMethod();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TIBETURL.Inst.defineMethod('asDumpString',
 function() {
 
@@ -7921,6 +7901,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('getPrimaryHref',
+function() {
+
+    /**
+     * @method getPrimaryHref
+     * @summary Returns the primary resource's href as a String. This is the
+     *     portion of the URI which isn't qualified by a fragment, the portion
+     *     you can send to a server without causing an error.
+     * @returns {String} The primary href as a String.
+     */
+
+    //  TIBET URLs with no canvas are effectively simply aliases to the
+    //  content URI.
+    if (TP.isEmpty(this.getCanvasName())) {
+        return this.getNestedURI().getPrimaryHref();
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('$getPrimaryResource',
 function(aRequest, filterResult) {
 
@@ -8281,28 +8283,6 @@ function(aRequest, filterResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getPrimaryHref',
-function() {
-
-    /**
-     * @method getPrimaryHref
-     * @summary Returns the primary resource's href as a String. This is the
-     *     portion of the URI which isn't qualified by a fragment, the portion
-     *     you can send to a server without causing an error.
-     * @returns {String} The primary href as a String.
-     */
-
-    //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
-    if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().getPrimaryHref();
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TIBETURL.Inst.defineMethod('getPrimaryURI',
 function() {
 
@@ -8428,19 +8408,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('setWatched',
-function(shouldBeWatched) {
+TP.core.TIBETURL.Inst.defineMethod('$parseSchemeSpecificPart',
+function(schemeSpecificString) {
 
     /**
-     * @method setWatched
-     * @summary Sets whether the URI is watched or not. For TIBETURLs, this
-     *     passes through to the concrete URI's 'watched' property.
-     * @param {Boolean} shouldBeWatched Whether the URI should be watched or
-     *     not.
-     * @returns {TP.core.TIBETURL} The receiver.
+     * @method $parseSchemeSpecificPart
+     * @summary Parses inbound URI string content in a fashion specific to the
+     *     scheme(s) being managed by the receiver.
+     * @param {String} schemeSpecificString A String containing the
+     *     "scheme-specific-part" of a URI.
+     * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
-    return this.getNestedURI().set('watched', shouldBeWatched);
+    //  TODO:   replace with logic from getID() and related parsing.
+    this.callNextMethod();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -8658,6 +8641,23 @@ function() {
     //  fragment, otherwise the version of this URI sans fragment is the
     //  primary.
     return !this.hasFragment();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('setWatched',
+function(shouldBeWatched) {
+
+    /**
+     * @method setWatched
+     * @summary Sets whether the URI is watched or not. For TIBETURLs, this
+     *     passes through to the concrete URI's 'watched' property.
+     * @param {Boolean} shouldBeWatched Whether the URI should be watched or
+     *     not.
+     * @returns {TP.core.TIBETURL} The receiver.
+     */
+
+    return this.getNestedURI().set('watched', shouldBeWatched);
 });
 
 //  ------------------------------------------------------------------------
