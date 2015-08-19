@@ -546,6 +546,24 @@ function(anID) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Type.defineMethod('hasInstance',
+function(anID) {
+
+    /**
+     * @method hasInstance
+     * @summary Returns whether a URI object with the supplied URI ID is in the
+     *     TP.core.URI instance registry.
+     * @param {String} anID A URI ID, which is typically the URI's
+     *     fully-expanded and normalized location.
+     * @returns {Boolean} Whether or not an instance is registered with the
+     *     type.
+     */
+
+    return TP.core.URI.$get('instances').hasKey(anID);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Type.defineMethod('registerInstance',
 function(anInstance) {
 
