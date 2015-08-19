@@ -566,9 +566,12 @@ function(anInstance) {
     }
 
     //  update our instance registry with the instance, keying it under the
-    //  fully-expanded URI ID.
+    //  URI ID.
     dict = this.$get('instances');
-    dict.atPut(anInstance.getLocation(), anInstance);
+
+    //  Note here how we use the value of the 'uri' attribute - we want the
+    //  original (but normalized) URI value - not the resolved 'location'.
+    dict.atPut(anInstance.get('uri'), anInstance);
 
     return this;
 });
