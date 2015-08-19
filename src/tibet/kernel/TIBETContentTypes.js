@@ -2411,12 +2411,13 @@ function(targetObj) {
         i,
 
         pathAspectAliases,
-        pathEntries,
-        entriesLen,
         j,
 
         pathEntry,
+        actions,
+
         pathAction,
+        pathAddresses,
 
         sigName,
         description,
@@ -2473,6 +2474,15 @@ function(targetObj) {
 
     changedAddresses = TP.core.AccessPath.$getChangedAddresses();
 
+    //  Generate a data structure with a data path as its key and
+    //  action/addresses as the value:
+    //
+    //  {
+    //      <path1>  :  {
+    //                      <action>   :   [address1, address2, ...]
+    //                  }
+    //  }
+
     changedPaths = TP.hc();
 
     observedAddresses.perform(
@@ -2481,11 +2491,15 @@ function(targetObj) {
                 interestedPaths,
 
                 l,
+                record,
+
                 m,
 
-                records,
+                action,
+                thePath,
 
-                record;
+                addressesEntry,
+                actionEntry;
 
             observedAddress = addressPair.first();
 
@@ -2494,29 +2508,43 @@ function(targetObj) {
 
             for (l = 0; l < changedAddresses.getSize(); l++) {
 
-                if (changedAddresses.at(l).at('address') === observedAddress) {
+                record = changedAddresses.at(l);
 
-                    //  We found an address match between changed and observed
-                    //  addresses. Add the paths from the observed address and
-                    //  the action from the changed address into the Array of
-                    //  'changed paths'.
+                //  We found an address match between changed and observed
+                //  addresses. Add the paths from the observed address and
+                //  the action from the changed address into the Array of
+                //  'changed paths'.
 
+                if (record.at('address') === observedAddress) {
+                    action = record.at('action');
+
+                    //  Loop over all of the interested paths
                     for (m = 0; m < interestedPaths.getSize(); m++) {
+                        thePath = interestedPaths.at(m);
 
-                        record = changedAddresses.at(l);
+                        //  If there isn't an action/addresses entry for the
+                        //  path, create one.
+                        if (TP.notValid(actionEntry =
+                                        changedPaths.at(thePath))) {
 
-                        //  Make sure there's an Array at actions, since the
-                        //  address could've been changed in more than one way.
-                        if (TP.isArray(
-                                records =
-                                changedPaths.at(interestedPaths.at(m)))) {
+                            addressesEntry = TP.ac();
+                            actionEntry = TP.hc(action, addressesEntry);
 
-                            records.push(record);
+                            changedPaths.atPut(thePath, actionEntry);
                         } else {
-                            //  New entry - create an Array.
-                            changedPaths.atPut(interestedPaths.at(m),
-                                                TP.ac(record));
+                            //  Otherwise, if there was an entry for the path,
+                            //  but not for the action, create one.
+                            if (TP.notValid(addressesEntry =
+                                            actionEntry.at(action))) {
+
+                                addressesEntry = TP.ac();
+                                actionEntry.atPut(action, addressesEntry);
+                            }
                         }
+
+                        //  Push the observed address into the list of addresses
+                        //  for this action for this path.
+                        addressesEntry.push(observedAddress);
                     }
                 }
             }
@@ -2534,17 +2562,18 @@ function(targetObj) {
         //  Get any aliases that are associated with the particular path.
         pathAspectAliases = targetObj.getAccessPathAliases(pathKeys.at(i));
 
-        pathEntries = changedPaths.at(pathKeys.at(i));
+        //  This will be a hash
+        pathEntry = changedPaths.at(pathKeys.at(i));
 
         //  Loop over all of the entries for this particular path. Each one
-        //  will contain the address that changed and the action that changed
-        //  it (TP.CREATE, TP.DELETE or TP.UPDATE)
-        entriesLen = pathEntries.getSize();
-        for (j = 0; j < entriesLen; j++) {
+        //  will contain an Array of the addresses that changed and the action
+        //  that changed them (TP.CREATE, TP.DELETE or TP.UPDATE)
+        actions = pathEntry.getKeys();
 
-            pathEntry = pathEntries.at(j);
+        for (j = 0; j < actions.getSize(); j++) {
 
-            pathAction = pathEntry.at('action');
+            pathAction = actions.at(j);
+            pathAddresses = pathEntry.at(pathAction);
 
             switch (pathAction) {
                 case TP.CREATE:
@@ -2575,7 +2604,7 @@ function(targetObj) {
                 aliasesLen = pathAspectAliases.getSize();
 
                 description = TP.hc(
-                                'address', pathEntry.at('address'),
+                                'addresses', pathAddresses,
                                 'action', pathAction,
                                 'target', targetObj,
                                 'facet', 'value',
@@ -2606,7 +2635,7 @@ function(targetObj) {
                 //  Otherwise send the generic signal.
                 description = TP.hc(
                                 'aspect', pathKeys.at(i),
-                                'address', pathEntry.at('address'),
+                                'addresses', pathAddresses,
                                 'action', pathAction,
                                 'target', targetObj,
                                 'facet', 'value',
