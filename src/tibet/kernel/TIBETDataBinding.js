@@ -1527,6 +1527,7 @@ function(attrName, attrValue, scopeVals, direction) {
                 primaryURIPath = splitURI.getPrimaryHref() +
                                     '#tibet(value)';
                 exprToExecute = splitURI.getFragmentExpr();
+                splitURI.unregister();
             } else {
                 //  Concatenate a simple 'value' expression onto the scope
                 //  values array (thereby creating a new Array) and use it
@@ -1555,6 +1556,7 @@ function(attrName, attrValue, scopeVals, direction) {
         //  binding from the data model to this object.
         if (direction === TP.IN || direction === TP.IO) {
             this.destroyBinding('@' + attrName, obsURI, 'value', TP.ALL);
+            obsURI.unregister();
         }
 
         //  If we are tearing down a bind for either 'OUT' or 'IO', then we
@@ -1562,6 +1564,7 @@ function(attrName, attrValue, scopeVals, direction) {
         //  object to the data model.
         if (direction === TP.OUT || direction === TP.IO) {
             obsURI.destroyBinding('value', this, attrName);
+            obsURI.unregister();
         }
     }
 
@@ -2319,6 +2322,7 @@ function(aSignalOrHash) {
         if (TP.notEmpty(oldObsLoc)) {
             oldObsURI = TP.uc(oldObsLoc);
             this.destroyBinding('repeatValue', oldObsURI, 'value');
+            oldObsURI.unregister();
         }
 
         //  If we're configured to be 'editable', then ignore the double click
