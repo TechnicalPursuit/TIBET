@@ -451,8 +451,7 @@ function(anObj, anID, forceRegistration, observeResource) {
 
         anObjType,
 
-        urn,
-        oldObj;
+        urn;
 
     if (TP.notValid(anObj)) {
         return false;
