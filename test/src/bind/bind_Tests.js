@@ -209,7 +209,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind1.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -222,18 +222,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind1_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind1_person#xpath1(/person/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind1_person#xpath1(/person/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind1_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -287,7 +287,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind2.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLAllXHTMLControls.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -305,18 +305,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind2_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind2_person#xpath1(/person/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind2_person#xpath1(/person/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind2_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -478,7 +478,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind3.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLNoFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -496,18 +496,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind3_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind3_person#xpath1(/person/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind3_person#xpath1(/person/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind3_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -669,7 +669,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind4.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLSingleFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -687,18 +687,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind4_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind4_person#xpath1(/person/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind4_person#xpath1(/person/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind4_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -860,7 +860,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind5.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLMultiFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -878,18 +878,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind5_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind5_person#xpath1(/person/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind5_person#xpath1(/person/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind5_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1047,11 +1047,11 @@ function() {
 
     //  ---
 
-    this.it('simple binding with text fields - JSON data source', function(test, options) {
+    this.it('simple binding with text fields - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind6.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1064,18 +1064,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind6_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind6_person#tibet(person.firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind6_person#tibet(person.lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind6_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1125,11 +1125,11 @@ function() {
 
     //  ---
 
-    this.it('simple binding with various XHTML controls - JSON data source', function(test, options) {
+    this.it('simple binding with various XHTML controls - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind7.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjAllXHTMLControls.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1147,18 +1147,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind7_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind7_person#tibet(person.firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind7_person#tibet(person.lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind7_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1316,11 +1316,11 @@ function() {
 
     //  ---
 
-    this.it('bind:scope, no fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
+    this.it('bind:scope, no fragment, qualified binding with various XHTML controls - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind8.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjNoFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1338,18 +1338,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind8_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind8_person#tibet(person.firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind8_person#tibet(person.lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind8_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1507,11 +1507,11 @@ function() {
 
     //  ---
 
-    this.it('bind:scope, single-level fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
+    this.it('bind:scope, single-level fragment, qualified binding with various XHTML controls - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind9.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjSingleFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1529,18 +1529,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind9_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind9_person#tibet(person.firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind9_person#tibet(person.lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind9_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1698,11 +1698,11 @@ function() {
 
     //  ---
 
-    this.it('bind:scope, multi-level fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
+    this.it('bind:scope, multi-level fragment, qualified binding with various XHTML controls - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind10.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjMultiFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1720,18 +1720,18 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind10_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind10_person#tibet(person.firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind10_person#tibet(person.lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind10_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1931,7 +1931,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind11.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedXML.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -1946,26 +1946,26 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind11_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[1]/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[1]/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/lastname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[2]/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind11_person#xpath1(/people/person[2]/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind11_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2048,7 +2048,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind12.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedXMLWithScopes.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2063,26 +2063,26 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind12_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[1]/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[1]/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/lastname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[2]/firstname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind12_person#xpath1(/people/person[2]/lastname)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind12_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2161,11 +2161,11 @@ function() {
 
     //  ---
 
-    this.it('simple numeric indexed binds - JSON data source', function(test, options) {
+    this.it('simple numeric indexed binds - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind13.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2180,26 +2180,26 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind13_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind13_person#tibet(people[0].firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[0].firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind13_person#tibet(people[0].lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[0].lastname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind13_person#tibet(people[1].firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[1].firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind13_person#tibet(people[1].lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind13_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2278,11 +2278,11 @@ function() {
 
     //  ---
 
-    this.it('simple numeric indexed binds with scoping - JSON data source', function(test, options) {
+    this.it('simple numeric indexed binds with scoping - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind14.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSObjWithScopes.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2297,26 +2297,26 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind14_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind14_person#tibet(people[0].firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[0].firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind14_person#tibet(people[0].lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[0].lastname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind14_person#tibet(people[1].firstname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[1].firstname)'),
                         'TP.sig.StructureChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind14_person#tibet(people[1].lastname)'),
+                        TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind14_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2429,7 +2429,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind15.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2444,14 +2444,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind15_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind15_person#xpath1(/people/person)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind15_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2534,7 +2534,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind16.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLNested.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2551,14 +2551,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind16_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind16_person#xpath1(/people/person)'),
+                        TP.uc('urn:tibet:test_person#xpath1(/people/person)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind16_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 //  ---
 
@@ -2713,11 +2713,11 @@ function() {
 
     //  ---
 
-    this.it('repeat binding with text fields - JSON data source', function(test, options) {
+    this.it('repeat binding with text fields - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind17.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2732,14 +2732,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind17_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind17_person#tibet(people)'),
+                        TP.uc('urn:tibet:test_person#tibet(people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind17_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField0', windowContext).get('value'),
@@ -2818,11 +2818,11 @@ function() {
 
     //  ---
 
-    this.it('nested repeat binding with text fields - JSON data source', function(test, options) {
+    this.it('nested repeat binding with text fields - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind18.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjNested.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2839,14 +2839,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind18_person'),
+                        TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:Bind18_person#tibet(people)'),
+                        TP.uc('urn:tibet:test_person#tibet(people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:Bind18_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 //  ---
 
@@ -3005,7 +3005,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind19.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3173,7 +3173,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind20.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLNestedPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3403,11 +3403,11 @@ function() {
 
     //  ---
 
-    this.it('repeat binding with text fields and paging - JSON data source', function(test, options) {
+    this.it('repeat binding with text fields and paging - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind21.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3571,11 +3571,11 @@ function() {
 
     //  ---
 
-    this.it('nested repeat binding with text fields and paging - JSON data source', function(test, options) {
+    this.it('nested repeat binding with text fields and paging - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind22.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjNestedPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3829,7 +3829,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind23.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindStaticTableXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3890,11 +3890,11 @@ function() {
 
     //  ---
 
-    this.it('Simple table - JSON data source', function(test, options) {
+    this.it('Simple table - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind24.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindStaticTableJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3978,7 +3978,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind25.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3991,7 +3991,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind25_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4040,7 +4040,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind26.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeNoFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4054,7 +4054,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind26_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4103,7 +4103,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind27.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeSingleFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4117,7 +4117,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind27_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4166,7 +4166,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind28.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeMultiFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4180,7 +4180,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind28_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4229,7 +4229,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind29.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4244,7 +4244,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind29_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -4308,7 +4308,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind30.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeNoFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4323,7 +4323,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind30_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -4388,7 +4388,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind31.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeSingleFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4403,7 +4403,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind31_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -4467,7 +4467,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind32.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeMultiFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4482,7 +4482,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind32_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -4542,11 +4542,11 @@ function() {
 
     //  ---
 
-    this.it('whole attribute expression - JSON data source', function(test, options) {
+    this.it('whole attribute expression - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind33.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4560,7 +4560,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind33_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4605,11 +4605,11 @@ function() {
 
     //  ---
 
-    this.it('whole attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+    this.it('whole attribute expression, no fragment, qualified binding - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind34.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeNoFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4623,7 +4623,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind34_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4668,11 +4668,11 @@ function() {
 
     //  ---
 
-    this.it('whole attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+    this.it('whole attribute expression, single-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind35.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeSingleFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4686,7 +4686,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind35_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4731,11 +4731,11 @@ function() {
 
     //  ---
 
-    this.it('whole attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+    this.it('whole attribute expression, multi-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind36.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeMultiFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4749,7 +4749,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind36_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -4794,11 +4794,11 @@ function() {
 
     //  ---
 
-    this.it('partial attribute expression - JSON data source', function(test, options) {
+    this.it('partial attribute expression - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind37.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4813,7 +4813,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind37_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -4873,11 +4873,11 @@ function() {
 
     //  ---
 
-    this.it('partial attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+    this.it('partial attribute expression, no fragment, qualified binding - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind38.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeNoFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4892,7 +4892,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind38_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -4953,11 +4953,11 @@ function() {
 
     //  ---
 
-    this.it('partial attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+    this.it('partial attribute expression, single-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind39.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeSingleFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4972,7 +4972,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind39_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -5032,11 +5032,11 @@ function() {
 
     //  ---
 
-    this.it('partial attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+    this.it('partial attribute expression, multi-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind40.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeMultiFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5051,7 +5051,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:Bind40_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -5136,7 +5136,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind41.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsNoLiterals.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5188,7 +5188,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind42.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsWithLiterals.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5240,7 +5240,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind43.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsEmbedded.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5292,7 +5292,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind44.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsAndLiteralsEmbedded.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5344,7 +5344,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind45.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsIOAttrsRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5436,7 +5436,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind46.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsAndLiteralsIOAttrsRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5527,7 +5527,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind47.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsEmbeddedRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5619,7 +5619,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind48.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsAndLiteralsEmbeddedRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5712,7 +5712,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind49.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindTableXMLRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5785,11 +5785,11 @@ function() {
 
     //  ---
 
-    this.it('Table - JSON data source - repeating context', function(test, options) {
+    this.it('Table - JavaScript Object data source - repeating context', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind50.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindTableJSObjRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5889,7 +5889,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind51.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindFullExpressionsXML.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -5922,11 +5922,11 @@ function() {
 
     //  ---
 
-    this.it('fully qualified expressions - JSON data source', function(test, options) {
+    this.it('fully qualified expressions - JavaScript Object data source', function(test, options) {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/Bind52.xhtml');
+        loadURI = TP.uc('~lib_tst/src/bind/BindFullExpressionsJSObj.xhtml');
 
         this.getDriver().setLocation(loadURI);
 

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+                <addresses>
+                    <address>
+                        <street>111 Main St.</street>
+                        <city>Anytown</city>
+                    </address>
+                    <address>
+                        <street>222 State St.</street>
+                        <city>Another Town</city>
+                    </address>
+                </addresses>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+                <addresses>
+                    <address>
+                        <street>333 1st Av.</street>
+                        <city>Yet Another Town</city>
+                    </address>
+                    <address>
+                        <street>444 2nd Av.</street>
+                        <city>One More Town</city>
+                    </address>
+                </addresses>
+            </person>
+            <person>
+                <lastname>Homemaker</lastname>
+                <firstname>Billy</firstname>
+                <addresses>
+                    <address>
+                        <street>#27 Ritz Ave. Apt A.</street>
+                        <city>In Your Town</city>
+                    </address>
+                    <address>
+                        <street>#4 Country Rd.</street>
+                        <city>Middle Of Nowhere</city>
+                    </address>
+                </addresses>
+            </person>
+            <person>
+                <lastname>Professional</lastname>
+                <firstname>Pamela</firstname>
+                <addresses>
+                    <address>
+                        <street>2700 Main St.</street>
+                        <city>High Power Place</city>
+                    </address>
+                    <address>
+                        <street>#4 Hidden Court</street>
+                        <city>Middle Of Nowhere</city>
+                    </address>
+                </addresses>
+            </person>
+        </people>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind Repeat XML Nested Paging</h2><br/>
+	<br/>
+	<br/>
+    This test sets up a *nested* 'repeat' binding between the group of fields and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document. The repeating fields and bindings are automatically generated from the data, which is a collection.
+	<br/>
+	<br/>
+    <br/>
+    This test also uses both a 'bind:repeatsize' and a 'bind:repeatindex'. These allow control over how many repeat items are showing and what the 'starting point' within the data to begin showing data is.
+	<br/>
+	<br/>
+
+    Repeat index #: <input type="text" value="1" id="repeatIndexField" onchange="TP.byId('personRepeat').setAttribute('bind:repeatindex', this.value)"/>
+	<br/>
+	<br/>
+
+    Repeat size: <input type="text" value="2" id="repeatSizeField" onchange="TP.byId('personRepeat').setAttribute('bind:repeatsize', this.value)"/>
+	<br/>
+	<br/>
+
+    <span id="personRepeat" bind:repeat="urn:tibet:test_person#xpath1(/people/person)" bind:repeatindex="1" bind:repeatsize="2">
+        <label for="firstNameField">First name: </label>
+        <input type="text" id="firstNameField" bind:io="value: firstname" tabindex="0"/><br/>
+
+        <label for="lastNameField">Last name: </label>
+        <input type="text" id="lastNameField" bind:io="value: lastname" tabindex="0"/><br/>
+            <span bind:repeat="addresses/address">
+                <label for="addressStreetField">Street: </label>
+                <input type="text" id="addressStreetField" bind:io="value: street" tabindex="0"/><br/>
+                <label for="addressStreetField">City: </label>
+                <input type="text" id="addressCityField" bind:io="value: city" tabindex="0"/><br/>
+            </span>
+    </span>
+</body>
+</html>

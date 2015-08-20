@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person_xml">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+            </person>
+            <person>
+                <lastname>Homemaker</lastname>
+                <firstname>Billy</firstname>
+            </person>
+            <person>
+                <lastname>Professional</lastname>
+                <firstname>Pamela</firstname>
+            </person>
+        </people>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind expressions in a table XML</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a 'repeat' binding between the static Active Client Pages templating expressions in the page and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document. The repeating data rows and cells are automatically generated from the data, which is a collection.
+    <br/>
+    <br/>
+    Note that this test also includes variables in data expressions.
+    <br/>
+    <br/>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Row #</th><th>First Name</th><th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody id="people" bind:repeat="urn:tibet:test_person_xml#xpath1(/people/person)">
+            <tr>
+                <td>[[$INDEX]]</td><td>[[firstname]]</td><td>[[lastname]]</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

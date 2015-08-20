@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+                <addresses>
+                    <address>
+                        <street>111 Main St.</street>
+                        <city>Anytown</city>
+                    </address>
+                    <address>
+                        <street>222 State St.</street>
+                        <city>Another Town</city>
+                    </address>
+                </addresses>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+                <addresses>
+                    <address>
+                        <street>333 1st Av.</street>
+                        <city>Yet Another Town</city>
+                    </address>
+                    <address>
+                        <street>444 2nd Av.</street>
+                        <city>One More Town</city>
+                    </address>
+                </addresses>
+            </person>
+        </people>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+	<h2>Bind Repeat XML Nested</h2><br/>
+	<br/>
+	<br/>
+    This test sets up a *nested* 'repeat' binding between the group of fields and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document. The repeating fields and bindings are automatically generated from the data, which is a collection.
+	<br/>
+	<br/>
+
+    <span bind:repeat="urn:tibet:test_person#xpath1(/people/person)">
+        <label for="firstNameField">First name: </label>
+        <input type="text" id="firstNameField" bind:io="value: firstname" tabindex="0"/><br/>
+
+        <label for="lastNameField">Last name: </label>
+        <input type="text" id="lastNameField" bind:io="value: lastname" tabindex="0"/><br/>
+        <span bind:repeat="addresses/address">
+            <input type="text" id="addressStreetField" bind:io="value: street" tabindex="0"/><br/>
+            <input type="text" id="addressCityField" bind:io="value: city" tabindex="0"/><br/>
+        </span>
+    </span>
+
+</body>
+</html>

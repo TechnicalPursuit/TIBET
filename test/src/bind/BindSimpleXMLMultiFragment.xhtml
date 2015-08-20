@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person">
+        <person xmlns="">
+            <lastname>Jones</lastname>
+            <firstname>Jane</firstname>
+            <description>Ms. Jones is a great lady</description>
+            <gender>f</gender>
+            <pet>cat</pet>
+            <color>blue</color>
+        </person>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind Simple XML - Multi-level fragment</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a 'simple binding' between the various XHTML controls and a piece of XML data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+    <br/>
+    <br/>
+    <br/>
+    This test also uses a top-level binding scope of a 'pure URI' with a nested scope that contains a further qualifying fragment to avoid having to repeat the full qualifications for the bind scope on each bind.
+    <br/>
+    <br/>
+
+    <!-- Set up a span to define the first part of the binding scope -->
+    <span bind:scope="urn:tibet:test_person">
+
+        <!-- Set up a span to define the second part of the binding scope -->
+        <span bind:scope="#xpath1(/person)">
+
+            <label for="firstNameField">First name: </label>
+            <input type="text" id="firstNameField" bind:io="value: firstname" tabindex="0"/><br/>
+
+            <label for="lastNameField">Last name: </label>
+            <input type="text" id="lastNameField" bind:io="value: lastname" tabindex="0"/><br/>
+
+            <label for="descriptionField">Description: </label>
+            <textarea id="descriptionField" bind:io="value: description" tabindex="0"></textarea><br/>
+
+            <label for="genderField">Gender: </label>
+            <select id="genderField" bind:io="value: gender" tabindex="0">
+                <option value="m">Male</option>
+                <option value="f">Female</option>
+            </select>
+
+            <br/>
+            <span>Favorite Pet:</span>
+            <br/>
+
+            <input type="radio" name="input_radio" value="dog" id="petRadio1" bind:io="checked: pet"/><label for="petRadio1">Dog</label>
+            <input type="radio" name="input_radio" value="cat" id="petRadio2"/><label for="petRadio2">Cat</label>
+            <input type="radio" name="input_radio" value="fish" id="petRadio3"/><label for="petRadio3">Fish</label>
+
+            <br/>
+            <span>Favorite Color:</span>
+            <br/>
+
+            <input type="checkbox" name="input_checkbox" value="red" id="colorCheckbox1" bind:io="checked: color"/><label for="colorCheckbox1">Red</label>
+            <input type="checkbox" name="input_checkbox" value="blue" id="colorCheckbox2"/><label for="colorCheckbox2">Blue</label>
+            <input type="checkbox" name="input_checkbox" value="yellow" id="colorCheckbox3"/><label for="colorCheckbox3">Yellow</label>
+
+        </span>
+    </span>
+
+</body>
+</html>
