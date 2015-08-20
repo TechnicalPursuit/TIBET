@@ -2646,8 +2646,6 @@ function(aResource) {
 
     totalDisplaySize = endIndex - startIndex;
 
-    scopeVals = this.getBindingScopeValues();
-
     //  If we've already built all of the repeating elements, we can just rebind
     //  the individual elements here.
     if (elemChildElements.getSize() !==
@@ -2814,6 +2812,8 @@ function(aResource) {
     if (boundCount > 0) {
         this.$triggerRepeatURIChanged();
     }
+
+    scopeVals = this.getBindingScopeValues();
 
     for (i = 0; i < resourceLength; i++) {
         vals = scopeVals.concat(
