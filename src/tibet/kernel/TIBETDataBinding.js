@@ -1472,7 +1472,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('destroyBindingsUsing',
-function(attrName, attrValue, scopeVals, direction) {
+function(attrName, attrValue, scopeVals, direction, unregisterURIs) {
 
     /**
      * @method destroyBindingsUsing
@@ -1487,6 +1487,7 @@ function(attrName, attrValue, scopeVals, direction) {
      * @param {String} direction The binding 'direction' (i.e. which way the
      *     original binding connection was established from the data source to
      *     the receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
+     * @param {Boolean} unregisterURIs
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -1527,7 +1528,9 @@ function(attrName, attrValue, scopeVals, direction) {
                 primaryURIPath = splitURI.getPrimaryHref() +
                                     '#tibet(value)';
                 exprToExecute = splitURI.getFragmentExpr();
-                splitURI.unregister();
+                if (unregisterURIs) {
+                    splitURI.unregister();
+                }
             } else {
                 //  Concatenate a simple 'value' expression onto the scope
                 //  values array (thereby creating a new Array) and use it
@@ -1556,7 +1559,6 @@ function(attrName, attrValue, scopeVals, direction) {
         //  binding from the data model to this object.
         if (direction === TP.IN || direction === TP.IO) {
             this.destroyBinding('@' + attrName, obsURI, 'value', TP.ALL);
-            obsURI.unregister();
         }
 
         //  If we are tearing down a bind for either 'OUT' or 'IO', then we
@@ -1564,6 +1566,9 @@ function(attrName, attrValue, scopeVals, direction) {
         //  object to the data model.
         if (direction === TP.OUT || direction === TP.IO) {
             obsURI.destroyBinding('value', this, attrName);
+        }
+
+        if (unregisterURIs) {
             obsURI.unregister();
         }
     }
@@ -1920,18 +1925,19 @@ function(aSignalOrHash) {
      * @param {TP.sig.DOMRebuild|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or hash supplied by the caller. This
      *     object should include the following keys:
-     *          'deep'          ->      a value of true causes all descendant
+     *          'deep'              ->  a value of true causes all descendant
      *                                  nodes to rebuild their bindings. If this
      *                                  value isn't supplied, this method
      *                                  defaults this setting to true.
-     *          'shouldDefine'  ->      a value of true causes this method to
+     *          'shouldDefine'      ->  a value of true causes this method to
      *                                  define bindings when rebuilding them. If
      *                                  this value isn't supplied, this method
      *                                  defaults this setting to true.
-     *          'shouldDestroy' ->      a value of true causes this method to
+     *          'shouldDestroy'     ->  a value of true causes this method to
      *                                  destroy bindings when rebuilding them.
      *                                  If this value isn't supplied, this
      *                                  method defaults this setting to true.
+     *          'unregisterURIs'    ->
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -1941,6 +1947,7 @@ function(aSignalOrHash) {
 
         shouldDefine,
         shouldDestroy,
+        unregisterURIs,
 
         nonBindAttrNodes,
 
@@ -1967,6 +1974,7 @@ function(aSignalOrHash) {
 
     shouldDefine = info.atIfInvalid('shouldDefine', true);
     shouldDestroy = info.atIfInvalid('shouldDestroy', true);
+    unregisterURIs = info.atIfInvalid('unregisterURIs', true);
 
     //  If there isn't an overall 'binding information' dictionary defined on
     //  the receiver, then define one.
@@ -2016,7 +2024,8 @@ function(aSignalOrHash) {
                             attrName,
                             attrVal,
                             scopeVals,
-                            TP.IN);
+                            TP.IN,
+                            unregisterURIs);
 
                 }.bind(this));
         }
@@ -2047,7 +2056,8 @@ function(aSignalOrHash) {
                             attrName,
                             attrVal,
                             scopeVals,
-                            isBidi ? TP.IO : TP.IN);
+                            isBidi ? TP.IO : TP.IN,
+                            unregisterURIs);
 
                 }.bind(this));
         }
@@ -2074,7 +2084,8 @@ function(aSignalOrHash) {
                             attrName,
                             attrVal,
                             scopeVals,
-                            TP.OUT);
+                            TP.OUT,
+                            unregisterURIs);
 
                 }.bind(this));
         }
@@ -2100,7 +2111,8 @@ function(aSignalOrHash) {
                         attrName,
                         attrValue,
                         scopeVals,
-                        isBidi ? TP.IO : TP.IN);
+                        isBidi ? TP.IO : TP.IN,
+                        unregisterURIs);
             }
         }.bind(this)());
     }
@@ -2786,7 +2798,8 @@ function(aResource) {
             //  Have the child destroy it's current bindings (before we
             //  change its scope).
             childTPElem.rebuild(
-                    TP.hc('shouldDefine', false, 'shouldDestroy', true));
+                    TP.hc('shouldDefine', false, 'shouldDestroy', true,
+                            'unregisterURIs', false));
 
             //  Have to adjust for the fact that XPaths are 1-based.
             if (isXMLResource) {
