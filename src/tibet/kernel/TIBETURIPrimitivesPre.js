@@ -299,6 +299,12 @@ function(parts) {
     //  Fragment path is any portion of the fragment prior to fragment params.
     //  By default an empty path is '/' to be consistent with location.pathname.
     if (fragPath !== '/' && TP.notEmpty(fragPath)) {
+
+        //  If we're about to put on fragment don't leave base path empty.
+        if (TP.isEmpty(basePath)) {
+            url += '/';
+        }
+
         url += '#' +
             (fragPath.charAt(0) === '/' ? fragPath.slice(1) : fragPath);
     }
@@ -309,6 +315,11 @@ function(parts) {
 
         //  Make sure that we're always within a fragment by forcing leading #.
         if (!/#/.test(url)) {
+
+            //  If we're about to put on fragment don't leave base path empty.
+            if (TP.isEmpty(basePath)) {
+                url += '/';
+            }
             url += '#';
         }
 
