@@ -10838,8 +10838,8 @@ function(resource, mimeType, fallback) {
 
     uri = this.computeResourceURI(resource, mimeType, fallback);
 
-    if (TP.notEmpty(uri)) {
-        return TP.uc(uri);
+    if (TP.notEmpty(uri) && uri !== 'NO_RESULT') {
+        return TP.uc(uri).getConcreteURI();
     }
 
     return;
