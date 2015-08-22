@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person">
+        <![CDATA[
+        {"person": {"lastname": "Jones", "firstname": "Jane", "description": "Ms. Jones is a great lady", "gender": "f", "pet": "cat", "color": "blue"}}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind Simple JSON to All XHTML Controls</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a 'simple binding' between various XHTML controls and a piece of JSON data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+    <br/>
+    <br/>
+
+    <label for="firstNameField">First name: </label>
+    <input type="text" id="firstNameField" bind:io="value: urn:tibet:test_person#json($.person.firstname)" tabindex="0"/><br/>
+
+    <label for="lastNameField">Last name: </label>
+    <input type="text" id="lastNameField" bind:io="value: urn:tibet:test_person#json($.person.lastname)" tabindex="0"/><br/>
+
+    <label for="descriptionField">Description: </label>
+    <textarea id="descriptionField" bind:io="value: urn:tibet:test_person#json($.person.description)" tabindex="0"></textarea><br/>
+
+    <label for="genderField">Gender: </label>
+    <select id="genderField" bind:io="value: urn:tibet:test_person#json($.person.gender)" tabindex="0">
+        <option value="m">Male</option>
+        <option value="f">Female</option>
+    </select>
+
+    <br/>
+    <span>Favorite Pet:</span>
+    <br/>
+
+    <input type="radio" name="input_radio" value="dog" id="petRadio1" bind:io="checked: urn:tibet:test_person#json($.person.pet)"/><label for="petRadio1">Dog</label>
+    <input type="radio" name="input_radio" value="cat" id="petRadio2"/><label for="petRadio2">Cat</label>
+    <input type="radio" name="input_radio" value="fish" id="petRadio3"/><label for="petRadio3">Fish</label>
+
+    <br/>
+    <span>Favorite Color:</span>
+    <br/>
+
+    <input type="checkbox" name="input_checkbox" value="red" id="colorCheckbox1" bind:io="checked: urn:tibet:test_person#json($.person.color)"/><label for="colorCheckbox1">Red</label>
+    <input type="checkbox" name="input_checkbox" value="blue" id="colorCheckbox2"/><label for="colorCheckbox2">Blue</label>
+    <input type="checkbox" name="input_checkbox" value="yellow" id="colorCheckbox3"/><label for="colorCheckbox3">Yellow</label>
+
+</body>
+</html>

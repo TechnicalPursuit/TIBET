@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_person">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Bind Simple JSON</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a 'simple binding' between the fields and an piece of JSON data, set up by the &lt;tibet:data&gt; tag embedded in this document.
+    <br/>
+    <br/>
+
+    <label for="firstNameField">First name: </label>
+    <input type="text" id="firstNameField" bind:io="value: urn:tibet:test_person#json($.person.firstname)" tabindex="0"/><br/>
+
+    <label for="lastNameField">Last name: </label>
+    <input type="text" id="lastNameField" bind:io="value: urn:tibet:test_person#json($.person.lastname)" tabindex="0"/><br/>
+
+</body>
+</html>

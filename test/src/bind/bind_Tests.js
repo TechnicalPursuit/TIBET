@@ -1047,6 +1047,848 @@ function() {
 
     //  ---
 
+    this.it('simple binding with text fields - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+                    modelObj,
+                    lastNameField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField', windowContext).get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.lastname')),
+                    'Smith');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField = TP.byId('lastNameField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
+                    sendKeys('Jones', lastNameField).
+                    sendEvent(TP.hc('type', 'change'), lastNameField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField.get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.lastname')),
+                            'Jones');
+                    });
+
+                //  firstNameField is just another text field - same logic
+                //  should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('simple binding with various XHTML controls - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONAllXHTMLControls.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+                    modelObj,
+                    lastNameField,
+                    descriptionField,
+                    genderField,
+                    genderFieldOption1,
+                    petRadio3,
+                    colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.lastname')),
+                    'Jones');
+
+                //  firstNameField is just another text field - no reason to
+                //  test it too
+
+                test.assert.isEqualTo(
+                    TP.byId('descriptionField', windowContext).get('value'),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.description')),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.byId('genderField', windowContext).get('value'),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.gender')),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.byId('petRadio1', windowContext).get('value'),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.pet')),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
+                    TP.ac('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.color')),
+                    'blue');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField = TP.byId('lastNameField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
+                    sendKeys('Jones', lastNameField).
+                    sendEvent(TP.hc('type', 'change'), lastNameField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField.get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.lastname')),
+                            'Jones');
+                    });
+
+                //  firstNameField is just another text field - same logic
+                //  should work
+
+                descriptionField = TP.byId('descriptionField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
+                    sendKeys('She is great!', descriptionField).
+                    sendEvent(TP.hc('type', 'change'), descriptionField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            descriptionField.get('value'),
+                            'She is great!');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.description')),
+                            'She is great!');
+                    });
+
+                genderField = TP.byId('genderField', windowContext);
+                genderFieldOption1 = genderField.getElementArray().at(0);
+
+                test.getDriver().startSequence().
+                    click(genderFieldOption1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            genderField.get('value'),
+                            'm');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.gender')),
+                            'm');
+                    });
+
+                petRadio3 = TP.byId('petRadio3', windowContext);
+
+                test.getDriver().startSequence().
+                    click(petRadio3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            petRadio3.get('value'),
+                            'fish');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.pet')),
+                            'fish');
+                    });
+
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
+
+                test.getDriver().startSequence().
+                    click(colorCheckbox1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorCheckbox1.get('value'),
+                            TP.ac('red', 'blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.color')),
+                            TP.ac('red', 'blue'));
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('bind:scope, no fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONNoFragment.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+                    modelObj,
+                    lastNameField,
+                    descriptionField,
+                    genderField,
+                    genderFieldOption1,
+                    petRadio3,
+                    colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.lastname')),
+                    'Jones');
+
+                //  firstNameField is just another text field - no reason to
+                //  test it too
+
+                test.assert.isEqualTo(
+                    TP.byId('descriptionField', windowContext).get('value'),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.description')),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.byId('genderField', windowContext).get('value'),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.gender')),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.byId('petRadio1', windowContext).get('value'),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.pet')),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
+                    TP.ac('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.color')),
+                    'blue');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField = TP.byId('lastNameField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
+                    sendKeys('Jones', lastNameField).
+                    sendEvent(TP.hc('type', 'change'), lastNameField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField.get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.lastname')),
+                            'Jones');
+                    });
+
+                //  firstNameField is just another text field - same logic
+                //  should work
+
+                descriptionField = TP.byId('descriptionField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
+                    sendKeys('She is great!', descriptionField).
+                    sendEvent(TP.hc('type', 'change'), descriptionField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            descriptionField.get('value'),
+                            'She is great!');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.description')),
+                            'She is great!');
+                    });
+
+                genderField = TP.byId('genderField', windowContext);
+                genderFieldOption1 = genderField.getElementArray().at(0);
+
+                test.getDriver().startSequence().
+                    click(genderFieldOption1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            genderField.get('value'),
+                            'm');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.gender')),
+                            'm');
+                    });
+
+                petRadio3 = TP.byId('petRadio3', windowContext);
+
+                test.getDriver().startSequence().
+                    click(petRadio3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            petRadio3.get('value'),
+                            'fish');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.pet')),
+                            'fish');
+                    });
+
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
+
+                test.getDriver().startSequence().
+                    click(colorCheckbox1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorCheckbox1.get('value'),
+                            TP.ac('red', 'blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.color')),
+                            TP.ac('red', 'blue'));
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('bind:scope, single-level fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONSingleFragment.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+                    modelObj,
+                    lastNameField,
+                    descriptionField,
+                    genderField,
+                    genderFieldOption1,
+                    petRadio3,
+                    colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.lastname')),
+                    'Jones');
+
+                //  firstNameField is just another text field - no reason to
+                //  test it too
+
+                test.assert.isEqualTo(
+                    TP.byId('descriptionField', windowContext).get('value'),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.description')),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.byId('genderField', windowContext).get('value'),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.gender')),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.byId('petRadio1', windowContext).get('value'),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.pet')),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
+                    TP.ac('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.color')),
+                    'blue');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField = TP.byId('lastNameField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
+                    sendKeys('Jones', lastNameField).
+                    sendEvent(TP.hc('type', 'change'), lastNameField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField.get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.lastname')),
+                            'Jones');
+                    });
+
+                //  firstNameField is just another text field - same logic
+                //  should work
+
+                descriptionField = TP.byId('descriptionField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
+                    sendKeys('She is great!', descriptionField).
+                    sendEvent(TP.hc('type', 'change'), descriptionField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            descriptionField.get('value'),
+                            'She is great!');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.description')),
+                            'She is great!');
+                    });
+
+                genderField = TP.byId('genderField', windowContext);
+                genderFieldOption1 = genderField.getElementArray().at(0);
+
+                test.getDriver().startSequence().
+                    click(genderFieldOption1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            genderField.get('value'),
+                            'm');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.gender')),
+                            'm');
+                    });
+
+                petRadio3 = TP.byId('petRadio3', windowContext);
+
+                test.getDriver().startSequence().
+                    click(petRadio3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            petRadio3.get('value'),
+                            'fish');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.pet')),
+                            'fish');
+                    });
+
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
+
+                test.getDriver().startSequence().
+                    click(colorCheckbox1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorCheckbox1.get('value'),
+                            TP.ac('red', 'blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.color')),
+                            TP.ac('red', 'blue'));
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('bind:scope, multi-level fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONMultiFragment.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+                    modelObj,
+                    lastNameField,
+                    descriptionField,
+                    genderField,
+                    genderFieldOption1,
+                    petRadio3,
+                    colorCheckbox1;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.lastname')),
+                    'Jones');
+
+                //  firstNameField is just another text field - no reason to
+                //  test it too
+
+                test.assert.isEqualTo(
+                    TP.byId('descriptionField', windowContext).get('value'),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.description')),
+                    'Ms. Jones is a great lady');
+
+                test.assert.isEqualTo(
+                    TP.byId('genderField', windowContext).get('value'),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.gender')),
+                    'f');
+
+                test.assert.isEqualTo(
+                    TP.byId('petRadio1', windowContext).get('value'),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.pet')),
+                    'cat');
+
+                test.assert.isEqualTo(
+                    TP.byId('colorCheckbox1', windowContext).get('value'),
+                    TP.ac('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.person.color')),
+                    'blue');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField = TP.byId('lastNameField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField.clearValue();
+                            }).
+                    sendKeys('Jones', lastNameField).
+                    sendEvent(TP.hc('type', 'change'), lastNameField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField.get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.lastname')),
+                            'Jones');
+                    });
+
+                //  firstNameField is just another text field - same logic
+                //  should work
+
+                descriptionField = TP.byId('descriptionField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                descriptionField.clearValue();
+                            }).
+                    sendKeys('She is great!', descriptionField).
+                    sendEvent(TP.hc('type', 'change'), descriptionField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            descriptionField.get('value'),
+                            'She is great!');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.description')),
+                            'She is great!');
+                    });
+
+                genderField = TP.byId('genderField', windowContext);
+                genderFieldOption1 = genderField.getElementArray().at(0);
+
+                test.getDriver().startSequence().
+                    click(genderFieldOption1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            genderField.get('value'),
+                            'm');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.gender')),
+                            'm');
+                    });
+
+                petRadio3 = TP.byId('petRadio3', windowContext);
+
+                test.getDriver().startSequence().
+                    click(petRadio3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            petRadio3.get('value'),
+                            'fish');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.pet')),
+                            'fish');
+                    });
+
+                colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
+
+                test.getDriver().startSequence().
+                    click(colorCheckbox1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorCheckbox1.get('value'),
+                            TP.ac('red', 'blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.person.color')),
+                            TP.ac('red', 'blue'));
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
     this.it('simple binding with text fields - JavaScript Object data source', function(test, options) {
 
         var loadURI;
@@ -2161,6 +3003,240 @@ function() {
 
     //  ---
 
+    this.it('simple numeric indexed binds - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+                    modelObj,
+                    lastNameField1,
+                    lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[0].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[0].lastname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[1].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField1', windowContext).get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField2', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].lastname')),
+                    'Jones');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[1].lastname')),
+                            'Weber');
+                    });
+
+                //  firstNameField1 and firstNameField2 are just other text
+                //  fields - same logic should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('simple numeric indexed binds with scoping - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSONWithScopes.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+                    modelObj,
+                    lastNameField1,
+                    lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[0].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[0].lastname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[1].firstname)'),
+                        'TP.sig.StructureChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField1', windowContext).get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField2', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].lastname')),
+                    'Jones');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byId('lastNameField1', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byId('lastNameField2', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[1].lastname')),
+                            'Weber');
+                    });
+
+                //  firstNameField1 and firstNameField2 are just other text
+                //  fields - same logic should work
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
     this.it('simple numeric indexed binds - JavaScript Object data source', function(test, options) {
 
         var loadURI;
@@ -2695,6 +3771,294 @@ function() {
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('/people/person[2]/addresses/address[2]/city')),
+                            'The Main Town');
+                    });
+
+                //  All of the others are just other text fields - same logic
+                //  should work
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('repeat binding with text fields - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+                    modelObj,
+                    lastNameField1,
+                    lastNameField2;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField0', windowContext).get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField1', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].lastname')),
+                    'Jones');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byId('lastNameField0', windowContext);
+
+                lastNameField1.clearValue();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byId('lastNameField1', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[1].lastname')),
+                            'Weber');
+                    });
+
+                //  firstNameField1 and firstNameField2 are just other text
+                //  fields - same logic should work
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('nested repeat binding with text fields - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONNested.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+                    modelObj,
+                    lastNameField1,
+                    lastNameField2,
+                    addressStreetField00,
+                    addressCityField11;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person#json($.people)'),
+                        'TP.sig.StructureChange');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                //  ---
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField0', windowContext).get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].lastname')),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressStreetField00', windowContext).get('value'),
+                    '111 Main St.');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].addresses[0].street')),
+                    '111 Main St.');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressStreetField01', windowContext).get('value'),
+                    '222 State St.');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].addresses[1].street')),
+                    '222 State St.');
+
+                //  ---
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField1', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].lastname')),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressCityField10', windowContext).get('value'),
+                    'Yet Another Town');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].addresses[0].city')),
+                    'Yet Another Town');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressCityField11', windowContext).get('value'),
+                    'One More Town');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].addresses[1].city')),
+                    'One More Town');
+
+                //  Change the content via 'user' interaction
+
+                lastNameField1 = TP.byId('lastNameField0', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField1.clearValue();
+                            }).
+                    sendKeys('Lyon', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField1.get('value'),
+                            'Lyon');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].lastname')),
+                            'Lyon');
+                    });
+
+                lastNameField2 = TP.byId('lastNameField1', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                lastNameField2.clearValue();
+                            }).
+                    sendKeys('Weber', lastNameField2).
+                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            lastNameField2.get('value'),
+                            'Weber');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[1].lastname')),
+                            'Weber');
+                    });
+
+                addressStreetField00 = TP.byId('addressStreetField00', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                addressStreetField00.clearValue();
+                            }).
+                    sendKeys('555 3rd Av', addressStreetField00).
+                    sendEvent(TP.hc('type', 'change'), addressStreetField00).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            addressStreetField00.get('value'),
+                            '555 3rd Av');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].addresses[0].street')),
+                            '555 3rd Av');
+                    });
+
+                addressCityField11 = TP.byId('addressCityField11', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                addressCityField11.clearValue();
+                            }).
+                    sendKeys('The Main Town', addressCityField11).
+                    sendEvent(TP.hc('type', 'change'), addressCityField11).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            addressCityField11.get('value'),
+                            'The Main Town');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[1].addresses[1].city')),
                             'The Main Town');
                     });
 
@@ -3403,6 +4767,408 @@ function() {
 
     //  ---
 
+    this.it('repeat binding with text fields and paging - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONPaging.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    repeatIndexField,
+                    repeatSizeField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                repeatIndexField = TP.byId('repeatIndexField', windowContext);
+                repeatSizeField = TP.byId('repeatSizeField', windowContext);
+
+                test.assert.isEqualTo(
+                    TP.byId('repeatIndexField', windowContext).get('value'),
+                    '0');
+
+                test.assert.isEqualTo(
+                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(
+                    TP.byId('firstNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                    TP.byId('lastNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                    TP.byId('firstNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                    TP.byId('lastNameField1', windowContext, false));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField0', windowContext).get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byId('firstNameField0', windowContext).get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField1', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byId('firstNameField1', windowContext).get('value'),
+                    'John');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField3', windowContext, false));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField2', windowContext).get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField2', windowContext).get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField3', windowContext).get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField3', windowContext).get('value'),
+                            'Pamela');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('1', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '1');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField1', windowContext, false));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField0', windowContext).get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField0', windowContext).get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField1', windowContext).get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField1', windowContext).get('value'),
+                            'Billy');
+                    });
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('nested repeat binding with text fields and paging - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONNestedPaging.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    repeatIndexField,
+                    repeatSizeField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                repeatIndexField = TP.byId('repeatIndexField', windowContext);
+                repeatSizeField = TP.byId('repeatSizeField', windowContext);
+
+                test.assert.isEqualTo(
+                    TP.byId('repeatIndexField', windowContext).get('value'),
+                    '0');
+
+                test.assert.isEqualTo(
+                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    '2');
+
+                //  These 4 fields should be generated and visible
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField0', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('firstNameField1', windowContext, false));
+                test.assert.isDisplayed(
+                        TP.byId('lastNameField1', windowContext, false));
+
+                //  And have the following values
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField0', windowContext).get('value'),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    TP.byId('firstNameField0', windowContext).get('value'),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressStreetField00', windowContext).get('value'),
+                    '111 Main St.');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressStreetField01', windowContext).get('value'),
+                    '222 State St.');
+
+                test.assert.isEqualTo(
+                    TP.byId('lastNameField1', windowContext).get('value'),
+                    'Jones');
+
+                test.assert.isEqualTo(
+                    TP.byId('firstNameField1', windowContext).get('value'),
+                    'John');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressCityField10', windowContext).get('value'),
+                    'Yet Another Town');
+
+                test.assert.isEqualTo(
+                    TP.byId('addressCityField11', windowContext).get('value'),
+                    'One More Town');
+
+                //  Change the content via 'user' interaction
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('4', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '4');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField2', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField20', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField21', windowContext, false));
+
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField3', windowContext, false));
+                        test.assert.isDisplayed(
+                                TP.byId('addressCityField30', windowContext, false));
+                        test.assert.isDisplayed(
+                                TP.byId('addressCityField31', windowContext, false));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField2', windowContext).get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField2', windowContext).get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressStreetField20', windowContext).get('value'),
+                            '#27 Ritz Ave. Apt A.');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressStreetField21', windowContext).get('value'),
+                            '#4 Country Rd.');
+
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField3', windowContext).get('value'),
+                            'Professional');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField3', windowContext).get('value'),
+                            'Pamela');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressCityField30', windowContext).get('value'),
+                            'High Power Place');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressCityField31', windowContext).get('value'),
+                            'Middle Of Nowhere');
+                    });
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatSizeField.clearValue();
+                            }).
+                    sendKeys('2', repeatSizeField).
+                    sendEvent(TP.hc('type', 'change'), repeatSizeField).
+                    perform();
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                repeatIndexField.clearValue();
+                            }).
+                    sendKeys('1', repeatIndexField).
+                    sendEvent(TP.hc('type', 'change'), repeatIndexField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            repeatSizeField.get('value'),
+                            '2');
+
+                        test.assert.isEqualTo(
+                            repeatIndexField.get('value'),
+                            '1');
+
+                        //  Now these fields should be generated and visible
+
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField0', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField00', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressStreetField01', windowContext, false));
+
+                        test.assert.isDisplayed(
+                            TP.byId('firstNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('lastNameField1', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressCityField10', windowContext, false));
+                        test.assert.isDisplayed(
+                            TP.byId('addressCityField11', windowContext, false));
+
+                        //  And have the following values
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField0', windowContext).get('value'),
+                            'Jones');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField0', windowContext).get('value'),
+                            'John');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressStreetField00', windowContext).get('value'),
+                            '333 1st Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressStreetField01', windowContext).get('value'),
+                            '444 2nd Av.');
+
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField1', windowContext).get('value'),
+                            'Homemaker');
+
+                        test.assert.isEqualTo(
+                            TP.byId('firstNameField1', windowContext).get('value'),
+                            'Billy');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressCityField10', windowContext).get('value'),
+                            'In Your Town');
+
+                        test.assert.isEqualTo(
+                            TP.byId('addressCityField11', windowContext).get('value'),
+                            'Middle Of Nowhere');
+                    });
+
+                test.getDriver().setLocation(unloadURI);
+
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(15000);
+
+    //  ---
+
     this.it('repeat binding with text fields and paging - JavaScript Object data source', function(test, options) {
 
         var loadURI;
@@ -3802,7 +5568,7 @@ function() {
                                             loadURI.getLocation()));
             });
     }).timeout(10000);
-}).timeout(45000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).timeout(60000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -3836,6 +5602,70 @@ function() {
         test.then(
             function() {
 
+                var windowContext,
+
+                    dataRows,
+                    dataCells;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                dataRows = TP.byCSSPath(
+                    'tr', TP.byId('people', windowContext, false), false, false);
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSSPath(
+                    'td', TP.byId('people', windowContext, false), false, false);
+                test.assert.isEqualTo(dataCells.getSize(), 8);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Professional');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('Simple table - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindStaticTableJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
                 var windowContext,
 
                     dataRows,
@@ -4525,6 +6355,575 @@ function() {
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('/people/person[4]/color')),
+                            'blue');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].color')),
+                            'purple');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeNoFragmentJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[1].color')),
+                            'yellow');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeSingleFragmentJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[2].color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[2].color')),
+                            'orange');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('whole attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeMultiFragmentJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[3].color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[3].color')),
+                            'blue');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField,
+                    colorSpan;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'red');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('red'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[0].color')),
+                    'red');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('purple', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'purple');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('purple'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[0].color')),
+                            'purple');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeNoFragmentJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField,
+                    colorSpan;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'green');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    //  For some reason, green isn't green...
+                    TP.core.Color.fromString('rgb(0, 128, 0)'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[1].color')),
+                    'green');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('yellow', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'yellow');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('yellow'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[1].color')),
+                            'yellow');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeSingleFragmentJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField,
+                    colorSpan;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'blue');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('blue'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[2].color')),
+                    'blue');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('orange', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'orange');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('orange'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[2].color')),
+                            'orange');
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('partial attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeMultiFragmentJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    modelObj,
+                    colorField,
+                    colorSpan;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                modelObj = TP.uc('urn:tibet:test_person').getResource();
+
+                colorField = TP.byId('colorField', windowContext);
+                colorSpan = TP.byId('colorSpan', windowContext);
+
+                test.assert.isEqualTo(
+                    colorField.get('value'),
+                    'yellow');
+
+                //  NB: We convert this into a TP.core.Color object to compare
+                //  - depending on platform, getComputedStyleProperty will
+                //  return RGB values, etc.
+                test.assert.isEqualTo(
+                    TP.core.Color.fromString(
+                        colorSpan.getComputedStyleProperty('backgroundColor')),
+                    TP.core.Color.fromString('yellow'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('$.people[3].color')),
+                    'yellow');
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                                colorField.clearValue();
+                            }).
+                    sendKeys('blue', colorField).
+                    sendEvent(TP.hc('type', 'change'), colorField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            colorField.get('value'),
+                            'blue');
+
+                        test.assert.isEqualTo(
+                            TP.core.Color.fromString(
+                                colorSpan.getComputedStyleProperty(
+                                                        'backgroundColor')),
+                            TP.core.Color.fromString('blue'));
+
+                        test.assert.isEqualTo(
+                            TP.val(modelObj.get('$.people[3].color')),
                             'blue');
                     });
 
@@ -5521,6 +7920,7 @@ function() {
                                             loadURI.getLocation()));
             });
     });
+
     //  ---
 
     this.it('embedded syntax - no literal expression content - repeating context', function(test, options) {
@@ -5785,6 +8185,82 @@ function() {
 
     //  ---
 
+    this.it('Table - JSON data source - repeating context', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindTableJSONRepeating.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    dataRows,
+                    dataCells;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                dataRows = TP.byCSSPath(
+                    'tr', TP.byId('people', windowContext, false), false, false);
+                test.assert.isEqualTo(dataRows.getSize(), 4);
+
+                dataCells = TP.byCSSPath(
+                    'td', TP.byId('people', windowContext, false), false, false);
+                test.assert.isEqualTo(dataCells.getSize(), 12);
+
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(0)),
+                    '0');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(1)),
+                    'Joe');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(2)),
+                    'Smith');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(3)),
+                    '1');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(4)),
+                    'John');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(5)),
+                    'Jones');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(6)),
+                    '2');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(7)),
+                    'Billy');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(8)),
+                    'Homemaker');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(9)),
+                    '3');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(10)),
+                    'Pamela');
+                test.assert.isEqualTo(
+                    TP.nodeGetTextContent(dataCells.at(11)),
+                    'Professional');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
     this.it('Table - JavaScript Object data source - repeating context', function(test, options) {
 
         var loadURI;
@@ -5890,6 +8366,43 @@ function() {
         var loadURI;
 
         loadURI = TP.uc('~lib_tst/src/bind/BindFullExpressionsXML.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var fields;
+
+                fields = TP.byCSSPath('span[bind|in]');
+
+                test.assert.isEqualTo(
+                    fields.at(0).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(1).getValue(),
+                    'Smith');
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('fully qualified expressions - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindFullExpressionsJSON.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
