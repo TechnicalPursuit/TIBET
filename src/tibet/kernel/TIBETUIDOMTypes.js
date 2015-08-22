@@ -658,8 +658,8 @@ function(aTargetElem, nodesAdded) {
     }
 
     //  Signal from our document that attach processing is complete.
-    TP.signal(TP.gid(TP.nodeGetDocument(aTargetElem)),
-                'TP.sig.AttachProcessingComplete',
+    TP.signal(TP.gid(aTargetElem),
+                'TP.sig.AttachComplete',
                 TP.hc('mutatedNodeIDs', mutatedGIDs));
 
     return this;
@@ -754,8 +754,8 @@ function(aTargetElem, nodesRemoved) {
     }
 
     //  Signal from our document that detach processing is complete.
-    TP.signal(TP.gid(TP.nodeGetDocument(aTargetElem)),
-                'TP.sig.DetachProcessingComplete',
+    TP.signal(TP.gid(aTargetElem),
+                'TP.sig.DetachComplete',
                 TP.hc('mutatedNodeIDs', mutatedGIDs));
 
     //  Filter any elements that are in the document of the nodes we are

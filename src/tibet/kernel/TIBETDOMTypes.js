@@ -9225,7 +9225,7 @@ function(aRequest, replaceNode, alternateNode) {
         newNode = workNode.firstChild;
 
         //  Signal from the node that compile processing is complete.
-        TP.signal(nodeGID, 'TP.sig.CompileProcessingComplete');
+        TP.signal(nodeGID, 'TP.sig.CompileComplete');
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
@@ -9613,7 +9613,7 @@ function(aRequest) {
         }
 
         //  Signal from the node that compile processing is complete.
-        TP.signal(nodeGID, 'TP.sig.CompileProcessingComplete');
+        TP.signal(nodeGID, 'TP.sig.CompileComplete');
     }
 
     return this;
