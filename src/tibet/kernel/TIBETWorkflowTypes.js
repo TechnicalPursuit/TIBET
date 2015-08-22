@@ -6123,7 +6123,8 @@ function(aSignal, isCapturing) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('popController', function() {
+TP.core.Application.Inst.defineMethod('popController',
+function() {
 
     /**
      * Pops the current top controller off the controller stack. The application
@@ -6145,7 +6146,8 @@ TP.core.Application.Inst.defineMethod('popController', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('pushController', function(aController) {
+TP.core.Application.Inst.defineMethod('pushController',
+function(aController) {
 
     /**
      * Pushes a new controller onto the controller stack. The controller stack

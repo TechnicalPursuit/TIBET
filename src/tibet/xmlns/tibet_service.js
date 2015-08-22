@@ -51,16 +51,20 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    if (TP.bc(tpElem.getAttribute('triggerOnAttach')) === true) {
-        tpElem.trigger();
-    }
-
     tpElem.setAttribute('statuscode', '');
     tpElem.setAttribute('statustext', '');
 
-    tpElem.setAttribute('autorefresh', 'false');
+    //  Make sure to run the setter for this, if it has a value, as that's where
+    //  the watch/unwatch happens.
+    if (tpElem.hasAttribute('autorefresh')) {
+        tpElem.setAttrAutorefresh(TP.bc(tpElem.getAttribute('autorefresh')));
+    }
 
     tpElem.shouldSignalChange(true);
+
+    if (TP.bc(tpElem.getAttribute('triggerOnAttach')) === true) {
+        tpElem.trigger();
+    }
 
     return;
 });
