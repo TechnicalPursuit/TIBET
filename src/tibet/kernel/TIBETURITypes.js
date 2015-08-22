@@ -2283,6 +2283,23 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getConcreteURI',
+function() {
+
+    /**
+     * @method getConcreteURI
+     * @summary Return's the receiver's 'concrete' URI. At this level, this
+     *     method just returns the receiver. Subtypes may override this method
+     *     to return a different URI as the concrete URI. See TP.core.TIBETURL
+     *     for an example of this.
+     * @returns {Object} The receiver's 'concrete' URI.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getContent',
 function(aRequest) {
 
@@ -7680,6 +7697,21 @@ function() {
     }
 
     return name;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('getConcreteURI',
+function() {
+
+    /**
+     * @method getConcreteURI
+     * @summary Return's the receiver's 'concrete' URI. For TP.core.TIBETURL,
+     *     this will return the concrete URI that the TIBETURL is a holder for.
+     * @returns {Object} The receiver's 'concrete' URI.
+     */
+
+    return this.getNestedURI();
 });
 
 //  ------------------------------------------------------------------------
