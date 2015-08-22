@@ -2300,74 +2300,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getContent',
-function(aRequest) {
-
-    /**
-     * @method getContent
-     * @summary Returns the actual content of the resource referenced by the
-     *     receiver. The basic approach is to invoke a getResource() operation
-     *     to get the resource, then invoke getContent() on that resource to
-     *     acquire its content.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
-     *     request information accessible via the at/atPut collection API of
-     *     TP.sig.Requests.
-     * @returns {Object} The receiver's resource object.
-     */
-
-    return this.$requestContent(aRequest,
-                                'getResource',
-                                '$getResultContent');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getContentNode',
-function(aRequest) {
-
-    /**
-     * @method getContentNode
-     * @summary Returns the content of the receiver's resource in native Node
-     *     form. Note that like all variants of getContent* this method can be
-     *     asynchronous.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-     *     defining control parameters.
-     * @returns {Node} The receiver's content in node form.
-     */
-
-    var request;
-
-    request = this.constructRequest(aRequest);
-    request.atPut('resultType', TP.DOM);
-
-    return this.getContent(request);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getContentText',
-function(aRequest) {
-
-    /**
-     * @method getContentText
-     * @summary Returns the content of the receiver's resource in text (String)
-     *     form. Note that like all variants of getContent* this method can be
-     *     asynchronous.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-     *     defining control parameters.
-     * @returns {String} The receiver's content in text form.
-     */
-
-    var request;
-
-    request = this.constructRequest(aRequest);
-    request.atPut('resultType', TP.TEXT);
-
-    return this.getContent(request);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.URI.Inst.defineMethod('$getDefaultHandler',
 function(aRequest) {
 
@@ -3013,38 +2945,6 @@ function() {
      */
 
     return TP.uriRoot(this.getLocation());
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('$getResultContent',
-function(aRequest, aResult, aResource) {
-
-    /**
-     * @method $getResultContent
-     * @summary Invoked as a "success body" function for the getContent call
-     *     with the purpose of returning the content of the result object being
-     *     provided.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-     *     defining control parameters.
-     * @param {Object} aResult The result of a content access call.
-     * @param {Object} aResource Optional data from set* invocations.
-     * @returns {Object} The return value for the content operation using this
-     *     as a success body function.
-     */
-
-    var result,
-        resultType;
-
-    //  Try to collapse and process using the smartest objects possible.
-    result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
-    result = TP.isNode(result) ? TP.wrap(result) : result;
-
-    //  filter to any result type which was specified.
-    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
-    result = this.$getFilteredResult(result, resultType);
-
-    return result;
 });
 
 //  ------------------------------------------------------------------------
@@ -5777,7 +5677,7 @@ function(aRequest) {
     } else if (TP.isString(dat)) {
         //  when looking for a content object (a text-specific object)
         //  we work from MIME type as a starting point. Proper XML won't
-        //  normally be run through this routine since getContent looks
+        //  normally be run through this routine since getResource looks
         //  for a node wrapper first. we're normally dealing with
         //  non-XML content here -- like CSS, JSON, etc.
 

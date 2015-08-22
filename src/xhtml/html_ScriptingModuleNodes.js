@@ -129,7 +129,7 @@ function(aSrc) {
             return this.raise('InvalidURI', 'Not a valid \'src\' URI: ' + aSrc);
         }
 
-        src = srcURL.getContent(TP.hc('async', false, 'refresh', true));
+        src = srcURL.getResource(TP.hc('async', false, 'refresh', true));
 
         if (TP.notValid(src)) {
             return this.raise('InvalidString',

@@ -3433,7 +3433,7 @@ function(aRequest) {
                 continue;
             }
 
-            if (TP.notValid(src = url.getContent(
+            if (TP.notValid(src = url.getResource(
                                 TP.hc('refresh', true, 'async', false)))) {
                 aRequest.fail(
                     'tsh:import failed to load ' + file);
@@ -3568,7 +3568,7 @@ function(aRequest) {
                 }
 
                 if (TP.notValid(
-                        src = url.getContent(
+                        src = url.getResource(
                                 TP.hc('refresh', true, 'async', false)))) {
                     aRequest.fail(
                         'tsh:source failed to load ' + file);

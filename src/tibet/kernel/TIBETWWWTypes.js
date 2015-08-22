@@ -2943,11 +2943,12 @@ function(aURI, aRequest) {
  *     myCookieURI = TP.uc('cookie:///last_visited');
  *
  *     // Fetch the content and cache it in the URL the first time
- *     myCookieURI.getContent(); // -> Returns the date set
+ *     myCookieURI.getResource(); // -> Returns the date set
  *
- *     // OR Fetch the content and ignore the URL cache, going to the //
- *     database each time. myCookieURI.getContent(TP.hc('refresh', true)); // ->
- *     Returns the // date set.
+ *     // OR Fetch the content and ignore the URL cache, going to the
+ *     // database each time.
+ *     // myCookieURI.getResource(TP.hc('refresh', true)); ->  Returns the
+ *     // date set.
  *
  *     // session #3. Store the data using non-default values:
  *
@@ -2961,7 +2962,7 @@ function(aURI, aRequest) {
  *     myCookieURI.setContent(TP.dc().asString()); myCookieURI.save();
  *
  *     // Fetch the content and cache it in the URL the first time
- *     myCookieURI.getContent(); // -> Returns the date set
+ *     myCookieURI.getResource(); // -> Returns the date set
  */
 
 //  ------------------------------------------------------------------------

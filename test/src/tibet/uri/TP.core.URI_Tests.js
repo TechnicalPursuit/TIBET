@@ -2834,7 +2834,7 @@ function() {
     this.it('change of an end aspect of a branching path', function(test, options) {
 
         objURI4 = TP.uc('urn:tibet:objData#tibet(foo.3.bar.roo)');
-        objURI4.getContent();
+        objURI4.getResource();
 
         objURI5 = TP.uc('urn:tibet:objData#tibet(foo.3.moo.roo)');
         objURI5.set('shouldCreateContent', true);
@@ -3403,7 +3403,7 @@ function() {
     this.it('change of an end aspect of a branching path', function(test, options) {
 
         jsonURI4 = TP.uc('urn:tibet:jsonData#json($.foo[3].bar.roo)');
-        jsonURI4.getContent();
+        jsonURI4.getResource();
 
         jsonURI5 = TP.uc('urn:tibet:jsonData#json($.foo[3].moo.roo)');
         jsonURI5.set('shouldCreateContent', true);

@@ -1096,7 +1096,7 @@ function(newMethodText) {
     //  the server for the latest version of the file. This is so that we can
     //  compute the diff against the latest version that is real.
     url = TP.uc(path);
-    content = url.getContent(TP.hc('async', false, 'refresh', true));
+    content = url.getResource(TP.hc('async', false, 'refresh', true));
 
     if (TP.isEmpty(content)) {
         TP.ifWarn() ?
