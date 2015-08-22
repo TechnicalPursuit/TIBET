@@ -2969,16 +2969,10 @@ function(aRequest, aResult, aResource) {
         fragment,
         result;
 
-    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
-
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
-        fragment = fragment.indexOf('#') === 0 ? fragment : '#' + fragment;
 
-        //  Try to collapse and wrap to use the smartest objects possible for
-        //  the query.
-        result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
-        result = TP.isNode(result) ? TP.wrap(result) : result;
+        fragment = fragment.indexOf('#') === 0 ? fragment : '#' + fragment;
 
         if (TP.regex.DOCUMENT_ID.test(fragment) ||
                 TP.regex.BARENAME.test(fragment)) {
@@ -2988,6 +2982,11 @@ function(aRequest, aResult, aResource) {
             //  results here, since we collapse whatever we got below.
             fragment = TP.apc(fragment);
         }
+
+        //  Try to collapse and wrap to use the smartest objects possible for
+        //  the query.
+        result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
+        result = TP.isNode(result) ? TP.wrap(result) : result;
 
         //  Note here how we collapse just to make sure to have consistent
         //  results across 'get' calls... what ultimately gets returned from
@@ -3002,6 +3001,7 @@ function(aRequest, aResult, aResource) {
     }
 
     //  filter to any result type which was specified.
+    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
     result = this.$getFilteredResult(result, resultType);
 
     return result;
