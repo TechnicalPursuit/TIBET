@@ -578,7 +578,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
     } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
-        resource = resourceOrURI.getNestedURI();
+        resource = resourceOrURI.getConcreteURI();
     } else {
         resource = resourceOrURI;
     }
@@ -592,7 +592,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     finalTarget = target;
 
     if (TP.isKindOf(finalTarget, TP.core.TIBETURL)) {
-        finalTarget = finalTarget.getNestedURI();
+        finalTarget = finalTarget.getConcreteURI();
     }
 
     //  Get the source attribute. If there is no source attribute, then use the
@@ -912,7 +912,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     if (TP.isString(resourceOrURI)) {
         resource = TP.uc(TP.TIBET_URN_PREFIX + resourceOrURI);
     } else if (TP.isKindOf(resourceOrURI, TP.core.TIBETURL)) {
-        resource = resourceOrURI.getNestedURI();
+        resource = resourceOrURI.getConcreteURI();
     } else {
         resource = resourceOrURI;
     }

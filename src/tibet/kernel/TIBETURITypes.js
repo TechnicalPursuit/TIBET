@@ -7517,9 +7517,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().asDumpString();
+        return this.getConcreteURI().asDumpString();
     }
 
     //  Otherwise, call up
@@ -7540,9 +7540,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().asHTMLString();
+        return this.getConcreteURI().asHTMLString();
     }
 
     //  Otherwise, call up
@@ -7561,9 +7561,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().asJSONSource();
+        return this.getConcreteURI().asJSONSource();
     }
 
     //  Otherwise, call up
@@ -7584,9 +7584,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().asPrettyString();
+        return this.getConcreteURI().asPrettyString();
     }
 
     //  Otherwise, call up
@@ -7610,9 +7610,9 @@ function(verbose) {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().asString(verbose);
+        return this.getConcreteURI().asString(verbose);
     }
 
     //  Otherwise, call up
@@ -7633,9 +7633,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().asXMLString();
+        return this.getConcreteURI().asXMLString();
     }
 
     //  Otherwise, call up
@@ -7701,21 +7701,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getConcreteURI',
-function() {
-
-    /**
-     * @method getConcreteURI
-     * @summary Return's the receiver's 'concrete' URI. For TP.core.TIBETURL,
-     *     this will return the concrete URI that the TIBETURL is a holder for.
-     * @returns {Object} The receiver's 'concrete' URI.
-     */
-
-    return this.getNestedURI();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TIBETURL.Inst.defineMethod('getID',
 function() {
 
@@ -7773,8 +7758,8 @@ function() {
     //  the second part is our resource URI, which may include a ~ that
     //  needs to be expanded before we have all the components of the ID
     if (TP.isEmpty(canvas)) {
-        //  when we have a resource uri we can ask it for the location
-        url = this.getNestedURI();
+        //  when we have a concrete uri we can ask it for the location
+        url = this.getConcreteURI();
         loc = url.getLocation();
     } else {
         //  the path and pointer portions of our regex match are the
@@ -7809,9 +7794,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().getLocation();
+        return this.getConcreteURI().getLocation();
     }
 
     //  supertype will compute a decent default value as an alternative.
@@ -7837,12 +7822,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getNestedURI',
+TP.core.TIBETURL.Inst.defineMethod('getConcreteURI',
 function(forceRefresh) {
 
     /**
-     * @method getNestedURI
-     * @summary Returns a concrete URI for the resource this URI references.
+     * @method getConcreteURI
+     * @summary Return's the receiver's 'concrete' URI. For TP.core.TIBETURL,
+     *     this will return the concrete URI that the TIBETURL is a holder for.
      *     This is typically the file: or http: URI for the content the receiver
      *     references.
      * @param {Boolean} forceRefresh True will force any cached value for
@@ -7945,9 +7931,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().getPrimaryHref();
+        return this.getConcreteURI().getPrimaryHref();
     }
 
     return this.callNextMethod();
@@ -8329,9 +8315,9 @@ function() {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().getPrimaryURI();
+        return this.getConcreteURI().getPrimaryURI();
     }
 
     return this.callNextMethod();
@@ -8356,7 +8342,7 @@ function(aRequest) {
      */
 
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().getResource(aRequest);
+        return this.getConcreteURI().getResource(aRequest);
     }
 
     return this.callNextMethod();
@@ -8435,7 +8421,7 @@ function() {
      * @returns {Boolean} Whether or not the URI is watched.
      */
 
-    return this.getNestedURI().get('watched');
+    return this.getConcreteURI().get('watched');
 });
 
 //  ------------------------------------------------------------------------
@@ -8619,9 +8605,9 @@ function(aFlag) {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().isDirty(aFlag);
+        return this.getConcreteURI().isDirty(aFlag);
     }
 
     return this.callNextMethod();
@@ -8642,9 +8628,9 @@ function(aFlag) {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().isLoaded(aFlag);
+        return this.getConcreteURI().isLoaded(aFlag);
     }
 
     return this.callNextMethod();
@@ -8689,7 +8675,7 @@ function(shouldBeWatched) {
      * @returns {TP.core.TIBETURL} The receiver.
      */
 
-    return this.getNestedURI().set('watched', shouldBeWatched);
+    return this.getConcreteURI().set('watched', shouldBeWatched);
 });
 
 //  ------------------------------------------------------------------------
@@ -8707,9 +8693,9 @@ function(headerData) {
      */
 
     //  TIBET URLs with no canvas are effectively simply aliases to the
-    //  content URI.
+    //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getNestedURI().updateHeaders(headerData);
+        return this.getConcreteURI().updateHeaders(headerData);
     }
 
     //  No concept of headers for a UI target, just return.

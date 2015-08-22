@@ -547,7 +547,7 @@ function() {
 
                 server = TP.test.fakeServer.create();
 
-                loc = TP.uc('~lib_tst/src/tibet/tagprocessor/XIncludePart10.xml').getNestedURI().get('path');
+                loc = TP.uc('~lib_tst/src/tibet/tagprocessor/XIncludePart10.xml').getConcreteURI().get('path');
                 if (loc.charAt(0) !== '/') {
                     loc = '/' + loc;
                 }
