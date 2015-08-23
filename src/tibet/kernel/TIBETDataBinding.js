@@ -674,7 +674,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
                 entry,
                 targetAttr,
-                transform,
+                transformFunc,
 
                 source,
                 newVal,
@@ -704,7 +704,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
                     //  The target attribute is the first item in the entry pair
                     //  and any (optional) transformation Function is the last.
                     targetAttr = entry.first();
-                    transform = entry.last();
+                    transformFunc = entry.last();
 
                     newVal = aSignal.getValue();
 
@@ -720,10 +720,10 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
                     //  If there was a transformation Function registered, then
                     //  execute it.
-                    if (TP.isCallable(transform)) {
+                    if (TP.isCallable(transformFunc)) {
 
                         source = aSignal.getSource();
-                        newVal = transform(source, newVal);
+                        newVal = transformFunc(source, newVal);
                     }
 
                     this.setFacet(targetAttr, facet, newVal, false);
