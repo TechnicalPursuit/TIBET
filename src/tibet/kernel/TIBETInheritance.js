@@ -10890,6 +10890,7 @@ function(namespaceName, forceDefinition) {
         }
 
         if (newNamespace[TP.NAME] === 'TP.sys' ||
+            newNamespace[TP.NAME] === 'TP.extern' ||
             newNamespace[TP.NAME] === 'TP.boot') {
 
             newNamespace.getTypeNames = function() {return []; };

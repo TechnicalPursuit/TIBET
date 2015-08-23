@@ -3983,12 +3983,6 @@ TP.lang.RootObject.Inst = TP.lang.RootObject[TP.INSTC].prototype;
 TP.lang.RootObject.Inst[TP.OWNER] = TP.lang.RootObject;
 
 //  -----------------------------------------------------------------------
-//  EXTERNAL LIBRARY SUPPORT
-//  -----------------------------------------------------------------------
-
-TP.defineNamespace('TP.extern');
-
-//  -----------------------------------------------------------------------
 //  TP Primitives
 //  ------------------------------------------------------------------------
 

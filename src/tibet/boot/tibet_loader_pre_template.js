@@ -126,6 +126,12 @@ if (Object.defineProperty) {
                             'boot',
                             {value: {}, writable: true, configurable: true});
 
+    //  The TP.extern object, which holds functions and data related to
+    //  external code (environmental or loaded libraries)
+    Object.defineProperty(TP,
+                            'extern',
+                            {value: {}, writable: true, configurable: true});
+
     //  The TP.sys object, which is responsible for system data,
     //  metadata, control parameters, etc.
     Object.defineProperty(TP,
@@ -145,8 +151,9 @@ if (Object.defineProperty) {
 
 } else {
     TP = window.TP || {};
-    TP.sys = TP.sys || {};
     TP.boot = TP.boot || {};
+    TP.extern = TP.extern || {};
+    TP.sys = TP.sys || {};
     APP = window.APP || {};
 }
 
@@ -222,6 +229,10 @@ TP.$$id = 'TP';
 TP.boot.$$isNamespace = true;
 TP.boot.$$name = 'TP.boot';
 TP.boot.$$id = 'TP.boot';
+
+TP.extern.$$isNamespace = true;
+TP.extern.$$name = 'TP.extern';
+TP.extern.$$id = 'TP.extern';
 
 TP.sys.$$isNamespace = true;
 TP.sys.$$name = 'TP.sys';
