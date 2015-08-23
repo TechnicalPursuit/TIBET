@@ -97,6 +97,7 @@ function(aName) {
 
                     TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
                                                             'hidden', false);
+
                     /* eslint-disable no-wrap-func,no-extra-parens */
                     (function() {
                         TP.byId('SherpaConsole', TP.win('UIROOT')).refresh();
