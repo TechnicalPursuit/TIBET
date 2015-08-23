@@ -36,7 +36,7 @@
     <script>
         <![CDATA[
         Promise[TP.NAME] = 'Promise';
-        TP.extern.Promise = Promise;
+        TP.extern.Promise = window.Promise;
         TP.extern.Promise.construct = function(resolver, rejector) {
             return new Promise(resolver, rejector);
         };
@@ -46,7 +46,7 @@
     <script src="~lib_deps/jxon-tpi.js" unless="linting"/>
     <script>
         <![CDATA[
-        TP.extern.jxon = JXON;
+        TP.extern.jxon = window.JXON;
         delete window.JXON;
         ]]>
     </script>
@@ -54,7 +54,7 @@
     <script src="~lib_deps/forge-tpi.min.js" no-minify="true" unless="linting"/>
     <script>
         <![CDATA[
-        TP.extern.forge = forge;
+        TP.extern.forge = window.forge;
         delete window.forge;
         ]]>
     </script>
@@ -120,13 +120,13 @@
     <script src="~lib_deps/jquery-sizzle-tpi.js" unless="linting"/>
     <script>
         <![CDATA[
-        TP.extern.Sizzle = Sizzle;
+        TP.extern.Sizzle = window.Sizzle;
         ]]>
     </script>
     <script src="~lib_deps/jquery-jquery-tpi.js" unless="linting"/>
     <script>
         <![CDATA[
-        TP.extern.jQuery = jQuery;
+        TP.extern.jQuery = window.jQuery;
         ]]>
     </script>
     <script src="~lib_deps/jquery-xmlns-tpi.js" unless="linting"/>
@@ -138,7 +138,7 @@
         if="boot.unminified" unless="linting"/>
     <script>
         <![CDATA[
-        TP.extern.XPathJS = XPathJS;
+        TP.extern.XPathJS = window.XPathJS;
         ]]>
     </script>
 
