@@ -117,11 +117,13 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
     //  Check under any regName provided if we're supposed to check the cache.
     if (TP.notEmpty(regName) && TP.notTrue(ignoreCache)) {
 
-        //  Build a URI and check to see if it already has a resource - if so,
-        //  it's the template function.
+        //  Build a URI and check to see if it already has a resource result -
+        //  if so, it's the template function.
         uri = TP.uc(TP.TIBET_URN_PREFIX + regName);
         if (TP.isURI(uri)) {
-            if (TP.isFunction(func = uri.getResource())) {
+
+            //  NB: We assume 'async' of false here.
+            if (TP.isFunction(func = uri.getResource().get('result'))) {
                 return func;
             }
         }
@@ -746,7 +748,9 @@ function(aDataSource, transformParams) {
         }
 
         if (TP.isURI(url = TP.uc(urn))) {
-            if (TP.isValid(template = url.getResource())) {
+
+            //  NB: We assume 'async' of false here.
+            if (TP.isValid(template = url.getResource().get('result'))) {
                 return template.transform(aDataSource, transformParams);
             } else if (TP.notTrue(urnBuilt)) {
                 TP.ifError() ?

@@ -772,11 +772,13 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
     //  PERF
 
-    //  If the resource is a URI and we can obtain the resource value of it,
-    //  make sure that it is configured to signal Change notifications.
+    //  If the resource is a URI and we can obtain the resource result value of
+    //  it, make sure that it is configured to signal Change notifications.
+
+    //  NB: We assume 'async' of false here.
     if (TP.isURI(resource) &&
         TP.isValid(resourceValue =
-                    resource.getResource(TP.hc('resultType', TP.WRAP)))) {
+            resource.getResource(TP.hc('resultType', TP.WRAP)).get('result'))) {
         resourceValue.shouldSignalChange(true);
     }
 
@@ -1361,7 +1363,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 index,
                 params,
 
-                repeatResource,
+                repeatResourceResult,
 
                 retVal;
 
@@ -1371,8 +1373,9 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
             if (TP.isNumber(index = transformFunc.$$repeatIndex)) {
 
-                repeatResource =
-                    transformFunc.$$repeatInputURI.getResource();
+                //  NB: We assume 'async' of false here.
+                repeatResourceResult =
+                    transformFunc.$$repeatInputURI.getResource().get('result');
 
                 //  Iterating context
                 params = TP.hc(
@@ -1380,7 +1383,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     '$TAG', this,
                     '$TARGET', this.getDocument(),
                     '$_', wrappedVal,
-                    '$INPUT', repeatResource,
+                    '$INPUT', repeatResourceResult,
                     '$INDEX', index,
                     '$#', index);
             } else {
@@ -1435,18 +1438,20 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     'value', TP.ALL,
                     transformFunc);
 
+                //  NB: We assume 'async' of false here.
                 if (refreshImmediately) {
                     newVal = transformFunc(
-                                obsURIs.at(i).getPrimaryURI().getResource(),
-                                obsURIs.at(i).getResource());
+                    obsURIs.at(i).getPrimaryURI().getResource().get('result'),
+                    obsURIs.at(i).getResource().get('result'));
                 }
             } else {
                 this.defineBinding(
                     '@' + attrName, obsURIs.at(i),
                     'value', TP.ALL);
 
+                //  NB: We assume 'async' of false here.
                 if (refreshImmediately) {
-                    newVal = obsURIs.at(i).getResource();
+                    newVal = obsURIs.at(i).getResource().get('result');
                 }
             }
 
@@ -2302,7 +2307,9 @@ function(aSignalOrHash) {
         allVals,
         fullyExpandedVal,
 
-        obsURI;
+        obsURI,
+        resp,
+        result;
 
     info = TP.isValid(aSignalOrHash) ? aSignalOrHash : TP.hc();
 
@@ -2394,14 +2401,17 @@ function(aSignalOrHash) {
 
         this.setAttribute('oldObsLoc', obsURI.asString());
 
-        //  If we have real resource data and either had an old URI or we're not
-        //  a primary URI, then we won't have gotten notified from the main URI
-        //  since it didn't change, but we did, so we need to manually call
-        //  refresh.
-        if (TP.notEmpty(obsURI.getResource()) &&
+        //  If we have real resource result data and either had an old URI or
+        //  we're not a primary URI, then we won't have gotten notified from the
+        //  main URI since it didn't change, but we did, so we need to manually
+        //  call refresh.
+
+        //  NB: We assume 'async' of false here.
+        resp = obsURI.getResource();
+        if (TP.notEmpty(result = resp.get('result')) &&
             (TP.notEmpty(oldObsLoc) || !obsURI.isPrimaryURI())) {
 
-            this.updateRepeat(obsURI.getResource());
+            this.updateRepeat(result);
         }
 
         //  If we're configured to be 'editable', then observe the double click
@@ -2435,7 +2445,7 @@ function(aSignal) {
         updatePath,
         updateAspect,
         index,
-        repeatResource,
+        repeatResourceResult,
 
         thisArg,
 
@@ -2462,7 +2472,7 @@ function(aSignal) {
     updateAspect = textNode.updateAspect;
     template = textNode.template;
     index = textNode.index;
-    repeatResource = textNode.repeatResource;
+    repeatResourceResult = textNode.repeatResourceResult;
 
     thisArg = this;
 
@@ -2475,7 +2485,7 @@ function(aSignal) {
     editor.addEventListener('change',
             handler = function() {
                 var newText,
-                    resource,
+                    resourceResult,
                     params,
 
                     newTextNode;
@@ -2486,8 +2496,10 @@ function(aSignal) {
                 this.removeEventListener('change', handler, false);
 
                 //  Update the underlying text value in the model
-                resource = TP.uc(updatePath).getResource();
-                resource.set(updateAspect, newText);
+
+                //  NB: We assume 'async' of false here.
+                resourceResult = TP.uc(updatePath).getResource().get('result');
+                resourceResult.set(updateAspect, newText);
 
                 //  If there was a template, then execute it against the model.
                 //  This will produce a 'new' new text value that we can use for
@@ -2500,11 +2512,11 @@ function(aSignal) {
                         '$TAG', thisArg,
                         '$TARGET', thisArg.getDocument(),
                         '$_', newText,
-                        '$INPUT', repeatResource,
+                        '$INPUT', repeatResourceResult,
                         '$INDEX', index,
                         '$#', index);
 
-                    newText = template.transform(resource, params);
+                    newText = template.transform(resourceResult, params);
                 }
 
                 newTextNode = editor.ownerDocument.createTextNode(newText);
@@ -2514,7 +2526,7 @@ function(aSignal) {
                 newTextNode.updatePath = updatePath;
                 newTextNode.updateAspect = updateAspect;
                 newTextNode.index = index;
-                newTextNode.repeatResource = repeatResource;
+                newTextNode.repeatResourceResult = repeatResourceResult;
 
                 //  Replace the editor with the newly generated text node
                 TP.nodeReplaceChild(editor.parentNode,
@@ -2544,7 +2556,7 @@ function(aResource) {
 
         elem,
 
-        repeatResource,
+        repeatResourceResult,
         resourceLength,
         isXMLResource,
 
@@ -2582,22 +2594,26 @@ function(aResource) {
     //  If we weren't handed a resource, then try to see if we can form a URI
     //  from either our 'bind:repeat' attribute or 'oldObsLoc' attribute and use
     //  that.
-    if (TP.notValid(repeatResource = aResource)) {
+    if (TP.notValid(repeatResourceResult = aResource)) {
         if (TP.notEmpty(repeatAttrVal)) {
             if (TP.isURI(repeatURI = TP.uc(repeatAttrVal))) {
-                repeatResource = repeatURI.getResource();
+
+                //  NB: We assume 'async' of false here.
+                repeatResourceResult = repeatURI.getResource().get('result');
             }
         } else if (TP.notEmpty(repeatAttrVal =
                                 this.getAttribute('oldObsLoc'))) {
             if (TP.isURI(repeatURI = TP.uc(repeatAttrVal))) {
-                repeatResource = repeatURI.getResource();
+
+                //  NB: We assume 'async' of false here.
+                repeatResourceResult = repeatURI.getResource().get('result');
             }
         }
     }
 
     //  If we still couldn't get a valid resource, then just log a warning and
     //  return.
-    if (TP.notValid(repeatResource)) {
+    if (TP.notValid(repeatResourceResult)) {
         TP.ifWarn() ?
                 TP.warn('Could not obtain a repeating resource') : 0;
 
@@ -2606,12 +2622,12 @@ function(aResource) {
 
     //  If the resource we were handed wasn't an Array, then wrap the resource
     //  we were handed into an Array.
-    if (!TP.isArray(repeatResource)) {
-        repeatResource = TP.ac(repeatResource);
+    if (!TP.isArray(repeatResourceResult)) {
+        repeatResourceResult = TP.ac(repeatResourceResult);
     }
 
-    resourceLength = repeatResource.getSize();
-    isXMLResource = TP.isXMLNode(TP.unwrap(repeatResource.first()));
+    resourceLength = repeatResourceResult.getSize();
+    isXMLResource = TP.isXMLNode(TP.unwrap(repeatResourceResult.first()));
 
     elem = this.getNativeNode();
 
@@ -2835,10 +2851,10 @@ function(aResource) {
 
         this.$updateRepeatingTextNodes(
                 elemChildElements.at(i),
-                repeatResource.at(i),
+                repeatResourceResult.at(i),
                 vals,
                 i,
-                repeatResource);
+                repeatResourceResult);
     }
 
     return this;
@@ -2847,7 +2863,7 @@ function(aResource) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('$updateRepeatingTextNodes',
-function(aNode, aResource, pathValues, anIndex, repeatResource) {
+function(aNode, aResource, pathValues, anIndex, repeatResourceResult) {
 
     /**
      * @method $updateRepeatingTextNodes
@@ -2889,7 +2905,7 @@ function(aNode, aResource, pathValues, anIndex, repeatResource) {
         '$TAG', this,
         '$TARGET', this.getDocument(),
         '$_', aResource,
-        '$INPUT', repeatResource,
+        '$INPUT', repeatResourceResult,
         '$INDEX', index,
         '$#', index);
 
@@ -2930,7 +2946,7 @@ function(aNode, aResource, pathValues, anIndex, repeatResource) {
             textNode.updatePath = path;
             textNode.updateAspect = parts.at(1);
             textNode.index = index;
-            textNode.repeatResource = repeatResource;
+            textNode.repeatResourceResult = repeatResourceResult;
 
             value = template.transform(aResource, params);
             TP.nodeSetTextContent(textNode, value);

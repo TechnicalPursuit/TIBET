@@ -45,13 +45,16 @@ function(anElement, aName, aURI) {
      * @returns {Function} The template function created, if any.
      */
 
-    var result,
+    var resp,
+        result,
         str,
         templateNode,
         func;
 
     if (TP.isURI(aURI)) {
-        result = aURI.getResourceNode(TP.hc('async', false));
+        resp = aURI.getResourceNode(TP.hc('async', false));
+        result = resp.get('result');
+
         if (TP.isDocument(result)) {
             //  Extract the text content of the root node, it's only there
             //  so we have a place for a CDATA block.
@@ -126,7 +129,8 @@ function(anElement, aName, aURI) {
      *     TP.DESCEND.
      */
 
-    var result,
+    var resp,
+        result,
         elements,
         len,
         i,
@@ -135,7 +139,8 @@ function(anElement, aName, aURI) {
         node;
 
     if (TP.isURI(aURI)) {
-        result = aURI.getResourceNode(TP.hc('async', false));
+        resp = aURI.getResourceNode(TP.hc('async', false));
+        result = resp.get('result');
 
         //  Need to add the TP.w3.Xmlns.TIBET namespace so that other
         //  attributes will work.
@@ -235,6 +240,7 @@ function(anElement, aName, aURI) {
      */
 
     var template,
+        resp,
         result,
         elements,
         insertionNode;
@@ -249,7 +255,8 @@ function(anElement, aName, aURI) {
 
     //  Try to load via 'src' URI if we have one.
     if (TP.isURI(aURI)) {
-        result = aURI.getResourceNode(TP.hc('async', false));
+        resp = aURI.getResourceNode(TP.hc('async', false));
+        result = resp.get('result');
 
         //  Need to add the TP.w3.Xmlns.TIBET namespace so that other
         //  attributes will work.
@@ -382,7 +389,8 @@ function(aTemplateName, aDataSource, formatParams) {
         void 0;
     }
 
-    template = uri.getResource(TP.hc('resultType', TP.WRAP));
+    //  NB: We assume 'async' of false here.
+    template = uri.getResource(TP.hc('resultType', TP.WRAP)).get('result');
     if (TP.notValid(template) || !TP.canInvoke(template, 'format')) {
         //  TODO
         void 0;
@@ -481,6 +489,7 @@ function(anElement) {
 
     var src,
         uri,
+        resp,
         doc;
 
     src = TP.sys.cfg('path.xslt_boilerplate');
@@ -491,7 +500,9 @@ function(anElement) {
                             'Unable to load XSLT boilerplate: ' + src);
     }
 
-    doc = TP.wrap(uri.getResourceNode(TP.hc('async', false)));
+    resp = uri.getResourceNode(TP.hc('async', false));
+    doc = TP.wrap(resp.get('result'));
+
     if (!TP.isKindOf(doc, 'TP.core.XSLDocumentNode')) {
         return this.raise('TP.sig.InvalidDocument',
                             'Unable to acquire XSLT template for: ' +
@@ -602,6 +613,7 @@ function(aRequest) {
         wrapper,
 
         request,
+        resp,
         processedNode,
         retNode,
 
@@ -762,7 +774,8 @@ function(aRequest) {
                             'cmdPhases', TP.core.TSH.COMPILE_PHASES,
                             'targetPhase', 'Compile'));
 
-        processedNode = TP.process(newNode, request);
+        resp = TP.process(newNode, request);
+        processedNode = resp.get('result');
 
         if (!TP.isNode(processedNode = TP.unwrap(processedNode))) {
             this.raise('TP.sig.InvalidNode');

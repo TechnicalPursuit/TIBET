@@ -1960,7 +1960,7 @@ function(aRequest) {
      *     method. If no other method can be found the default
      *     processTP_sig_Request method is invoked.
      * @param {TP.sig.Request} aRequest The request to process.
-     * @returns {Object} The processing results.
+     * @returns {TP.sig.Response} A response containing the processing results.
      */
 
     var request;
@@ -1990,7 +1990,7 @@ function(aRequest, stdinContent) {
      * @param {TP.sig.Request} aRequest The request to process and execute.
      * @param {Object} stdinContent The content to use as 'stdin' when executing
      *     the supplied request.
-     * @returns {Object} The processing and executing results.
+     * @returns {TP.sig.Response} A response containing the processing results.
      */
 
     var request;
@@ -2012,19 +2012,26 @@ function(aRequest) {
     /**
      * @method processTP_sig_Request
      * @summary Default request processing method. By default this method
-     *     simply returns. Subtypes with processing responsibilities are
-     *     expected to override this method.
+     *     simply returns the supplied request's response, if it has one.
+     *     Subtypes with processing responsibilities are expected to override
+     *     this method.
      * @param {TP.sig.Request} aRequest The request to process.
-     * @returns {Object} The processing results.
+     * @returns {TP.sig.Response} A response containing the processing results.
      */
 
-    var retVal;
+    var request,
+        result,
+        response;
 
-    if (TP.notValid(retVal = aRequest.get('result'))) {
-        retVal = this;
+    request = TP.request(aRequest);
+    if (TP.notValid(result = request.get('result'))) {
+        result = this;
     }
 
-    return retVal;
+    response = request.constructResponse(result);
+    request.complete(result);
+
+    return response;
 });
 
 //  ------------------------------------------------------------------------
@@ -8490,13 +8497,16 @@ function() {
                         obsFunction.observe(obsFunction.source, 'ValueChange');
                     } else if (TP.isURI(facetSetting)) {
                         //  Otherwise, if its an access path, set up a Function
-                        //  to observe the URI and get that URI's resource when
-                        //  it changes. Then use that value to set the facet.
+                        //  to observe the URI and get that URI's resource
+                        //  result when it changes. Then use that value to set
+                        //  the facet.
                         obsFunction =
                             function(aSignal) {
                                 var newVal;
 
-                                newVal = obsFunction.source.getResource();
+                                //  NB: We assume 'async' of false here.
+                                newVal = obsFunction.source.getResource().
+                                                                get('result');
                                 this.setFacet(obsFunction.aspectName,
                                                 obsFunction.facetName,
                                                 newVal,

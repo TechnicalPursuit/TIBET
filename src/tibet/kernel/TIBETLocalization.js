@@ -974,7 +974,8 @@ function(forceRefresh) {
      *     be included in the file.
      */
 
-    var node,
+    var resp,
+        node,
         flag,
 
         fname,
@@ -1009,7 +1010,8 @@ function(forceRefresh) {
                         '.'));
 
                 if (TP.isURI(url)) {
-                    node = url.getNativeNode(TP.hc('async', false));
+                    resp = url.getNativeNode(TP.hc('async', false));
+                    node = resp.get('result');
                 }
             }
         } catch (e) {
@@ -1020,7 +1022,8 @@ function(forceRefresh) {
         if (TP.notValid(node)) {
             url = TP.uc(TP.sys.cfg('path.string_file'));
             if (TP.isURI(url)) {
-                node = url.getNativeNode(TP.hc('async', false));
+                resp = url.getNativeNode(TP.hc('async', false));
+                node = resp.get('result');
             }
         }
     } finally {

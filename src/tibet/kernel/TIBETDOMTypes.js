@@ -111,6 +111,7 @@ function(nodeSpec, varargs) {
     var node,
         newDoc,
 
+        resp,
         template,
         str,
         uri,
@@ -163,10 +164,11 @@ function(nodeSpec, varargs) {
         //  wrapped version of the node later in this method.
         if (TP.isValid(varargs) &&
             (TP.isURI(varargs) || TP.isString(varargs))) {
+
             if (TP.isURI(varargs)) {
-                template = TP.uc(varargs).getResource(
-                                            TP.hc('async', false,
-                                                    'resultType', TP.WRAP));
+                resp = TP.uc(varargs).getResource(
+                            TP.hc('async', false, 'resultType', TP.WRAP));
+                template = resp.get('result');
 
                 if (TP.isKindOf(template, 'TP.core.DocumentNode')) {
                     template.getDocumentElement().removeAttribute('id');
@@ -189,9 +191,8 @@ function(nodeSpec, varargs) {
         //  Make sure its a URI, and not a URI string.
         uri = TP.uc(nodeSpec);
 
-        if (!TP.isNode(retVal = uri.getResource(
-                                        TP.hc('async', false,
-                                            'resultType', TP.WRAP)))) {
+        resp = uri.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
+        if (!TP.isNode(retVal = resp.get('result'))) {
             return;
         }
 
@@ -324,6 +325,7 @@ function() {
     var template,
 
         uri,
+        resp,
         retVal;
 
     if (this.isAbstract()) {
@@ -340,9 +342,8 @@ function() {
             //  Make sure its a URI, and not a URI string.
             uri = TP.uc(template);
 
-            if (!TP.isNode(retVal = uri.getResource(
-                                            TP.hc('async', false,
-                                                'resultType', TP.DOM)))) {
+            resp = uri.getResource(TP.hc('async', false, 'resultType', TP.DOM));
+            if (!TP.isNode(retVal = resp.get('result'))) {
                 return;
             }
 
@@ -473,14 +474,17 @@ function(aURI, shouldReport) {
      * @returns {TP.core.Node} The newly constructed TP.core.Node.
      */
 
-    var content;
+    var resp,
+        content;
 
     if (TP.notValid(aURI)) {
         return this.raise('TP.sig.InvalidURI');
     }
 
     //  this will return a TP.core.Node if at all possible
-    content = TP.wrap(aURI.getResourceNode(TP.hc('async', false)));
+    resp = aURI.getResourceNode(TP.hc('async', false));
+    content = TP.wrap(resp.get('result'));
+
     if (TP.isKindOf(content, TP.core.Node)) {
         return content;
     }
@@ -1979,6 +1983,7 @@ function(preserveDeletes, preserveCrud) {
         nodes,
 
         url,
+        resp,
         styleNode;
 
     //  NOTE:   we use $get here since we don't want to recurse over
@@ -2003,7 +2008,9 @@ function(preserveDeletes, preserveCrud) {
         }
 
         if (TP.isURI(url)) {
-            styleNode = url.getNativeNode(TP.hc('async', false));
+            resp = url.getNativeNode(TP.hc('async', false));
+            styleNode = resp.get('result');
+
             if (TP.isNode(styleNode)) {
                 return TP.documentTransformNode(styleNode, node);
             } else {
@@ -4822,7 +4829,9 @@ function(anObject, aParamHash) {
         urn;
 
     if (TP.notEmpty(templateName = this.getTemplateName())) {
-        templateFunc = TP.uc(templateName).getResource();
+
+        //  NB: We assume 'async' of false here.
+        templateFunc = TP.uc(templateName).getResource().get('result');
         if (TP.isCallable(templateFunc)) {
             //  Run the transform Function
             resultStr = templateFunc.transform(anObject, aParamHash);
@@ -4944,6 +4953,7 @@ function(newContent, aRequest, stdinContent) {
      */
 
     var request,
+        resp,
         content;
 
     if (TP.notValid(newContent) || newContent === '') {
@@ -4971,15 +4981,21 @@ function(newContent, aRequest, stdinContent) {
     //  a visible DOM, so we don't awaken them here.
     request.atPutIfAbsent('awaken', false);
 
-    //  If stdin content was supplied, execute the content as well as
-    //  process it.
+    //  If stdin content was supplied, execute the content as well as process
+    //  it.
     if (TP.notEmpty(stdinContent)) {
-        content = TP.processAndExecuteWith(newContent,
-                                            request,
-                                            stdinContent);
+        resp = TP.processAndExecuteWith(newContent,
+                                        request,
+                                        stdinContent);
     } else {
-        content = TP.process(newContent, request);
+        resp = TP.process(newContent, request);
     }
+
+    if (request.didFail()) {
+        return;
+    }
+
+    content = resp.get('result');
 
     return this.addRawContent(content, request);
 });
@@ -5230,6 +5246,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
      */
 
     var request,
+        resp,
         content;
 
     if (TP.notValid(newContent) || newContent === '') {
@@ -5257,15 +5274,19 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
     //  a visible DOM, so we don't awaken them here.
     request.atPutIfAbsent('awaken', false);
 
-    //  If stdin content was supplied, execute the content as well as
-    //  process it.
+    //  If stdin content was supplied, execute the content as well as process
+    //  it.
     if (TP.notEmpty(stdinContent)) {
-        content = TP.processAndExecuteWith(newContent,
-                                            request,
-                                            stdinContent);
+        resp = TP.processAndExecuteWith(newContent, request, stdinContent);
     } else {
-        content = TP.process(newContent, request);
+        resp = TP.process(newContent, request);
     }
+
+    if (request.didFail()) {
+        return;
+    }
+
+    content = resp.get('result');
 
     return this.insertRawContent(content, aPositionOrPath, request);
 });
@@ -5465,6 +5486,7 @@ function(newContent, aRequest, stdinContent) {
      */
 
     var request,
+        resp,
         content;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
@@ -5513,19 +5535,19 @@ function(newContent, aRequest, stdinContent) {
         request.atPutIfAbsent('awaken', true);
     }
 
-    //  If stdin content was supplied, execute the content as well as
-    //  process it.
+    //  If stdin content was supplied, execute the content as well as process
+    //  it.
     if (TP.notEmpty(stdinContent)) {
-        content = TP.processAndExecuteWith(newContent,
-                                            request,
-                                            stdinContent);
+        resp = TP.processAndExecuteWith(newContent, request, stdinContent);
     } else {
-        content = TP.process(newContent, request);
+        resp = TP.process(newContent, request);
     }
 
     if (request.didFail()) {
         return;
     }
+
+    content = resp.get('result');
 
     return this.replaceRawContent(content, request);
 });
@@ -5651,6 +5673,7 @@ function(newContent, aRequest, stdinContent) {
      */
 
     var request,
+        resp,
         content;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
@@ -5699,19 +5722,19 @@ function(newContent, aRequest, stdinContent) {
         request.atPutIfAbsent('awaken', true);
     }
 
-    //  If stdin content was supplied, execute the content as well as
-    //  process it.
+    //  If stdin content was supplied, execute the content as well as process
+    //  it.
     if (TP.notEmpty(stdinContent)) {
-        content = TP.processAndExecuteWith(newContent,
-                                            request,
-                                            stdinContent);
+        resp = TP.processAndExecuteWith(newContent, request, stdinContent);
     } else {
-        content = TP.process(newContent, request);
+        resp = TP.process(newContent, request);
     }
 
     if (request.didFail()) {
         return;
     }
+
+    content = resp.get('result');
 
     return this.setRawContent(content, request);
 });
@@ -9284,10 +9307,20 @@ function(aRequest) {
      *     the TSH as a standard set of execution phases defined as sets of
      *     sequenced phase names on the TSH type.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.CollectionNode} The receiver.
+     * @returns {TP.sig.Response} A response containing the processing results.
      */
 
-    return this.compile(aRequest);
+    var request,
+        result,
+        response;
+
+    request = TP.request(aRequest);
+    result = this.compile(request);
+
+    response = request.constructResponse(result);
+    request.complete(result);
+
+    return response;
 });
 
 //  ------------------------------------------------------------------------
@@ -10744,6 +10777,7 @@ function(resource, mimeType) {
 
     var uri,
         src,
+        resp,
         str,
 
         mime,
@@ -10765,7 +10799,8 @@ function(resource, mimeType) {
     //  Grab the receiver's content for processing. We do this synchronously
     //  here and we also get it in string form so we can process the markup and
     //  add default namespace as needed to make authoring more convenient.
-    str = uri.getResourceText(TP.hc('async', false));
+    resp = uri.getResourceText(TP.hc('async', false));
+    str = resp.get('result');
 
     if (TP.isEmpty(mime = mimeType)) {
         mime = TP.ietf.Mime.guessMIMEType(str, uri);
@@ -13265,6 +13300,7 @@ function(aRequest) {
         hrefValue,
         url,
 
+        resp,
         styleTPDoc,
 
         rootElem,
@@ -13334,7 +13370,9 @@ function(aRequest) {
 
     //  Grab the content (TP) node of the stylesheet. If its a
     //  TP.core.XSLDocumentNode, run the transformation process using it.
-    styleTPDoc = url.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
+    resp = url.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
+    styleTPDoc = resp.get('result');
+
     if (!TP.canInvoke(styleTPDoc, 'getNativeNode')) {
         //  Couldn't find the sheet - log an error and return.
         TP.ifError() ?
@@ -16131,6 +16169,7 @@ function(aRequest) {
 
         parts,
         path,
+        resp,
         content,
 
         url,
@@ -16262,8 +16301,8 @@ function(aRequest) {
 
         //  rely on the URI to manage things for content acquisition, but
         //  unwrap any node wrappers we might get
-        content = url.getResource(TP.hc('async', false));
-        content = TP.unwrap(content);
+        resp = url.getResource(TP.hc('async', false));
+        content = TP.unwrap(resp.get('result'));
     }
 
     //  no content to include?

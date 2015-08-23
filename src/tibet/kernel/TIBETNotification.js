@@ -6030,10 +6030,13 @@ function(originSet, aSignal, aPayload, aType) {
         return sig;
     }
 
-    //  Make sure that we can get a resource for the scope - note here how we
-    //  query the primary URI for its resource. The handler will be on that
-    //  object.
-    if (TP.notValid(resource = scopeURI.getPrimaryURI().getResource())) {
+    //  Make sure that we can get a resource result for the scope - note here
+    //  how we query the primary URI for its resource. The handler will be on
+    //  that object's result.
+
+    //  NB: We assume 'async' of false here.
+    if (TP.notValid(resource =
+                    scopeURI.getPrimaryURI().getResource().get('result'))) {
         //  TODO: Raise an exception
         return sig;
     }

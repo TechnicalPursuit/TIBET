@@ -222,7 +222,8 @@ function(targetDoc, cssHref, inlineRuleText) {
      * @returns {HTMLElement} The new link or style element that was added.
      */
 
-    var cssText,
+    var resp,
+        cssText,
 
         newNativeElem;
 
@@ -235,11 +236,13 @@ function(targetDoc, cssHref, inlineRuleText) {
     TP.documentEnsureHeadElement(targetDoc);
 
     if (TP.isTrue(inlineRuleText)) {
+
         //  If inlineRuleText is true, then we load the style rule text
-        //  synchronously, if its not empty, we use that style text to add
+        //  synchronously. If its not empty, we use that style text to add
         //  under a 'style' element.
 
-        cssText = TP.uc(cssHref).getResourceText(TP.hc('async', false));
+        resp = TP.uc(cssHref).getResourceText(TP.hc('async', false));
+        cssText = resp.get('result');
 
         newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
     } else {
@@ -437,6 +440,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
 
         sourceDirectory,
 
+        resp,
         cssText,
 
         newNativeElem;
@@ -483,11 +487,13 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
                                 TP.nodeGetDocument(anElement)));
 
     if (TP.isTrue(inlineRuleText)) {
+
         //  If inlineRuleText is true, then we load the style rule text
-        //  synchronously, if its not empty, we use that style text to add
+        //  synchronously. If its not empty, we use that style text to add
         //  under a 'style' element.
 
-        cssText = TP.uc(linkHref).getResourceText(TP.hc('async', false));
+        resp = TP.uc(linkHref).getResourceText(TP.hc('async', false));
+        cssText = resp.get('result');
 
         newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
     } else {

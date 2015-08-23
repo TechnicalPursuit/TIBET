@@ -720,6 +720,7 @@ function(aURI, aCatalog, aFilter) {
 
     var cat,
         path,
+        resp,
         subcat,
         url,
         xml,
@@ -756,11 +757,12 @@ function(aURI, aCatalog, aFilter) {
             } else {
                 //  attempt to load the catalog file, must be valid XML
                 if (TP.isURI(url = TP.uc(path))) {
-                    xml = url.getNativeNode(
+                    resp = url.getNativeNode(
                                         TP.request(
                                             'no_rewrite', true,
                                             'shouldReport', false,
                                             'async', false));
+                    xml = resp.get('result');
                 }
 
                 if (TP.notValid(xml)) {
@@ -2058,9 +2060,11 @@ function(anAspect, anAction, aDescription) {
 
         i;
 
-    //  Note how we set the target to the *primary URI's* resource. This is the
+    //  Note how we grab the *primary URI's* resource's result. This is the
     //  target that the path query will be executed against to obtain any value.
-    primaryResource = this.getPrimaryURI().getResource(TP.hc('refresh', false));
+    //  NB: We assume 'async' of false here
+    primaryResource =
+        this.getPrimaryURI().getResource(TP.hc('refresh', false)).get('result');
 
     //  If this this doesn't have any sub URIs, then it's we'll just let all of
     //  the parameters default in the supertype call, except we do provide the
@@ -2817,7 +2821,8 @@ function(aRequest, filterResult) {
      * @param {Boolean} filterResult True if the resource result will be used
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     content set as its result.
      */
 
     return TP.override();
@@ -2872,7 +2877,8 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the requested
+     *     content set as its result.
      */
 
     //  When we're primary or we don't have a fragment we can keep it
@@ -2900,7 +2906,8 @@ function(aRequest) {
      *     asynchronous depending on the nature of the resource.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
-     * @returns {Node} The receiver's resource in node form.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     node content set as its result.
      */
 
     var request;
@@ -2922,7 +2929,8 @@ function(aRequest) {
      *     provided that the resource is a String.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
-     * @returns {String} The receiver's content in text form.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     text content set as its result.
      */
 
     var request;
@@ -3191,7 +3199,8 @@ function(aSignal) {
 
         primaryAspect;
 
-    resource = this.getResource();
+    //  NB: We assume 'async' of false here
+    resource = this.getResource().get('result');
 
     //  If TP.CHANGE_PATHS were supplied in the signal, filter them against any
     //  'sub URI's of the receiver and signal a change from those URIs.
@@ -3512,6 +3521,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
      * @param {Object} aResource Optional data used for set* methods.
      * @returns {Object} The result returned from the successBody or failureBody
      *     function as defined.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the requested
+     *     content set as its result.
      */
 
     var fragment,
@@ -3622,7 +3633,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
 
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
-    return subrequest.get('result');
+    return subrequest.constructResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -3659,9 +3670,8 @@ function(contentData, aRequest) {
      * @param {Object} contentData A new content object.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
-     *     when the resource must be acquired in an async fashion prior to
-     *     setting any fragment value.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the requested
+     *     content set as its result.
      */
 
     return this.$requestContent(aRequest,
@@ -3707,14 +3717,19 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     //  If this isn't a primary URI, then we won't use any supplied aspect, but
     //  we'll use the fragment text instead.
     if (!this.isPrimaryURI()) {
-        this.getPrimaryURI().getResource().set(
+
+        //  NB: We assume 'async' of false here
+        this.getPrimaryURI().getResource().get('result').set(
                     this.getFragmentExpr(), facetValue);
     } else {
 
         //  Make sure we have a real content object - if not, stub it in.
-        if (TP.notValid(resourceContent = this.getResource())) {
+        //  NB: We assume 'async' of false here
+        if (TP.notValid(resourceContent = this.getResource().get('result'))) {
+            //  Stub out new content.
             this.stubResourceContent();
-            resourceContent = this.getResource();
+            //  Get that new content.
+            resourceContent = this.getResource().get('result');
         }
         resourceContent.set(aspectName, facetValue);
     }
@@ -3855,9 +3870,8 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
-     * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
-     *     when the resource must be acquired in an async fashion prior to
-     *     setting any fragment value.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the newly set
+     *     content set as its result.
      */
 
     //  When we're primary or we don't have a fragment we can keep it
@@ -4012,8 +4026,8 @@ function() {
         return this.getPrimaryURI().stubResourceContent();
     }
 
-    //  If the receiver has a real resource, don't replace it.
-    if (TP.notValid(resourceContent = this.getResource())) {
+    //  If the receiver doesn't have a real resource result, replace it.
+    if (TP.notValid(resourceContent = this.getResource().get('result'))) {
 
         //  Construct a simple TP.lang.Object, define a 'value' slot on it and
         //  give it an initial value of the empty String. Also, configure it be
@@ -4076,7 +4090,8 @@ function(aDataSource, aRequest) {
      *     'ordered collection' this flag needs to be set to 'true' in order to
      *     have 'automatic' iteration occur). Additional keys of '$STARTINDEX'
      *     and '$REPEATCOUNT' determine the range of the iteration.
-     * @returns {String} The string resulting from the transformation process.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the transformed
+     *     content set as its result.
      */
 
     var subrequest,
@@ -4122,6 +4137,8 @@ function(aDataSource, aRequest) {
                         aRequest.complete();
                     }
                 }
+
+                subrequest.constructResponse(result);
             });
 
     subrequest.defineMethod(
@@ -4167,7 +4184,7 @@ function(aDataSource, aRequest) {
 
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
-    return subrequest.get('result');
+    return subrequest.constructResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -4486,17 +4503,19 @@ function(aRequest, filterResult) {
      * @param {Boolean} filterResult True if the resource result will be used
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     content set as its result.
      */
 
     var url,
 
-        async,
         refresh,
         request,
         result,
         resultType,
         response;
+
+    request = this.constructRequest(aRequest);
 
     //  If we're not the primary URI, that means we have a fragment. So we have
     //  to get the 'whole' resource from the primary URI and then proceed
@@ -4504,19 +4523,16 @@ function(aRequest, filterResult) {
     //  configured to retrieve the value of the fragment, so we have to use a
     //  new, one-time, request here.
     if ((url = this.getPrimaryURI()) !== this) {
+
+        //  The primary resource for a URN is always a URN, so we don't have to
+        //  worry about asynchronicity.
         result = url.$getPrimaryResource(
-                                TP.request('async', false), filterResult);
+                        TP.request('async', false), filterResult).get('result');
     } else {
 
         //  Things that we do only if we're the primary URI
 
-        //  for consistency we have to process as request/response if async
-        async = this.rewriteRequestMode(aRequest);
-        if (async) {
-            request = this.constructRequest(aRequest);
-        }
-
-        refresh = TP.ifKeyInvalid(aRequest, 'refresh', null);
+        refresh = TP.ifKeyInvalid(request, 'refresh', null);
         result = this.$get('resource');
 
         if (TP.notValid(result) || refresh) {
@@ -4530,24 +4546,14 @@ function(aRequest, filterResult) {
 
     //  filter any remaining data
     if (TP.isTrue(filterResult) && TP.isValid(result)) {
-        resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
+        resultType = TP.ifKeyInvalid(request, 'resultType', null);
         result = this.$getFilteredResult(result, resultType, false);
     }
 
-    //  Simulate async, even when we're not really an async URI type.
-    if (async) {
-        response = request.constructResponse(result);
-        request.complete(result);
+    response = request.constructResponse(result);
+    request.complete(result);
 
-        return response;
-    }
-
-    //  synchronous? complete any request we might actually have.
-    if (TP.canInvoke(aRequest, 'complete')) {
-        aRequest.complete(result);
-    }
-
-    return result;
+    return response;
 });
 
 //  ------------------------------------------------------------------------
@@ -4677,7 +4683,7 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var request,
@@ -4946,15 +4952,25 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     content set as its result.
      */
 
     var primaryResource,
-        result;
 
+        request,
+        result,
+
+        response;
+
+    //  NB: The call to $get('resource') here - this does *NOT* return a
+    //  response, but the real object. We can assume 'async' is false since this
+    //  is a URN.
     if (TP.notValid(primaryResource = this.getPrimaryURI().$get('resource'))) {
         return this.callNextMethod();
     }
+
+    request = TP.request(aRequest);
 
     //  When we're primary or we don't have a fragment we can keep it simple and
     //  return primaryResource.
@@ -4967,11 +4983,13 @@ function(aRequest) {
     }
 
     //  synchronous? complete any request we might actually have.
-    if (TP.canInvoke(aRequest, 'complete')) {
-        aRequest.complete(result);
+    if (TP.canInvoke(request, 'complete')) {
+        request.complete(result);
     }
 
-    return result;
+    response = request.constructResponse(result);
+
+    return response;
 });
 
 //  ========================================================================
@@ -5151,7 +5169,8 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Node} The node value of the receiver's content.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     node content set as its result.
      */
 
     var subrequest,
@@ -5220,7 +5239,7 @@ function(aRequest) {
 
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
-    return subrequest.get('result');
+    return subrequest.constructResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -5362,7 +5381,8 @@ function(aRequest, filterResult) {
      * @param {Boolean} filterResult True if the resource result will be used
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     primary content set as its result.
      */
 
     var url,
@@ -5501,7 +5521,7 @@ function(aRequest, filterResult) {
 
     //  if we're not running async then the subrequest will be complete and
     //  we can return whatever result was produced.
-    return subrequest.get('result');
+    return subrequest.constructResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -5765,7 +5785,8 @@ function(targetPhase, targetPhaseList) {
      *     the supplied phase in its processing.
      */
 
-    var content;
+    var content,
+        resp;
 
     //  if we're not loaded we can't have reached a particular phase.
     if (!this.isLoaded()) {
@@ -5774,7 +5795,9 @@ function(targetPhase, targetPhaseList) {
 
     //  force refresh to false, we only want cached data access here. NOTE
     //  that this avoids any async issues as well.
-    content = this.getResource(TP.hc('refresh', false, 'async', false));
+    resp = this.getResource(TP.hc('refresh', false, 'async', false));
+    content = resp.get('result');
+
     if (TP.canInvoke(content, 'hasReachedPhase')) {
         return content.hasReachedPhase(targetPhase, targetPhaseList);
     }
@@ -5795,7 +5818,8 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or parameter
      *     hash with control parameters. The 'targetPhase' parameter is the most
      *     important here. Default is 'Finalized'.
-     * @returns {Object} The processing results.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     processed content set as its result.
      */
 
     var request,
@@ -5817,6 +5841,7 @@ function(aRequest) {
             function(aResult) {
 
                 var resource,
+                    resp,
                     result;
 
                 resource = TP.tpnode(aResult);
@@ -5824,8 +5849,8 @@ function(aRequest) {
                     //  Force XMLBase and TIBET src attributes.
                     thisref.$setPrimaryResource(resource);
 
-                    //  TODO: THIS IS WRONG...
-                    result = TP.process(resource, request);
+                    resp = TP.process(resource, request);
+                    result = resp.get('result');
 
                     if (request.didFail()) {
                         aRequest.fail(request.getFaultText(),
@@ -5900,7 +5925,7 @@ function(aRequest) {
         }
     }
 
-    return subrequest.get('result');
+    return subrequest.constructResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -6141,7 +6166,7 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response|null} The request's response object.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var request,
@@ -6179,7 +6204,7 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response|null} The request's response object.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var request,
@@ -6425,8 +6450,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP DELETE
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     return TP.httpDelete(this.asString(), aRequest);
@@ -6442,8 +6466,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP GET
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     return TP.httpGet(this.asString(), aRequest);
@@ -6459,8 +6482,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP HEAD
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     return TP.httpHead(this.asString(), aRequest);
@@ -6476,8 +6498,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP OPTIONS
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     return TP.httpOptions(this.asString(), aRequest);
@@ -6493,8 +6514,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP POST
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     return TP.httpPost(this.asString(), aRequest);
@@ -6510,8 +6530,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP PUT
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     return TP.httpPut(this.asString(), aRequest);
@@ -6527,8 +6546,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP TRACE
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     return TP.httpTrace(this.asString(), aRequest);
@@ -6846,11 +6864,11 @@ function(aRequest, filterResult) {
      * @param {Boolean} filterResult True if the resource result will be used
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     primary content set as its result.
      */
 
     var request,
-        async,
 
         str,
 
@@ -6862,7 +6880,6 @@ function(aRequest, filterResult) {
         response;
 
     request = this.constructRequest(aRequest);
-    async = this.rewriteRequestMode(request);
 
     //  get rid of leading javascript: portion so we can eval the rest
     str = this.get('jsSource');
@@ -6882,20 +6899,10 @@ function(aRequest, filterResult) {
         result = this.$getFilteredResult(result, resultType, false);
     }
 
-    //  Simulate async, even when we're not really an async URI type.
-    if (async) {
-        response = request.constructResponse(result);
-        request.complete(result);
+    response = request.constructResponse(result);
+    request.complete(result);
 
-        return response;
-    }
-
-    //  synchronous? complete any request we might actually have.
-    if (TP.canInvoke(aRequest, 'complete')) {
-        aRequest.complete(result);
-    }
-
-    return result;
+    return response;
 });
 
 //  ------------------------------------------------------------------------
@@ -7016,7 +7023,7 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var request,
@@ -7746,7 +7753,9 @@ function(forceRefresh) {
     //  that case we will grab the resource, get it's global ID and then compute
     //  a new URL from that.
     if (TP.notEmpty(this.getCanvasName())) {
-        if (TP.isValid(resource = this.getResource())) {
+
+        //  NB: We assume 'async' of false here
+        if (TP.isValid(resource = this.getResource().get('result'))) {
             //  If it's a Window, hand back a TIBET URI, but pointing to the
             //  'more concrete' URI that includes the Window's global ID.
             if (TP.isKindOf(resource, TP.core.Window)) {
@@ -7866,7 +7875,8 @@ function(aRequest, filterResult) {
      * @param {Boolean} filterResult True if the resource result will be used
      *     directly and should be filtered to match any resultType definition
      *     found in the request. The default is false.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     content set as its result.
      */
 
     var request,
@@ -7933,15 +7943,11 @@ function(aRequest, filterResult) {
             aRequest.complete(result);
         }
 
-        if (async) {
-            if (TP.canInvoke(aRequest, 'constructResponse')) {
-                return aRequest.constructResponse(result);
-            } else {
-                return TP.request().constructResponse(result);
-            }
+        if (TP.canInvoke(aRequest, 'constructResponse')) {
+            return aRequest.constructResponse(result);
+        } else {
+            return TP.request().constructResponse(result);
         }
-
-        return result;
     }
 
     //  most common cases are a) loading external file content b)
@@ -8019,7 +8025,8 @@ function(aRequest, filterResult) {
 
                     //  This will always be synchronous - it's a 'javascript:'
                     //  URL.
-                    result = url.getResource();
+                    result = url.getResource().get('result');
+
                     return this.$getResourceResult(request,
                                                     result,
                                                     async,
@@ -8238,7 +8245,8 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Object} The resource or TP.sig.Response when async.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the requested
+     *     content set as its result.
      */
 
     if (TP.isEmpty(this.getCanvasName())) {
@@ -8262,8 +8270,8 @@ function(request, result, async, filter) {
      * @param {Boolean} filter True if the resource result will be used directly
      *     and should be filtered to match any resultType definition found in
      *     the request. The default is false.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
+     *     content set as its result.
      */
 
     var resource,
@@ -8283,16 +8291,10 @@ function(request, result, async, filter) {
         this.isLoaded(true);
     }
 
-    if (TP.isTrue(async)) {
-        response = request.constructResponse(resource);
-        request.complete(resource);
+    response = request.constructResponse(resource);
+    request.complete(resource);
 
-        return response;
-    } else {
-        request.complete(resource);
-
-        return resource;
-    }
+    return response;
 });
 
 //  ------------------------------------------------------------------------
@@ -8354,8 +8356,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP DELETE
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     if (this.isHTTPBased()) {
@@ -8375,8 +8376,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP GET
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     if (this.isHTTPBased()) {
@@ -8396,8 +8396,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP HEAD
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     if (this.isHTTPBased()) {
@@ -8417,8 +8416,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP OPTIONS
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     if (this.isHTTPBased()) {
@@ -8438,8 +8436,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP POST
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     if (this.isHTTPBased()) {
@@ -8459,8 +8456,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP PUT
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     if (this.isHTTPBased()) {
@@ -8480,8 +8476,7 @@ function(aRequest) {
      * @summary Uses the receiver as a target URI and invokes an HTTP TRACE
      *     with aRequest.
      * @param {TP.sig.Request} aRequest The original request being processed.
-     * @returns {Object|TP.sig.Response} A response when async, object
-     *     otherwise.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     if (this.isHTTPBased()) {
@@ -9978,7 +9973,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var subrequest,
@@ -10104,7 +10099,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var subrequest,
@@ -10208,7 +10203,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var subrequest,
@@ -10251,7 +10246,7 @@ function(targetURI, aRequest) {
     subrequest.atPutIfAbsent('refreshContent', false);
 
     //  default text content to the empty string to avoid errors
-    content = TP.ifInvalid(targetURI.getResource(subrequest), '');
+    content = TP.ifInvalid(targetURI.getResource(subrequest).get('result'), '');
     subrequest.atPutIfAbsent('body', TP.str(content));
 
     subrequest.defineMethod(
@@ -10336,7 +10331,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var request,
@@ -10399,7 +10394,7 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var request,
@@ -10484,13 +10479,14 @@ function(targetURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {TP.sig.Response} A valid response object for the request.
+     * @returns {TP.sig.Response} The request's response object.
      */
 
     var request,
         response,
         targetLoc,
         saveRequest,
+        resp,
         content,
         useWebDAV;
 
@@ -10524,8 +10520,9 @@ function(targetURI, aRequest) {
     //  Make sure we have content. Note that this will get encoded via the
     //  httpEncode() call in lower layers, so we don't touch it here.
     if (TP.notValid(saveRequest.at('body'))) {
-        content = TP.ifInvalid(
-                    targetURI.getResource(TP.hc('async', false)), '');
+        resp = targetURI.getResource(TP.hc('async', false));
+        content = TP.ifInvalid(resp.get('result', ''));
+
         saveRequest.atPut('body', content);
     }
 

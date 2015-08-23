@@ -282,6 +282,8 @@ function() {
 
         thisArg,
 
+        resp,
+
         headerContent,
         bodyContent,
 
@@ -438,7 +440,9 @@ function() {
 
                 //  If the named URI has existing data, then we signal
                 //  'TP.sig.UIDataDestruct'.
-                if (TP.notEmpty(resultURI.getResource())) {
+
+                //  NB: We assume 'async' of false here.
+                if (TP.notEmpty(resultURI.getResource().get('result'))) {
                     thisArg.signal('TP.sig.UIDataDestruct');
                 }
 
@@ -496,12 +500,16 @@ function() {
     //  Do the work.
 
     //  Process any custom headers
-    if (TP.isURI(headersURI) &&
-        TP.isValid(headerContent =
-                    headersURI.getResource(TP.hc('async', false)))) {
-        headerContent = headerContent.get('value');
-        headerContent = TP.hc(headerContent).copy();
-        request.atPut('headers', headerContent);
+    if (TP.isURI(headersURI)) {
+
+        //  NB: We assume 'async' of false here.
+        resp = headersURI.getResource(TP.hc('async', false));
+
+        if (TP.isValid(headerContent = resp.get('result'))) {
+            headerContent = headerContent.get('value');
+            headerContent = TP.hc(headerContent).copy();
+            request.atPut('headers', headerContent);
+        }
     }
 
     //  Process the verb
@@ -519,11 +527,13 @@ function() {
                 bodyContent = TP.ac();
                 bodyURIs.perform(
                         function(aURI) {
-                            var bodyVal;
+                            var bodyResp,
+                                bodyVal;
 
-                            if (TP.isValid(
-                                    bodyVal = aURI.getResource(
-                                                    TP.hc('async', false)))) {
+                            //  NB: We assume 'async' of false here.
+                            bodyResp = aURI.getResource(TP.hc('async', false));
+
+                            if (TP.isValid(bodyVal = bodyResp.get('result'))) {
                                 bodyVal = bodyVal.get('value');
                             }
 
@@ -543,11 +553,13 @@ function() {
         /* eslint-enable no-fallthrough */
         case TP.HTTP_PUT:
 
+            //  NB: We assume 'async' of false here.
+            resp = val.getResource(TP.hc('async', false));
+            bodyContent = resp.get('result');
+
             //  If we had a body, set the resource of the URI to it. We might
             //  not - we might have a simple payload in the query.
-            if (TP.isURI(val = bodyURIs.first()) &&
-                TP.isValid(bodyContent =
-                            val.getResource(TP.hc('async', false)))) {
+            if (TP.isURI(val = bodyURIs.first()) && TP.isValid(bodyContent)) {
                 bodyContent = bodyContent.get('value');
                 uri.setResource(bodyContent);
             } else {

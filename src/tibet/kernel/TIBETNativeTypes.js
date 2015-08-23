@@ -5264,26 +5264,38 @@ function(aRequest) {
      *     via the substitute method.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing control parameters.
-     * @returns {TP.core.URL} The receiver.
+     * @returns {TP.sig.Response} A response containing the processing results.
      */
 
     var doc,
         node,
         dataSource,
-        keySource;
+        keySource,
+
+        request,
+        result,
+        response;
+
+    request = TP.request(aRequest);
 
     //  if the string represents markup then we work from that perspective
     if (TP.isValid(doc = TP.core.Node.from(this))) {
         node = doc.getDocumentElement();
-        return TP.process(node, aRequest);
+        return TP.process(node, request);
     }
 
-    if (TP.isValid(aRequest)) {
-        dataSource = TP.ifKeyInvalid(aRequest, 'dataSource', aRequest);
-        keySource = TP.ifKeyInvalid(aRequest, 'keySource', null);
+    if (TP.isValid(request)) {
+        dataSource = TP.ifKeyInvalid(request, 'dataSource', request);
+        keySource = TP.ifKeyInvalid(request, 'keySource', null);
     }
 
-    return this.substitute(dataSource, keySource);
+    result = this.substitute(dataSource, keySource);
+
+    response = request.constructResponse(result);
+    request.complete(result);
+
+    return response;
+
 });
 
 //  ------------------------------------------------------------------------

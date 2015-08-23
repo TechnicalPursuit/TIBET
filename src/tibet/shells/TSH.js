@@ -3370,6 +3370,7 @@ function(aRequest) {
         flag,
 
         url,
+        resp,
         src,
 
         debug,
@@ -3433,8 +3434,8 @@ function(aRequest) {
                 continue;
             }
 
-            if (TP.notValid(src = url.getResource(
-                                TP.hc('refresh', true, 'async', false)))) {
+            resp = url.getResource(TP.hc('refresh', true, 'async', false));
+            if (TP.notValid(src = resp.get('result'))) {
                 aRequest.fail(
                     'tsh:import failed to load ' + file);
 
@@ -3511,6 +3512,7 @@ function(aRequest) {
         flag,
 
         url,
+        resp,
         src,
 
         debug,
@@ -3567,9 +3569,8 @@ function(aRequest) {
                     continue;
                 }
 
-                if (TP.notValid(
-                        src = url.getResource(
-                                TP.hc('refresh', true, 'async', false)))) {
+                resp = url.getResource(TP.hc('refresh', true, 'async', false));
+                if (TP.notValid(src = resp.get('result'))) {
                     aRequest.fail(
                         'tsh:source failed to load ' + file);
 

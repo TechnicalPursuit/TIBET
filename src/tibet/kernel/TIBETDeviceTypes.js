@@ -724,6 +724,7 @@ function() {
         path,
 
         url,
+        resp,
         xml;
 
     req = TP.hc('async', false);
@@ -742,7 +743,9 @@ function() {
     }
 
     url = TP.uc(path);
-    if (TP.notValid(xml = url.getNativeNode(req))) {
+    resp = url.getNativeNode(req);
+
+    if (TP.notValid(xml = resp.get('result'))) {
         return this.raise('TP.sig.InvalidKeymap');
     }
 

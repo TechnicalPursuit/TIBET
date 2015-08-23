@@ -98,10 +98,12 @@ function(aRequest) {
         if (TP.notEmpty(schemas = schema.split(' '))) {
             schemas.perform(
                 function(aSchemaURL) {
-                    var schemaObj;
+                    var resp,
+                        schemaObj;
 
-                    if (TP.isValid(schemaObj = TP.uc(aSchemaURL).getResource(
-                                                    TP.hc('async', false)))) {
+                    resp = TP.uc(aSchemaURL).getResource(TP.hc('async', false));
+
+                    if (TP.isValid(schemaObj = resp.get('result'))) {
                         if (TP.isKindOf(schemaObj, TP.core.XMLDocumentNode)) {
                             schemaObj = schemaObj.getDocumentElement();
                         }

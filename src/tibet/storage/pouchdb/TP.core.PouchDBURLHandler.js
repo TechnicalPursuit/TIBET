@@ -225,6 +225,7 @@ function(targetURI, aRequest) {
         verb,
 
         cmdAction,
+        resp,
         content,
 
         requestParams,
@@ -259,12 +260,12 @@ function(targetURI, aRequest) {
 
         //  Grab whatever is in *the memory cache* of the URI. This will be the
         //  value of whatever was just 'set' as the 'resource' of the URI -
-        //  this will be the value that we want to update.
+        //  the result value will be the value that we want to update.
 
         //  Note here how we force refresh. as well as async, to 'false' so we
         //  effectively do a synchronous "cache read".
-        if (TP.isEmpty(content = targetURI.getResource(
-                                TP.hc('refresh', false, 'async', false)))) {
+        resp = targetURI.getResource(TP.hc('refresh', false, 'async', false));
+        if (TP.isEmpty(content = resp.get('result'))) {
             request.fail('No content to save for: ' + TP.str(targetURI));
 
             return response;

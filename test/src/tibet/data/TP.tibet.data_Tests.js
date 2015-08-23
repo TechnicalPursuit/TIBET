@@ -106,7 +106,7 @@ function() {
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
 
@@ -145,7 +145,7 @@ function() {
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
 
@@ -184,7 +184,7 @@ function() {
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 test.assert.isMemberOf(dataResource,
                                         TP.test.DataTestMarkupEmployee);
@@ -224,7 +224,7 @@ function() {
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 test.assert.isMemberOf(dataResource,
                                         TP.test.DataTestJSONEmployee);
@@ -264,7 +264,7 @@ function() {
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 //  We loaded with XML, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
@@ -281,7 +281,7 @@ function() {
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 //  We've now reloaded with (more) XML, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);
@@ -298,7 +298,7 @@ function() {
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 //  We've now reloaded with JSON, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
@@ -340,7 +340,7 @@ function() {
 
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 //  We loaded with JSON, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
@@ -357,7 +357,7 @@ function() {
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 //  We've now reloaded with (more) JSON, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.JSONContent);
@@ -374,7 +374,7 @@ function() {
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataDestruct');
                 test.assert.didSignal(dataTPElem, 'TP.sig.UIDataConstruct');
 
-                dataResource = srcURI.getResource();
+                dataResource = srcURI.getResource().get('result');
 
                 //  We've now reloaded with XML, so test that here.
                 test.assert.isMemberOf(dataResource, TP.core.XMLContent);

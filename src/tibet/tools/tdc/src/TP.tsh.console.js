@@ -174,7 +174,8 @@ function() {
     inputElemURI = 'tibet://top.UIBOOT#css(\'#BOOT-PROGRESS #BOOT-PERCENT\')';
 
     //  Access the input element we're being tasked with converting.
-    inputElem = TP.unwrap(TP.uc(inputElemURI).getResource());
+    //  NB: We assume 'async' of false here.
+    inputElem = TP.unwrap(TP.uc(inputElemURI).getResource().get('result'));
 
     //  If we got a real Element, then replace it with the following markup.
     if (TP.isElement(inputElem)) {
@@ -2458,6 +2459,7 @@ function(aRequest) {
         cssClass,
 
         inputData,
+        resp,
         inputStr;
 
     request = TP.request(aRequest);
@@ -2507,9 +2509,12 @@ function(aRequest) {
                         'stats', '_ | _ | _',
                         'resulttype', '');
 
-    inputStr = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
+    resp = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
                         '#xpath1(//*[@name="inputText"])').transform(
-                            inputData);
+                            inputData,
+                            TP.request('async', false));
+
+    inputStr = resp.get('result');
 
     if (/\{\{/.test(inputStr)) {
         return;
@@ -2539,6 +2544,7 @@ function(anObject, aRequest) {
         asIs,
         tap,
         inputNode,
+        resp,
         cssClass,
         outputData,
         outputStr;
@@ -2630,9 +2636,12 @@ function(anObject, aRequest) {
         }
     }
 
-    outputStr = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
+    resp = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
                         '#xpath1(//*[@name="outputText"])').transform(
-                            outputData);
+                            outputData,
+                            TP.request('async', false));
+
+    outputStr = resp.get('result');
 
     if (!TP.isString(outputStr)) {
         // Something went wrong during templating. The outputData didn't get
@@ -2643,9 +2652,12 @@ function(anObject, aRequest) {
         outputData.atPut('output',
                 TP.boot.$dump(outputData.at('output'), '', true));
 
-        outputStr = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
+        resp = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
                         '#xpath1(//*[@name="outputText"])').transform(
-                            outputData);
+                            outputData,
+                            TP.request('async', false));
+
+        outputStr = resp.get('result');
     }
 
     request.atPut('cmdOutputNode', TP.boot.$displayMessage(outputStr, true));

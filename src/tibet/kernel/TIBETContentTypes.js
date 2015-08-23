@@ -1069,7 +1069,10 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
     //  Make sure that we have an Array as our collection. If we end up with a
     //  non-Array, we wrap it into one.
-    if (!TP.isArray(targetCollection = aCollectionURI.getResource())) {
+
+    //  NB: We assume 'async' of false here.
+    if (!TP.isArray(targetCollection =
+                    aCollectionURI.getResource().get('result'))) {
         targetCollection = TP.ac(targetCollection);
     }
 
@@ -1135,7 +1138,10 @@ function(aCollectionURI, aDeleteIndex) {
 
     //  If the supplied URI really resolves to an Array, then remove the proper
     //  row.
-    if (TP.isArray(targetCollection = aCollectionURI.getResource())) {
+
+    //  NB: We assume 'async' of false here.
+    if (!TP.isArray(targetCollection =
+                    aCollectionURI.getResource().get('result'))) {
 
         //  If a deletion index was supplied or we have numbers in our selection
         //  indexes, then use those as the deletion indexes.
@@ -1335,8 +1341,10 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
         insertionPath;
 
     //  Make sure that we have a TP.core.CollectionNode
+
+    //  NB: We assume 'async' of false here.
     targetCollection = aCollectionURI.getResource(
-                                        TP.hc('resultType', TP.WRAP));
+                        TP.hc('resultType', TP.WRAP)).get('result');
 
     if (!TP.isKindOf(targetCollection, TP.core.CollectionNode)) {
         return this.raise('TP.sig.InvalidNode');
@@ -1416,8 +1424,10 @@ function(aCollectionURI, aDeleteIndex) {
         i;
 
     //  Make sure that we have a TP.core.CollectionNode
+
+    //  NB: We assume 'async' of false here.
     targetCollection = aCollectionURI.getResource(
-                                        TP.hc('resultType', TP.WRAP));
+                        TP.hc('resultType', TP.WRAP)).get('result');
 
     if (!TP.isKindOf(targetCollection, TP.core.CollectionNode)) {
         return this.raise('TP.sig.InvalidNode');
@@ -8515,15 +8525,17 @@ function() {
         'TP.sig.AppWillStart',
         function(aSignal) {
 
+            var resp;
+
             this.ignore(TP.sys, aSignal.getSignalName());
 
             (function() {
 
                 //  Load the DTD information for HTML 4.01 Strict
                 dtdInfoURI = TP.uc('~lib_schema/html401_strict.json');
-                dtdInfo = dtdInfoURI.getResource(
-                                    TP.hc('async', false,
-                                            'contentHandler', this));
+                resp = dtdInfoURI.getResource(
+                            TP.hc('async', false, 'contentHandler', this));
+                dtdInfo = resp.get('result');
 
                 if (TP.isValid(dtdInfo)) {
                     TP.w3.DocType.HTML_401_STRICT.set('dtdInfo', dtdInfo);

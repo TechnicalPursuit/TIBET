@@ -114,6 +114,7 @@ function(targetURI, aRequest) {
     var request,
         response,
 
+        resp,
         content,
 
         saveRequest;
@@ -122,7 +123,9 @@ function(targetURI, aRequest) {
     response = request.constructResponse();
 
     //  Saving data to Google requires 'data' to save ;-)
-    if (TP.isEmpty(content = targetURI.getResource(TP.hc('async', false)))) {
+    resp = targetURI.getResource(TP.hc('async', false));
+
+    if (TP.isEmpty(content = resp.get('result'))) {
         request.fail();
         return response;
     }

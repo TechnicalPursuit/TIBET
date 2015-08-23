@@ -1326,6 +1326,8 @@ function(uniqueID, dataRecord) {
         cssClass,
 
         inputData,
+
+        resp,
         entryStr,
 
         outElem;
@@ -1355,9 +1357,11 @@ function(uniqueID, dataRecord) {
                         'resulttype', '',
                         'stats', '&#8230;');
 
-        entryStr = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+        resp = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
                             '#xpath1(//*[@name="consoleEntry"])').transform(
-                                inputData);
+                                inputData,
+                                TP.request('async', false));
+        entryStr = resp.get('result');
 
         if (/\{\{/.test(entryStr)) {
             return;
@@ -1402,6 +1406,7 @@ function(uniqueID, dataRecord) {
         resultTile,
 
         outputData,
+        resp,
         outputStr,
 
         coalesceFragment,
@@ -1458,9 +1463,13 @@ function(uniqueID, dataRecord) {
 
         if (TP.notValid(
                 rawOutEntryTemplate = this.get('rawOutEntryTemplate'))) {
-            rawOutEntryTemplate = TP.uc(
+
+            resp = TP.uc(
                 '~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                        '#xpath1(//*[@name="raw_outputEntry"])').getResource();
+                        '#xpath1(//*[@name="raw_outputEntry"])').getResource(
+                        TP.request('async', false));
+
+            rawOutEntryTemplate = resp.get('result');
             this.set('rawOutEntryTemplate', rawOutEntryTemplate);
         }
 

@@ -42,6 +42,7 @@ function(aValue, aNode) {
         type,
         typeName,
 
+        resp,
         schema,
 
         list,
@@ -147,7 +148,9 @@ function(aValue, aNode) {
         return true;
     }
 
-    if (TP.notValid(schema = tpuri.getNativeNode(TP.hc('async', false)))) {
+    resp = tpuri.getNativeNode(TP.hc('async', false));
+
+    if (TP.notValid(schema = resp.get('result'))) {
         TP.ifWarn() ?
             TP.warn('Unable to load XML Schema from URI: ' + url) : 0;
 

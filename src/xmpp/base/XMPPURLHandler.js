@@ -445,6 +445,8 @@ function(targetURI, aRequest) {
         uriparams,
         queryDict,
 
+        resp,
+
         content;
 
     request = TP.request(aRequest);
@@ -476,8 +478,10 @@ function(targetURI, aRequest) {
     switch (action) {
         case 'command':
 
-            if (TP.isEmpty(content = targetURI.getResourceNode(
-                                TP.hc('refresh', false, 'async', false)))) {
+            resp = targetURI.getResourceNode(
+                                TP.hc('refresh', false, 'async', false));
+
+            if (TP.isEmpty(content = resp.get('result'))) {
                 content = uriparams.atIfInvalid(
                                 'node', queryDict.at('node'));
             }
@@ -488,8 +492,10 @@ function(targetURI, aRequest) {
 
         case 'message':
 
-            if (TP.isEmpty(content = targetURI.getResourceText(
-                                TP.hc('refresh', false, 'async', false)))) {
+            resp = targetURI.getResourceText(
+                                TP.hc('refresh', false, 'async', false));
+
+            if (TP.isEmpty(content = resp.get('result'))) {
                 content = uriparams.atIfInvalid(
                                 'body', queryDict.at('body'));
             }
@@ -500,8 +506,10 @@ function(targetURI, aRequest) {
 
         case 'presence':
 
-            if (TP.isEmpty(content = targetURI.getResourceText(
-                                TP.hc('refresh', false, 'async', false)))) {
+            resp = targetURI.getResourceText(
+                                TP.hc('refresh', false, 'async', false));
+
+            if (TP.isEmpty(content = resp.get('result'))) {
                 content = uriparams.atIfInvalid(
                                 'status', queryDict.at('status'));
             }
@@ -512,8 +520,10 @@ function(targetURI, aRequest) {
 
         case 'publish':
 
-            if (TP.isEmpty(content = targetURI.getResource(
-                                TP.hc('refresh', false, 'async', false)))) {
+            resp = targetURI.getResource(
+                                TP.hc('refresh', false, 'async', false));
+
+            if (TP.isEmpty(content = resp.get('result'))) {
                 content = uriparams.atIfInvalid(
                                 'payload', queryDict.at('payload'));
             }

@@ -1302,6 +1302,7 @@ function(aWindowOrID, theContent, aLoadedFunction) {
 
     var win,
         url,
+        resp,
         content;
 
     win = TP.sys.getWindowById(aWindowOrID);
@@ -1315,14 +1316,18 @@ function(aWindowOrID, theContent, aLoadedFunction) {
     if (TP.isString(theContent)) {
         url = TP.uc(theContent);
         if (TP.isURI(url)) {
-            content = url.getResource(TP.hc('async', false));
+            //  NB: We assume 'async' false here.
+            resp = url.getResource(TP.hc('async', false));
+            content = resp.get('result');
         } else {
             content = theContent;
         }
     } else if (TP.isNode(theContent)) {
         content = theContent;
     } else if (TP.isKindOf(theContent, TP.core.URI)) {
-        content = theContent.getResource(TP.hc('async', false));
+        //  NB: We assume 'async' false here.
+        resp = theContent.getResource(TP.hc('async', false));
+        content = resp.get('result');
     } else {
         this.raise('TP.sig.InvalidParameter');
 
