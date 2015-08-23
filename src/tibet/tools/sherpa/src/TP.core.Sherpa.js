@@ -335,6 +335,7 @@ function() {
     sherpaSouthDrawer.setAttribute('tibet:nomutationtracking', true);
 
     TP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
+    APP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
 
     //  Effectively replace the test logger's appenders with just ours.
     TP.getLogger(TP.TEST_LOG).clearAppenders();
