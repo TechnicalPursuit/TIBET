@@ -731,7 +731,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('httpError',
-function(targetUrl, aSignal, aRequest, shouldThrow) {
+function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
 
     /**
      * @method httpError
@@ -751,6 +751,8 @@ function(targetUrl, aSignal, aRequest, shouldThrow) {
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
      *     by this call.
      * @param {TP.core.Hash|TP.sig.Request} aRequest A request/hash with keys.
+     * @param {Boolean} [shouldSignal=true] Whether to signal failure/completed
+     *     which will close out the request properly.
      * @param {Boolean} [shouldThrow=TP.sys.shouldThrowExceptions] Whether or
      *     not errors should be thrown.
      * @exception HTTPException
@@ -761,6 +763,11 @@ function(targetUrl, aSignal, aRequest, shouldThrow) {
         signal,
         error,
 
+        type,
+        sig,
+        id,
+
+        signalFailure,
         throwExceptions,
 
         willLogError,
@@ -782,19 +789,56 @@ function(targetUrl, aSignal, aRequest, shouldThrow) {
                                                 signal)));
     args.atPut('error', error);
 
+    //  make sure the IO log contains this data to show a complete record
+    //  for access to the targetUrl
+    args.atPut('message', 'HTTP request exception.');
+
+    signalFailure = TP.ifInvalid(shouldSignal, true);
+
+    //  get a response object for the request that we can use to convey the
+    //  bad news in a consistent fashion with normal success processing.
+    if (TP.notValid(type = TP.sys.getTypeByName('TP.sig.HTTPResponse',
+                                                    false))) {
+        if (TP.notValid(type = TP.sys.getTypeByName('TP.sig.Response',
+                                                        false))) {
+            //  real problems...typically crashing during boot since none of
+            //  the core kernel response types appear to be valid.
+            return;
+        }
+    }
+
+    sig = type.construct(args);
+    id = args.getRequestID();
+
+    //  start with most specific, the fact we timed out
+    sig.setSignalName(aSignal);
+    sig.fire(id);
+
+    //  move on to general failure, timeout is considered a failure
+    sig.setSignalName('TP.sig.IOFailed');
+    sig.fire(id);
+
+    //  success or failure all operations "complete" so that's last
+    sig.setSignalName('TP.sig.IOCompleted');
+    sig.fire(id);
+
+    //  if the signal handler said to prevent default then don't continue, just
+    //  stop and avoid throw logic entirely.
+    if (sig.shouldPrevent()) {
+        return;
+    }
+
     throwExceptions = TP.sys.shouldThrowExceptions();
     if (TP.isFalse(shouldThrow)) {
         TP.sys.shouldThrowExceptions(false);
     }
 
-    //  make sure the IO log contains this data to show a complete record
-    //  for access to the targetUrl
-    args.atPut('message', 'HTTP request exception.');
-
-    willLogError = TP.ifError();
-
-    willLogError ?
-        TP.error(args, TP.IO_LOG) : 0;
+    if (args && TP.notTrue(args.get('logged'))) {
+        if (TP.ifError()) {
+            args.set('logged', true);
+            TP.error(TP.IO_LOG, args);
+        }
+    }
 
     //  If we're not throwing errors, then make sure that we log some
     if (TP.isFalse(shouldThrow)) {
@@ -1042,7 +1086,7 @@ function(targetUrl, aRequest, httpObj) {
     request.atPut('message', 'HTTP request failed: Timeout');
 
     //  log it consistently with any other error
-    TP.httpError(targetUrl, 'HTTPSendException', request);
+    TP.httpError(targetUrl, 'HTTPSendException', request, false, false);
 
     //  get a response object for the request that we can use to convey the
     //  bad news in a consistent fashion with normal success processing.
@@ -1157,7 +1201,7 @@ function(targetUrl, aRequest, httpObj, shouldThrow) {
 
     //  with/without redirect, did we succeed?
     if (!TP.httpDidSucceed(xhr)) {
-        TP.httpError(url, 'HTTPException', request, shouldThrow);
+        TP.httpError(url, 'HTTPException', request, false, shouldThrow);
         sig.setSignalName('TP.sig.IOFailed');
         sig.fire(id);
     } else {
