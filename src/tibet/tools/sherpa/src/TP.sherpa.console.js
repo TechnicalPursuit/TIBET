@@ -1369,7 +1369,7 @@ function(uniqueID, dataRecord) {
 
         outElem = TP.xmlElementAddContent(
                         this.get('consoleOutput').getNativeNode(),
-                        entryStr);
+                        TP.xhtmlnode(entryStr));
         TP.elementRemoveAttribute(outElem, 'name');
         TP.elementSetAttribute(outElem, 'tibet:noawaken', 'true', true);
 
@@ -1507,11 +1507,11 @@ function(uniqueID, dataRecord) {
 
             TP.xmlElementSetContent(
                     TP.byCSSPath('.typeinfo', cellGroupElem, true, false),
-                    resultTypeStr);
+                    TP.xhtmlnode(resultTypeStr));
 
             TP.xmlElementSetContent(
                     TP.byCSSPath('.stats', cellGroupElem, true, false),
-                    statsStr);
+                    TP.xhtmlnode(statsStr));
         }.bind(this);
 
         if (!TP.isNode(coalesceFragment = this.get('outputCoalesceFragment'))) {
@@ -1519,7 +1519,7 @@ function(uniqueID, dataRecord) {
             this.set('outputCoalesceFragment', coalesceFragment);
         }
 
-        coalesceFragment.appendChild(TP.elem(outputStr));
+        coalesceFragment.appendChild(TP.xhtmlnode(outputStr));
 
         if (!(flushTimer = this.get('outputCoalesceTimer'))) {
             flushTimer = setTimeout(
