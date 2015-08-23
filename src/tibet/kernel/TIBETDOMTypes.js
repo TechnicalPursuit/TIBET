@@ -9237,7 +9237,7 @@ function(aRequest, replaceNode, alternateNode) {
                             '</processingroot>');
 
         if (!TP.isCollectionNode(workNode)) {
-            aRequest.fail('work node is not a collection node', TP.FAILED);
+            request.fail('work node is not a collection node', TP.FAILED);
             return;
         }
 
@@ -9252,7 +9252,7 @@ function(aRequest, replaceNode, alternateNode) {
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
-            aRequest.fail(request.getFaultText(),
+            request.fail(request.getFaultText(),
                             request.getFaultCode(),
                             request.getFaultInfo());
             return;

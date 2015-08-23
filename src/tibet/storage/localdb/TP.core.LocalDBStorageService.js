@@ -150,9 +150,9 @@ function(aRequest) {
         }
     }
 
-    id = aRequest.at('id');
-    dbName = aRequest.at('dbName');
-    body = aRequest.at('body');
+    id = request.at('id');
+    dbName = request.at('dbName');
+    body = request.at('body');
 
     resultData = null;
 
@@ -164,7 +164,7 @@ function(aRequest) {
 
         outBody = output.at('_body');
 
-        if (TP.notEmpty(securePW = aRequest.at('securePW'))) {
+        if (TP.notEmpty(securePW = request.at('securePW'))) {
             outBody = TP.decryptStorageValue(outBody, securePW);
             output.atPut('_body', outBody);
         }
@@ -172,7 +172,7 @@ function(aRequest) {
         return output;
     };
 
-    switch (aRequest.at('action')) {
+    switch (request.at('action')) {
         case 'deleteDB':
 
             if (TP.notValid(allDBs.at(dbName))) {
@@ -278,7 +278,7 @@ function(aRequest) {
                 //  Make sure we have a real id
                 id = TP.isEmpty(id) ? TP.genUUID() : id;
 
-                if (TP.notEmpty(securePW = aRequest.at('securePW'))) {
+                if (TP.notEmpty(securePW = request.at('securePW'))) {
                     body = TP.encryptStorageValue(TP.js2json(body), securePW);
                 }
 
@@ -306,7 +306,7 @@ function(aRequest) {
                 allDBs.atPut(dbName, theDB);
             }
 
-            if (TP.notEmpty(securePW = aRequest.at('securePW'))) {
+            if (TP.notEmpty(securePW = request.at('securePW'))) {
                 body = TP.encryptStorageValue(TP.js2json(body), securePW);
             }
 
@@ -343,7 +343,7 @@ function(aRequest) {
         storageInstance.atPut(TP.LOCALSTORAGE_DB_NAME, TP.js2json(allDBs));
     }
 
-    aRequest.complete(resultData);
+    request.complete(resultData);
 
     return this;
 });
