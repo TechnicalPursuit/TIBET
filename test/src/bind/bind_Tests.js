@@ -233,7 +233,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -316,7 +316,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -507,7 +507,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -698,7 +698,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -889,7 +889,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1075,7 +1075,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1158,7 +1158,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1349,7 +1349,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1540,7 +1540,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1731,7 +1731,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -1917,7 +1917,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -2000,7 +2000,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -2191,7 +2191,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -2382,7 +2382,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -2573,7 +2573,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField', windowContext).get('value'),
@@ -2807,7 +2807,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2924,7 +2924,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3041,7 +3041,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3158,7 +3158,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3275,7 +3275,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3392,7 +3392,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3527,7 +3527,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/people/person)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3634,7 +3634,7 @@ function() {
                         TP.uc('urn:tibet:test_person#xpath1(/people/person)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 //  ---
 
@@ -3815,7 +3815,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField0', windowContext).get('value'),
@@ -3922,7 +3922,7 @@ function() {
                         TP.uc('urn:tibet:test_person#json($.people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 //  ---
 
@@ -4103,7 +4103,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField0', windowContext).get('value'),
@@ -4210,7 +4210,7 @@ function() {
                         TP.uc('urn:tibet:test_person#tibet(people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 //  ---
 
@@ -5821,7 +5821,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -5884,7 +5884,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -5947,7 +5947,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6010,7 +6010,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6074,7 +6074,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6153,7 +6153,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6233,7 +6233,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6312,7 +6312,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6390,7 +6390,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6453,7 +6453,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6516,7 +6516,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6579,7 +6579,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6643,7 +6643,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6722,7 +6722,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6802,7 +6802,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6881,7 +6881,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6959,7 +6959,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7022,7 +7022,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7085,7 +7085,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7148,7 +7148,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7212,7 +7212,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7291,7 +7291,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7371,7 +7371,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7450,7 +7450,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource();
+                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);

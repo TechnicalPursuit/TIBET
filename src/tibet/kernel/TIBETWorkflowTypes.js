@@ -6009,7 +6009,8 @@ function() {
     if (TP.notValid(controller)) {
         url = TP.uc(config);
         if (TP.isValid(url)) {
-            controller = url.getResource();
+            //  NB: We assume 'async' of false here.
+            controller = url.getResource().get('result');
         }
     }
 

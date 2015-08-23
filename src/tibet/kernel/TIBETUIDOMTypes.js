@@ -791,6 +791,7 @@ function() {
      */
 
     var url,
+        resp,
         xml;
 
     url = this.getResourceURI('keybindings', TP.ietf.Mime.XML);
@@ -800,7 +801,10 @@ function() {
         return this;
     }
 
-    if (TP.notValid(xml = url.getNativeNode(TP.hc('async', false)))) {
+    //  NB: We assume 'async' of false here.
+    resp = url.getNativeNode(TP.hc('async', false));
+    if (TP.notValid(xml = resp.get('result'))) {
+
         // Mark the type slot so we don't try again. The load failed.
         this.set('keyBindingsMap', TP.NOT_FOUND);
 

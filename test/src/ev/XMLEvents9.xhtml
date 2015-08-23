@@ -23,7 +23,7 @@
     <!-- Salary changing -->
     <ev:script type="text/javascript" event="TP.sig.DOMClick" observer="setSalaryButton">
         <![CDATA[
-        TP.uc('urn:tibet:empObject').getResource().set(TP.apc('person.salary'), 42);
+        TP.uc('urn:tibet:empObject').getResource().get('result').set(TP.apc('person.salary'), 42);
         ]]>
     </ev:script>
 
@@ -42,7 +42,7 @@
     <!-- SSN changing -->
     <ev:script type="text/javascript" event="TP.sig.DOMClick" observer="setSSNButton">
         <![CDATA[
-        TP.uc('urn:tibet:empObject').getResource().set(TP.apc('person.SSN'), '111-22-3333');
+        TP.uc('urn:tibet:empObject').getResource().get('result').set(TP.apc('person.SSN'), '111-22-3333');
         ]]>
     </ev:script>
 

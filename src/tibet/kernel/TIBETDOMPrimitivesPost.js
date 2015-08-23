@@ -297,8 +297,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                                            theContent.getResource() :
-                                            theContent;
+                theContent.getResource().get('result') :
+                theContent;
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(aDocument)) {
@@ -356,8 +356,8 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                                            theContent.getResource() :
-                                            theContent;
+                theContent.getResource().get('result') :
+                theContent;
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(aDocument)) {
@@ -476,8 +476,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                                            theContent.getResource() :
-                                            theContent;
+                theContent.getResource().get('result') :
+                theContent;
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(aDocument)) {
@@ -727,9 +727,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     //  Since script elements, if we have them and they have a 'src'
     //  attribute, may be processed and fully realized in an asynchronous
-    //  manner (even if we set the new HTML5 'async' flag to false), we
-    //  define a callback function that 'finishes up' the last parts of our
-    //  simulated 'document.write()'. This includes dispatching a
+    //  manner, we define a callback function that 'finishes up' the last parts
+    //  of our simulated 'document.write()'. This includes dispatching a
     //  'DOMContentLoaded' event and calling any callback function supplied
     //  to this method.
     allContentLoadedFunc =
@@ -1261,8 +1260,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                    anObject.getResource() :
-                    anObject;
+                anObject.getResource().get('result') :
+                anObject;
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(anElement)) {
@@ -3529,8 +3528,8 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                    theContent.getResource() :
-                    theContent;
+                theContent.getResource().get('result') :
+                theContent;
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(anElement)) {
@@ -3765,9 +3764,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                        anObject.getResource() :
-                        anObject;
-
+                anObject.getResource().get('result') :
+                anObject;
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(anElement)) {
@@ -4387,8 +4385,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                    anObject.getResource() :
-                    anObject;
+                anObject.getResource().get('result') :
+                anObject;
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(anElement)) {
@@ -5975,9 +5973,8 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                            anObject.getResource() :
-                            anObject;
-
+                anObject.getResource().get('result') :
+                anObject;
     content = TP.unwrap(content);
 
     switch (aNode.nodeType) {
@@ -13637,9 +13634,8 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                            anObject.getResource() :
-                            anObject;
-
+                anObject.getResource().get('result') :
+                anObject;
     content = TP.unwrap(content);
 
     switch (aNode.nodeType) {
@@ -13792,14 +13788,16 @@ function(aNode, anObject) {
      *     the method.
      */
 
-    var content;
+    var resp,
+        content;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
     if (TP.canInvoke(anObject, 'getResourceText')) {
-        content = anObject.getResourceText(TP.hc('async', false));
+        resp = anObject.getResourceText(TP.hc('async', false));
+        content = resp.get('result');
     } else {
         content = TP.str(anObject);
     }
@@ -14702,6 +14700,7 @@ function(anObject, defaultNS, shouldReport) {
      */
 
     var node,
+        resp,
         content;
 
     if (TP.notValid(anObject)) {
@@ -14755,7 +14754,9 @@ function(anObject, defaultNS, shouldReport) {
         }
     } else if (TP.canInvoke(anObject, 'getResourceNode')) {
         //  content will be a Node - we want a TP.core.Node
-        content = TP.wrap(anObject.getResourceNode(TP.hc('async', false)));
+        resp = anObject.getResourceNode(TP.hc('async', false));
+        content = TP.wrap(resp.get('result'));
+
         if (TP.isKindOf(content, 'TP.core.Node')) {
             return content;
         }

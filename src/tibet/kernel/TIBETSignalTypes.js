@@ -293,7 +293,8 @@ function() {
             } else if (TP.isString(target)) {
                 obj = TP.sys.getObjectById(target);
             } else {
-                obj = target.getResource();
+                //  NB: We assume 'async' of false here.
+                obj = target.getResource().get('result');
             }
 
             //  ignore targets we can't find, it's the same as having not

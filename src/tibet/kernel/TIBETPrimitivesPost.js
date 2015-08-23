@@ -3877,9 +3877,10 @@ function(anObject, anAspect, autoCollapse) {
     val = null;
 
     //  if the aspect is a URI (but only if it's an absolute URI with a scheme),
-    //  try to get the value of the URI's resource.
+    //  try to get the value of the URI's resource's result.
     if (TP.isURI(anAspect) && TP.regex.HAS_SCHEME.test(TP.str(anAspect))) {
-        val = TP.val(TP.uc(anAspect).getResource());
+        //  NB: We assume 'async' of false here.
+        val = TP.val(TP.uc(anAspect).getResource().get('result'));
     }
 
     //  some native objects may not have been TIBET-enabled, so for those

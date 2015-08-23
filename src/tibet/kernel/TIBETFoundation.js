@@ -1066,6 +1066,7 @@ function(newMethodText) {
         url,
         str,
         matcher,
+        resp,
         content,
         match,
         newtext,
@@ -1091,12 +1092,13 @@ function(newMethodText) {
         return;
     }
 
-    //  Get the original source text. Note here how we do this asynchronously
+    //  Get the original source text. Note here how we do this synchronously
     //  and we set 'refresh' to true, thereby forcing the browser to go back to
     //  the server for the latest version of the file. This is so that we can
     //  compute the diff against the latest version that is real.
     url = TP.uc(path);
-    content = url.getResource(TP.hc('async', false, 'refresh', true));
+    resp = url.getResource(TP.hc('async', false, 'refresh', true));
+    content = resp.get('result');
 
     if (TP.isEmpty(content)) {
         TP.ifWarn() ?

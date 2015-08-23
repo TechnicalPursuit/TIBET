@@ -167,10 +167,12 @@ function(aRequest) {
             }
         }
 
-        //  If the new resource is a content object of some sort (highly likely)
-        //  then it should respond to 'setData' so set its data to null (which
-        //  will cause it to ignore its data for *Change signals).
-        resource = namedURI.getResource();
+        //  If the new resource result is a content object of some sort (highly
+        //  likely) then it should respond to 'setData' so set its data to null
+        //  (which will cause it to ignore its data for *Change signals).
+
+        //  NB: We assume 'async' of false here.
+        resource = namedURI.getResource().get('result');
         if (TP.canInvoke(resource, 'setData')) {
             resource.setData(null);
         }
@@ -206,7 +208,8 @@ function() {
         }
     }
 
-    return namedURI.getResource();
+    //  NB: We assume 'async' of false here.
+    return namedURI.getResource().get('result');
 });
 
 //  ------------------------------------------------------------------------
@@ -308,16 +311,18 @@ function(aContentObject, aRequest) {
 
     newResource = resultType.construct();
 
-    //  If the new resource is a content object of some sort (highly likely)
-    //  then it should respond to 'setData' so set its data to the resource
-    //  String (the content object type will convert it to the proper type).
+    //  If the new resource result is a content object of some sort (highly
+    //  likely) then it should respond to 'setData' so set its data to the
+    //  resource String (the content object type will convert it to the proper
+    //  type).
     if (TP.canInvoke(newResource, 'setData')) {
         newResource.setData(aContentObject);
     }
 
     //  If the named URI has existing data, then we signal
     //  'TP.sig.UIDataDestruct'.
-    if (TP.notEmpty(namedURI.getResource())) {
+    //  NB: We assume 'async' of false here.
+    if (TP.notEmpty(namedURI.getResource().get('result'))) {
         this.signal('TP.sig.UIDataDestruct');
     }
 

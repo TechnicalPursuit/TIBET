@@ -2144,6 +2144,7 @@ function(anObjectSpec, aRequest) {
         spec,
 
         url,
+        resp,
         $$inst,
 
         instType,
@@ -2216,7 +2217,8 @@ function(anObjectSpec, aRequest) {
             !TP.regex.REGEX_LITERAL_STRING.test(spec)) {
             url = this.expandPath(spec);
             if (TP.isURI(url = TP.uc(url))) {
-                $$inst = url.getResource(TP.hc('async', false));
+                resp = url.getResource(TP.hc('async', false));
+                $$inst = resp.get('result');
             }
         } else if (execInstance.hasKey(spec)) {
             $$inst = execInstance.at(spec);

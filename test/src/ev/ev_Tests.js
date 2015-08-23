@@ -1012,8 +1012,8 @@ function() {
                         var testVal;
 
                         testVal =
-                            TP.uc('urn:tibet:empObject').getResource().get(
-                                                    TP.apc('person.salary'));
+                            TP.uc('urn:tibet:empObject').getResource().
+                                    get('result').get(TP.apc('person.salary'));
 
                         test.assert.isEqualTo(testVal, 42);
 
@@ -1045,8 +1045,8 @@ function() {
 
                         var testVal;
 
-                        testVal = TP.uc('urn:tibet:empObject').getResource().get(
-                                                            TP.apc('person.SSN'));
+                        testVal = TP.uc('urn:tibet:empObject').getResource().
+                                    get('result').get(TP.apc('person.SSN'));
 
                         test.assert.isEqualTo(testVal, '111-22-3333');
 

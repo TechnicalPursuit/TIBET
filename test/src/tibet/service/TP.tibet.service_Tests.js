@@ -133,7 +133,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service1_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -240,7 +240,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service2_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -348,7 +348,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service3_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -451,7 +451,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service4_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -558,7 +558,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service5_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -674,7 +674,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service6_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -789,7 +789,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service7_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(aResult, String);
                             test.assert.isEqualTo(aResult, testBody);
@@ -897,7 +897,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service8_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -1009,7 +1009,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service9_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -1077,7 +1077,7 @@ function() {
                 locStr = '/TIBET_endpoints/HTTP_FORM_POST_TEST';
 
                 bodyURI = TP.uc('urn:tibet:Service10_Body');
-                testBody = bodyURI.getResource();
+                testBody = bodyURI.getResource().get('result');
 
                 //  Create a 'fake' HTTP server
                 server = TP.test.fakeServer.create();
@@ -1128,7 +1128,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service10_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(aResult, TP.core.Hash);
                             test.assert.isEqualTo(
@@ -1232,7 +1232,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service11_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(aResult, Array);
                             test.assert.hasKey(aResult.at(0), 'body');
@@ -1336,7 +1336,7 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service12_Result');
 
-                            aResult = resultURI.getResource();
+                            aResult = resultURI.getResource().get('result');
 
                             test.assert.isKindOf(aResult, Array);
                             test.assert.hasKey(aResult.at(0), 'body');

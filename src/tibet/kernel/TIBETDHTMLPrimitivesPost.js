@@ -9045,6 +9045,7 @@ function(aWindow, anHref) {
         elemType,
         elemURI,
 
+        resp,
         domDoc,
 
         newElem,
@@ -9082,9 +9083,9 @@ function(aWindow, anHref) {
         elemURI = elemType.getResourceURI('template');
         if (elemURI.equalTo(url)) {
 
-            //  Grab an X(HT)ML document from the resource.
-            domDoc = url.getResource(TP.hc('async', false,
-                                            'resultType', TP.DOM));
+            //  Grab an X(HT)ML document from the resource's result.
+            resp = url.getResource(TP.hc('async', false, 'resultType', TP.DOM));
+            domDoc = resp.get('result');
 
             if (!TP.isDocument(domDoc)) {
                 return TP.raise(this, 'TP.sig.InvalidDocument');

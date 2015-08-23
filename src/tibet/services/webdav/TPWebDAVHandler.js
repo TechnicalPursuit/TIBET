@@ -124,6 +124,7 @@ function(targetURI, aRequest) {
     var request,
         response,
 
+        resp,
         content,
 
         action,
@@ -134,8 +135,9 @@ function(targetURI, aRequest) {
     response = request.constructResponse();
 
     //  Saving data to a 'WebDAV' resource requires 'data' to save ;-)
-    if (TP.isEmpty(content = targetURI.getResourceText(
-                                            TP.hc('async', false)))) {
+    resp = targetURI.getResourceText(TP.hc('async', false));
+    if (TP.isEmpty(content = resp.get('result'))) {
+
         request.fail();
 
         return response;

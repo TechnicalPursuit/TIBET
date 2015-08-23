@@ -72,6 +72,7 @@ function(anID, regOnly, nodeContext) {
         oref,
         idot,
         win,
+        resp,
         inst,
         parts,
         url,
@@ -125,23 +126,27 @@ function(anID, regOnly, nodeContext) {
     }
 
     //  If the ID starts with a TIBET URN scheme and it has a real resource
-    //  object, then return that. Note here how we use 'getInstanceById' on the
-    //  TP.core.URI type rather than 'TP.uc()' - that call will always create an
-    //  instance *and register it* if it doesn't exist.
+    //  result object, then return that. Note here how we use 'getInstanceById'
+    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
+    //  create an instance *and register it* if it doesn't exist.
     if (TP.regex.TIBET_URN.test(id)) {
         if (TP.isURI(url = TP.core.URI.getInstanceById(id))) {
-            if (TP.isValid(inst = url.getResource())) {
+
+            //  NB: This is a URN so we assume 'async' of false here.
+            if (TP.isValid(inst = url.getResource().get('result'))) {
                 return inst;
             }
         }
     }
 
     //  Try to make a TIBET URN from the ID and, if it has a real resource
-    //  object, then return that. Note here how we use 'getInstanceById' on the
-    //  TP.core.URI type rather than 'TP.uc()' - that call will always create an
-    //  instance *and register it* if it doesn't exist.
+    //  result object, then return that. Note here how we use 'getInstanceById'
+    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
+    //  create an instance *and register it* if it doesn't exist.
     if (TP.isURI(url = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
-        if (TP.isValid(inst = url.getResource())) {
+
+        //  NB: This is a URN so we assume 'async' of false here.
+        if (TP.isValid(inst = url.getResource().get('result'))) {
             return inst;
         }
     }
@@ -178,19 +183,20 @@ function(anID, regOnly, nodeContext) {
     if (id.indexOf('~') === 0 ||
         TP.regex.HAS_SCHEME.test(id) ||
         TP.regex.JS_SCHEME.test(id)) {
-        //  if we're not looking at a barename we need to check for a
-        //  URI-style ID and see if we can locate the data using a URI. note
-        //  that this may cause the URI to call back to this routine with
-        //  portions of the URI string. also note that we have an explicit
-        //  forward slash here to avoid problems with references to
-        //  namespace-qualified elements but we have to watch out for
-        //  javascript uri entries
+
+        //  If we're not looking at a barename we need to check for a URI-style
+        //  ID and see if we can locate the data using a URI. Note that this may
+        //  cause the URI to call back to this routine with portions of the URI
+        //  string. Also note that we have an explicit forward slash here to
+        //  avoid problems with references to namespace-qualified elements but
+        //  we have to watch out for javascript uri entries
         if (TP.isURI(url = TP.uc(id))) {
-            //  NOTE that this call means that URIs should be very careful
-            //  not to re-invoke getObjectById without at least altering the
-            //  actual ID being requested or we'll recurse
-            inst = url.getResource(TP.hc('async', false,
-                                            'resultType', TP.WRAP));
+            //  NOTE that this call means that URIs should be very careful not
+            //  to re-invoke getObjectById without at least altering the actual
+            //  ID being requested or we'll recurse
+            resp = url.getResource(
+                            TP.hc('async', false, 'resultType', TP.WRAP));
+            inst = resp.get('result');
 
             if (TP.isNode(inst)) {
                 //  try to force types to come in for creation
@@ -404,10 +410,10 @@ function(anObj, anID) {
     //  a URI in the registry if one doesn't exist.
 
     //  If a TIBET URN can be made from the ID and it is registered with the URI
-    //  type and it has a real resource object, then return that.
+    //  type and it has a real resource result object, then return that.
     if (TP.regex.TIBET_URN.test(id) &&
         TP.core.URI.instances.containsKey(id) &&
-        TP.isValid(TP.uc(id).getResource())) {
+        TP.isValid(TP.uc(id).getResource().get('result'))) {
 
         return true;
     }
@@ -415,10 +421,10 @@ function(anObj, anID) {
     urnID = TP.TIBET_URN_PREFIX + id;
 
     //  Try to make a TIBET URN from the urnID and, if it is registered with the
-    //  URI type and it has a real resource object, then return that.
+    //  URI type and it has a real resource result object, then return that.
     if (TP.regex.TIBET_URN.test(urnID) &&
         TP.core.URI.instances.containsKey(urnID) &&
-        TP.isValid(TP.uc(urnID).getResource())) {
+        TP.isValid(TP.uc(urnID).getResource().get('result'))) {
 
         return true;
     }

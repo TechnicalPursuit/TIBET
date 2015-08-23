@@ -870,7 +870,9 @@ function() {
 
     this.before(
         function() {
-            var xmlSchemaTPDoc,
+            var resp,
+
+                xmlSchemaTPDoc,
                 jsonSchemaContent;
 
             //  For now, we turn off triggering the debugger because we know
@@ -888,12 +890,14 @@ function() {
             //  validations to fail).
             TP.raise.$suspended = true;
 
-            xmlSchemaTPDoc = TP.uc('~lib_schema/tibet_common_types.xsd').
+            resp = TP.uc('~lib_schema/tibet_common_types.xsd').
                                             getResource(TP.hc('async', false));
+            xmlSchemaTPDoc = resp.get('result');
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
-            jsonSchemaContent = TP.uc('~lib_schema/tibet_common_types.json').
+            resp = TP.uc('~lib_schema/tibet_common_types.json').
                                             getResource(TP.hc('async', false));
+            jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
         });
 
@@ -1068,7 +1072,9 @@ function() {
 
     this.before(
         function() {
-            var xmlSchemaTPDoc,
+            var resp,
+
+                xmlSchemaTPDoc,
                 jsonSchemaContent;
 
             //  For now, we turn off triggering the debugger because we know
@@ -1088,12 +1094,14 @@ function() {
 
             //  ---
 
-            xmlSchemaTPDoc = TP.uc('~lib_schema/tibet_common_types.xsd').
+            resp = TP.uc('~lib_schema/tibet_common_types.xsd').
                                             getResource(TP.hc('async', false));
+            xmlSchemaTPDoc = resp.get('result');
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
-            jsonSchemaContent = TP.uc('~lib_schema/tibet_common_types.json').
+            resp = TP.uc('~lib_schema/tibet_common_types.json').
                                             getResource(TP.hc('async', false));
+            jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
 
             //  ---

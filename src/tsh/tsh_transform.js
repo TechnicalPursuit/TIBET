@@ -54,6 +54,8 @@ function(transformElem) {
             var templateName,
                 templateURI,
 
+                resp,
+
                 compileRequest,
 
                 templateContentElem;
@@ -77,7 +79,9 @@ function(transformElem) {
 
             //  Try to fetch the compiled template (which will be the
             //  resource of that URI) and, if its not available, compile it.
-            if (TP.notValid(templateURI.getResource(TP.hc('async', false)))) {
+            resp = templateURI.getResource(TP.hc('async', false));
+
+            if (TP.notValid(resp.get('result'))) {
                 //  Set the 'tsh:generator' to be the transform element's ID
                 TP.elementSetAttribute(anElem,
                                         'tsh:generator',
@@ -128,6 +132,7 @@ function(anInput, cmdNode, aRequest) {
 
     var rootName,
         templateName,
+        resp,
         template,
         params,
         result;
@@ -150,15 +155,17 @@ function(anInput, cmdNode, aRequest) {
                     TP.TIBET_URN_PREFIX + rootName;
 
     //  Fetch the template from the URI.
-    if (TP.notValid(template =
-                    TP.uc(templateName).getResource(TP.hc('async', false)))) {
+    resp = TP.uc(templateName).getResource(TP.hc('async', false));
+
+    if (TP.notValid(template = resp.get('result'))) {
 
         //  The template couldn't be found. Compile any templates under us.
         this.compileTemplates(cmdNode);
 
         //  Try again.
-        if (TP.notValid(template =
-                    TP.uc(templateName).getResource(TP.hc('async', false)))) {
+        resp = TP.uc(templateName).getResource(TP.hc('async', false));
+
+        if (TP.notValid(template = resp.get('result'))) {
             aRequest.fail('Unable to find template: ' + templateName);
 
             return;

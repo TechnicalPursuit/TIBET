@@ -1879,6 +1879,7 @@ function(aRequest) {
 
         src,
         url,
+        resp,
         content,
         req,
 
@@ -1938,8 +1939,10 @@ function(aRequest) {
                 'Invalid or unresolvable TSH script url: ' + src);
         }
 
-        content = url.getResource(
+        resp = url.getResource(
                 TP.hc('refresh', true, 'async', false, 'resultType', TP.WRAP));
+        content = resp.get('content');
+
         if (!TP.canInvoke(content, 'getNativeNode')) {
             return this.scriptFail(
                 aRequest,

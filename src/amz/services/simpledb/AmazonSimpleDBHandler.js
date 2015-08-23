@@ -124,6 +124,7 @@ function(targetURI, aRequest) {
 
     var request,
         response,
+        resp,
         content,
         domainName,
         itemName,
@@ -135,8 +136,9 @@ function(targetURI, aRequest) {
     response = request.constructResponse();
 
     //  Saving data to Amazon requires 'data' to save ;-)
-    if (TP.isEmpty(content = targetURI.getResource(
-            TP.hc('async', false, 'refresh', false)))) {
+    resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
+
+    if (TP.isEmpty(content = resp.get('result'))) {
         request.fail('No content to send for: ' + TP.str(targetURI));
 
         return response;

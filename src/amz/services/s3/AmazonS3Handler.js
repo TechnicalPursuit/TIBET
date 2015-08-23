@@ -119,6 +119,7 @@ function(targetURI, aRequest) {
 
     var request,
         response,
+        resp,
         content,
         saveRequest;
 
@@ -126,8 +127,9 @@ function(targetURI, aRequest) {
     response = request.constructResponse();
 
     //  Saving data to Amazon requires 'data' to save ;-)
-    if (TP.isEmpty(content = targetURI.getResourceText(
-            TP.hc('async', false)))) {
+    resp = targetURI.getResourceText(TP.hc('async', false));
+
+    if (TP.isEmpty(content = resp.get('result'))) {
         request.fail();
         return response;
     }

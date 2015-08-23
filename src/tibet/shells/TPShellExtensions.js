@@ -591,7 +591,6 @@ function(aRequest) {
                     //  string so we loop here
                     result = content.collect(
                                 function(item) {
-
                                     return str.transform(item, params);
                                 });
 
@@ -815,7 +814,6 @@ function(aRequest) {
                 //  here
                 result = content.collect(
                             function(item) {
-
                                 return obj.transform(item, aRequest);
                             });
 

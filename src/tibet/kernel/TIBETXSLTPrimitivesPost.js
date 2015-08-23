@@ -35,7 +35,9 @@ function(styleUrl, inputUrl, paramHash) {
      * @returns {Document} A document object containing the results.
      */
 
-    var url1,
+    var resp,
+
+        url1,
         node1,
 
         url2,
@@ -47,7 +49,8 @@ function(styleUrl, inputUrl, paramHash) {
         return;
     }
 
-    node1 = url1.getNativeNode(TP.hc('async', false));
+    resp = url1.getNativeNode(TP.hc('async', false));
+    node1 = resp.get('result');
 
     if (TP.notValid(url2 = TP.uc(inputUrl))) {
         this.raise('TP.sig.InvalidURI', inputUrl);
@@ -55,7 +58,8 @@ function(styleUrl, inputUrl, paramHash) {
         return;
     }
 
-    node2 = url2.getNativeNode(TP.hc('async', false));
+    resp = url2.getNativeNode(TP.hc('async', false));
+    node2 = resp.get('result');
 
     return TP.documentTransformFile(node1, node2, paramHash);
 });
@@ -79,7 +83,8 @@ function(styleUrl, inputNode, paramHash) {
      * @returns {Document} A document object containing the results.
      */
 
-    var url1,
+    var resp,
+        url1,
         node1;
 
     if (TP.notValid(url1 = TP.uc(styleUrl))) {
@@ -88,7 +93,8 @@ function(styleUrl, inputNode, paramHash) {
         return;
     }
 
-    node1 = url1.getNativeNode(TP.hc('async', false));
+    resp = url1.getNativeNode(TP.hc('async', false));
+    node1 = resp.get('result');
 
     return TP.documentTransformNode(node1, inputNode, paramHash);
 });
@@ -112,7 +118,9 @@ function(styleNode, inputUrl, paramHash) {
      * @returns {Document} A document object containing the results.
      */
 
-    var url2,
+    var resp,
+
+        url2,
         node2;
 
     if (TP.notValid(url2 = TP.uc(inputUrl))) {
@@ -120,7 +128,8 @@ function(styleNode, inputUrl, paramHash) {
         return;
     }
 
-    node2 = url2.getNativeNode(TP.hc('async', false));
+    resp = url2.getNativeNode(TP.hc('async', false));
+    node2 = resp.get('result');
 
     return TP.documentTransformNode(styleNode, node2, paramHash);
 });

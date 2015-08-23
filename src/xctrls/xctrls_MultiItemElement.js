@@ -97,7 +97,8 @@ function(aValue, aPositionOrPath, templateName) {
     theValue.perform(
         function(itemValue, index) {
 
-            var newItemStr,
+            var resp,
+                newItemStr,
                 newItemElem;
 
             //  Make an index available to the template each time.
@@ -105,7 +106,8 @@ function(aValue, aPositionOrPath, templateName) {
 
             executeRequest.atPut(TP.STDIN, TP.ac(itemValue));
 
-            newItemStr = TP.process(transformElem, executeRequest);
+            resp = TP.process(transformElem, executeRequest);
+            newItemStr = resp.get('result');
 
             newItemElem = TP.elem(newItemStr);
 
