@@ -1282,6 +1282,10 @@ TP.sig.Request.Inst.defineAttribute('parentJoins');
 //  optional hash of peer requests used for simple workflow configurations
 TP.sig.Request.Inst.defineAttribute('peerJoins');
 
+//  optional deferred Promise used for 'then' ('Promises/A+' compatible)
+//  chaining
+TP.sig.Request.Inst.defineAttribute('$deferredPromise');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1543,24 +1547,6 @@ function() {
      */
 
     return this.getResponse();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Request.Inst.defineMethod('getPromise',
-function() {
-
-    /**
-     * @method getPromise
-     * @summary Returns a 'promise' (a 'Promises/A+'-compliant Promise) for the
-     *     receiving object. Note that, in TIBET, all a promise really is is a
-     *     TP.sig.Response. See the 'then()' method on that type for more
-     *     information.
-     * @returns {TP.sig.Response} The 'promise' which can be used in
-     *     promises-based programming.
-     */
-
-    return this.constructResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -2855,7 +2841,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         joins,
         ancestor,
         join,
-        arglen;
+        arglen,
+
+        deferred;
 
     //  consider this to be "end of processing" time since what follows is
     //  largely about notifying rather than "real work" for the request
@@ -3039,6 +3027,19 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                     ancestor.$completeJoin(this);
                 }
             }
+        }
+    }
+
+    //  If we had a deferred Promise hooked up to us, then (depending on success
+    //  or not) resolve it or reject it.
+    deferred = this.get('$deferredPromise');
+    if (TP.isValid(deferred)) {
+        if (aState === TP.SUCCEEDED) {
+            deferred.resolve(aResultOrFault);
+        } else {
+            deferred.reject(TP.hc('faultText', response.getFaultText(),
+                                    'faultCode', response.getFaultCode(),
+                                    'faultInfo', response.getFaultInfo()));
         }
     }
 
@@ -3557,138 +3558,103 @@ function(onFulfilled, onRejected) {
 
     /**
      * @method then
-     * @summary A method which implements, as closely as possible, a
-     *     'Promises/A+' implementation in TIBET.
-     * @description This method, which is standardized by the 'Promises/A+'
-     *     standard, implements the core functionality of TIBET-based JavaScript
-     *      Promises. Note that, in TIBET, Promises are really just instances of
-     *      TP.sig.Response. This method allows for Promise composition as
-     *      intended by Promises/A+, while also leveraging all of TIBET's
-     *      Request/Response infrastructure.
+     * @summary A method which returns a 'Promises/A+' compliant Promise object
+     *     after installing the supplied fulfillment/rejection Functions.
+     * @description The returned Promise will be resolved (fulfilled or
+     *     rejected) when the TP.sig.Request for this TP.sig.Response completes.
      * @param {Function} onFulfilled A Function that will be executed if the
      *     promise reaches it's fulfilled state.
      * @param {Function} onRejected A Function that will be executed if the
      *     promise reaches it's rejected state.
-     * @returns {TP.sig.Response} A 'promise' that can be used to be the 'next
-     *     step' in a chain of promises.
+     * @returns {Promise} A promise that can be used to be the 'next step' in a
+     *     chain of promises.
      */
 
     var myReq,
-        newReq;
 
-    //  In TIBET, a Promise's 'resolver' is it's Request
+        result,
+
+        deferred,
+        promise;
+
     myReq = this.getRequest();
 
-    //  Create a new request that will be the 'next step in the promises chain'.
-    //  This can be a 'plain' TP.core.Request.
-    newReq = TP.request();
+    //  If the request already completed (possibly it's a synchronous call),
+    //  then test for success or failure
+    if (myReq.didComplete()) {
 
-    //  Set up a 'request succeeded' handler on the receiving request that will
-    //  run the onFulfilled handler (if supplied) or just complete the new
-    //  request with the value (if the onFulfilled handler is not supplied).
-    myReq.defineMethod('handleRequestSucceeded',
-        function(aResponse) {
-            var handlerValue,
-                promiseRequest;
+        //  If the request succeeded, then grab the result and call the
+        //  fulfillment handler (if its defined).
+        if (this.didSucceed()) {
+            result = this.get('result');
 
+            //  If a callable fulfillment handler was supplied, then try to call
+            //  it.
             if (TP.isCallable(onFulfilled)) {
-
-                //  We must run this when the stack has completely unwound,
-                //  according to the Promises/A+ specification.
-                /* eslint-disable no-wrap-func,no-extra-parens */
-                (function() {
-                    try {
-                        //  Go ahead and run the onFulfilled
-                        handlerValue = onFulfilled(aResponse.getResult());
-
-                        //  If we get a 'promise' back as the handler value
-                        //  (promises are just Responses), then get it's request
-                        //  and *join that to the new request that we created
-                        //  above*. This is the core of what makes the chaining
-                        //  work.
-                        if (TP.isKindOf(handlerValue, TP.sig.Response)) {
-
-                            promiseRequest = handlerValue.getRequest();
-                            newReq.andJoinChild(promiseRequest);
-                        } else {
-                            //  We didn't get back a promise - just complete the
-                            //  new request with the returned value.
-                            newReq.complete(handlerValue);
-                        }
-                    } catch (e) {
-                        //  The onFulfilled handler threw an exception - fail
-                        //  the new request.
-                        newReq.fail(TP.sc('Promise failure: ') + TP.str(e));
-                    }
-                }).afterUnwind();
-                /* eslint-enable no-wrap-func,no-extra-parens */
-            } else {
-                //  No onFulfilled handler - complete the new request, passing
-                //  along the result of this response.
-                newReq.complete(aResponse.getResult());
+                try {
+                    result = onFulfilled(result);
+                } catch (e) {
+                    //  If the fulfillment handler threw an Error, then return a
+                    //  rejected Promise with the error object for chainability.
+                    return TP.extern.Promise.reject(e);
+                }
             }
-        });
 
-    //  Set up a 'request failed' handler on the receiving request that will
-    //  run the onRejected handler (if supplied) or just complete the new
-    //  request with the value (if the onRejected handler is not supplied).
-    myReq.defineMethod('handleRequestFailed',
-        function(aResponse) {
-            var handlerValue,
-                promiseRequest;
+            //  If the result (either the original result or the result after
+            //  the fulfillment handler was invoked) is a 'then()able' object,
+            //  then return it.
+            if (TP.canInvoke(result, 'then')) {
+                return result;
+            } else {
+                //  Otherwise, return a resolved Promise with the result for
+                //  chainability.
+                return TP.extern.Promise.resolve(result);
+            }
+        } else {
 
+            //  The 'result' data will be the fault text, fault code and fault
+            //  info from the receiver.
+            result = TP.hc('faultText', this.getFaultText(),
+                            'faultCode', this.getFaultCode(),
+                            'faultInfo', this.getFaultInfo());
+
+            //  If a callable rejection handler was supplied, then try to call
+            //  it.
             if (TP.isCallable(onRejected)) {
-
-                //  We must run this when the stack has completely unwound,
-                //  according to the Promises/A+ specification.
-                /* eslint-disable no-wrap-func,no-extra-parens */
-                (function() {
-                    try {
-                        //  Go ahead and run the onRejected
-                        handlerValue = onRejected(
-                            TP.hc('faultText', aResponse.getFaultText(),
-                                    'faultCode', aResponse.getFaultCode(),
-                                    'faultInfo', aResponse.getFaultInfo()));
-
-                        //  If we get a 'promise' back as the handler value
-                        //  (promises are just Responses), then get it's request
-                        //  and *join that to the new request that we created
-                        //  above*. This is the core of what makes the chaining
-                        //  work.
-                        if (TP.isKindOf(handlerValue, TP.sig.Response)) {
-
-                            promiseRequest = handlerValue.getRequest();
-                            newReq.andJoinChild(promiseRequest);
-                        } else if (TP.isDefined(handlerValue)) {
-                            //  Otherwise, a non-promise value was returned -
-                            //  try to complete the new request with that as the
-                            //  value.
-                            newReq.complete(handlerValue);
-                        } else {
-                            //  No value was returned - just fail the new
-                            //  request.
-                            newReq.fail(aResponse.getFaultText(),
-                                        aResponse.getFaultCode(),
-                                        aResponse.getFaultInfo());
-                        }
-                    } catch (e) {
-                        //  The onRejected handler threw an exception - fail the
-                        //  new request.
-                        newReq.fail(TP.sc('Promise failure: ') + TP.str(e));
-                    }
-                }).afterUnwind();
-                /* eslint-enable no-wrap-func,no-extra-parens */
-            } else {
-                //  No onRejected handler - fail the new request, passing along
-                //  the fault code and fault text of this response.
-                newReq.fail(aResponse.getFaultText(),
-                            aResponse.getFaultCode(),
-                            aResponse.getFaultInfo());
+                try {
+                    result = onRejected(result);
+                } catch (e) {
+                    //  If the rejection handler threw an Error, then return a
+                    //  rejected Promise with the error object for chainability.
+                    return TP.extern.Promise.reject(e);
+                }
             }
-        });
 
-    //  Return the 'promise' of the new request - allowing chaining.
-    return newReq.getPromise();
+            //  If the result (either the original result or the result after
+            //  the rejection handler was invoked) is a 'then()able' object,
+            //  then return it.
+            if (TP.canInvoke(result, 'then')) {
+                return result;
+            } else {
+                //  Otherwise, return a rejected Promise with the result for
+                //  chainability.
+                return TP.extern.Promise.reject(result);
+            }
+        }
+    }
+
+    //  Stash away a reference to the *deferred* (not its Promise). We'll need
+    //  to resolve() or reject() this later then the request completes.
+    deferred = TP.extern.Promise.pending();
+    myReq.set('$deferredPromise', deferred);
+
+    //  Grab the Promise from the deferred and hook up the supplied
+    //  fulfillment/rejection Functions.
+    promise = deferred.promise;
+    promise.then(onFulfilled, onRejected);
+
+    //  Return the Promise for chainability.
+    return promise;
 });
 
 //  ========================================================================
