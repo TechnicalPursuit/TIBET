@@ -4879,9 +4879,9 @@ TP.core.FunctionService.Type.defineAttribute(
 //  ------------------------------------------------------------------------
 
 TP.core.FunctionService.Type.defineAttribute(
-                        'supportedModes', TP.core.SyncAsync.SYNCHRONOUS);
+                        'supportedModes', TP.core.SyncAsync.DUAL_MODE);
 TP.core.FunctionService.Type.defineAttribute(
-                        'mode', TP.core.SyncAsync.SYNCHRONOUS);
+                        'mode', TP.core.SyncAsync.DUAL_MODE);
 
 TP.core.FunctionService.register();
 
@@ -4923,8 +4923,10 @@ function(aRequest) {
     if (!TP.isCallable(handler = request.at('handler'))) {
         request.fail('Handler not callable');
     } else {
+        //  TODO: Need to handle when a Promise might be returned here for true
+        //  asynchronicity.
         result = handler.apply(request, TP.ac(request));
-        request.set('result', result, null, true);
+        request.complete(result);
     }
 
     return this;
