@@ -49,6 +49,7 @@
     <config ref="grouping"/>
     <config ref="oo"/>
     <config ref="service"/>
+    <config ref="requests"/>
     <config ref="states"/>
     <config ref="values"/>
     <config ref="validation"/>
@@ -159,6 +160,10 @@
 
 <config id="shell">
     <script src="~lib_tst/src/tsh/tsh_Tests.js" />
+</config>
+
+<config id="requests">
+    <script src="~lib_tst/src/tibet/requests/TP.sig.Request_Tests.js" />
 </config>
 
 <config id="xslt">
