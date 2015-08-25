@@ -28,12 +28,14 @@ function() {
 
             testResult;
 
+        testResult = '';
+
         testFunction = function() {
                             return 'Hi there!';
                         };
 
         testRequest = testFunction.asFunctionRequest();
-        testResponse = testRequest.constructResponse();
+        testResponse = testRequest.fire();
 
         //  Note here how we capture the Promise returned by 'then()'ing the
         //  response and return it below from this test method. This is so that
@@ -44,9 +46,6 @@ function() {
                 function(aResult) {
                     testResult = 'The message is: ' + aResult;
                 });
-
-        testResult = '';
-        testRequest.fire();
 
         test.then(
                 function(result) {
