@@ -187,17 +187,19 @@ Cmd.prototype.execute = function() {
         throw new Error();
     }
 
-    /* eslint-disable no-extra-parens */
-    if ((this.options.enable && this.options.disable) ||
-        ((this.options.enable || this.options.disable) && this.options.status)) {
+    if (this.options.enable && this.options.disable) {
         this.error('Incompatible command flags.');
         throw new Error();
     }
-    /* eslint-enable no-extra-parens */
 
     if (this.options.missing && this.options.rebuild) {
         this.error('Incompatible command flags.');
         throw new Error();
+    }
+
+    /* eslint-disable no-extra-parens */
+    if ((this.options.enable || this.options.disable) && this.options.status) {
+        this.options.status = null;
     }
 
     // Verify existence of the specified or default cache file. Even with
@@ -206,11 +208,11 @@ Cmd.prototype.execute = function() {
         cachefile = this.options.file;
     } else {
         appname = CLI.getcfg('npm.name');
-        cachefile = CLI.expandPath('~app_cfg/' + appname + '.appcache');
-
-        //  resolve the cache file path relative to our current location
-        cachefile = './' + cachefile.replace(CLI.expandPath('~'), '');
+        cachefile = CLI.expandPath('~app/' + appname + '.appcache');
     }
+
+    //  resolve the cache file path relative to our current location
+    cachefile = '.' + cachefile.replace(CLI.expandPath('~app'), '');
 
     if (!sh.test('-e', cachefile)) {
         this.error('Cannot find cache file: ' + cachefile);
