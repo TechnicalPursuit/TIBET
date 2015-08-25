@@ -46,7 +46,7 @@ function(targetURI, aRequest) {
         loadRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  If an action is already defined, then we just go with a generic
     //  request.
@@ -124,7 +124,7 @@ function(targetURI, aRequest) {
         saveRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Saving data to Amazon requires 'data' to save ;-)
     resp = targetURI.getResourceText(TP.hc('async', false));

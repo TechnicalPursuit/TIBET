@@ -53,7 +53,7 @@ function(targetURI, aRequest) {
         loadRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Manipulating a 'WebDAV' resource requires an 'action'
     if (TP.isEmpty(action = request.at('action'))) {
@@ -132,7 +132,7 @@ function(targetURI, aRequest) {
         saveRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Saving data to a 'WebDAV' resource requires 'data' to save ;-)
     resp = targetURI.getResourceText(TP.hc('async', false));

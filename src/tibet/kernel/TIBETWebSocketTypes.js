@@ -536,7 +536,7 @@ function(aRequest) {
     //  with all request tweaking in place we can now construct our
     //  response, which may have had the type/name altered by request
     //  rewriting
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  go ahead and perform the WebSocket call
     this.performWebSocketCall(request);

@@ -286,7 +286,7 @@ function(aRequest) {
         //  requests).
         TP.handle(this, authRequest);
 
-        return aRequest.constructResponse();
+        return aRequest.getResponse();
     }
 
     return this.callNextMethod();

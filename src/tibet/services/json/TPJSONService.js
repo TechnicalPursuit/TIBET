@@ -132,7 +132,7 @@ function(aRequest) {
 
     request.atPut('finaluri', path);
 
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Might be null - we check below
     callbackFunc = request.at('callbackFunc');

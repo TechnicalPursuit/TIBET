@@ -872,7 +872,7 @@ function(aRequest) {
             break;
     }
 
-    response = aRequest.constructResponse();
+    response = aRequest.getResponse();
     response.complete();
 
     return response;
@@ -1415,7 +1415,7 @@ function(rawInput) {
         //  response so it can manage what that means. effectively by
         //  calling handle directly we're simulating having fired the
         //  response without the overhead of actually doing the signaling.
-        res = req.constructResponse();
+        res = req.getResponse();
         res.set('result', input);
 
         TP.handle(req, res);

@@ -64,7 +64,7 @@ function(targetURI, aRequest) {
     }
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  We take values for XMPP requests from either the request or the URI.
 
@@ -123,7 +123,7 @@ function(targetURI, aRequest) {
     this.raise('TP.sig.UnsupportedOperation');
 
     request = TP.request(aRequest);
-    response = request.constructResponse(false);
+    response = request.getResponse(false);
     request.fail();
 
     return response;
@@ -153,7 +153,7 @@ function(targetURI, aRequest) {
     this.raise('TP.sig.UnsupportedOperation');
 
     request = TP.request(aRequest);
-    response = request.constructResponse(false);
+    response = request.getResponse(false);
     request.fail();
 
     return response;

@@ -1334,7 +1334,7 @@ function(aRequest) {
     aRequest.isActive(true);
 
     //  first make sure we can construct a valid response
-    if (TP.notValid(response = aRequest.constructResponse())) {
+    if (TP.notValid(response = aRequest.getResponse())) {
         aRequest.fail('Couldn\'t construct response.');
         this.raise(
             'TP.sig.ProcessingException',
@@ -1448,7 +1448,7 @@ function(aSignal) {
         }
     }
 
-    response = aSignal.constructResponse();
+    response = aSignal.getResponse();
 
     //  TODO:   why both?
     response.complete();

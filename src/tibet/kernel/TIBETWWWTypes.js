@@ -2810,7 +2810,7 @@ function(aURI, aRequest, logError) {
     }
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     cookie = this.getCookie(aURI.get('cname'));
 
@@ -2848,7 +2848,7 @@ function(aURI, aRequest) {
     }
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     if (!this.removeCookie(aURI.get('cname'),
                                         aURI.get('path'),
@@ -2892,7 +2892,7 @@ function(aURI, aRequest) {
     }
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Grab the content from the request.
     contentToSet = TP.str(request.at('body'));

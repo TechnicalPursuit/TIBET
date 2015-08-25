@@ -1132,7 +1132,7 @@ TP.sig.WorkflowSignal.defineSubtype('Request');
 //  ------------------------------------------------------------------------
 
 //  this type's response type, the type that will be created in response to
-//  a constructResponse message. this is typically redefined in subtypes so
+//  a getResponse message. this is typically redefined in subtypes so
 //  that custom response manipulation logic can be implemented efficiently
 TP.sig.Request.Type.defineAttribute('responseType', 'TP.sig.Response');
 
@@ -1457,47 +1457,6 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Request.Inst.defineMethod('constructResponse',
-function(aResult) {
-
-    /**
-     * @method constructResponse
-     * @summary The default method for getting a response instance for the
-     *     request. This method is invoked automatically by services when
-     *     building up responses to incoming requests. The returned instance is
-     *     then updated with the result data and fired when ready.
-     * @param {Object} aResult A result object.
-     * @returns {TP.sig.Response}
-     */
-
-    var response,
-        responseName;
-
-    //  don't allow a request to get more than one instance of response
-    if (TP.isValid(response = this.getResponse())) {
-        if (TP.isDefined(aResult)) {
-            response.set('result', aResult, null, true);
-        }
-
-        return response;
-    }
-
-    //  construct a new instance and hold on to it
-    response = this.getResponseType().construct(this, aResult);
-    this.$set('response', response, false);
-
-    //  adjust the response instance built from our response type with the
-    //  specific response name if they're different
-    responseName = this.getResponseName();
-    if (responseName !== response.getTypeName()) {
-        response.setSignalName(responseName);
-    }
-
-    return response;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Request.Inst.defineMethod('fire',
 function(anOrigin, aPayload, aPolicy) {
 
@@ -1539,7 +1498,7 @@ function(anOrigin, aPayload, aPolicy) {
 
     this.callNextMethod();
 
-    return this.constructResponse();
+    return this.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -1618,15 +1577,44 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('getResponse',
-function() {
+function(aResult) {
 
     /**
      * @method getResponse
-     * @summary Returns the response object for this request, if any.
-     * @returns {Object}
+     * @summary The default method for getting a response instance for the
+     *     request. This method is invoked automatically by services when
+     *     building up responses to incoming requests. The returned instance is
+     *     then updated with the result data and fired when ready.
+     * @param {Object} aResult A result object.
+     * @returns {TP.sig.Response}
      */
 
-    return this.$get('response');
+    var response,
+        responseName;
+
+    response = this.$get('response');
+
+    //  don't allow a request to get more than one instance of response
+    if (TP.isValid(response)) {
+        if (TP.isDefined(aResult)) {
+            response.set('result', aResult, null, true);
+        }
+
+        return response;
+    }
+
+    //  construct a new instance and hold on to it
+    response = this.getResponseType().construct(this, aResult);
+    this.$set('response', response, false);
+
+    //  adjust the response instance built from our response type with the
+    //  specific response name if they're different
+    responseName = this.getResponseName();
+    if (responseName !== response.getTypeName()) {
+        response.setSignalName(responseName);
+    }
+
+    return response;
 });
 
 //  ------------------------------------------------------------------------
@@ -2051,8 +2039,8 @@ function(aResult) {
      * @returns {Object}
      */
 
-    //  calling constructResponse will construct/get the response as needed
-    this.constructResponse(aResult);
+    //  calling getResponse will construct/get the response as needed
+    this.getResponse(aResult);
 
     return this;
 });
@@ -2737,7 +2725,7 @@ function(aResult) {
 
     //  completing a job should ensure the result gets properly set in any
     //  response object we have.
-    this.constructResponse(aResult);
+    this.getResponse(aResult);
 
     //  don't push empty values into the argument list or we risk creating
     //  'undefined' as one of the values inappropriately.
@@ -2862,7 +2850,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     }
 
     //  get a handle to the response object for the request.
-    response = this.constructResponse();
+    response = this.getResponse();
 
     //  three objects get special consideration with respect to notification
     //  to keep observe/ignore overhead to a minimum.

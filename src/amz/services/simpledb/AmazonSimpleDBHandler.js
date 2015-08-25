@@ -47,7 +47,7 @@ function(targetURI, aRequest) {
         itemName;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  If neither a domainName or a itemName is defined, then we just go
     //  with a request that has an action of 'ListDomains'.
@@ -133,7 +133,7 @@ function(targetURI, aRequest) {
         saveRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Saving data to Amazon requires 'data' to save ;-)
     resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));

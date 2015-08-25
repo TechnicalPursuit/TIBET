@@ -3624,16 +3624,16 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
-        if (TP.canInvoke(aRequest, 'constructResponse')) {
-            return aRequest.constructResponse();
+        if (TP.canInvoke(aRequest, 'getResponse')) {
+            return aRequest.getResponse();
         } else {
-            return subrequest.constructResponse();
+            return subrequest.getResponse();
         }
     }
 
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
-    return subrequest.constructResponse();
+    return subrequest.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -4138,7 +4138,7 @@ function(aDataSource, aRequest) {
                     }
                 }
 
-                subrequest.constructResponse(result);
+                subrequest.getResponse(result);
             });
 
     subrequest.defineMethod(
@@ -4175,16 +4175,16 @@ function(aDataSource, aRequest) {
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
-        if (TP.canInvoke(aRequest, 'constructResponse')) {
-            return aRequest.constructResponse();
+        if (TP.canInvoke(aRequest, 'getResponse')) {
+            return aRequest.getResponse();
         } else {
-            return subrequest.constructResponse();
+            return subrequest.getResponse();
         }
     }
 
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
-    return subrequest.constructResponse();
+    return subrequest.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -4550,7 +4550,7 @@ function(aRequest, filterResult) {
         result = this.$getFilteredResult(result, resultType, false);
     }
 
-    response = request.constructResponse(result);
+    response = request.getResponse(result);
     request.complete(result);
 
     return response;
@@ -4987,7 +4987,7 @@ function(aRequest) {
         request.complete(result);
     }
 
-    response = request.constructResponse(result);
+    response = request.getResponse(result);
 
     return response;
 });
@@ -5230,16 +5230,16 @@ function(aRequest) {
         //  hand back the response object for the "outer" request, which
         //  will be either the originating request or our internally
         //  constructed one (which was also used as the subrequest)
-        if (TP.canInvoke(aRequest, 'constructResponse')) {
-            return aRequest.constructResponse();
+        if (TP.canInvoke(aRequest, 'getResponse')) {
+            return aRequest.getResponse();
         } else {
-            return subrequest.constructResponse();
+            return subrequest.getResponse();
         }
     }
 
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
-    return subrequest.constructResponse();
+    return subrequest.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -5509,10 +5509,10 @@ function(aRequest, filterResult) {
             //  our cache. now we just need to "fake" a response, which we
             //  want to associate with the original request object if there
             //  was one.
-            if (TP.canInvoke(aRequest, 'constructResponse')) {
-                response = aRequest.constructResponse();
+            if (TP.canInvoke(aRequest, 'getResponse')) {
+                response = aRequest.getResponse();
             } else {
-                response = subrequest.constructResponse();
+                response = subrequest.getResponse();
             }
         }
 
@@ -5521,7 +5521,7 @@ function(aRequest, filterResult) {
 
     //  if we're not running async then the subrequest will be complete and
     //  we can return whatever result was produced.
-    return subrequest.constructResponse();
+    return subrequest.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -5918,14 +5918,14 @@ function(aRequest) {
 
         //  if we're async then the data may not be ready, we need to return
         //  a viable response object instead.
-        if (TP.canInvoke(aRequest, 'constructResponse')) {
-            return aRequest.constructResponse();
+        if (TP.canInvoke(aRequest, 'getResponse')) {
+            return aRequest.getResponse();
         } else {
-            return subrequest.constructResponse();
+            return subrequest.getResponse();
         }
     }
 
-    return subrequest.constructResponse();
+    return subrequest.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -6899,7 +6899,7 @@ function(aRequest, filterResult) {
         result = this.$getFilteredResult(result, resultType, false);
     }
 
-    response = request.constructResponse(result);
+    response = request.getResponse(result);
     request.complete(result);
 
     return response;
@@ -7943,10 +7943,10 @@ function(aRequest, filterResult) {
             aRequest.complete(result);
         }
 
-        if (TP.canInvoke(aRequest, 'constructResponse')) {
-            return aRequest.constructResponse(result);
+        if (TP.canInvoke(aRequest, 'getResponse')) {
+            return aRequest.getResponse(result);
         } else {
-            return TP.request().constructResponse(result);
+            return TP.request().getResponse(result);
         }
     }
 
@@ -8291,7 +8291,7 @@ function(request, result, async, filter) {
         this.isLoaded(true);
     }
 
-    response = request.constructResponse(resource);
+    response = request.getResponse(resource);
     request.complete(resource);
 
     return response;
@@ -8702,7 +8702,7 @@ function(targetURI, aRequest) {
 
     //  fake success via request/response semantics for consistency
     request = targetURI.constructRequest(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     request.complete(true);
 
@@ -8741,7 +8741,7 @@ function(targetURI, aRequest) {
 
     //  fake success via request/response semantics for consistency
     request = targetURI.constructRequest(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     request.complete(true);
 
@@ -10075,10 +10075,10 @@ function(targetURI, aRequest) {
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
     //  here, we'll undo any wrapping or filtering.
-    if (TP.canInvoke(aRequest, 'constructResponse')) {
-        response = aRequest.constructResponse();
+    if (TP.canInvoke(aRequest, 'getResponse')) {
+        response = aRequest.getResponse();
     } else {
-        response = subrequest.constructResponse();
+        response = subrequest.getResponse();
     }
 
     //  return the response object so it can pass up the chain
@@ -10173,10 +10173,10 @@ function(targetURI, aRequest) {
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
     //  here, we'll undo any wrapping or filtering.
-    if (TP.canInvoke(aRequest, 'constructResponse')) {
-        response = aRequest.constructResponse();
+    if (TP.canInvoke(aRequest, 'getResponse')) {
+        response = aRequest.getResponse();
     } else {
-        response = subrequest.constructResponse();
+        response = subrequest.getResponse();
     }
 
     return response;
@@ -10292,10 +10292,10 @@ function(targetURI, aRequest) {
     //  Note: We do *not* set the result for these responses here.
     //  complete() already did that in the call above. If we do that again
     //  here, we'll undo any wrapping or filtering.
-    if (TP.canInvoke(aRequest, 'constructResponse')) {
-        response = aRequest.constructResponse();
+    if (TP.canInvoke(aRequest, 'getResponse')) {
+        response = aRequest.getResponse();
     } else {
-        response = subrequest.constructResponse();
+        response = subrequest.getResponse();
     }
 
     return response;
@@ -10340,7 +10340,7 @@ function(targetURI, aRequest) {
         loadRequest;
 
     request = targetURI.constructRequest(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         request.fail();
@@ -10407,7 +10407,7 @@ function(targetURI, aRequest) {
         useWebDAV;
 
     request = targetURI.constructRequest(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         request.fail();
@@ -10491,7 +10491,7 @@ function(targetURI, aRequest) {
         useWebDAV;
 
     request = targetURI.constructRequest(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     if (!TP.canInvoke(targetURI, 'getLocation')) {
         request.fail();
@@ -10730,7 +10730,7 @@ function(targetURI, aRequest) {
     }
 
     request = targetURI.constructRequest(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Make sure that we match one of our watched sources
 
@@ -10987,7 +10987,7 @@ function(targetURI, aRequest) {
         watchedURLs;
 
     request = targetURI.constructRequest(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  If we don't have a hash of watchers, there's nothing to do, so just
     //  return here.

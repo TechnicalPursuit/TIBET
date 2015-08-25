@@ -1094,7 +1094,7 @@ function(aRequest) {
     var response;
 
     //  first make sure we can construct a valid response
-    if (TP.notValid(response = aRequest.constructResponse())) {
+    if (TP.notValid(response = aRequest.getResponse())) {
         this.raise('TP.sig.ProcessingException',
                     'Couldn\'t construct response.');
 

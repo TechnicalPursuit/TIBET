@@ -60,7 +60,7 @@ function(targetURI, aRequest) {
         loadRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  GET requests require at least a dbName
     if (TP.notValid(dbName = targetURI.get('dbName'))) {
@@ -144,7 +144,7 @@ function(targetURI, aRequest) {
         nukeRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  DELETE requests require a dbName
     if (TP.notValid(dbName = targetURI.get('dbName'))) {
@@ -221,7 +221,7 @@ function(targetURI, aRequest) {
         saveRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  PUT and POST requests require at least a dbName
     if (TP.notValid(dbName = targetURI.get('dbName'))) {

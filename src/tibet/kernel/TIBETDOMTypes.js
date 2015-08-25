@@ -9317,7 +9317,7 @@ function(aRequest) {
     request = TP.request(aRequest);
     result = this.compile(request);
 
-    response = request.constructResponse(result);
+    response = request.getResponse(result);
     request.complete(result);
 
     return response;

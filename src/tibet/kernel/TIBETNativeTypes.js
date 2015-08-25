@@ -5291,7 +5291,7 @@ function(aRequest) {
 
     result = this.substitute(dataSource, keySource);
 
-    response = request.constructResponse(result);
+    response = request.getResponse(result);
     request.complete(result);
 
     return response;

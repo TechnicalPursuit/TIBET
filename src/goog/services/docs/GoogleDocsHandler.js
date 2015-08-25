@@ -50,7 +50,7 @@ function(targetURI, aRequest) {
         loadRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Construct and initialize an TP.sig.GoogleDocsRequest, defaulting the
     //  'action' to 'downloadDoc' if the load request hasn't specified one.
@@ -120,7 +120,7 @@ function(targetURI, aRequest) {
         saveRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Saving data to Google requires 'data' to save ;-)
     resp = targetURI.getResource(TP.hc('async', false));

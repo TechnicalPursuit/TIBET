@@ -2028,7 +2028,7 @@ function(aRequest) {
         result = this;
     }
 
-    response = request.constructResponse(result);
+    response = request.getResponse(result);
     request.complete(result);
 
     return response;

@@ -61,7 +61,7 @@ function(targetURI, aRequest) {
         loadRequest;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Manipulating an 'XMPP' resource requires an 'action'. Note here how
     //  we do *not* take the action from the request. This is because it
@@ -407,7 +407,7 @@ function(targetURI, aRequest) {
     this.raise('TP.sig.UnsupportedOperation');
 
     request = TP.request(aRequest);
-    response = request.constructResponse(false);
+    response = request.getResponse(false);
     request.fail();
 
     return response;
@@ -450,7 +450,7 @@ function(targetURI, aRequest) {
         content;
 
     request = TP.request(aRequest);
-    response = request.constructResponse();
+    response = request.getResponse();
 
     //  Manipulating an 'XMPP' resource requires an 'action'. Note here how
     //  we do *not* take the action from the request. This is because it
