@@ -3,18 +3,18 @@
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
     name="phantom" default="phantom" basedir="~lib">
 
-<config id="properties" if="boot.phaseone">
+<config id="properties" if="boot.phase_one">
 </config>
 
 <config id="phantom">
     <config ref="properties"/>
-    <script src="~lib_build/tibet_developer.min.js" if="boot.phaseone"/>
+    <script src="~lib_build/tibet_developer.min.js" if="boot.phase_one"/>
     <package src="~app_cfg/app.xml" config="test"/>
 </config>
 
 <config id="reflection">
     <config ref="properties"/>
-    <script src="~lib_build/tibet_developer.js" if="boot.phaseone"/>
+    <script src="~lib_build/tibet_developer.js" if="boot.phase_one"/>
     <package src="~app_cfg/app.xml" config="test"/>
 </config>
 

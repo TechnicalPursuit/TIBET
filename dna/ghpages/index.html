@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" no-manifest="{{appname}}.appcache">
+<html xmlns="http://www.w3.org/1999/xhtml" no-manifest="./{{appname}}.appcache">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
 <title>{{appname}}</title>
-<link rel="shortcut icon" href="./img/favicon.ico" type="image/x-icon"/>
-<link rel="icon" href="./img/favicon.ico" type="image/x-icon"/>
+<link rel="shortcut icon" href="./media/favicon.ico" type="image/x-icon"/>
+<link rel="icon" href="./media/favicon.ico" type="image/x-icon"/>
 
 <style type="text/css">
 html,body,iframe {
@@ -17,23 +17,35 @@ html,body,iframe {
     margin: 0;
     padding: 0;
     border: 0;
-}
-iframe {
     overflow: hidden;
 }
 </style>
 </head>
 <body onload="init()">
 
-<iframe id="UIROOT" frameborder="0" src="./TIBET-INF/tibet/lib/xhtml/blank.xhtml"></iframe>
-<iframe id="UIBOOT" frameborder="0" src="./html/UIBOOT.xhtml"></iframe>
+<iframe id="UIROOT" frameborder="0"
+    src="./TIBET-INF/boot/xhtml/blank.xhtml"></iframe>
+<iframe id="UIBOOT" frameborder="0"
+    src="./TIBET-INF/boot/xhtml/UIBOOT.xhtml"></iframe>
 
-<script src="./TIBET-INF/tibet/lib/src/tibet_init.min.js"></script>
+<script src="./TIBET-INF/tibet/lib/src/tibet_loader.min.js"></script>
 
 <script>
 //<![CDATA[
 function init() {
-    TP.boot.launch({ path: { lib_root: '~app_inf/tibet' } });
+    if (window['TP'] && TP.boot) {
+        TP.boot.launch();
+        return;
+    }
+
+    //  If TP isn't real it means tibet_loader wasn't found. Try to notify about
+    //  that in a reasonable fashion so the UI doesn't just look hung.
+    if (top.UIBOOT && top.UIBOOT.contentDocument) {
+        top.UIBOOT.contentDocument.getElementById('BOOT-IMAGE').src =
+            '../media/alert.png'
+        top.UIBOOT.contentDocument.getElementById('BOOT-SUBHEAD').innerHTML =
+            'Error loading. Was the project initialized via `tibet init`?'
+    }
 }
 //]]>
 </script>

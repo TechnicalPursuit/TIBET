@@ -3,10 +3,6 @@
   "name": "{{appname}}",
   "version": "0.1.0",
   "dependencies": {
-    "chalk": "*",
-    "diff": "*",
-    "eslint": "*",
-    "js-beautify": "*",
     "minimist": "*",
     "phantomjs": "*",
     "shelljs": "TechnicalPursuit/shelljs",

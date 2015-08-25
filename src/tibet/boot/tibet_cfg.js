@@ -384,6 +384,14 @@
         TP.sys.setcfg('log.color.mode', 'terminal');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
+    } else if (/Electron\//.test(navigator.userAgent)) {
+
+        TP.sys.setcfg('boot.context', 'electron');
+        TP.sys.setcfg('boot.reporter', 'bootui');
+
+        TP.sys.setcfg('log.color.mode', 'browser');
+        TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
+
     } else {
 
         TP.sys.setcfg('boot.context', 'browser');

@@ -43,6 +43,31 @@
     }
 
 //  ============================================================================
+//  Electron Overrides / Updates
+//  ============================================================================
+
+/*
+ * Electron lets you load as if you're in chrome, but any module that is
+ * checking for require, module, or exports per CommonJS etc. will fail to do
+ * what's right for a browser. We remap those calls here and then remove them
+ * from the global context.
+ */
+if (TP.sys.cfg('boot.context') === 'electron') {
+
+    TP.extern.define = root.define;
+    TP.extern.exports = root.exports;
+    TP.extern.module = root.module;
+    TP.extern.process = root.process;
+    TP.extern.require = root.require;
+
+    delete root.define;
+    delete root.exports;
+    delete root.module;
+    delete root.process;
+    delete root.require;
+}
+
+//  ============================================================================
 //  tibet_cfg Overrides / Updates
 //  ============================================================================
 

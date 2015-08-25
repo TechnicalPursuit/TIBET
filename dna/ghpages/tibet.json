@@ -5,7 +5,7 @@
         "dna": "{{dna}}"
     },
     "boot": {
-        "profile": "standard.xml"
+        "profile": "standard"
     },
     "escodegen": {
         "format": {
