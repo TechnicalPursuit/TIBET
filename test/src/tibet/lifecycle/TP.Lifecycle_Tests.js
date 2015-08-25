@@ -16,10 +16,16 @@ TP.describe('TP: document lifecycle',
 function() {
 
     var loadURI,
-        win;
+        winContext;
 
     loadURI = TP.uc('~lib_tst/src/tibet/lifecycle/LoadUnload_Test.xhtml');
-    win = TP.win(TP.sys.cfg('tibet.uicanvas'));
+
+    //  ---
+
+    this.before(
+        function() {
+            winContext = this.getDriver().get('windowContext');
+        });
 
     //  ---
 
@@ -37,7 +43,7 @@ function() {
 
     //  ---
 
-    this.it('document loaded', function(test, options) {
+    this.it('window - DocumentLoaded', function(test, options) {
 
         var driver;
 
@@ -47,12 +53,13 @@ function() {
         test.then(
             function() {
 
-                test.assert.didSignal(TP.gid(win),
+                //  Window throws DocumentLoaded when document loads
+                test.assert.didSignal(TP.gid(winContext),
                                         'TP.sig.DocumentLoaded');
             });
     });
 
-    this.it('document unloaded', function(test, options) {
+    this.it('window - DocumentUnloaded', function(test, options) {
 
         var driver;
 
@@ -62,10 +69,64 @@ function() {
         test.then(
             function() {
 
-                test.assert.didSignal(TP.gid(win),
+                //  Window throws DocumentLoaded when document unloads
+                test.assert.didSignal(TP.gid(winContext),
                                         'TP.sig.DocumentUnloaded');
             });
     });
+
+    //  ---
+
+    this.it('document - DOMContentLoaded', function(test, options) {
+
+        var driver;
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                //  Document throws DOMContentLoaded when document loads
+                test.assert.didSignal(
+                        TP.gid(winContext.getNativeDocument()),
+                        'TP.sig.DOMContentLoaded');
+            });
+    });
+
+    //  ---
+
+    this.it('element - DOMContentLoaded / AttachComplete', function(test, options) {
+
+        var driver;
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function() {
+                TP.elementSetContent(
+                    TP.byId('testSpan', winContext, false),
+                    '<span>This is inner content</span>');
+            });
+
+        test.then(
+            function() {
+
+                //  Element throws DOMContentLoaded when its content is added
+                //  to, inserted or set.
+                test.assert.didSignal(
+                    TP.gid(TP.byId('testSpan', winContext, false)),
+                    'TP.sig.DOMContentLoaded');
+
+                //  Element throws AttachComplete when its content is done
+                //  attaching.
+                test.assert.didSignal(
+                    TP.gid(TP.byId('testSpan', winContext, false)),
+                    'TP.sig.AttachComplete');
+            });
+    });
+
 });
 
 //  ========================================================================
