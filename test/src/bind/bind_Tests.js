@@ -7545,12 +7545,14 @@ function() {
                 var windowContext,
 
                     xmlField,
-                    jsonField;
+                    jsonField,
+                    jsobjField;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 xmlField = TP.byId('xmlBindCNAttr', windowContext);
                 jsonField = TP.byId('jsonBindCNAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindCNAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7558,15 +7560,22 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     'html:input');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    'html:input');
 
                 xmlField = TP.byId('xmlBindStdinAttr', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'SMITH');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'SMITH');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'SMITH');
 
                 //  Unload the current page by setting it to the blank
@@ -7597,12 +7606,14 @@ function() {
                 var windowContext,
 
                     xmlField,
-                    jsonField;
+                    jsonField,
+                    jsobjField;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 xmlField = TP.byId('xmlBindAttr', windowContext);
                 jsonField = TP.byId('jsonBindAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7610,15 +7621,22 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     'The canonical name: html:input');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    'The canonical name: html:input');
 
                 xmlField = TP.byId('xmlBindStdinAttr', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'The data source\'s last name field value uppercased: SMITH');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'The data source\'s last name field value uppercased: SMITH');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'The data source\'s last name field value uppercased: SMITH');
 
                 //  Unload the current page by setting it to the blank
@@ -7649,12 +7667,14 @@ function() {
                 var windowContext,
 
                     xmlField,
-                    jsonField;
+                    jsonField,
+                    jsobjField;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 xmlField = TP.byId('xmlBindAttr', windowContext);
                 jsonField = TP.byId('jsonBindAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7662,15 +7682,22 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     'html:input');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    'html:input');
 
                 xmlField = TP.byId('xmlBindStdinAttr', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'SMITH');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'SMITH');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'SMITH');
 
                 //  Unload the current page by setting it to the blank
@@ -7701,12 +7728,14 @@ function() {
                 var windowContext,
 
                     xmlField,
-                    jsonField;
+                    jsonField,
+                    jsobjField;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 xmlField = TP.byId('xmlBindAttr', windowContext);
                 jsonField = TP.byId('jsonBindAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7714,15 +7743,22 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     'The canonical name: html:input');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    'The canonical name: html:input');
 
                 xmlField = TP.byId('xmlBindStdinAttr', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'The data source\'s last name field value uppercased: SMITH');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'The data source\'s last name field value uppercased: SMITH');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'The data source\'s last name field value uppercased: SMITH');
 
                 //  Unload the current page by setting it to the blank

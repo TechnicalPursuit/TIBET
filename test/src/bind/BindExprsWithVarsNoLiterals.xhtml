@@ -24,6 +24,12 @@
         ]]>
     </tibet:data>
 
+    <tibet:data name="urn:tibet:test_person_jsobj">
+        <![CDATA[
+        {"person": {"lastname": "Smith", "firstname": "Joe"}}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
@@ -44,11 +50,19 @@
     <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
     <input type="text" id="xmlBindStdinAttr" bind:io="value: urn:tibet:test_person_xml#tibet($_.(.//lastname).value .% upperCase)" tabindex="0"/><br/>
 
+
     <label for="jsonBindCNAttr">Binding to JSON data with $TAG variable reference:</label>
     <input type="text" id="jsonBindCNAttr" bind:io="value: urn:tibet:test_person_json#tibet($TAG.canonicalName)" tabindex="0"/><br/>
 
     <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
-    <input type="text" id="jsonBindStdinAttr" bind:io="value: urn:tibet:test_person_json#tibet($_.person.lastname .% upperCase)" tabindex="0"/><br/>
+    <input type="text" id="jsonBindStdinAttr" bind:io="value: urn:tibet:test_person_json#tibet($_.($.person.lastname).value .% upperCase)" tabindex="0"/><br/>
+
+
+    <label for="jsobjBindCNAttr">Binding to JavaScript Object data with $TAG variable reference:</label>
+    <input type="text" id="jsobjBindCNAttr" bind:io="value: urn:tibet:test_person_jsobj#tibet($TAG.canonicalName)" tabindex="0"/><br/>
+
+    <label for="jsobjBindStdinAttr">Binding to JavaScript Object data with $_ variable reference:</label>
+    <input type="text" id="jsobjBindStdinAttr" bind:io="value: urn:tibet:test_person_jsobj#tibet($_.person.lastname .% upperCase)" tabindex="0"/><br/>
 
 </body>
 </html>
