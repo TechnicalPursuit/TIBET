@@ -1517,8 +1517,17 @@ function(anOrigin, aPayload, aPolicy) {
      * @returns {TP.sig.Response} The receiver's response.
      */
 
+    //  If we're not done processing we shouldn't clear things like status,
+    //  response, deferred, etc.
+    if (this.isActive()) {
+        return this.raise('InvalidOperation');
+    }
+
     //  clear any response we may have from a prior execution
     this.$set('response', null);
+
+    //  if we had a deferred it should be cleared.
+    this.$set('$deferredPromise', null);
 
     //  clear status code back to original
     this.set('statusCode', TP.READY);
