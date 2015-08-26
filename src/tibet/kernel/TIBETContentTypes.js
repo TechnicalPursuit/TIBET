@@ -1140,7 +1140,7 @@ function(aCollectionURI, aDeleteIndex) {
     //  row.
 
     //  NB: We assume 'async' of false here.
-    if (!TP.isArray(targetCollection =
+    if (TP.isArray(targetCollection =
                     aCollectionURI.getResource().get('result'))) {
 
         //  If a deletion index was supplied or we have numbers in our selection
