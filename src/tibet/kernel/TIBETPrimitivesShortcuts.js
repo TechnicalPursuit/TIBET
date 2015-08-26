@@ -2650,7 +2650,7 @@ function(aURIOrRoute, linkContext) {
         router;
 
     if (TP.notValid(aURIOrRoute)) {
-        TP.raise(TP.go2, 'TP.sig.InvalidURI');
+        TP.raise(this, 'TP.sig.InvalidURI');
         return false;
     }
 
@@ -2665,7 +2665,7 @@ function(aURIOrRoute, linkContext) {
     }
 
     if (!TP.isURI(aURIOrRoute)) {
-        TP.raise(TP.go2, 'TP.sig.InvalidURI');
+        TP.raise(this, 'TP.sig.InvalidURI');
         return false;
     }
 
@@ -2675,7 +2675,7 @@ function(aURIOrRoute, linkContext) {
     }
 
     if (!TP.isWindow(context)) {
-        TP.raise(TP.go2, 'TP.sig.InvalidWindow');
+        TP.raise(this, 'TP.sig.InvalidWindow');
         return false;
     }
 
