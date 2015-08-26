@@ -2524,6 +2524,32 @@ function(anObject, aProperty, aValue, aComment) {
                     ' and ', aValue, ' to be equal.'));
 });
 
+//  ------------------------------------------------------------------------
+//  FAUX ASSERTIONS
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.defineAssertion('equalTo',
+function(anObject, aValue, aComment) {
+
+    TP.ifWarn() ?
+        TP.warn('Invalid assertion method: equalTo.' +
+                    ' Use "isEqualTo" instead.') : 0;
+
+    return this.assert(false);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.TestMethodCollection.defineAssertion('identicalTo',
+function(anObject, aValue, aComment) {
+
+    TP.ifWarn() ?
+        TP.warn('Invalid assertion method: identicalTo.' +
+                    ' Use "isIdenticalTo" instead.') : 0;
+
+    return this.assert(false);
+});
+
 //  ========================================================================
 //  TP.test.Expect
 //  ========================================================================
