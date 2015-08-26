@@ -129,6 +129,15 @@ function(aCondition, aComment, aFaultString) {
 
     this.assertMinArguments(arguments, 1);
 
+    //  Mark this test case as having run at least one assertion. If we don't do
+    //  this, the test case will fail and be marked as 'todo'.
+
+    //  NB: We specifically do this *after* the assertMinArguments() above,
+    //  since those calls don't 'count' towards whether an assertion has been
+    //  tested or not.
+
+    this.get('currentTestCase').$set('$executedAssertion', true);
+
     //  If we're configured to be a 'refuter', then flip the condition result
     //  and alter the fault string message.
     if (this.get('isRefuter')) {

@@ -2016,6 +2016,12 @@ TP.test.Case.Inst.defineAttribute('$internalExpect');
 TP.test.Case.Inst.defineAttribute('$resolver');
 TP.test.Case.Inst.defineAttribute('$rejector');
 
+/**
+ * Whether or not we've executed at least one assertion.
+ * @type {Boolean}
+ */
+TP.test.Case.Inst.defineAttribute('$executedAssertion');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2555,6 +2561,8 @@ function(options) {
     this.$set('assert', null);
     this.$set('refute', null);
 
+    this.$set('$executedAssertion', false);
+
     if (options && options.at('case_timeout')) {
         this.$set('mslimit', options.at('case_timeout'));
     }
@@ -2613,165 +2621,210 @@ function(options) {
     testcase = this;
 
    /* eslint-disable new-cap */
-    promise = TP.extern.Promise.construct(function(resolver, rejector) {
-        var asserter,
-            refuter,
+    promise = TP.extern.Promise.construct(
+            function(resolver, rejector) {
+                var asserter,
+                    refuter,
 
-            drivers,
+                    drivers,
 
-            internalPromise,
-            maybe;
+                    internalPromise,
+                    maybe;
 
-        //  Set up state for the testcase case
-        asserter = testcase.getSuite().get('asserter');
-        asserter.$set('currentTestCase', testcase);
-        testcase.$set('assert', asserter);
+                //  Set up state for the testcase case
+                asserter = testcase.getSuite().get('asserter');
+                asserter.$set('currentTestCase', testcase);
+                testcase.$set('assert', asserter);
 
-        refuter = testcase.getSuite().get('refuter');
-        refuter.$set('currentTestCase', testcase);
-        testcase.$set('refute', refuter);
+                refuter = testcase.getSuite().get('refuter');
+                refuter.$set('currentTestCase', testcase);
+                testcase.$set('refute', refuter);
 
-        //  The testcase provides a 'then()', 'thenAllowGUIRefresh()',
-        //  'thenPromise()' and 'thenWait()' API to our drivers, so we need to
-        //  reset the reference here to it each time.
-        drivers = testcase.getSuite().$get('drivers');
-        drivers.getKeys().perform(
-                function(driverKey) {
-                    drivers.at(driverKey).set('promiseProvider', testcase);
-                    if (driverKey === 'gui') {
-                        drivers.at(driverKey).set('windowContext',
-                                                    TP.sys.getUICanvas());
-                    }
-                });
+                //  The testcase provides a 'then()', 'thenAllowGUIRefresh()',
+                //  'thenPromise()' and 'thenWait()' API to our drivers, so we
+                //  need to reset the reference here to it each time.
+                drivers = testcase.getSuite().$get('drivers');
+                drivers.getKeys().perform(
+                    function(driverKey) {
+                        drivers.at(driverKey).set('promiseProvider', testcase);
+                        if (driverKey === 'gui') {
+                            drivers.at(driverKey).set('windowContext',
+                                                        TP.sys.getUICanvas());
+                        }
+                    });
 
-        //  Capture references to the resolve/reject operations we can use from
-        //  the test case itself. Do this first so any errors below will still
-        //  be able to depend on these hooks being in place.
-        testcase.set('$resolver', resolver);
-        testcase.set('$rejector', rejector);
+                //  Capture references to the resolve/reject operations we can
+                //  use from the test case itself. Do this first so any errors
+                //  below will still be able to depend on these hooks being in
+                //  place.
+                testcase.set('$resolver', resolver);
+                testcase.set('$rejector', rejector);
 
-        if (testcase.isSkipped() && !params.at('ignore_skip')) {
-            TP.sys.logTest('ok - ' + testcase.getCaseName() + ' # SKIP');
-            resolver();
+                if (testcase.isSkipped() && !params.at('ignore_skip')) {
+                    TP.sys.logTest(
+                            'ok - ' + testcase.getCaseName() + ' # SKIP');
+                    resolver();
 
-            return;
-        }
-
-        //  NOTE: do this after checking for deferred so we don't end up with
-        //  timing values for something we never ran.
-        testcase.set('msstart', Date.now());
-
-        try {
-
-            //  Note that inside the test method we bind to the Case instance.
-            //  Also note that 'maybe' might be a Promise that the test case
-            //  author returned to us. Also also note that we check $STATUS here
-            //  in case we hit bottom or had a stack overflow, or for any other
-            //  reason didn't get an Error but failed for some reason.
-            $STATUS = TP.SUCCESS;
-
-            maybe = testcase.$get('caseFunc').call(testcase, testcase, options);
-
-            //  Now, check to see if there is an internal promise.
-
-            if (TP.notValid(internalPromise =
-                                testcase.$get('$internalPromise'))) {
-
-                //  If there is no internal Promise, then just see if 'maybe'
-                //  contains a Promise that was returned from the test case.
-
-                //  If 'maybe' contains a Promise (or at least a 'thenable'),
-                //  use it.
-                if (TP.canInvoke(maybe, 'then')) {
-
-                    //  NB: We use 'done()' here rather than 'then()' as per the
-                    //  recommendation of the Q documentation.
-                    maybe.done(
-                        function(obj) {
-                            testcase.pass();
-                        },
-                        function(err) {
-                            //  NOTE that if we fail at this level the try/catch
-                            //  isn't involved, so we need to wrap up manually.
-                            if (err instanceof AssertionFailed) {
-                                testcase.fail(err);
-                            } else if (err instanceof Error) {
-                                testcase.error(err);
-                            } else {
-                                testcase.fail(err);
-                            }
-                        });
-                } else {
-
-                    if ($STATUS === TP.FAILED) {
-                        $STATUS = TP.SUCCESS;
-                        throw new Error();
-                    }
-
-                    //  Otherwise, just pass the test.
-                    testcase.pass();
+                    return;
                 }
-            } else {
-                //  There was an internal Promise.
 
-                //  Now, if the test method itself returned a Promise, then we
-                //  should return that in a 'then()' on our internal promise.
-                //  Based on the evaluation of that, the testcase will have been
-                //  considered to have passed or failed.
+                //  NOTE: do this after checking for deferred so we don't end up
+                //  with timing values for something we never ran.
+                testcase.set('msstart', Date.now());
 
-                //  NB: Note how we use 'done()' here as the *last* part of the
-                //  chain rather than 'then()' as per the recommendation of the
-                //  Q documentation.
-                if (TP.canInvoke(maybe, 'then')) {
-                    internalPromise.then(
-                        function(obj) {
-                            return maybe;
-                        }).done(
-                        function(obj) {
-                            testcase.pass();
-                        },
-                        function(err) {
-                            //  NOTE that if we fail at this level the try/catch
-                            //  isn't involved, so we need to wrap up manually.
-                            if (err instanceof AssertionFailed) {
-                                testcase.fail(err);
-                            } else if (err instanceof Error) {
-                                testcase.error(err);
-                            } else {
-                                testcase.fail(err);
+                try {
+
+                    //  Note that inside the test method we bind to the Case
+                    //  instance. Also note that 'maybe' might be a Promise that
+                    //  the test case author returned to us. Also also note that
+                    //  we check $STATUS here in case we hit bottom or had a
+                    //  stack overflow, or for any other reason didn't get an
+                    //  Error but failed for some reason.
+                    $STATUS = TP.SUCCESS;
+
+                    maybe = testcase.$get('caseFunc').call(
+                                            testcase, testcase, options);
+
+                    //  Now, check to see if there is an internal promise.
+
+                    if (TP.notValid(internalPromise =
+                                        testcase.$get('$internalPromise'))) {
+
+                        //  If there is no internal Promise, then just see if
+                        //  'maybe' contains a Promise that was returned from
+                        //  the test case.
+                        //  If 'maybe' contains a Promise (or at least a
+                        //  'thenable'), use it.
+                        if (TP.canInvoke(maybe, 'then')) {
+
+                            //  NB: We use 'done()' here rather than 'then()'
+                            //  as per the recommendation of the Q
+                            //  documentation.
+                            maybe.done(
+                                function(obj) {
+
+                                    //  As a final check, we make sure that the
+                                    //  test case executed at least one
+                                    //  assertion. If it didn't, we mark it as
+                                    //  'todo' and fail it.
+                                    if (!testcase.get('$executedAssertion')) {
+                                        testcase.todo();
+                                        testcase.fail('No assertions found');
+                                    } else {
+                                        testcase.pass();
+                                    }
+                                },
+                                function(err) {
+                                    //  NOTE that if we fail at this level the
+                                    //  try/catch isn't involved, so we need to
+                                    //  wrap up manually.
+                                    if (err instanceof AssertionFailed) {
+                                        testcase.fail(err);
+                                    } else if (err instanceof Error) {
+                                        testcase.error(err);
+                                    } else {
+                                        testcase.fail(err);
+                                    }
+                                });
+                        } else {
+
+                            if ($STATUS === TP.FAILED) {
+                                $STATUS = TP.SUCCESS;
+                                throw new Error();
                             }
-                        });
 
-                } else {
-                    //  The test method didn't return a Promise - just 'then()'
-                    //  onto our internal promise to either pass or fail the
-                    //  testcase.
-                    internalPromise.done(
-                        function(obj) {
-                            testcase.pass();
-                        },
-                        function(err) {
-                            //  NOTE that if we fail at this level the try/catch
-                            //  isn't involved, so we need to wrap up manually.
-                            if (err instanceof AssertionFailed) {
-                                testcase.fail(err);
-                            } else if (err instanceof Error) {
-                                testcase.error(err);
+                            //  As a final check, we make sure that the test
+                            //  case executed at least one assertion. If it
+                            //  didn't, we mark it as 'todo' and fail it.
+                            if (!testcase.get('$executedAssertion')) {
+                                testcase.todo();
+                                testcase.fail('No assertions found');
                             } else {
-                                testcase.fail(err);
+                                testcase.pass();
                             }
-                        });
+                        }
+                    } else {
+                        //  There was an internal Promise.
+
+                        //  Now, if the test method itself returned a Promise,
+                        //  then we should return that in a 'then()' on our
+                        //  internal promise.
+                        //  Based on the evaluation of that, the testcase will
+                        //  have been considered to have passed or failed.
+
+                        //  NB: Note how we use 'done()' here as the *last* part
+                        //  of the chain rather than 'then()' as per the
+                        //  recommendation of the Q documentation.
+                        if (TP.canInvoke(maybe, 'then')) {
+                            internalPromise.then(
+                                function(obj) {
+                                    return maybe;
+                                }).done(
+                                function(obj) {
+                                    //  As a final check, we make sure that the
+                                    //  test case executed at least one
+                                    //  assertion. If it didn't, we mark it as
+                                    //  'todo' and fail it.
+                                    if (!testcase.get('$executedAssertion')) {
+                                        testcase.todo();
+                                        testcase.fail('No assertions found');
+                                    } else {
+                                        testcase.pass();
+                                    }
+                                },
+                                function(err) {
+                                    //  NOTE that if we fail at this level the
+                                    //  try/catch isn't involved, so we need to
+                                    //  wrap up manually.
+                                    if (err instanceof AssertionFailed) {
+                                        testcase.fail(err);
+                                    } else if (err instanceof Error) {
+                                        testcase.error(err);
+                                    } else {
+                                        testcase.fail(err);
+                                    }
+                                });
+
+                        } else {
+                            //  The test method didn't return a Promise - just
+                            //  'then()' onto our internal promise to either
+                            //  pass or fail the testcase.
+                            internalPromise.done(
+                                function(obj) {
+                                    //  As a final check, we make sure that the
+                                    //  test case executed at least one
+                                    //  assertion. If it didn't, we mark it as
+                                    //  'todo' and fail it.
+                                    if (!testcase.get('$executedAssertion')) {
+                                        testcase.todo();
+                                        testcase.fail('No assertions found');
+                                    } else {
+                                        testcase.pass();
+                                    }
+                                },
+                                function(err) {
+                                    //  NOTE that if we fail at this level the
+                                    //  try/catch isn't involved, so we need to
+                                    //  wrap up manually.
+                                    if (err instanceof AssertionFailed) {
+                                        testcase.fail(err);
+                                    } else if (err instanceof Error) {
+                                        testcase.error(err);
+                                    } else {
+                                        testcase.fail(err);
+                                    }
+                                });
+                        }
+                    }
+                } catch (e) {
+                    if (e instanceof AssertionFailed) {
+                        testcase.fail(e);
+                    } else {
+                        testcase.error(e);
+                    }
                 }
-            }
-        } catch (e) {
-            if (e instanceof AssertionFailed) {
-                testcase.fail(e);
-            } else {
-                testcase.error(e);
-            }
-        }
-    }).timeout(timeout);
-   /* eslint-enable new-cap */
+            }).timeout(timeout);
+           /* eslint-enable new-cap */
 
     return promise.then(
         function(obj) {
