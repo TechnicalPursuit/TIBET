@@ -2167,6 +2167,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Case.Inst.defineMethod('getCircularKeys', function() {
+
+    /**
+     * @method getCircularKeys
+     * @summary Returns a known list of keys for the receiver that will cause a
+     *     circular reference to eventually occur. Used by asString/asSource
+     *     to allow certain types to avoid circular reference issues when
+     *     producing simple string representations.
+     * @return {Array} For test cases the 'suite' key can be circular.
+     */
+
+    //  The test suite will refer to case lists. The 'assert' and 'refute'
+    //  keys reference the test collection which refer to current test case.
+    return ['assert', 'refute', 'suite'];
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Case.Inst.defineMethod('getDriver',
 function(aKey) {
 

@@ -6613,10 +6613,9 @@ function(verbose) {
      * @returns {String} A new String containing the elements of the receiver.
      */
 
-    var wantsVerbose,
-
+    var marker,
+        wantsVerbose,
         joinCh,
-
         joinArr,
         joinStr;
 
@@ -6627,18 +6626,12 @@ function(verbose) {
 
     this.$sortIfNeeded();
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asString = true;
+    this[marker] = true;
 
     joinCh = this.$get('delimiter');
 
@@ -6660,10 +6653,9 @@ function(verbose) {
         joinStr = joinArr.join(joinCh);
     } catch (e) {
         joinStr = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asString;
 
     return joinStr;
 });
@@ -10350,26 +10342,31 @@ function() {
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
-    var str;
+    var marker,
+        str,
+        keys;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asSource) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asSource';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
+    this[marker] = true;
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asSource = true;
+    //  Process the key list to remove potentially circular keys.
+    keys = this.getUniqueValueKeys();
+    this.getCircularKeys().forEach(function(key) {
+        if (keys.indexOf(key)) {
+            keys.splice(keys.indexOf(key), 1);
+        }
+    });
 
-    str = TP.tname(this) + '.construct()' +
-            this.$generateSourceSets(this.getUniqueValueKeys());
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asSource;
+    try {
+        str = TP.tname(this) + '.construct()' +
+            this.$generateSourceSets(keys);
+    } finally {
+        delete this[marker];
+    }
 
     return str;
 });
@@ -10436,6 +10433,23 @@ function() {
      */
 
     return this.getType()[TP.INSTC];
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Inst.defineMethod('getCircularKeys',
+function() {
+
+    /**
+     * @method getCircularKeys
+     * @summary Returns a known list of keys for the receiver that will cause a
+     *     circular reference to eventually occur. Used by asString/asSource
+     *     to allow certain types to avoid circular reference issues when
+     *     producing simple string representations.
+     * @return {Array} The default is an empty array.
+     */
+
+    return [];
 });
 
 //  ------------------------------------------------------------------------

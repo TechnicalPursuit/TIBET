@@ -9577,13 +9577,11 @@ function(verbose) {
      */
 
     var wantsVerbose,
-
+        marker,
         arr,
-
         keys,
         len,
         i,
-
         str;
 
     wantsVerbose = TP.ifInvalid(verbose, true);
@@ -9600,21 +9598,16 @@ function(verbose) {
         return TP.objectToString(this);
     }
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
     //  NB: For 'Object', we put this in a try...catch since some native Objects
     //  (i.e. XHR objects) don't like to have slots placed on them.
     try {
-        this.$$format_asString = true;
+        this[marker] = true;
     } catch (e) {
         void 0;
     }
@@ -9636,13 +9629,12 @@ function(verbose) {
         str = arr.join(', ');
     } catch (e) {
         str = this.toString();
-    }
-
-    //  We're done - we can remove the recursion flag.
-    try {
-        delete this.$$format_asString;
-    } catch (e) {
-        void 0;
+    } finally {
+        try {
+            delete this[marker];
+        } catch (e) {
+            void 0;
+        }
     }
 
     return str;
