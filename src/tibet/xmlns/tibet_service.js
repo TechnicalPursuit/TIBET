@@ -70,6 +70,99 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.tibet.service.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        sigName;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    //  Grab a wrapped version of the element.
+    tpElem = TP.wrap(elem);
+
+    //  If it has an 'activateOn' attribute, then the author wants us to
+    //  activate when that signal is fired.
+    if (tpElem.hasAttribute('activateOn')) {
+
+        //  Get the signal name and normalize it.
+        sigName = tpElem.getAttribute('activateOn');
+        sigName = TP.expandSignalName(sigName);
+
+        //  If 'TP.sig.AttachComplete', then 'just do it'
+        if (sigName === 'TP.sig.AttachComplete') {
+            tpElem.trigger();
+        } else {
+            //  Otherwise, observe the signal and install a local method that
+            //  will trigger us when the signal is handled.
+            tpElem.observe(tpElem, sigName);
+            tpElem.defineMethod(
+                    TP.escapeTypeName(sigName),
+                    function(aSignal) {
+                        this.trigger();
+                    });
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Type.defineMethod('tagDetachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagDetachComplete
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        sigName;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  If it has an 'activateOn' attribute, then the author wanted us to
+    //  activate when that signal is fired and we set up a handler in the
+    //  'tagAttachComplete' method above. We need to ignore that signal now.
+    if (tpElem.hasAttribute('activateOn')) {
+
+        //  Get the signal name and normalize it.
+        sigName = tpElem.getAttribute('activateOn');
+        sigName = TP.expandSignalName(sigName);
+
+        //  Ignore any 'activateOn' signal that we were set up to observe.
+        tpElem.ignore(tpElem, sigName);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  TEMPORARY METHODS
 //  ------------------------------------------------------------------------
 
