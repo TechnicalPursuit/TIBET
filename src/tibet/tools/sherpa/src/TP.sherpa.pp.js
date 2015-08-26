@@ -30,8 +30,8 @@ TP.lang.Object.defineSubtype('sherpa.pp');
 TP.sherpa.pp.Type.defineMethod('fromArray',
 function(anObject, optFormat) {
 
-    var output,
-
+    var marker,
+        output,
         len,
         i;
 
@@ -39,13 +39,10 @@ function(anObject, optFormat) {
         return this.fromString('[]', optFormat);
     }
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (anObject.$$format_sherpa_pp) {
-        return TP.recursion(anObject);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_sherpa_pp';
+    if (TP.owns(anObject, marker)) {
+        return TP.recursion(anObject, marker);
     }
 
     //  If an optional format was supplied, then, if it has a level, check the
@@ -61,9 +58,11 @@ function(anObject, optFormat) {
         }
     }
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    anObject.$$format_sherpa_pp = true;
+    try {
+        anObject[marker] = true;
+    } catch (e) {
+        void 0;
+    }
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -75,23 +74,28 @@ function(anObject, optFormat) {
 
     output = TP.ac();
     output.push('<span class="sherpa_pp Array">');
-
     len = anObject.getSize();
-    for (i = 0; i < len; i++) {
-        output.push('<span data-name="', i, '">',
-                    TP.format(anObject.at(i), TP.sherpa.pp.Type, optFormat),
-                    '</span>');
+
+    try {
+        for (i = 0; i < len; i++) {
+            output.push('<span data-name="', i, '">',
+                        TP.format(anObject.at(i), TP.sherpa.pp.Type, optFormat),
+                        '</span>');
+        }
+    } finally {
+        output.push('</span>');
+
+        //  Decrement the traversal level
+        if (TP.isValid(optFormat)) {
+            optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
+        }
+
+        try {
+            delete anObject[marker];
+        } catch (e) {
+            void 0;
+        }
     }
-
-    output.push('</span>');
-
-    //  Decrement the traversal level
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
-    }
-
-    //  We're done - we can remove the recursion flag.
-    delete anObject.$$format_sherpa_pp;
 
     return output.join('');
 });
@@ -271,20 +275,20 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromNode',
 function(anObject, optFormat) {
 
-    var str;
+    var marker,
+        str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (anObject.$$format_sherpa_pp) {
-        return TP.recursion(anObject);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_sherpa_pp';
+    if (TP.owns(anObject, marker)) {
+        return TP.recursion(anObject, marker);
     }
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    anObject.$$format_sherpa_pp = true;
+    try {
+        anObject[marker] = true;
+    } catch (e) {
+        void 0;
+    }
 
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
@@ -293,20 +297,24 @@ function(anObject, optFormat) {
         optFormat.atPut('cmdAwaken', false);
     }
 
-    if (TP.isValid(TP.extern.CodeMirror)) {
-        str = this.runXMLModeOn(anObject);
-        str = str.replace(/\n/g, '<br/>');
+    try {
+        if (TP.isValid(TP.extern.CodeMirror)) {
+            str = this.runXMLModeOn(anObject);
+            str = str.replace(/\n/g, '<br/>');
 
-    } else {
-        str = TP.str(anObject).asEscapedXML();
+        } else {
+            str = TP.str(anObject).asEscapedXML();
+        }
+
+        str = '<span class="sherpa_pp Node">' +
+            str + '</span>';
+    } finally {
+        try {
+            delete anObject[marker];
+        } catch (e) {
+            void 0;
+        }
     }
-
-    str = '<span class="sherpa_pp Node">' +
-            str +
-            '</span>';
-
-    //  We're done - we can remove the recursion flag.
-    delete anObject.$$format_sherpa_pp;
 
     return str;
 });
@@ -392,14 +400,12 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromObject',
 function(anObject, optFormat) {
 
-    var output,
-
+    var marker,
+        output,
         formatInLoop,
-
         keys,
         key,
         value,
-
         i,
         len;
 
@@ -407,13 +413,10 @@ function(anObject, optFormat) {
         return this.fromString('{}', optFormat);
     }
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (anObject.$$format_sherpa_pp) {
-        return TP.recursion(anObject);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_sherpa_pp';
+    if (TP.owns(anObject, marker)) {
+        return TP.recursion(anObject, marker);
     }
 
     //  If an optional format was supplied, then, if it has a level, check the
@@ -429,9 +432,11 @@ function(anObject, optFormat) {
         }
     }
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    anObject.$$format_sherpa_pp = true;
+    try {
+        anObject[marker] = true;
+    } catch (e) {
+        void 0;
+    }
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -468,15 +473,19 @@ function(anObject, optFormat) {
         keys.compact();
         len = keys.getSize();
 
-        for (i = 0; i < len; i++) {
-            key = keys.at(i);
-            value = TP.format(anObject[key], TP.sherpa.pp.Type, optFormat);
-            //value = value.asEscapedXML();
+        try {
+            for (i = 0; i < len; i++) {
+                key = keys.at(i);
+                value = TP.format(anObject[key], TP.sherpa.pp.Type, optFormat);
+                //value = value.asEscapedXML();
 
-            output.push(
-                '<span data-name="' + TP.str(key).asEscapedXML() + '">',
-                value,
-                '</span>');
+                output.push(
+                    '<span data-name="' + TP.str(key).asEscapedXML() + '">',
+                    value,
+                    '</span>');
+            }
+        } catch (e) {
+            output.push(e.message);
         }
     }
 
@@ -487,8 +496,11 @@ function(anObject, optFormat) {
         optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
     }
 
-    //  We're done - we can remove the recursion flag.
-    delete anObject.$$format_sherpa_pp;
+    try {
+        delete anObject[marker];
+    } catch (e) {
+        void 0;
+    }
 
     return output.join('');
 });
@@ -691,7 +703,8 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_core_Hash',
 function(anObject, optFormat) {
 
-    var output,
+    var marker,
+        output,
         keys,
         key,
         len,
@@ -701,13 +714,10 @@ function(anObject, optFormat) {
         return this.fromString('TP.hc()', optFormat);
     }
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (anObject.$$format_sherpa_pp) {
-        return TP.recursion(anObject);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_sherpa_pp';
+    if (TP.owns(anObject, marker)) {
+        return TP.recursion(anObject, marker);
     }
 
     //  If an optional format was supplied, then, if it has a level, check the
@@ -723,9 +733,11 @@ function(anObject, optFormat) {
         }
     }
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    anObject.$$format_sherpa_pp = true;
+    try {
+        anObject[marker] = true;
+    } catch (e) {
+        void 0;
+    }
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
@@ -760,8 +772,11 @@ function(anObject, optFormat) {
         optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
     }
 
-    //  We're done - we can remove the recursion flag.
-    delete anObject.$$format_sherpa_pp;
+    try {
+        delete anObject[marker];
+    } catch (e) {
+        void 0;
+    }
 
     return output.join('');
 });
@@ -771,20 +786,20 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_core_Node',
 function(anObject, optFormat) {
 
-    var str;
+    var marker,
+        str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (anObject.$$format_sherpa_pp) {
-        return TP.recursion(anObject);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_sherpa_pp';
+    if (TP.owns(anObject, marker)) {
+        return TP.recursion(anObject, marker);
     }
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    anObject.$$format_sherpa_pp = true;
+    try {
+        anObject[marker] = true;
+    } catch (e) {
+        void 0;
+    }
 
     //  Don't need to box output from our own markup generator.
     if (TP.isValid(optFormat)) {
@@ -804,8 +819,11 @@ function(anObject, optFormat) {
             str +
             '</span>';
 
-    //  We're done - we can remove the recursion flag.
-    delete anObject.$$format_sherpa_pp;
+    try {
+        delete anObject[marker];
+    } catch (e) {
+        void 0;
+    }
 
     return str;
 });
@@ -815,21 +833,21 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromTP_sig_ShellRequest',
 function(anObject, optFormat) {
 
-    var data,
+    var marker,
+        data,
         str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (anObject.$$format_sherpa_pp) {
-        return TP.recursion(anObject);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_sherpa_pp';
+    if (TP.owns(anObject, marker)) {
+        return TP.recursion(anObject, marker);
     }
 
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    anObject.$$format_sherpa_pp = true;
+    try {
+        anObject[marker] = true;
+    } catch (e) {
+        void 0;
+    }
 
     if (TP.isValid(optFormat)) {
         optFormat.atPut('cmdBox', false);
@@ -846,8 +864,11 @@ function(anObject, optFormat) {
 
     str = '<span class="sherpa_pp">' + data + '</span>';
 
-    //  We're done - we can remove the recursion flag.
-    delete anObject.$$format_sherpa_pp;
+    try {
+        delete anObject[marker];
+    } catch (e) {
+        void 0;
+    }
 
     return str;
 });

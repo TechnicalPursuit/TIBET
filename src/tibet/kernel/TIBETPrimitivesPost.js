@@ -3500,6 +3500,8 @@ function(anObject) {
      * @returns {String} The best-possible source rep of the Object.
      */
 
+    var marker;
+
     if (anObject === null) {
         return 'null';
     } else if (anObject === undefined) {
@@ -3589,7 +3591,17 @@ function(anObject) {
     }
 
     if (TP.canInvoke(anObject, 'asSource')) {
-        return anObject.asSource();
+        marker = '$$recursive_asSource';
+        if (TP.owns(anObject, marker)) {
+            return TP.recursion(anObject, marker);
+        }
+
+        try {
+            this[marker] = true;
+            return anObject.asSource();
+        } finally {
+            delete anObject[marker];
+        }
     }
 
     if (TP.canInvoke(anObject, 'toString')) {
@@ -3631,7 +3643,7 @@ function(anObject, verbose) {
 
     var str,
         wantsVerbose,
-
+        marker,
         arr,
         len,
         i,
@@ -3802,10 +3814,17 @@ function(anObject, verbose) {
         return str;
     }
 
-    //  We're out of options - must be a pretty plain Object. Grab the version
-    //  of 'asString' that was installed as a 'meta method' and call that on the
-    //  object.
-    return TP.META_INST_OWNER.meta_methods.asString.call(anObject);
+    marker = '$$recursive_asString';
+    if (TP.owns(anObject, marker)) {
+        return TP.recursion(anObject, marker);
+    }
+
+    try {
+        this[marker] = true;
+        return TP.META_INST_OWNER.meta_methods.asString.call(anObject);
+    } finally {
+        delete anObject[marker];
+    }
 });
 
 //  ------------------------------------------------------------------------

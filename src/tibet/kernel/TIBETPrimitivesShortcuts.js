@@ -2521,7 +2521,7 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('recursion',
-function(anObject) {
+function(anObject, aKey) {
 
     /**
      * @method recursion
@@ -2529,12 +2529,21 @@ function(anObject) {
      *     when the object is encountered in a circularly referenced manner
      *     during the production of some sort of formatted String
      *     representation.
-     * @param {The} anObject object whose properties and recursion string should
-     *     be returned.
-     * @returns {String} A 'recursion' string for the object.
+     * @param {Object} anObject The object whose properties triggered a
+     *     circular reference recursion.
+     * @param {aKey} aKey The operation key which marked the circularity.
+     * @returns {String} A recursion string rep for the object.
      */
 
     var obj;
+
+    try {
+        TP.warn('Circular reference(s) detected in ' + TP.gid(anObject) +
+            ' ' + aKey.replace('\$\$recursive_', ''));
+        delete anObject[aKey];
+    } catch (e) {
+        void 0;
+    }
 
     obj = TP.wrap(anObject);
     if (obj !== anObject) {

@@ -640,20 +640,15 @@ function() {
      *     receiver.
      */
 
-    var str;
+    var marker,
+        str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asDumpString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asDumpString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asDumpString = true;
+    this[marker] = true;
 
     try {
         str = this.getSignalName() +
@@ -661,10 +656,9 @@ function() {
                 '(' + TP.dump(this.getPayload()) + ')';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asDumpString;
 
     return str;
 });
@@ -680,20 +674,15 @@ function() {
      * @returns {String} The receiver in HTML string format.
      */
 
-    var str;
+    var marker,
+        str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asHTMLString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asHTMLString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asHTMLString = true;
+    this[marker] = true;
 
     try {
         str = '<span class="TP_sig_Signal ' +
@@ -704,10 +693,9 @@ function() {
                  '<\/span>';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asHTMLString;
 
     return str;
 });
@@ -723,20 +711,15 @@ function() {
      * @returns {String} A JSON-formatted string.
      */
 
-    var str;
+    var marker,
+        str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asJSONSource) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asJSONSource';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asJSONSource = true;
+    this[marker] = true;
 
     try {
         str = '{"type":' + this.getTypeName().quoted('"') + ',' +
@@ -744,10 +727,9 @@ function() {
                 '"payload":' + TP.jsonsrc(this.getPayload()) + '}}';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asJSONSource;
 
     return str;
 });
@@ -765,20 +747,15 @@ function() {
      *     the receiver.
      */
 
-    var str;
+    var marker,
+        str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asPrettyString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asPrettyString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asPrettyString = true;
+    this[marker] = true;
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
@@ -790,10 +767,9 @@ function() {
                     '<\/dl>';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asPrettyString;
 
     return str;
 });
@@ -828,8 +804,8 @@ function(verbose) {
      * @returns {String} The receiver as a String.
      */
 
-    var wantsVerbose,
-
+    var marker,
+        wantsVerbose,
         str;
 
     wantsVerbose = TP.ifInvalid(verbose, true);
@@ -838,18 +814,12 @@ function(verbose) {
                 this.toString().split(TP.OID_PREFIX).last();
     }
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asString = true;
+    this[marker] = true;
 
     //  NB: We force the TP.str() rep of the payload to be verbose.
     try {
@@ -858,10 +828,9 @@ function(verbose) {
                 '(' + TP.str(this.getPayload(), true) + ')';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asString;
 
     return str;
 });
@@ -877,23 +846,17 @@ function() {
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
-    var payload,
+    var marker,
+        payload,
         str,
-
         keys;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asSource) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asSource';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asSource = true;
+    this[marker] = true;
 
     try {
         if (TP.isDefined(payload = this.getPayload())) {
@@ -910,10 +873,9 @@ function() {
         str += this.$generateSourceSets(keys);
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asSource;
 
     return str;
 });
@@ -929,20 +891,15 @@ function() {
      * @returns {String} The receiver in XML string format.
      */
 
-    var str;
+    var marker,
+        str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asXMLString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asXMLString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asXMLString = true;
+    this[marker] = true;
 
     try {
         str = '<instance type="' + TP.tname(this) + '">' +
@@ -952,10 +909,9 @@ function() {
                  '<\/instance>';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asXMLString;
 
     return str;
 });
@@ -2431,25 +2387,18 @@ function() {
      * @returns {String} An appropriate form for recreating the receiver.
      */
 
-    var err,
+    var marker,
+        err,
         msg,
-
         str,
-
         keys;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asSource) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asSource';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asSource = true;
+    this[marker] = true;
 
     err = this.at('object');
     if (TP.isError(err)) {
@@ -2475,10 +2424,9 @@ function() {
         str += this.$generateSourceSets(keys);
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asSource;
 
     return str;
 });
@@ -2496,23 +2444,17 @@ function() {
      *     receiver.
      */
 
-    var err,
+    var marker,
+        err,
         msg,
-
         str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asDumpString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asString = true;
+    this[marker] = true;
 
     err = this.at('object');
     if (TP.isError(err)) {
@@ -2530,10 +2472,9 @@ function() {
                 '(' + msg + ')';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asString;
 
     return str;
 });
@@ -2549,23 +2490,17 @@ function() {
      * @returns {String} The receiver in HTML string format.
      */
 
-    var err,
+    var marker,
+        err,
         msg,
-
         str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asHTMLString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asHTMLString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asHTMLString = true;
+    this[marker] = true;
 
     err = this.at('object');
     if (TP.isValid(err)) {
@@ -2593,10 +2528,9 @@ function() {
 
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asHTMLString;
 
     return str;
 });
@@ -2612,23 +2546,17 @@ function() {
      * @returns {String} A JSON-formatted string.
      */
 
-    var err,
+    var marker,
+        err,
         msg,
-
         str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asJSONSource) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asJSONSource';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asJSONSource = true;
+    this[marker] = true;
 
     err = this.at('object');
     if (TP.isValid(err)) {
@@ -2656,10 +2584,9 @@ function() {
 
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asJSONSource;
 
     return str;
 });
@@ -2677,23 +2604,17 @@ function() {
      *     the receiver.
      */
 
-    var err,
+    var marker,
+        err,
         msg,
-
         str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asPrettyString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asPrettyString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asPrettyString = true;
+    this[marker] = true;
 
     err = this.at('object');
     if (TP.isValid(err)) {
@@ -2725,10 +2646,9 @@ function() {
 
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asPrettyString;
 
     return str;
 });
@@ -2746,7 +2666,8 @@ function(verbose) {
      * @returns {String} The receiver as a String
      */
 
-    var err,
+    var marker,
+        err,
         msg,
         wantsVerbose,
         str;
@@ -2757,18 +2678,12 @@ function(verbose) {
                 this.toString().split(TP.OID_PREFIX).last();
     }
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asString = true;
+    this[marker] = true;
 
     err = this.at('object');
     if (TP.isValid(err)) {
@@ -2783,10 +2698,9 @@ function(verbose) {
                 '(' + msg + ')';
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asString;
 
     return str;
 });
@@ -2802,23 +2716,17 @@ function() {
      * @returns {String} The receiver in XML string format.
      */
 
-    var err,
+    var marker,
+        err,
         msg,
-
         str;
 
-    //  If this flag is set to true, that means that we're already trying to
-    //  format this object as part of larger object set and we may have an
-    //  endless recursion problem if there are circular references and we
-    //  let this formatting operation proceed. Therefore, we just return the
-    //  'recursion' format of the object.
-    if (this.$$format_asXMLString) {
-        return TP.recursion(this);
+    //  Trap recursion around potentially nested object structures.
+    marker = '$$recursive_asXMLString';
+    if (TP.owns(this, marker)) {
+        return TP.recursion(this, marker);
     }
-
-    //  Set the recursion flag so that we don't endless recurse when
-    //  producing circular representations of this object and its members.
-    this.$$format_asXMLString = true;
+    this[marker] = true;
 
     err = this.at('object');
     if (TP.isValid(err)) {
@@ -2844,10 +2752,9 @@ function() {
 
     } catch (e) {
         str = this.toString();
+    } finally {
+        delete this[marker];
     }
-
-    //  We're done - we can remove the recursion flag.
-    delete this.$$format_asXMLString;
 
     return str;
 });
