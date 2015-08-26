@@ -11091,6 +11091,20 @@ function(aNode) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
+    //  If the node is an Element and it has an attribute of 'tibet:noawaken',
+    //  then skip processing it.
+    if (TP.isElement(aNode) &&
+        TP.elementHasAttribute(aNode, 'tibet:noawaken', true)) {
+        return;
+    }
+
+    //  If the node has an ancestor Element that has an attribute of
+    //  'tibet:noawaken', then skip processing it.
+    if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
+                                    aNode, 'tibet:noawaken', null, true))) {
+        return;
+    }
+
     //  Allocate a tag processor and initialize it with the ATTACH_PHASES
     processor = TP.core.TagProcessor.constructWithPhaseTypes(
                                     TP.core.TagProcessor.ATTACH_PHASES);
