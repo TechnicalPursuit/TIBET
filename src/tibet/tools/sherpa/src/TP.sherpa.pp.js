@@ -170,7 +170,7 @@ function(anObject, optFormat) {
     if (TP.notEmpty(anObject.message)) {
         str = this.fromString(anObject.message);
     } else {
-        str = TP.sc('Error');
+        str = '';
     }
 
     if (TP.sys.shouldLogStack() &&
