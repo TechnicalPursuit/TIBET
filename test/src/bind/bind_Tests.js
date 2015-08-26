@@ -8835,6 +8835,265 @@ function() {
     }).timeout(10000);
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: delete from repeat',
+function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    //  ---
+
+    this.it('delete from repeat - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLDelete.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    deleteFirstRowButton,
+                    deleteLastRowButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                deleteFirstRowButton =
+                    TP.byId('deleteFirstRow', windowContext);
+
+                deleteLastRowButton =
+                    TP.byId('deleteLastRow', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Delete the first row
+
+                test.getDriver().startSequence().
+                    click(deleteFirstRowButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField1', windowContext).get('value'),
+                            'Jones');
+                    });
+
+                //  Delete the last row
+
+                test.getDriver().startSequence().
+                    click(deleteLastRowButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        //  There should only be 2 text fields left under the
+                        //  repeater.
+                        var repeater,
+                            fields;
+
+                        repeater = TP.byId('repeater', windowContext);
+
+                        fields = TP.byCSSPath('input', repeater);
+
+                        test.assert.isSizeOf(fields, 2);
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('delete from repeat - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONDelete.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    deleteFirstRowButton,
+                    deleteLastRowButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                deleteFirstRowButton =
+                    TP.byId('deleteFirstRow', windowContext);
+
+                deleteLastRowButton =
+                    TP.byId('deleteLastRow', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Delete the first row
+
+                test.getDriver().startSequence().
+                    click(deleteFirstRowButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField0', windowContext).get('value'),
+                            'Jones');
+                    });
+
+                //  Delete the last row
+
+                test.getDriver().startSequence().
+                    click(deleteLastRowButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        //  There should only be 2 text fields left under the
+                        //  repeater.
+                        var repeater,
+                            fields;
+
+                        repeater = TP.byId('repeater', windowContext);
+
+                        fields = TP.byCSSPath('input', repeater);
+
+                        test.assert.isSizeOf(fields, 2);
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('delete from repeat - JavaScript Object data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjDelete.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    deleteFirstRowButton,
+                    deleteLastRowButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                deleteFirstRowButton =
+                    TP.byId('deleteFirstRow', windowContext);
+
+                deleteLastRowButton =
+                    TP.byId('deleteLastRow', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Delete the first row
+
+                test.getDriver().startSequence().
+                    click(deleteFirstRowButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            TP.byId('lastNameField0', windowContext).get('value'),
+                            'Jones');
+                    });
+
+                //  Delete the last row
+
+                test.getDriver().startSequence().
+                    click(deleteLastRowButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        //  There should only be 2 text fields left under the
+                        //  repeater.
+                        var repeater,
+                            fields;
+
+                        repeater = TP.byId('repeater', windowContext);
+
+                        fields = TP.byCSSPath('input', repeater);
+
+                        test.assert.isSizeOf(fields, 2);
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
