@@ -6873,13 +6873,16 @@ function(stateObj, title, aURL, fromDoc) {
 
     //  work around bug(s) on chrome et. al. which fire popstate on pushState
     try {
+
         this.set('popstate', false);
+
         if (TP.sys.cfg('log.history')) {
             TP.debug('pushState(' + JSON.stringify(state) +
                     ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
+
         result = this.getNativeWindow().history.pushState(
-            state, title || '', url);
+                    state, title || '', url);
 
         if (TP.isTrue(fromDoc)) {
             return;
