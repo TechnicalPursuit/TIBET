@@ -757,8 +757,9 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.AttachDataPhase',      //  model construct et. al.
     'TP.core.AttachInfoPhase',      //  other info tags (acl:, dnd:, etc)
     'TP.core.AttachBindsPhase',     //  data bindings in the bind: namespace
-    'TP.core.AttachStylePhase'      //  CSS is last so display: none can flip
-                                    //  late
+    'TP.core.AttachStylePhase',     //  CSS is near end so display: none can
+                                    //  flip late
+    'TP.core.AttachCompletePhase'
     ));
 
 //  A set of phase types used when 'detaching' content from a visual DOM
@@ -772,7 +773,8 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.DetachBindsPhase',
     'TP.core.DetachInfoPhase',
     'TP.core.DetachEventsPhase',
-    'TP.core.DetachDOMPhase'
+    'TP.core.DetachDOMPhase',
+    'TP.core.DetachCompletePhase'
     ));
 
 //  A set of phase types used when 'compiling' or transforming content from one
@@ -2037,6 +2039,35 @@ function() {
 });
 
 //  ========================================================================
+//  TP.core.AttachCompletePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachCompletePhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachCompletePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachCompletePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachComplete';
+});
+
+//  ========================================================================
 //  TP.core.DetachDOMPhase
 //  ========================================================================
 
@@ -2330,6 +2361,35 @@ function() {
      */
 
     return 'tagDetachStyle';
+});
+
+//  ========================================================================
+//  TP.core.DetachCompletePhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachCompletePhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachCompletePhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachCompletePhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachComplete';
 });
 
 //  ------------------------------------------------------------------------
