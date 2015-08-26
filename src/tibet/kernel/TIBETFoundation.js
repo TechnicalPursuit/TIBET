@@ -6455,6 +6455,11 @@ function(attributeName) {
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
+        pathStr = path.asString();
+        if (pathStr === '.') {
+            return this;
+        }
+
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
         //  and invoke with an apply(). Otherwise, we make an Array that has our
@@ -6640,6 +6645,11 @@ function(attributeName) {
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
+        pathStr = path.asString();
+        if (pathStr === '.') {
+            return this;
+        }
+
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
         //  and invoke with an apply(). Otherwise, we make an Array that has our
@@ -6731,6 +6741,11 @@ function(attributeName) {
     //  access path, then invoke the path.
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
+
+        pathStr = path.asString();
+        if (pathStr === '.') {
+            return this;
+        }
 
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
