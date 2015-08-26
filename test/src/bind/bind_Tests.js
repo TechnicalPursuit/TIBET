@@ -8508,6 +8508,333 @@ function() {
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: insert into repeat',
+function() {
+
+    var unloadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+        });
+
+    //  ---
+
+    this.it('insert into repeat - XML data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLInsert.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    insertBeforeBeginButton,
+                    insertAfterBeginButton,
+                    insertBeforeEndButton,
+                    insertAfterEndButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                insertBeforeBeginButton =
+                    TP.byId('insertBeforeBegin', windowContext);
+
+                insertAfterBeginButton =
+                    TP.byId('insertAfterBegin', windowContext);
+
+                insertBeforeEndButton =
+                    TP.byId('insertBeforeEnd', windowContext);
+
+                insertAfterEndButton =
+                    TP.byId('insertAfterEnd', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Insert empty row before the first row
+
+                test.getDriver().startSequence().
+                    click(insertBeforeBeginButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField1', windowContext).get('value'));
+                    });
+
+                //  Insert empty row after the first row
+
+                test.getDriver().startSequence().
+                    click(insertAfterBeginButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField2', windowContext).get('value'));
+                    });
+
+                //  Insert empty row before the last row
+
+                test.getDriver().startSequence().
+                    click(insertBeforeEndButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField5', windowContext).get('value'));
+                    });
+
+                //  Insert empty row after the last row
+
+                test.getDriver().startSequence().
+                    click(insertAfterEndButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField7', windowContext).get('value'));
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('insert into repeat - JSON data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONInsert.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    insertBeforeBeginButton,
+                    insertAfterBeginButton,
+                    insertBeforeEndButton,
+                    insertAfterEndButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                insertBeforeBeginButton =
+                    TP.byId('insertBeforeBegin', windowContext);
+
+                insertAfterBeginButton =
+                    TP.byId('insertAfterBegin', windowContext);
+
+                insertBeforeEndButton =
+                    TP.byId('insertBeforeEnd', windowContext);
+
+                insertAfterEndButton =
+                    TP.byId('insertAfterEnd', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Insert empty row before the first row
+
+                test.getDriver().startSequence().
+                    click(insertBeforeBeginButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField0', windowContext).get('value'));
+                    });
+
+                //  Insert empty row after the first row
+
+                test.getDriver().startSequence().
+                    click(insertAfterBeginButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField1', windowContext).get('value'));
+                    });
+
+                //  Insert empty row before the last row
+
+                test.getDriver().startSequence().
+                    click(insertBeforeEndButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField4', windowContext).get('value'));
+                    });
+
+                //  Insert empty row after the last row
+
+                test.getDriver().startSequence().
+                    click(insertAfterEndButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField6', windowContext).get('value'));
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+
+    //  ---
+
+    this.it('insert into repeat - JavaScript Object data source', function(test, options) {
+
+        var loadURI;
+
+        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjInsert.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    insertBeforeBeginButton,
+                    insertAfterBeginButton,
+                    insertBeforeEndButton,
+                    insertAfterEndButton;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_person'),
+                        'TP.sig.ValueChange');
+
+                insertBeforeBeginButton =
+                    TP.byId('insertBeforeBegin', windowContext);
+
+                insertAfterBeginButton =
+                    TP.byId('insertAfterBegin', windowContext);
+
+                insertBeforeEndButton =
+                    TP.byId('insertBeforeEnd', windowContext);
+
+                insertAfterEndButton =
+                    TP.byId('insertAfterEnd', windowContext);
+
+                //  NB: We start with 3 rows
+
+                //  Insert empty row before the first row
+
+                test.getDriver().startSequence().
+                    click(insertBeforeBeginButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField0', windowContext).get('value'));
+                    });
+
+                //  Insert empty row after the first row
+
+                test.getDriver().startSequence().
+                    click(insertAfterBeginButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField1', windowContext).get('value'));
+                    });
+
+                //  Insert empty row before the last row
+
+                test.getDriver().startSequence().
+                    click(insertBeforeEndButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField4', windowContext).get('value'));
+                    });
+
+                //  Insert empty row after the last row
+
+                test.getDriver().startSequence().
+                    click(insertAfterEndButton).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEmpty(
+                        TP.byId('lastNameField6', windowContext).get('value'));
+                    });
+
+                //  Unload the current page by setting it to the blank
+                test.getDriver().setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    }).timeout(10000);
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
