@@ -58,13 +58,13 @@ function(aRequest) {
     //  the watch/unwatch happens.
     if (tpElem.hasAttribute('autorefresh')) {
         tpElem.setAttrAutorefresh(TP.bc(tpElem.getAttribute('autorefresh')));
+    } else {
+        //  If we didn't have an autorefresh attribute, then just set a blank
+        //  one in case anyone is binding to it.
+        tpElem.setAttribute('autorefresh', '');
     }
 
     tpElem.shouldSignalChange(true);
-
-    if (TP.bc(tpElem.getAttribute('triggerOnAttach')) === true) {
-        tpElem.trigger();
-    }
 
     return;
 });
