@@ -48,6 +48,7 @@ function(aCondition, aComment, aFaultString) {
      * @param {String} aComment A human-readable comment String.
      * @param {String} aFaultString A String detailing the fault. This will be
      *     appended to the comment if it's supplied.
+     * @returns {Boolean} True if the assertion succeeded, false if it failed.
      */
 
     var comment,
@@ -63,6 +64,8 @@ function(aCondition, aComment, aFaultString) {
 
         this.get('currentTestCase').fail(message);
     }
+
+    return aCondition;
 });
 
 //  ------------------------------------------------------------------------
@@ -80,6 +83,8 @@ function(anArgArray, aCount, aComment) {
      * @param {String} aComment The comment to use when reporting that the
      *     argument Array does not have the required minimum number of
      *     arguments.
+     * @returns {Boolean} True if the supplied arg array had at least the number
+     *     of items given by the supplied count.
      */
 
     var comment;
@@ -91,7 +96,7 @@ function(anArgArray, aCount, aComment) {
     //  "minimum" count.
 
     if (anArgArray.length >= aCount) {
-        return;
+        return true;
     }
 
     comment = TP.isEmpty(aComment) ? '' : aComment + ' ';
@@ -100,6 +105,8 @@ function(anArgArray, aCount, aComment) {
         TP.join(comment,
                 TP.sc('Expected ', aCount, ' argument(s).',
                         ' Got ', anArgArray.length, '.')));
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -114,6 +121,7 @@ function(aCondition, aComment, aFaultString) {
      * @param {String} aComment A human-readable comment String.
      * @param {String} aFaultString A String detailing the fault. This will be
      *     appended to the comment if it's supplied.
+     * @returns {Boolean} True if the assertion succeeded, false if it failed.
      */
 
     var condition,
@@ -181,14 +189,14 @@ function(methodName, methodBody) {
 TP.test.TestMethodCollection.defineAssertion('isA',
 function(anObject, aType, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.validate(anObject, aType),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a ', aType, '.'));
-
-    return;
+    return this.assert(
+            TP.validate(anObject, aType),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a ', aType, '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -196,14 +204,14 @@ function(anObject, aType, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isEnhanced',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isEnhanced(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an enhanced object.'));
-
-    return;
+    return this.assert(
+            TP.isEnhanced(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an enhanced object.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -211,14 +219,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isKindOf',
 function(anObject, aType, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isKindOf(anObject, aType),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a kind of ', aType, '.'));
-
-    return;
+    return this.assert(
+            TP.isKindOf(anObject, aType),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a kind of ', aType, '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -226,14 +234,14 @@ function(anObject, aType, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isMemberOf',
 function(anObject, aType, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isMemberOf(anObject, aType),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a member of ', aType, '.'));
-
-    return;
+    return this.assert(
+            TP.isMemberOf(anObject, aType),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a member of ', aType, '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -241,14 +249,14 @@ function(anObject, aType, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isMutable',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isMutable(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be mutable.'));
-
-    return;
+    return this.assert(
+            TP.isMutable(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be mutable.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -256,14 +264,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNamespace',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isNamespace(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a namespace.'));
-
-    return;
+    return this.assert(
+            TP.isNamespace(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a namespace.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -271,14 +279,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNativeType',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isNativeType(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a native type.'));
-
-    return;
+    return this.assert(
+            TP.isNativeType(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a native type.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -286,14 +294,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isPrototype',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isPrototype(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a prototype.'));
-
-    return;
+    return this.assert(
+            TP.isPrototype(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a prototype.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -301,14 +309,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isReferenceType',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isReferenceType(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a reference type.'));
-
-    return;
+    return this.assert(
+            TP.isReferenceType(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a reference type.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -316,15 +324,15 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isSubtypeOf',
 function(anObject, aType, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isSubtypeOf(anObject, aType),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be a subtype of: ' + TP.name(aType)));
-
-    return;
+    return this.assert(
+            TP.isSubtypeOf(anObject, aType),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to be a subtype of: ' + TP.name(aType)));
 });
 
 //  ------------------------------------------------------------------------
@@ -332,14 +340,14 @@ function(anObject, aType, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isType',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isType(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a type.'));
-
-    return;
+    return this.assert(
+            TP.isType(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a type.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -347,14 +355,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isTypeName',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isTypeName(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a type name.'));
-
-    return;
+    return this.assert(
+            TP.isTypeName(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a type name.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -364,15 +372,15 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('canInvoke',
 function(anObject, aMethodName, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.canInvoke(anObject, aMethodName),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' could invoke ', aMethodName, '.'));
-
-    return;
+    return this.assert(
+            TP.canInvoke(anObject, aMethodName),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' could invoke ', aMethodName, '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -380,14 +388,14 @@ function(anObject, aMethodName, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isCallable',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isCallable(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be callable.'));
-
-    return;
+    return this.assert(
+            TP.isCallable(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be callable.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -395,15 +403,15 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isAttribute',
 function(anObject, anAttributeName, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isProperty(anObject, anAttributeName) &&
-            !TP.isMethod(anObject[anAttributeName]),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an attribute.'));
-
-    return;
+    return this.assert(
+            TP.isProperty(anObject, anAttributeName) &&
+                !TP.isMethod(anObject[anAttributeName]),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an attribute.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -411,14 +419,14 @@ function(anObject, anAttributeName, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isGlobal',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isGlobal(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a global.'));
-
-    return;
+    return this.assert(
+            TP.isGlobal(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a global.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -426,14 +434,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isGlobalMethod',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isGlobalMethod(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a global method.'));
-
-    return;
+    return this.assert(
+            TP.isGlobalMethod(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a global method.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -441,14 +449,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isInstMethod',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isInstMethod(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an instance method.'));
-
-    return;
+    return this.assert(
+            TP.isInstMethod(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an instance method.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -456,14 +464,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isLocalMethod',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isLocalMethod(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a local method.'));
-
-    return;
+    return this.assert(
+            TP.isLocalMethod(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a local method.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -471,14 +479,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isMethod',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isMethod(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a method.'));
-
-    return;
+    return this.assert(
+            TP.isMethod(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a method.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -486,15 +494,15 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isOwnProperty',
 function(anObject, aPropertyName, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isOwnProperty(anObject, aPropertyName),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to have an "own" property of:',
-                aPropertyName, '.'));
-
-    return;
+    return this.assert(
+            TP.isOwnProperty(anObject, aPropertyName),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to have an "own" property of:',
+                    aPropertyName, '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -502,15 +510,15 @@ function(anObject, aPropertyName, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isProperty',
 function(anObject, aPropertyName, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isProperty(anObject, aPropertyName),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to have a property of:',
-                aPropertyName, '.'));
-
-    return;
+    return this.assert(
+            TP.isProperty(anObject, aPropertyName),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to have a property of:',
+                    aPropertyName, '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -518,14 +526,14 @@ function(anObject, aPropertyName, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isTypeMethod',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isTypeMethod(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a type method.'));
-
-    return;
+    return this.assert(
+            TP.isTypeMethod(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a type method.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -535,15 +543,15 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isArgArray',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isArgArray(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be an "arguments" object.'));
-
-    return;
+    return this.assert(
+            TP.isArgArray(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to be an "arguments" object.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -551,14 +559,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isArray',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isArray(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an Array.'));
-
-    return;
+    return this.assert(
+            TP.isArray(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an Array.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -566,14 +574,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isBoolean',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isBoolean(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Boolean.'));
-
-    return;
+    return this.assert(
+            TP.isBoolean(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Boolean.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -581,14 +589,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isCollection',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isCollection(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a collection.'));
-
-    return;
+    return this.assert(
+            TP.isCollection(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a collection.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -596,14 +604,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDate',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isDate(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Date.'));
-
-    return;
+    return this.assert(
+            TP.isDate(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Date.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -611,14 +619,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isError',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isError(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an Error.'));
-
-    return;
+    return this.assert(
+            TP.isError(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an Error.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -626,14 +634,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isEvent',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isEvent(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an Event.'));
-
-    return;
+    return this.assert(
+            TP.isEvent(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an Event.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -641,14 +649,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isFunction',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isFunction(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Function.'));
-
-    return;
+    return this.assert(
+            TP.isFunction(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Function.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -656,14 +664,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isIFrameWindow',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isIFrameWindow(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an iframe.'));
-
-    return;
+    return this.assert(
+            TP.isIFrameWindow(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an iframe.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -671,14 +679,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isMediaQueryList',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isMediaQueryList(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a media query list.'));
-
-    return;
+    return this.assert(
+            TP.isMediaQueryList(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a media query list.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -686,14 +694,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNaN',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isNaN(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be NaN.'));
-
-    return;
+    return this.assert(
+            TP.isNaN(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be NaN.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -701,14 +709,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNumber',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isNumber(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Number.'));
-
-    return;
+    return this.assert(
+            TP.isNumber(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Number.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -716,14 +724,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isPair',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isPair(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a "pair".'));
-
-    return;
+    return this.assert(
+            TP.isPair(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a "pair".'));
 });
 
 //  ------------------------------------------------------------------------
@@ -731,14 +739,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isRegExp',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isRegExp(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a RegExp.'));
-
-    return;
+    return this.assert(
+            TP.isRegExp(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a RegExp.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -746,14 +754,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isString',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isString(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a String.'));
-
-    return;
+    return this.assert(
+            TP.isString(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a String.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -761,14 +769,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isStyleDeclaration',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isStyleDeclaration(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a style declaration.'));
-
-    return;
+    return this.assert(
+            TP.isStyleDeclaration(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a style declaration.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -776,14 +784,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isStyleRule',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isStyleRule(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a style rule.'));
-
-    return;
+    return this.assert(
+            TP.isStyleRule(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a style rule.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -791,14 +799,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isStyleSheet',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isStyleSheet(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a style sheet.'));
-
-    return;
+    return this.assert(
+            TP.isStyleSheet(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a style sheet.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -806,14 +814,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isURI',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isURI(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a URI.'));
-
-    return;
+    return this.assert(
+            TP.isURI(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a URI.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -821,14 +829,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isWindow',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isWindow(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Window.'));
-
-    return;
+    return this.assert(
+            TP.isWindow(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Window.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -836,14 +844,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isXHR',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isXHR(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an XHR object.'));
-
-    return;
+    return this.assert(
+            TP.isXHR(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an XHR object.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -853,14 +861,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isFalse',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isFalse(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be false.'));
-
-    return;
+    return this.assert(
+            TP.isFalse(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be false.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -868,14 +876,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isFalsey',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isFalsey(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be false-like.'));
-
-    return;
+    return this.assert(
+            TP.isFalsey(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be false-like.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -883,14 +891,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isTrue',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isTrue(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be true.'));
-
-    return;
+    return this.assert(
+            TP.isTrue(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be true.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -898,14 +906,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isTruthy',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isTruthy(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be true-like.'));
-
-    return;
+    return this.assert(
+            TP.isTruthy(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be true-like.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -915,14 +923,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDefined',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isDefined(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be defined.'));
-
-    return;
+    return this.assert(
+            TP.isDefined(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be defined.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -930,14 +938,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isEmpty',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isEmpty(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be empty.'));
-
-    return;
+    return this.assert(
+            TP.isEmpty(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be empty.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -945,14 +953,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNull',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isNull(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be null.'));
-
-    return;
+    return this.assert(
+            TP.isNull(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be null.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -960,14 +968,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isValid',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isValid(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be defined and non-null.'));
-
-    return;
+    return this.assert(
+            TP.isValid(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be defined and non-null.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -977,14 +985,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isBlank',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isBlank(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be blank.'));
-
-    return;
+    return this.assert(
+            TP.isBlank(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be blank.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -992,15 +1000,15 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('contains',
 function(anObject, someContent, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.contains(anObject, someContent),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to contain ', TP.id(someContent)));
-
-    return;
+    return this.assert(
+            TP.contains(anObject, someContent),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to contain ', TP.id(someContent)));
 });
 
 //  ------------------------------------------------------------------------
@@ -1008,15 +1016,15 @@ function(anObject, someContent, aComment) {
 TP.test.TestMethodCollection.defineAssertion('hasKey',
 function(anObject, aKeyName, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.keys(anObject).contains(aKeyName),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to have a key of: ' + aKeyName));
-
-    return;
+    return this.assert(
+            TP.keys(anObject).contains(aKeyName),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to have a key of: ' + aKeyName));
 });
 
 //  ------------------------------------------------------------------------
@@ -1024,14 +1032,14 @@ function(anObject, aKeyName, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isEmpty',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isEmpty(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be empty.'));
-
-    return;
+    return this.assert(
+            TP.isEmpty(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be empty.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1039,14 +1047,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isSizeOf',
 function(anObject, aCount, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(TP.size(anObject), aCount),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be size of: ', aCount));
-
-    return;
+    return this.assert(
+            TP.equal(TP.size(anObject), aCount),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be size of: ', aCount));
 });
 
 //  ------------------------------------------------------------------------
@@ -1054,14 +1062,14 @@ function(anObject, aCount, aComment) {
 TP.test.TestMethodCollection.defineAssertion('matches',
 function(anObject, aValue, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isTrue(aValue.test(anObject)),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to match ', TP.id(aValue), '.'));
-
-    return;
+    return this.assert(
+            TP.isTrue(aValue.test(anObject)),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to match ', TP.id(aValue), '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1071,15 +1079,15 @@ function(anObject, aValue, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isEqualAs',
 function(anObject, aValue, aType, aComment) {
 
-    this.assertMinArguments(arguments, 3);
+    if (!this.assertMinArguments(arguments, 3)) {
+        return false;
+    }
 
-    this.assert(
-        TP.sc(anObject, aValue).equalAs(aType),
-        aComment,
-        TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
-                ' to be equal as ', TP.name(aType), 's.'));
-
-    return;
+    return this.assert(
+            TP.sc(anObject, aValue).equalAs(aType),
+            aComment,
+            TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
+                    ' to be equal as ', TP.name(aType), 's.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1087,15 +1095,15 @@ function(anObject, aValue, aType, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isEqualTo',
 function(anObject, aValue, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(anObject, aValue),
-        aComment,
-        TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
-                ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(anObject, aValue),
+            aComment,
+            TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
+                    ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1103,15 +1111,15 @@ function(anObject, aValue, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isIdenticalTo',
 function(anObject, aValue, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.identical(anObject, aValue),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
-                ' to be identical.'));
-
-    return;
+    return this.assert(
+            TP.identical(anObject, aValue),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' and ', TP.id(aValue),
+                    ' to be identical.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1123,17 +1131,17 @@ function(anObject, attrName, aValue, aComment) {
 
     var val;
 
-    this.assertMinArguments(arguments, 3);
+    if (!this.assertMinArguments(arguments, 3)) {
+        return false;
+    }
 
     val = TP.elementGetAttribute(anObject, attrName, true);
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected attribute value ', val,
-                ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected attribute value ', val,
+                    ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1145,14 +1153,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.hash(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected hash ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected hash ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1164,14 +1172,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.htmlstr(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected HTML ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected HTML ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1183,14 +1191,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.json(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected JSON ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected JSON ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1202,14 +1210,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.src(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected JS source ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected JS source ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1221,14 +1229,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.str(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
+    return this.assert(
         TP.equal(val, aValue),
         aComment,
         TP.sc('Expected string ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1240,14 +1248,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.uri(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected URI ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected URI ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1259,14 +1267,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.val(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected value ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected value ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1278,14 +1286,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.xhtmlstr(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected XHTML ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected XHTML ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1297,14 +1305,14 @@ function(anObject, aValue, aComment) {
 
     val = TP.xmlstr(anObject);
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected XML ', val, ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected XML ', val, ' and ', aValue, ' to be equal.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1316,17 +1324,17 @@ function(anObject, anAttributeName, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.ElementNode.
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.elementHasAttribute(obj, anAttributeName),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to have an attribute of: ' + anAttributeName));
-
-    return;
+    return this.assert(
+            TP.elementHasAttribute(obj, anAttributeName),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to have an attribute of: ' + anAttributeName));
 });
 
 //  ------------------------------------------------------------------------
@@ -1336,16 +1344,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.AttributeNode.
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isAttributeNode(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an attribute node.'));
-
-    return;
+    return this.assert(
+            TP.isAttributeNode(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an attribute node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1358,20 +1366,20 @@ function(anObject, anotherObject, aComment) {
 
         childNodes;
 
-    this.assertMinArguments(arguments, 2);
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
     obj = TP.unwrap(anObject);
     otherObj = TP.unwrap(anotherObject);
 
     childNodes = TP.nodeGetChildNodes(obj);
 
-    this.assert(
-        childNodes.contains(otherObj, TP.IDENTITY),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be a child of ', TP.id(anotherObject)));
-
-    return;
+    return this.assert(
+            childNodes.contains(otherObj, TP.IDENTITY),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to be a child of ', TP.id(anotherObject)));
 });
 
 //  ------------------------------------------------------------------------
@@ -1381,16 +1389,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.CommentNode.
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isCommentNode(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Comment node.'));
-
-    return;
+    return this.assert(
+            TP.isCommentNode(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Comment node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1400,16 +1408,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.CDATASectionNode.
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isCDATASectionNode(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a CDATASection node.'));
-
-    return;
+    return this.assert(
+            TP.isCDATASectionNode(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a CDATASection node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1419,16 +1427,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.* (CollectionNode of some sort)
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isCollectionNode(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a collection node.'));
-
-    return;
+    return this.assert(
+            TP.isCollectionNode(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a collection node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1438,16 +1446,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.DocumentNode
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isDocument(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Document.'));
-
-    return;
+    return this.assert(
+            TP.isDocument(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Document.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1457,16 +1465,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.ElementNode.
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isElement(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
-
-    return;
+    return this.assert(
+            TP.isElement(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1476,16 +1484,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.DocumentFragmentNode.
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isFragment(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a document fragment.'));
-
-    return;
+    return this.assert(
+            TP.isFragment(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a document fragment.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1505,16 +1513,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.HTMLDocumentNode
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isHTMLDocument(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an HTML document.'));
-
-    return;
+    return this.assert(
+            TP.isHTMLDocument(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an HTML document.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1524,16 +1532,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.* (HTML Node of some sort)
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isHTMLNode(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an HTML node.'));
-
-    return;
+    return this.assert(
+            TP.isHTMLNode(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an HTML node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1541,14 +1549,14 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isJSONString',
 function(aString, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
-    this.assert(
-        TP.isJSONString(aString),
-        aComment,
-        TP.sc('Expected ', TP.str(aString), ' to be a JSON string.'));
-
-    return;
+    return this.assert(
+            TP.isJSONString(aString),
+            aComment,
+            TP.sc('Expected ', TP.str(aString), ' to be a JSON string.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1556,16 +1564,16 @@ function(aString, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNode',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Strict test - we don't unwrap here.
 
-    this.assert(
-        TP.isNode(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Node.'));
-
-    return;
+    return this.assert(
+            TP.isNode(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a Node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1573,16 +1581,16 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNamedNodeMap',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Strict test - we don't unwrap here.
 
-    this.assert(
-        TP.isNamedNodeMap(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a NamedNodeMap.'));
-
-    return;
+    return this.assert(
+            TP.isNamedNodeMap(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a NamedNodeMap.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1590,16 +1598,16 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNodeList',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Strict test - we don't unwrap here.
 
-    this.assert(
-        TP.isNodeList(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a NodeList.'));
-
-    return;
+    return this.assert(
+            TP.isNodeList(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a NodeList.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1607,22 +1615,29 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isNodeType',
 function(anObject, aNodeType, aComment) {
 
-    this.assertMinArguments(arguments, 2);
+    var isNode,
+        isNodeType;
+
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
     //  Strict test - we don't unwrap here.
 
-    this.assert(
-        TP.isNode(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a Node.'));
+    isNode = this.assert(
+                TP.isNode(anObject),
+                aComment,
+                TP.sc('Expected ', TP.id(anObject), ' to be a Node.'));
 
-    this.assert(
-        anObject.nodeType === aNodeType,
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be a type #', aNodeType, ' Node.'));
+    isNodeType = this.assert(
+                    anObject.nodeType === aNodeType,
+                    aComment,
+                    TP.sc('Expected ', TP.id(anObject),
+                            ' to be a type #', aNodeType, ' Node.'));
 
-    return;
+    /* eslint-disable no-extra-parens */
+    return (isNode && isNodeType);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -1630,17 +1645,17 @@ function(anObject, aNodeType, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isProcessingInstructionNode',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Strict test - we don't unwrap here.
 
-    this.assert(
-        TP.isPINode(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject),
-                ' to be a ProcessingInstruction node.'));
-
-    return;
+    return this.assert(
+            TP.isPINode(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to be a ProcessingInstruction node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1648,16 +1663,16 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isSVGNode',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Strict test - we don't unwrap here.
 
-    this.assert(
-        TP.isSVGNode(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an SVG Node.'));
-
-    return;
+    return this.assert(
+            TP.isSVGNode(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an SVG Node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1665,16 +1680,16 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isTextNode',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Strict test - we don't unwrap here.
 
-    this.assert(
-        TP.isTextNode(anObject),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be a text Node.'));
-
-    return;
+    return this.assert(
+            TP.isTextNode(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a text Node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1694,16 +1709,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.XMLDocumentNode
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isXHTMLDocument(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an XHTML document.'));
-
-    return;
+    return this.assert(
+            TP.isXHTMLDocument(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an XHTML document.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1713,16 +1728,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.* (HTML Node of some sort)
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isXHTMLNode(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an XHTML node.'));
-
-    return;
+    return this.assert(
+            TP.isXHTMLNode(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an XHTML node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1742,16 +1757,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.HTMLDocumentNode
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isXMLDocument(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an XML document.'));
-
-    return;
+    return this.assert(
+            TP.isXMLDocument(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an XML document.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1761,16 +1776,16 @@ function(anObject, aComment) {
 
     var obj;
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.* (HTML Node of some sort)
     obj = TP.unwrap(anObject);
-    this.assert(
-        TP.isXMLNode(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an XML node.'));
-
-    return;
+    return this.assert(
+            TP.isXMLNode(obj),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be an XML node.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1790,6 +1805,10 @@ function(aTarget, aSignal) {
         eventMatcher,
 
         hadMatch;
+
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
     if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {
         this.assert(
@@ -1933,12 +1952,10 @@ function(aTarget, aSignal) {
     //  Try the match.
     hadMatch = TP.signal.calledWith(originMatcher, signalMatcher, eventMatcher);
 
-    this.assert(
-        hadMatch,
-        TP.sc('Expected ', TP.id(aTarget),
-                ' to have signaled ', signalName, '.'));
-
-    return;
+    return this.assert(
+            hadMatch,
+            TP.sc('Expected ', TP.id(aTarget),
+                    ' to have signaled ', signalName, '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1947,9 +1964,13 @@ TP.test.TestMethodCollection.defineAssertion('raises',
 function(aFunction, anException) {
 
     var name,
-        exception;
+        exception,
 
-    this.assertMinArguments(arguments, 2);
+        retVal;
+
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
     if (TP.isValid(anException)) {
         name = TP.isString(anException) ? anException : TP.name(anException);
@@ -1969,26 +1990,30 @@ function(aFunction, anException) {
         if (TP.isValid(exception)) {
             if (TP.isEmpty(name)) {
                 this.assert(true);
+                retVal = true;
             } else if (TP.str(exception) === name) {
                 this.assert(true);
+                retVal = true;
             } else {
                 this.assert(
                     false,
                     TP.sc('Expected function to raise',
                                 TP.notEmpty(name) ? ' ' + name : '.',
                             ' but raised ', TP.str(exception)));
+                retVal = false;
             }
         } else {
             this.assert(
                 false,
                 TP.sc('Expected function to raise',
                         TP.notEmpty(name) ? ' ' + name : '.'));
+            retVal = false;
         }
     } finally {
         TP.raise.restore();
     }
 
-    return;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -1997,9 +2022,13 @@ TP.test.TestMethodCollection.defineAssertion('signals',
 function(aFunction, aSignal) {
 
     var name,
-        signal;
+        signal,
 
-    this.assertMinArguments(arguments, 2);
+        retVal;
+
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
     if (TP.isValid(aSignal)) {
         name = TP.isString(aSignal) ? aSignal : TP.name(aSignal);
@@ -2025,23 +2054,28 @@ function(aFunction, aSignal) {
     if (TP.isValid(signal)) {
         if (TP.isEmpty(name)) {
             this.assert(true);
+            retVal = true;
         } else if (TP.str(signal).indexOf(name) !== TP.NOT_FOUND) {
             this.assert(true);
+            retVal = true;
         } else {
             this.assert(
                 false,
                 TP.sc('Expected function to signal',
                             TP.notEmpty(name) ? ' ' + name : '.',
                         ' but signaled ' + TP.str(signal)));
+            retVal = false;
         }
     } else {
         this.assert(
             false,
             TP.sc('Expected function to signal',
                     TP.notEmpty(name) ? ' ' + name : '.'));
+
+        retVal = false;
     }
 
-    return;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -2050,9 +2084,13 @@ TP.test.TestMethodCollection.defineAssertion('throws',
 function(aFunction, anError) {
 
     var name,
-        type;
+        type,
 
-    this.assertMinArguments(arguments, 2);
+        retVal;
+
+    if (!this.assertMinArguments(arguments, 2)) {
+        return false;
+    }
 
     if (TP.isValid(anError)) {
         name = TP.isString(anError) ?
@@ -2066,15 +2104,17 @@ function(aFunction, anError) {
 
     try {
         aFunction();
+
         //  Didn't throw. That's a fail for this particular assertion.
-        this.assert(
-            false,
-            TP.sc('Expected function to throw',
-                    TP.notEmpty(name) ? ' ' + name : '.'));
+        retVal = this.assert(
+                        false,
+                        TP.sc('Expected function to throw',
+                                TP.notEmpty(name) ? ' ' + name : '.'));
     } catch (e) {
         //  success if e matches what's expected
         if (e instanceof type) {
             this.assert(true);
+            retVal = true;
         } else {
             //  Didn't throw what we expected.
             this.assert(
@@ -2082,10 +2122,11 @@ function(aFunction, anError) {
                 TP.sc('Expected function to throw',
                             TP.notEmpty(name) ? ' ' + name : ' Error',
                         ' but threw ' + TP.tname(e)));
+            retVal = false;
         }
     }
 
-    return;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -2137,7 +2178,10 @@ function() {
 TP.test.TestMethodCollection.defineAssertion('isActive',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isActive(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be active.');
 
@@ -2151,7 +2195,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isBusy',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isBusy(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be busy.');
 
@@ -2165,7 +2212,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isClosed',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isClosed(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be closed.');
 
@@ -2179,7 +2229,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDisabled',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isDisabled(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be disabled.');
 
@@ -2193,24 +2246,31 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDisplayed',
 function(anObject, aComment) {
 
-    var obj;
+    var obj,
 
-    this.assertMinArguments(arguments, 1);
+        isElem,
+        isDisplayed;
+
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.ElementNode.
     obj = TP.unwrap(anObject);
 
-    this.assert(
-        TP.isElement(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
+    isElem = this.assert(
+                TP.isElement(obj),
+                aComment,
+                TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
 
-    this.assert(
-        TP.elementIsDisplayed(obj),
-        aComment,
-        TP.sc('Expected ', TP.id(anObject), ' to be displayed.'));
+    isDisplayed = this.assert(
+                    TP.elementIsDisplayed(obj),
+                    aComment,
+                    TP.sc('Expected ', TP.id(anObject), ' to be displayed.'));
 
-    return;
+    /* eslint-disable no-extra-parens */
+    return (isElem && isDisplayed);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2218,7 +2278,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isEnabled',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(!TP.isDisabled(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be enabled.');
 
@@ -2232,7 +2295,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isFocused',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isFocused(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be focused.');
 
@@ -2246,7 +2312,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isInactive',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(!TP.isActive(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be inactive.');
 
@@ -2260,7 +2329,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isInvisible',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be invisible.');
 
@@ -2274,7 +2346,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isOpen',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(!TP.isClosed(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be open.');
 
@@ -2288,7 +2363,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isReadonly',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isReadonly(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be readonly.');
 
@@ -2302,7 +2380,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isRelevant',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isRelevant(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be relevant.');
 
@@ -2316,7 +2397,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isRequired',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isRequired(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be required.');
 
@@ -2330,7 +2414,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isSelected',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.isSelected(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be selected.');
 
@@ -2344,7 +2431,10 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isVisible',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(!TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be visible.');
 
@@ -2370,7 +2460,10 @@ function() {
 TP.test.TestMethodCollection.defineAssertion('isInputInvalid',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(TP.notValid(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to have invalid input.');
 
@@ -2394,7 +2487,10 @@ function() {
 TP.test.TestMethodCollection.defineAssertion('isInputValid',
 function(anObject, aComment) {
 
-    this.assertMinArguments(arguments, 1);
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
     //this.assert(!TP.notValid(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to have valid input.');
 
@@ -2413,19 +2509,19 @@ function(anObject, aProperty, aValue, aComment) {
     var obj,
         val;
 
-    this.assertMinArguments(arguments, 3);
+    if (!this.assertMinArguments(arguments, 3)) {
+        return false;
+    }
 
     //  Just in case we got handed a TP.core.ElementNode.
     obj = TP.unwrap(anObject);
     val = TP.elementGetComputedStyleProperty(obj, aProperty);
 
-    this.assert(
-        TP.equal(val, aValue),
-        aComment,
-        TP.sc('Expected style property ', aProperty, ' with value ', val,
-                ' and ', aValue, ' to be equal.'));
-
-    return;
+    return this.assert(
+            TP.equal(val, aValue),
+            aComment,
+            TP.sc('Expected style property ', aProperty, ' with value ', val,
+                    ' and ', aValue, ' to be equal.'));
 });
 
 //  ========================================================================
