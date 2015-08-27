@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 
 <xctrls:radioitem xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-    xmlns:pclass="urn:tibet:pseudoclass"
-    xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
-    xmlns:ev="http://www.w3.org/2001/xml-events"
     tibet:captures="TP.sig.DOMMouseDown TP.sig.DOMMouseUp TP.sig.DOMMouseOver TP.sig.DOMMouseOut TP.sig.DOMFocus TP.sig.DOMBlur TP.sig.DOMClick"
     ev:event="TP.sig.DOMClick"
-    ev:observer="{{@id}}"
-    class="item {{@class}}"
+    ev:observer="{{$SOURCE.(@id)}}"
+    class="item {{$SOURCE.(@class)}}"
     hidefocus="true">
-    {{./xctrls:label}}
-    <html:span id="{{@id}_value" tibet:pelem="value"/>
-    {{./xctrls:hint}}
-    {{./xctrls:value}}
+    {{$SOURCE.(./xctrls:label)}}
+    <html:span id="{{$SOURCE.(@id)}}_value" tibet:pelem="value"/>
+    {{$SOURCE.(./xctrls:hint)}}
+    {{$SOURCE.(./xctrls:value)}}
 </xctrls:radioitem>
 

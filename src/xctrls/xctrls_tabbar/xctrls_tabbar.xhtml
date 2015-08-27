@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 
 <xctrls:tabbar xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-    xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
-    xmlns:ev="http://www.w3.org/2001/xml-events"
     tibet:ctrl="xctrls:tabbar"
     tibet:captures="TP.sig.DOMClick"
     ev:event="TP.sig.DOMClick"
-    ev:observer="{{@id}}"
+    ev:observer="{{$SOURCE.(@id)}}"
     hidefocus="true">
-    {{./xctrls:tabitem}}
+    {{$SOURCE.(./xctrls:tabitem)}}
     <div class="shadow"/>
 </xctrls:tabbar>
 

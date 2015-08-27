@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 
 <xctrls:drawerbox xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
-        xmlns:pclass="urn:tibet:pseudoclass"
-        xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
         tibet:ctrl="xctrls:drawerbox"
-        class="CURTAIN_TIER {{@class}}"
+        class="CURTAIN_TIER {{$SOURCE.(@class)}}"
         pclass:hidden="true">
-    {{./xctrls:body}}
+    {{$SOURCE.(./xctrls:body)}}
 </xctrls:drawerbox>
 
