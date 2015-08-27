@@ -7,10 +7,11 @@
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-xctrls|curtain
-{
-	display: block;
+xctrls|curtain {
 	position: absolute;
+
+    top: 0px;
+    left: 0px;
 
 	width: 100%;
 	height: 100%;
@@ -27,7 +28,6 @@ xctrls|curtain
 /* doesn't work in any browser:
 xctrls|curtain:visible
 */
-xctrls|curtain:not([pclass|hidden])
-{
+xctrls|curtain:not([pclass|hidden]) {
 	visibility: visible;
 }
