@@ -136,34 +136,6 @@ TP.html.iframe.Type.set('booleanAttrs', TP.ac('seamless', 'allowFullscreen'));
 //  IFRAME elements are also UI canvases just like windows
 TP.html.iframe.addTraits(TP.core.UICanvas);
 
-TP.html.iframe.Type.resolveTraits(
-    TP.ac('cmdGetContent', 'cmdSetContent', 'construct',
-            'constructContentObject', 'fromObject', 'fromString',
-            'fromTP_sig_Signal', 'getConcreteType', 'handleSignal'),
-        TP.html.CoreAttrs);
-
-TP.html.iframe.Inst.resolveTraits(
-    TP.ac('asArray', 'asDumpString', 'asHTMLNode', 'asHTMLString', 'asHash',
-            'asJSONSource', 'asPrettyString', 'asSource', 'asString',
-            'asXHTMLNode', 'asXHTMLString', 'asXMLNode', 'asXMLString', 'at',
-            'atPut', 'canResolveDNU', 'changed', 'collapse', 'collect',
-            'collectGet', 'collectInvoke', 'contains', 'containsKey',
-            'containsValue', 'convert', 'defineBinding', 'destroyBinding',
-            'detectInvoke', 'detectMax', 'detectMin', 'equalTo', 'first',
-            'flatten', 'get', 'getCanvasID', 'getContent', 'getContentMIMEType',
-            'getContentNode', 'getGlobalID', 'getID', 'getItems', 'getKVPairs',
-            'getKeys', 'getLocalID', 'getLocalName', 'getName',
-            'getNextResponder', 'getPairs', 'getProperty', 'getSize',
-            'getValue', 'getValues', 'grep', 'grepKeys', 'groupBy',
-            'identicalTo', 'init', 'injectInto', 'isResponderFor', 'last',
-            'observe', 'orderedBy', 'partition', 'perform', 'performInvoke',
-            'performOver', 'performSet', 'performUntil', 'performWhile',
-            'processTP_sig_Request', 'refresh', 'reject', 'removeKey',
-            'removeKeys', 'resolveDNU', 'resume', 'select', 'set', 'setContent',
-            'setID', 'setProperty', 'setValue', 'shouldSignalChange', 'signal',
-            'suspend', 'transform'),
-        TP.html.CoreAttrs);
-
 TP.html.iframe.Type.set('uriAttrs', TP.ac('src', 'longdesc'));
 
 //  ------------------------------------------------------------------------

@@ -32,11 +32,6 @@ TP.html.area.Type.resolveTraits(
         TP.html.area);
 
 TP.html.area.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.html.area.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 

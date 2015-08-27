@@ -92,11 +92,6 @@ TP.html.CoreAttrs.defineSubtype('br');
 TP.html.br.addTraits(TP.core.EmptyElementNode);
 
 TP.html.br.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.html.br.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 

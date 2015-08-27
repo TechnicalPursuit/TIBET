@@ -378,11 +378,6 @@ TP.html.Attrs.defineSubtype('param');
 TP.html.param.addTraits(TP.core.EmptyElementNode);
 
 TP.html.param.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.html.param.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
@@ -418,11 +413,6 @@ TP.html.track.Type.set('uriAttrs', TP.ac('src'));
 TP.html.track.Type.set('booleanAttrs', TP.ac('default'));
 
 TP.html.track.addTraits(TP.core.EmptyElementNode);
-
-TP.html.track.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
 
 TP.html.track.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),

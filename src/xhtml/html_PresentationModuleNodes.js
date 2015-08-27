@@ -85,11 +85,6 @@ TP.html.hr.addTraits(TP.core.EmptyElementNode);
 TP.html.hr.Type.resolveTrait('booleanAttrs', TP.html.Element);
 
 TP.html.hr.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.html.hr.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 

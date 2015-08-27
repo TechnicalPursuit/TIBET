@@ -32,11 +32,6 @@ TP.html.img.Type.resolveTraits(
         TP.html.img);
 
 TP.html.img.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.html.img.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 

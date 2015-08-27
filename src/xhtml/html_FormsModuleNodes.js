@@ -1194,11 +1194,6 @@ TP.html.input.Type.resolveTraits(
         TP.html.input);
 
 TP.html.input.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
-TP.html.input.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
 
@@ -3306,11 +3301,6 @@ TP.html.inputText.Type.resolveTraits(
         TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
         TP.html.inputText);
 
-TP.html.inputText.Type.resolveTraits(
-        TP.ac('fromBoolean', 'fromDate', 'fromNumber', 'fromString',
-                'generateMarkup', 'getConcreteType', 'shouldAutoWrapItems'),
-        TP.html.input);
-
 TP.html.inputText.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
@@ -3318,10 +3308,6 @@ TP.html.inputText.Inst.resolveTraits(
 TP.html.inputText.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
-
-TP.html.inputText.Inst.resolveTraits(
-        TP.ac('isSingleValued', 'isScalarValued'),
-        TP.html.input);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -3414,11 +3400,6 @@ TP.html.inputUrl.Type.resolveTraits(
         TP.ac('bidiAttrs', 'booleanAttrs', 'uriAttrs'),
         TP.html.inputUrl);
 
-TP.html.inputUrl.Type.resolveTraits(
-        TP.ac('fromBoolean', 'fromDate', 'fromNumber', 'fromString',
-                'generateMarkup', 'getConcreteType', 'shouldAutoWrapItems'),
-        TP.html.input);
-
 TP.html.inputUrl.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
@@ -3426,10 +3407,6 @@ TP.html.inputUrl.Inst.resolveTraits(
 TP.html.inputUrl.Inst.resolveTraits(
         TP.ac('getContent', 'setContent'),
         TP.core.EmptyElementNode);
-
-TP.html.inputUrl.Inst.resolveTraits(
-        TP.ac('isSingleValued', 'isScalarValued'),
-        TP.html.input);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
