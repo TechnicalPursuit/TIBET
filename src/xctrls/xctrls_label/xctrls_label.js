@@ -19,14 +19,14 @@ TP.core.UIElementNode.defineSubtype('xctrls:label');
 
 TP.xctrls.label.addTraits(TP.xctrls.Element);
 
-TP.xctrls.label.Type.resolveTraits(
-        TP.ac('cmdRunContent', 'tagCompile'),
-        TP.xctrls.Element);
+//  ------------------------------------------------------------------------
+//  Type Attribute
+//  ------------------------------------------------------------------------
 
-TP.xctrls.label.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
+//  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
+//  design.
+TP.xctrls.label.defineAttribute('styleURI', TP.NO_RESULT);
+TP.xctrls.label.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  end

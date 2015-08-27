@@ -19,14 +19,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:notifier');
 
 TP.xctrls.notifier.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
-TP.xctrls.notifier.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.notifier.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.notifier.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

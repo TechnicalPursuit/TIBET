@@ -20,13 +20,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:listbox');
 TP.xctrls.listbox.addTraits(TP.xctrls.Element, TP.xctrls.MultiItemElement,
                             TP.core.TemplatedNode);
 
-TP.xctrls.listbox.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.listbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.listbox.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
 TP.xctrls.listbox.Inst.resolveTrait('addItem', TP.xctrls.MultiItemElement);
 
 //  ------------------------------------------------------------------------

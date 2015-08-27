@@ -19,14 +19,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:drawerbox');
 
 TP.xctrls.drawerbox.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
-TP.xctrls.drawerbox.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.drawerbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.drawerbox.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

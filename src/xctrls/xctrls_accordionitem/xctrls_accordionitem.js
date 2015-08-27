@@ -18,15 +18,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:accordionitem');
 
 TP.xctrls.accordionitem.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
-TP.xctrls.accordionitem.Type.resolveTraits(
-        TP.ac('cmdRunContent', 'tagCompile'),
-        TP.xctrls.Element);
-
-TP.xctrls.accordionitem.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

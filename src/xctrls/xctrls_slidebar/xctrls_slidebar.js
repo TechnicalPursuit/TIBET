@@ -19,14 +19,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:slidebar');
 
 TP.xctrls.slidebar.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
-TP.xctrls.slidebar.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.slidebar.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.slidebar.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------

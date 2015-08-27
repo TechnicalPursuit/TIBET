@@ -19,15 +19,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:clipbox');
 
 TP.xctrls.clipbox.addTraits(TP.xctrls.Element);
 
-TP.xctrls.clipbox.Type.resolveTraits(
-        TP.ac('cmdRunContent', 'tagCompile'),
-        TP.xctrls.Element);
-
-TP.xctrls.clipbox.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

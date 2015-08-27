@@ -19,14 +19,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:button');
 
 TP.xctrls.button.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
-TP.xctrls.button.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.button.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.button.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

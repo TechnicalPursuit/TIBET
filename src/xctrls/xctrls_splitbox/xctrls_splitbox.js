@@ -19,14 +19,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:splitbox');
 
 TP.xctrls.splitbox.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
-TP.xctrls.splitbox.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.splitbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.splitbox.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

@@ -20,13 +20,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:log');
 TP.xctrls.log.addTraits(TP.xctrls.Element, TP.xctrls.MultiItemElement,
                         TP.core.TemplatedNode);
 
-TP.xctrls.log.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.log.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.log.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
 TP.xctrls.log.Inst.resolveTrait('addItem', TP.xctrls.MultiItemElement);
 
 //  ------------------------------------------------------------------------

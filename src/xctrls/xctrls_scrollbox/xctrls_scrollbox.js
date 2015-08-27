@@ -19,14 +19,6 @@ TP.core.UIElementNode.defineSubtype('xctrls:scrollbox');
 
 TP.xctrls.scrollbox.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
-TP.xctrls.scrollbox.Type.resolveTrait('cmdRunContent', TP.xctrls.Element);
-TP.xctrls.scrollbox.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-TP.xctrls.scrollbox.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.xctrls.Element);
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

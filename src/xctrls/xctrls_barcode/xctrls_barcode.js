@@ -26,11 +26,6 @@ TP.xctrls.barcode.Type.resolveTraits(
 TP.xctrls.barcode.Type.resolveTrait('tshExecute',
                                         TP.core.PipeSegmentElementNode);
 
-TP.xctrls.barcode.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'act', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
-        TP.core.UIElementNode);
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
