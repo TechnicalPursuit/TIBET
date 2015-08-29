@@ -102,8 +102,7 @@
         "                       '                    `/\n" +
         "                                             /,\n" +
         "                                             `/\n" +
-        "                                              /\n" +
-        "                                              '";
+        "                                              /";
     /* eslint-enable: quotes, no-multi-str */
 
     //  Log it now so the user gets immediate feedback the server is starting.
