@@ -103,7 +103,7 @@ self.addEventListener(
                         msgResult.result.push(arguments[i]);
                     }
 
-                    self.postMessage(msgResult);
+                    self.postMessage(JSON.stringify(msgResult));
                 };
 
                 //  Push the callback function onto the end of the '.params'
@@ -134,7 +134,7 @@ self.addEventListener(
 
                 //  Post the message result back to the code that triggered this
                 //  worker.
-                self.postMessage(msgResult);
+                self.postMessage(JSON.stringify(msgResult));
             }
 
             return;

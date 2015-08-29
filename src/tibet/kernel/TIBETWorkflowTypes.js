@@ -7554,7 +7554,7 @@ function(name, body, async) {
 
                             //  Run the Promise resolver with the result data
                             //  returned in the message event.
-                            return resolver(e.data.result);
+                            return resolver(JSON.parse(e.data).result);
                         };
 
                         workerThread.onerror = function(e) {
