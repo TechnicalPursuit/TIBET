@@ -7631,12 +7631,33 @@ TP.core.LESSWorker.Type.defineConstant('SETUP_STRING',
 'window = self; window.document = { getElementsByTagName: function(tagName) { if (tagName === "script") { return [{dataset: {}}]; } else if (tagName === "style") { return []; } else if (tagName === "link") { return []; } } };');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.LESSWorker.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Initializes the type.
+     */
+
+    //  We allocate a maximum of 2 workers in our pool to compile LESS.
+    this.set('$maxWorkerCount', 2);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  a worker thread object used by this object to interface with the worker
 //  thread.
-TP.core.LESSWorker.Inst.defineAttribute('$workerIsSetUp');
+TP.core.LESSWorker.Inst.defineAttribute('$workerIsSettingUp');
+
+//  the Promise that will be fulfilled when the setup process is complete.
+TP.core.LESSWorker.Inst.defineAttribute('$setupPromise');
 
 //  ------------------------------------------------------------------------
 
@@ -7654,7 +7675,9 @@ function(srcText, options) {
      */
 
     var opts,
-        resultFunc;
+        resultFunc,
+
+        setupPromise;
 
     if (TP.isEmpty(srcText)) {
         return this.raise('InvalidString', 'Invalid LESSCSS source text');
@@ -7684,24 +7707,29 @@ function(srcText, options) {
                     return output.css;
                 };
 
+    setupPromise = this.get('$setupPromise');
+
     //  If our worker isn't set up, do so and then call our 'compileLESS' method
     //  that will dispatch over into the worker.
-    if (!this.get('$workerIsSetUp')) {
+    if (TP.notValid(setupPromise) &&
+        TP.notTrue(this.get('$workerIsSettingUp'))) {
+
+        //  Flip our flag so that we don't do this again. We only flip this to
+        //  true once and don't flip it back so that the test above only
+        //  succeeds once.
+        this.set('$workerIsSettingUp', true);
 
         //  Evaluate the setup String, then import the copy of LESSCSS in the
         //  dependencies directory, then define a worker method that will
         //  'render' the LESSCSS code we hand to it (automagically sent over to
         //  the worker by this type).
-        return this.eval(this.getType().SETUP_STRING).then(
+        setupPromise = this.eval(this.getType().SETUP_STRING).then(
             function() {
 
                 //  Import the LESS library
                 return this.import(TP.uc('~lib_deps/less-tpi.min.js'));
             }.bind(this)).then(
             function() {
-
-                //  Flip our flag so that we don't do this again.
-                this.set('$workerIsSetUp', true);
 
                 //  Define the compilation 'worker method'. Note that worker
                 //  methods actually get shipped over to the worker thread, so
@@ -7721,6 +7749,8 @@ function(srcText, options) {
                 //  Then run the compilation 'worker method'.
                 return this.compileLESS(srcText, opts).
                                     then(function(results) {
+                                        this.set('$setupPromise', null);
+
                                         //  Return the worker to the pool
                                         //  when we're done, and make sure to
                                         //  pass along the results to the result
@@ -7731,6 +7761,52 @@ function(srcText, options) {
                                     }.bind(this)).then(resultFunc);
             }.bind(this));
 
+        //  Capture the setup Promise so that we can continue to chain onto it.
+        this.set('$setupPromise', setupPromise);
+
+        //  If the current worker count is equal to our max worker count, we
+        //  repool ourselves as we're the last worker available and we have the
+        //  capability to continue chaining onto the setup Promise as shown in
+        //  the following block.
+        if (this.getType().get('$currentWorkerCount') ===
+            this.getType().get('$maxWorkerCount')) {
+            this.repool();
+        }
+
+        //  Return the setup Promise so that more things can be chained onto it.
+        return setupPromise;
+
+    } else if (TP.isValid(setupPromise)) {
+
+        //  Otherwise, just run the compilation 'worker method'.
+        setupPromise = setupPromise.then(
+                function() {
+
+                    return this.compileLESS(srcText, opts).
+                                    then(function(results) {
+
+                                        //  Return the worker to the pool
+                                        //  when we're done, and make sure to
+                                        //  pass along the results to the result
+                                        //  function.
+                                        this.repool();
+
+                                        return results;
+                                    }.bind(this)).then(resultFunc);
+                }.bind(this));
+
+        this.set('$setupPromise', setupPromise);
+
+        //  If the current worker count is equal to our max worker count, we
+        //  repool ourselves as we're the last worker available and we have the
+        //  capability to continue chaining onto the setup Promise using the
+        //  logic in this block.
+        if (this.getType().get('$currentWorkerCount') ===
+            this.getType().get('$maxWorkerCount')) {
+            this.repool();
+        }
+
+        return setupPromise;
     } else {
 
         //  Otherwise, just run the compilation 'worker method'.
