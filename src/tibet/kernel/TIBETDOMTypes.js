@@ -5744,7 +5744,8 @@ function(tagType, aRequest) {
      *     receiver.
      */
 
-    var content;
+    var content,
+        request;
 
     if (!TP.isSubtypeOf(tagType, 'TP.core.ElementNode')) {
         return this.raise('TP.sig.InvalidType',
@@ -5757,7 +5758,10 @@ function(tagType, aRequest) {
         return this;
     }
 
-    return this.setContent(content, aRequest);
+    request = TP.request(aRequest);
+    request.atPutIfAbsent('tagType', tagType);
+
+    return this.setContent(content, request);
 });
 
 //  ------------------------------------------------------------------------
