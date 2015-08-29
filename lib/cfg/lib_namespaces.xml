@@ -191,7 +191,7 @@
     <property name="path.TP.xctrls.clipbox.style" value="~TP.xctrls.clipbox/xctrls_clipbox.css"/>
 
     <script src="xctrls/xctrls_curtain/xctrls_curtain.js"/>
-    <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/xctrls_curtain.css"/>
+    <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/xctrls_curtain.less"/>
     <property name="path.TP.xctrls.curtain.template" value="~TP.xctrls.curtain/xctrls_curtain.xhtml"/>
 
     <script src="xctrls/xctrls_dialog/xctrls_dialog.js"/>
