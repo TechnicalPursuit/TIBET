@@ -7215,8 +7215,15 @@ TP.core.Worker.isAbstract(true);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  a pool of worker objects, keyed by the worker type name
-TP.core.Worker.Type.defineAttribute('$workerPoolDict');
+//  a pool of worker objects, keyed by the worker type name. Note that this is a
+//  LOCAL attribute
+TP.core.Worker.defineAttribute('$workerPoolDict');
+
+//  the maximum number of workers allowed in the pool for this type
+TP.core.Worker.Type.defineAttribute('$maxWorkerCount');
+
+//  the total number of workers currently allocated for this type
+TP.core.Worker.Type.defineAttribute('$currentWorkerCount');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -7262,13 +7269,25 @@ function() {
     if (TP.notValid(pool = poolDict.at(this.getName()))) {
         pool = TP.ac();
         poolDict.atPut(this.getName(), pool);
+        this.set('$currentWorkerCount', 0);
     }
 
     //  If there are workers available for this receiving type, use one of them.
     if (TP.notEmpty(pool)) {
         worker = pool.shift();
-    } else {
+    } else if (this.get('$currentWorkerCount') < this.get('$maxWorkerCount')) {
+        //  Otherwise, if the current worker count is less than the max worker
+        //  count for this type, then go ahead and construct one and bump the
+        //  current count.
         worker = this.construct();
+        this.set('$currentWorkerCount', this.get('$currentWorkerCount') + 1);
+    } else {
+        //  Otherwise, the pool was empty and if we allocated another worker
+        //  we'd be over our max limit, so we warn.
+        TP.ifWarn() ?
+            TP.warn('Maximum number of workers reached for: ' +
+                    this.getName() +
+                    '.') : 0;
     }
 
     return worker;
