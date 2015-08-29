@@ -632,6 +632,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
         i,
 
+        docHead,
+
         loadFunc,
         count;
 
@@ -705,6 +707,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  document, so we must manually process them (i.e. create new ones using
     //  the same URLs and add them individually - then they will be invoked
     //  properly).
+
     //  But because of the way they are processed by browsers, and because of
     //  the way that certain browsers (Chrome) will retain information (and
     //  attempt to act on that information) about script elements even if they
@@ -717,13 +720,17 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                             'script',
                                             TP.w3.Xmlns.XHTML);
 
-    //  Loop over them and capture their 'src' URL.
+    //  Loop over them, capture their 'src' URL *and remove them from the
+    //  document*.
     for (i = 0; i < scripts.getSize(); i++) {
         scriptURLs.push(scripts.at(i).src);
+        TP.nodeDetach(scripts.at(i));
     }
 
     //  Append the new child into the target document
     TP.nodeAppendChild(aDocument, nodeContent, awakenContent);
+
+    docHead = TP.documentEnsureHeadElement(aDocument);
 
     //  Since script elements, if we have them and they have a 'src'
     //  attribute, may be processed and fully realized in an asynchronous
@@ -782,8 +789,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
     //  Now, using the scriptURLs Array as a queue, create a script element for
     //  each scriptURL, set its 'load' event handler to the Function it is
-    //  actually in, find the placeholder span and replace it. This will cause
-    //  the script to load and for the load handler to be called recursively.
+    //  actually in, and then append the new script element to the head. This
+    //  will cause the script to load and for the load handler to be called
+    //  recursively.
 
     //  This ensures that each script is loaded in order and is completely
     //  finished loading before the next script is loaded.
@@ -791,8 +799,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     loadFunc = function(evt) {
         var scriptURL,
 
-            newScript,
-            existingScript;
+            newScript;
 
         if (evt) {
             evt.target.removeEventListener('load', loadFunc, false);
@@ -808,23 +815,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                                     scriptURL);
             newScript.addEventListener('load', loadFunc, false);
 
-            //  Find the 'script' element that matches the script URL
-            existingScript = TP.byCSSPath('script[src="' + scriptURL + '"]',
-                                            aDocument,
-                                            true,
-                                            false);
-
-            //  Replace it with the new script. This will cause it to execute.
-            if (TP.isElement(existingScript)) {
-                TP.nodeReplaceChild(existingScript.parentNode,
-                                    newScript, existingScript,
-                                    false);
-            } else {
-                TP.ifWarn() ?
-                    TP.warn(
-                        'Couldn\'t find existing script element with URL: ' +
-                        scriptURL) : 0;
-            }
+            //  Append it into the document head.
+            TP.nodeAppendChild(docHead, newScript, false);
 
             //  Make sure to increment the count for the next pass!
             count++;
