@@ -133,7 +133,9 @@ function(lessLoc, lessText) {
             }
         });
 
-    lessParams = TP.hc('filename', lessLoc, 'globalVars', lessGlobalVars);
+    lessParams = TP.hc('filename', lessLoc,
+                        'rootpath', TP.uriCollectionPath(lessLoc),
+                        'globalVars', lessGlobalVars);
 
     ourDoc = this.getNativeDocument();
 
