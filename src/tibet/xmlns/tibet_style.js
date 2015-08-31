@@ -141,8 +141,18 @@ function(lessLoc, lessText) {
     lessWorker = TP.core.LESSWorker.getWorker();
     lessWorker.compile(lessText, lessParams).then(
             function(result) {
-                var existingStyleElem,
+                var cssText,
+                    cssImports,
+
+                    existingStyleElem,
                     compiledStyleElem;
+
+                if (TP.notValid(result)) {
+                    return;
+                }
+
+                cssText = result.at('css');
+                cssImports = result.at('imports');
 
                 //  If there is no existing 'style' element, create one and set
                 //  its content.
@@ -153,7 +163,7 @@ function(lessLoc, lessText) {
 
                     compiledStyleElem = TP.documentAddStyleElement(
                                             ourDoc,
-                                            result,
+                                            cssText,
                                             TP.unwrap(this).nextSibling);
 
                     TP.elementSetAttribute(
@@ -168,7 +178,7 @@ function(lessLoc, lessText) {
                 } else {
 
                     //  Otherwise, just set the content of the existing one.
-                    TP.styleElementSetContent(existingStyleElem, result);
+                    TP.styleElementSetContent(existingStyleElem, cssText);
                 }
 
                 //  Work around Chrome (and possibly others) stupidity

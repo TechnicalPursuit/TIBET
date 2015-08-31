@@ -7713,7 +7713,7 @@ function(srcText, options) {
                         return;
                     }
 
-                    return output.css;
+                    return TP.hc('css', output.css, 'imports', output.imports);
                 };
 
     setupPromise = this.get('$setupPromise');
