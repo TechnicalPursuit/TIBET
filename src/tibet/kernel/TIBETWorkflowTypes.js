@@ -7552,9 +7552,18 @@ function(name, body, async) {
 
                         workerThread.onmessage = function(e) {
 
+                            var data;
+
                             //  Run the Promise resolver with the result data
-                            //  returned in the message event.
-                            return resolver(JSON.parse(e.data).result);
+                            //  returned in the message event (if there is
+                            //  result data).
+                            data = JSON.parse(e.data);
+                            if (TP.isValid(data)) {
+                                return resolver(data.result);
+                            }
+
+                            //  No result data - so just call the resolver.
+                            return resolver();
                         };
 
                         workerThread.onerror = function(e) {
