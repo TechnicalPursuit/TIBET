@@ -118,7 +118,7 @@ describe('_cli.js', function() {
             s = [1, 2, 3];
             o = CLI.blend(t, s);
 
-            expect(o.toString()).to.equal([0, 2, 3].toString());
+            expect(o.toString()).to.equal([0, 1, 2, 3].toString());
         });
 
         it('blends into deeper objects with arrays', function() {
@@ -144,7 +144,7 @@ describe('_cli.js', function() {
             o = CLI.blend(t, s);
 
             expect(o.a).to.equal(0);
-            expect(o.b.toString()).to.equal([0, 2, 3].toString());
+            expect(o.b.toString()).to.equal([0, 1, 2, 3].toString());
         });
 
         it('blends into nasty nested things', function() {
@@ -156,7 +156,7 @@ describe('_cli.js', function() {
             s = {a: 1, b: [1, 2, {c: 3, d: 4, e: [9, 8, 7]}]};
             o = CLI.blend(t, s);
 
-            expect(o.b[2].e[1]).to.equal(8);
+            expect(o.b[3].e[1]).to.equal(8);
         });
     });
 });
