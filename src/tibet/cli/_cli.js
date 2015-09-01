@@ -310,7 +310,8 @@ CLI.isFalse = function(aReference) {
  * @returns {Boolean} True if the object is an Object.
  */
 CLI.isObject = function(obj) {
-    return Object.prototype.toString.call(obj) === '[object Object]';
+    return typeof obj === 'object' &&
+        Object.prototype.toString.call(obj) === '[object Object]';
 };
 
 CLI.isTrue = function(aReference) {
@@ -352,9 +353,7 @@ CLI.blend = function(target, source) {
 
     if (Array.isArray(target)) {
         if (!Array.isArray(source)) {
-            this.handleError(new Error('Incompatible Types'),
-                'blending', 'blend');
-            process.exit(1);
+            return target;
         }
 
         // Both arrays. Blend as best we can.
@@ -376,9 +375,7 @@ CLI.blend = function(target, source) {
 
         //  Target is complex object, but source isn't.
         if (!this.isObject(source)) {
-            this.handleError(new Error('Incompatible Types'),
-                'blending', 'blend');
-            process.exit(1);
+            return target;
         }
     } else {
         // Target not valid, source should overlay.

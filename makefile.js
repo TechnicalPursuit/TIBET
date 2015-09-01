@@ -640,7 +640,7 @@ targets.test_cli = function(make) {
     var result;
 
     make.log('starting mocha...');
-    result = nodecli.exec('mocha', '--ui bdd', '--reporter dot',
+    result = nodecli.exec('mocha', '--ui bdd', '--reporter spec',
             './test/mocha/cli_test.js');
 
     if (result.code !== 0) {
