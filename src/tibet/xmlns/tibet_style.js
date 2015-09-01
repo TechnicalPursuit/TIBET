@@ -93,21 +93,19 @@ function(lessLoc, lessText) {
      */
 
     var ourID,
-        generatedStyleID,
 
         cfg,
         lessGlobalVars,
 
+        natNode,
         ourDoc,
+        docHead,
 
         lessParams,
         lessWorker;
 
     //  Get our local ID, assigning it if necessary.
     ourID = this.getLocalID(true);
-
-    //  Compute an ID for our generated (real) CSS style sheet.
-    generatedStyleID = ourID + '_generated';
 
     //  Get all of the cfg variables starting with 'path.'
     cfg = TP.sys.cfg('path');
@@ -135,9 +133,13 @@ function(lessLoc, lessText) {
 
     lessParams = TP.hc('filename', lessLoc,
                         'rootpath', TP.uriCollectionPath(lessLoc),
-                        'globalVars', lessGlobalVars);
+                        'globalVars', lessGlobalVars,
+                        'elemID', ourID);
 
+    natNode = this.getNativeNode();
     ourDoc = this.getNativeDocument();
+
+    docHead = TP.documentEnsureHeadElement(ourDoc);
 
     //  Obtain a 'LESS worker' and ask it to compile the LESS text.
     lessWorker = TP.core.LESSWorker.getWorker();
@@ -145,9 +147,15 @@ function(lessLoc, lessText) {
             function(result) {
                 var cssText,
                     cssImports,
+                    cssElemID,
+                    styleElems,
+
+                    insertionPoint,
 
                     existingStyleElem,
-                    compiledStyleElem;
+                    compiledStyleElem,
+
+                    cssGeneratedID;
 
                 if (TP.notValid(result)) {
                     return;
@@ -156,26 +164,142 @@ function(lessLoc, lessText) {
                 cssText = result.at('css');
                 cssImports = result.at('imports');
 
-                //  If there is no existing 'style' element, create one and set
+                //  If there were valid compilation options (as set above in the
+                //  'lessParams' variable), extract the element ID as supplied
+                //  there. It is necessary to pass this above and use it here
+                //  since workers are asynchronous and closured variables are
+                //  inadequate.
+                if (TP.isValid(result.at('compilationOptions'))) {
+
+                    cssElemID = result.at('compilationOptions').at('elemID');
+                }
+
+                //  Because of a quirk of the way that we invoke the LESSCSS
+                //  processor (running it in a worker thread rather than in the
+                //  main UI canvas document), we need to manually ensure that
+                //  all of the referenced '@imports' are actually put into the
+                //  document.
+
+                //  Try to compute an insertion point for any '@import'ed
+                //  stylesheets by first looking for any other 'html:' or
+                //  'tibet:' style elements that contain the word 'import'
+                //  anywhere in their ID
+                styleElems = TP.byCSSPath('style[id*="import"]',
+                                                ourDoc,
+                                                false,      //  No autocollapse
+                                                false);     //  No wrap
+                if (TP.notEmpty(styleElems)) {
+                    //  Found one - insert after the last 'import' style
+                    //  element, which means before it's next sibling
+                    insertionPoint = styleElems.last().nextSibling;
+                } else {
+                    //  Otherwise, there are no 'import' style elements - see if
+                    //  there are any others.
+                    styleElems = TP.byCSSPath('style',
+                                                ourDoc,
+                                                false,      //  No autocollapse
+                                                false);     //  No wrap
+
+                    if (TP.notEmpty(styleElems)) {
+                        //  Insert before the first style element
+                        insertionPoint = styleElems.first();
+                    } else {
+                        insertionPoint = natNode;
+                    }
+                }
+
+                //  Note here that, in order to try to preserve CSS rule order,
+                //  we try to insert the '@imported' style sheets at the top.
+
+                cssImports.forEach(
+                        function(aPath) {
+                            var isCSS,
+                                extension,
+                                styleElem,
+
+                                sheetID;
+
+                            isCSS = false;
+
+                            //  If the extension is '.css', then we're dealing
+                            //  with a non-LESS CSS file.
+                            extension = TP.uriExtension(aPath);
+                            if (extension === 'css') {
+                                isCSS = true;
+                            }
+
+                            //  Compute an ID from the last part of the path
+                            //  followed by '_import'.
+                            sheetID = TP.uriName(aPath).replace('.', '_') +
+                                        '_import';
+                            styleElem = TP.byId(sheetID, ourDoc, false);
+
+                            //  If there isn't an existing style element with
+                            //  that name, create one and insert it.
+                            if (!TP.isElement(styleElem)) {
+
+                                if (isCSS) {
+                                    styleElem = TP.documentCreateElement(
+                                                    ourDoc,
+                                                    'style',
+                                                    TP.w3.Xmlns.XHTML);
+                                } else {
+                                    styleElem = TP.documentCreateElement(
+                                                    ourDoc,
+                                                    'tibet:style',
+                                                    TP.w3.Xmlns.TIBET);
+                                }
+
+                                TP.elementSetAttribute(
+                                                    styleElem,
+                                                    'href',
+                                                    aPath);
+
+                                TP.elementSetAttribute(
+                                                    styleElem,
+                                                    'id',
+                                                    sheetID);
+
+                                //  Go ahead and insert the new element - note
+                                //  here how we do *not* awaken the content -
+                                //  the MutationObserver machinery will take
+                                //  care of that.
+                                styleElem = TP.nodeInsertBefore(
+                                                    docHead,
+                                                    styleElem,
+                                                    insertionPoint,
+                                                    false);
+                            }
+                        });
+
+                //  If there is no existing native CSS 'style' element that
+                //  would've been generated for this element, create one and set
                 //  its content.
                 if (!TP.isElement(
                     existingStyleElem =
                     TP.byCSSPath(
-                        '[for="' + ourID + '"]', ourDoc, true, false))) {
+                        '[for="' + cssElemID + '"]', ourDoc, true, false))) {
+
+                    //  Always insert the 'compiled representation' just after
+                    //  the original.
+                    insertionPoint = natNode.nextSibling;
 
                     compiledStyleElem = TP.documentAddStyleElement(
-                                            ourDoc,
-                                            cssText,
-                                            TP.unwrap(this).nextSibling);
+                                                    ourDoc,
+                                                    cssText,
+                                                    insertionPoint);
 
+                    //  Compute and set an ID for our generated (real) CSS style
+                    //  sheet.
+                    cssGeneratedID = cssElemID + '_generated';
                     TP.elementSetAttribute(
-                            compiledStyleElem, 'id', generatedStyleID, true);
+                                compiledStyleElem, 'id', cssGeneratedID, true);
 
                     //  Set an attribute on our newly created style element that
                     //  links it back to the source element.
                     TP.elementSetAttribute(compiledStyleElem,
                                             'for',
-                                            ourID,
+                                            cssElemID,
                                             true);
                 } else {
 
