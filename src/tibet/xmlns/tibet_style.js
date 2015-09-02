@@ -151,7 +151,7 @@ function(lessLoc, lessText) {
                     docHead,
 
                     existingStyleElem,
-                    compiledStyleElem,
+                    generatedStyleElem,
 
                     cssGeneratedID;
 
@@ -181,31 +181,36 @@ function(lessLoc, lessText) {
                 //  all of the referenced '@imports' are actually put into the
                 //  document.
 
-                //  Try to compute an insertion point for any '@import'ed
-                //  stylesheets by first looking for any other 'html:' or
-                //  'tibet:' style elements that contain the word 'import'
-                //  anywhere in their ID
-                styleElems = TP.byCSSPath('style[id*="import"]',
+                if (TP.notEmpty(cssElemID) && cssElemID.endsWith('_import')) {
+                    insertionPoint = natNode;
+                } else {
+                    //  Try to compute an insertion point for any '@import'ed
+                    //  stylesheets by first looking for any other 'html:' or
+                    //  'tibet:' style elements that contain the word 'import'
+                    //  anywhere in their ID
+                    styleElems = TP.byCSSPath('style[id*="import"]',
                                                 natDoc,
                                                 false,      //  No autocollapse
                                                 false);     //  No wrap
-                if (TP.notEmpty(styleElems)) {
-                    //  Found one - insert after the last 'import' style
-                    //  element, which means before it's next sibling
-                    insertionPoint = styleElems.last().nextSibling;
-                } else {
-                    //  Otherwise, there are no 'import' style elements - see if
-                    //  there are any others.
-                    styleElems = TP.byCSSPath('style',
+                    if (TP.notEmpty(styleElems)) {
+                        //  Found one - insert after the last 'import' style
+                        //  element, which means before it's next sibling
+                        insertionPoint = styleElems.last().nextSibling;
+                    } else {
+                        //  Otherwise, there are no 'import' style elements -
+                        //  see if there are any others.
+                        styleElems = TP.byCSSPath(
+                                                'style',
                                                 natDoc,
                                                 false,      //  No autocollapse
                                                 false);     //  No wrap
 
-                    if (TP.notEmpty(styleElems)) {
-                        //  Insert before the first style element
-                        insertionPoint = styleElems.first();
-                    } else {
-                        insertionPoint = natNode;
+                        if (TP.notEmpty(styleElems)) {
+                            //  Insert before the first style element
+                            insertionPoint = styleElems.first();
+                        } else {
+                            insertionPoint = natNode;
+                        }
                     }
                 }
 
@@ -276,6 +281,44 @@ function(lessLoc, lessText) {
                                                     styleElem,
                                                     insertionPoint,
                                                     true);
+                            } else {
+
+                                //  The style element was already in the
+                                //  document (because another sheet brought it
+                                //  in), but it might not be positioned
+                                //  ahead of the element that's referencing it
+                                //  ('natNode' in this case).
+                                if (TP.nodeComparePosition(
+                                    natNode, styleElem, TP.FOLLOWING_NODE)) {
+
+                                    //  Detach it and reposition it in front of
+                                    //  the node that's referencing it.
+                                    TP.nodeDetach(styleElem);
+                                    TP.nodeInsertBefore(natNode.parentNode,
+                                                        styleElem,
+                                                        natNode,
+                                                        false);
+
+                                    //  See if it also already has a generated
+                                    //  representation.
+                                    generatedStyleElem =
+                                        TP.byId(
+                                            TP.lid(styleElem) + '_generated',
+                                            natDoc,
+                                            false);
+                                    if (TP.isElement(generatedStyleElem)) {
+
+                                        //  Detach it and reposition it in front
+                                        //  of the style element that it's a
+                                        //  generated representation of.
+                                        TP.nodeDetach(generatedStyleElem);
+                                        TP.nodeInsertBefore(
+                                                    styleElem.parentNode,
+                                                    generatedStyleElem,
+                                                    styleElem.nextSibling,
+                                                    false);
+                                    }
+                                }
                             }
                         });
 
@@ -300,7 +343,7 @@ function(lessLoc, lessText) {
                         insertionPoint = null;
                     }
 
-                    compiledStyleElem = TP.documentAddStyleElement(
+                    generatedStyleElem = TP.documentAddStyleElement(
                                                     natDoc,
                                                     cssText,
                                                     insertionPoint);
@@ -309,11 +352,11 @@ function(lessLoc, lessText) {
                     //  sheet.
                     cssGeneratedID = cssElemID + '_generated';
                     TP.elementSetAttribute(
-                                compiledStyleElem, 'id', cssGeneratedID, true);
+                                generatedStyleElem, 'id', cssGeneratedID, true);
 
                     //  Set an attribute on our newly created style element that
                     //  links it back to the source element.
-                    TP.elementSetAttribute(compiledStyleElem,
+                    TP.elementSetAttribute(generatedStyleElem,
                                             'for',
                                             cssElemID,
                                             true);
