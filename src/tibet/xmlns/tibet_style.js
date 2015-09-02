@@ -272,8 +272,8 @@ function(lessLoc, lessText) {
                                 //  here how we *always* awaken the content.
                                 //  Because we're being called asynchronously,
                                 //  it's impossible to tell if we're already
-                                //  part of an awaken cycle or not. Because of
-                                //  our check above to determine whether we
+                                //  part of an awaken cycle or not. But, because
+                                //  of our check above to determine whether we
                                 //  already exist, we don't have to worry about
                                 //  multiple awakenings.
                                 styleElem = TP.nodeInsertBefore(
