@@ -9267,7 +9267,21 @@ function(aWindow) {
                                                 canvasWindow.document);
 
                         if (TP.isElement(focusedElem)) {
-                            focusedElem.focus();
+                            //  Sometimes, it's a custom XML element that
+                            //  doesn't know how to focus.
+                            if (TP.canInvoke(focusedElem, 'focus')) {
+                                focusedElem.focus();
+                            } else {
+                                //  Otherwise, try a TIBET wrapper around the
+                                //  element.
+                                focusedElem = TP.wrap(focusedElem);
+                                if (TP.canInvoke(focusedElem, 'focus')) {
+                                    focusedElem.focus();
+                                } else {
+                                    TP.documentGetBody(
+                                                canvasWindow.document).focus();
+                                }
+                            }
                         } else {
                             TP.documentGetBody(canvasWindow.document).focus();
                         }
@@ -9288,7 +9302,20 @@ function(aWindow) {
                                                 canvasWindow.document);
 
                         if (TP.isElement(focusedElem)) {
-                            focusedElem.focus();
+                            //  Sometimes, it's a custom XML element that
+                            //  doesn't know how to focus.
+                            if (TP.canInvoke(focusedElem, 'focus')) {
+                                focusedElem.focus();
+                            } else {
+                                //  Otherwise, try a TIBET wrapper around the
+                                //  element.
+                                focusedElem = TP.wrap(focusedElem);
+                                if (TP.canInvoke(focusedElem, 'focus')) {
+                                    focusedElem.focus();
+                                } else {
+                                    canvasWindow.focus();
+                                }
+                            }
                         } else {
                             canvasWindow.focus();
                         }
