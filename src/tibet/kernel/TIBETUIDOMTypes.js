@@ -4327,6 +4327,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('setSelected',
+function(aFlag) {
+
+    /**
+     * @method setSelected
+     * @summary Set whether or not the receiver is selected.
+     * @param {Boolean} aFlag Whether or not the receiver should be selected.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    this.setAttrSelected(aFlag);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('toggleSelectedItem',
 function(oldItem, newItem) {
 
@@ -4340,12 +4357,17 @@ function(oldItem, newItem) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    if (!TP.isElement(oldItem) || !TP.isElement(newItem)) {
-        return this.raise('TP.sig.InvalidElement');
+    var item;
+
+    if (TP.isValid(oldItem)) {
+        item = TP.wrap(oldItem);
+        item.set('selected', false);
     }
 
-    TP.wrap(oldItem).set('selected', false);
-    TP.wrap(newItem).set('selected', true);
+    if (TP.isValid(newItem)) {
+        item = TP.wrap(newItem);
+        item.set('selected', true);
+    }
 
     return this;
 });
