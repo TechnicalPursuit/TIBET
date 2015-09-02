@@ -264,14 +264,18 @@ function(lessLoc, lessText) {
                                                     sheetID);
 
                                 //  Go ahead and insert the new element - note
-                                //  here how we do *not* awaken the content -
-                                //  the MutationObserver machinery will take
-                                //  care of that.
+                                //  here how we *always* awaken the content.
+                                //  Because we're being called asynchronously,
+                                //  it's impossible to tell if we're already
+                                //  part of an awaken cycle or not. Because of
+                                //  our check above to determine whether we
+                                //  already exist, we don't have to worry about
+                                //  multiple awakenings.
                                 styleElem = TP.nodeInsertBefore(
                                                     docHead,
                                                     styleElem,
                                                     insertionPoint,
-                                                    false);
+                                                    true);
                             }
                         });
 
