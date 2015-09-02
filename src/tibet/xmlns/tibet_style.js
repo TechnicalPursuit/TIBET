@@ -289,6 +289,17 @@ function(lessLoc, lessText) {
 
                     insertionPoint = natNode.nextSibling;
 
+                    //  Always insert the 'compiled representation' just after
+                    //  the original. Make sure that if it's not an Element or
+                    //  if it has been detached (which can happen due to DOM
+                    //  structural changes when content is being loaded -
+                    //  sometimes <script> elements are moved around, for
+                    //  instance), that we set the insertion point to null.
+                    if (!TP.isElement(insertionPoint) ||
+                        TP.nodeIsDetached(insertionPoint)) {
+                        insertionPoint = null;
+                    }
+
                     compiledStyleElem = TP.documentAddStyleElement(
                                                     natDoc,
                                                     cssText,
