@@ -350,8 +350,8 @@ function(anOrigin, aSignal, aState, wantsFullName) {
     //  that all handlerName values start with 'handle'.
     if (TP.regex.SIGNAL_PREFIX.test(signame)) {
         if (TP.notTrue(wantsFullName)) {
-            // Contracting will remove any prefixing in splits between key
-            // sequences or other signal chains.
+            //  Contracting will remove any prefixing in splits between key
+            //  sequences or other signal chains.
             handlerName = 'handle' + TP.contractSignalName(signame);
         } else {
             handlerName = 'handle' + TP.escapeTypeName(signame);

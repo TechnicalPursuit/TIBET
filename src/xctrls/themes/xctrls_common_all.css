@@ -9,6 +9,7 @@
 /* All disabled controls */
 
 *[data-theme] xctrls|*[pclass|disabled] {
+
 	pointer-events: none;
 	cursor: default;
 
