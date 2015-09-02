@@ -2,8 +2,10 @@
 	CSS styles for 'xctrls:button' controls for the 'tpi' theme.
 */
 
-@import url('../xctrls_button_all.css');
-@import url('xctrls_common.css');
+@import (reference) url('xctrls_variables_tpi.less');
+
+@import url('../xctrls_button_all.less');
+@import url('xctrls_common_tpi.less');
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
@@ -11,7 +13,10 @@
 /* The button */
 
 *[data-theme="tpi"] xctrls|button {
-    border-radius: 4px;
+
+    border-width: @xctrls_button-border-width;
+    border-style: @xctrls_button-border-style;
+    border-radius: @xctrls_button-border-radius;
 }
 
 /* Hovering over the button */
@@ -47,14 +52,15 @@
 
 *[data-theme="tpi"] xctrls|button > xctrls|label {
 
-    color: black;
+    font-family: @xctrls_button-font-family;
+    color: @xctrls_button-font-color-normal;
 }
 
 /* Hovering over the button, label must highlight */
 
 *[data-theme="tpi"] xctrls|button:hover > xctrls|label {
 
-    color: #D59D6E;
+    color: @xctrls_button-font-color-hover;
 }
 
 /* Focusing on the button, label must highlight */
@@ -64,7 +70,7 @@
 */
 *[data-theme="tpi"] xctrls|button[pclass|focus] > xctrls|label {
 
-    color: #46A3C9;
+    color: @xctrls_button-font-color-focus;
 }
 
 /* Clicking down on the button, label must highlight */
@@ -74,7 +80,7 @@
 */
 *[data-theme="tpi"] xctrls|button[pclass|active] > xctrls|label {
 
-    color: #D23E3E;
+    color: @xctrls_button-font-color-active;
 }
 
 /* The button is disabled, so is the label */
@@ -84,6 +90,6 @@
 */
 *[data-theme="tpi"] xctrls|button[pclass|disabled] > xctrls|label {
 
-    color: #444444;
+    color: @xctrls_button-font-color-disabled;
 }
 

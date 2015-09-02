@@ -3,6 +3,7 @@
 */
 
 @import url('../xctrls_common.css');
+@import url('../xctrls_mixins.less');
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
@@ -15,9 +16,7 @@ xctrls|button {
     justify-content: center;
     align-items: center;
 
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
+    .user-select(none);
 }
 
 /* Hovering over the button */

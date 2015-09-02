@@ -3,6 +3,8 @@
 	CSS styles common across 'xctrls:button' controls for any theme.
 */
 
+@import url('../xctrls_button/xctrls_button.less');
+
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
@@ -19,7 +21,6 @@
 
 *[data-theme] xctrls|button {
 
-	border: 1px solid black;
 	background: transparent;
 
 	text-decoration: none;
@@ -28,10 +29,6 @@
 /* All themed, non-disabled 'xctrls:button' control labels */
 
 *[data-theme] xctrls|button xctrls|label {
-
-	font-family: Helvetica, Arial, sans-serif;
-
-    color: black;
 }
 
 /* All themed, non-disabled 'xctrls:button' controls with an image but no

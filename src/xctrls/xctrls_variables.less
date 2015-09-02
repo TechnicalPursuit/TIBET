@@ -4,16 +4,25 @@
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 
-@curtain-color: #EEEEEE;
-@curtain-opacity: 0.6;
+//  Grid variables
 
-@tile-bg-color: #FFFFFF;
+@grid-full-width: 100%;
+@grid-1of2-width: 50%;
+@grid-1of3-width: 33.3333%;
+@grid-1of4-width: 25%;
 
-@tile-spacer-x: 1.25em;
-@tile-spacer-y: .75em;
+@grid-sm-break: ~"(min-width: 384px)";
+@grid-md-break: ~"(min-width: 576px)";
+@grid-lg-break: ~"(min-width: 768px)";
 
-@tile-border-width: .0625rem;
-@tile-border-radius: .25rem;
-@tile-border-color: #E5E5E5;
-@tile-border-radius-inner: (@tile-border-radius - @tile-border-width);
+@grid-gutter-margin: 1em;
+@grid-lg-gutter-margin: 1.5em;
+@grid-xl-gutter-margin: 2em;
+
+/** NON-THEMED WIDGETS **/
+
+//  xctrls|curtain variables
+
+@xctrls_curtain-color: #EEEEEE;
+@xctrls_curtain-opacity: 0.6;
 

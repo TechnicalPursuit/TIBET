@@ -2,8 +2,7 @@
 	CSS styles for the 'xctrls:curtain' control.
 */
 
-@import url('../xctrls_variables.less');
-@import url('../xctrls_common.less');
+@import (reference) url('../xctrls_variables.less');
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
@@ -17,11 +16,11 @@ xctrls|curtain {
 	width: 100%;
 	height: 100%;
 
-	background-color: @curtain-color;
+	background-color: @xctrls_curtain-color;
 
 	visibility: hidden;
 
-	opacity: @curtain-opacity;
+	opacity: @xctrls_curtain-opacity;
 
     /* When the curtain is not hidden */
 
