@@ -97,10 +97,6 @@ function(lessLoc, lessText) {
         cfg,
         lessGlobalVars,
 
-        natNode,
-        ourDoc,
-        docHead,
-
         lessParams,
         lessWorker;
 
@@ -131,15 +127,12 @@ function(lessLoc, lessText) {
             }
         });
 
+    TP.documentEnsureHeadElement(this.getNativeDocument());
+
     lessParams = TP.hc('filename', lessLoc,
                         'rootpath', TP.uriCollectionPath(lessLoc),
                         'globalVars', lessGlobalVars,
                         'elemID', ourID);
-
-    natNode = this.getNativeNode();
-    ourDoc = this.getNativeDocument();
-
-    docHead = TP.documentEnsureHeadElement(ourDoc);
 
     //  Obtain a 'LESS worker' and ask it to compile the LESS text.
     lessWorker = TP.core.LESSWorker.getWorker();
@@ -148,9 +141,14 @@ function(lessLoc, lessText) {
                 var cssText,
                     cssImports,
                     cssElemID,
+
+                    natNode,
+                    natDoc,
+
                     styleElems,
 
                     insertionPoint,
+                    docHead,
 
                     existingStyleElem,
                     compiledStyleElem,
@@ -174,6 +172,9 @@ function(lessLoc, lessText) {
                     cssElemID = result.at('compilationOptions').at('elemID');
                 }
 
+                natNode = this.getNativeNode();
+                natDoc = this.getNativeDocument();
+
                 //  Because of a quirk of the way that we invoke the LESSCSS
                 //  processor (running it in a worker thread rather than in the
                 //  main UI canvas document), we need to manually ensure that
@@ -185,7 +186,7 @@ function(lessLoc, lessText) {
                 //  'tibet:' style elements that contain the word 'import'
                 //  anywhere in their ID
                 styleElems = TP.byCSSPath('style[id*="import"]',
-                                                ourDoc,
+                                                natDoc,
                                                 false,      //  No autocollapse
                                                 false);     //  No wrap
                 if (TP.notEmpty(styleElems)) {
@@ -196,7 +197,7 @@ function(lessLoc, lessText) {
                     //  Otherwise, there are no 'import' style elements - see if
                     //  there are any others.
                     styleElems = TP.byCSSPath('style',
-                                                ourDoc,
+                                                natDoc,
                                                 false,      //  No autocollapse
                                                 false);     //  No wrap
 
@@ -210,6 +211,8 @@ function(lessLoc, lessText) {
 
                 //  Note here that, in order to try to preserve CSS rule order,
                 //  we try to insert the '@imported' style sheets at the top.
+
+                docHead = TP.documentGetHead(natDoc);
 
                 cssImports.forEach(
                         function(aPath) {
@@ -232,7 +235,7 @@ function(lessLoc, lessText) {
                             //  followed by '_import'.
                             sheetID = TP.uriName(aPath).replace('.', '_') +
                                         '_import';
-                            styleElem = TP.byId(sheetID, ourDoc, false);
+                            styleElem = TP.byId(sheetID, natDoc, false);
 
                             //  If there isn't an existing style element with
                             //  that name, create one and insert it.
@@ -240,12 +243,12 @@ function(lessLoc, lessText) {
 
                                 if (isCSS) {
                                     styleElem = TP.documentCreateElement(
-                                                    ourDoc,
+                                                    natDoc,
                                                     'style',
                                                     TP.w3.Xmlns.XHTML);
                                 } else {
                                     styleElem = TP.documentCreateElement(
-                                                    ourDoc,
+                                                    natDoc,
                                                     'tibet:style',
                                                     TP.w3.Xmlns.TIBET);
                                 }
@@ -278,14 +281,12 @@ function(lessLoc, lessText) {
                 if (!TP.isElement(
                     existingStyleElem =
                     TP.byCSSPath(
-                        '[for="' + cssElemID + '"]', ourDoc, true, false))) {
+                        '[for="' + cssElemID + '"]', natDoc, true, false))) {
 
-                    //  Always insert the 'compiled representation' just after
-                    //  the original.
                     insertionPoint = natNode.nextSibling;
 
                     compiledStyleElem = TP.documentAddStyleElement(
-                                                    ourDoc,
+                                                    natDoc,
                                                     cssText,
                                                     insertionPoint);
 
@@ -308,7 +309,7 @@ function(lessLoc, lessText) {
                 }
 
                 //  Work around Chrome (and possibly others) stupidity
-                TP.windowForceRepaint(TP.nodeGetWindow(ourDoc));
+                TP.windowForceRepaint(TP.nodeGetWindow(natDoc));
 
             }.bind(this));
 
