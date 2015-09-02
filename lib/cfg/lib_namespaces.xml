@@ -167,9 +167,9 @@
     <property name="path.TP.xctrls.accordionitem.template" value="~TP.xctrls.accordionitem/xctrls_accordionitem.xsl"/>
 
     <script src="xctrls/xctrls_button/xctrls_button.js"/>
-    <property name="path.TP.xctrls.button.style" value="~TP.xctrls.button/xctrls_button.css"/>
+    <property name="path.TP.xctrls.button.style" value="~TP.xctrls.button/xctrls_button.less"/>
     <property name="path.TP.xctrls.button.template" value="~TP.xctrls.button/xctrls_button.xhtml"/>
-    <property name="path.TP.xctrls.button.theme_white" value="~TP.xctrls.XMLNS/themes/white/xctrls_button.css"/>
+    <property name="path.TP.xctrls.button.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_button_tpi.less"/>
 
     <script src="xctrls/xctrls_checkitem/xctrls_checkitem.js"/>
     <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/xctrls_checkitem.css"/>
