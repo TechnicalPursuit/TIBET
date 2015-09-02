@@ -179,10 +179,18 @@ function(aDocument) {
         //  system has already started, the MutationObserver machinery will take
         //  care of awakening this content (i.e. the 'tibet:style' element) but
         //  if it hasn't already started, then we need to do that manually.
+
+
+        //  Go ahead and insert the new element - note here how we *always*
+        //  awaken the content. Because we could be being called as part of an
+        //  asychronous populating of the page, it's impossible to tell if we're
+        //  already part of an awaken cycle or not. But, because of our check
+        //  above to determine whether we already exist, we don't have to worry
+        //  about multiple awakenings.
         TP.nodeInsertBefore(docHead,
                             styleElem,
                             insertionPoint,
-                            !TP.sys.hasStarted());
+                            true);
     }
 
     //  Track the original source from the URI - this is what the author
