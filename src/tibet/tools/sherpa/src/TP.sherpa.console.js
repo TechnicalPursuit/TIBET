@@ -1407,8 +1407,8 @@ function(uniqueID, dataRecord) {
 
         typeinfo,
         rawData,
-
         outputText,
+
         outputClass,
 
         resultTile,
@@ -1456,9 +1456,11 @@ function(uniqueID, dataRecord) {
     outputText = dataRecord.at('output');
 
     //  If we're outputting logging data, add the '.logoutput' class to the
-    //  output cell element.
+    //  output cell element and empty the content of the cells under the input
+    //  line..
     if (typeinfo === 'LOG') {
         TP.elementAddClass(cellGroupElem, 'logoutput');
+        TP.nodeEmptyContent(cellGroupElem);
     }
 
     //  If the output text is empty and the user is asking for structured
@@ -1520,6 +1522,10 @@ function(uniqueID, dataRecord) {
 
             var statsStr,
                 resultTypeStr;
+
+            if (record.at('typeinfo') === 'LOG') {
+                return;
+            }
 
             //  Now, update statistics and result type data that was part of the
             //  entry that we inserted before with the input content.
