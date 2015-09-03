@@ -1601,6 +1601,8 @@ function(uniqueID, dataRecord) {
                     //  the next time around.
                     outputCoalesceRecords.empty();
 
+                    this.scrollOutputToEnd();
+
                     flushTimer = null;
                     this.set('outputCoalesceTimer', null);
                 }.bind(this),

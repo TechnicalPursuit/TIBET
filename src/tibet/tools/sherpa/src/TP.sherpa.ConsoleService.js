@@ -1627,8 +1627,6 @@ function(anError, aRequest) {
                      )) : 0;
     }
 
-    this.get('$consoleGUI').scrollOutputToEnd();
-
     this.get('$multiResults').empty();
 
     return;
@@ -1744,8 +1742,6 @@ function(anObject, aRequest) {
                                 TP.str(outObject), ') generated error.')
                      )) : 0;
     }
-
-    this.get('$consoleGUI').scrollOutputToEnd();
 
     this.get('$multiResults').empty();
 
