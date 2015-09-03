@@ -348,25 +348,23 @@ TP.sys.release[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 //  JAVASCRIPT LANGUAGE GLOBALS / KEYWORDS ETC.
 //  ------------------------------------------------------------------------
 
-TP.sys.$keywords =
-    [
-        'break', 'case', 'catch', 'continue', 'default',
-        'delete', 'do', 'else', 'false', 'finally', 'for',
-        'function', 'if', 'in', 'instanceof', 'new', 'null',
-        'return', 'switch', 'this', 'throw', 'true', 'try',
-        'typeof', 'var', 'void', 'while', 'with'
-    ];
+TP.sys.$keywords = [
+    'break', 'case', 'catch', 'continue', 'default',
+    'delete', 'do', 'else', 'false', 'finally', 'for',
+    'function', 'if', 'in', 'instanceof', 'new', 'null',
+    'return', 'switch', 'this', 'throw', 'true', 'try',
+    'typeof', 'var', 'void', 'while', 'with'
+];
 
-TP.sys.$reservedwords =
-    [
-        'abstract', 'boolean', 'byte', 'char', 'class',
-        'const', 'debugger', 'double', 'enum', 'export',
-        'extends', 'final', 'float', 'goto', 'implements',
-        'import', 'int', 'interface', 'long', 'native',
-        'package', 'private', 'protected', 'public',
-        'short', 'static', 'super', 'synchronized',
-        'throws', 'transient', 'volatile'
-    ];
+TP.sys.$reservedwords = [
+    'abstract', 'boolean', 'byte', 'char', 'class',
+    'const', 'debugger', 'double', 'enum', 'export',
+    'extends', 'final', 'float', 'goto', 'implements',
+    'import', 'int', 'interface', 'long', 'native',
+    'package', 'private', 'protected', 'public',
+    'short', 'static', 'super', 'synchronized',
+    'throws', 'transient', 'volatile'
+];
 
 //  The complete list of global slots found at a low-level, with no filtering,
 //  by the system. This is configured by the boot system and finalized once the
@@ -385,130 +383,127 @@ TP.sys.$noDNUs = ['toJSON'];
 //  Error, EvalError, RangeError, ReferenceError, SyntaxError, TypeError,
 //  URIError
 //  Math, JSON
-TP.sys.$ecmaglobals =
-    [
-        'decodeURI',
-        'decodeURIComponent',
-        'encodeURI',
-        'encodeURIComponent',
-        'escape',               //  Non-normative
-        'eval',
-        'NaN',
-        'Infinity',
-        'parseInt',
-        'parseFloat',
-        'isNaN',
-        'isFinite',
-        'unescape'              //  Non-normative
-    ];
+TP.sys.$ecmaglobals = [
+    'decodeURI',
+    'decodeURIComponent',
+    'encodeURI',
+    'encodeURIComponent',
+    'escape',               //  Non-normative
+    'eval',
+    'NaN',
+    'Infinity',
+    'parseInt',
+    'parseFloat',
+    'isNaN',
+    'isFinite',
+    'unescape'              //  Non-normative
+];
 
 //  additional 'non Window' globals
-TP.sys.$systemglobals =
-    [
-        'applicationCache',
-        'clearInterval',
-        'clearTimeout',
-        'console',
-        'localStorage',
-        'performance',
-        'postMessage',
-        'setTimeout',
-        'setInterval'
-    ];
+TP.sys.$systemglobals = [
+    'applicationCache',
+    'clearInterval',
+    'clearTimeout',
+    'console',
+    'localStorage',
+    'performance',
+    'postMessage',
+    'setTimeout',
+    'setInterval'
+];
 
 //  these are slots based on DOM Level 0 - which is implemented by most user
 //  agents
-TP.sys.$windowglobals =
-    [
-        'alert',
-        'addEventListener',
-        'back',
-        'blur',
-        'close',
-        'closed',
-        'confirm',
-        'content',
-        'document',
-        'find',
-        'focus',
-        'forward',
-        'frameElement',
-        'frames',
-        'fullScreen',
-        'getComputedStyle',
-        'getDefaultComputedStyle',
-        'getSelection',
-        'history',
-        'home',
-        'innerHeight',
-        'innerWidth',
-        'length',
-        'location',
-        'matchMedia',
-        'moveBy',
-        'moveTo',
-        'name',
-        'navigator',
-        'onabort',
-        'onbeforeunload',
-        'onblur',
-        'onchange',
-        'onclick',
-        'oncontextmenu',
-        'ondevicelight',
-        'ondevicemotion',
-        'ondeviceorientation',
-        'ondeviceproximity',
-        'onerror',
-        'onfocus',
-        'onhashchange',
-        'onkeydown',
-        'onkeypress',
-        'onkeyup',
-        'onload',
-        'onmousedown',
-        'onmouseenter',
-        'onmouseleave',
-        'onmousemove',
-        'onmouseout',
-        'onmouseover',
-        'onmouseup',
-        'onpopstate',
-        'onreset',
-        'onresize',
-        'onscroll',
-        'onselect',
-        'onsubmit',
-        'onunload',
-        'onuserproximity',
-        'open',
-        'openDialog',
-        'opener',
-        'outerHeight',
-        'outerWidth',
-        'pageXOffset',
-        'pageYOffset',
-        'parent',
-        'print',
-        'prompt',
-        'removeEventListener',
-        'resizeBy',
-        'resizeTo',
-        'screen',
-        'scroll',
-        'scrollBy',
-        'scrollTo',
-        'scrollX',
-        'scrollY',
-        'self',
-        'sessionStorage',
-        'showModalDialog',
-        'sizeToContent',
-        'status',
-        'stop',
-        'top',
-        'window'
-    ];
+TP.sys.$windowglobals = [
+    'alert',
+    'addEventListener',
+    'back',
+    'blur',
+    'close',
+    'closed',
+    'confirm',
+    'content',
+    'document',
+    'find',
+    'focus',
+    'forward',
+    'frameElement',
+    'frames',
+    'fullScreen',
+    'getComputedStyle',
+    'getDefaultComputedStyle',
+    'getSelection',
+    'history',
+    'home',
+    'innerHeight',
+    'innerWidth',
+    'length',
+    'location',
+    'matchMedia',
+    'moveBy',
+    'moveTo',
+    'name',
+    'navigator',
+    'onabort',
+    'onbeforeunload',
+    'onblur',
+    'onchange',
+    'onclick',
+    'oncontextmenu',
+    'ondevicelight',
+    'ondevicemotion',
+    'ondeviceorientation',
+    'ondeviceproximity',
+    'onerror',
+    'onfocus',
+    'onhashchange',
+    'onkeydown',
+    'onkeypress',
+    'onkeyup',
+    'onload',
+    'onmousedown',
+    'onmouseenter',
+    'onmouseleave',
+    'onmousemove',
+    'onmouseout',
+    'onmouseover',
+    'onmouseup',
+    'onpopstate',
+    'onreset',
+    'onresize',
+    'onscroll',
+    'onselect',
+    'onsubmit',
+    'onunload',
+    'onuserproximity',
+    'open',
+    'openDialog',
+    'opener',
+    'outerHeight',
+    'outerWidth',
+    'pageXOffset',
+    'pageYOffset',
+    'parent',
+    'print',
+    'prompt',
+    'removeEventListener',
+    'resizeBy',
+    'resizeTo',
+    'screen',
+    'scroll',
+    'scrollBy',
+    'scrollTo',
+    'scrollX',
+    'scrollY',
+    'self',
+    'sessionStorage',
+    'showModalDialog',
+    'sizeToContent',
+    'status',
+    'stop',
+    'top',
+    'window'
+];
 
 //  Any remaining globally-accessible slots will be placed by the finalization
 //  code into a structure under TP.sys.$extraglobals. Slots that you might see
@@ -735,17 +730,16 @@ TP.META_TYPE_OWNER.getName = function() {return 'MetaType'; };
 
 TP.META_TYPE_OWNER.meta_methods = {};
 
-TP.META_TYPE_TARGETS =
-    [
-        Array,
-        Boolean,
-        Date,
-        Function,
-        Number,
-        Object,
-        RegExp,
-        String
-    ];
+TP.META_TYPE_TARGETS = [
+    Array,
+    Boolean,
+    Date,
+    Function,
+    Number,
+    Object,
+    RegExp,
+    String
+];
 
 TP.META_INST_OWNER = {};
 TP.META_INST_OWNER[TP.ID] = 'MetaInst';
@@ -757,16 +751,15 @@ TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
 
 //  NB: We leave TP.ObjectProto out of this list on purpose.
-TP.META_INST_TARGETS =
-    [
-        TP.ArrayProto,
-        TP.BooleanProto,
-        TP.DateProto,
-        TP.FunctionProto,
-        TP.NumberProto,
-        TP.RegExpProto,
-        TP.StringProto
-    ];
+TP.META_INST_TARGETS = [
+    TP.ArrayProto,
+    TP.BooleanProto,
+    TP.DateProto,
+    TP.FunctionProto,
+    TP.NumberProto,
+    TP.RegExpProto,
+    TP.StringProto
+];
 
 //  attribute name prefixes
 TP.PUBLIC = '';
@@ -1300,16 +1293,15 @@ TP.NEVER_PREFIXED_ATTRS = ['id'];
 
 //  A list of queries for elements that can be focused without a 'tabindex'
 //  attribute, plus the query for any element that has a tabindex.
-TP.FOCUSABLE_QUERIES =
-    [
-        'a[href]',
-        'input:not([disabled])',
-        'select:not([disabled])',
-        'textarea:not([disabled])',
-        'button:not([disabled])',
-        'iframe:not([disabled])',
-        '*[tabindex]'
-    ];
+TP.FOCUSABLE_QUERIES = [
+    'a[href]',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    'button:not([disabled])',
+    'iframe:not([disabled])',
+    '*[tabindex]'
+];
 
 //  ---
 //  encryption/security
@@ -1499,148 +1491,147 @@ NOTE: the collection is sparse and relies on default values of:
 */
 
 /* eslint-disable no-reserved-keys */
-TP.SLOT_FILTERS =
-    {
-        //  Visibility
-        public:
-            {methods: true, scope: TP.ALL},
-        hidden:
-            {methods: true, hidden: true, scope: TP.ALL},
-        known:
-            {methods: true, hidden: true, scope: TP.ALL, public: true},
+TP.SLOT_FILTERS = {
+    //  Visibility
+    public:
+        {methods: true, scope: TP.ALL},
+    hidden:
+        {methods: true, hidden: true, scope: TP.ALL},
+    known:
+        {methods: true, hidden: true, scope: TP.ALL, public: true},
 
-        //  Different scopes
-        unique:
-            {methods: true},
-        local:
-            {methods: true, scope: TP.LOCAL},
-        introduced:
-            {methods: true, scope: TP.INTRODUCED},
-        inherited:
-            {methods: true, scope: TP.INHERITED},
-        overridden:
-            {methods: true, scope: TP.OVERRIDDEN},
+    //  Different scopes
+    unique:
+        {methods: true},
+    local:
+        {methods: true, scope: TP.LOCAL},
+    introduced:
+        {methods: true, scope: TP.INTRODUCED},
+    inherited:
+        {methods: true, scope: TP.INHERITED},
+    overridden:
+        {methods: true, scope: TP.OVERRIDDEN},
 
-        //  Attributes only
-        attributes:
-            {scope: TP.ALL},
-        hidden_attributes:
-            {hidden: true, scope: TP.ALL},
-        known_attributes:
-            {hidden: true, scope: TP.ALL, public: true},
+    //  Attributes only
+    attributes:
+        {scope: TP.ALL},
+    hidden_attributes:
+        {hidden: true, scope: TP.ALL},
+    known_attributes:
+        {hidden: true, scope: TP.ALL, public: true},
 
-        unique_attributes:
-            {},  // default values
-        local_attributes:
-            {scope: TP.LOCAL},
-        introduced_attributes:
-            {scope: TP.INTRODUCED},
-        inherited_attributes:
-            {scope: TP.INHERITED},
-        overridden_attributes:
-            {scope: TP.OVERRIDDEN},
+    unique_attributes:
+        {},  // default values
+    local_attributes:
+        {scope: TP.LOCAL},
+    introduced_attributes:
+        {scope: TP.INTRODUCED},
+    inherited_attributes:
+        {scope: TP.INHERITED},
+    overridden_attributes:
+        {scope: TP.OVERRIDDEN},
 
-        hidden_unique_attributes:
-            {hidden: true},
-        hidden_local_attributes:
-            {hidden: true, scope: TP.LOCAL},
-        hidden_introduced_attributes:
-            {hidden: true, scope: TP.INTRODUCED},
-        hidden_inherited_attributes:
-            {hidden: true, scope: TP.INHERITED},
-        hidden_overridden_attributes:
-            {hidden: true, scope: TP.OVERRIDDEN},
+    hidden_unique_attributes:
+        {hidden: true},
+    hidden_local_attributes:
+        {hidden: true, scope: TP.LOCAL},
+    hidden_introduced_attributes:
+        {hidden: true, scope: TP.INTRODUCED},
+    hidden_inherited_attributes:
+        {hidden: true, scope: TP.INHERITED},
+    hidden_overridden_attributes:
+        {hidden: true, scope: TP.OVERRIDDEN},
 
-        known_unique_attributes:
-            {hidden: true, public: true},
-        known_local_attributes:
-            {hidden: true, scope: TP.LOCAL, public: true},
-        known_introduced_attributes:
-            {hidden: true, scope: TP.INTRODUCED, public: true},
-        known_inherited_attributes:
-            {hidden: true, scope: TP.INHERITED, public: true},
-        known_overridden_attributes:
-            {hidden: true, scope: TP.OVERRIDDEN, public: true},
+    known_unique_attributes:
+        {hidden: true, public: true},
+    known_local_attributes:
+        {hidden: true, scope: TP.LOCAL, public: true},
+    known_introduced_attributes:
+        {hidden: true, scope: TP.INTRODUCED, public: true},
+    known_inherited_attributes:
+        {hidden: true, scope: TP.INHERITED, public: true},
+    known_overridden_attributes:
+        {hidden: true, scope: TP.OVERRIDDEN, public: true},
 
-        //  Methods only
-        methods:
-            {attributes: false, methods: true, scope: TP.ALL},
-        hidden_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.ALL},
-        known_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.ALL, public: true},
+    //  Methods only
+    methods:
+        {attributes: false, methods: true, scope: TP.ALL},
+    hidden_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.ALL},
+    known_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.ALL, public: true},
 
-        unique_methods:
-            {attributes: false, methods: true},
-        local_methods:
-            {attributes: false, methods: true, scope: TP.LOCAL},
-        introduced_methods:
-            {attributes: false, methods: true, scope: TP.INTRODUCED},
-        inherited_methods:
-            {attributes: false, methods: true, scope: TP.INHERITED},
-        overridden_methods:
-            {attributes: false, methods: true, scope: TP.OVERRIDDEN},
+    unique_methods:
+        {attributes: false, methods: true},
+    local_methods:
+        {attributes: false, methods: true, scope: TP.LOCAL},
+    introduced_methods:
+        {attributes: false, methods: true, scope: TP.INTRODUCED},
+    inherited_methods:
+        {attributes: false, methods: true, scope: TP.INHERITED},
+    overridden_methods:
+        {attributes: false, methods: true, scope: TP.OVERRIDDEN},
 
-        hidden_unique_methods:
-            {attributes: false, methods: true, hidden: true},
-        hidden_local_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.LOCAL},
-        hidden_introduced_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.INTRODUCED},
-        hidden_inherited_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.INHERITED},
-        hidden_overridden_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.OVERRIDDEN},
+    hidden_unique_methods:
+        {attributes: false, methods: true, hidden: true},
+    hidden_local_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.LOCAL},
+    hidden_introduced_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.INTRODUCED},
+    hidden_inherited_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.INHERITED},
+    hidden_overridden_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.OVERRIDDEN},
 
-        known_unique_methods:
-            {attributes: false, methods: true, hidden: true,
-                public: true},
-        known_local_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.LOCAL, public: true},
-        known_introduced_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.INTRODUCED, public: true},
-        known_inherited_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.INHERITED, public: true},
-        known_overridden_methods:
-            {attributes: false, methods: true, hidden: true,
-                scope: TP.OVERRIDDEN, public: true},
+    known_unique_methods:
+        {attributes: false, methods: true, hidden: true,
+            public: true},
+    known_local_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.LOCAL, public: true},
+    known_introduced_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.INTRODUCED, public: true},
+    known_inherited_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.INHERITED, public: true},
+    known_overridden_methods:
+        {attributes: false, methods: true, hidden: true,
+            scope: TP.OVERRIDDEN, public: true},
 
-        //  Attributes and methods
-        hidden_unique:
-            {methods: true, hidden: true},
-        hidden_local:
-            {methods: true, hidden: true, scope: TP.LOCAL},
-        hidden_introduced:
-            {methods: true, hidden: true, scope: TP.INTRODUCED},
-        hidden_inherited:
-            {methods: true, hidden: true, scope: TP.INHERITED},
-        hidden_overridden:
-            {methods: true, hidden: true, scope: TP.OVERRIDDEN},
+    //  Attributes and methods
+    hidden_unique:
+        {methods: true, hidden: true},
+    hidden_local:
+        {methods: true, hidden: true, scope: TP.LOCAL},
+    hidden_introduced:
+        {methods: true, hidden: true, scope: TP.INTRODUCED},
+    hidden_inherited:
+        {methods: true, hidden: true, scope: TP.INHERITED},
+    hidden_overridden:
+        {methods: true, hidden: true, scope: TP.OVERRIDDEN},
 
-        known_unique:
-            {methods: true, hidden: true, public: true},
-        known_local:
-            {methods: true, hidden: true, scope: TP.LOCAL,
-                public: true},
-        known_introduced:
-            {methods: true, hidden: true, scope: TP.INTRODUCED,
-                public: true},
-        known_inherited:
-            {methods: true, hidden: true, scope: TP.INHERITED,
-                public: true},
-        known_overridden:
-            {methods: true, hidden: true, scope: TP.OVERRIDDEN,
-                public: true}
-    };
+    known_unique:
+        {methods: true, hidden: true, public: true},
+    known_local:
+        {methods: true, hidden: true, scope: TP.LOCAL,
+            public: true},
+    known_introduced:
+        {methods: true, hidden: true, scope: TP.INTRODUCED,
+            public: true},
+    known_inherited:
+        {methods: true, hidden: true, scope: TP.INHERITED,
+            public: true},
+    known_overridden:
+        {methods: true, hidden: true, scope: TP.OVERRIDDEN,
+            public: true}
+};
 /* eslint-enable no-reserved-keys */
 
 //  ------------------------------------------------------------------------

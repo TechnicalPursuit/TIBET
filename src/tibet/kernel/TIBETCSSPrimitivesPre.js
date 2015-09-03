@@ -321,13 +321,12 @@ function(aMatrix) {
         return aMatrix;
     }
 
-    matrix =
-        [
-            [aMatrix[0], aMatrix[1], 0, 0],
-            [aMatrix[2], aMatrix[3], 0, 0],
-            [0, 0, 1, 0],
-            [aMatrix[4], aMatrix[5], 0, 1]
-        ];
+    matrix = [
+        [aMatrix[0], aMatrix[1], 0, 0],
+        [aMatrix[2], aMatrix[3], 0, 0],
+        [0, 0, 1, 0],
+        [aMatrix[4], aMatrix[5], 0, 1]
+    ];
 
     return matrix;
 });
@@ -365,13 +364,12 @@ function(cssStr, wants2DMatrix) {
     matrixValues = cssStr.match(/matrix3?d?\(([^\)]+)\)/i)[1].split(',');
 
     if (matrixValues.length === 6) {
-        matrixValues =
-            [
-                matrixValues[0], matrixValues[1], 0, 0,
-                matrixValues[2], matrixValues[3], 0, 0,
-                0, 0, 1, 0,
-                matrixValues[4], matrixValues[5], 0, 1
-            ];
+        matrixValues = [
+            matrixValues[0], matrixValues[1], 0, 0,
+            matrixValues[2], matrixValues[3], 0, 0,
+            0, 0, 1, 0,
+            matrixValues[4], matrixValues[5], 0, 1
+        ];
     }
 
     matrix = [];

@@ -24,17 +24,16 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'Hi there '
-                ],
-                [
-                    'value',
-                    'firstName'
-                ]
-            ];
+                'text',
+                'Hi there '
+            ],
+            [
+                'value',
+                'firstName'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -47,37 +46,36 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'Hi there '
-                ],
-                [
-                    'value',
-                    'firstName'
-                ],
-                [
-                    'text',
-                    ' '
-                ],
-                [
-                    'value',
-                    'lastName'
-                ],
-                [
-                    'text',
-                    '. You are '
-                ],
-                [
-                    'value',
-                    'age'
-                ],
-                [
-                    'text',
-                    ' years old'
-                ]
-            ];
+                'text',
+                'Hi there '
+            ],
+            [
+                'value',
+                'firstName'
+            ],
+            [
+                'text',
+                ' '
+            ],
+            [
+                'value',
+                'lastName'
+            ],
+            [
+                'text',
+                '. You are '
+            ],
+            [
+                'value',
+                'age'
+            ],
+            [
+                'text',
+                ' years old'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -90,17 +88,16 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The element with a bar attribute is: '
-                ],
-                [
-                    'value',
-                    './*[@bar]'
-                ]
-            ];
+                'text',
+                'The element with a bar attribute is: '
+            ],
+            [
+                'value',
+                './*[@bar]'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -113,17 +110,16 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'hi: '
-                ],
-                [
-                    'value',
-                    'foo .% escapedHTML'
-                ]
-            ];
+                'text',
+                'hi: '
+            ],
+            [
+                'value',
+                'foo .% escapedHTML'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -136,25 +132,24 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The second item is: '
-                ],
-                [
-                    'value',
-                    '1'
-                ],
-                [
-                    'text',
-                    ' and the other two are: '
-                ],
-                [
-                    'value',
-                    'data[0,2]'
-                ]
-            ];
+                'text',
+                'The second item is: '
+            ],
+            [
+                'value',
+                '1'
+            ],
+            [
+                'text',
+                ' and the other two are: '
+            ],
+            [
+                'value',
+                'data[0,2]'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -167,37 +162,36 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'Hi there '
-                ],
-                [
-                    'value',
-                    'firstName'
-                ],
-                [
-                    'text',
-                    ' '
-                ],
-                [
-                    'value',
-                    'lastName'
-                ],
-                [
-                    'text',
-                    '. Your phone number is '
-                ],
-                [
-                    'value',
-                    'phone .% @{@@@-@@@@}'
-                ],
-                [
-                    'text',
-                    '.'
-                ]
-            ];
+                'text',
+                'Hi there '
+            ],
+            [
+                'value',
+                'firstName'
+            ],
+            [
+                'text',
+                ' '
+            ],
+            [
+                'value',
+                'lastName'
+            ],
+            [
+                'text',
+                '. Your phone number is '
+            ],
+            [
+                'value',
+                'phone .% @{@@@-@@@@}'
+            ],
+            [
+                'text',
+                '.'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -210,37 +204,36 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'Hi there '
-                ],
-                [
-                    'value',
-                    'firstName'
-                ],
-                [
-                    'text',
-                    ' '
-                ],
-                [
-                    'value',
-                    'lastName'
-                ],
-                [
-                    'text',
-                    '. Your salary is '
-                ],
-                [
-                    'value',
-                    'salary .% $#{#,###.00}'
-                ],
-                [
-                    'text',
-                    '.'
-                ]
-            ];
+                'text',
+                'Hi there '
+            ],
+            [
+                'value',
+                'firstName'
+            ],
+            [
+                'text',
+                ' '
+            ],
+            [
+                'value',
+                'lastName'
+            ],
+            [
+                'text',
+                '. Your salary is '
+            ],
+            [
+                'value',
+                'salary .% $#{#,###.00}'
+            ],
+            [
+                'text',
+                '.'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -253,17 +246,16 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The content as XML-RPC is: '
-                ],
-                [
-                    'value',
-                    'value .% TP.core.XMLRPCNode'
-                ]
-            ];
+                'text',
+                'The content as XML-RPC is: '
+            ],
+            [
+                'value',
+                'value .% TP.core.XMLRPCNode'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -276,17 +268,16 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The element with a bar attribute is: '
-                ],
-                [
-                    'value',
-                    './*[@bar].%String'
-                ]
-            ];
+                'text',
+                'The element with a bar attribute is: '
+            ],
+            [
+                'value',
+                './*[@bar].%String'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -299,17 +290,16 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The list is '
-                ],
-                [
-                    'value',
-                    'value .%* html:ul'
-                ]
-            ];
+                'text',
+                'The list is '
+            ],
+            [
+                'value',
+                'value .%* html:ul'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -323,21 +313,20 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    '{foo:'
-                ],
-                [
-                    'value',
-                    'x'
-                ],
-                [
-                    'text',
-                    '}'
-                ]
-            ];
+                'text',
+                '{foo:'
+            ],
+            [
+                'value',
+                'x'
+            ],
+            [
+                'text',
+                '}'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -359,17 +348,16 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The name of the element with a bar attribute is: '
-                ],
-                [
-                    'value',
-                    './*[@bar] .% It really is: {{localName .% {{fetchit .% formatit}}}}'
-                ]
-            ];
+                'text',
+                'The name of the element with a bar attribute is: '
+            ],
+            [
+                'value',
+                './*[@bar] .% It really is: {{localName .% {{fetchit .% formatit}}}}'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -383,51 +371,50 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
+                'text',
+                'Hi there '
+            ],
+            [
+                'with',
+                'data',
                 [
-                    'text',
-                    'Hi there '
-                ],
-                [
-                    'with',
-                    'data',
                     [
-                        [
-                            'text',
-                            ' '
-                        ],
-                        [
-                            'value',
-                            'firstName'
-                        ],
-                        [
-                            'text',
-                            ' '
-                        ],
-                        [
-                            'value',
-                            'lastName'
-                        ],
-                        [
-                            'text',
-                            ' '
-                        ]
+                        'text',
+                        ' '
+                    ],
+                    [
+                        'value',
+                        'firstName'
+                    ],
+                    [
+                        'text',
+                        ' '
+                    ],
+                    [
+                        'value',
+                        'lastName'
+                    ],
+                    [
+                        'text',
+                        ' '
                     ]
-                ],
-                [
-                    'text',
-                    '. You are '
-                ],
-                [
-                    'value',
-                    'age'
-                ],
-                [
-                    'text',
-                    ' years old'
                 ]
-            ];
+            ],
+            [
+                'text',
+                '. You are '
+            ],
+            [
+                'value',
+                'age'
+            ],
+            [
+                'text',
+                ' years old'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -441,43 +428,42 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
+                'text',
+                'Hello '
+            ],
+            [
+                'value',
+                'world'
+            ],
+            [
+                'text',
+                '. '
+            ],
+            [
+                'with',
+                './*[@bar]',
                 [
-                    'text',
-                    'Hello '
-                ],
-                [
-                    'value',
-                    'world'
-                ],
-                [
-                    'text',
-                    '. '
-                ],
-                [
-                    'with',
-                    './*[@bar]',
                     [
-                        [
-                            'text',
-                            'First name is: '
-                        ],
-                        [
-                            'value',
-                            'firstName'
-                        ],
-                        [
-                            'text',
-                            ' and last name is: '
-                        ],
-                        [
-                            'value',
-                            'lastName'
-                        ]
+                        'text',
+                        'First name is: '
+                    ],
+                    [
+                        'value',
+                        'firstName'
+                    ],
+                    [
+                        'text',
+                        ' and last name is: '
+                    ],
+                    [
+                        'value',
+                        'lastName'
                     ]
                 ]
-            ];
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -491,44 +477,43 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
+                'if',
+                'foo',
                 [
-                    'if',
-                    'foo',
                     [
-                        [
-                            'text',
-                            '<li>'
-                        ],
-                        [
-                            'value',
-                            'goo'
-                        ],
-                        [
-                            'text',
-                            '</li><li>'
-                        ],
-                        [
-                            'value',
-                            'moo'
-                        ],
-                        [
-                            'text',
-                            '</li>'
-                        ]
+                        'text',
+                        '<li>'
                     ],
-                    null
+                    [
+                        'value',
+                        'goo'
+                    ],
+                    [
+                        'text',
+                        '</li><li>'
+                    ],
+                    [
+                        'value',
+                        'moo'
+                    ],
+                    [
+                        'text',
+                        '</li>'
+                    ]
                 ],
-                [
-                    'text',
-                    '</ul> and then there\'s: '
-                ],
-                [
-                    'value',
-                    'foo.bar.moo'
-                ]
-            ];
+                null
+            ],
+            [
+                'text',
+                '</ul> and then there\'s: '
+            ],
+            [
+                'value',
+                'foo.bar.moo'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -542,43 +527,42 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
+                'for',
+                'foo',
                 [
-                    'for',
-                    'foo',
                     [
-                        [
-                            'text',
-                            '<li>'
-                        ],
-                        [
-                            'value',
-                            'goo'
-                        ],
-                        [
-                            'text',
-                            '</li><li>'
-                        ],
-                        [
-                            'value',
-                            'moo'
-                        ],
-                        [
-                            'text',
-                            '</li>'
-                        ]
+                        'text',
+                        '<li>'
+                    ],
+                    [
+                        'value',
+                        'goo'
+                    ],
+                    [
+                        'text',
+                        '</li><li>'
+                    ],
+                    [
+                        'value',
+                        'moo'
+                    ],
+                    [
+                        'text',
+                        '</li>'
                     ]
-                ],
-                [
-                    'text',
-                    '</ul> and then there\'s: '
-                ],
-                [
-                    'value',
-                    'foo.bar.moo'
                 ]
-            ];
+            ],
+            [
+                'text',
+                '</ul> and then there\'s: '
+            ],
+            [
+                'value',
+                'foo.bar.moo'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -592,46 +576,45 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
+                'text',
+                'Hello '
+            ],
+            [
+                'value',
+                'world'
+            ],
+            [
+                'text',
+                '. '
+            ],
+            [
+                'for',
+                {
+                    args: 'a,b',
+                    data: 'words'
+                },
                 [
-                    'text',
-                    'Hello '
-                ],
-                [
-                    'value',
-                    'world'
-                ],
-                [
-                    'text',
-                    '. '
-                ],
-                [
-                    'for',
-                    {
-                        args: 'a,b',
-                        data: 'words'
-                    },
                     [
-                        [
-                            'value',
-                            'a'
-                        ],
-                        [
-                            'text',
-                            ' is at: '
-                        ],
-                        [
-                            'value',
-                            'b'
-                        ],
-                        [
-                            'text',
-                            ' '
-                        ]
+                        'value',
+                        'a'
+                    ],
+                    [
+                        'text',
+                        ' is at: '
+                    ],
+                    [
+                        'value',
+                        'b'
+                    ],
+                    [
+                        'text',
+                        ' '
                     ]
                 ]
-            ];
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -645,13 +628,12 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The year is: \\{{value .% YYYY\\}}'
-                ]
-            ];
+                'text',
+                'The year is: \\{{value .% YYYY\\}}'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,
@@ -665,21 +647,20 @@ function() {
 
         testRep = TP.$templateParser.parse(templateStr);
 
-        correctRep =
+        correctRep = [
             [
-                [
-                    'text',
-                    'The year is: \\{{value .% '
-                ],
-                [
-                    'value',
-                    '\\{{some\\}}'
-                ],
-                [
-                    'text',
-                    '\\}}'
-                ]
-            ];
+                'text',
+                'The year is: \\{{value .% '
+            ],
+            [
+                'value',
+                '\\{{some\\}}'
+            ],
+            [
+                'text',
+                '\\}}'
+            ]
+        ];
 
         test.assert.isEqualTo(
             testRep,

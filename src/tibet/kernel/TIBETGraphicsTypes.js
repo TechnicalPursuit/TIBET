@@ -2610,12 +2610,11 @@ function() {
 
     var identityData;
 
-    identityData =
-        {
-            xx: 1, xy: 0,
-            yx: 0, yy: 1,
-            dx: 0, dy: 0
-        };
+    identityData = {
+        xx: 1, xy: 0,
+        yx: 0, yy: 1,
+        dx: 0, dy: 0
+    };
 
     return identityData;
 });
@@ -3046,15 +3045,14 @@ function(anObj) {
     var data,
         newObj;
 
-    data =
-        {
-            xx: anObj[0][0],
-            xy: anObj[0][1],
-            yx: anObj[1][0],
-            yy: anObj[1][1],
-            dx: anObj[0][2],
-            dy: anObj[1][2]
-        };
+    data = {
+        xx: anObj[0][0],
+        xy: anObj[0][1],
+        yx: anObj[1][0],
+        yy: anObj[1][1],
+        dx: anObj[0][2],
+        dy: anObj[1][2]
+    };
 
     newObj = this.construct(data);
 
@@ -3258,12 +3256,11 @@ function(matrixData) {
         if (TP.isKindOf(newData, TP.core.Matrix)) {
             newData = newData.$get('data');
 
-            newData =
-                {
-                    xx: newData.xx, xy: newData.xy,
-                    yx: newData.yx, yy: newData.yy,
-                    dx: newData.dx, dy: newData.dy
-                };
+            newData = {
+                xx: newData.xx, xy: newData.xy,
+                yx: newData.yx, yy: newData.yy,
+                dx: newData.dx, dy: newData.dy
+            };
         }
 
         //  Loop over the rest of the arguments and 'accumulate' them into a
@@ -3948,15 +3945,14 @@ function() {
 
     data = this.$get('data');
 
-    newData =
-        {
-            xx: data.xx,
-            xy: data.yx,
-            yx: data.xy,
-            yy: data.yy,
-            dx: 0,
-            dy: 0
-        };
+    newData = {
+        xx: data.xx,
+        xy: data.yx,
+        yx: data.xy,
+        yy: data.yy,
+        dx: 0,
+        dy: 0
+    };
 
     this.$set('data', newData);
 
@@ -4125,13 +4121,12 @@ function(red, green, blue, alpha) {
             }
         } else {
             //  Got handed four Numbers.
-            newData =
-                {
-                    r: red.min(255).max(0),
-                    g: green.min(255).max(0),
-                    b: blue.min(255).max(0),
-                    a: TP.ifInvalid(alpha, 1.0).min(1).max(0)
-                };
+            newData = {
+                r: red.min(255).max(0),
+                g: green.min(255).max(0),
+                b: blue.min(255).max(0),
+                a: TP.ifInvalid(alpha, 1.0).min(1).max(0)
+            };
         }
     } else {
         //  Got nothing - set everything to 0.

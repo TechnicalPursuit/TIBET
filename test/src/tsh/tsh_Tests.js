@@ -5240,20 +5240,17 @@ function() {
 
         storageStr = TP.js2json(
             {
-                local_test:
-                    {
-                        author_info:
-                            {
-                                _id: 'author_info',
-                                _date_created: TP.dc(),
-                                _date_modified: TP.dc(),
-                                _body:
-                                    {
-                                        firstName: 'Bill',
-                                        lastName: 'Edney'
-                                    }
-                            }
+                local_test: {
+                    author_info: {
+                        _id: 'author_info',
+                        _date_created: TP.dc(),
+                        _date_modified: TP.dc(),
+                        _body: {
+                            firstName: 'Bill',
+                            lastName: 'Edney'
+                        }
                     }
+                }
             });
 
         storage.atPut(TP.LOCALSTORAGE_DB_NAME, storageStr);
@@ -5600,11 +5597,10 @@ function() {
                         _id: 'author_info',
                         date_created: now,
                         date_modified: now,
-                        body:
-                            {
-                                firstName: 'Bill',
-                                lastName: 'Edney'
-                            }
+                        body: {
+                            firstName: 'Bill',
+                            lastName: 'Edney'
+                        }
                     });
 
                 promise = TP.extern.Promise.resolve(pouchPromise);

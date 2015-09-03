@@ -1486,11 +1486,10 @@ function() {
                             _id: 'author_info',
                             date_created: now,
                             date_modified: now,
-                            body:
-                                {
-                                    firstName: 'Bill',
-                                    lastName: 'Edney'
-                                }
+                            body: {
+                                firstName: 'Bill',
+                                lastName: 'Edney'
+                            }
                         });
 
                     promise = TP.extern.Promise.resolve(pouchPromise);
@@ -2472,11 +2471,10 @@ function() {
                             _id: 'author_info',
                             date_created: now,
                             date_modified: now,
-                            body:
-                                {
-                                    firstName: 'Bill',
-                                    lastName: 'Edney'
-                                }
+                            body: {
+                                firstName: 'Bill',
+                                lastName: 'Edney'
+                            }
                         });
 
                     promise = TP.extern.Promise.resolve(pouchPromise);
