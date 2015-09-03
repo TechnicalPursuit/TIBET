@@ -134,6 +134,15 @@ span[name="inputEntry"] {
     min-height: -moz-min-content;
 }
 
+/* When a console cell outgroup is showing log contents, we want to hide any
+ * spans under the inputcell (but not the inputcell itself, since we want the
+ * spacing).
+ */
+.consolecellgroup.logoutput > .inputcell span {
+
+    display: none;
+}
+
 #SherpaConsoleOutput .inputcell {
     font-size: inherit;
 }
