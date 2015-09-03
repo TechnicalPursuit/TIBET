@@ -633,7 +633,7 @@ function(aRequest) {
     req = TP.sig.UserOutputRequest.construct(
                     TP.hc('cmdTitle', '',
                             'cmdEcho', true,
-                            'output', str,
+                            'output', '\n' + str,
                             'cssClass', 'inbound_announce',
                             'cmdAsIs', true,
                             'cmdBox', false));
