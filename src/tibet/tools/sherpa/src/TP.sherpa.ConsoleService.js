@@ -1964,10 +1964,10 @@ function(anObject, aRequest) {
             this.set('lastNonCmdTileID', tileID);
         }
 
-        //  Stub in a blank space for the stats and the word 'Log' for the
+        //  Stub in an empty String  for the stats and the word 'LOG' for the
         //  result data type information.
-        outputData.atPut('stats', ' ');
-        outputData.atPut('typeinfo', 'Log');
+        outputData.atPut('stats', '');
+        outputData.atPut('typeinfo', 'LOG');
     } else {
         tileID = tileID.replace(/\$/g, '_');
         this.set('lastNonCmdTileID', null);
