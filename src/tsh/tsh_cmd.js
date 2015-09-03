@@ -1479,6 +1479,8 @@ function(REQUEST$$, CMDTYPE$$) {
             $SCOPE.$INPUT = INPUT$$.at(I$$);
 
             try {
+                $REQUEST.stdout(TP.TSH_NO_VALUE);
+
                 START$$ = Date.now();
                 if (LOOP$$) {
                     if (TP.isCollection($SCOPE.$INPUT)) {

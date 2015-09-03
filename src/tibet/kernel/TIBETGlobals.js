@@ -2708,6 +2708,8 @@ TP.regex.VIRTUAL_URI_PREFIX = /^~/;
 
 TP.TSH_OPERATOR_CHARS = '`#~!@%^&*=\\;:,./?';
 
+TP.TSH_NO_VALUE = '__TSH__NO_VALUE__TSH__';
+
 TP.regex.TSH_TEMPLATE = /\$\{/;
 TP.regex.TSH_SUBSHELL = /\.\(\((.*)?\.\)\)/;
 TP.regex.TSH_SUBGROUP = /\.\{\{(.*)?\.\}\}/;
