@@ -243,6 +243,24 @@ function() {
         }
     }
 
+    //  Some commands (like a history entry) will not have content in the
+    //  cmdRoot node, but will in its 'cmdTitle'.
+
+    if (TP.isEmpty(text)) {
+        if (TP.isEmpty(text = this.at('cmdTitle'))) {
+            text = '';
+        }
+    }
+
+    //  Some commands (like the ':history' command itself) will not have content
+    //  in either place, but will in its 'cmd' property.
+
+    if (TP.isEmpty(text)) {
+        if (TP.isEmpty(text = this.at('cmd'))) {
+            text = '';
+        }
+    }
+
     return text;
 });
 
