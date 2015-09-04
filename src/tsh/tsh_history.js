@@ -276,13 +276,18 @@ function(aString, aRequest, aShell) {
         cmd = aShell.getHistory(aString, true);
     }
 
-    //  if we didn't find a command no point in continuing
-    if (TP.isEmpty(cmd)) {
+    //  if we didn't find a command no point in continuing. also, if the command
+    //  we did find is just the current entry we're looking for, it's
+    //  nonsensical to continue - it's self-referential and will result in an
+    //  endless recursion.
+    /* eslint-disable no-extra-parens */
+    if (TP.isEmpty(cmd) || (cmd === '!' + aString)) {
         aRequest.fail(
             TP.sc('Unable to find specified history entry.'));
 
         return;
     }
+    /* eslint-enable no-extra-parens */
 
     //  ---
     //  word access
