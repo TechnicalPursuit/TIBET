@@ -114,8 +114,8 @@ function(aRequest) {
 
     isEdit = TP.elementGetAttribute(node, 'tsh:edit', true);
     if (TP.bc(isEdit)) {
-        req = TP.sig.ConsoleRequest.construct(TP.hc('cmd', 'input',
-                                            'body', str));
+        req = TP.sig.ConsoleRequest.construct(
+                                    TP.hc('cmd', 'input', 'body', str));
         req.fire(shell);
 
         //  This is a bit hackish - having to put the cmdInput flag on the
@@ -133,13 +133,20 @@ function(aRequest) {
                     'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
                     'cmdAsIs', aRequest.at('cmdAsIs'),
                     'cmdExecute', true,
-                    'cmdHistory', aRequest.at('cmdHistory'),
-                    'cmdBuildGUI', aRequest.at('cmdBuildGUI'),
+                    //  Do not make a history entry for this request. A history
+                    //  entry will be make for the main request that started us.
+                    'cmdHistory', false,
+                    //  Do not build GUI for this request.
+                    'cmdBuildGUI', false,
                     'cmdLiteral', aRequest.at('cmdLiteral'),
                     'cmdPeer', aRequest,
                     'cmdPhases', aRequest.at('cmdPhases'),
                     'cmdRecycle', aRequest.at('cmdRecycle'),
-                    'cmdSilent', aRequest.at('cmdSilent')
+                    //  We configure this request as silent since we don't want
+                    //  it to output to stdout. We will output its result
+                    //  through the main request that started us in the
+                    //  'completeJob' below.
+                    'cmdSilent', true
             ));
 
     origReq.atPut('cmdTitle', str);
