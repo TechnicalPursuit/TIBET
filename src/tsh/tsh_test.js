@@ -55,7 +55,7 @@ function(aRequest) {
     //  format output.
     aRequest.atPut('cmdTAP', true);
 
-    aRequest.stdout('\n');
+    aRequest.stdout(TP.TSH_NO_VALUE);
 
     shell = aRequest.at('cmdShell');
 
@@ -112,7 +112,7 @@ function(aRequest) {
 
     } else if (TP.isEmpty(target) && TP.notEmpty(suiteName)) {
 
-        aRequest.stdout('\n');
+        aRequest.stdout(TP.TSH_NO_VALUE);
 
         runner.runTargetSuites(null, options).then(
             function(result) {
@@ -160,7 +160,7 @@ function(aRequest) {
             }
         }
 
-        aRequest.stdout('\n');
+        aRequest.stdout(TP.TSH_NO_VALUE);
 
         obj.runTestSuites(options).then(
             function(result) {
