@@ -17,7 +17,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('xctrls:XMLNS');
+TP.core.XMLNamespace.defineSubtype('xctrls.XMLNS');
 
 //  ------------------------------------------------------------------------
 //  end

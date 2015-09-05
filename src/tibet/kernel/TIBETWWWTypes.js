@@ -2550,7 +2550,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('html:XMLNS');
+TP.core.XMLNamespace.defineSubtype('html.XMLNS');
 
 //  ========================================================================
 //  TP.core.XIncludeNamespace
@@ -2563,7 +2563,7 @@ TP.core.XMLNamespace.defineSubtype('html:XMLNS');
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('xi:XMLNS');
+TP.core.XMLNamespace.defineSubtype('xi.XMLNS');
 
 //  ========================================================================
 //  TP.core.XSLTNamespace
@@ -2576,7 +2576,7 @@ TP.core.XMLNamespace.defineSubtype('xi:XMLNS');
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('xsl:XMLNS');
+TP.core.XMLNamespace.defineSubtype('xsl.XMLNS');
 
 //  ========================================================================
 //  TP.core.Cookie

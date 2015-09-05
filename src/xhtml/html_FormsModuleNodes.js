@@ -606,7 +606,7 @@ TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('html:textUtilities');
+TP.core.UIElementNode.defineSubtype('html.textUtilities');
 TP.html.textUtilities.addTraits(TP.html.Element);
 
 TP.html.textUtilities.Type.resolveTrait('booleanAttrs', TP.html.Element);

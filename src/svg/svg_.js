@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('svg:XMLNS');
+TP.core.XMLNamespace.defineSubtype('svg.XMLNS');
 
 //  ------------------------------------------------------------------------
 //  end

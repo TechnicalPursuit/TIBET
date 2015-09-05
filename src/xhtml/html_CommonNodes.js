@@ -23,7 +23,7 @@
 
 //  can't construct concrete instances of any of these types
 
-TP.core.UIElementNode.defineSubtype('html:CoreAttrs');
+TP.core.UIElementNode.defineSubtype('html.CoreAttrs');
 
 //  A subtype of TP.core.UIElement that has 4 common attributes:
 //  id, class, style, title
@@ -38,7 +38,7 @@ TP.html.CoreAttrs.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
-TP.core.UIElementNode.defineSubtype('html:Attrs');
+TP.core.UIElementNode.defineSubtype('html.Attrs');
 TP.html.Attrs.isAbstract(true);
 
 TP.html.Attrs.addTraits(TP.html.Element);

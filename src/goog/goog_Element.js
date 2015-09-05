@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('goog:Element');
+TP.core.ElementNode.defineSubtype('goog.Element');
 
 TP.w3.Xmlns.registerNSInfo('urn:goog', TP.hc('prefix', 'goog'));
 

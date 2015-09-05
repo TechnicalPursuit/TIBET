@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('xmpp:XMLNS');
+TP.core.XMLNamespace.defineSubtype('xmpp.XMLNS');
 
 //  ------------------------------------------------------------------------
 //  Type Constants

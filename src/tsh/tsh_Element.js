@@ -9,13 +9,13 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {tsh:Element}
+ * @type {tsh.Element}
  * @summary The root type for all tsh: action tags and command elements.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('tsh:Element');
+TP.core.ElementNode.defineSubtype('tsh.Element');
 
 //  ------------------------------------------------------------------------
 //  end

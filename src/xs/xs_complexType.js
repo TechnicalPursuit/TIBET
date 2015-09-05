@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('xs:complexType');
+TP.core.ElementNode.defineSubtype('xs.complexType');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

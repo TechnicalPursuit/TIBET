@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('svg:Element');
+TP.core.ElementNode.defineSubtype('svg.Element');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

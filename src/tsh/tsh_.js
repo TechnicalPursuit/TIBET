@@ -16,7 +16,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('tsh:XMLNS');
+TP.core.XMLNamespace.defineSubtype('tsh.XMLNS');
 
 //  ------------------------------------------------------------------------
 //  end

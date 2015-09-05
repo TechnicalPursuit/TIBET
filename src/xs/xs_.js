@@ -17,7 +17,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('xs:XMLNS');
+TP.core.XMLNamespace.defineSubtype('xs.XMLNS');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

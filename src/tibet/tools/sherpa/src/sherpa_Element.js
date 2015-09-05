@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('sherpa:Element');
+TP.core.UIElementNode.defineSubtype('sherpa.Element');
 
 TP.sherpa.Element.addTraits(TP.core.NonNativeUIElementNode);
 

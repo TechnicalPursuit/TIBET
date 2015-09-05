@@ -26,7 +26,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:MultiItemElement');
+TP.core.UIElementNode.defineSubtype('xctrls.MultiItemElement');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

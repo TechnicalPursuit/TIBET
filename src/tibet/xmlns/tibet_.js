@@ -17,7 +17,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('tibet:XMLNS');
+TP.core.XMLNamespace.defineSubtype('tibet.XMLNS');
 
 //  ------------------------------------------------------------------------
 //  end

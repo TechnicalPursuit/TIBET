@@ -17,7 +17,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('html:Element');
+TP.core.UIElementNode.defineSubtype('html.Element');
 
 //  can't construct concrete instances of this
 TP.html.Element.isAbstract(true);

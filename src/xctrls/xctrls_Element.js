@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:Element');
+TP.core.UIElementNode.defineSubtype('xctrls.Element');
 
 TP.xctrls.Element.addTraits(TP.core.NonNativeUIElementNode);
 

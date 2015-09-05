@@ -62,7 +62,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLNamespace.defineSubtype('acl:XMLNS');
+TP.core.XMLNamespace.defineSubtype('acl.XMLNS');
 
 //  ------------------------------------------------------------------------
 //  end

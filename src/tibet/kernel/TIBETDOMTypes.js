@@ -16118,7 +16118,7 @@ function(aRequest) {
 //  XSLT ELEMENTS
 //  ========================================================================
 
-TP.core.ElementNode.defineSubtype('xsl:Element');
+TP.core.ElementNode.defineSubtype('xsl.Element');
 
 //  actual XSL Element instances returned are specialized on a number of
 //  factors
@@ -16150,7 +16150,7 @@ TP.xsl.include.Type.set('uriAttrs', TP.ac('href'));
 //  XINCLUDE PROCESSING
 //  ========================================================================
 
-TP.core.ElementNode.defineSubtype('xi:Element');
+TP.core.ElementNode.defineSubtype('xi.Element');
 
 //  actual XI Element instances returned are specialized on a number of
 //  factors
@@ -16444,7 +16444,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('core:TemplatedNode');
+TP.core.ElementNode.defineSubtype('core.TemplatedNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.
@@ -16662,7 +16662,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('core:EmptyElementNode');
+TP.core.ElementNode.defineSubtype('core.EmptyElementNode');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation.

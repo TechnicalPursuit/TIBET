@@ -18,7 +18,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('xmpp:Node');
+TP.core.ElementNode.defineSubtype('xmpp.Node');
 
 //  can't construct concrete instances of this
 TP.xmpp.Node.isAbstract(true);
