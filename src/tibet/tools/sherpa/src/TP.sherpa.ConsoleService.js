@@ -495,6 +495,8 @@ function(aSignal) {
 
     this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
 
+    this.get('$consoleGUI').focusInput();
+
     return this;
 });
 
