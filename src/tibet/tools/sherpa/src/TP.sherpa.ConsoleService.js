@@ -1853,6 +1853,8 @@ function(anObject, aRequest) {
         data,
         asIs,
 
+        possibleElem,
+
         cssClass,
         outputData,
 
@@ -1907,16 +1909,24 @@ function(anObject, aRequest) {
             if (TP.isArray(anObject)) {
                 anObject.set('delimiter', '');
                 data = anObject.asString();
-            } else {
+            } else if (TP.isElement(possibleElem = TP.unwrap(anObject)) &&
+                        TP.w3.Xmlns.getNativeURIs().contains(
+                                                possibleElem.namespaceURI)) {
+                //  It's an element in a namespace that we support native
+                //  rendering of. Just pass it through.
                 data = anObject;
+            } else {
+
+                //  just use the raw object.
+                data = anObject;
+
+                //  make sure its always a String though.
+                data = TP.str(data);
+
+                //  and, since we're not feeding it through a formatter (who is
+                //  normally responsible for this), make sure its escaped
+                data = data.asEscapedXML();
             }
-
-            //  make sure its always a String though.
-            data = TP.str(data);
-
-            //  and, since we're not feeding it through a formatter (who is
-            //  normally responsible for this), make sure its escaped
-            data = data.asEscapedXML();
         }
 
         if (TP.isTrue(tap)) {

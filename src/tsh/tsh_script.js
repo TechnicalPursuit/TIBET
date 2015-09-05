@@ -3380,9 +3380,8 @@ function(output, request) {
 
     if (TP.notEmpty(asIs)) {
         asIs = TP.bc(asIs);
+        req.atPut('cmdAsIs', asIs);
     }
-
-    req.atPutIfAbsent('cmdAsIs', asIs);
 
     //  Compute the tagtime from the cmdStart & cmdEnd
     if (TP.isNumber(start = req.at('cmdStart')) &&
