@@ -90,6 +90,12 @@ function() {
 
     editor.setDisplayValue(str);
 
+    /* eslint-disable no-extra-parens */
+    (function() {
+        editor.$get('$editorObj').refresh();
+    }).fork(200);
+    /* eslint-enable no-extra-parens */
+
     return this;
 });
 
