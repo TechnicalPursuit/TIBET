@@ -51,9 +51,9 @@ TP.sherpa.ConsoleService.Inst.defineAttribute('systemConsole', false);
 //  key is held down for a particular amount of time
 TP.sherpa.ConsoleService.Inst.defineAttribute('markingTimer');
 
-//  the ID of the last 'non cmd output tile' - usually a logging tile that we
+//  the ID of the last 'non cmd output cell' - usually a logging cell that we
 //  just want to append to.
-TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdTileID');
+TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdCellID');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -1770,7 +1770,7 @@ function(aRequest) {
 
         inputData,
 
-        tileID,
+        cellID,
 
         consoleGUI;
 
@@ -1815,17 +1815,17 @@ function(aRequest) {
                         'cssClass', cssClass,
                         'request', request);
 
-    tileID = aRequest.at('cmdID');
+    cellID = aRequest.at('cmdID');
 
     consoleGUI = this.get('$consoleGUI');
 
-    if (TP.isEmpty(tileID)) {
+    if (TP.isEmpty(cellID)) {
         //  Fail - shouldn't get here
         void 0;
     } else {
-        tileID = tileID.replace(/\$/g, '_');
+        cellID = cellID.replace(/\$/g, '_');
 
-        consoleGUI.createOutputEntry(tileID, inputData);
+        consoleGUI.createOutputEntry(cellID, inputData);
     }
 
     return this;
@@ -1856,7 +1856,7 @@ function(anObject, aRequest) {
         cssClass,
         outputData,
 
-        tileID,
+        cellID,
 
         consoleGUI;
 
@@ -1945,19 +1945,19 @@ function(anObject, aRequest) {
 
     consoleGUI = this.get('$consoleGUI');
 
-    //  If the request has no cmdID for us to use as a tile ID, then this was
+    //  If the request has no cmdID for us to use as a cell ID, then this was
     //  probably a call to stdout() that wasn't a direct result of a command
     //  being issued.
-    if (TP.isEmpty(tileID = aRequest.at('cmdID'))) {
+    if (TP.isEmpty(cellID = aRequest.at('cmdID'))) {
 
-        //  See if there's a current 'non cmd' tile that we're using to write
+        //  See if there's a current 'non cmd' cell that we're using to write
         //  this kind of output. If there isn't one, then create one (but don't
         //  really hand it any data to write out - we'll take care of that
         //  below).
-        if (TP.isEmpty(tileID = this.get('lastNonCmdTileID'))) {
-            tileID = 'log' + TP.genID().replace('$', '_');
-            consoleGUI.createOutputEntry(tileID, TP.hc());
-            this.set('lastNonCmdTileID', tileID);
+        if (TP.isEmpty(cellID = this.get('lastNonCmdCellID'))) {
+            cellID = 'log' + TP.genID().replace('$', '_');
+            consoleGUI.createOutputEntry(cellID, TP.hc());
+            this.set('lastNonCmdCellID', cellID);
         }
 
         //  Stub in an empty String  for the stats and the word 'LOG' for the
@@ -1965,12 +1965,12 @@ function(anObject, aRequest) {
         outputData.atPut('stats', '');
         outputData.atPut('typeinfo', 'LOG');
     } else {
-        tileID = tileID.replace(/\$/g, '_');
-        this.set('lastNonCmdTileID', null);
+        cellID = cellID.replace(/\$/g, '_');
+        this.set('lastNonCmdCellID', null);
     }
 
-    //  Update the output entry tile with the output data.
-    consoleGUI.updateOutputEntry(tileID, outputData);
+    //  Update the output entry cell with the output data.
+    consoleGUI.updateOutputEntry(cellID, outputData);
 
     return this;
 });
