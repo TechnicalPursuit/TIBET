@@ -289,9 +289,12 @@ function(anID, tileParent) {
     //  supertype's
     newEditorTPElem = TP.sherpa.tile.getResourceElement(
                             'template',
-                            TP.ietf.Mime.XHTML);
+                            TP.ietf.Mime.XHTML,
+                            function(anElement) {
+                                anElement.setAttribute(
+                                        'tibet:tag', 'TP.sherpa.editortile');
+                            });
     newEditorTPElem = newEditorTPElem.clone();
-    newEditorTPElem.setAttribute('tibet:ctrl', 'TP.sherpa.editortile');
 
     tileTPElem = TP.wrap(tileParent).addContent(newEditorTPElem);
 
