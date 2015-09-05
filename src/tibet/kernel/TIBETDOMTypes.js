@@ -10752,7 +10752,7 @@ function(wantsDeep, wantsCompiled) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('getResourceElement',
-function(resource, mimeType) {
+function(resource, mimeType, setupFunc) {
 
     /**
      * @method getResourceElement
@@ -10763,6 +10763,9 @@ function(resource, mimeType) {
      *     style_{theme}, etc. but it could be essentially anything except the
      *     word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
+     * @param {Function} [setupFunc] An optional set up function for the
+     *     resource element that will be executed before it is wrapped for
+     *     return.
      * @returns {TP.core.ElementNode} The wrapped element containing the
      *     content.
      */
@@ -10818,6 +10821,11 @@ function(resource, mimeType) {
     //  path on the resulting element so we have it for reference.
     if (TP.notEmpty(src)) {
         elem[TP.SRC_LOCATION] = src;
+    }
+
+    //  If we were supplied with a setup Function, then execute it here.
+    if (TP.isCallable(setupFunc)) {
+        setupFunc(elem);
     }
 
     return TP.wrap(elem);
