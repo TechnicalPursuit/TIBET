@@ -1468,6 +1468,11 @@ function(uniqueID, dataRecord) {
     if (TP.isEmpty(outputText) &&
         TP.isTrue(dataRecord.at('structuredOutput'))) {
 
+        //  Make sure to configure this particular cell group so that content
+        //  *can* be awakened under it - our structured output might very well
+        //  need it.
+        TP.elementRemoveAttribute(cellGroupElem, 'tibet:noawaken', true);
+
         resultTile = TP.bySystemId('Sherpa').makeEditorTile(
                                     uniqueID + '_tile',
                                     cellGroupElem);
