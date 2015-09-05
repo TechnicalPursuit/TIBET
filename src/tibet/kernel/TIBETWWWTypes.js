@@ -2019,7 +2019,7 @@ function() {
 
     /**
      * @method getNativeURIs
-     * @summary Returns an array of natively supported namespace URIS on the
+     * @summary Returns an array of natively supported namespace URIs on the
      *     current browser.
      * @returns {Array} The list of native namespace URIs.
      */
