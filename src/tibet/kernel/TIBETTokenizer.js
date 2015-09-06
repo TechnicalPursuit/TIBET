@@ -26,132 +26,144 @@ how the resulting token array will be utilized.
 Keywords and reserved words from the ECMA 3.0 JavaScript specification.
 */
 
-TP.boot.$keywords = [
-    'break', 'case', 'catch', 'continue', 'default', 'delete', 'do', 'else',
-    'false', 'finally', 'for', 'function', 'if', 'in', 'instanceof', 'new',
-    'null', 'return', 'switch', 'this', 'throw', 'true', 'try', 'typeof',
-    'var', 'void', 'while', 'with'
-];
-TP.boot.$keywordString = '__' + TP.boot.$keywords.join('__') + '__';
+TP.boot.defineAttribute('$keywords',
+    TP.ac(
+        'break', 'case', 'catch', 'continue', 'default', 'delete', 'do', 'else',
+        'false', 'finally', 'for', 'function', 'if', 'in', 'instanceof', 'new',
+        'null', 'return', 'switch', 'this', 'throw', 'true', 'try', 'typeof',
+        'var', 'void', 'while', 'with'
+    ));
 
-TP.boot.$reservedwords = [
-    'abstract', 'boolean', 'byte', 'char', 'class', 'const', 'debugger',
-    'double', 'enum', 'export', 'extends', 'final', 'float', 'goto',
-    'implements', 'import', 'int', 'interface', 'long', 'native', 'package',
-    'private', 'protected', 'public', 'short', 'static', 'super',
-    'synchronized', 'throws', 'transient', 'volatile'
-];
-TP.boot.$reservedString = '__' + TP.boot.$reservedwords.join('__') + '__';
+TP.boot.defineAttribute('$keywordString',
+    '__' + TP.boot.$keywords.join('__') + '__');
+
+TP.boot.defineAttribute('$reservedwords',
+    TP.ac(
+        'abstract', 'boolean', 'byte', 'char', 'class', 'const', 'debugger',
+        'double', 'enum', 'export', 'extends', 'final', 'float', 'goto',
+        'implements', 'import', 'int', 'interface', 'long', 'native', 'package',
+        'private', 'protected', 'public', 'short', 'static', 'super',
+        'synchronized', 'throws', 'transient', 'volatile'
+    ));
+
+TP.boot.defineAttribute('$reservedString',
+    '__' + TP.boot.$reservedwords.join('__') + '__');
 
 //  The following list is per Narcissus's jsdefs.js definitions.
-TP.boot.$operators = [
-    ';',
-    ',',
-    '=',
-    '?', ':',
-    '||',
-    '&&',
-    '|',
-    '^',
-    '&',
-    '==', '!=', '===', '!==',
-    '<', '<=', '>=', '>',
-    '<<', '>>', '>>>',
-    '+', '-',
-    '*', '/', '%',
-    '+=', '-=', '*=', '/=', '%=', '<<=', '>>=', '>>>=', '&=', '|=', '^=',
-    '!', '~',
-    '++', '--',
-    '.',
-    '[', ']',
-    '{', '}',
-    '(', ')'
-];
-TP.boot.$operatorString = '__' + TP.boot.$operators.join('__') + '__';
+TP.boot.defineAttribute('$operators',
+    TP.ac(
+        ';',
+        ',',
+        '=',
+        '?', ':',
+        '||',
+        '&&',
+        '|',
+        '^',
+        '&',
+        '==', '!=', '===', '!==',
+        '<', '<=', '>=', '>',
+        '<<', '>>', '>>>',
+        '+', '-',
+        '*', '/', '%',
+        '+=', '-=', '*=', '/=', '%=', '<<=', '>>=', '>>>=', '&=', '|=', '^=',
+        '!', '~',
+        '++', '--',
+        '.',
+        '[', ']',
+        '{', '}',
+        '(', ')'
+    ));
 
-TP.boot.$tshOpRegex = /^\.[|&<>\(\{\[;][|&<>!\*\?\(\{\[]*/;
+TP.boot.defineAttribute('$operatorString',
+        '__' + TP.boot.$operators.join('__') + '__');
+
+TP.boot.defineAttribute('$tshOpRegex',
+        /^\.[|&<>\(\{\[;][|&<>!\*\?\(\{\[]*/);
 
 //  Considered 'built-in' by TIBET, but other schemes are added when
 //  registered.
-TP.boot.$uriSchemes = {
-    tibet: 'tibet',    // common
-    urn: 'urn',        // common
-    http: 'http',      // common
-    https: 'https',    // common
-    file: 'file',      // common
-    xmpp: 'xmpp',      // common
-    about: 'about',    // common
-    mailto: 'mailto',  // common
-    tel: 'tel',        // common
-    news: 'news',      // common
-    nntp: 'nntp',      // common
-    ftp: 'ftp',        // common
-    ws: 'ws',          // common
-    wss: 'wss',        // common
+TP.boot.defineAttribute('$uriSchemes',
+    {
+        tibet: 'tibet',    // common
+        urn: 'urn',        // common
+        http: 'http',      // common
+        https: 'https',    // common
+        file: 'file',      // common
+        xmpp: 'xmpp',      // common
+        about: 'about',    // common
+        mailto: 'mailto',  // common
+        tel: 'tel',        // common
+        news: 'news',      // common
+        nntp: 'nntp',      // common
+        ftp: 'ftp',        // common
+        ws: 'ws',          // common
+        wss: 'wss',        // common
 
-    aaa: 'aaa',
-    aaas: 'aaas',
-    acap: 'acap',
-    cap: 'cap',
-    cid: 'cid',
-    crid: 'crid',
-    data: 'data',
-    dav: 'dav',
-    dict: 'dict',
-    dns: 'dns',
-    fax: 'fax',
-    go: 'go',
-    gopher: 'gopher',
-    h323: 'h323',
-    icap: 'icap',
-    im: 'im',
-    imap: 'imap',
-    info: 'info',
-    ipp: 'ipp',
-    iris: 'iris',
-    'iris.beep': 'iris.beep',
-    'iris.xpc': 'iris.xpc',
-    'iris.xpcs': 'iris.xpcs',
-    'iris.lws': 'iris.lws',
-    ldap: 'ldap',
-    lsid: 'lsid',
-    mid: 'mid',
-    modem: 'modem',
-    msrp: 'msrp',
-    msrps: 'msrps',
-    mtqp: 'mtqp',
-    mupdate: 'mupdate',
-    nfs: 'nfs',
-    opaquelocktoken: 'opaquelocktoken',
-    pop: 'pop',
-    pres: 'pres',
-    prospero: 'prospero',
-    rtsp: 'rtsp',
-    service: 'service',
-    shttp: 'shttp',
-    sip: 'sip',
-    sips: 'sips',
-    snmp: 'snmp',
-    'soap.beep': 'soap.beep',
-    'soap.beeps': 'soap.beeps',
-    tag: 'tag',
-    telnet: 'telnet',
-    tftp: 'tftp',
-    thismessage: 'thismessage',
-    tip: 'tip',
-    tv: 'tv',
-    vemmi: 'vemmi',
-    wais: 'wais',
-    'xmlrpc.beep': 'xmlrpc.beep',
-    'z39.50r': 'z39.50r',
-    'z39.50s': 'z39.50s'
-};
+        aaa: 'aaa',
+        aaas: 'aaas',
+        acap: 'acap',
+        cap: 'cap',
+        cid: 'cid',
+        crid: 'crid',
+        data: 'data',
+        dav: 'dav',
+        dict: 'dict',
+        dns: 'dns',
+        fax: 'fax',
+        go: 'go',
+        gopher: 'gopher',
+        h323: 'h323',
+        icap: 'icap',
+        im: 'im',
+        imap: 'imap',
+        info: 'info',
+        ipp: 'ipp',
+        iris: 'iris',
+        'iris.beep': 'iris.beep',
+        'iris.xpc': 'iris.xpc',
+        'iris.xpcs': 'iris.xpcs',
+        'iris.lws': 'iris.lws',
+        ldap: 'ldap',
+        lsid: 'lsid',
+        mid: 'mid',
+        modem: 'modem',
+        msrp: 'msrp',
+        msrps: 'msrps',
+        mtqp: 'mtqp',
+        mupdate: 'mupdate',
+        nfs: 'nfs',
+        opaquelocktoken: 'opaquelocktoken',
+        pop: 'pop',
+        pres: 'pres',
+        prospero: 'prospero',
+        rtsp: 'rtsp',
+        service: 'service',
+        shttp: 'shttp',
+        sip: 'sip',
+        sips: 'sips',
+        snmp: 'snmp',
+        'soap.beep': 'soap.beep',
+        'soap.beeps': 'soap.beeps',
+        tag: 'tag',
+        telnet: 'telnet',
+        tftp: 'tftp',
+        thismessage: 'thismessage',
+        tip: 'tip',
+        tv: 'tv',
+        vemmi: 'vemmi',
+        wais: 'wais',
+        'xmlrpc.beep': 'xmlrpc.beep',
+        'z39.50r': 'z39.50r',
+        'z39.50s': 'z39.50s'
+    });
 
 //  ------------------------------------------------------------------------
 //  Helper Functions
 //  ------------------------------------------------------------------------
 
-TP.$is_identifier = function(tokenType) {
+TP.definePrimitive('$is_identifier',
+function(tokenType) {
 
     /**
     @method     $is_identifier
@@ -164,11 +176,12 @@ TP.$is_identifier = function(tokenType) {
     return tokenType === 'identifier' ||
             tokenType === 'keyword' ||
             tokenType === 'reserved';
-};
+});
 
 //  ------------------------------------------------------------------------
 
-TP.$is_ioend = function(anOperator) {
+TP.definePrimitive('$is_ioend',
+function(anOperator) {
 
     /**
     @method     $is_ioend
@@ -184,11 +197,12 @@ TP.$is_ioend = function(anOperator) {
             anOperator === '.||' ||
             anOperator === '.&&');
     /* eslint-enable no-extra-parens */
-};
+});
 
 //  ------------------------------------------------------------------------
 
-TP.$is_scheme = function(anIdentifier) {
+TP.definePrimitive('$is_scheme',
+function(anIdentifier) {
 
     /**
     @method     $is_scheme
@@ -207,11 +221,12 @@ TP.$is_scheme = function(anIdentifier) {
     value = anIdentifier;
 
     return TP.boot.$uriSchemes[value] === value;
-};
+});
 
 //  ------------------------------------------------------------------------
 
-TP.$is_terminator = function(anOperator) {
+TP.definePrimitive('$is_terminator',
+function(anOperator) {
 
     /**
     @method     $is_terminator
@@ -226,11 +241,12 @@ TP.$is_terminator = function(anOperator) {
     /* eslint-disable no-extra-parens */
     return (anOperator === ';' || TP.boot.$tshOpRegex.test(anOperator));
     /* eslint-enable no-extra-parens */
-};
+});
 
 //  ------------------------------------------------------------------------
 
-TP.$is_whitespace = function(tokenType) {
+TP.definePrimitive('$is_whitespace',
+function(tokenType) {
 
     /**
     @method     $is_whitespace
@@ -244,13 +260,14 @@ TP.$is_whitespace = function(tokenType) {
             tokenType === 'tab' ||
             tokenType === 'newline');
     /* eslint-enable no-extra-parens */
-};
+});
 
 //  ------------------------------------------------------------------------
 //  Tokenizing
 //  ------------------------------------------------------------------------
 
-TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
+TP.definePrimitive('$tokenize',
+function(src, ops, tsh, exp, alias, args) {
 
     /**
     @method     $tokenize
@@ -1154,14 +1171,14 @@ TP.$tokenize = function(src, ops, tsh, exp, alias, args) {
     }
 
     return result;
-};
+});
 
 //  ------------------------------------------------------------------------
 //  Packing/Condensing
 //  ------------------------------------------------------------------------
 
-TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
-                            tsh) {
+TP.definePrimitive('$condenseJS',
+function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
 
     /**
     @method     $condenseJS
@@ -1330,7 +1347,7 @@ TP.$condenseJS = function(src, newlines, spaces, operators, tokens, nojoin,
 
     //  join and add a proper final newline as needed (vim-friendly :))
     return result.join('') + (last && last.name !== 'newline' ? '\n' : '');
-};
+});
 
 //  ------------------------------------------------------------------------
 //  end

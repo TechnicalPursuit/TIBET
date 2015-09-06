@@ -11,12 +11,12 @@
     <script src="TIBETGlobals.js"/>
     <script src="TIBETVersion.js"/>
 
-    <script src="TIBETTokenizer.js"/>
-
     <script src="TIBETPrimitivesPre.js"/>
     <script src="TIBETPrimitivesBase.js"/>
     <script src="TIBETPrimitivesPlatform.js"/>
     <script src="TIBETPrimitivesPost.js"/>
+
+    <script src="TIBETTokenizer.js"/>
 
     <script src="TIBETDOMPrimitivesPre.js"/>
     <script src="TIBETDOMPrimitivesBase.js"/>
