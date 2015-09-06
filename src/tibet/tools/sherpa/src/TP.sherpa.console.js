@@ -1351,6 +1351,14 @@ function(uniqueID, dataRecord) {
 
         cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
+
+        //  If there's ACP in the text, we need to escape it before feeding it
+        //  into the template transformation machinery.
+        if (TP.regex.HAS_ACP.test(cmdText)) {
+            cmdText = cmdText.replace(/\{\{/g, '\\{{').
+                                replace(/\}\}/g, '\\}}');
+        }
+
         cmdText = cmdText.asEscapedXML();
 
         inputData = TP.hc(
@@ -1367,10 +1375,6 @@ function(uniqueID, dataRecord) {
                                 inputData,
                                 TP.request('async', false));
         entryStr = resp.get('result');
-
-        if (/\{\{/.test(entryStr)) {
-            return;
-        }
 
         outElem = TP.xmlElementAddContent(
                         this.get('consoleOutput').getNativeNode(),
