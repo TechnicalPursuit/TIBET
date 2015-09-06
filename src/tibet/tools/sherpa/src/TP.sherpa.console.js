@@ -560,6 +560,8 @@ function(aMode) {
             break;
     }
 
+    this.focusInput();
+
     return this;
 });
 
