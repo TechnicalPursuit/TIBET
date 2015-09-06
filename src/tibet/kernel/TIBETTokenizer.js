@@ -23,31 +23,82 @@ how the resulting token array will be utilized.
 //  ------------------------------------------------------------------------
 
 /*
-Keywords and reserved words from the ECMA 3.0 JavaScript specification.
+Keywords and reserved words from the ECMA 6.0 JavaScript specification.
 */
 
 TP.boot.defineAttribute('$keywords',
     TP.ac(
-        'break', 'case', 'catch', 'continue', 'default', 'delete', 'do', 'else',
-        'false', 'finally', 'for', 'function', 'if', 'in', 'instanceof', 'new',
-        'null', 'return', 'switch', 'this', 'throw', 'true', 'try', 'typeof',
-        'var', 'void', 'while', 'with'
-    ));
+        'break',
+        'case',
+        'class',
+        'catch',
+        'const',
+        'continue',
+        'debugger',
+        'default',
+        'delete',
+        'do',
+        'else',
+        'export',
+        'extends',
+        'false',
+        'finally',
+        'for',
+        'function',
+        'if',
+        'import',
+        'in',
+        'instanceof',
+        'let',
+        'new',
+        'null',
+        'return',
+        'super',
+        'switch',
+        'this',
+        'throw',
+        'true',
+        'try',
+        'typeof',
+        'var',
+        'void',
+        'while',
+        'with',
+        'yield'));
 
 TP.boot.defineAttribute('$keywordString',
     '__' + TP.boot.$keywords.join('__') + '__');
 
-TP.boot.defineAttribute('$reservedwords',
+TP.boot.defineAttribute('$futurereservedwords',
     TP.ac(
-        'abstract', 'boolean', 'byte', 'char', 'class', 'const', 'debugger',
-        'double', 'enum', 'export', 'extends', 'final', 'float', 'goto',
-        'implements', 'import', 'int', 'interface', 'long', 'native', 'package',
-        'private', 'protected', 'public', 'short', 'static', 'super',
-        'synchronized', 'throws', 'transient', 'volatile'
+        'abstract',
+        'await',
+        'boolean',
+        'byte',
+        'char',
+        'double',
+        'enum',
+        'final',
+        'float',
+        'goto',
+        'implements',
+        'int',
+        'interface',
+        'long',
+        'native',
+        'package',
+        'private',
+        'protected',
+        'public',
+        'short',
+        'static',
+        'synchronized',
+        'transient',
+        'volatile'
     ));
 
-TP.boot.defineAttribute('$reservedString',
-    '__' + TP.boot.$reservedwords.join('__') + '__');
+TP.boot.defineAttribute('$futureReservedString',
+    '__' + TP.boot.$futurereservedwords.join('__') + '__');
 
 //  The following list is per Narcissus's jsdefs.js definitions.
 TP.boot.defineAttribute('$operators',
@@ -170,7 +221,7 @@ function(tokenType) {
     @abstract   Returns true if the token type represents an
                 identifier of some kind. Valid identifier types
                 include 'identifier', 'keyword', and 'reserved'.
-    @return     Boolean     True for identifier types/subtypes.
+    @returns    {Boolean} True for identifier types/subtypes.
     */
 
     return tokenType === 'identifier' ||
@@ -188,8 +239,8 @@ function(anOperator) {
     @abstract   Returns true if the operator represents a pipe symbol that
                 ends a pipe segment. Common values are .;, .||, and .&&
                 which all imply the next command does not read stdio etc.
-    @param      anOperator      String      The operator to test.
-    @return     Boolean
+    @param      {String} anOperator The operator to test.
+    @returns    {Boolean}
     */
 
     /* eslint-disable no-extra-parens */
@@ -208,8 +259,8 @@ function(anIdentifier) {
     @method     $is_scheme
     @abstract   Returns true if token's value is a valid URI scheme. The
                 list maintained in TP.boot.$uriSchemes.
-    @param      anIdentifier        String      A string value to test.
-    @return     Boolean
+    @param      {String} anIdentifier A string value to test.
+    @returns    {Boolean}
     */
 
     var value;
@@ -234,8 +285,8 @@ function(anOperator) {
                 statement or substatement terminator. Semicolons and TSH
                 operators (which all start with .) are terminators since
                 they end a statement or sub-statement.
-    @param      anOperator      String      The operator to test.
-    @return     Boolean
+    @param      {String} anOperator The operator to test.
+    @returns    {Boolean}
     */
 
     /* eslint-disable no-extra-parens */
@@ -252,7 +303,7 @@ function(tokenType) {
     @method     $is_whitespace
     @abstract   Returns true if the token type represents a form of
                 whitespace such as a 'space', 'tab', or 'newline'.
-    @return     Boolean     True for whitespace token subtypes.
+    @returns    {Boolean} True for whitespace token subtypes.
     */
 
     /* eslint-disable no-extra-parens */
@@ -279,26 +330,26 @@ function(src, ops, tsh, exp, alias, args) {
                 allows us to have reasonable control over the source for
                 condensing or other processing without resorting immediately
                 to a full parser.
-    @param      src         String      The JavaScript source to process.
-    @param      ops         Array       An optional array of additional
+    @param      {String} src            The JavaScript source to process.
+    @param      {String} [ops]          An optional array of additional
                                         operator strings which should be
                                         considered valid for the source.
-    @param      tsh         Boolean     True to support extensions specific
+    @param      {Boolean} [tsh=false]   True to support extensions specific
                                         to the TIBET Shell (tsh) which
                                         includes ${var} and `cmd` syntax as
                                         well as limited markup processing.
-    @param      exp         Boolean     True to signify that the content is
+    @param      {Boolean} [exp=false]   True to signify that the content is
                                         being tokenized for expansion, which
                                         means certain clues for strings and
                                         regular expressions won't be found.
-    @param      alias       Boolean     True to signify content is being
+    @param      {Boolean} [alias=false] True to signify content is being
                                         tokenized for aliasing purposes. This
                                         causes substitutions to always
                                         terminate an ongoing string or URI.
-    @param      args        Boolean     True to signify content is being
+    @param      {Boolean} [args=false]  True to signify content is being
                                         tokenized for 'shell arguments'.
-    @return     Array       An array of token objects, simple objects which
-                            represent one token within the source string.
+    @returns    {Array} An array of token objects, simple objects which
+                        represent one token within the source string.
     */
 
     var digit,
@@ -350,7 +401,7 @@ function(src, ops, tsh, exp, alias, args) {
 
     //  easily tested strings used for identifier/operator testing
     keywords = TP.boot.$keywordString;
-    reserved = TP.boot.$reservedString;
+    reserved = TP.boot.$futureReservedString;
     operators = TP.boot.$operatorString;
     if (ops) {
         //  merge in any operators that may have been passed in to augment
@@ -368,10 +419,9 @@ function(src, ops, tsh, exp, alias, args) {
         @abstract   Returns the proper type for an identifier string. This
                     allows the tokenizer to fine-tune identifier recognition
                     to point out keywords, reserved words, etc.
-        @param      ident         String    The identifier string to
-                                            categorize.
-        @return     String      An identifier type: 'keyword', 'reserved',
-                                or 'identifier'.
+        @param      {String} ident The identifier string to categorize.
+        @returns    {String} An identifier type: 'keyword', 'reserved', or
+                             'identifier'.
         */
 
         if (keywords.indexOf('__' + ident + '__') > 0) {
@@ -389,12 +439,11 @@ function(src, ops, tsh, exp, alias, args) {
         @abstract   Simple token constructor which returns a token object
                     identifying the token type, value, and its location in
                     the source text.
-        @param      type        String      The token type. Must be one of
-                                            the standard token types for the
-                                            outer $tokenize method.
-        @param      value       String      The string value for the token.
-        @return     Object      A simple object containing type, value,
-                                line, from, and to keys for the token.
+        @param      {String} type The token type. Must be one of the standard
+                                  token types for the outer $tokenize method.
+        @param      {String} value The string value for the token.
+        @returns    {Object} A simple object containing type, value, line, from,
+                             and to keys for the token.
         */
 
         //  assign to outer scope'd variable for use in processing loop
@@ -1186,26 +1235,23 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
                 simple tokenizing process to segment the original source and
                 then remove comments, extraneous whitespace, and optionally
                 remove newlines.
-    @param      src             String      The JavaScript source to
-                                            process.
-    @param      newlines        Boolean     True to remove newlines. Default
-                                            is false to limit the potential
-                                            for introducing bugs, but blank
-                                            lines are still removed in all
-                                            cases.
-    @param      spaces          Boolean     True to remove spaces. Default
-                                            is true to create minimal output
-                                            size.
-    @param      operators       Array       An optional array of additional
+    @param      {String} src                The JavaScript source to process.
+    @param      {Boolean} [newlines=false]  True to remove newlines. Default is
+                                            false to limit the potential for
+                                            introducing bugs, but blank lines
+                                            are still removed in all cases.
+    @param      {Boolean} [spaces=true]     True to remove spaces. Default is
+                                            true to create minimal output size.
+    @param      {Array} [operators]         An optional array of additional
                                             operator token strings.
-    @param      tokens          Boolean     True forces tokens back into the
+    @param      {Boolean} [tokens=false]    True forces tokens back into the
                                             output array rather than values.
-    @param      nojoin          Boolean     True turns off join processing
-                                            so the result is the processed
-                                            token array rather than a string.
-    @param      tsh             Boolean     True if TIBET Shell (TSH)
-                                            semantics should be observed.
-    @return     String|Array    The condensed source code or token array.
+    @param      {Boolean} [nojoin=false]    True turns off join processing so
+                                            the result is the processed token
+                                            array rather than a string.
+    @param      {Boolean} [tsh=false]       True if TIBET Shell (TSH) semantics
+                                            should be observed.
+    @returns    {String|Array} The condensed source code or token array.
     */
 
     var arr,
