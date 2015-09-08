@@ -441,26 +441,80 @@ function(aRequest) {
      * @returns {TP.core.TSH} The receiver.
      */
 
-    var user,
+    var shell,
+        successFunc,
+
+        user,
         name,
-        shell,
         usernameReq;
 
     //  capture 'this' for closure purposes
     shell = this;
+
+    successFunc = function(userName) {
+
+        //  creating a TP.core.User instance will trigger the UI
+        //  updating done based on vcard role/unit assignments (if
+        //  this user has a vCard)
+        TP.core.User.construct(userName);
+
+        //  access to the shell instance through our previously
+        //  defined shell = this reference
+        shell.isRunning(true);
+        shell.setVariable('USER', userName);
+
+        //  store the username away in a cookie
+        TP.core.Cookie.setCookie(
+            'username',
+            userName,
+            TP.dc().addDuration('P1Y'));
+
+        //  TODO:   clean this up with something more sensible that
+        //  isn't so aware of what might be in the console (or that
+        //  there is a console)
+
+        //  space down from current location/announce
+        TP.sig.UserOutputRequest.construct(
+            TP.hc('output', '\n',
+                    'render', true
+                    )).fire(shell);
+
+        //  start login message thread...
+        TP.sig.UserOutputRequest.construct(
+            TP.hc('output', 'Loading and initializing user profile' +
+                            ' data for user "' + userName + '"...',
+                    'cssClass', 'inbound_announce'
+                    )).fire(shell);
+
+        //  if we're logged in, initiate the run sequence which will
+        //  load any startup files but allow the login output
+        //  message to display by forking the call here
+        /* eslint-disable no-wrap-func,no-extra-parens */
+        (function() {
+
+            shell.initProfile();
+
+            //  notify any observers that we've logged in
+            shell.signal('TP.sig.TSH_Login');
+
+        }).fork(20);
+        /* eslint-enable no-wrap-func,no-extra-parens */
+    };
 
     //  If the user is running this shell in an already-authenticated
     //  application then we piggyback on that user information instead of asking
     //  for new information
     if (TP.notEmpty(user = aRequest.at('username'))) {
         name = user;
-    } else if (TP.notEmpty(user = TP.sys.getEffectiveUser())) {
+    } else if (TP.isValid(user = TP.sys.getEffectiveUser()) &&
+                TP.notEmpty(name = user.get('vCard').get('shortname'))) {
 
-        name = user.get('shortname');
+        this.set('username', name);
 
-        //  When we've got a user we just silently load their profile and be
-        //  done with it so there's no prompting etc. and no interference
-        shell.initProfile();
+        //  There's no success or failure here - call the success handler.
+        successFunc(name);
+
+        return this;
 
     } else if (TP.notEmpty(user = TP.core.Cookie.getCookie('username'))) {
         //  this will remove the quotes wrapping the cookie value since
@@ -544,8 +598,7 @@ function(aRequest) {
                 function(anotherSignal) {
 
                     var invalidPasswordReq,
-                        passwordResult,
-                        thread;
+                        passwordResult;
 
                     //  do this so the current request clears the queue
                     if (TP.isValid(
@@ -572,55 +625,8 @@ function(aRequest) {
                         return;
                     }
 
-                    //  creating a TP.core.User instance will trigger the UI
-                    //  updating done based on vcard role/unit assignments (if
-                    //  this user has a vCard)
-                    TP.core.User.construct(this.at('username'));
-
-                    //  access to the shell instance through our previously
-                    //  defined shell = this reference
-                    shell.isRunning(true);
-                    shell.setVariable('USER', this.at('username'));
-
-                    TP.core.Cookie.setCookie('username',
-                        this.at('username'),
-                        TP.dc().addDuration('P1Y'));
-
-                    //  TODO:   clean this up with something more sensible that
-                    //  isn't so aware of what might be in the console (or that
-                    //  there is a console)
-
-                    //  space down from current location/announce
-                    TP.sig.UserOutputRequest.construct(
-                        TP.hc('output', '\n',
-                            'render', true
-                            )).fire(shell);
-
-                    //  start login message thread...
-                    thread = Number.random().toString();
-                    TP.sig.UserOutputRequest.construct(
-                        TP.hc('output',
-                                'Loading and initializing user profile' +
-                                ' data for user ' +
-                                anotherSignal.getResult() + '...',
-                                'cssClass', 'inbound_announce',
-                                'render', true,
-                                'threadID', thread
-                                )).fire(shell);
-
-                    //  if we're logged in, initiate the run sequence which will
-                    //  load any startup files but allow the login output
-                    //  message to display by forking the call here
-                    /* eslint-disable no-wrap-func,no-extra-parens */
-                    (function() {
-
-                        shell.initProfile();
-
-                        //  notify any observers that we've logged in
-                        shell.signal('TP.sig.TSH_Login');
-
-                    }).fork(20);
-                    /* eslint-enable no-wrap-func,no-extra-parens */
+                    //  We succeeded - call the success handler.
+                    successFunc(this.at('username'));
 
                     return;
                 });
@@ -1818,7 +1824,6 @@ function(aRequest) {
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
-     * @abstract
      */
 
     var args,
@@ -1826,10 +1831,13 @@ function(aRequest) {
 
     args = this.getArgument(aRequest, 'ARGV');
 
+    //  If a name was supplied, then use it. Otherwise, the current effective
+    //  user's shortname or the 'username' property from a cookie will be used.
     if (TP.notEmpty(name = args.first())) {
         aRequest.atPut('username', name);
-        this.login(aRequest);
     }
+
+    this.login(aRequest);
 
     return aRequest.complete();
 });
@@ -1844,7 +1852,6 @@ function(aRequest) {
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
-     * @abstract
      */
 
     var req;
@@ -1852,12 +1859,10 @@ function(aRequest) {
     this.logout();
 
     req = TP.sig.UserOutputRequest.construct(
-                TP.hc('output', 'Logging out user ' + this.get('username'),
-                        'cssClass', 'inbound_announce',
-                        'cmdAsIs', true,
-                        'cmdBox', false,
-                        'cmdRecycle', true,
-                        'cmdID', aRequest.at('cmdID')));
+                TP.hc('output', 'Logging out user "' +
+                                this.get('username') +
+                                '"',
+                        'cssClass', 'inbound_announce'));
 
     req.fire(this);
 
