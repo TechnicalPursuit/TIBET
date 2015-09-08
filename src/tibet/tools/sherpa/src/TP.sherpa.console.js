@@ -244,19 +244,6 @@ function() {
 //  Event Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('handleDOMShiftUp__DOMShiftUp',
-function(aSignal) {
-
-    this.focusInput();
-    this.setInputCursorToEnd();
-
-    aSignal.stopPropagation();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.console.Inst.defineMethod('handleDOMQuestionMarkUp__DOMQuestionMarkUp',
 function(aSignal) {
 
@@ -339,11 +326,6 @@ function(beHidden) {
         //  cell no longer has focus.
         this.getNativeDocument().activeElement.blur();
 
-        //  Stop observing the 'double Shift key' for focusing the input cell.
-        this.ignore(
-            TP.core.Keyboard,
-            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
-
         this.ignore(
             TP.core.Keyboard,
             'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
@@ -367,11 +349,6 @@ function(beHidden) {
 
         //  activate the input cell
         this.activateInputEditor();
-
-        //  Start observing the 'double Shift key' for focusing the input cell.
-        this.observe(
-            TP.core.Keyboard,
-            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
         this.observe(
             TP.core.Keyboard,

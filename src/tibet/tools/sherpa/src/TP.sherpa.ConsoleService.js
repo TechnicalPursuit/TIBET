@@ -526,6 +526,9 @@ function() {
 
     this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
 
+    //  the 'double Shift key' for focusing the input cell.
+    this.observe(TP.core.Keyboard, 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+
     //  set up mouse observation for status updating
 
     this.observe(TP.core.Mouse, 'TP.sig.DOMMouseMove');
@@ -553,6 +556,9 @@ function() {
     //  remove other keyboard observations
 
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+
+    //  the 'double Shift key' for focusing the input cell.
+    this.ignore(TP.core.Keyboard, 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     //  remove mouse observation for status updating
 
@@ -742,6 +748,30 @@ function(aSignal) {
 
     //  Update the 'keyboardInfo' part of the status.
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMShiftUp__DOMShiftUp',
+function(aSignal) {
+
+    /**
+     * @method handleDOMShiftUp_DOMShiftUp
+     * @param {TP.sig.DOMShiftUp_DOMShiftUp} aSignal The TIBET signal which
+     *     triggered this handler.
+     */
+
+    var consoleGUI;
+
+    consoleGUI = this.get('$consoleGUI');
+
+    //  Focus the console GUI's input and set its cursor to the end.
+    consoleGUI.focusInput();
+    consoleGUI.setInputCursorToEnd();
+
+    aSignal.stopPropagation();
 
     return;
 });
