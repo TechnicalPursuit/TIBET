@@ -990,6 +990,42 @@ function(select) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('getInputContent',
+function() {
+
+    /**
+     * @method getInputContent
+     * @summary Returns the value currently considered the 'input value'
+     * @returns {String} The user's input.
+     */
+
+    var inputText,
+
+        marker,
+
+        editor,
+        range;
+
+    inputText = null;
+
+    //  First, see if we have a valid eval mark.
+    if (TP.isValid(marker = this.get('currentEvalMarker'))) {
+        //  empty
+    } else if (TP.isValid(marker = this.get('currentInputMarker'))) {
+        //  empty
+    } else {
+        return '';
+    }
+
+    range = marker.find();
+    editor = this.get('consoleInput').$get('$editorObj');
+    inputText = editor.getRange(range.from, range.to);
+
+    return inputText;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('setInputCursorToEnd',
 function() {
 
@@ -1671,6 +1707,194 @@ function() {
 //  Eval marking/value retrieval
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeAnchor',
+function() {
+
+    /**
+     * @method computeEvalMarkRangeAnchor
+     * @returns
+     */
+
+    var promptMark,
+
+        range,
+
+        editor,
+
+        head,
+
+        matcher,
+
+        searchCursor,
+        retVal;
+
+    if (TP.isValid(promptMark = this.get('currentPromptMarker'))) {
+        range = promptMark.find();
+        retVal = range.to;
+    } else {
+        editor = this.get('consoleInput').$get('$editorObj');
+
+        //  Look for the following, in this order (at the beginning of a line)
+        //      - The current prompt (preceded by zero-or-more whitespace)
+        //      - A newline
+        //      - One of the TSH characters
+        head = editor.getCursor();
+
+        if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
+            matcher = TP.rc('^(\\s*' +
+                            '\\n' + '|' +
+                            TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
+                            ')');
+            this.set('evalMarkAnchorMatcher', matcher);
+        }
+
+        searchCursor = editor.getSearchCursor(matcher, head);
+
+        if (searchCursor.findPrevious()) {
+            //  We want the 'to', since that's the end of the '^\s*>' match
+            retVal = searchCursor.to();
+        } else {
+            //  Couldn't find a starting '>', so we just use the beginning of the
+            //  editor
+            retVal = {line: 0, ch: 0};
+        }
+
+        /*
+        //  See if there are any output marks between the anchor and head
+        marks = this.findOutputMarks(retVal, head);
+        if (marks.length > 0) {
+            retVal = marks[marks.length - 1].find().to;
+        }
+
+        //  If the 'ch' is at the end of the line, increment the line and set the
+        //  'ch' to 0
+        lineInfo = editor.lineInfo(retVal.line);
+
+        //  If we matched one of the TSH operator characters then it was a TSH
+        //  command and we want that character included.
+        if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
+            retVal.ch -= 1;
+        }
+
+        if (retVal.ch === lineInfo.text.length) {
+            retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
+                        ch: 0};
+        }
+        */
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeHead',
+function() {
+
+    /**
+     * @method computeEvalMarkRangeHead
+     * @returns
+     */
+
+    var editor,
+
+        anchor,
+        searchCursor,
+        lineInfo,
+        retVal;
+
+    editor = this.get('consoleInput').$get('$editorObj');
+
+    anchor = editor.getCursor();
+    searchCursor = editor.getSearchCursor(/^(\s*<|\n)/, anchor);
+
+    if (searchCursor.findNext()) {
+        //  We want the 'from', since that's the start of the '^\s*<' match
+        retVal = searchCursor.from();
+    } else {
+        //  Couldn't find an ending '<', so we just use the end of the editor
+        lineInfo = editor.lineInfo(editor.lastLine());
+        retVal = {line: lineInfo.line, ch: lineInfo.text.length};
+    }
+
+    /*
+    //  See if there are any output marks between the anchor and head
+    marks = this.findOutputMarks(anchor, retVal);
+    if (marks.length > 0) {
+        retVal = marks[0].find().from;
+    }
+
+    //  If the 'ch' is at the beginning of the line, decrement the line and set
+    //  the 'ch' to end of the line
+    if (retVal.ch === 0) {
+        lineInfo = editor.lineInfo(retVal.line - 1);
+        retVal = {'line': Math.max(retVal.line - 1, 0),
+                    'ch': lineInfo.text.length};
+    }
+    */
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('computeEvalMarkRange',
+function() {
+
+    /**
+     * @method computeEvalMarkRange
+     * @returns
+     */
+
+    var editor,
+
+        selection,
+        range;
+
+    editor = this.get('consoleInput').$get('$editorObj');
+
+    //  If there are real selections, then just use the first one
+    selection = editor.getSelection();
+    if (selection.length > 0) {
+        return editor.listSelections()[0];
+    }
+
+    range = {anchor: this.computeEvalMarkRangeAnchor(),
+                head: this.computeEvalMarkRangeHead()};
+
+    return range;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('generateEvalMarkAt',
+function(range) {
+
+    /**
+     * @method generateEvalMarkAt
+     * @returns
+     */
+
+    var marker;
+
+    marker = this.get('consoleInput').$get('$editorObj').markText(
+        range.anchor,
+        range.head,
+        {
+            className: 'bordered-eval',
+            startStyle: 'bordered-eval-left',
+            endStyle: 'bordered-eval-right',
+            atomic: true,
+            inclusiveLeft: false,
+            inclusiveRight: false
+        }
+    );
+
+    return marker;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('setupEvalMark',
 function() {
 
@@ -1884,226 +2108,6 @@ function() {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('getInputContent',
-function() {
-
-    /**
-     * @method getInputContent
-     * @summary Returns the value currently considered the 'input value'
-     * @returns {String} The user's input.
-     */
-
-    var inputText,
-
-        marker,
-
-        editor,
-        range;
-
-    inputText = null;
-
-    //  Only compute the text if you get a valid range
-    if (TP.isValid(marker = this.get('currentInputMarker'))) {
-        range = marker.find();
-        editor = this.get('consoleInput').$get('$editorObj');
-        inputText = editor.getRange(range.from, range.to);
-    } else {
-        this.teardownInputMark();
-    }
-
-    return inputText;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeAnchor',
-function() {
-
-    /**
-     * @method computeEvalMarkRangeAnchor
-     * @returns
-     */
-
-    var promptMark,
-
-        range,
-
-        editor,
-
-        head,
-
-        matcher,
-
-        searchCursor,
-        retVal;
-
-    if (TP.isValid(promptMark = this.get('currentPromptMarker'))) {
-        range = promptMark.find();
-        retVal = range.to;
-    } else {
-        editor = this.get('consoleInput').$get('$editorObj');
-
-        //  Look for the following, in this order (at the beginning of a line)
-        //      - The current prompt (preceded by zero-or-more whitespace)
-        //      - A newline
-        //      - One of the TSH characters
-        head = editor.getCursor();
-
-        if (!TP.isRegExp(matcher = this.get('evalMarkAnchorMatcher'))) {
-            matcher = TP.rc('^(\\s*' +
-                            '\\n' + '|' +
-                            TP.regExpEscape(TP.TSH_OPERATOR_CHARS) +
-                            ')');
-            this.set('evalMarkAnchorMatcher', matcher);
-        }
-
-        searchCursor = editor.getSearchCursor(matcher, head);
-
-        if (searchCursor.findPrevious()) {
-            //  We want the 'to', since that's the end of the '^\s*>' match
-            retVal = searchCursor.to();
-        } else {
-            //  Couldn't find a starting '>', so we just use the beginning of the
-            //  editor
-            retVal = {line: 0, ch: 0};
-        }
-
-        /*
-        //  See if there are any output marks between the anchor and head
-        marks = this.findOutputMarks(retVal, head);
-        if (marks.length > 0) {
-            retVal = marks[marks.length - 1].find().to;
-        }
-
-        //  If the 'ch' is at the end of the line, increment the line and set the
-        //  'ch' to 0
-        lineInfo = editor.lineInfo(retVal.line);
-
-        //  If we matched one of the TSH operator characters then it was a TSH
-        //  command and we want that character included.
-        if (lineInfo.text.contains(TP.TSH_OPERATOR_CHARS)) {
-            retVal.ch -= 1;
-        }
-
-        if (retVal.ch === lineInfo.text.length) {
-            retVal = {line: Math.min(retVal.line + 1, editor.lastLine()),
-                        ch: 0};
-        }
-        */
-    }
-
-    return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('computeEvalMarkRangeHead',
-function() {
-
-    /**
-     * @method computeEvalMarkRangeHead
-     * @returns
-     */
-
-    var editor,
-
-        anchor,
-        searchCursor,
-        lineInfo,
-        retVal;
-
-    editor = this.get('consoleInput').$get('$editorObj');
-
-    anchor = editor.getCursor();
-    searchCursor = editor.getSearchCursor(/^(\s*<|\n)/, anchor);
-
-    if (searchCursor.findNext()) {
-        //  We want the 'from', since that's the start of the '^\s*<' match
-        retVal = searchCursor.from();
-    } else {
-        //  Couldn't find an ending '<', so we just use the end of the editor
-        lineInfo = editor.lineInfo(editor.lastLine());
-        retVal = {line: lineInfo.line, ch: lineInfo.text.length};
-    }
-
-    /*
-    //  See if there are any output marks between the anchor and head
-    marks = this.findOutputMarks(anchor, retVal);
-    if (marks.length > 0) {
-        retVal = marks[0].find().from;
-    }
-
-    //  If the 'ch' is at the beginning of the line, decrement the line and set
-    //  the 'ch' to end of the line
-    if (retVal.ch === 0) {
-        lineInfo = editor.lineInfo(retVal.line - 1);
-        retVal = {'line': Math.max(retVal.line - 1, 0),
-                    'ch': lineInfo.text.length};
-    }
-    */
-
-    return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('computeEvalMarkRange',
-function() {
-
-    /**
-     * @method computeEvalMarkRange
-     * @returns
-     */
-
-    var editor,
-
-        selection,
-        range;
-
-    editor = this.get('consoleInput').$get('$editorObj');
-
-    //  If there are real selections, then just use the first one
-    selection = editor.getSelection();
-    if (selection.length > 0) {
-        return editor.listSelections()[0];
-    }
-
-    range = {anchor: this.computeEvalMarkRangeAnchor(),
-                head: this.computeEvalMarkRangeHead()};
-
-    return range;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('generateEvalMarkAt',
-function(range) {
-
-    /**
-     * @method generateEvalMarkAt
-     * @returns
-     */
-
-    var marker;
-
-    marker = this.get('consoleInput').$get('$editorObj').markText(
-        range.anchor,
-        range.head,
-        {
-            className: 'bordered-eval',
-            startStyle: 'bordered-eval-left',
-            endStyle: 'bordered-eval-right',
-            atomic: true,
-            inclusiveLeft: false,
-            inclusiveRight: false
-        }
-    );
-
-    return marker;
 });
 
 //  ========================================================================
