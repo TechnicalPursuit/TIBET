@@ -170,24 +170,16 @@ function(aResourceID, aRequest) {
     //  resize/reposition)
     this.get('$consoleGUI').scrollOutputToEnd();
 
-    this.observe(TP.byId('SherpaConsole', TP.win('UIROOT')),
-                    'HiddenChange');
+    //  observe the console GUI for when it's shown/hidden
+    this.observe(this.get('$consoleGUI'), 'HiddenChange');
+
+    //  observe the halo for focus/blur
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidFocus');
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
-
-    (function(aSignal) {
-
-        if (aSignal.getWindow() === TP.sys.getUICanvas(true)) {
-            this.get('$consoleGUI').updateStatus(aSignal, 'mouseInfo');
-        } else {
-            this.get('$consoleGUI').updateStatus(null, 'mouseInfo');
-        }
-
-    }.bind(this)).observe(TP.core.Mouse, 'TP.sig.DOMMouseMove');
 
     return this;
 });
@@ -551,6 +543,10 @@ function() {
 
     this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
 
+    //  set up mouse observation for status updating
+
+    this.observe(TP.core.Mouse, 'TP.sig.DOMMouseMove');
+
     return this;
 });
 
@@ -570,9 +566,13 @@ function() {
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
 
-    //  set up other keyboard observations
+    //  remove other keyboard observations
 
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+
+    //  remove mouse observation for status updating
+
+    this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseMove');
 
     return this;
 });
@@ -614,7 +614,7 @@ function(aSignal) {
         markingTimer = setTimeout(
                             function() {
                                 consoleGUI.setupEvalMark();
-                            }, TP.sys.cfg('sherp.edit_mark_time', 2000));
+                            }, TP.sys.cfg('sherpa.edit_mark_time', 2000));
         this.set('markingTimer', markingTimer);
     }
 
@@ -740,6 +740,28 @@ function(aSignal) {
      */
 
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Mouse Handling
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMMouseMove',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseMove
+     * @param {TP.sig.DOMMouseMove} aSignal The TIBET signal which
+     *     triggered this handler.
+     */
+
+    if (aSignal.getWindow() === TP.sys.getUICanvas(true)) {
+        this.get('$consoleGUI').updateStatus(aSignal, 'mouseInfo');
+    } else {
+        this.get('$consoleGUI').updateStatus(null, 'mouseInfo');
+    }
 
     return;
 });
