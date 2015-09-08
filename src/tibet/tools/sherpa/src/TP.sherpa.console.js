@@ -1420,7 +1420,6 @@ function(uniqueID, dataRecord) {
      */
 
     var consoleOutput,
-
         doc,
         cellGroupElem,
 
@@ -1448,7 +1447,6 @@ function(uniqueID, dataRecord) {
         rawOutEntryTemplate;
 
     consoleOutput = this.get('consoleOutput');
-
     doc = consoleOutput.getNativeDocument();
 
     //  If we can't find the output cell that this output was using before
@@ -1476,10 +1474,11 @@ function(uniqueID, dataRecord) {
 
     //  If we're outputting logging data, add the '.logoutput' class to the
     //  output cell element and empty the content of the cells under the input
-    //  line..
+    //  line.
     if (typeinfo === 'LOG') {
         TP.elementAddClass(cellGroupElem, 'logoutput');
-        TP.nodeEmptyContent(cellGroupElem);
+        TP.nodeEmptyContent(
+                TP.byCSSPath('.inputcell', cellGroupElem, true, false));
     }
 
     //  If the output text is empty and the user is asking for structured
