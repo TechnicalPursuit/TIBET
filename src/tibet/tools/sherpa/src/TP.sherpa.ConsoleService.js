@@ -214,28 +214,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('sendShellCommand',
-function(cmdText) {
-
-    /**
-     * @method sendShellCommand
-     * @summary
-     * @returns
-     */
-
-    return TP.shell(
-                TP.hc(
-                    'cmdSrc', cmdText,
-                    'cmdEcho', true,
-                    'cmdHistory', true,
-                    'cmdSilent', false,
-                    'cmdBuildGUI', true,
-                    'cmdStdio', this
-                    ));
-});
-
-//  ------------------------------------------------------------------------
 //  Display Primitives
 //  ------------------------------------------------------------------------
 
@@ -271,31 +249,13 @@ function(aFlag) {
 
     /**
      * @method shouldConcealInput
-     * @summary Returns false for now.
+     * @summary Whether or not to conceal input by 'masking' it (i.e. with
+     *     something like the '*' character). Returns false for now.
      * @param {Boolean} aFlag The new value to set.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not we should conceal input.
      */
 
     return false;
-});
-
-//  ------------------------------------------------------------------------
-//  String I/O Formatting
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('formatInput',
-function(plainText) {
-
-    /**
-     * @method formatInput
-     * @summary Converts text intended for the input cell so it's properly
-     *     displayed.
-     * @param {String} plainText The string to convert.
-     * @returns {String}
-     */
-
-    //  For now, we just return the plain text that was handed to us.
-    return plainText;
 });
 
 //  ------------------------------------------------------------------------
@@ -310,6 +270,8 @@ function(anEvent) {
      * @summary Returns true if the event represents a key binding used to
      *     trigger command processing of some kind for the console.
      * @param {Event} anEvent The native event that fired.
+     * @returns {Boolean} Whether or not the supplied event has a key binding
+     *     that triggers command processing.
      */
 
     var keyname;
@@ -368,7 +330,7 @@ function(anEvent) {
 
     /**
      * @method handleCommandEvent
-     * @summary Processes incoming events from the view.
+     * @summary Handles incoming events from the view.
      * @param {Event} anEvent The native event that fired.
      */
 
@@ -460,13 +422,18 @@ TP.sherpa.ConsoleService.Inst.defineMethod('handleHiddenChangeFromSherpaConsole'
 function(aSignal) {
 
     /**
-     * @method handleHiddenChange
+     * @method handleHiddenChangeFromSherpaConsole
+     * @summary Handles notifications of when the 'hidden' state of the
+     *     SherpaConsole object changes.
+     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this method.
      */
 
     var isHidden;
 
     isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
 
+    //  Install or remove event handlers based on whether the SherpaConsole is
+    //  being shown or not.
     if (isHidden) {
         this.removeHandlers();
     } else {
@@ -481,10 +448,14 @@ function(aSignal) {
 TP.sherpa.ConsoleService.Inst.defineMethod('handleHaloDidFocus',
 function(aSignal) {
 
-    //this.show();
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     */
 
-    //TP.info('got to halo did focus');
-
+    //  Set the shell '$HALO' variable
     this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
 
     this.get('$consoleGUI').focusInput();
@@ -497,10 +468,14 @@ function(aSignal) {
 TP.sherpa.ConsoleService.Inst.defineMethod('handleHaloDidBlur',
 function(aSignal) {
 
-    //this.hide();
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     */
 
-    //TP.info('got to halo did blur');
-
+    //  Set the shell '$HALO' variable to null
     this.get('model').setVariable('HALO', null);
 
     return this;
@@ -511,11 +486,18 @@ function(aSignal) {
 TP.sherpa.ConsoleService.Inst.defineMethod('handleConsoleCommand',
 function(aSignal) {
 
+    /**
+     * @method handleConsoleCommand
+     * @summary Handles signals that trigger console command execution.
+     * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
     var cmdText;
 
     if (TP.notEmpty(cmdText = aSignal.at('cmdText'))) {
 
-        this.execCommandText(cmdText);
+        this.sendConsoleRequest(cmdText);
     }
 
     return this;
@@ -530,6 +512,7 @@ function() {
 
     /**
      * @method installHandlers
+     * @summary Installs key & mouse handlers to manage the console.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
@@ -557,6 +540,7 @@ function() {
 
     /**
      * @method removeHandlers
+     * @summary Removes key & mouse handlers currently managing the console.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
@@ -604,11 +588,15 @@ function(aSignal) {
         return;
     }
 
+    //  If we're currently showing the eval marking timer, we need to clear it.
     if (TP.isValid(markingTimer = this.get('markingTimer'))) {
         clearTimeout(markingTimer);
         this.set('markingTimer', null);
     }
 
+    //  If there is a Shift-Down-Arrow, then set up the marking timer. If the
+    //  timer isn't canceled with another keypress within the marking time, the
+    //  eval mark will show.
     keyname = TP.domkeysigname(evt);
     if (keyname === 'DOM_Shift_Down') {
         markingTimer = setTimeout(
@@ -618,11 +606,14 @@ function(aSignal) {
         this.set('markingTimer', markingTimer);
     }
 
+    //  If this was a command event or we're concealing input, then we prevent
+    //  the event from doing its default and from propagating anywhere else.
     if (this.isCommandEvent(evt) || this.shouldConcealInput()) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
     }
 
+    //  Update the 'keyboardInfo' part of the status.
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
 
     return;
@@ -650,11 +641,14 @@ function(aSignal) {
         return;
     }
 
+    //  If this was a command event or we're concealing input, then we prevent
+    //  the event from doing its default and from propagating anywhere else.
     if (this.isCommandEvent(evt) || this.shouldConcealInput()) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
     }
 
+    //  Update the 'keyboardInfo' part of the status.
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
 
     return;
@@ -697,11 +691,17 @@ function(aSignal) {
     keyname = TP.domkeysigname(evt);
 
     if (this.isCommandEvent(evt)) {
+        //  If this was a command event, then we prevent the event from doing
+        //  its default and from propagating anywhere else.
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
 
+        //  Handle the command event.
         this.handleCommandEvent(evt);
+
     } else if (this.shouldConcealInput()) {
+        //  If we're concealing input, then we prevent the event from doing its
+        //  default and from propagating anywhere else.
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
 
@@ -721,6 +721,7 @@ function(aSignal) {
                 '*'.times(this.$get('concealedInput').getSize()));
     }
 
+    //  Update the 'keyboardInfo' part of the status.
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
 
     return;
@@ -739,6 +740,7 @@ function(aSignal) {
      *     triggered this handler.
      */
 
+    //  Update the 'keyboardInfo' part of the status.
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
 
     return;
@@ -757,6 +759,10 @@ function(aSignal) {
      *     triggered this handler.
      */
 
+    //  Update the 'mouseInfo' part of the status.
+
+    //  If the event happened in our UI canvas, then update with real data from
+    //  the signal, otherwise update with 'null' to clear the info.
     if (aSignal.getWindow() === TP.sys.getUICanvas(true)) {
         this.get('$consoleGUI').updateStatus(aSignal, 'mouseInfo');
     } else {
@@ -817,8 +823,6 @@ function(aRequest) {
     //  one.
     consoleGUI.setPrompt(this.get('model').getPrompt());
 
-    //this.showInputCell();
-
     //  process whatever might be sitting in the input request queue
     this.handleNextRequest();
 
@@ -838,6 +842,7 @@ function(aRequest) {
      *     console request is the ':clear' command.
      * @param {TP.sig.ConsoleRequest} aRequest The signal instance that
      *     triggered this call.
+     * @returns {TP.sig.ConsoleResponse} The supplied request's response.
      */
 
     var cmd,
@@ -854,6 +859,8 @@ function(aRequest) {
         return;
     }
 
+    //  If the command is one of the 'built ins' for the console, then perform
+    //  the action. Otherwise, it's not one we recognize so we do nothing.
     switch (cmd) {
         case 'clear':
             this.clearConsole();
@@ -867,6 +874,7 @@ function(aRequest) {
             break;
     }
 
+    //  Make sure to complete the request's response and return it.
     response = aRequest.getResponse();
     response.complete();
 
@@ -937,13 +945,14 @@ function(aSignal) {
         //  have one.
         consoleGUI.setPrompt(this.get('model').getPrompt());
 
-        //  if the registered request was the last input request, then clear it
-        //  and reset 'awaiting input' and 'should conceal input'
+        //  if the registered request was the last input request, then clear it,
+        //  clear the console GUI and reset 'awaiting input' and 'should conceal
+        //  input'
         if (request === this.get('lastInputRequest')) {
 
-            consoleGUI.clearInput();
-
             this.set('lastInputRequest', null);
+
+            consoleGUI.clearInput();
 
             this.isAwaitingInput(false);
             this.shouldConcealInput(false);
@@ -966,8 +975,8 @@ function(aSignal) {
      *     updated. These are typically fired by TP.sig.UserInputRequests such
      *     as the TP.sig.UserInputSeries subtype during intermediate stages of
      *     data capture.
-     * @param {RequestModified} aSignal The signal instance that triggered this
-     *     call.
+     * @param {TP.sig.RequestModified} aSignal The signal instance that
+     *     triggered this call.
      */
 
     //  NOTE:   we don't ignore() here since this signal can be repeated and
@@ -986,7 +995,8 @@ function(aSignal) {
      * @method handleShellRequestCompleted
      * @summary Responds to notifications that a shell request is complete. The
      *     typical response is to output the response via the view.
-     * @param {TP.sig.ShellResponse} aSignal
+     * @param {TP.sig.ShellRequest} aSignal The signal instance that
+     *     triggered this call.
      */
 
     this.get('$consoleGUI').updateStatus(aSignal.getRequest());
@@ -1042,6 +1052,7 @@ function(aSignal) {
     this.set('lastInputRequest', aSignal);
     this.isAwaitingInput(true);
 
+    //  track whether we're concealing input too
     this.shouldConcealInput(TP.isTrue(aSignal.at('hideInput')));
 
     //  it's important to note the use of stdin to do the real work. by
@@ -1237,10 +1248,10 @@ function(anEvent) {
         return;
     }
 
-    TP.eventPreventDefault(anEvent);
-
     consoleGUI = this.get('$consoleGUI');
 
+    //  Move forward in the history index and, if there is a valid command, use
+    //  it. Otherwise, clear the input.
     cmd = model.getHistory(model.incrementHistoryIndex());
     if (TP.isValid(cmd)) {
         consoleGUI.setInputContent(cmd);
@@ -1272,10 +1283,10 @@ function(anEvent) {
         return;
     }
 
-    TP.eventPreventDefault(anEvent);
-
     consoleGUI = this.get('$consoleGUI');
 
+    //  Move backward in the history index and, if there is a valid command, use
+    //  it. Otherwise, clear the input.
     cmd = model.getHistory(model.decrementHistoryIndex());
     if (TP.isValid(cmd)) {
         consoleGUI.setInputContent(cmd);
@@ -1318,8 +1329,10 @@ function(anEvent) {
     //  the input and are working on it
     consoleGUI.clearInput();
 
-    this.execRawInput(input);
+    //  Fire off the input content to the shell
+    this.sendShellRequest(input);
 
+    //  Make sure that the console GUI clears its eval mark
     consoleGUI.teardownEvalMark();
 
     return;
@@ -1361,18 +1374,26 @@ function(resetPrompt) {
 //  General Purpose
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('execCommandText',
-function(cmdText) {
+TP.sherpa.ConsoleService.Inst.defineMethod('sendConsoleRequest',
+function(rawInput) {
+
+    /**
+     * @method sendConsoleRequest
+     * @summary Sends a 'console request', which may be input to the shell or
+     *     just command text that only the console itself processes.
+     * @param {String} rawInput A String of raw input.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+     */
 
     var text,
         req;
 
-    if (TP.notEmpty(cmdText)) {
+    if (TP.notEmpty(rawInput)) {
 
-        text = cmdText.stripEnclosingQuotes();
+        text = rawInput.stripEnclosingQuotes();
 
         if (this.isShellCommand(text)) {
-            this.sendShellCommand(text);
+            this.sendShellRequest(text);
         } else {
             text = text.slice(1);
 
@@ -1393,62 +1414,64 @@ function(cmdText) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('execRawInput',
+TP.sherpa.ConsoleService.Inst.defineMethod('sendShellRequest',
 function(rawInput) {
 
     /**
-     * @method execRawInput
-     * @param {String} rawInput A String of raw input
+     * @method sendShellRequest
+     * @summary Sends a 'shell request', which, unlike a ConsoleRequest, *must*
+     *     be input to the shell.
+     * @param {String} rawInput A String of raw input.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    var input,
-        res,
+    var res,
         req,
         model;
 
-    if (TP.notValid(input = rawInput)) {
-        //  oops, not even an empty string value
-        return;
-    }
+    if (TP.notEmpty(rawInput)) {
 
-    //  two options here...one is we find an input request that caused
-    //  display of the input cell (in which case that request "owns" the
-    //  input and we forward to that input request) or we got new input in
-    //  which case we build a shell request and forward it to the shell
-    if (TP.notValid(req = this.get('lastInputRequest'))) {
-        if (TP.notValid(model = this.get('model'))) {
-            this.raise('TP.sig.InvalidModel',
-                        'Console has no attached shell instance');
+        //  two options here...one is we find an input request that caused
+        //  display of the input cell (in which case that request "owns" the
+        //  input and we forward to that input request) or we got new input in
+        //  which case we build a shell request and forward it to the shell
+        if (TP.notValid(req = this.get('lastInputRequest'))) {
+            if (TP.notValid(model = this.get('model'))) {
+                this.raise('TP.sig.InvalidModel',
+                            'Console has no attached shell instance');
 
-            return;
+                return;
+            }
+
+            req = TP.sig.ShellRequest.construct(
+                TP.hc('async', true,
+                        'cmd', rawInput,        //  The source text
+                        'cmdAllowSubs', true,
+                        'cmdEcho', true,        //  Send output to attached GUI
+                        'cmdExecute', true,
+                        'cmdHistory', true,     //  Generate history entry
+                        'cmdBuildGUI', true,    //  Attached GUI should build UI
+                        'cmdLogin', true,
+                        'cmdPhases', 'nocache',
+                        'cmdSilent', false,     //  Allow logging output
+                        'cmdEcho', true
+                ));
+
+            req.set('requestor', this);
+            TP.handle(model, req);
+        } else {
+            //  input request owns the response data...ask it to handle the
+            //  response so it can manage what that means. effectively by
+            //  calling handle directly we're simulating having fired the
+            //  response without the overhead of actually doing the signaling.
+            res = req.getResponse();
+            res.set('result', rawInput);
+
+            TP.handle(req, res);
         }
-
-        req = TP.sig.ShellRequest.construct(
-            TP.hc('async', true,
-                    'cmd', input,
-                    'cmdAllowSubs', true,
-                    'cmdExecute', true,
-                    'cmdHistory', true,
-                    'cmdBuildGUI', true,
-                    'cmdLogin', true,
-                    'cmdPhases', 'nocache',
-                    'cmdEcho', true
-            ));
-
-        req.set('requestor', this);
-        TP.handle(model, req);
-    } else {
-        //  input request owns the response data...ask it to handle the
-        //  response so it can manage what that means. effectively by
-        //  calling handle directly we're simulating having fired the
-        //  response without the overhead of actually doing the signaling.
-        res = req.getResponse();
-        res.set('result', input);
-
-        TP.handle(req, res);
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1474,7 +1497,7 @@ function() {
      * @method getWidth
      * @summary Returns the maximum width of unbroken strings in the console.
      *     This value will default to the WIDTH variable setting.
-     * @returns {Number}
+     * @returns {Number} The maximum width of an unbroken String in the console.
      */
 
     var model,
@@ -1501,9 +1524,19 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('isShellCommand',
-function(aCommand) {
+function(aCommandText) {
 
-    if (aCommand === ':clear') {
+    /**
+     * @method isShellCommand
+     * @summary Returns whether the supplied command text is a 'shell command'.
+     *     Certain commands, like ':clear', are not.
+     * @param {String} aCommandText A String of raw input.
+     * @returns {Boolean} Whether or not the supplied command text is a shell
+     *     command.
+     */
+
+    //  These are pure console commands, not shell commands
+    if (aCommandText === ':clear' || aCommandText === ':input') {
         return false;
     }
 
@@ -1522,7 +1555,7 @@ function(aFlag) {
      *     output etc.
      * @param {Boolean} aFlag An optional flag to set as the new system console
      *     status.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the receiver is a system console.
      */
 
     //  TODO:   use this flag to control which console has stdio ownership
@@ -1563,7 +1596,7 @@ function(aModel) {
     //  one.
     this.get('$consoleGUI').setPrompt(aModel.getPrompt());
 
-    //  watch model for events so we keep things loosly coupled
+    //  watch model for events so we keep things loosely coupled
     this.observe(aModel, TP.ANY);
 
     return this;
@@ -1580,14 +1613,13 @@ function(aWidth) {
      *     that this only affects newly constructed cells, older cells are not
      *     reflowed.
      * @param {Number} aWidth The character count to use.
-     * @returns {Number}
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var model;
 
     if (TP.isValid(model = this.getModel())) {
-        model.setVariable('WIDTH',
-                TP.ifInvalid(aWidth, this.$get('width')));
+        model.setVariable('WIDTH', TP.ifInvalid(aWidth, this.$get('width')));
     } else {
         this.$set('width');
     }
@@ -1630,7 +1662,6 @@ function(anError, aRequest) {
      * @param {String} anError The error to output.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var request,
@@ -1666,6 +1697,7 @@ function(anError, aRequest) {
                      )) : 0;
     }
 
+    //  Clear any 'multi results' that were getting batched
     this.get('$multiResults').empty();
 
     return;
@@ -1733,19 +1765,22 @@ function(anObject, aRequest) {
 
     outObject = anObject;
 
+    //  If the supplied request is part of a command sequence and the sequence
+    //  has more than one item in it, then we gather them all up in a 'multi
+    //  result' set for flushing to the GUI all at once.
     if ((cmdSequence = request.at('cmdSequence')) &&
          cmdSequence.getSize() > 1) {
 
         this.get('$multiResults').push(outObject);
 
+        //  If it's not the last one - return
         if (request !== cmdSequence.last()) {
-            //  It's not the last one - return
             return this;
         } else {
             //  It's the last one - collapse the contents of the $multiResults
             //  Array as the thing to report. Having an Array here with one item
             //  is a common case - a piping sequence will generate a
-            //  'cmdSequence' will a single 'out object'.
+            //  'cmdSequence' with a single 'out object'.
             outObject = TP.collapse(this.get('$multiResults'));
         }
     }
@@ -1782,6 +1817,7 @@ function(anObject, aRequest) {
                      )) : 0;
     }
 
+    //  Clear any 'multi results' that were getting batched
     this.get('$multiResults').empty();
 
     return this;
@@ -1794,10 +1830,10 @@ function(aRequest) {
 
     /**
      * @method writeInputContent
+     * @summary Writes input content to the console GUI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.tsh.ConsoleOutputCell} The receiver.
-     * @abstract
      */
 
     var request,
@@ -1809,9 +1845,7 @@ function(aRequest) {
 
         inputData,
 
-        cellID,
-
-        consoleGUI;
+        cellID;
 
     request = TP.request(aRequest);
 
@@ -1820,8 +1854,11 @@ function(aRequest) {
         return;
     }
 
+    //  Let this request and its handlers know that its input has been written.
     request.atPut('inputWritten', true);
 
+    //  If we're 'echo'ing the input, then build up data for the 'input
+    //  readout'.
     if (TP.notFalse(request.at('cmdEcho'))) {
 
         //  update the command title bar based on the latest output from
@@ -1840,31 +1877,34 @@ function(aRequest) {
         }
     }
 
+    //  We're either not configured to echo input content or we couldn't
+    //  generate any - exit here.
     if (TP.isEmpty(str)) {
         return;
     }
 
+    //  Compute the CSS class that we'll use to style the input readout.
     if (TP.isValid(request.at('messageLevel'))) {
         cssClass = request.at('messageLevel').getName().toLowerCase();
     }
     cssClass = TP.ifInvalid(cssClass, 'info');
 
+    //  Build up the input data for the console GUI to template.
     inputData = TP.hc('hid', hid,
                         'cmdtext', str,
                         'cssClass', cssClass,
                         'request', request);
 
+    //  Get the unique ID used for the overall output cell (containing both the
+    //  input readout and the output from the command) for the supplied request.
     cellID = aRequest.at('cmdID');
-
-    consoleGUI = this.get('$consoleGUI');
-
     if (TP.isEmpty(cellID)) {
         //  Fail - shouldn't get here
-        void 0;
+        //  empty
     } else {
+        //  Replace the '$' with a '_' to avoid X(HT)ML naming issues.
         cellID = cellID.replace(/\$/g, '_');
-
-        consoleGUI.createOutputEntry(cellID, inputData);
+        this.get('$consoleGUI').createOutputEntry(cellID, inputData);
     }
 
     return this;
@@ -1877,11 +1917,11 @@ function(anObject, aRequest) {
 
     /**
      * @method writeOutputContent
+     * @summary Writes output content to the console GUI.
      * @param {Object} anObject The object to output in string form.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      * @returns {TP.sherpa.Console} The receiver.
-     * @abstract
      */
 
     var request,
@@ -1905,6 +1945,7 @@ function(anObject, aRequest) {
 
     structuredOutput = false;
 
+    //  If the request has structured output, then we blank out the data.
     if (TP.isTrue(request.at('structuredOutput'))) {
         data = '';
         structuredOutput = true;
@@ -1986,6 +2027,7 @@ function(anObject, aRequest) {
         }
     }
 
+    //  Build up the output data for the console GUI to template.
     outputData = TP.hc('output', data,
                         'cssClass', cssClass,
                         'rawData', anObject,
