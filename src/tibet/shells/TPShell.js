@@ -50,7 +50,7 @@ function(aRequest) {
      *          standard version that uses the standard TIBET logs for these.
      *
      *          {Boolean} cmdSilent Should shell output be reserved only for
-     *          the reponse (and not sent to any Logger) [false].
+     *          the response (and not sent to any Logger) [false].
      *
      *          {String} shellID The ID or typename of the shell to target.
      *          When a typename is given the ultimate target is that type's
