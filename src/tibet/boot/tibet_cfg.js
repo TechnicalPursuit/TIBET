@@ -1147,6 +1147,9 @@
     //  should the console suspend normal output?
     TP.sys.setcfg('sherpa.silent', false);
 
+    //  should the console auto-login to the shell?
+    TP.sys.setcfg('sherpa.auto_login', true);
+
     //  how long should the sherpa console wait before allowing 'eval mark'
     //  editing (in ms) ?
     TP.sys.setcfg('sherpa.edit_mark_time', 1500);

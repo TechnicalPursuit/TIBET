@@ -115,7 +115,10 @@ function(aResourceID, aRequest) {
      */
 
     var request,
-        model;
+        model,
+
+        user,
+        userName;
 
     this.callNextMethod();
 
@@ -160,8 +163,6 @@ function(aResourceID, aRequest) {
     //  Process whatever initial request(s) might be sitting in the queue
     this.handleNextRequest();
 
-    //  TODO:   add TP.sig.DocumentUnloaded logout hook observation/method
-
     //  Not sure why we need this... probably some coordination in how observes
     //  get set up.
     this.shouldSignalChange(true);
@@ -180,6 +181,22 @@ function(aResourceID, aRequest) {
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
+
+    //  if we're configured to auto-login, try to do that now.
+    if (TP.sys.cfg('sherpa.auto_login') &&
+        TP.isValid(user = TP.sys.getEffectiveUser()) &&
+        TP.notEmpty(userName = user.get('vCard').get('shortname'))) {
+
+        TP.sig.UserOutputRequest.construct(
+            TP.hc('output', '\n' +
+                            'Sherpa auto-login configured to log in current' +
+                            ' effective user "' + userName + '"',
+                    'cssClass', 'inbound_announce',
+                    'cmdAsIs', true
+                    )).fire(model);
+
+        model.login();
+    }
 
     return this;
 });
