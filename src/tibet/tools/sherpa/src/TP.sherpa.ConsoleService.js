@@ -624,7 +624,7 @@ function(aSignal) {
     if (keyname === 'DOM_Shift_Down') {
         markingTimer = setTimeout(
                             function() {
-                                consoleGUI.setupEvalMark();
+                                consoleGUI.transitionToSeparateEvalMarker();
                             }, TP.sys.cfg('sherpa.edit_mark_time', 2000));
         this.set('markingTimer', markingTimer);
     }

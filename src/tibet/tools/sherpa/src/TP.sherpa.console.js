@@ -100,6 +100,7 @@ function() {
             //  TP.sherpa.ConsoleService
             'Shift-Enter': function() { return true; },
 
+            //  -- start eval mark keys
             'Shift-Up': function() {return true; },
             'Shift-Right': function() {return true; },
             'Shift-Down': function() {return true; },
@@ -109,6 +110,7 @@ function() {
             'Shift-Alt-Right': function() {return true; },
             'Shift-Alt-Down': function() {return true; },
             'Shift-Alt-Left': function() {return true; },
+            //  -- end eval mark keys
 
             'Shift-Backspace': function() {return true; },
 
@@ -169,7 +171,6 @@ function() {
 
     /**
      * @method getCurrentEvalMarker
-     * @returns
      */
 
     var marker;
@@ -195,7 +196,6 @@ function() {
 
     /**
      * @method getCurrentInputMarker
-     * @returns
      */
 
     var marker;
@@ -221,7 +221,6 @@ function() {
 
     /**
      * @method getCurrentPromptMarker
-     * @returns
      */
 
     var marker;
@@ -238,20 +237,6 @@ function() {
     }
 
     return marker;
-});
-
-//  ------------------------------------------------------------------------
-//  Event Handling
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('handleDOMQuestionMarkUp__DOMQuestionMarkUp',
-function(aSignal) {
-
-    this.toggleSearcher();
-
-    aSignal.stopPropagation();
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -303,9 +288,6 @@ function(beHidden) {
 
     /**
      * @method setAttrHidden
-     * @abstract
-     * @param
-     * @returns {TP.sherpa.hud} The receiver.
      */
 
     var consoleInput,
@@ -326,10 +308,6 @@ function(beHidden) {
         //  cell no longer has focus.
         this.getNativeDocument().activeElement.blur();
 
-        this.ignore(
-            TP.core.Keyboard,
-            'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
-
         TP.byId('content', this.getNativeWindow()).hide();
 
         //  Execute the supertype's method and capture the return value *after*
@@ -349,10 +327,6 @@ function(beHidden) {
 
         //  activate the input cell
         this.activateInputEditor();
-
-        this.observe(
-            TP.core.Keyboard,
-            'TP.sig.DOM_QuestionMark_Up__TP.sig.DOM_QuestionMark_Up');
     }
 
     return retVal;
@@ -362,6 +336,10 @@ function(beHidden) {
 
 TP.sherpa.console.Inst.defineMethod('setupConsoleService',
 function() {
+
+    /**
+     * @method setupConsoleService
+     */
 
     var tsh;
 
@@ -379,6 +357,10 @@ function() {
 
 TP.sherpa.console.Inst.defineMethod('setupLogView',
 function() {
+
+    /**
+     * @method setupLogView
+     */
 
     var sherpaFrameBody,
         logviewTPElem;
@@ -399,6 +381,10 @@ function() {
 
 TP.sherpa.console.Inst.defineMethod('toggleLog',
 function() {
+
+    /**
+     * @method toggleLog
+     */
 
     var logviewTPElem;
 
@@ -449,6 +435,15 @@ function(aMode) {
 
     /**
      * @method toggleOutputMode
+     * @summary Toggles the 'output mode' on the console (i.e. full screen, half
+     *     screen, various orientations, etc.).
+     * @param {String} aMode One of the following modes:
+     *                          all-console
+     *                          all-world
+     *                          v-split-left
+     *                          v-split-right
+     *                          h-split-top
+     *                          h-split-bottom
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -537,6 +532,7 @@ function(aMode) {
             break;
     }
 
+    //  Make sure to focus the input after shifting the console orientation.
     this.focusInput();
 
     return this;
@@ -551,10 +547,29 @@ function() {
 
     /**
      * @method getPrompt
-     * @returns {String}
+     * @summary Returns the prompt text used for the input cell.
+     * @returns {String} The current prompt text or the empty String if that
+     *     cannot be computed.
      */
 
-    return '>';
+    var marker,
+
+        range,
+        editor,
+        promptText;
+
+    //  If we have a valid prompt marker
+    if (TP.isValid(marker = this.get('currentPromptMarker'))) {
+
+        //  Find the marker in the input and grab its text.
+        range = marker.find();
+        editor = this.get('consoleInput').$get('$editorObj');
+        promptText = editor.getRange(range.from, range.to);
+
+        return promptText;
+    }
+
+    return '';
 });
 
 //  ------------------------------------------------------------------------
@@ -564,9 +579,6 @@ function(range, cssClass, promptText) {
 
     /**
      * @method generatePromptMarkAt
-     * @param
-     * @param
-     * @returns
      */
 
     var consoleInput,
@@ -682,9 +694,9 @@ function(statusOutID) {
 
     /**
      * @method clearStatus
-     * @summary Clears any status information such as window.status and/or any
-     *     status bar content, resetting it to the default state.
-     * @param
+     * @summary Clears any status information in the status bar content,
+     *     resetting it to the default state.
+     * @param {String} statusOutID The ID of the status readout to clear.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
@@ -713,6 +725,7 @@ function(aSignal, statusOutID) {
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
      * @param {String} statusOutID The ID of the status readout to update.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
     var statID,
@@ -795,7 +808,7 @@ function(aSignal, statusOutID) {
         }
     }
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -807,8 +820,9 @@ function() {
 
     /**
      * @method activateInputEditor
+     * @summary Activates the input editor by setting up some of its necessary
+     *     low-level key handlers, etc.
      * @returns {TP.sherpa.console} The receiver.
-     * @abstract
      */
 
     var consoleInput;
@@ -841,7 +855,8 @@ function() {
 
     /**
      * @method adjustInputSize
-     * @summary Adjust the height of the input cell based on its contents.
+     * @summary Adjusts the height of the input cell based on its contents.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var consoleInput,
@@ -872,7 +887,8 @@ function() {
                         styleVals.at('paddingTop') +
                         styleVals.at('paddingBottom') +
                         styleVals.at('bottom'));
-    return;
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -912,8 +928,9 @@ function() {
 
     /**
      * @method deactivateInputEditor
+     * @summary Deactivates the input editor by tearing down some of its
+     *     necessary low-level key handlers, etc.
      * @returns {TP.sherpa.console} The receiver.
-     * @abstract
      */
 
     var consoleInput;
@@ -944,7 +961,8 @@ function(select) {
 
     /**
      * @method focusInput
-     * @param {Boolean} select True to select in addition.
+     * @summary Focuses the input cell and optionally selects its contents.
+     * @param {Boolean} select True to select in addition to focusing.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -994,6 +1012,7 @@ function() {
         return '';
     }
 
+    //  Find the marker in the input and grab its text.
     range = marker.find();
     editor = this.get('consoleInput').$get('$editorObj');
     inputText = editor.getRange(range.from, range.to);
@@ -1026,8 +1045,6 @@ function(anObject, shouldAppend) {
      * @method setInputContent
      * @summary Sets the value of the input cell, essentially 'pre-filling' the
      *     input area with content.
-     * @description If shouldAppend is true, and the input cell already has
-     *     content, a '.;\n' is appended to the front of the content.
      * @param {Object} anObject The object defining the input.
      * @param {Boolean} shouldAppend Whether or not to append the value of
      *     anObject to any existing content.
@@ -1051,18 +1068,14 @@ function(anObject, shouldAppend) {
         return this;
     }
 
-    consoleInput = this.get('consoleInput');
     if (TP.isTrue(shouldAppend)) {
-        //if (TP.notEmpty(val = consoleInput.get('value'))) {
-        //    val += '.;\n';
-        //}
-        val = '';
-
+        val = this.getInputContent();
         val = val + TP.str(anObject);
     } else {
         val = TP.str(anObject);
     }
 
+    consoleInput = this.get('consoleInput');
     editor = consoleInput.$get('$editorObj');
 
     if (TP.isValid(marker = this.get('currentInputMarker'))) {
@@ -1087,6 +1100,7 @@ function(anObject, shouldAppend) {
         end = consoleInput.getCursor();
     }
 
+    //  Reset the current input marker to encompass all of the new content.
     this.set('currentInputMarker',
                 this.generateInputMarkAt({anchor: start, head: end}));
 
@@ -1150,9 +1164,6 @@ function(aFlag) {
 
     /**
      * @method shouldConcealInput
-     * @summary Returns false for now.
-     * @param {Boolean} aFlag The new value to set.
-     * @returns {Boolean}
      */
 
     return false;
@@ -1165,9 +1176,6 @@ function() {
 
     /**
      * @method toggleSearcher
-     * @summary Returns false for now.
-     * @param {Boolean} aFlag The new value to set.
-     * @returns {Boolean}
      */
 
     var searcherTile,
@@ -1329,9 +1337,6 @@ function(uniqueID, dataRecord) {
 
     /**
      * @method createOutputEntry
-     * @param
-     * @param
-     * @returns {TP.sherpa.console} The receiver.
      */
 
     var consoleOutput,
@@ -1398,8 +1403,8 @@ function(uniqueID, dataRecord) {
         TP.elementSetAttribute(outElem, 'tibet:noawaken', 'true', true);
 
     } else {
-        //  Print an error
-        void 0;
+        //  TODO: Print an error
+        //  empty
     }
 
     this.teardownInputMark();
@@ -1414,9 +1419,6 @@ function(uniqueID, dataRecord) {
 
     /**
      * @method updateOutputEntry
-     * @param
-     * @param
-     * @returns {TP.sherpa.console} The receiver.
      */
 
     var consoleOutput,
@@ -1645,8 +1647,6 @@ function(uniqueID) {
 
     /**
      * @method generateOutputElement
-     * @param
-     * @returns
      */
 
     var elem;
@@ -1669,6 +1669,7 @@ function() {
     /**
      * @method scrollOutputToEnd
      * @summary Adjust the height of the input cell based on its contents.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var consoleOutputElem;
@@ -1676,7 +1677,7 @@ function() {
     consoleOutputElem = this.get('consoleOutput').getNativeNode();
     consoleOutputElem.scrollTop = consoleOutputElem.scrollHeight;
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1688,7 +1689,6 @@ function() {
 
     /**
      * @method computeEvalMarkRangeAnchor
-     * @returns
      */
 
     var promptMark,
@@ -1769,7 +1769,6 @@ function() {
 
     /**
      * @method computeEvalMarkRangeHead
-     * @returns
      */
 
     var editor,
@@ -1819,7 +1818,6 @@ function() {
 
     /**
      * @method computeEvalMarkRange
-     * @returns
      */
 
     var editor,
@@ -1848,7 +1846,6 @@ function(range) {
 
     /**
      * @method generateEvalMarkAt
-     * @returns
      */
 
     var marker;
@@ -1871,11 +1868,14 @@ function(range) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('setupEvalMark',
+TP.sherpa.console.Inst.defineMethod('transitionToSeparateEvalMarker',
 function() {
 
     /**
-     * @method setupEvalMark
+     * @method transitionToSeparateEvalMarker
+     * @summary Transitions from using just the input marker to having a
+     *     separate eval marker. This is used when the user wants to evaluate
+     *     only a portion of what is in the input cell.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -1888,6 +1888,8 @@ function() {
         return this;
     }
 
+    //  If we have a valid input marker, then we use it to set up the eval
+    //  marker.
     if (TP.isValid(this.get('currentInputMarker'))) {
         if (TP.isValid(
                 currentInputRange = this.get('currentInputMarker').find())) {
@@ -1900,7 +1902,10 @@ function() {
         }
     }
 
+    //  If we still don't have an eval marker, that means that we didn't have a
+    //  valid input marker - set them both up here using the same range.
     if (TP.notValid(this.get('currentEvalMarker'))) {
+
         newEvalRange = this.computeEvalMarkRange();
 
         this.set('currentInputMarker',
@@ -1931,9 +1936,6 @@ function(direction, endPoint) {
 
     /**
      * @method shiftEvalMark
-     * @param
-     * @param
-     * @returns {TP.sherpa.console} The receiver.
      */
 
     var currentEvalMarker,
@@ -2075,7 +2077,6 @@ function() {
 
     /**
      * @method teardownEvalMark
-     * @returns {TP.sherpa.console} The receiver.
      */
 
     if (TP.isValid(this.get('currentEvalMarker'))) {
