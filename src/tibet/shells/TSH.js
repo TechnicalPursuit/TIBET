@@ -441,25 +441,28 @@ function(aRequest) {
      * @returns {TP.core.TSH} The receiver.
      */
 
-    var shell,
+    var request,
+
+        shell,
         successFunc,
 
         user,
         name,
         usernameReq;
 
+    request = TP.request(aRequest);
+
     //  capture 'this' for closure purposes
     shell = this;
 
     successFunc = function(userName) {
 
-        //  creating a TP.core.User instance will trigger the UI
-        //  updating done based on vcard role/unit assignments (if
-        //  this user has a vCard)
+        //  creating a TP.core.User instance will trigger the UI updating done
+        //  based on vcard role/unit assignments (if this user has a vCard)
         TP.core.User.construct(userName);
 
-        //  access to the shell instance through our previously
-        //  defined shell = this reference
+        //  access to the shell instance through our previously defined
+        //  shell = this reference
         shell.isRunning(true);
         shell.setVariable('USER', userName);
 
@@ -469,26 +472,21 @@ function(aRequest) {
             userName,
             TP.dc().addDuration('P1Y'));
 
-        //  TODO:   clean this up with something more sensible that
-        //  isn't so aware of what might be in the console (or that
-        //  there is a console)
-
-        //  space down from current location/announce
-        TP.sig.UserOutputRequest.construct(
-            TP.hc('output', '\n',
-                    'render', true
-                    )).fire(shell);
+        //  TODO:   clean this up with something more sensible that isn't so
+        //  aware of what might be in the console (or that there is a console)
 
         //  start login message thread...
         TP.sig.UserOutputRequest.construct(
-            TP.hc('output', 'Loading and initializing user profile' +
+            TP.hc('output', '\n' +
+                            'Loading and initializing user profile' +
                             ' data for user "' + userName + '"...',
-                    'cssClass', 'inbound_announce'
+                    'cssClass', 'inbound_announce',
+                    'cmdAsIs', true
                     )).fire(shell);
 
-        //  if we're logged in, initiate the run sequence which will
-        //  load any startup files but allow the login output
-        //  message to display by forking the call here
+        //  if we're logged in, initiate the run sequence which will load any
+        //  startup files but allow the login output message to display by
+        //  forking the call here
         /* eslint-disable no-wrap-func,no-extra-parens */
         (function() {
 
@@ -504,7 +502,7 @@ function(aRequest) {
     //  If the user is running this shell in an already-authenticated
     //  application then we piggyback on that user information instead of asking
     //  for new information
-    if (TP.notEmpty(user = aRequest.at('username'))) {
+    if (TP.notEmpty(user = request.at('username'))) {
         name = user;
     } else if (TP.isValid(user = TP.sys.getEffectiveUser()) &&
                 TP.notEmpty(name = user.get('vCard').get('shortname'))) {
@@ -1859,10 +1857,12 @@ function(aRequest) {
     this.logout();
 
     req = TP.sig.UserOutputRequest.construct(
-                TP.hc('output', 'Logging out user "' +
+                TP.hc('output', '\n' +
+                                'Logging out user "' +
                                 this.get('username') +
                                 '"',
-                        'cssClass', 'inbound_announce'));
+                        'cssClass', 'inbound_announce',
+                        'cmdAsIs', true));
 
     req.fire(this);
 
