@@ -855,8 +855,9 @@ function(initial, target, trigger) {
     }
 
     //  Didn't have a valid guard function. Check for local method guards.
-    guard = 'accept' + this.getStateName(target) + 'When' +
-        this.getStateName(initial);
+    guard = 'accept' + this.getStateName(target) +
+            'When' + this.getStateName(initial);
+
     if (TP.canInvoke(this, guard)) {
         return this[guard](trigger);
     } else {
@@ -953,15 +954,15 @@ function(details) {
         if (TP.isKindOf(trigger, 'TP.sig.Signal')) {
 
             //  Try to handle locally within this state machine.
-            handler = this.getHandler(trigger,
-                null, null, null, 'handleSignal');
+            handler = this.getHandler(
+                            trigger, null, null, null, 'handleSignal');
             if (TP.isFunction(handler)) {
                 handler.call(this, trigger);
             } else {
                 //  Try bubbling to parent if not handled.
                 if (TP.isValid(parent = this.get('parent'))) {
-                    handler = parent.getHandler(trigger,
-                        null, null, null, 'handleSignal');
+                    handler = parent.getHandler(
+                            trigger, null, null, null, 'handleSignal');
                     if (TP.isFunction(handler)) {
                         handler.call(parent, trigger);
                     }
@@ -976,8 +977,8 @@ function(details) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getHandler(signal,
-            null, null, null, 'handleSignal');
+        handler = this.getHandler(
+                            signal, null, null, null, 'handleSignal');
         if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
@@ -985,8 +986,8 @@ function(details) {
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getHandler(signal,
-                    null, null, null, 'handleSignal');
+                handler = parent.getHandler(
+                            signal, null, null, null, 'handleSignal');
                 if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }
