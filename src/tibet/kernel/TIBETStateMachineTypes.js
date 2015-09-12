@@ -313,7 +313,7 @@ function(initialState, targetState, transitionDetails) {
      *     Defaults to null since final states may not have target states.
      * @param {TP.core.Hash} [transitionDetails] A hash containing details on
      *     the transition such as triggers and nested machine activation.
-     * @param {String|Array.<String>} {transitionDetails.signal}
+     * @param {String|Array.<String>} [transitionDetails.signal]
      * @param {TP.core.StateMachine|String} [transitionDetails.nested]. The type
      *     name for a nested state machine, or the state machine itself.
      */
@@ -329,7 +329,8 @@ function(initialState, targetState, transitionDetails) {
 
     if (this.isActive()) {
         this.raise('InvalidOperation',
-            'Cannot modify an active state machine.');
+                    'Cannot modify an active state machine.');
+
         return;
     }
 
@@ -342,6 +343,9 @@ function(initialState, targetState, transitionDetails) {
     trigger = options.at('trigger');
 
     if (TP.notEmpty(trigger)) {
+        trigger = TP.expandSignalName(trigger);
+        options.atPut('trigger', trigger);
+
         this.addTrigger(trigger);
     }
 
