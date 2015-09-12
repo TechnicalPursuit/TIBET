@@ -2804,11 +2804,12 @@ function(singletonName, normalizedEvent, aSignal) {
     typename = signal.getName();
 
     if (signal.getSignalName() !== typename) {
-        if (TP.notEmpty(handlers = dict.at(typename))) {
-            //  Reset the signal name to the type name because we need to
-            //  signal to observers of the type name.
-            signal.setSignalName(typename);
 
+        //  Reset the signal name to the type name because we need to
+        //  signal to observers of the type name.
+        signal.setSignalName(typename);
+
+        if (TP.notEmpty(handlers = dict.at(typename))) {
             len = handlers.getSize();
             for (i = 0; i < len; i++) {
                 if (signal.shouldStop()) {
@@ -2833,7 +2834,6 @@ function(singletonName, normalizedEvent, aSignal) {
                 }
             }
         } else if (!redirected) {
-            signal.setSignalName(typename);
             TP.handle(redirector, signal);
         }
     }
