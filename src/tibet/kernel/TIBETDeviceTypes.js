@@ -451,7 +451,7 @@ isCancelable, isBubbling) {
             signal.setSignalName(signame);
         }
 
-        this.invokeObservers(null, null, signal);
+        this.invokeObservers(null, aPayload, signal);
     }
 
     return false;
