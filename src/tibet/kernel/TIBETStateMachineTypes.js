@@ -1115,9 +1115,13 @@ function(signalOrParams) {
     stateTargets = this.get('byInitial').at(oldState);
 
     if (TP.isEmpty(stateTargets)) {
+
         //  No target states means we're at a final state, but apparently didn't
         //  deactivate since we're still receiving input from our triggers.
-        TP.warn('State update request yielded no targets for: ' + oldState);
+        TP.ifWarn() ?
+            TP.warn('State update request yielded no targets for: ' +
+                    oldState +
+                    '.') : 0;
 
         return oldState;
     } else {
