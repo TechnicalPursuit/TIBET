@@ -6345,6 +6345,18 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
     if (TP.isEmpty(aSignal)) {
         //  It's empty, which means ANY
         signal = TP.ANY;
+    } else if (TP.isArray(aSignal)) {
+        //  It's an Array - check to make sure each one is a real type.
+        signal = aSignal.collect(
+                        function(sig) {
+                            var sigTypeName;
+
+                            sigTypeName = TP.expandSignalName(sig);
+                            if (TP.notEmpty(sigTypeName) &&
+                                TP.isType(TP.sys.require(sigTypeName))) {
+                                return sigTypeName;
+                            }
+                        });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.require(typename))) {
         //  It's a real type.
@@ -6554,6 +6566,18 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
     if (TP.isEmpty(aSignal)) {
         //  It's empty, which means ANY
         signal = TP.ANY;
+    } else if (TP.isArray(aSignal)) {
+        //  It's an Array - check to make sure each one is a real type.
+        signal = aSignal.collect(
+                        function(sig) {
+                            var sigTypeName;
+
+                            sigTypeName = TP.expandSignalName(sig);
+                            if (TP.notEmpty(sigTypeName) &&
+                                TP.isType(TP.sys.require(sigTypeName))) {
+                                return sigTypeName;
+                            }
+                        });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.require(typename))) {
         //  It's a real type.
@@ -6698,6 +6722,18 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
     if (TP.isEmpty(aSignal)) {
         //  It's empty, which means ANY
         signal = TP.ANY;
+    } else if (TP.isArray(aSignal)) {
+        //  It's an Array - check to make sure each one is a real type.
+        signal = aSignal.collect(
+                        function(sig) {
+                            var sigTypeName;
+
+                            sigTypeName = TP.expandSignalName(sig);
+                            if (TP.notEmpty(sigTypeName) &&
+                                TP.isType(TP.sys.require(sigTypeName))) {
+                                return sigTypeName;
+                            }
+                        });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.require(typename))) {
         //  It's a real type.
@@ -6831,6 +6867,18 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
     if (TP.isEmpty(aSignal)) {
         //  It's empty, which means ANY
         signal = TP.ANY;
+    } else if (TP.isArray(aSignal)) {
+        //  It's an Array - check to make sure each one is a real type.
+        signal = aSignal.collect(
+                        function(sig) {
+                            var sigTypeName;
+
+                            sigTypeName = TP.expandSignalName(sig);
+                            if (TP.notEmpty(sigTypeName) &&
+                                TP.isType(TP.sys.require(sigTypeName))) {
+                                return sigTypeName;
+                            }
+                        });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
                 TP.isType(TP.sys.require(typename))) {
         //  It's a real type.
