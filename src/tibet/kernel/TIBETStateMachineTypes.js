@@ -362,35 +362,38 @@ function(initialState, targetState, transitionDetails) {
         }
 
         arr = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-        arr.forEach(function(key) {
-            var list,
-                exists;
+        arr.forEach(
+            function(key) {
+                var list,
+                    exists;
 
-            list = targets.at(key);
+                list = targets.at(key);
 
-            if (TP.notValid(list)) {
-                list = TP.ac();
-                targets.atPut(key, list);
-            } else {
-                //  Check for duplicates.
-                exists = list.some(function(item) {
-                    return item.at(0) === null;
-                });
+                if (TP.notValid(list)) {
+                    list = TP.ac();
+                    targets.atPut(key, list);
+                } else {
+                    //  Check for duplicates.
+                    exists = list.some(
+                                function(item) {
+                                    return item.at(0) === null;
+                                });
 
-                if (TP.isTrue(exists)) {
-                    this.raise('DuplicateStateDefinition', 'null -> ' + key);
+                    if (TP.isTrue(exists)) {
+                        this.raise('DuplicateStateDefinition',
+                                    'null -> ' + key);
+                    }
                 }
-            }
 
-            //  Once we know it's not a duplicate push ordered pairs into the
-            //  initial list's null keyset and the targeted key's list.
-            nulls.push([key, options]);
-            list.push([null, options]);
+                //  Once we know it's not a duplicate push ordered pairs into
+                //  the initial list's null keyset and the targeted key's list.
+                nulls.push([key, options]);
+                list.push([null, options]);
 
-            if (TP.isValid(nested)) {
-                parents.atPut(key, nested);
-            }
-        });
+                if (TP.isValid(nested)) {
+                    parents.atPut(key, nested);
+                }
+            }.bind(this));
 
         return this;
     }
@@ -412,31 +415,34 @@ function(initialState, targetState, transitionDetails) {
         }
 
         arr = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-        arr.forEach(function(key) {
-            var list,
-                exists;
+        arr.forEach(
+            function(key) {
+                var list,
+                    exists;
 
-            list = initials.at(key);
+                list = initials.at(key);
 
-            if (TP.notValid(list)) {
-                list = TP.ac();
-                initials.atPut(key, list);
-            } else {
-                //  Check for duplicates.
-                exists = list.some(function(item) {
-                    return item.at(0) === null;
-                });
+                if (TP.notValid(list)) {
+                    list = TP.ac();
+                    initials.atPut(key, list);
+                } else {
+                    //  Check for duplicates.
+                    exists = list.some(
+                                function(item) {
+                                    return item.at(0) === null;
+                                });
 
-                if (TP.isTrue(exists)) {
-                    this.raise('DuplicateStateDefinition', key + ' -> null');
+                    if (TP.isTrue(exists)) {
+                        this.raise('DuplicateStateDefinition',
+                                    key + ' -> null');
+                    }
                 }
-            }
 
-            //  Once we know it's not a duplicate push ordered pairs into the
-            //  initial list's null keyset and the targeted key's list.
-            nulls.push([key, options]);
-            list.push([null, options]);
-        });
+                //  Once we know it's not a duplicate push ordered pairs into
+                //  the initial list's null keyset and the targeted key's list.
+                nulls.push([key, options]);
+                list.push([null, options]);
+            }.bind(this));
 
         return this;
     }
@@ -449,70 +455,80 @@ function(initialState, targetState, transitionDetails) {
     //  ---
 
     arr = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-    arr.forEach(function(key) {
-        var list,
-            exists,
-            items;
+    arr.forEach(
+        function(key) {
+            var list,
+                exists,
+                items;
 
-        list = initials.at(key);
+            list = initials.at(key);
 
-        if (TP.notValid(list)) {
-            list = TP.ac();
-            initials.atPut(key, list);
-        } else {
-            //  Check for duplicates.
-            exists = list.some(function(item) {
-                return item.at(0) === targetState;
-            });
+            if (TP.notValid(list)) {
+                list = TP.ac();
+                initials.atPut(key, list);
+            } else {
+                //  Check for duplicates.
+                exists = list.some(
+                            function(item) {
+                                return item.at(0) === targetState;
+                            });
 
-            if (TP.isTrue(exists)) {
-                this.raise('DuplicateStateDefinition', key + ' -> ' +
-                    targetState);
+                if (TP.isTrue(exists)) {
+                    this.raise('DuplicateStateDefinition',
+                                key + ' -> ' + targetState);
+                }
             }
-        }
 
-        items = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-        items.forEach(function(target) {
-            list.push([target, options]);
-        });
-    });
+            items = TP.isArray(targetState) ? targetState : TP.ac(targetState);
+            items.forEach(
+                    function(target) {
+                        list.push([target, options]);
+                    });
+
+        }.bind(this));
 
     //  ---
     //  byTarget
     //  ---
 
     arr = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-    arr.forEach(function(key) {
-        var list,
-            exists,
-            items;
+    arr.forEach(
+        function(key) {
+            var list,
+                exists,
+                items;
 
-        list = targets.at(key);
+            list = targets.at(key);
 
-        if (TP.notValid(list)) {
-            list = TP.ac();
-            targets.atPut(key, list);
-        } else {
-            //  Check for duplicates.
-            exists = list.some(function(item) {
-                return item.at(0) === targetState;
-            });
+            if (TP.notValid(list)) {
+                list = TP.ac();
+                targets.atPut(key, list);
+            } else {
+                //  Check for duplicates.
+                exists = list.some(
+                            function(item) {
+                                return item.at(0) === targetState;
+                            });
 
-            if (TP.isTrue(exists)) {
-                this.raise('DuplicateStateDefinition', key + ' -> ' +
-                    targetState);
+                if (TP.isTrue(exists)) {
+                    this.raise('DuplicateStateDefinition', key + ' -> ' +
+                        targetState);
+                }
             }
-        }
 
-        items = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-        items.forEach(function(initial) {
-            list.push([initial, options]);
-        });
+            items = TP.isArray(initialState) ?
+                                initialState :
+                                TP.ac(initialState);
 
-        if (TP.isValid(nested)) {
-            parents.atPut(key, nested);
-        }
-    });
+            items.forEach(
+                    function(initial) {
+                        list.push([initial, options]);
+                    });
+
+            if (TP.isValid(nested)) {
+                parents.atPut(key, nested);
+            }
+        }.bind(this));
 
     return this;
 });
@@ -729,9 +745,10 @@ function() {
         return TP.ac();
     }
 
-    return items.collect(function(item) {
-        return item.first();
-    });
+    return items.collect(
+                function(item) {
+                    return item.first();
+                });
 });
 
 //  ------------------------------------------------------------------------
