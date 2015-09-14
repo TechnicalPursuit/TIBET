@@ -2707,7 +2707,8 @@ function(options) {
                                     //  test case executed at least one
                                     //  assertion. If it didn't, we mark it as
                                     //  'todo' and fail it.
-                                    if (!testcase.get('$executedAssertion')) {
+                                    if (!testcase.get('$executedAssertion') &&
+                                        !testcase.get('ignored')) {
                                         testcase.todo();
                                         testcase.fail('No assertions found');
                                     } else {
@@ -2736,7 +2737,8 @@ function(options) {
                             //  As a final check, we make sure that the test
                             //  case executed at least one assertion. If it
                             //  didn't, we mark it as 'todo' and fail it.
-                            if (!testcase.get('$executedAssertion')) {
+                            if (!testcase.get('$executedAssertion') &&
+                                !testcase.get('ignored')) {
                                 testcase.todo();
                                 testcase.fail('No assertions found');
                             } else {
@@ -2765,7 +2767,8 @@ function(options) {
                                     //  test case executed at least one
                                     //  assertion. If it didn't, we mark it as
                                     //  'todo' and fail it.
-                                    if (!testcase.get('$executedAssertion')) {
+                                    if (!testcase.get('$executedAssertion') &&
+                                        !testcase.get('ignored')) {
                                         testcase.todo();
                                         testcase.fail('No assertions found');
                                     } else {
@@ -2795,7 +2798,8 @@ function(options) {
                                     //  test case executed at least one
                                     //  assertion. If it didn't, we mark it as
                                     //  'todo' and fail it.
-                                    if (!testcase.get('$executedAssertion')) {
+                                    if (!testcase.get('$executedAssertion') &&
+                                        !testcase.get('ignored')) {
                                         testcase.todo();
                                         testcase.fail('No assertions found');
                                     } else {
