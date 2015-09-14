@@ -2399,7 +2399,7 @@ function() {
 
     this.it('data binding to complex object values', function(test, options) {
 
-    });
+    }).todo();
 
     //  ---
 
@@ -2441,7 +2441,7 @@ function() {
 
     this.it('data binding "value" to path complex values', function(test, options) {
 
-    });
+    }).todo();
 });
 
 //  ========================================================================
