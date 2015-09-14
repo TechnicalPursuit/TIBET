@@ -2708,13 +2708,19 @@ function(options) {
                             maybe.done(
                                 function(obj) {
 
+                                    //  Make sure to set the testcase to be
+                                    //  ignored if the entire test suite is
+                                    //  being ignored (to get proper count data
+                                    //  and assertion execution checking).
+                                    if (testcase.getSuite().get('ignored')) {
+                                        testcase.set('ignored', true);
+                                    }
+
                                     //  As a final check, we make sure that the
                                     //  test case executed at least one
-                                    //  assertion. If it didn't, we mark it as
-                                    //  'todo' and fail it.
+                                    //  assertion (if it isn't being ignored).
                                     if (!testcase.get('$executedAssertion') &&
                                         !testcase.get('ignored')) {
-                                        testcase.todo();
                                         testcase.fail('No assertions found');
                                     } else {
                                         testcase.pass();
@@ -2739,12 +2745,19 @@ function(options) {
                                 throw new Error();
                             }
 
+                            //  Make sure to set the testcase to be ignored if
+                            //  the entire test suite is being ignored (to get
+                            //  proper count data and assertion execution
+                            //  checking).
+                            if (testcase.getSuite().get('ignored')) {
+                                testcase.set('ignored', true);
+                            }
+
                             //  As a final check, we make sure that the test
-                            //  case executed at least one assertion. If it
-                            //  didn't, we mark it as 'todo' and fail it.
+                            //  case executed at least one assertion (if it
+                            //  isn't being ignored).
                             if (!testcase.get('$executedAssertion') &&
                                 !testcase.get('ignored')) {
-                                testcase.todo();
                                 testcase.fail('No assertions found');
                             } else {
                                 testcase.pass();
@@ -2768,13 +2781,20 @@ function(options) {
                                     return maybe;
                                 }).done(
                                 function(obj) {
+
+                                    //  Make sure to set the testcase to be
+                                    //  ignored if the entire test suite is
+                                    //  being ignored (to get proper count data
+                                    //  and assertion execution checking).
+                                    if (testcase.getSuite().get('ignored')) {
+                                        testcase.set('ignored', true);
+                                    }
+
                                     //  As a final check, we make sure that the
                                     //  test case executed at least one
-                                    //  assertion. If it didn't, we mark it as
-                                    //  'todo' and fail it.
+                                    //  assertion (if it isn't being ignored).
                                     if (!testcase.get('$executedAssertion') &&
                                         !testcase.get('ignored')) {
-                                        testcase.todo();
                                         testcase.fail('No assertions found');
                                     } else {
                                         testcase.pass();
@@ -2799,13 +2819,21 @@ function(options) {
                             //  pass or fail the testcase.
                             internalPromise.done(
                                 function(obj) {
+
+                                    //  Make sure to set the testcase to be
+                                    //  ignored if the entire test suite is
+                                    //  being ignored (to get proper count data
+                                    //  and assertion execution checking).
+                                    if (testcase.getSuite().get('ignored')) {
+                                        testcase.set('ignored', true);
+                                    }
+
                                     //  As a final check, we make sure that the
                                     //  test case executed at least one
                                     //  assertion. If it didn't, we mark it as
                                     //  'todo' and fail it.
                                     if (!testcase.get('$executedAssertion') &&
                                         !testcase.get('ignored')) {
-                                        testcase.todo();
                                         testcase.fail('No assertions found');
                                     } else {
                                         testcase.pass();
