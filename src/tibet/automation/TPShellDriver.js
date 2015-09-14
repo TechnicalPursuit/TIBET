@@ -56,11 +56,14 @@ function(test, shellInput, valueTestFunction) {
 
                     try {
                         //  The correct value should be in the stdout that is
-                        //  made available to this method.
-                        testResult = stdioResults.detect(function(item) {
-                            return TP.isValid(item) &&
-                                item.meta === 'stdout';
-                        });
+                        //  made available to this method. Note how we skip any
+                        //  stdout values that are TP.TSH_NO_VALUEs.
+                        testResult = stdioResults.detect(
+                                        function(item) {
+                                            return TP.isValid(item) &&
+                                                item.data !== TP.TSH_NO_VALUE &&
+                                                item.meta === 'stdout';
+                                        });
                         if (TP.isValid(testResult)) {
                             testResult = testResult.data;
                         }
