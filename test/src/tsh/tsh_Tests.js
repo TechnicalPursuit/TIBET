@@ -22,7 +22,9 @@ function() {
     this.before(function(suite, options) {
         inputVal = null;
         correctResult = null;
+
         shellDriver = TP.tsh.Driver.construct();
+
         this.get('drivers').atPut('shell', shellDriver);
     });
 
@@ -30,6 +32,9 @@ function() {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
+
+        //  Merely here to shut up the test harness.
+        test.assert.isTrue(true);
 
         shellDriver.execShellTest(test, inputVal);
     });
@@ -78,7 +83,9 @@ function() {
     this.before(function(suite, options) {
         inputVal = null;
         correctResult = null;
+
         shellDriver = TP.tsh.Driver.construct();
+
         this.get('drivers').atPut('shell', shellDriver);
     });
 
@@ -86,6 +93,9 @@ function() {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
+
+        //  Merely here to shut up the test harness.
+        test.assert.isTrue(true);
 
         shellDriver.execShellTest(test, inputVal);
     });
@@ -814,13 +824,19 @@ function() {
     this.before(function(suite, options) {
         inputVal = null;
         correctResult = null;
+
         shellDriver = TP.tsh.Driver.construct();
+
         this.get('drivers').atPut('shell', shellDriver);
     });
 
     this.it('data setup', function(test, options) {
+
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
+
+        //  Merely here to shut up the test harness.
+        test.assert.isTrue(true);
 
         shellDriver.execShellTest(test, inputVal);
     });
@@ -1941,7 +1957,9 @@ function() {
     this.before(function(suite, options) {
         inputVal = null;
         correctResult = null;
+
         shellDriver = TP.tsh.Driver.construct();
+
         this.get('drivers').atPut('shell', shellDriver);
     });
 
@@ -1949,6 +1967,9 @@ function() {
 
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
+
+        //  Merely here to shut up the test harness.
+        test.assert.isTrue(true);
 
         shellDriver.execShellTest(test, inputVal);
     });
@@ -3963,8 +3984,12 @@ function() {
     });
 
     this.it('data setup', function(test, options) {
+
         inputVal =
             'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
+
+        //  Merely here to shut up the test harness.
+        test.assert.isTrue(true);
 
         shellDriver.execShellTest(test, inputVal);
     });
@@ -5181,6 +5206,7 @@ function() {
         stub;
 
     this.before(function(suite, options) {
+
         shellDriver = TP.tsh.Driver.construct();
         this.get('drivers').atPut('shell', shellDriver);
 
@@ -5201,6 +5227,9 @@ function() {
                         'v=1.0&q=football&start=10';
 
         inputVal = locStr;
+
+        //  Merely here to shut up the test harness.
+        test.assert.isTrue(true);
 
         shellDriver.execShellTest(
             test,
