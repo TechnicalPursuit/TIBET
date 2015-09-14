@@ -1076,9 +1076,10 @@ function(details) {
 
             //  A final state. But it is a "final only" state?
             states = this.get('byInitial').at(newState);
-            states = states.map(function(item) {
-                return item.at(0);
-            });
+            states = states.map(
+                        function(item) {
+                            return item.at(0);
+                        });
             if (states.length === 1 && states.at(0) === null) {
 
                 this.deactivate();
