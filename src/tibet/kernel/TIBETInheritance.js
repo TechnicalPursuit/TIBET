@@ -180,8 +180,10 @@ function(name) {
         nsObj,
         type,
         wholeName,
+
         typeName,
         instName,
+
         realType,
         typeConstructor,
         instConstructor,
@@ -253,10 +255,9 @@ function(name) {
 
     //  build the instance side
     /* eslint-disable no-new-func */
-    TP.sys[instName] = new Function();
+    instConstructor = new Function();
     /* eslint-enable no-new-func */
 
-    instConstructor = TP.sys[instName];
     instConstructor[TP.NAME] = instName;
     instConstructor.prototype = this[TP.INSTC].$constructPrototype();
     instConstructor.prototype[TP.TYPE] = this[TP.INSTC];
@@ -265,10 +266,9 @@ function(name) {
 
     //  build the type side
     /* eslint-disable no-new-func */
-    TP.sys[typeName] = new Function();
+    typeConstructor = new Function();
     /* eslint-enable no-new-func */
 
-    typeConstructor = TP.sys[typeName];
     typeConstructor[TP.NAME] = typeName;
     typeConstructor.prototype = this[TP.TYPEC].$constructPrototype();
     typeConstructor.prototype[TP.NAME] = typeName;
@@ -2998,8 +2998,7 @@ function() {
     /* eslint-disable new-cap */
     if (TP.notValid(TP.ifInvalid(TP[this.$getName()],
                                     TP.global[this.$getName()]))) {
-        //  TODO: Why do we do this?
-        return new TP.sys[this.$getName()]();
+        return new TP.global[this.$getName()]();
     } else {
         return new TP.ifInvalid(TP[this.$getName()],
                                     TP.global[this.$getName()])();
