@@ -95,6 +95,18 @@
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
     TP.sys.setcfg('project.app_type', null);
 
+    //  the user name for the project. The default value is 'demo'. Note that
+    //  there *MUST* be a corresponding vCard in the system that matches this
+    //  user name in order for TIBET to work properly. Note that this must be
+    //  kept in sync with 'project.user_role' and it's setting in the vCard.
+    TP.sys.setcfg('project.user_name', 'demo');
+
+    //  the role name for the user of the project. The default value is
+    //  'Public', which is the role of the default user 'demo' above (as defined
+    //  in the corresponding vCard for 'demo'). Note that this must be kept in
+    //  sync with 'project.user_name' and it's setting in the vCard.
+    TP.sys.setcfg('project.user_role', 'Public');
+
 
     //  ---
     //  phase control

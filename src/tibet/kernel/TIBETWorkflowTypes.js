@@ -3799,13 +3799,8 @@ function() {
      * @summary Initializes the type, defining the baseline keyrings.
      */
 
-    //  We initialize a key ring for the 'Guest' role. This matches the role
-    //  for the user 'demo' that the TP.core.User type will default to if no
-    //  user is supplied at startup. That username ('demo') *must* have a
-    //  role of 'Guest' in the vCards that are loaded into the system for
-    //  this role/keyring to make a difference.
-
-    this.addKeyRing('Guest');
+    //  Initialize a key ring for the current user.
+    this.addKeyRing(TP.sys.cfg('project.user_role'));
 
     return;
 });
@@ -4112,13 +4107,8 @@ function() {
     var realUser;
 
     if (TP.notValid(realUser = this.$get('realUser'))) {
-        //  We construct the default user of 'demo' if no TP.core.User has
-        //  been constructed yet (i.e. via some sort of login process). Note
-        //  that, if the standard supplied vCards.xml file that is supplied
-        //  with TIBET is used here, this user will have a role of 'Guest'
-        //  and a keyring that matches. See TP.core.Role's initialize()
-        //  method for more information.
-        TP.core.User.construct('demo');
+        //  Construct the default user.
+        TP.core.User.construct(TP.sys.cfg('project.user_name'));
 
         realUser = this.$get('realUser');
     }
