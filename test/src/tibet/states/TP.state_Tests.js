@@ -1165,7 +1165,7 @@ function() {
         details = machine.get('byInitial').at('start');
         details = details.first();
 
-        this.assert.equalTo(details.last(), {test: 'yay'});
+        this.assert.isEqualTo(details.last(), TP.hc('test', 'yay'));
     });
 
     this.it('triggers based on transition details', function(test, options) {
