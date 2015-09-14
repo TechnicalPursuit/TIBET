@@ -1356,21 +1356,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.DOMUISignal.Inst.defineMethod('getWindow',
-function() {
-
-    /**
-     * @method getWindow
-     * @summary Returns the window object that the native event occurred in.
-     * @returns {Window} The window containing the source element that generated
-     *     the event.
-     */
-
-    return TP.eventGetWindow(this.getEvent());
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.DOMUISignal.Inst.defineMethod('getNativeObject',
 function() {
 
@@ -1414,6 +1399,44 @@ function() {
      */
 
     return TP.eventGetTarget(this.getEvent());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMUISignal.Inst.defineMethod('getTime',
+function() {
+
+    /**
+     * @method getTime
+     * @summary Returns the time that the signal/event was fired.
+     * @returns {Number} The time that the signal/event was fired.
+     */
+
+    var firingTime;
+
+    //  If a firing time isn't in the signal itself (usually, for non-GUI
+    //  signals, this is set when the signal is fired), then use the firing time
+    //  encoded in the underlying native Event object.
+    if (!TP.isNumber(firingTime = this.$get('time'))) {
+        firingTime = TP.eventGetTime(this.getEvent());
+    }
+
+    return firingTime;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMUISignal.Inst.defineMethod('getWindow',
+function() {
+
+    /**
+     * @method getWindow
+     * @summary Returns the window object that the native event occurred in.
+     * @returns {Window} The window containing the source element that generated
+     *     the event.
+     */
+
+    return TP.eventGetWindow(this.getEvent());
 });
 
 //  ------------------------------------------------------------------------
