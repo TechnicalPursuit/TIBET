@@ -450,6 +450,8 @@ function() {
 
         TP.signal(TP.ANY, 'Fluffy');    //  second call here...
 
+        this.assert.isTrue(called > 0);
+
         machine.deactivate(true);
     });
 
