@@ -2317,6 +2317,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.DOMKeySignal.Inst.defineMethod('getKeyName',
+function() {
+
+    /**
+     * @method getKeyName
+     * @summary Returns the 'key name' for the receiver.
+     * @description This is a name (e.g. 'DOM_Shift_Enter_up') based on a
+     *     computation involving the underlying Event object's charCode,
+     *     keyCode, modifier key states all matched with entries in the
+     *     currently active keyboard map.
+     * @returns {String} The key name of the receiver.
+     */
+
+    return TP.core.Keyboard.getDOMSignalName(this.getEvent());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.DOMKeySignal.Inst.defineMethod('getKeyCode',
 function() {
 
