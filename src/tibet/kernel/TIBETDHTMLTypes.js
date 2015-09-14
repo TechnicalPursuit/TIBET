@@ -17,9 +17,9 @@
 
 //  NOTE SCOTT: these specific subtypes of TP.sig.StateSignal should be
 //  eliminated once signaling is fixed.
-TP.sig.StateSignal.defineSubtype('TP.sig.DraggingEnter');
-TP.sig.StateSignal.defineSubtype('TP.sig.DraggingInput');
-TP.sig.StateSignal.defineSubtype('TP.sig.DraggingExit');
+TP.sig.StateEnter.defineSubtype('TP.sig.DraggingEnter');
+TP.sig.StateInput.defineSubtype('TP.sig.DraggingInput');
+TP.sig.StateExit.defineSubtype('TP.sig.DraggingExit');
 
 //  ========================================================================
 //  TP.core.DragMachine
