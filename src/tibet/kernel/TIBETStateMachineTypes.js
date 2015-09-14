@@ -347,9 +347,6 @@ function(initialState, targetState, transitionDetails) {
     trigger = options.at('trigger');
 
     if (TP.notEmpty(trigger)) {
-        trigger = TP.expandSignalName(trigger);
-        options.atPut('trigger', trigger);
-
         this.addTrigger(trigger);
     }
 
