@@ -1232,9 +1232,14 @@ function(options) {
                     var status;
 
                     if (item.didSucceed()) {
-                        passed += 1;
+                        if (item.isTodo()) {
+                            ignored += 1;
+                        } else {
+                            passed += 1;
+                        }
                     } else {
                         status = item.getStatusCode();
+
                         switch (status) {
                             case TP.CANCELLED:
                                 errored += 1;
