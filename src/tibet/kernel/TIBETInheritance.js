@@ -1764,7 +1764,9 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
         }
 
         if (dontTraverse) {
-            handlers.atPut(key, TP.NO_RESULT);
+            if (!handlers.hasKey(key)) {
+                handlers.atPut(key, TP.NO_RESULT);
+            }
             return;
         }
 
@@ -1775,7 +1777,9 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
         //  type and we want that to be considered as well.
         if (aSignal.isSpoofed()) {
             if (dontTraverseSpoofs) {
-                handlers.atPut(key, TP.NO_RESULT);
+                if (!handlers.hasKey(key)) {
+                    handlers.atPut(key, TP.NO_RESULT);
+                }
                 return;
             }
 
@@ -1883,7 +1887,9 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
             }
         }
 
-        handlers.atPut(key, TP.NO_RESULT);
+        if (!handlers.hasKey(key)) {
+            handlers.atPut(key, TP.NO_RESULT);
+        }
     }
 
     return;
