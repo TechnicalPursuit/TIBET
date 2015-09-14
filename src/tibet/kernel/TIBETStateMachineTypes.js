@@ -85,6 +85,10 @@ TP.core.StateMachine.Inst.defineAttribute('state');
 //  trimmed to TP.core.StateMachine.LOG_MAX avoid large-scale leaking.
 TP.core.StateMachine.Inst.defineAttribute('stateLog');
 
+//  The last time a trigger signal was fired. We track this to avoid multiple
+//  firings of the trigger signal when doing a transition.
+TP.core.StateMachine.Inst.defineAttribute('$lastTriggerTime');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -943,6 +947,10 @@ function(details) {
 
     var oldState,
         newState,
+
+        triggerTime,
+        lastTriggerTime,
+
         internal,
         trigger,
         handler,
@@ -962,6 +970,19 @@ function(details) {
 
     //  If the state isn't changing this is an internal transition request.
 
+    //  If we are triggered try to directly respond to that triggering
+    //  signal as our first priority.
+    trigger = details.at('trigger');
+
+    //  If we can obtain a time from the trigger (i.e. it's a TP.sig.Signal of
+    //  some sort), then we do so. We'll use this in a comparison below.
+    if (TP.isKindOf(trigger, 'TP.sig.Signal')) {
+        triggerTime = trigger.get('time');
+    } else {
+        //  Otherwise, we just set the last trigger time to 0.
+        this.set('$lastTriggerTime', 0);
+    }
+
     //  Certain cases seem to misbehave here if we don't force parens.
     /* eslint-disable no-extra-parens */
     internal = (oldState === newState);
@@ -969,9 +990,19 @@ function(details) {
 
     if (internal) {
 
+        //  If our last trigger time matches the trigger time for this signal,
+        //  then we exit here. This is because we might have already fired this
+        //  signal (as part of our 'fire the INPUT signal' convenience) just
+        //  before we transitioned out of a state (see below) and we don't want
+        //  it to fire again.
+        lastTriggerTime = this.get('$lastTriggerTime');
+        if (TP.isNumber(lastTriggerTime) &&
+            triggerTime === lastTriggerTime) {
+            return;
+        }
+
         //  If we are triggered try to directly respond to that triggering
         //  signal as our first priority.
-        trigger = details.at('trigger');
         if (TP.isKindOf(trigger, 'TP.sig.Signal')) {
 
             //  Try to handle locally within this state machine.
@@ -990,6 +1021,8 @@ function(details) {
                 }
             }
         }
+
+        //  Fire any input signal as a 'convenience'
 
         //  {Old}Input or StateInputWhen{Old}
         signal = this.getActionSignal(oldState, TP.INPUT);
@@ -1019,6 +1052,40 @@ function(details) {
         signal.fire();
 
     } else {
+
+        //  The first thing we do before we transition out of the current state
+        //  is fire the INPUT signal, as a 'convenience'.
+
+        //  {Old}Input or StateInputWhen{Old}
+        signal = this.getActionSignal(oldState, TP.INPUT);
+        signal.setPayload(details);
+
+        //  Try to handle it locally. The state machine itself gets first chance
+        //  at any input/internal transition signals. NOTE that we have to watch
+        //  out for invoking our update routine recursively via handleSignal :).
+        handler = this.getHandler(
+                            signal, null, null, null, 'handleSignal');
+        if (TP.isFunction(handler)) {
+            handler.call(this, signal);
+        } else {
+            //  If this is a nested state machine bubble the option to handle
+            //  the input to our outer composite state. This is the fundamental
+            //  feature of a truly nested state machine.
+            if (TP.isValid(parent = this.get('parent'))) {
+                handler = parent.getHandler(
+                            signal, null, null, null, 'handleSignal');
+                if (TP.isFunction(handler)) {
+                    handler.call(parent, signal);
+                }
+            }
+        }
+
+        //  Note that if the signal has been stopped this won't do much.
+        signal.fire();
+
+
+        //  Now go ahead and do the state transition
+
 
         //  When processing a start state there is no state to exit.
         if (TP.notEmpty(oldState)) {
@@ -1095,6 +1162,9 @@ function(details) {
             }
         }
     }
+
+    //  Capture the time that the last trigger signal fired.
+    this.set('$lastTriggerTime', triggerTime);
 
     return;
 });
