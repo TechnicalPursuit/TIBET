@@ -31,7 +31,7 @@ large-scale web development.
 
 TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
 combines best-of-breed technology with unmatched standards support in a
-comprehensive, vendor-supported stack that eliminates technical risk.
+comprehensive, vendor-supported stack that reduces technical risk.
 
 TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring tools</a>
 let your team focus on standards-compliant markup, not JavaScript coding,
