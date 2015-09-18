@@ -12,7 +12,7 @@
              /`              //       /'
             /                //      '/
            ,/____             /'    ,/_____
-          /////////;;,,       //   ,//////////;,_
+          /////////;;,,_      //   ,//////////;,_
                       `'/,_   '/              `'///,_
                          `'/,_ /                   '//,
                             '/,/,                    '/_
@@ -22,15 +22,26 @@
                                                         /
 
 
-TIBET is an unparalleled web development solution that blends a <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">full client stack</a>
-with <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">advanced tools</a> focused on reducing server overhead and JavaScript coding.
+#### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
-Designed for large-scale web development, TIBET is more like Smalltalk than
-Scheme, bringing immersive, object-oriented, tag-centered development to
-JavaScript.
+We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
+our way of saying TIBET is a seamlessly integrated framework; one focused on
+**solving both the technical and business problems** associated with
+large-scale web development.
 
----
+TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
+combines best-of-breed technology with unmatched standards support in a
+comprehensive, vendor-supported stack that eliminates technical risk.
+
+TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring tools</a>
+let your team focus on standards-compliant markup, not JavaScript coding,
+reducing the need for costly gurus, ninjas, and rock stars.
+
+<a href="http://www.technicalpursuit.com/html/support.xhtml">Commercial support</a>,
+open source <a href="http://www.technicalpursuit.com/html/license.xhtml">privacy
+waivers</a>, and
+<a href="http://www.technicalpursuit.com/html/solutions.xhtml">development services</a> are available
+from Technical Pursuit Inc., the company behind TIBET since 1999.
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
@@ -289,7 +300,7 @@ applications incorporating RPL'd code to reciprocate by open sourcing their code
 Technical Pursuit Inc., the company behind TIBET, offers privacy waivers which
 allow you to keep your source code private while helping to fund further TIBET
 development. Read more about privacy waivers at <a target="_blank"
-href="http://www.technicalpursuit.com/license.xhtml">http://www.technicalpursuit.com/license.xhtml</a>.
+href="http://www.technicalpursuit.com/html/license.xhtml">http://www.technicalpursuit.com/html/license.xhtml</a>.
 
 ##### Third Party Libraries
 
