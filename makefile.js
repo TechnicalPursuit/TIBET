@@ -200,6 +200,12 @@ targets.rollup_codemirror = function(make) {
     sh.exec('cp -f -R addon/runmode/runmode.js ' +
             '../../deps/codemirror/addon/runmode');
 
+    sh.exec('mkdir ../../deps/codemirror/addon/hint');
+    sh.exec('cp -f -R addon/hint/show-hint.js ' +
+            '../../deps/codemirror/addon/hint');
+    sh.exec('cp -f -R addon/hint/show-hint.css ' +
+            '../../deps/codemirror/addon/hint');
+
     targets.rollup_codemirror.resolve();
 };
 
