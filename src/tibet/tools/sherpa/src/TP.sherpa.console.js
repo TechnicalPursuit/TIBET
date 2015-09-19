@@ -1145,9 +1145,9 @@ function(aRange) {
         aRange.anchor,
         aRange.head,
         {
-            className: 'bordered-input',
-            startStyle: 'bordered-input-left',
-            endStyle: 'bordered-input-right',
+            className: 'input-mark',
+            startStyle: 'input-mark-left',
+            endStyle: 'input-mark-right',
             atomic: false,
             inclusiveLeft: true,
             inclusiveRight: true
@@ -1854,9 +1854,9 @@ function(range) {
         range.anchor,
         range.head,
         {
-            className: 'bordered-eval',
-            startStyle: 'bordered-eval-left',
-            endStyle: 'bordered-eval-right',
+            className: 'eval-mark',
+            startStyle: 'eval-mark-left',
+            endStyle: 'eval-mark-right',
             atomic: true,
             inclusiveLeft: false,
             inclusiveRight: false
