@@ -47,6 +47,8 @@ TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
 
 TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
 
+TP.sherpa.console.Inst.defineAttribute('currentCompletionMarker');
+
 TP.sherpa.console.Inst.defineAttribute('currentPromptMarker');
 
 TP.sherpa.console.Inst.defineAttribute('rawOutEntryTemplate');
@@ -534,6 +536,64 @@ function(aMode) {
 
     //  Make sure to focus the input after shifting the console orientation.
     this.focusInput();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Completion Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('generateCompletionMarkAt',
+function(aRange, completionContent) {
+
+    /**
+     * @method generateCompletionMarkAt
+     */
+
+    var doc,
+        elem,
+        marker;
+
+    doc = this.getNativeDocument();
+
+    elem = TP.documentCreateElement(doc, 'span', TP.w3.Xmlns.XHTML);
+    TP.elementSetClass(elem, 'completion-mark');
+    TP.xmlElementSetContent(elem, TP.xmlEntitiesToLiterals(completionContent));
+
+    marker = this.get('consoleInput').$get('$editorObj').markText(
+        aRange.anchor,
+        aRange.head,
+        {
+            atomic: true,
+            readOnly: true,
+            replacedWith: elem,
+            clearWhenEmpty: false,
+            inclusiveLeft: false,
+            inclusiveRight: true    //  don't allow the cursor to be placed
+                                    //  after the completion mark
+        }
+    );
+
+    return marker;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('teardownCompletionMark',
+function() {
+
+    /**
+     * @method teardownCompletionMark
+     */
+
+    var marker;
+
+    if (TP.isValid(marker = this.get('currentCompletionMarker'))) {
+        marker.clear();
+
+        this.set('currentCompletionMarker', null);
+    }
 
     return this;
 });
