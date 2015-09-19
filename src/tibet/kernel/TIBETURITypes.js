@@ -210,6 +210,11 @@ function(aURI, $$vetted) {
         } else {
             return;
         }
+    } else {
+        inst = TP.core.URI.getInstanceById(aURI);
+        if (TP.isValid(inst)) {
+            return inst;
+        }
     }
 
     //  given a null or empty string? no address.
