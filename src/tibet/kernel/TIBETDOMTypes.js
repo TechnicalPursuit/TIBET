@@ -10879,7 +10879,8 @@ function(resource, mimeType, fallback) {
         if (TP.isValid(uri)) {
             return uri.getConcreteURI();
         } else {
-            TP.warn('Unable to construct concrete URI for: ' + str);
+            TP.ifWarn() ?
+                TP.warn('Unable to construct concrete URI for: ' + str) : 0;
         }
     }
 
