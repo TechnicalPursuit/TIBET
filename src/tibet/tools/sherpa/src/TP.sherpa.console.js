@@ -891,15 +891,10 @@ function() {
 
     consoleInput.setKeyHandler(
             function(evt) {
-                var end;
 
                 if (TP.notValid(this.get('currentInputMarker'))) {
 
-                    end = consoleInput.getCursor();
-
-                    this.set('currentInputMarker',
-                        this.generateInputMarkAt(
-                            {anchor: {line: 0, ch: 0}, head: end}));
+                    this.setupInputMarkForExistingContent();
                 }
 
                 return TP.core.Keyboard.$$handleKeyEvent(evt);
@@ -967,16 +962,18 @@ function() {
 
         range;
 
-    if (TP.isValid(marker = this.get('currentInputMarker'))) {
-
-        editor = this.get('consoleInput').$get('$editorObj');
-        range = marker.find();
-
-        editor.setSelection(range.from, range.to);
-        editor.replaceSelection('');
-
-        this.teardownInputMark();
+    if (TP.notValid(marker = this.get('currentInputMarker'))) {
+        this.setupInputMarkForExistingContent();
+        marker = this.get('currentInputMarker');
     }
+
+    editor = this.get('consoleInput').$get('$editorObj');
+    range = marker.find();
+
+    editor.setSelection(range.from, range.to);
+    editor.replaceSelection('');
+
+    this.teardownInputMark();
 
     return this;
 });
@@ -1169,6 +1166,33 @@ function(anObject, shouldAppend) {
         this.setInputCursorToEnd();
 
     }.bind(this)).afterUnwind();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setupInputMarkForExistingContent',
+function() {
+
+    /**
+     * @method setupInputMarkForExistingContent
+     */
+
+    var consoleInput,
+
+        end;
+
+    if (TP.isValid(this.get('currentInputMarker'))) {
+        this.teardownInputMark();
+    }
+
+    consoleInput = this.get('consoleInput');
+
+    end = consoleInput.getCursor();
+
+    this.set('currentInputMarker',
+                this.generateInputMarkAt({anchor: {line: 0, ch:0}, head: end}));
 
     return this;
 });
