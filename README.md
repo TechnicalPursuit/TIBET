@@ -7,31 +7,41 @@
                  '//,   ///'`
                     '/_/'
                       `
-           ////////////////////   ///////////////////  ////
-           `//'````````````///    `//'```````````````  '''
-            /`             ///     /'
-           //               //    //
-           /                ///   /
-          ,/____             //  ,/_____
-         //////////-,,_      // ,///////////,_
-                   `'-//,_   '/            `'///,_
-                        `'/,_ /                 '//,
-                           '/,/,                  '/_
-                             `/,                   `/,
-                               '                    `/
-                                                     /,
-                                                     `/
-                                                      /
+            ////////////////////     ///////////////////  ////
+            `//'````````````///      `//'```````````````  '''
+             /`              //       /'
+            /                //      '/
+           ,/____             /'    ,/_____
+          /////////;;,,_      //   ,//////////;,_
+                      `'/,_   '/              `'///,_
+                         `'/,_ /                   '//,
+                            '/,/,                    '/_
+                              `/,                     `/,
+                                '                      `/
+                                                       '/
+                                                        /
 
-TIBET is an unparalleled web development solution that blends a <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">full client stack</a>
-with <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">advanced tools</a> focused on reducing server overhead and JavaScript coding.
 
-Designed for large-scale web development, TIBET is more like Smalltalk than
-Scheme, bringing immersive, object-oriented, tag-centered development to
-JavaScript.
+#### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
----
+We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
+our way of saying TIBET is a seamlessly integrated framework; one focused on
+**solving both the technical and business problems** associated with
+large-scale web development.
+
+TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
+combines best-of-breed technology with unmatched standards support in a
+comprehensive, vendor-supported stack that reduces technical risk.
+
+TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring tools</a>
+let your team focus on standards-compliant markup, not JavaScript coding,
+reducing the need for costly gurus, ninjas, and rock stars.
+
+<a href="http://www.technicalpursuit.com/html/support.xhtml">Commercial support</a>,
+open source <a href="http://www.technicalpursuit.com/html/license.xhtml">privacy
+waivers</a>, and
+<a href="http://www.technicalpursuit.com/html/solutions.xhtml">development services</a> are available
+from Technical Pursuit Inc., the company behind TIBET.
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
@@ -109,49 +119,6 @@ start working on your first TIBET application.
 
 Once you have TIBET installed the `tibet` command gives you access to a wide
 range of tools to help streamline your development workflow.
-
-### Help
-
-The `tibet help` command lists all the options for the `tibet` command:
-
-<pre>
-    $ tibet help
-
-    Usage: tibet <command> <options>
-
-    The tibet command can invoke TIBET built-ins, custom commands,
-    tibet makefile.js targets, grunt targets, or gulp targets based
-    on your project configuration and your specific customizations.
-
-    <command> built-ins include:
-
-        cache clone config context echo freeze help init lint
-        make package quickstart reflect rollup start test thaw
-        tsh version
-
-    Project <commands> include:
-
-        sample
-
-    makefile.js targets include:
-
-        build checkup clean rollup
-
-    <options> always include:
-
-        --help         display command help text
-        --usage        display command usage summary
-        --color        colorize the log output [true]
-        --verbose      work with verbose output [false]
-        --debug        turn on debugging output [false]
-        --stack        display stack with error [false]
-
-    Configure default parameters via 'tibet config'.
-
-    tibet@v5.0.0-dev.7 /Users/ss/.nvm/v0.10.28/bin/tibet
-</pre>
-
-### Quickstart
 
 The `tibet quickstart` command will output version-specific instructions on how
 to clone, initialize, and start your first TIBET application.
@@ -290,7 +257,7 @@ applications incorporating RPL'd code to reciprocate by open sourcing their code
 Technical Pursuit Inc., the company behind TIBET, offers privacy waivers which
 allow you to keep your source code private while helping to fund further TIBET
 development. Read more about privacy waivers at <a target="_blank"
-href="http://www.technicalpursuit.com/license.xhtml">http://www.technicalpursuit.com/license.xhtml</a>.
+href="http://www.technicalpursuit.com/html/license.xhtml">http://www.technicalpursuit.com/html/license.xhtml</a>.
 
 ##### Third Party Libraries
 
