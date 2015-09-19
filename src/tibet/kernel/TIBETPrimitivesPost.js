@@ -3245,7 +3245,7 @@ TP.definePrimitive('jsonsrc', TP.objectJSONSource);
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('objectKeys',
-function(anObject) {
+function(anObject, includeNonenumerables, includePrototypeProps) {
 
     /**
      * @method objectKeys
@@ -3255,6 +3255,11 @@ function(anObject) {
      *     duplicating test code when you're not sure of the return type of some
      *     function but need the object's keys.
      * @param {Object} anObject The object to return the keys for.
+     * @param {Boolean} [includeNonenumerables=false] Whether or not to include
+     *     the supplied object's 'non enumerable' properties.
+     * @param {Boolean} [includePrototypeProps=false] Whether or not to include
+     *     properties that the supplied object inherits through it's prototype
+     *     chain.
      * @returns {Array} The object's keys.
      */
 
@@ -3265,6 +3270,19 @@ function(anObject) {
 
     if (TP.canInvoke(anObject, 'getKeys')) {
         return anObject.getKeys();
+    }
+
+    //  If the caller wants non enumerable and/or prototype properties, we call
+    //  on one of the helpers defined on TP.boot
+    if (includeNonenumerables && includePrototypeProps) {
+        return TP.boot.$simplePropertyRetriever.
+                getOwnAndPrototypeEnumerablesAndNonenumerables(anObject);
+    } else if (includeNonenumerables) {
+        return TP.boot.$simplePropertyRetriever.
+                getOwnEnumerablesAndNonenumerables(anObject);
+    } else if (includePrototypeProps) {
+        return TP.boot.$simplePropertyRetriever.
+                getOwnAndPrototypeEnumerables(anObject);
     }
 
     if (TP.isNode(anObject)) {
@@ -5461,6 +5479,98 @@ TP.boot.$configurePluginEnvironment = function() {
     }
 
     return;
+};
+
+//  ------------------------------------------------------------------------
+
+//  A TIBET-formatted version of the code found here:
+//  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Enumerability_and_ownership_of_properties
+
+TP.boot.$simplePropertyRetriever = {
+
+    getOwnEnumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, true, false, this._enumerable);
+         // Or could use for..in filtered with hasOwnProperty or just this:
+         //     return Object.keys(obj);
+    },
+    getOwnNonenumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, true, false, this._notEnumerable);
+    },
+    getOwnEnumerablesAndNonenumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, true, false, this._enumerableAndNotEnumerable);
+        //  Or just use: return Object.getOwnPropertyNames(obj);
+    },
+    getPrototypeEnumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, false, true, this._enumerable);
+    },
+    getPrototypeNonenumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, false, true, this._notEnumerable);
+    },
+    getPrototypeEnumerablesAndNonenumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, false, true, this._enumerableAndNotEnumerable);
+    },
+    getOwnAndPrototypeEnumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, true, true, this._enumerable);
+        //  Or could use unfiltered for..in
+    },
+    getOwnAndPrototypeNonenumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, true, true, this._notEnumerable);
+    },
+    getOwnAndPrototypeEnumerablesAndNonenumerables: function(obj) {
+        return this._getPropertyNames(
+                        obj, true, true, this._enumerableAndNotEnumerable);
+    },
+    // Private static property checker callbacks
+    _enumerable : function(obj, prop) {
+        return obj.propertyIsEnumerable(prop);
+    },
+    _notEnumerable : function(obj, prop) {
+        return !obj.propertyIsEnumerable(prop);
+    },
+    _enumerableAndNotEnumerable : function(obj, prop) {
+        return true;
+    },
+    // Inspired by http://stackoverflow.com/a/8024294/271577
+    _getPropertyNames : function getAllPropertyNames(
+                                    obj, iterateSelfBool,
+                                    iteratePrototypeBool, includePropCb) {
+        var target,
+            props,
+
+            selfBool;
+
+        target = obj;
+        props = [];
+        selfBool = iterateSelfBool;
+
+        do {
+            if (selfBool) {
+                Object.getOwnPropertyNames(target).forEach(
+                        function(prop) {
+                            if (props.indexOf(prop) === -1 &&
+                                includePropCb(target, prop)) {
+                                props.push(prop);
+                            }
+                        });
+            }
+            if (!iteratePrototypeBool) {
+                break;
+            }
+            selfBool = true;
+        /* eslint-disable no-extra-parens */
+        } while ((target = Object.getPrototypeOf(target)));
+        /* eslint-enable no-extra-parens */
+
+        return props;
+    }
 };
 
 //  ------------------------------------------------------------------------

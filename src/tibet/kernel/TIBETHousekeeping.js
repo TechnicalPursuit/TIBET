@@ -306,6 +306,10 @@ TP.sys.defineGlobal('$$globalID', null);
 TP.boot.defineMethod('$configurePluginEnvironment',
                                     TP.boot.$configurePluginEnvironment);
 
+//  Enhanced methods for slot lookup
+TP.boot.defineMethod('$simplePropertyRetriever',
+                                    TP.boot.$simplePropertyRetriever);
+
 //  ---
 //  TIBETDOMPrimitivesPre.js
 //  ---
