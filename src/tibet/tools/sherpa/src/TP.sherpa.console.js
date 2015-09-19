@@ -96,31 +96,49 @@ function() {
     editorObj.setOption('autofocus', true);
     editorObj.setOption('matchBrackets', true);
 
+    //  Note that we define the same key multiple times for expository purposes.
+    //  CodeMirror doesn't seem to care.
+
+    /* eslint-disable no-dupe-keys,quote-props */
     editorObj.setOption(
         'extraKeys',
         {
             //  NB: These should match keys that are used by the console in
             //  TP.sherpa.ConsoleService
-            'Shift-Enter': function() { return true; },
 
-            //  -- start eval mark keys
-            'Shift-Up': function() {return true; },
-            'Shift-Right': function() {return true; },
-            'Shift-Down': function() {return true; },
-            'Shift-Left': function() {return true; },
+            //  Normal mode
+            'Shift-Enter'       : TP.RETURN_TRUE,   //  Accept raw input
 
-            'Shift-Alt-Up': function() {return true; },
-            'Shift-Alt-Right': function() {return true; },
-            'Shift-Alt-Down': function() {return true; },
-            'Shift-Alt-Left': function() {return true; },
-            //  -- end eval mark keys
+            'Shift-Up'          : TP.RETURN_TRUE,   //  Previous history
+            'Shift-Down'        : TP.RETURN_TRUE,   //  Next history
 
-            'Shift-Backspace': function() {return true; },
+            'Ctrl-U'            : TP.RETURN_TRUE,   //  Clear input
+            'Ctrl-K'            : TP.RETURN_TRUE,   //  Clear output
 
-            'Shift-Esc': function() {return true; },
+            'Shift-Esc'         : TP.RETURN_TRUE,   //  Cancel process
 
-            'Ctrl-Enter': function() {return true; }
+            //  Eval mark mode
+            'Shift-Up'          : TP.RETURN_TRUE,   //  Move Anchor Up
+            'Shift-Right'       : TP.RETURN_TRUE,   //  Move Anchor Right
+            'Shift-Down'        : TP.RETURN_TRUE,   //  Move Anchor Down
+            'Shift-Left'        : TP.RETURN_TRUE,   //  Move Anchor Left
+
+            'Shift-Alt-Up'      : TP.RETURN_TRUE,   //  Move Head Up
+            'Shift-Alt-Right'   : TP.RETURN_TRUE,   //  Move Head Right
+            'Shift-Alt-Down'    : TP.RETURN_TRUE,   //  Move Head Down
+            'Shift-Alt-Left'    : TP.RETURN_TRUE,   //  Move Head Left
+
+            //  Help mode
+            'Esc'               : TP.RETURN_TRUE,   //  Exit mode
+
+            //  History mode
+            'Esc'               : TP.RETURN_TRUE,   //  Exit mode
+
+            //  Autocomplete mode
+            'Ctrl-A'            : TP.RETURN_TRUE,   //  Enter mode
+            'Esc'               : TP.RETURN_TRUE    //  Exit mode
         });
+    /* eslint-enable no-dupe-keys,quote-props */
 
     consoleInputTPElem.setEditorEventHandler('viewportChange',
             function() {
