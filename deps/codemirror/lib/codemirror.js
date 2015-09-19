@@ -96,8 +96,6 @@
     };
 
     var cm = this;
-    cm.placeWindow = placeWin;
-    CodeMirror.placeWindow = placeWin;
 
     // Override magic textarea content restore that IE sometimes does
     // on our hidden textarea on reload

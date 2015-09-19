@@ -191,18 +191,18 @@
     this.picked = false;
     var widget = this, cm = completion.cm;
 
-    var hints = this.hints = cm.placeWindow.document.createElement("ul");
+    var hints = this.hints = document.createElement("ul");
     hints.className = "CodeMirror-hints";
     this.selectedHint = data.selectedHint || 0;
 
     var completions = data.list;
     for (var i = 0; i < completions.length; ++i) {
-      var elt = hints.appendChild(cm.placeWindow.document.createElement("li")), cur = completions[i];
+      var elt = hints.appendChild(document.createElement("li")), cur = completions[i];
       var className = HINT_ELEMENT_CLASS + (i != this.selectedHint ? "" : " " + ACTIVE_HINT_ELEMENT_CLASS);
       if (cur.className != null) className = cur.className + " " + className;
       elt.className = className;
       if (cur.render) cur.render(elt, data, cur);
-      else elt.appendChild(cm.placeWindow.document.createTextNode(cur.displayText || getText(cur)));
+      else elt.appendChild(document.createTextNode(cur.displayText || getText(cur)));
       elt.hintId = i;
     }
 
@@ -211,9 +211,9 @@
     hints.style.left = left + "px";
     hints.style.top = top + "px";
     // If we're at the edge of the screen, then we want the menu to appear on the left of the cursor.
-    var winW = cm.placeWindow.innerWidth || Math.max(cm.placeWindow.document.body.offsetWidth, cm.placeWindow.document.documentElement.offsetWidth);
-    var winH = cm.placeWindow.innerHeight || Math.max(cm.placeWindow.document.body.offsetHeight, cm.placeWindow.document.documentElement.offsetHeight);
-    (completion.options.container || cm.placeWindow.document.body).appendChild(hints);
+    var winW = window.innerWidth || Math.max(document.body.offsetWidth, document.documentElement.offsetWidth);
+    var winH = window.innerHeight || Math.max(document.body.offsetHeight, document.documentElement.offsetHeight);
+    (completion.options.container || document.body).appendChild(hints);
     var box = hints.getBoundingClientRect(), overlapY = box.bottom - winH;
     if (overlapY > 0) {
       var height = box.bottom - box.top, curTop = pos.top - (pos.bottom - box.top);
@@ -260,7 +260,7 @@
     cm.on("scroll", this.onScroll = function() {
       var curScroll = cm.getScrollInfo(), editor = cm.getWrapperElement().getBoundingClientRect();
       var newTop = top + startScroll.top - curScroll.top;
-      var point = newTop - (cm.placeWindow.pageYOffset || (cm.placeWindow.document.documentElement || cm.placeWindow.document.body).scrollTop);
+      var point = newTop - (window.pageYOffset || (document.documentElement || document.body).scrollTop);
       if (!below) point += hints.offsetHeight;
       if (point <= editor.top || point >= editor.bottom) return completion.close();
       hints.style.top = newTop + "px";
