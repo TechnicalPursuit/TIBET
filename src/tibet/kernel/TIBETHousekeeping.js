@@ -307,7 +307,7 @@ TP.boot.defineMethod('$configurePluginEnvironment',
                                     TP.boot.$configurePluginEnvironment);
 
 //  Enhanced methods for slot lookup
-TP.boot.defineMethod('$simplePropertyRetriever',
+TP.boot.defineAttribute('$simplePropertyRetriever',
                                     TP.boot.$simplePropertyRetriever);
 
 //  ---
