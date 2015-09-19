@@ -1133,6 +1133,7 @@
     //  should the console suspend normal output?
     TP.sys.setcfg('tdc.silent', false);
 
+    //  the toggle key for the TDC
     TP.sys.setcfg('tdc.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
     //  should the TDC output collection value types during status updates?
@@ -1164,11 +1165,12 @@
 
     //  how long should the sherpa console wait before allowing 'eval mark'
     //  editing (in ms) ?
-    TP.sys.setcfg('sherpa.edit_mark_time', 1500);
+    TP.sys.setcfg('sherpa.eval_mark_time', 1500);
 
     //  the id of the element under the mark holding the prompt
     TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
 
+    //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
     //  the initial location to load into screen_0 in the Sherpa. Note this

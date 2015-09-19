@@ -10,6 +10,7 @@
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet_framing.css"/>
 
     <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/lib/codemirror.css"/>
+    <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/addon/hint/show-hint.css"/>
     <link type="text/css" rel="stylesheet" href="~ide_root/cm_theme/zenburn.css"/>
 
     <script src="~lib_build/tibet_hook.min.js"></script>
@@ -150,6 +151,71 @@
         }
 
         .completion-mark-right {
+        }
+
+        .CodeMirror-hints {
+
+            border: dotted 1px orange;
+            background-color: #3F3F3F;
+
+            z-index: 30000;
+
+            box-shadow: none;
+            border-radius: 0px;
+
+            font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+            font-size: 9.6px;
+        }
+
+        .CodeMirror-hint {
+
+            color: orange;
+            max-width: 25em;
+        }
+
+        .CodeMirror-hint-active {
+
+            color: black;
+            background-color: orange;
+        }
+
+        /* Fake */
+        .match_custom_type {
+
+            color: #CC9393;
+        }
+
+        .match_css_prop {
+
+            color: #93E0E3;
+        }
+
+        .match_uri {
+
+            color: #F0DFAF;
+        }
+
+        /* Matches theme */
+        .match_keyword {
+
+            color: #F0DFAF;
+        }
+
+        .match_method_name {
+
+            color: #DFAF8F;
+        }
+
+        .match_key_source {
+
+            color: #DFAF8F;
+        }
+
+        /* Individual character match */
+        .match_result {
+
+            color: white;
+            text-decoration: underline;
         }
 
         ]]>

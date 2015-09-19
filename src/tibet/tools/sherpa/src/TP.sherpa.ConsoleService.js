@@ -55,6 +55,9 @@ TP.sherpa.ConsoleService.Inst.defineAttribute('markingTimer');
 //  just want to append to.
 TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdCellID');
 
+//  a state machine handling keyboard states
+TP.sherpa.ConsoleService.Inst.defineAttribute('keyboardStateMachine');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -197,6 +200,61 @@ function(aResourceID, aRequest) {
 
         model.login();
     }
+
+    //  Configure the keyboard state machine
+    this.configureKeyboardStateMachine();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('configureKeyboardStateMachine',
+function() {
+
+    /**
+     * @method configureKeyboardStateMachine
+     * @summary Configures the keyboard state machine with key responders to
+     *     handle the various console modes.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+     */
+
+    var keyboardSM,
+        newResponder;
+
+    keyboardSM = TP.core.StateMachine.construct();
+
+    this.set('keyboardStateMachine', keyboardSM);
+
+    keyboardSM.setTriggerSignals(TP.ac('TP.sig.DOMKeyDown', 'TP.sig.DOMKeyUp'));
+    keyboardSM.setTriggerOrigins(TP.ac(TP.core.Keyboard));
+
+    //  NB: In addition to being responders for state transition signals,
+    //  KeyResponder objects also supply handlers for keyboard signals.
+
+    //  ---  normal
+
+    //  'normal' is the initial state
+
+    newResponder = TP.sherpa.NormalKeyResponder.construct(keyboardSM);
+    newResponder.set('$consoleService', this);
+    newResponder.set('$consoleGUI', this.get('$consoleGUI'));
+
+    //  ---  evalmarking
+
+    //  'evalmarking' is the state used...
+
+    newResponder = TP.sherpa.EvalMarkingKeyResponder.construct(keyboardSM);
+    newResponder.set('$consoleService', this);
+    newResponder.set('$consoleGUI', this.get('$consoleGUI'));
+
+    //  ---  autocomplete
+
+    //  'evalmarking' is the state used...
+
+    newResponder = TP.sherpa.AutoCompletionKeyResponder.construct(keyboardSM);
+    newResponder.set('$consoleService', this);
+    newResponder.set('$consoleGUI', this.get('$consoleGUI'));
 
     return this;
 });
@@ -533,18 +591,12 @@ function() {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    //  set up root keyboard observations
-
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+    //  activate the keyboard state machine
+    this.get('keyboardStateMachine').activate();
 
     //  set up other keyboard observations
 
     this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
-
-    //  the 'double Shift key' for focusing the input cell.
-    this.observe(TP.core.Keyboard, 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     //  set up mouse observation for status updating
 
@@ -564,190 +616,18 @@ function() {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    //  remove root keyboard observations
-
-    this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
-    this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyPress');
-    this.ignore(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+    //  deactivate the keyboard state machine
+    this.get('keyboardStateMachine').deactivate(true);
 
     //  remove other keyboard observations
 
     this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
-
-    //  the 'double Shift key' for focusing the input cell.
-    this.ignore(TP.core.Keyboard, 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     //  remove mouse observation for status updating
 
     this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseMove');
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyDown',
-function(aSignal) {
-
-    /**
-     * @method handleDOMKeyDown
-     * @summary Handles notifications of keydown events. If the key is one the
-     *     console maps then the default action is overidden.
-     * @param {DOMKeyDown} aSignal The TIBET signal which triggered this method.
-     */
-
-    var evt,
-        consoleGUI,
-
-        keyname,
-
-        markingTimer;
-
-    evt = aSignal.getEvent();
-    consoleGUI = this.get('$consoleGUI');
-
-    //  Make sure that the key event happened in our document
-    if (!consoleGUI.eventIsInInput(evt)) {
-        return;
-    }
-
-    //  If we're currently showing the eval marking timer, we need to clear it.
-    if (TP.isValid(markingTimer = this.get('markingTimer'))) {
-        clearTimeout(markingTimer);
-        this.set('markingTimer', null);
-    }
-
-    //  If there is a Shift-Down-Arrow, then set up the marking timer. If the
-    //  timer isn't canceled with another keypress within the marking time, the
-    //  eval mark will show.
-    keyname = TP.domkeysigname(evt);
-    if (keyname === 'DOM_Shift_Down') {
-        markingTimer = setTimeout(
-                            function() {
-                                consoleGUI.transitionToSeparateEvalMarker();
-                            }, TP.sys.cfg('sherpa.edit_mark_time', 2000));
-        this.set('markingTimer', markingTimer);
-    }
-
-    //  If this was a command event or we're concealing input, then we prevent
-    //  the event from doing its default and from propagating anywhere else.
-    if (this.isCommandEvent(evt) || this.shouldConcealInput()) {
-        TP.eventPreventDefault(evt);
-        TP.eventStopPropagation(evt);
-    }
-
-    //  Update the 'keyboardInfo' part of the status.
-    this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyPress',
-function(aSignal) {
-
-    /**
-     * @method handleDOMKeyPress
-     * @summary Handles notifications of keypress events. If the key is one the
-     *     console maps then the default action is overidden.
-     * @param {DOMKeyPress} aSignal The TIBET signal which triggered this
-     *     method.
-     */
-
-    var evt;
-
-    evt = aSignal.getEvent();
-
-    //  Make sure that the key event happened in our document
-    if (!this.get('$consoleGUI').eventIsInInput(evt)) {
-        return;
-    }
-
-    //  If this was a command event or we're concealing input, then we prevent
-    //  the event from doing its default and from propagating anywhere else.
-    if (this.isCommandEvent(evt) || this.shouldConcealInput()) {
-        TP.eventPreventDefault(evt);
-        TP.eventStopPropagation(evt);
-    }
-
-    //  Update the 'keyboardInfo' part of the status.
-    this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMKeyUp',
-function(aSignal) {
-
-    /**
-     * @method handleDOMKeyUp
-     * @summary Handles notifications of keyup events. If the key is one we
-     *     care about then we forward the event to the shell for processing.
-     * @param {DOMKeyUp} aSignal The TIBET signal which triggered this handler.
-     */
-
-    var evt,
-        consoleGUI,
-
-        markingTimer,
-
-        keyname,
-        input,
-        code;
-
-    evt = aSignal.getEvent();
-    consoleGUI = this.get('$consoleGUI');
-
-    //  Make sure that the key event happened in our document
-    if (!consoleGUI.eventIsInInput(evt)) {
-        return;
-    }
-
-    if (TP.isValid(markingTimer = this.get('markingTimer'))) {
-        clearTimeout(markingTimer);
-        this.set('markingTimer', null);
-    }
-
-    keyname = TP.domkeysigname(evt);
-
-    if (this.isCommandEvent(evt)) {
-        //  If this was a command event, then we prevent the event from doing
-        //  its default and from propagating anywhere else.
-        TP.eventPreventDefault(evt);
-        TP.eventStopPropagation(evt);
-
-        //  Handle the command event.
-        this.handleCommandEvent(evt);
-
-    } else if (this.shouldConcealInput()) {
-        //  If we're concealing input, then we prevent the event from doing its
-        //  default and from propagating anywhere else.
-        TP.eventPreventDefault(evt);
-        TP.eventStopPropagation(evt);
-
-        input = TP.ifInvalid(this.$get('concealedInput'), '');
-        keyname = TP.domkeysigname(evt);
-
-        if (keyname === 'DOM_Backspace_Up') {
-            if (input.getSize() > 0) {
-                this.$set('concealedInput', input.slice(0, -1));
-            }
-        } else if (TP.core.Keyboard.isPrintable(evt)) {
-            code = TP.eventGetKeyCode(evt);
-            this.$set('concealedInput', input + String.fromCharCode(code));
-        }
-
-        consoleGUI.setInputContent(
-                '*'.times(this.$get('concealedInput').getSize()));
-    }
-
-    //  Update the 'keyboardInfo' part of the status.
-    this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -765,30 +645,6 @@ function(aSignal) {
 
     //  Update the 'keyboardInfo' part of the status.
     this.get('$consoleGUI').updateStatus(aSignal, 'keyboardInfo');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMShiftUp__DOMShiftUp',
-function(aSignal) {
-
-    /**
-     * @method handleDOMShiftUp_DOMShiftUp
-     * @param {TP.sig.DOMShiftUp_DOMShiftUp} aSignal The TIBET signal which
-     *     triggered this handler.
-     */
-
-    var consoleGUI;
-
-    consoleGUI = this.get('$consoleGUI');
-
-    //  Focus the console GUI's input and set its cursor to the end.
-    consoleGUI.focusInput();
-    consoleGUI.setInputCursorToEnd();
-
-    aSignal.stopPropagation();
 
     return;
 });
@@ -2114,6 +1970,8 @@ function(anObject, aRequest) {
 });
 
 //  ========================================================================
+//  TP.sig.ConsoleRequest
+//  ========================================================================
 
 /**
  * @type {TP.sig.ConsoleRequest}
@@ -2126,6 +1984,879 @@ function(anObject, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.defineSubtype('ConsoleRequest');
+
+//  ========================================================================
+//  TP.sherpa.ConsoleKeyResponder
+//  ========================================================================
+
+TP.core.KeyResponder.defineSubtype('TP.sherpa.ConsoleKeyResponder');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleKeyResponder.Inst.defineAttribute('$consoleService');
+TP.sherpa.ConsoleKeyResponder.Inst.defineAttribute('$consoleGUI');
+
+//  ========================================================================
+//  TP.sherpa.NormalKeyResponder
+//  ========================================================================
+
+TP.sherpa.ConsoleKeyResponder.defineSubtype('NormalKeyResponder');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.KeyResponder} The receiver.
+     */
+
+    var stateMachine;
+
+    this.set('mainState', 'normal');
+
+    stateMachine = this.get('stateMachine');
+
+    //  The state machine will transition to 'normal' when it is activated.
+    stateMachine.defineState(null, 'normal');         //  start-able state
+    stateMachine.defineState('normal');               //  final-able state
+
+    stateMachine.addTrigger('TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('executeTriggerSignalHandler',
+function(aSignal) {
+
+    /**
+     * @method executeTriggerSignalHandler
+     * @summary Executes the handler on the receiver (if there is one) for the
+     *     trigger signal (the underlying signal that caused a StateInput signal
+     *     to be fired from the state machine to this object).
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.KeyResponder} The receiver.
+     */
+
+    var consoleGUI,
+        evt,
+
+        handlerName;
+
+    if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
+
+        consoleGUI = this.get('$consoleGUI');
+
+        if (aSignal.getSignalName() ===
+            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
+            this.handleDOMShiftUp__DOMShiftUp(aSignal);
+        } else {
+
+            evt = aSignal.getEvent();
+
+            //  Make sure that the key event happened in our document
+            if (!consoleGUI.eventIsInInput(evt)) {
+                return this;
+            }
+
+            //  Update the 'keyboardInfo' part of the status.
+            consoleGUI.updateStatus(aSignal, 'keyboardInfo');
+
+            handlerName = 'handle' + aSignal.getKeyName();
+
+            if (TP.canInvoke(this, handlerName)) {
+                TP.eventPreventDefault(evt);
+                TP.eventStopPropagation(evt);
+
+                this[handlerName](aSignal);
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Enter_Up',
+function(aSignal) {
+    this.get('$consoleService').handleRawInput(aSignal);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOMShiftUp__DOMShiftUp',
+function(aSignal) {
+    var consoleGUI;
+
+    consoleGUI = this.get('$consoleGUI');
+
+    //  Focus the console GUI's input and set its cursor to the end.
+    consoleGUI.focusInput();
+    consoleGUI.setInputCursorToEnd();
+
+    aSignal.stopPropagation();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Down_Up',
+function(aSignal) {
+    this.get('$consoleService').handleHistoryNext(aSignal);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Up_Up',
+function(aSignal) {
+    this.get('$consoleService').handleHistoryPrev(aSignal);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Ctrl_U_Up',
+function(aSignal) {
+    this.get('$consoleService').handleClearInput(aSignal.getEvent());
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Ctrl_K_Up',
+function(aSignal) {
+    this.get('$consoleService').clearConsole(true);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Esc_Up',
+function(aSignal) {
+    this.get('$consoleService').handleCancel(aSignal.getEvent());
+});
+
+//  ========================================================================
+//  TP.sherpa.EvalMarkingKeyResponder
+//  ========================================================================
+
+TP.sherpa.NormalKeyResponder.defineSubtype('EvalMarkingKeyResponder');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.KeyResponder} The receiver.
+     */
+
+    var stateMachine,
+        delayedShiftTimer;
+
+    this.set('mainState', 'evalmarking');
+
+    stateMachine = this.get('stateMachine');
+
+    //  Define a faux type for the keyboard event that we will use for our 'long
+    //  Shift down'
+    TP.sig.DOMKeyDown.defineSubtype('LongShiftDown');
+
+    //  Define a behavior for our faux type that will trigger it when the user
+    //  has pressed the Shift key down for a certain amount of time (defaulting
+    //  to 2000ms).
+    /* eslint-disable no-extra-parens,indent */
+    (function(aSignal) {
+            delayedShiftTimer =
+                setTimeout(function() {
+                                TP.signal(TP.core.Keyboard,
+                                            'TP.sig.LongShiftDown',
+                                            aSignal.getPayload());
+                            }, TP.sys.cfg('sherpa.eval_mark_time', 2000));
+    }).observe(TP.core.Keyboard, 'TP.sig.DOM_Shift_Down');
+
+    (function(aSignal) {
+        clearTimeout(delayedShiftTimer);
+    }).observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+    /* eslint-enable no-extra-parens,indent */
+
+    //  Now that we've defined our faux type, we can use it as a trigger to the
+    //  state machine
+    stateMachine.defineState('normal',
+                                'evalmarking',
+                                {trigger: 'TP.sig.LongShiftDown'});
+
+    stateMachine.defineState('evalmarking',
+                                'normal',
+                                {trigger: 'TP.sig.DOM_Shift_Enter_Up'});
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('didEnter',
+function(aSignal) {
+
+    /**
+     * @method didEnter
+     */
+
+    this.get('$consoleGUI').transitionToSeparateEvalMarker();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('didExit',
+function(aSignal) {
+
+    /**
+     * @method didExit
+     */
+
+    this.get('$consoleGUI').teardownEvalMark();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Down_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.ANCHOR);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Up_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.ANCHOR);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Right_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.ANCHOR);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Left_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.ANCHOR);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Down_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.HEAD);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Up_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.HEAD);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Right_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.HEAD);
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Left_Up',
+function(anEvent) {
+    this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.HEAD);
+});
+
+//  ========================================================================
+//  TP.sherpa.AutoCompletionKeyResponder
+//  ========================================================================
+
+TP.sherpa.NormalKeyResponder.defineSubtype('AutoCompletionKeyResponder');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$finishedCompletion');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$popupContainer');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$showingHint');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.KeyResponder} The receiver.
+     */
+
+    var stateMachine,
+
+        backgroundElem,
+        hintFunc;
+
+    this.set('mainState', 'autocompletion');
+
+    stateMachine = this.get('stateMachine');
+
+    stateMachine.defineState('normal',
+                                'autocompletion',
+                                {trigger: 'TP.sig.DOM_Ctrl_A_Up'});
+
+    stateMachine.defineState('autocompletion',
+                                'normal',
+                                {trigger: 'TP.sig.DOM_Esc_Up'});
+
+    backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
+    this.set('$popupContainer', backgroundElem);
+
+    hintFunc = this.showHint.bind(this);
+
+    TP.extern.CodeMirror.commands.autocomplete = function(cm) {
+        cm.showHint(
+            {
+                hint: hintFunc,
+                container: backgroundElem,  //  undocumented property
+                completeSingle: false,
+                closeOnUnfocus: false
+            });
+    };
+
+    this.set('$showingHint', false);
+    this.set('$finishedCompletion', false);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('didEnter',
+function(aSignal) {
+
+    /**
+     * @method didEnter
+     * @summary Invoked when the receiver enters it's 'main state'.
+     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
+     *     machine to enter a state that matches the receiver's 'main state'.
+     * @returns {TP.core.KeyResponder} The receiver.
+     */
+
+    var consoleGUI,
+        editorObj;
+
+    consoleGUI = this.get('$consoleGUI');
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    editorObj.on(
+        'keyup',
+        function(cm, evt) {
+
+            var hintsElem;
+
+            if (this.get('$finishedCompletion')) {
+                this.set('$finishedCompletion', false);
+
+                return;
+            }
+
+            hintsElem = TP.byCSSPath('.CodeMirror-hints',
+                                        this.get('$popupContainer'),
+                                        true,
+                                        false);
+
+            if (!TP.isElement(hintsElem)) {
+                this.set('$showingHint', false);
+            } else {
+                this.set('$showingHint', true);
+            }
+
+            if (this.get('$showingHint')) {
+                return;
+            }
+
+            cm.execCommand('autocomplete');
+        }.bind(this));
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('showHint',
+function(cm, options) {
+
+    /**
+     * @method showHint
+     */
+
+    var completions,
+
+        consoleGUI,
+        editorObj;
+
+    completions = this.supplyCompletions(cm, options);
+
+    consoleGUI = this.get('$consoleGUI');
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    TP.extern.CodeMirror.on(
+        completions,
+        'select',
+        function(completion) {
+            var matcher,
+
+                theText,
+
+                cursor,
+                range,
+                marker;
+
+            consoleGUI.teardownCompletionMark();
+
+            matcher = TP.rc('^' + completion.input);
+
+            if (matcher.test(completion.text)) {
+
+                theText = completion.text.slice(completion.input.length);
+
+                if (TP.notEmpty(theText)) {
+                    cursor = editorObj.getCursor();
+
+                    range = {anchor: {line: cursor.line, ch: cursor.ch},
+                                head: {line: cursor.line, ch: cursor.ch}
+                            };
+
+                    marker = consoleGUI.generateCompletionMarkAt(range, theText);
+                    consoleGUI.set('currentCompletionMarker', marker);
+                }
+            }
+        });
+
+    TP.extern.CodeMirror.on(
+        completions,
+        'pick',
+        function(completion) {
+            this.set('$finishedCompletion', true);
+
+            consoleGUI.teardownCompletionMark();
+        }.bind(this));
+
+    TP.extern.CodeMirror.on(
+        completions,
+        'close',
+        function() {
+            this.set('$finishedCompletion', true);
+
+            consoleGUI.teardownCompletionMark();
+        }.bind(this));
+
+    return completions;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('supplyCompletions',
+function(editor, options) {
+
+    /**
+     * @method supplyCompletions
+     */
+
+    var completions,
+
+        inputContent,
+
+        matchers,
+
+        info,
+        matchInput,
+        fromIndex,
+
+        resolvedObj,
+        resolutionChunks,
+        chunk,
+
+        cursor,
+
+        fromPos,
+        toPos,
+
+        matches;
+
+    inputContent = editor.getValue();
+
+    completions = TP.ac();
+
+    if (TP.notEmpty(inputContent)) {
+        matchers = TP.ac();
+
+        info = this.tokenizeForCompletions(inputContent);
+        matchInput = info.at('fragment');
+        fromIndex = info.at('index');
+
+        switch (info.at('context')) {
+            case 'KEYWORD':
+            case 'JS':
+
+                resolvedObj = TP.global;
+                resolutionChunks = info.at('resolutionChunks');
+
+                if (TP.notEmpty(resolutionChunks)) {
+
+                    resolutionChunks = resolutionChunks.copy();
+
+                    while (TP.isValid(resolvedObj) &&
+                            TP.notEmpty(resolutionChunks)) {
+                        chunk = resolutionChunks.shift();
+                        resolvedObj = resolvedObj[chunk];
+                    }
+
+                    if (TP.notValid(resolvedObj) ||
+                        TP.notEmpty(resolutionChunks)) {
+                        //  TODO: Log a warning
+                        break;
+                    }
+
+                    matchers.push(
+                        TP.core.KeyedSourceMatcher.construct(resolvedObj));
+                } else {
+
+                    matchers.push(
+                        TP.core.KeyedSourceMatcher.construct(resolvedObj),
+                        TP.core.KeyedSourceMatcher.construct(
+                            TP.core.TSH.getDefaultInstance().getExecutionInstance()),
+                        TP.core.ListMatcher.construct(
+                            TP.boot.$keywords.concat(
+                                TP.boot.$futurereservedwords), 'match_keyword'));
+                }
+
+                break;
+
+            case 'TSH':
+
+                matchers.push(
+                        TP.core.ListMatcher.construct(
+                            TP.ac(
+                                'about',
+                                'alias',
+                                'apropos',
+                                'clear',
+                                'flag',
+                                'reflect',
+                                'save',
+                                'set')));
+
+                break;
+
+            case 'CFG':
+
+                matchers.push(
+                        TP.core.ListMatcher.construct(
+                            TP.sys.cfg().getKeys()));
+
+                break;
+
+            case 'URI':
+
+                matchers.push(
+                        TP.core.URIMatcher.construct());
+
+                break;
+
+            default:
+                break;
+        }
+
+        if (TP.notEmpty(matchers)) {
+
+            matchers.forEach(
+                function(matcher) {
+                    matcher.prepareForMatch();
+                    matches = matcher.match(matchInput);
+
+                    matches.forEach(
+                            function(anItem) {
+                                completions.push(
+                                    {
+                                        input: matchInput,
+                                        text: anItem.original,
+                                        score: anItem.score,
+                                        className: anItem.cssClass,
+                                        displayText: anItem.string,
+                                        render: function(elem, self, data) {
+                                            elem.innerHTML = data.displayText;
+                                        }
+                                    });
+                            });
+                });
+
+            if (TP.notEmpty(matchInput)) {
+                completions.sort(
+                    function(completionA, completionB) {
+
+                        var aLower,
+                            bLower;
+
+                        if (completionA.score === completionB.score) {
+
+                            aLower = completionA.text.toLowerCase();
+                            bLower = completionB.text.toLowerCase();
+
+                            if (aLower < bLower) {
+                                return -1;
+                            } else if (aLower > bLower) {
+                                return 1;
+                            }
+
+                            return 0;
+                        }
+
+                        return completionB.score - completionA.score;
+                    });
+            }
+        }
+    }
+
+    cursor = editor.getCursor();
+
+    if (TP.isEmpty(completions)) {
+        fromIndex = cursor.ch;
+    }
+
+    fromPos = TP.extern.CodeMirror.Pos(cursor.line, fromIndex);
+    toPos = TP.extern.CodeMirror.Pos(cursor.line, cursor.ch);
+
+    return {list: completions, from: fromPos, to: toPos};
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('tokenizeForCompletions',
+function(inputText) {
+
+    /**
+     * @method tokenizeForCompletions
+     */
+
+    var tokens,
+
+        context,
+        fragment,
+        resolutionChunks,
+        index,
+
+        captureFragment,
+
+        len,
+        i,
+
+        token,
+        shouldExit,
+        noMatches;
+
+    //  Invoke the tokenizer
+    tokens = TP.$condenseJS(inputText,
+                            false, false, TP.tsh.cmd.Type.$tshOperators,
+                            true, true, true);
+
+    //  Reverse the tokens to start from the back
+    tokens.reverse();
+
+    context = 'JS';
+    fragment = null;
+    resolutionChunks = TP.ac();
+    index = TP.NOT_FOUND;
+
+    captureFragment = true;
+    shouldExit = false;
+    noMatches = false;
+
+    len = tokens.getSize();
+    for (i = 0; i < len; i++) {
+        token = tokens.at(i);
+
+        switch (token.name) {
+
+            case 'comment':
+
+                noMatches = true;
+                shouldExit = true;
+
+                break;
+
+            case 'uri':
+
+                context = 'URI';
+
+                resolutionChunks = null;
+                fragment = token.value;
+                index = token.from;
+
+                shouldExit = true;
+
+                break;
+
+            case 'space':
+            case 'tab':
+            case 'newline':
+
+                if (i === 0) {
+                    noMatches = true;
+                }
+
+                shouldExit = true;
+
+                break;
+
+            case 'keyword':
+
+                context = 'KEYWORD';
+
+                resolutionChunks = null;
+                fragment = token.value;
+                index = token.from;
+
+                shouldExit = true;
+
+                break;
+
+            case 'operator':
+
+                switch (token.value) {
+
+                    case '[':
+
+                        if (tokens.at(i - 1).value === '\'') {
+                            if (captureFragment === true) {
+                                index = token.from + 2;
+                            }
+
+                            fragment = '';
+                            captureFragment = false;
+                        } else {
+                            noMatches = true;
+                            shouldExit = true;
+                        }
+
+                        break;
+
+                    case '.':
+                        if (captureFragment === true) {
+                            index = token.from + 1;
+                        }
+
+                        captureFragment = false;
+
+                        break;
+
+                    case ':':
+
+                        if (i === len - 1) {
+                            context = 'TSH';
+
+                            resolutionChunks = null;
+
+                            index = 1;
+                            shouldExit = true;
+                        }
+
+                        break;
+
+                    case '/':
+
+                        if (i === len - 1) {
+                            context = 'CFG';
+
+                            resolutionChunks = null;
+
+                            index = 1;
+                            shouldExit = true;
+                        }
+
+                        break;
+
+                    default:
+
+                        noMatches = true;
+                        shouldExit = true;
+
+                        break;
+                }
+
+                break;
+
+            default:
+                //  'substitution'
+                //  'reserved'
+                //  'identifier'
+                //  'number'
+                //  'string'
+                //  'regexp'
+                if (captureFragment) {
+                    fragment = token.value;
+                    index = token.from;
+                } else {
+                    resolutionChunks.unshift(token.value);
+                }
+                break;
+        }
+
+        if (noMatches) {
+            context = null;
+
+            resolutionChunks = null;
+            fragment = null;
+            index = TP.NOT_FOUND;
+        }
+
+        if (shouldExit) {
+            break;
+        }
+    }
+
+    return TP.hc(
+            'context', context,
+            'fragment', fragment,
+            'resolutionChunks', resolutionChunks,
+            'index', index);
+});
 
 //  ----------------------------------------------------------------------------
 //  end

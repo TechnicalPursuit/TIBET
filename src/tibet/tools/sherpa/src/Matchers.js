@@ -9,22 +9,49 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.Searcher}
+ * @type {TP.core.Matcher}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core.Searcher');
+TP.lang.Object.defineSubtype('core.Matcher');
+
+//  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Type.defineConstant('MATCH_RESULT_SORT',
+            function(itemA, itemB) {
+
+                var aLower,
+                    bLower;
+
+                if (itemA.score === itemB.score) {
+
+                    aLower = itemA.original.toLowerCase();
+                    bLower = itemB.original.toLowerCase();
+
+                    if (aLower < bLower) {
+                        return -1;
+                    } else if (aLower > bLower) {
+                        return 1;
+                    }
+
+                    return 0;
+                }
+
+                return itemB.score - itemA.score;
+            });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Searcher.Inst.defineMethod('search',
-function(usingText) {
+TP.core.Matcher.Inst.defineMethod('match',
+function(searchTerm) {
 
     /**
-     * @method search
+     * @method match
      */
 
     return TP.override();
@@ -32,216 +59,425 @@ function(usingText) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Searcher.Inst.defineMethod('getTitle',
+TP.core.Matcher.Inst.defineMethod('prepareForMatch',
 function() {
 
     /**
-     * @method search
+     * @method prepareForMatch
      */
 
-    return TP.override();
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Inst.defineMethod('generateMatchSet',
+function(rawData, searchTerm) {
+
+    /**
+     * @method generateMatchSet
+     */
+
+    var matches,
+        options;
+
+    /* eslint-disable no-undef */
+
+    options = {pre : '<span class="match_result">',
+                post : '</span>',
+                caseSensitive : true};
+
+    matches = TP.extern.fuzzyLib.filter(searchTerm, rawData, options);
+
+    /* eslint-enable no-undef */
+
+    return matches;
 });
 
 //  ========================================================================
-//  TP.core.CSSPropertySearcher
+//  TP.core.CSSPropertyMatcher
 //  ========================================================================
 
-TP.core.Searcher.defineSubtype('core.CSSPropertySearcher');
+TP.core.Matcher.defineSubtype('core.CSSPropertyMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CSSPropertySearcher.Inst.defineMethod('search',
-function(usingText) {
+TP.core.CSSPropertyMatcher.Inst.defineMethod('match',
+function(searchTerm) {
 
     /**
-     * @method search
+     * @method match
      */
 
-    var results,
+    var dataSet,
+        matches;
 
-        searchRegExp,
-        CSSPropNames;
+    dataSet = TP.CSS_ALL_PROPERTIES;
 
-    results = TP.ac();
+    matches = this.generateMatchSet(dataSet, searchTerm);
+    matches.forEach(
+            function(aMatch) {
+                aMatch.cssClass = 'match_css_prop';
+            });
 
-    searchRegExp = TP.rc(TP.regExpEscape(usingText));
-
-    CSSPropNames = TP.CSS_ALL_PROPERTIES;
-    CSSPropNames.perform(
-        function(aName) {
-            if (searchRegExp.test(aName)) {
-                results.push(aName);
-            }
-        });
-
-    return results;
+    return matches;
 });
+
+//  ========================================================================
+//  TP.core.ListMatcher
+//  ========================================================================
+
+TP.core.Matcher.defineSubtype('core.ListMatcher');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
 
-TP.core.CSSPropertySearcher.Inst.defineMethod('getTitle',
-function() {
-
-    /**
-     * @method title
-     */
-
-    return 'CSS PROPERTIES';
-});
-
-//  ========================================================================
-//  TP.core.CustomTypeSearcher
-//  ========================================================================
-
-TP.core.Searcher.defineSubtype('core.CustomTypeSearcher');
+TP.core.ListMatcher.Inst.defineAttribute('$dataSet');
+TP.core.ListMatcher.Inst.defineAttribute('$cssClass');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTypeSearcher.Inst.defineMethod('search',
-function(usingText) {
+TP.core.ListMatcher.Inst.defineMethod('init',
+function(dataSet, cssClass) {
 
     /**
-     * @method search
+     * @method init
+     * @summary Initialize the instance.
+     * @param {Object} dataSet
+     * @param {String} cssClass
+     * @returns {TP.core.KeyedSourceMatcher} The receiver.
      */
 
-    var results,
+    this.callNextMethod();
 
-        searchRegExp,
-        customTypeNames;
+    this.set('$dataSet', dataSet);
+    this.set('$cssClass', cssClass);
 
-    results = TP.ac();
-
-//    if (usingText.startsWith('TP')) {
- //       results.push('TP.sys', 'TP.boot');
-  //  } else {
-    searchRegExp = TP.rc(TP.regExpEscape(usingText));
-
-    customTypeNames = TP.sys.getMetadata('types').getKeys();
-    customTypeNames.perform(
-        function(aTypeName) {
-            if (searchRegExp.test(aTypeName)) {
-                results.push(aTypeName);
-            }
-        });
-   // }
-
-    return results;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTypeSearcher.Inst.defineMethod('getTitle',
-function() {
+TP.core.ListMatcher.Inst.defineMethod('match',
+function(searchTerm) {
 
     /**
-     * @method title
+     * @method match
      */
 
-    return 'TYPES';
+    var dataSet,
+        cssClass,
+
+        matches;
+
+    dataSet = this.get('$dataSet');
+
+    cssClass = TP.ifInvalid(this.get('$cssClass'), 'match_key_source');
+
+    if (TP.isEmpty(searchTerm)) {
+        matches = [];
+        dataSet.forEach(
+                function(anItem) {
+                    matches.push(
+                        {
+                            cssClass: cssClass,
+                            string: anItem,
+                            original: anItem
+                        }
+                    );
+                });
+    } else {
+        matches = this.generateMatchSet(dataSet, searchTerm);
+        matches.forEach(
+                function(aMatch) {
+                    aMatch.cssClass = cssClass;
+                });
+    }
+
+    return matches;
 });
 
 //  ========================================================================
-//  TP.core.MethodSearcher
+//  TP.core.CustomTypeMatcher
 //  ========================================================================
 
-TP.core.Searcher.defineSubtype('core.MethodSearcher');
+TP.core.Matcher.defineSubtype('core.CustomTypeMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MethodSearcher.Inst.defineMethod('search',
-function(usingText) {
+TP.core.CustomTypeMatcher.Inst.defineMethod('match',
+function(searchTerm) {
 
     /**
-     * @method search
+     * @method match
      */
 
-    var results,
+    var dataSet,
+        matches;
 
-        searchRegExp,
-        methodNames;
+    dataSet = TP.sys.getMetadata('types').getKeys();
 
-    results = TP.ac();
+    matches = this.generateMatchSet(dataSet, searchTerm);
+    matches.forEach(
+            function(aMatch) {
+                aMatch.cssClass = 'match_custom_type';
+            });
 
-//    if (usingText.startsWith('TP')) {
- //       results.push('TP.sys', 'TP.boot');
-  //  } else {
-    searchRegExp = TP.rc(TP.regExpEscape(usingText));
-
-    methodNames = TP.sys.getMetadata('methods').getKeys();
-    methodNames.perform(
-        function(aMethodName) {
-            var methodName,
-                ownerName;
-
-            methodName = aMethodName.slice(aMethodName.lastIndexOf('_') + 1);
-
-            if (searchRegExp.test(methodName)) {
-                ownerName = aMethodName.slice(0, aMethodName.indexOf('_'));
-                results.push(methodName + ' (' + ownerName + ')');
-
-                /*
-                trackName = aMethodName.slice(aMethodName.indexOf('_') + 1,
-                                            aMethodName.lastIndexOf('_'));
-
-                results.push(
-                    methodName + ' (' + ownerName + ' - ' + trackName + ')');
-                results.push(methodName);
-                */
-            }
-        });
-   // }
-
-    return results;
+    return matches;
 });
+
+//  ========================================================================
+//  TP.core.KeyedSourceMatcher
+//  ========================================================================
+
+TP.core.Matcher.defineSubtype('core.KeyedSourceMatcher');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
 
-TP.core.MethodSearcher.Inst.defineMethod('getTitle',
-function() {
+TP.core.KeyedSourceMatcher.Inst.defineAttribute('$dataSet');
 
-    /**
-     * @method search
-     */
-
-    return 'METHODS';
-});
-
-//  ========================================================================
-//  TP.core.NamespaceSearcher
-//  ========================================================================
-
-TP.core.Searcher.defineSubtype('core.NamespaceSearcher');
+TP.core.KeyedSourceMatcher.Inst.defineAttribute('keySource');
+TP.core.KeyedSourceMatcher.Inst.defineAttribute('keySourceName');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.NamespaceSearcher.Inst.defineMethod('search',
-function(usingText) {
+TP.core.KeyedSourceMatcher.Inst.defineMethod('init',
+function(keySource) {
 
     /**
-     * @method search
+     * @method init
+     * @summary Initialize the instance.
+     * @param {Object} keySource
+     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.set('keySource', keySource);
+    this.set('keySourceName', TP.name(keySource));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.KeyedSourceMatcher.Inst.defineMethod('match',
+function(searchTerm) {
+
+    /**
+     * @method match
+     */
+
+    var dataSet,
+        matches,
+
+        keySourceName;
+
+    dataSet = this.get('$dataSet');
+
+    keySourceName = this.get('keySourceName');
+
+    if (TP.isEmpty(searchTerm)) {
+        matches = [];
+        dataSet.forEach(
+                function(aKey) {
+                    matches.push(
+                        {
+                            cssClass: 'match_key_source ' + keySourceName,
+                            string: aKey,
+                            prefix: keySourceName + '.',
+                            original: aKey
+                        }
+                    );
+                });
+    } else {
+        matches = this.generateMatchSet(dataSet, searchTerm);
+        matches.forEach(
+                function(aMatch) {
+                    aMatch.cssClass = 'match_key_source ' + keySourceName;
+                    aMatch.prefix = keySourceName + '.';
+                });
+    }
+
+    return matches;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.KeyedSourceMatcher.Inst.defineMethod('prepareForMatch',
+function() {
+
+    /**
+     * @method prepareForMatch
+     */
+
+    var keySource,
+        dataSet,
+
+        wantsProtoChain;
+
+    keySource = this.get('keySource');
+    if (TP.canInvoke(keySource, 'getType')) {
+        if (TP.isNativeType(keySource.getType())) {
+            wantsProtoChain = true;
+        } else {
+            wantsProtoChain = false;
+        }
+    } else {
+        //  All TIBET objects respond to 'getType', so if it can't, it's a
+        //  native object that we definitely want all prototype properties of.
+        wantsProtoChain = true;
+    }
+
+    dataSet = TP.keys(this.get('keySource'), true, wantsProtoChain);
+
+    dataSet.sort();
+
+    this.set('$dataSet', dataSet);
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.core.URIMatcher
+//  ========================================================================
+
+TP.core.Matcher.defineSubtype('core.URIMatcher');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.URIMatcher.Inst.defineAttribute('keySource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.URIMatcher.Inst.defineMethod('match',
+function(searchTerm) {
+
+    /**
+     * @method match
+     */
+
+    var dataSet,
+        matches;
+
+    dataSet = TP.core.URI.Type.get('instances').getKeys();
+
+    matches = this.generateMatchSet(dataSet, searchTerm);
+    matches.forEach(
+            function(aMatch) {
+                aMatch.cssClass = 'match_uri';
+            });
+
+    return matches;
+});
+
+//  ========================================================================
+//  TP.core.MethodMatcher
+//  ========================================================================
+
+TP.core.Matcher.defineSubtype('core.MethodMatcher');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.MethodMatcher.Inst.defineAttribute('$dataSet');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.MethodMatcher.Inst.defineMethod('match',
+function(searchTerm) {
+
+    /**
+     * @method match
+     */
+
+    var dataSet,
+        matches;
+
+    dataSet = this.get('$dataSet');
+
+    matches = this.generateMatchSet(dataSet, searchTerm);
+    matches.forEach(
+            function(aMatch) {
+                var originalData,
+                    ownerName;
+
+                originalData = aMatch.original;
+                ownerName = originalData.at(1).slice(
+                                0, originalData.at(1).indexOf('_'));
+
+                aMatch.cssClass = 'match_method_name';
+                aMatch.suffix = ' (' + ownerName + ')';
+            });
+
+    return matches;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.MethodMatcher.Inst.defineMethod('prepareForMatch',
+function() {
+
+    /**
+     * @method prepareForMatch
+     */
+
+    var keys,
+        dataSet;
+
+    keys = TP.sys.getMetadata('methods').getKeys();
+
+    dataSet = TP.ac();
+
+    keys.forEach(
+            function(aKey) {
+                var methodName;
+
+                methodName = aKey.slice(aKey.lastIndexOf('_') + 1);
+                dataSet.push(TP.ac(methodName, aKey));
+            });
+
+    this.set('$dataSet', dataSet);
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.core.NamespaceMatcher
+//  ========================================================================
+
+TP.core.Matcher.defineSubtype('core.NamespaceMatcher');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.NamespaceMatcher.Inst.defineMethod('match',
+function(searchTerm) {
+
+    /**
+     * @method match
      */
 
     return TP.ac();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.NamespaceSearcher.Inst.defineMethod('getTitle',
-function() {
-
-    /**
-     * @method title
-     */
-
-    return 'NAMESPACES';
 });
 
 //  ------------------------------------------------------------------------
