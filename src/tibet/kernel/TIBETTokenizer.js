@@ -545,7 +545,7 @@ function(src, ops, tsh, exp, alias, args) {
 
                     if (c === '' && templateBracketCount !== 0) {
                         err = true;
-                        TP.boot.$stderr('Unbalanced parens in template: ' +
+                        TP.boot.$stderr('Unbalanced brackets in template: ' +
                             TP.boot.$dump(new_token('substitution', str),
                                 ', '));
 
@@ -697,8 +697,9 @@ function(src, ops, tsh, exp, alias, args) {
                         // we're looking at the start of an object literal...
                         if (/^\{[$_a-zA-Z]+/.test(str)) {
                             result.push(new_token('operator', '{'));
-                            result.push(new_token(identifier_type(str.slice(1)),
-                                str.slice(1)));
+                            result.push(new_token(
+                                        identifier_type(str.slice(1)),
+                                        str.slice(1)));
                         } else {
                             //  for identifiers we do a lookup to refine the
                             //  type here
