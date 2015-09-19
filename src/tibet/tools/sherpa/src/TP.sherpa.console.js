@@ -94,6 +94,7 @@ function() {
     editorObj.setOption('electricChars', false);
     editorObj.setOption('smartIndent', false);
     editorObj.setOption('autofocus', true);
+    editorObj.setOption('matchBrackets', true);
 
     editorObj.setOption(
         'extraKeys',
