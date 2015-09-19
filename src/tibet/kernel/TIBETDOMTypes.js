@@ -10869,12 +10869,18 @@ function(resource, mimeType, fallback) {
      * @returns {TP.core.URI} The computed resource URI.
      */
 
-    var uri;
+    var str,
+        uri;
 
-    uri = this.computeResourceURI(resource, mimeType, fallback);
+    str = this.computeResourceURI(resource, mimeType, fallback);
 
-    if (TP.notEmpty(uri) && uri !== 'NO_RESULT') {
-        return TP.uc(uri).getConcreteURI();
+    if (TP.notEmpty(str) && str !== 'NO_RESULT') {
+        uri = TP.uc(str);
+        if (TP.isValid(uri)) {
+            return uri.getConcreteURI();
+        } else {
+            TP.warn('Unable to construct concrete URI for: ' + str);
+        }
     }
 
     return;
