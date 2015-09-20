@@ -72,7 +72,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Inst.defineMethod('generateMatchSet',
-function(rawData, searchTerm) {
+function(rawData, searchTerm, extract) {
 
     /**
      * @method generateMatchSet
@@ -85,7 +85,8 @@ function(rawData, searchTerm) {
 
     options = {pre : '<span class="match_result">',
                 post : '</span>',
-                caseSensitive : true};
+                caseSensitive : true,
+                extract: extract};
 
     matches = TP.extern.fuzzyLib.filter(searchTerm, rawData, options);
 
