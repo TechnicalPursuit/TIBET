@@ -80,6 +80,10 @@
     <property name="path.TP.sherpa.typedisplay.template" value="~ide_root/xhtml/TP.sherpa.typedisplay.xhtml"/>
     <property name="path.TP.sherpa.typedisplay.style" value="~ide_root/css/TP.sherpa.typedisplay.css"/>
 
+    <script src="./src/TP.sherpa.searcher.js"/>
+    <property name="path.TP.sherpa.searcher.template" value="~ide_root/xhtml/TP.sherpa.searcher.xhtml"/>
+    <property name="path.TP.sherpa.searcher.style" value="~ide_root/css/TP.sherpa.searcher.css"/>
+
 </config>
 
 </package>
