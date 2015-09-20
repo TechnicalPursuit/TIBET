@@ -166,6 +166,8 @@ function() {
     //  the output view.
     this.setupConsoleService();
 
+    this.setupSearcher();
+
     hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
     this.observe(hudTPElem, 'HiddenChange');
 
@@ -1274,6 +1276,40 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('setupSearcher',
+function() {
+
+    /**
+     * @method setupSearcher
+     */
+
+    var searcherTile,
+
+        tileBody,
+        searcherContent;
+
+    searcherTile = TP.bySystemId('Sherpa').makeTile(
+                                'searcher_tile',
+                                this.get('consoleOutput'));
+    searcherTile.setAttribute('contenttype', 'sherpa:searcher');
+
+    this.set('searcherTile', searcherTile);
+
+    tileBody = searcherTile.get('body');
+
+    searcherContent = tileBody.addContent(
+                        TP.sherpa.searcher.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML));
+
+    searcherContent.awaken();
+    searcherContent.setup();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('toggleSearcher',
 function() {
 
@@ -1303,6 +1339,8 @@ function() {
 
         searcherContent.awaken();
         searcherContent.setup();
+    } else {
+        searcherContent = TP.byCSSPath('sherpa|searcher', searcherTile, true);
     }
 
     searcherTile.toggle('hidden');

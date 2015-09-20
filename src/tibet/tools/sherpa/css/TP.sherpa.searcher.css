@@ -1,0 +1,159 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|tile[contenttype="sherpa:searcher"] {
+    top: auto;
+    right: 5px;
+    bottom: 0px;
+    left: 5px;
+
+    border: dotted 1px orange;
+    background-color: #3F3F3F;
+}
+
+sherpa|searcher {
+
+    display: block;
+	position: relative;
+
+	top: 0px;
+	left: 0px;
+	height: 100%;
+}
+
+sherpa|searcher > .body {
+
+    position: absolute;
+
+    /*
+    font: 14px/1.4 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+
+    color: black;
+
+    background-color: white;
+    */
+
+    border: solid 1px orange;
+    color: orange;
+
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+
+    overflow-y: auto;
+}
+
+sherpa|searcher > .head {
+
+    position: absolute;
+
+    left: 0px;
+    right: 0px;
+}
+
+sherpa|searcher > .foot {
+
+    position: absolute;
+
+    display: flex;
+    justify-content: flex-end;
+
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    height: 16px;
+}
+
+.results_list {
+
+    position: absolute;
+
+    top: 0px;
+    right: 0px;
+    left: 0px;
+
+    overflow: auto;
+
+    -webkit-column-width: 30em;
+
+    font-size: 80%;
+}
+
+/*
+.match_custom_type {
+
+    color: #CC9393;
+}
+
+.match_key_source {
+
+    color: #BFEBBF;
+}
+
+.match_method_name {
+
+    color: #DFAF8F;
+}
+
+.match_css_prop {
+
+    color: #93E0E3;
+}
+
+.match_uri {
+    color: #F0DFAF;
+}
+
+.match_result {
+
+    color: white;
+    text-decoration: underline;
+}
+*/
+
+
+.results_list h1 {
+
+    display: block;
+
+    color: #73767D;
+    background-color: rgba(222, 222, 222, 0.6);
+}
+
+.results_list ul {
+
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+
+    cursor: pointer;
+}
+
+.results_list ul li {
+
+}
+
+.results_list li:selected {
+
+    background-color: #BBBBBB;
+}
+
+.results_list li:hover {
+
+    outline: solid 1px orange;
+}
+
+.result_detail {
+
+    border: solid 1px orange;
+
+    position: absolute;
+
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 50%;
+}
+
