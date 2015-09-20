@@ -23,13 +23,27 @@ TP.lang.Object.defineSubtype('core.Matcher');
 TP.core.Matcher.Type.defineConstant('MATCH_RESULT_SORT',
             function(itemA, itemB) {
 
-                var aLower,
+                var itemAEntry,
+                    itemBEntry,
+
+                    aLower,
                     bLower;
 
                 if (itemA.score === itemB.score) {
 
-                    aLower = itemA.original.toLowerCase();
-                    bLower = itemB.original.toLowerCase();
+                    //  Method matcher returns Arrays - pluck out the method
+                    //  name
+
+                    if (TP.isArray(itemAEntry = itemA.original)) {
+                        itemAEntry = itemAEntry.at(2);
+                    }
+
+                    if (TP.isArray(itemBEntry = itemB.original)) {
+                        itemBEntry = itemBEntry.at(2);
+                    }
+
+                    aLower = itemAEntry.toLowerCase();
+                    bLower = itemBEntry.toLowerCase();
 
                     if (aLower < bLower) {
                         return -1;
@@ -415,18 +429,17 @@ function(searchTerm) {
 
     dataSet = this.get('$dataSet');
 
-    matches = this.generateMatchSet(dataSet, searchTerm);
+    matches = this.generateMatchSet(
+                        dataSet,
+                        searchTerm,
+                        function(original) {
+                            return original.at(2);
+                        });
+
     matches.forEach(
             function(aMatch) {
-                var originalData,
-                    ownerName;
-
-                originalData = aMatch.original;
-                ownerName = originalData.at(1).slice(
-                                0, originalData.at(1).indexOf('_'));
-
                 aMatch.cssClass = 'match_method_name';
-                aMatch.suffix = ' (' + ownerName + ')';
+                aMatch.suffix = ' (' + aMatch.original.at(0) + ')';
             });
 
     return matches;
@@ -450,10 +463,8 @@ function() {
 
     keys.forEach(
             function(aKey) {
-                var methodName;
-
-                methodName = aKey.slice(aKey.lastIndexOf('_') + 1);
-                dataSet.push(TP.ac(methodName, aKey));
+                //  This pushes method data in as: [owner, track, name]
+                dataSet.push(aKey.split('_'));
             });
 
     this.set('$dataSet', dataSet);
