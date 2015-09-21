@@ -68,7 +68,7 @@ TP.ID = '$$id';
 TP.OWNER = '$$owner';
 TP.TRACK = '$$track';
 
-// track constants
+//  track constants
 
 TP.GLOBAL_TRACK = 'Global';
 TP.PRIMITIVE_TRACK = 'Primitive';
@@ -79,6 +79,17 @@ TP.LOCAL_TRACK = 'Local';
 TP.TYPE_TRACK = 'Type';
 TP.TYPE_LOCAL_TRACK = 'TypeLocal';
 
+//  load metadata constants
+
+TP.LOAD_PATH = '$loadPath';
+TP.SOURCE_PATH = '$srcPath';
+TP.LOAD_PACKAGE = '$loadPackage';
+TP.LOAD_CONFIG = '$loadConfig';
+
+TP.LOAD_PACKAGE_ATTR = 'load_package';
+TP.LOAD_CONFIG_ATTR = 'load_config';
+
+//  ------------------------------------------------------------------------
 //  ------------------------------------------------------------------------
 
 TP.constructOrphanObject = function() {
@@ -637,16 +648,6 @@ TP.RNAME = '$$realname';
 //  type/inst constructor suffixes
 TP.TYPEC = '$$Type';
 TP.INSTC = '$$Inst';
-
-TP.LOAD_NODE = '$loadNode';
-TP.LOAD_PATH = '$loadPath';
-TP.SOURCE_PATH = '$srcPath';
-
-TP.BUILTIN_LOAD_NODE = TP.boot.$documentFromString(
-    '<script></script>').childNodes[0];
-
-TP.LOAD_PACKAGE = 'load_package';
-TP.LOAD_CONFIG = 'load_config';
 
 //  js object relationships
 TP.ANCESTOR_NAMES = '$$anames';
