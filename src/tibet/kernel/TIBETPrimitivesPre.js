@@ -480,66 +480,6 @@ TP.owns[TP.NAME] = 'owns';
 TP.owns[TP.OWNER] = TP;
 TP.owns[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.owns[TP.DISPLAY] = 'TP.owns';
-
-//  ------------------------------------------------------------------------
-
-TP.objectGetLoadNode = function(anObject) {
-
-    /**
-     * @method objectGetLoadNode
-     * @summary Returns the script node responsible for loading the object.
-     * @param {Object} anObject The object to query.
-     * @returns {Node} The script node that loaded the object.
-     */
-
-    var node;
-
-    if (TP.notValid(anObject)) {
-        return;
-    }
-
-    try {
-        node = anObject[TP.LOAD_NODE];
-    } catch (e) {
-        //  All objects likely to freak out are native, hence no load
-        //  module.
-        return;
-    }
-
-    return node;
-};
-
-TP.objectGetLoadNode[TP.NAME] = 'objectGetLoadNode';
-TP.objectGetLoadNode[TP.OWNER] = TP;
-TP.objectGetLoadNode[TP.TRACK] = TP.PRIMITIVE_TRACK;
-TP.objectGetLoadNode[TP.DISPLAY] = 'TP.objectGetLoadNode';
-TP.objectGetLoadNode[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.objectGetLoadNode[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
-
-//  ------------------------------------------------------------------------
-
-TP.objectSetLoadNode = function(anObject, aNode) {
-
-    /**
-     * @method objectSetLoadNode
-     * @summary Sets the script node responsible for loading the object.
-     * @param {Object} anObject The object to update.
-     * @param {Node} aNode A script node, presumably the one responsible for
-     *     loading the object.
-     * @returns {Object} The updated object.
-     */
-
-    anObject[TP.LOAD_NODE] = aNode;
-
-    return anObject;
-};
-
-TP.objectSetLoadNode[TP.NAME] = 'objectSetLoadNode';
-TP.objectSetLoadNode[TP.OWNER] = TP;
-TP.objectSetLoadNode[TP.TRACK] = TP.PRIMITIVE_TRACK;
-TP.objectSetLoadNode[TP.DISPLAY] = 'TP.objectSetLoadNode';
-TP.objectSetLoadNode[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.objectSetLoadNode[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 TP.registerLoadInfo(TP.owns);
 
 //  ------------------------------------------------------------------------
@@ -610,8 +550,8 @@ TP.FunctionProto.asMethod = function(owner, name, track, display) {
     this[TP.TRACK] = track;
     this[TP.DISPLAY] = displayName;
 
-    //  Attach where we were loaded from (the script file node).
-    TP.objectSetLoadNode(this, TP.boot[TP.LOAD_NODE]);
+    //  Register where we were loaded from.
+    TP.registerLoadInfo(this);
 
     return this;
 };
@@ -2271,10 +2211,8 @@ function(target, name, value, track, desc, display, owner) {
     //  we don't wrap 'self' level methods so we need to patch on the load node
     //  manually. All others get it done via addMetadata.
     if (method[TP.OWNER] === self) {
-        if (TP.notValid(TP.objectGetLoadNode(method))) {
-            //  track the node we're loading from for reference
-            TP.objectSetLoadNode(method, TP.boot[TP.LOAD_NODE]);
-        }
+
+        TP.registerLoadInfo(method);
 
         return method;
     }
@@ -6612,13 +6550,11 @@ function(anObject) {
      * @returns {String} The module name for the object's node.
      */
 
-    var node;
-
-    if (TP.notValid(node = this.objectGetLoadNode(anObject))) {
+    if (TP.notValid(anObject)) {
         return;
     }
 
-    return node.getAttribute(TP.LOAD_PACKAGE);
+    return anObject[TP.LOAD_PACKAGE];
 });
 
 //  ------------------------------------------------------------------------
@@ -6676,13 +6612,11 @@ function(anObject) {
      * @returns {String} The module target for the object's node.
      */
 
-    var node;
-
-    if (TP.notValid(node = this.objectGetLoadNode(anObject))) {
+    if (TP.notValid(anObject)) {
         return;
     }
 
-    return node.getAttribute(TP.LOAD_CONFIG);
+    return anObject[TP.LOAD_CONFIG];
 });
 
 //  ------------------------------------------------------------------------
@@ -12201,8 +12135,6 @@ TP.sys.addMetadata(TP, TP.isDNU, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.isFunction, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.isString, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(TP, TP.owns, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.objectGetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
-TP.sys.addMetadata(TP, TP.objectSetLoadNode, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.asMethod,
                     TP.METHOD, TP.INST_TRACK);
 TP.sys.addMetadata(String, TP.StringProto.strip, TP.METHOD, TP.INST_TRACK);
