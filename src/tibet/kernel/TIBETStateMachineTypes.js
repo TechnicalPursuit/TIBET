@@ -624,26 +624,47 @@ function(stateName, stateAction) {
      */
 
     var name,
+        sigType,
         signal;
 
+    //  Compute a name based on the state and the action name
     name = this.getStateName(stateName) + this.getActionName(stateAction);
 
+    //  See if that name can be resolved to either an APP.sig or TP.sig signal.
+    sigType = TP.sys.getTypeByName('APP.sig.' + name);
+    if (!TP.isType(sigType)) {
+        sigType = TP.sys.getTypeByName('TP.sig.' + name);
+    }
+
+    //  If so, construct one, set it's origin and return that.
+    if (TP.isType(sigType)) {
+        signal = sigType.construct();
+        signal.setOrigin(this);
+
+        return signal;
+    }
+
+    //  Otherwise, we construct a 'generic' state signal subtype of
+    //  TP.sig.StateSignal, based on the state action.
     switch (stateAction) {
         case TP.ENTER:
-            signal = TP.sig.StateEnter.construct();
+            sigType = TP.sig.StateEnter;
             break;
         case TP.EXIT:
-            signal = TP.sig.StateExit.construct();
+            sigType = TP.sig.StateExit;
             break;
         case TP.INPUT:
-            signal = TP.sig.StateInput.construct();
+            sigType = TP.sig.StateInput;
             break;
         default:
-            signal = TP.sig.StateTransition.construct();
+            sigType = TP.sig.StateTransition;
             break;
     }
 
-    signal.setSignalName(name);
+    //  Construct it and set it's name locally to the fully expanded signal name
+    //  (if possible - this is a spoofed signal anyway).
+    signal = sigType.construct();
+    signal.setSignalName(TP.expandSignalName(name));
     signal.setOrigin(this);
 
     return signal;
