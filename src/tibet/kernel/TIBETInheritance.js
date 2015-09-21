@@ -6408,19 +6408,7 @@ function(aNote, aPrefix, anException) {
     prefix = TP.isString(aPrefix) ? aPrefix + ': ' : '';
     note = aNote || '';
 
-    if (TP.sys.shouldLogStack()) {
-        try {
-            throw new Error();
-        } catch (e) {
-            stackInfo = TP.getStackInfo(e);
-        }
-
-        TP.ifWarn() ?
-            TP.warn(prefix + note + '\n\n' + stackInfo.join('\n')) : 0;
-    } else {
-        TP.ifWarn() ?
-            TP.warn(prefix + note) : 0;
-    }
+    TP.ifWarn() ? TP.warn(prefix + note) : 0;
 
     if (TP.notEmpty(anException)) {
         TP.raise(this, anException);
