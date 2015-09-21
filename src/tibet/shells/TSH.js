@@ -2156,6 +2156,9 @@ function(aRequest) {
 
         name = item.at(0);
         func = item.at(1);
+
+        //  Note how we go after load path here, since source paths will never
+        //  be minified and that's what we check below.
         file = TP.objectGetLoadPath(func);
         text = func.getCommentText();
 
@@ -2339,7 +2342,11 @@ function(aRequest) {
 
         name = item.at(0);
         func = item.at(1);
+
+        //  Note how we go after load path here, since source paths will never
+        //  be minified and that's what we check below.
         file = TP.objectGetLoadPath(func);
+
         lines = func.getCommentLines();
         source = func.getSourceText();
         error = {file: file, name: name, errors: TP.ac()};
@@ -3166,6 +3173,10 @@ function(aRequest) {
                     text = obj.getCommentText();
 
                     if (TP.isEmpty(text)) {
+
+                        //  Note how we go after load path here, since source
+                        //  paths will never be minified and that's what we
+                        //  check below.
                         file = TP.objectGetLoadPath(obj);
 
                         if (TP.notEmpty(file) && file.match(/\.min\./)) {
@@ -3179,6 +3190,8 @@ function(aRequest) {
                         results.push(text);
                     }
 
+                    //  But here we go after the source path for reporting
+                    //  purposes.
                     results.push(TP.objectGetSourcePath(obj) || '');
                 }
 

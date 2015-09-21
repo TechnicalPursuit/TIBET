@@ -1768,7 +1768,10 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
      * @param {TP.FunctionProto|TP.lang.RootObject} targetType The type object
      *     which owns this metadata.
      * @param {Object} anItem The actual object providing the source information
-     *     for the metadata.
+     *     for the metadata. In the case of a TP.METHOD, this will be the
+     *     Function object that is the method body. In the case of a
+     *     TP.ATTRIBUTE, this will be the attribute descriptor. In the case of a
+     *     TP.SUBTYPE, this will be the type object itself.
      * @param {String} itemClass The nature of the item being added. Valid
      *     values include TP.SUBTYPE, TP.METHOD, TP.ATTRIBUTE. Note that you can
      *     add instance metadata for some of these by combining them with
