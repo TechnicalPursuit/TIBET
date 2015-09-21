@@ -2245,7 +2245,7 @@ TP.definePrimitive('$$log', TP.$$log);
 //  ----------------------------------------------------------------------------
 
 TP.sys.defineMethod('$$log',
-function(argList, aLogLevel) {
+function(argList, aLogLevel, logRoot) {
 
     /**
      * @method $$log
@@ -2253,6 +2253,7 @@ function(argList, aLogLevel) {
      *     logger for processing.
      * @param {Arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
+     * @param {Object} logRoot The root to use (TP or APP usually).
      * @returns {Boolean} True if the logging operation succeeded.
      */
 
@@ -2283,7 +2284,11 @@ function(argList, aLogLevel) {
     }
 
     if (TP.notValid(logger)) {
-        logger = APP.getDefaultLogger();
+        if (TP.canInvoke(logRoot, 'getDefaultLogger')) {
+            logger = logRoot.getDefaultLogger();
+        } else {
+            logger = TP.getDefaultLogger();
+        }
     }
 
     level = TP.isString(aLogLevel) ? TP.log[aLogLevel] : aLogLevel;

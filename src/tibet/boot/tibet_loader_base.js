@@ -7393,7 +7393,7 @@ TP.ifSystem = function(aLogName) {
 //  LOG PRIMITIVES
 //  ============================================================================
 
-TP.$$log = function(argList, aLogLevel) {
+TP.$$log = function(argList, aLogLevel, logRoot) {
 
     /**
      * @method $$log
@@ -7403,12 +7403,13 @@ TP.$$log = function(argList, aLogLevel) {
      *     TP.log infrastructure if the kernel has loaded and started.
      * @param {Arguments} argList A list of arguments from a logging call.
      * @param {Number} aLogLevel TP.INFO or a similar level name.
+     * @param {Object} logRoot The root logger to use (TP or APP usually).
      */
 
     if (TP.sys.hasStarted()) {
-        return TP.sys.$$log(argList, aLogLevel);
+        return TP.sys.$$log(argList, aLogLevel, logRoot);
     } else {
-        return TP.boot.$$log(argList, aLogLevel);
+        return TP.boot.$$log(argList, aLogLevel, logRoot);
     }
 };
 
@@ -7425,7 +7426,7 @@ TP.trace = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.TRACE);
+    return TP.$$log(arguments, TP.TRACE, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7441,7 +7442,7 @@ TP.debug = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.DEBUG);
+    return TP.$$log(arguments, TP.DEBUG, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7457,7 +7458,7 @@ TP.info = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.INFO);
+    return TP.$$log(arguments, TP.INFO, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7473,7 +7474,7 @@ TP.warn = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.WARN);
+    return TP.$$log(arguments, TP.WARN, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7489,7 +7490,7 @@ TP.error = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.ERROR);
+    return TP.$$log(arguments, TP.ERROR, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7505,7 +7506,7 @@ TP.severe = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.SEVERE);
+    return TP.$$log(arguments, TP.SEVERE, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7521,7 +7522,7 @@ TP.fatal = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.FATAL);
+    return TP.$$log(arguments, TP.FATAL, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -7537,7 +7538,7 @@ TP.system = function(varargs) {
      */
 
 
-    return TP.$$log(arguments, TP.SYSTEM);
+    return TP.$$log(arguments, TP.SYSTEM, this);
 };
 
 //  ============================================================================
