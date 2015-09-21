@@ -1957,7 +1957,7 @@ function(aPath, resourceOnly) {
                 return TP.uriResolveVirtualPath(path);
             }
         } else if (TP.isType(type = TP.sys.getTypeByName(variable))) {
-            value = TP.objectGetLoadCollectionPath(type);
+            value = TP.objectGetSourceCollectionPath(type);
 
             path = aPath.replace('~' + variable, value);
             if (path !== aPath) {
