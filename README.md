@@ -22,6 +22,8 @@
                                                         /
 
 
+---
+
 #### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
