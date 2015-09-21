@@ -1286,6 +1286,232 @@ function(signalOrParams) {
     return newState;
 });
 
+//  ========================================================================
+//  TP.core.StateResponder
+//  ========================================================================
+
+/**
+ * @type {TP.core.StateResponder}
+ * @summary A common supertype for StateMachine event responders.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('TP.core.StateResponder');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  The state machine that the responder is listening to for state changes and
+//  input signals.
+TP.core.StateResponder.Inst.defineAttribute('stateMachine');
+
+//  The state that, upon entry, will cause the responder to start listening to
+//  the state machine for state changes.
+TP.core.StateResponder.Inst.defineAttribute('mainState');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('init',
+function(stateMachine) {
+
+    /**
+     * @method init
+     * @summary Initializes a new instance of the receiver.
+     * @param {TP.core.StateMachine} stateMachine The state machine this
+     *     responder should observe.
+     * @returns {TP.core.StateResponder} A new instance.
+     */
+
+    this.callNextMethod();
+
+    if (TP.notValid(stateMachine)) {
+        return this.raise('InvalidParameter');
+    }
+
+    this.set('stateMachine', stateMachine);
+
+    this.setup();
+
+    //  Make sure to register this object *before* observing
+    //  StateEnter/StateExit from the state machine. This will allow the
+    //  signaling system to properly manage registering/unregistering of the
+    //  same object as its state machines move through various states.
+    TP.sys.registerObject(this);
+
+    this.observe(stateMachine, TP.ac('TP.sig.StateEnter', 'TP.sig.StateExit'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('didEnter',
+function(aSignal) {
+
+    /**
+     * @method didEnter
+     * @summary Invoked when the receiver enters it's 'main state'.
+     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
+     *     machine to enter a state that matches the receiver's 'main state'.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('didExit',
+function(aSignal) {
+
+    /**
+     * @method didExit
+     * @summary Invoked when the receiver exits it's 'main state'.
+     * @param {TP.sig.StateExit} aSignal The signal that caused the state
+     *     machine to exit a state that matches the receiver's 'main state'.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('executeTriggerSignalHandler',
+function(aSignal) {
+
+    /**
+     * @method executeTriggerSignalHandler
+     * @summary Executes the handler on the receiver (if there is one) for the
+     *     trigger signal (the underlying signal that caused a StateInput signal
+     *     to be fired from the state machine to this object).
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal will be
+     *     in this signal's payload under the key 'trigger'.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('handleStateEnter',
+function(aSignal) {
+
+    /**
+     * @method handleStateEnter
+     * @summary Handles 'enter signals' from the state machine.
+     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
+     *     machine to enter a particular state. If this state matches the
+     *     receiver's 'main state', it will start observing StateInput signals
+     *     from the state machine.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    if (aSignal.at('state') === this.get('mainState')) {
+        this.observe(this.get('stateMachine'), TP.sig.StateInput);
+        this.didEnter(aSignal);
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('handleStateExit',
+function(aSignal) {
+
+    /**
+     * @method handleStateExit
+     * @summary Handles 'exit signals' from the state machine.
+     * @param {TP.sig.StateExit} aSignal The signal that caused the state
+     *     machine to exit a particular state. If this state matches the
+     *     receiver's 'main state', it will stop observing StateInput signals
+     *     from the state machine.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    if (aSignal.at('prior') === this.get('mainState')) {
+        this.ignore(this.get('stateMachine'), TP.sig.StateInput);
+        this.didExit(aSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('handleStateInput',
+function(aSignal) {
+
+    /**
+     * @method handleStateInput
+     * @summary Handles 'input signals' from the state machine.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal will
+     *     be in this signal's payload under the key 'trigger'.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    var triggerSignal;
+
+    //  If the signal's 'prior' slot is equal to our main state, then we pluck
+    //  out the triggering signal and handle it. Note that we use 'prior'
+    //  because, in the case of a state transition, input signals will be
+    //  dispatched one last time before transitioning out of the state and this
+    //  is what we're typically interested in. For cases where there isn't a
+    //  state transition, 'prior' will also have the current state name as a
+    //  convenience.
+
+    if (aSignal.at('prior') === this.get('mainState')) {
+        triggerSignal = aSignal.getPayload().at('trigger');
+        this.executeTriggerSignalHandler(triggerSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('teardown',
+function() {
+
+    /**
+     * @method teardown
+     * @summary Tears down the receiver. At this level, this just ignores the
+     *     state transition signals that the receiver was set up to observe on
+     *     its state machine when it was created.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    this.ignore(this.get('stateMachine'),
+                TP.ac('TP.sig.StateEnter', 'TP.sig.StateExit'));
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
