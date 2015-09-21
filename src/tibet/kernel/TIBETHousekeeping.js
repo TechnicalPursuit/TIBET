@@ -270,8 +270,6 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETVersion.js';
 
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesPre.js';
 
-TP.definePrimitive('objectSetLoadNode', TP.objectSetLoadNode);
-
 TP.sys.defineGlobal(TP.ID, null);
 
 //  ---
