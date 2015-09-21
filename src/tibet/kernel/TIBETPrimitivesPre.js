@@ -6711,7 +6711,7 @@ function(aPath) {
         return;
     }
 
-    return node.getAttribute(TP.LOAD_PACKAGE);
+    return node.getAttribute(TP.LOAD_PACKAGE_ATTR);
 });
 
 //  ------------------------------------------------------------------------
@@ -6737,6 +6737,7 @@ function(aPath) {
 
     //  grab all of the script nodes, regardless of where they were
     //  positioned in the document (head or body)
+    //  TODO: Generalize to allow 'document' to be supplied
     nodes = document.getElementsByTagName('script');
 
     //  NOTE    that we test for both src="" and source="" (a
@@ -6775,7 +6776,7 @@ function(aPath) {
         return;
     }
 
-    return node.getAttribute(TP.LOAD_CONFIG);
+    return node.getAttribute(TP.LOAD_CONFIG_ATTR);
 });
 
 //  ------------------------------------------------------------------------
