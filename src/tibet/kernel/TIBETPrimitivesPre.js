@@ -187,8 +187,7 @@ TP.isCallable[TP.NAME] = 'isCallable';
 TP.isCallable[TP.OWNER] = TP;
 TP.isCallable[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isCallable[TP.DISPLAY] = 'TP.isCallable';
-TP.isCallable[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.isCallable[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.isCallable);
 
 //  ------------------------------------------------------------------------
 
@@ -250,8 +249,7 @@ TP.canInvoke[TP.NAME] = 'canInvoke';
 TP.canInvoke[TP.OWNER] = TP;
 TP.canInvoke[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.canInvoke[TP.DISPLAY] = 'TP.canInvoke';
-TP.canInvoke[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.canInvoke[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.canInvoke);
 
 //  ------------------------------------------------------------------------
 
@@ -278,8 +276,7 @@ TP.isValid[TP.NAME] = 'isValid';
 TP.isValid[TP.OWNER] = TP;
 TP.isValid[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isValid[TP.DISPLAY] = 'TP.isValid';
-TP.isValid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.isValid[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.isValid);
 
 //  ------------------------------------------------------------------------
 
@@ -305,8 +302,7 @@ TP.notValid[TP.NAME] = 'notValid';
 TP.notValid[TP.OWNER] = TP;
 TP.notValid[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.notValid[TP.DISPLAY] = 'TP.notValid';
-TP.notValid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.notValid[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.notValid);
 
 //  ------------------------------------------------------------------------
 
@@ -335,8 +331,7 @@ TP.ifInvalid[TP.NAME] = 'ifInvalid';
 TP.ifInvalid[TP.OWNER] = TP;
 TP.ifInvalid[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.ifInvalid[TP.DISPLAY] = 'TP.ifInvalid';
-TP.ifInvalid[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.ifInvalid[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.ifInvalid);
 
 //  ------------------------------------------------------------------------
 
@@ -366,8 +361,7 @@ TP.isDNU[TP.NAME] = 'isDNU';
 TP.isDNU[TP.OWNER] = TP;
 TP.isDNU[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isDNU[TP.DISPLAY] = 'TP.isDNU';
-TP.isDNU[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.isDNU[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.isDNU);
 
 // TODO: Remove after cleansing old name.
 TP.$$isDNU = TP.isDNU;
@@ -421,8 +415,7 @@ TP.isFunction[TP.NAME] = 'isFunction';
 TP.isFunction[TP.OWNER] = TP;
 TP.isFunction[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isFunction[TP.DISPLAY] = 'TP.isFunction';
-TP.isFunction[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.isFunction[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.isFunction);
 
 //  ------------------------------------------------------------------------
 
@@ -460,8 +453,7 @@ TP.isString[TP.NAME] = 'isString';
 TP.isString[TP.OWNER] = TP;
 TP.isString[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isString[TP.DISPLAY] = 'TP.isString';
-TP.isString[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.isString[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.isString);
 
 //  ------------------------------------------------------------------------
 
@@ -488,8 +480,6 @@ TP.owns[TP.NAME] = 'owns';
 TP.owns[TP.OWNER] = TP;
 TP.owns[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.owns[TP.DISPLAY] = 'TP.owns';
-TP.owns[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.owns[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
 //  ------------------------------------------------------------------------
 
@@ -550,6 +540,7 @@ TP.objectSetLoadNode[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.objectSetLoadNode[TP.DISPLAY] = 'TP.objectSetLoadNode';
 TP.objectSetLoadNode[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
 TP.objectSetLoadNode[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.owns);
 
 //  ------------------------------------------------------------------------
 
@@ -630,8 +621,7 @@ TP.FunctionProto.asMethod[TP.NAME] = 'asMethod';
 TP.FunctionProto.asMethod[TP.OWNER] = Function;
 TP.FunctionProto.asMethod[TP.TRACK] = TP.INST_TRACK;
 TP.FunctionProto.asMethod[TP.DISPLAY] = 'Function.Inst.asMethod';
-TP.FunctionProto.asMethod[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.FunctionProto.asMethod[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.FunctionProto.asMethod);
 
 //  ------------------------------------------------------------------------
 
@@ -654,8 +644,7 @@ TP.StringProto.strip[TP.NAME] = 'strip';
 TP.StringProto.strip[TP.OWNER] = String;
 TP.StringProto.strip[TP.TRACK] = TP.INST_TRACK;
 TP.StringProto.strip[TP.DISPLAY] = 'String.Inst.strip';
-TP.StringProto.strip[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.StringProto.strip[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.StringProto.strip);
 
 //  ------------------------------------------------------------------------
 //  OBJECT IDENTITY - PART I
@@ -706,8 +695,7 @@ TP.sys.constructOID[TP.NAME] = 'constructOID';
 TP.sys.constructOID[TP.OWNER] = TP.sys;
 TP.sys.constructOID[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.constructOID[TP.DISPLAY] = 'TP.sys.constructOID';
-TP.sys.constructOID[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.sys.constructOID[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.sys.constructOID);
 
 //  ---
 
@@ -765,8 +753,7 @@ TP.getFunctionName[TP.NAME] = 'getFunctionName';
 TP.getFunctionName[TP.OWNER] = TP;
 TP.getFunctionName[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.getFunctionName[TP.DISPLAY] = 'TP.getFunctionName';
-TP.getFunctionName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.getFunctionName[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.getFunctionName);
 
 //  ------------------------------------------------------------------------
 
@@ -812,8 +799,7 @@ TP.FunctionProto.$getName[TP.NAME] = '$getName';
 TP.FunctionProto.$getName[TP.OWNER] = Function;
 TP.FunctionProto.$getName[TP.TRACK] = TP.INST_TRACK;
 TP.FunctionProto.$getName[TP.DISPLAY] = 'Function.Inst.$getName';
-TP.FunctionProto.$getName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.FunctionProto.$getName[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.FunctionProto.$getName);
 
 //  ------------------------------------------------------------------------
 
@@ -1818,8 +1804,7 @@ TP.objectGetMetadataName[TP.NAME] = 'objectGetMetadataName';
 TP.objectGetMetadataName[TP.OWNER] = TP.sys;
 TP.objectGetMetadataName[TP.TRACK] = TP.LOCAL_TRACK;
 TP.objectGetMetadataName[TP.DISPLAY] = 'TP.objectGetMetadataName';
-TP.objectGetMetadataName[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.objectGetMetadataName[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.objectGetMetadataName);
 
 //  ------------------------------------------------------------------------
 
@@ -2011,8 +1996,7 @@ TP.sys.addMetadata[TP.NAME] = 'addMetadata';
 TP.sys.addMetadata[TP.OWNER] = TP.sys;
 TP.sys.addMetadata[TP.TRACK] = TP.LOCAL_TRACK;
 TP.sys.addMetadata[TP.DISPLAY] = 'TP.sys.addMetadata';
-TP.sys.addMetadata[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.sys.addMetadata[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.sys.addMetadata);
 
 //  -----------------------------------------------------------------------
 //  SLOT AND METHOD DEFINITION
@@ -2091,8 +2075,7 @@ TP.defineSlot[TP.NAME] = 'defineSlot';
 TP.defineSlot[TP.OWNER] = TP;
 TP.defineSlot[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.defineSlot[TP.DISPLAY] = 'TP.defineSlot';
-TP.defineSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.defineSlot[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.defineSlot);
 
 //  ------------------------------------------------------------------------
 
@@ -2309,8 +2292,7 @@ TP.defineMethodSlot[TP.NAME] = 'defineMethodSlot';
 TP.defineMethodSlot[TP.OWNER] = TP;
 TP.defineMethodSlot[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.defineMethodSlot[TP.DISPLAY] = 'TP.defineMethodSlot';
-TP.defineMethodSlot[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.defineMethodSlot[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.defineMethodSlot);
 
 //  ------------------------------------------------------------------------
 

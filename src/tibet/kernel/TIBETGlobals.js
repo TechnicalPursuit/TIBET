@@ -90,6 +90,40 @@ TP.LOAD_PACKAGE_ATTR = 'load_package';
 TP.LOAD_CONFIG_ATTR = 'load_config';
 
 //  ------------------------------------------------------------------------
+
+TP.registerLoadInfo = function(anObject) {
+
+    /**
+     * @method registerLoadInfo
+     * @summary Registers load information about the object (such as load &
+     *     source paths, load package and load config) onto the object itself.
+     * @param {Object} The object to register the load information for.
+     */
+
+    var lpath,
+        spath;
+
+    lpath = TP.boot[TP.LOAD_PATH] || '';
+    lpath = TP.boot.$uriInTIBETFormat(lpath);
+
+    // source path is any path specified by the rollup logic, or the load path
+    // if that value isn't found. that can happen if the bundle being loaded
+    // didn't specify headers during the rollup processing.
+    spath = TP.boot[TP.SOURCE_PATH] || lpath;
+
+    anObject[TP.LOAD_PATH] = lpath;
+    anObject[TP.SOURCE_PATH] = spath;
+    anObject[TP.LOAD_PACKAGE] = TP.boot[TP.LOAD_PACKAGE];
+    anObject[TP.LOAD_CONFIG] = TP.boot[TP.LOAD_CONFIG];
+};
+
+//  Manual setup
+TP.registerLoadInfo[TP.NAME] = 'registerLoadInfo';
+TP.registerLoadInfo[TP.OWNER] = TP;
+TP.registerLoadInfo[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.registerLoadInfo[TP.DISPLAY] = 'TP.registerLoadInfo';
+TP.registerLoadInfo(TP.registerLoadInfo);
+
 //  ------------------------------------------------------------------------
 
 TP.constructOrphanObject = function() {
@@ -123,8 +157,7 @@ TP.constructOrphanObject[TP.NAME] = 'constructOrphanObject';
 TP.constructOrphanObject[TP.OWNER] = TP;
 TP.constructOrphanObject[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.constructOrphanObject[TP.DISPLAY] = 'TP.constructOrphanObject';
-TP.constructOrphanObject[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.constructOrphanObject[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.constructOrphanObject);
 
 //  Create an alias
 TP.oc = TP.constructOrphanObject;
@@ -249,8 +282,7 @@ TP.defineNamespace[TP.NAME] = 'defineNamespace';
 TP.defineNamespace[TP.OWNER] = TP;
 TP.defineNamespace[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.defineNamespace[TP.DISPLAY] = 'TP.defineNamespace';
-TP.defineNamespace[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.defineNamespace[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.defineNamespace);
 
 //  ------------------------------------------------------------------------
 
@@ -280,8 +312,7 @@ TP.isNamespace[TP.NAME] = 'isNamespace';
 TP.isNamespace[TP.OWNER] = TP;
 TP.isNamespace[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.isNamespace[TP.DISPLAY] = 'TP.isNamespace';
-TP.isNamespace[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.isNamespace[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.isNamespace);
 
 //  ------------------------------------------------------------------------
 //  GLOBAL SYMBOL DEFINITION
@@ -330,8 +361,7 @@ TP.sys.getGlobals[TP.NAME] = 'getGlobals';
 TP.sys.getGlobals[TP.OWNER] = TP.sys;
 TP.sys.getGlobals[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.sys.getGlobals[TP.DISPLAY] = 'TP.getGlobals';
-TP.sys.getGlobals[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.sys.getGlobals[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.sys.getGlobals);
 
 //  ------------------------------------------------------------------------
 
@@ -352,8 +382,7 @@ TP.sys.release[TP.NAME] = 'release';
 TP.sys.release[TP.OWNER] = TP.sys;
 TP.sys.release[TP.TRACK] = TP.PRIMITIVE_TRACK;
 TP.sys.release[TP.DISPLAY] = 'TP.release';
-TP.sys.release[TP.LOAD_NODE] = TP.boot[TP.LOAD_NODE];
-TP.sys.release[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+TP.registerLoadInfo(TP.sys.release);
 
 //  ------------------------------------------------------------------------
 //  JAVASCRIPT LANGUAGE GLOBALS / KEYWORDS ETC.
