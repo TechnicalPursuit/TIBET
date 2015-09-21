@@ -3512,7 +3512,6 @@ function(aRequest) {
         $$inst,
 
         file,
-        loadnode,
 
         flag,
 
@@ -3554,9 +3553,7 @@ function(aRequest) {
             continue;
         }
 
-        if (TP.isNode(loadnode = TP.objectGetLoadNode($$inst)) &&
-            (TP.notEmpty(file = TP.elementGetAttribute(loadnode, 'src')) ||
-            TP.notEmpty(file = TP.elementGetAttribute(loadnode, 'source')))) {
+        if (TP.notEmpty(file = TP.objectGetSourcePath($$inst))) {
             try {
                 flag = TP.sys.shouldLogCodeChanges();
                 TP.sys.shouldLogCodeChanges(false);

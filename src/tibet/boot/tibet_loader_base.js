@@ -9266,6 +9266,8 @@ TP.boot.$importComponents = function(loadSync) {
     TP.boot.$loadNode = null;
     TP.boot.$loadPath = null;
     TP.boot.$srcPath = null;
+    TP.boot.$loadPackage = null;
+    TP.boot.$loadConfig = null;
 
     if (TP.boot.shouldStop()) {
         return;
@@ -9396,12 +9398,13 @@ TP.boot.$importComponents = function(loadSync) {
             TP.boot.$srcPath = null;
         }
 
+        TP.boot.$loadPackage = nd.getAttribute('load_package') || '';
+        TP.boot.$loadConfig = nd.getAttribute('load_config') || '';
+
         //  set the configuration values so the sourceImport call will have
         //  the information from the current node being processed
-        TP.sys.setcfg('load.package',
-                        nd.getAttribute('load_package') || '');
-        TP.sys.setcfg('load.config',
-                        nd.getAttribute('load_config') || '');
+        TP.sys.setcfg('load.package', TP.boot.$loadPackage);
+        TP.sys.setcfg('load.config', TP.boot.$loadConfig);
 
         //  In some sense the rest of this is all about getting the source code
         //  to import, either inlined, or from the original location, in either
@@ -9418,17 +9421,13 @@ TP.boot.$importComponents = function(loadSync) {
             //  ourselves...mostly.
             if (TP.sys.cfg('import.use_dom')) {
                 elem = TP.boot.$$scriptTemplate.cloneNode(true);
-                elem.setAttribute(
-                            'load_package',
-                            nd.getAttribute('load_package') || '');
-                elem.setAttribute(
-                            'load_config',
-                            nd.getAttribute('load_config') || '');
+
+                elem.setAttribute('load_package', TP.boot.$loadPackage);
+                elem.setAttribute('load_config', TP.boot.$loadConfig);
 
                 TP.boot.$loadNode = elem;
 
                 callback = function(event) {
-
 
                     TP.boot.$loadNode = null;
 

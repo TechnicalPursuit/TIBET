@@ -10580,8 +10580,10 @@ function(aFunction, copySourceInfo) {
     //  If the caller hasn't supplied false to the copySourceInfo parameter
     //  copy over the 'path information' slots about this method
     if (TP.notFalse(copySourceInfo)) {
-        newMethod[TP.LOAD_NODE] = this[TP.LOAD_NODE];
+        newMethod[TP.LOAD_PATH] = this[TP.LOAD_PATH];
         newMethod[TP.SOURCE_PATH] = this[TP.SOURCE_PATH];
+        newMethod[TP.LOAD_PACKAGE] = this[TP.LOAD_PACKAGE];
+        newMethod[TP.LOAD_CONFIG] = this[TP.LOAD_CONFIG];
     }
 
     //  Return the new method object here - the caller already has a handle to

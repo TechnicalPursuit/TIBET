@@ -184,15 +184,8 @@ function(typeName, customType) {
     //  avoid booting problems when TP.core.Hash is only 'half loaded')
 
     TP.sys.getMetadata('types').atPut(typeName, customType);
-    /*
-            typeName,
-            {
-                    'typeObj': customType,
-                    'sname': customType.getSupertypeName(),
-                    'lpath': TP.objectGetLoadPath(customType),
-                    'spath': TP.objectGetSourcePath(customType)
-            });
-    */
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -1784,10 +1784,6 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
     var iname,
 
-        node,
-        lpath,
-        spath,
-
         tname,
         gname,
 
@@ -1796,42 +1792,23 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         pathinfo,
         itemkey;
 
-    // Need a name for metadata key.
+    //  Need a name for metadata key.
     if (TP.notValid(iname = anItem[TP.NAME])) {
         return;
     }
 
-    //  some things (most notably 'traited' methods) won't have a load node.
-    /* eslint-disable no-extra-parens */
-    if ((node = TP.boot[TP.LOAD_NODE])) {
-    /* eslint-enable no-extra-parens */
-        lpath = node.src || node.source || '';
-        lpath = TP.boot.$uriInTIBETFormat(lpath);
-    } else {
-        lpath = '';
-    }
-
-    // source path is any path specified by the rollup logic, or the load path
-    // if that value isn't found. that can happen if the bundle being loaded
-    // didn't specify headers during the rollup processing.
-    spath = TP.boot[TP.SOURCE_PATH] || lpath;
+    //  Register load information for the supplied item, like load path, source
+    //  path, etc.
+    TP.registerLoadInfo(anItem);
 
     switch (itemClass) {
         case TP.METHOD:
-
-            anItem[TP.LOAD_NODE] = node;
-            anItem[TP.LOAD_PATH] = lpath;
-            anItem[TP.SOURCE_PATH] = spath;
 
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
                 TP.sys.$$meta_methods.atPut(gname, anItem);
-                        /*
-                        {'methodObj': anItem,
-                            'lpath': lpath, 'spath': spath});
-                        */
 
                 //  owners are keyed by name and point to a vertical-bar
                 //  separated list of one or more type names. these are
@@ -1845,33 +1822,17 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                     TP.sys.$$meta_owners.atPut(iname,
                         owners += TP.JOIN + tname);
                 }
-                /*
-                if (!Array.isArray(owners)) {
-                    owners = [];
-                    TP.sys.$$meta_owners.atPut(iname, owners);
-                }
-                owners.push(tname);
-                */
             }
 
             break;
 
         case TP.ATTRIBUTE:
 
-            anItem[TP.LOAD_PATH] = lpath;
-            anItem[TP.SOURCE_PATH] = spath;
-
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
                 TP.sys.$$meta_attributes.atPut(gname, anItem);
-                        /*
-                        gname,
-                        {'descriptorObj': anItem,
-                            'lpath': lpath,
-                            'spath': spath});
-                        */
 
                 //  If the item has a 'value' slot and the value there responds
                 //  to 'isAccessPath' and is, in fact, an access path, then we
@@ -1908,18 +1869,9 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
         case TP.SUBTYPE:
 
-            anItem[TP.LOAD_NODE] = node;
-            anItem[TP.LOAD_PATH] = lpath;
-            anItem[TP.SOURCE_PATH] = spath;
-
             //  don't overlay information we've already collected
             if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
                 TP.sys.$$meta_types.atPut(iname, anItem);
-                /*
-                        iname,
-                        {'typeObj': anItem, 'sname': sname,
-                            'lpath': lpath, 'spath': spath});
-                */
             }
 
             break;

@@ -502,9 +502,21 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 //  BUILT-IN METHODS
 //  ------------------------------------------------------------------------
 
-//  Faking out a load node here for the builtins
-TP.boot[TP.LOAD_NODE] = TP.BUILTIN_LOAD_NODE;
+//  Faking out a load info here for the builtins
+var currentLoadPath,
+    currentSourcePath,
+    currentLoadPackage,
+    currentLoadConfig;
+
+currentLoadPath = TP.boot[TP.LOAD_PATH];
+currentSourcePath = TP.boot[TP.SOURCE_PATH];
+currentLoadPackage = TP.boot[TP.LOAD_PACKAGE];
+currentLoadConfig = TP.boot[TP.LOAD_CONFIG];
+
+TP.boot[TP.LOAD_PATH] = '';
 TP.boot[TP.SOURCE_PATH] = '';
+TP.boot[TP.LOAD_PACKAGE] = '';
+TP.boot[TP.LOAD_CONFIG] = '';
 
 Array.Type.defineMethod('isArray', Array.isArray);
 
@@ -677,6 +689,11 @@ String.Inst.defineMethod('toString', TP.StringProto.toString);
 String.Inst.defineMethod('toUpperCase', TP.StringProto.toUpperCase);
 String.Inst.defineMethod('trim', TP.StringProto.trim);
 String.Inst.defineMethod('valueOf', TP.StringProto.valueOf);
+
+TP.boot[TP.LOAD_PATH] = currentLoadPath;
+TP.boot[TP.SOURCE_PATH] = currentSourcePath;
+TP.boot[TP.LOAD_PACKAGE] = currentLoadPackage;
+TP.boot[TP.LOAD_CONFIG] = currentLoadConfig;
 
 //  ------------------------------------------------------------------------
 //  end
