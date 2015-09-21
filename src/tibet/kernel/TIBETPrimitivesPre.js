@@ -2028,6 +2028,11 @@ function(target, name, value, track, desc, display, owner) {
     //  Ensure metadata is attached along with owner/track etc.
     value.asMethod(own, name, trk, display);
 
+    if (/^handle[0-9A-Z]/.test(name) && TP.canInvoke(TP, 'deprecated')) {
+        TP.deprecated('Use defineHandler for handler: ' +
+            TP.objectGetMetadataName(value));
+    }
+
     //  If the body of the function has a reference to methods that need
     //  'callee', then we have to wrap it into a wrapping function so that we
     //  can capture callee (arguments.callee is not valid in ECMA E5 strict
