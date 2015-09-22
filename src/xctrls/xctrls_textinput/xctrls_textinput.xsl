@@ -17,7 +17,6 @@
 		<html:span id="{@id}"
 					class="{concat('xctrls-textinput ', @class)}"
 					tibet:tag="xctrls:textinput"
-					tibet:captures="TP.sig.DOMMouseDown TP.sig.DOMMouseUp TP.sig.DOMMouseOver TP.sig.DOMMouseOut TP.sig.DOMFocus TP.sig.DOMBlur TP.sig.DOMClick"
 					hidefocus="true"
 					unselectable="true">
 

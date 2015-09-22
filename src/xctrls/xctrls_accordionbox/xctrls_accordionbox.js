@@ -42,6 +42,9 @@ TP.xctrls.accordionbox.Inst.defineAttribute(
             TP.xpc('string(./xctrls:accordionitem' +
                         '[@pclass:selected = "true"]/xctrls:value)', TP.hc('shouldCollapse', true))});
 
+TP.xctrls.accordionbox.Type.defineAttribute('opaqueSignalNames',
+        TP.ac('TP.sig.DOMClick'));
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------

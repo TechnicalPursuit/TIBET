@@ -20,6 +20,13 @@ TP.core.UIElementNode.defineSubtype('xctrls:tabbar');
 TP.xctrls.tabbar.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.tabbar.Type.defineAttribute('opaqueSignalNames',
+        TP.ac('TP.sig.DOMClick'));
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 

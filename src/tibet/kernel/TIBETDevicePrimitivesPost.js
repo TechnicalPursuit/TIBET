@@ -346,19 +346,16 @@ function(anEvent) {
         //  out of options or run into a disabled element.
         if (TP.notValid(computedTarget)) {
 
-            //  Grab the TIBET wrapper type for the element and query it for
-            //  signal names that this type might capture.
+            //  Grab the TIBET wrapper type for the element and query it to see
+            //  if the current element should capture the event at it's level.
             if (TP.isType(targetType =
                             TP.core.ElementNode.getConcreteType(current))) {
-                sigNames = targetType.getCapturingSignalNames(current);
-            }
-
-            if (TP.isValid(sigNames) &&
-                sigNames.indexOf(signalTypeName) !== TP.NOT_FOUND) {
-                //  set computedTarget to the current, but NOTE NO BREAK here so
-                //  the iteration will continue up the tree until we're sure
-                //  we're not under a disabled element.
-                computedTarget = current;
+                if (targetType.isOpaqueForSignal(current, signalTypeName)) {
+                    //  set computedTarget to the current, but NOTE NO BREAK
+                    //  here so the iteration will continue up the tree until
+                    //  we're sure we're not under a disabled element.
+                    computedTarget = current;
+                }
             }
         }
 

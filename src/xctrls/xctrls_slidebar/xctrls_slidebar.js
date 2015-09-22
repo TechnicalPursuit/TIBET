@@ -29,6 +29,11 @@ TP.xctrls.slidebar.Type.defineAttribute('horizSlideResponder');
 
 TP.xctrls.slidebar.Type.defineAttribute('defaultIncrement', 5);
 
+TP.xctrls.slidebar.Type.defineAttribute('opaqueSignalNames',
+        TP.ac('TP.sig.DOMMouseDown',
+                'TP.sig.DOMDragMove',
+                'TP.sig.DOMClick'));
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
