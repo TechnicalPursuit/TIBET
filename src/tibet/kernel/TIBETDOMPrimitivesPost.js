@@ -3730,11 +3730,11 @@ function(fromElement, toElement, shouldOverlay, nameRegExp, useElementNS) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementReplaceContent',
+TP.definePrimitive('elementReplaceWith',
 function(anElement, anObject, loadedFunction, shouldAwake) {
 
     /**
-     * @method elementReplaceContent
+     * @method elementReplaceWith
      * @summary Replaces the element with the object content provided.
      * @param {Element} anElement The element receiving content.
      * @param {Object} anObject The object to use as the source of the content.
@@ -3761,10 +3761,10 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     content = TP.unwrap(content);
 
     if (TP.isHTMLNode(anElement)) {
-        return TP.htmlElementReplaceContent(anElement, content,
+        return TP.htmlElementReplaceWith(anElement, content,
                                             loadedFunction, shouldAwake);
     } else {
-        return TP.xmlElementReplaceContent(anElement, content,
+        return TP.xmlElementReplaceWith(anElement, content,
                                             loadedFunction, shouldAwake);
     }
 
@@ -4621,11 +4621,11 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('xmlElementReplaceContent',
+TP.definePrimitive('xmlElementReplaceWith',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
     /**
-     * @method xmlElementReplaceContent
+     * @method xmlElementReplaceWith
      * @summary Replaces anElement which should be an XML element.
      * @description This method sets the 'outer content' of anElement to
      *     theContent which means that the entire element, including its start

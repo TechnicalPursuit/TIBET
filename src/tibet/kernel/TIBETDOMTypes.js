@@ -9274,7 +9274,7 @@ function(aRequest, replaceNode, alternateNode) {
         //  can update our internal node content.
         if (!TP.nodeIsDetached(originalNode) && TP.isTrue(replaceNode)) {
 
-            newNode = TP.elementReplaceContent(
+            newNode = TP.elementReplaceWith(
                                 originalNode, newNode, null, false);
         }
         this.setNativeNode(newNode);
@@ -11866,7 +11866,7 @@ function(operation) {
         case TP.INSERT:
             return TP.elementInsertContent;
         case TP.REPLACE:
-            return TP.elementReplaceContent;
+            return TP.elementReplaceWith;
         case TP.UPDATE:
             return TP.elementSetContent;
         default:
@@ -12932,7 +12932,7 @@ function(operation) {
         case TP.INSERT:
             return TP.htmlElementInsertContent;
         case TP.REPLACE:
-            return TP.htmlElementReplaceContent;
+            return TP.htmlElementReplaceWith;
         case TP.UPDATE:
             return TP.htmlElementSetContent;
         default:
@@ -12974,7 +12974,7 @@ function(operation) {
         case TP.INSERT:
             return TP.xmlElementInsertContent;
         case TP.REPLACE:
-            return TP.xmlElementReplaceContent;
+            return TP.xmlElementReplaceWith;
         case TP.UPDATE:
             return TP.xmlElementSetContent;
         default:
@@ -16591,7 +16591,7 @@ function(aRequest) {
 
     //  Replace the original element in the DOM so processing will continue in
     //  the proper context.
-    replacement = TP.elementReplaceContent(elem, replacement, null, false);
+    replacement = TP.elementReplaceWith(elem, replacement, null, false);
 
     return replacement;
 });

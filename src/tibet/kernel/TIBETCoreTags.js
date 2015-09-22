@@ -187,7 +187,7 @@ function(aRequest) {
             '&lt;' + this.getCanonicalName() + '/&gt;' +
             '</a>');
 
-    TP.elementReplaceContent(elem, newElem);
+    TP.elementReplaceWith(elem, newElem);
 
     return;
 });
@@ -399,7 +399,7 @@ function(aRequest) {
         '</p>' +
     '</div>');
 
-    TP.elementReplaceContent(elem, newElem);
+    TP.elementReplaceWith(elem, newElem);
 
     return;
 });

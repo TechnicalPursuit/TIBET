@@ -1029,11 +1029,11 @@ function(oldElemOrId, newElemOrId, nodeContext) {
     if (TP.isArray(elem)) {
         len = elem.length;
         for (i = 0; i < len; i++) {
-            return TP.elementReplaceContent(
+            return TP.elementReplaceWith(
                                 elem[i], TP.nodeCloneNode(newelem));
         }
     } else {
-        return TP.elementReplaceContent(elem, newelem);
+        return TP.elementReplaceWith(elem, newelem);
     }
 });
 
