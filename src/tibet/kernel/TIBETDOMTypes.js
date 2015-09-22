@@ -11041,8 +11041,6 @@ function(anElement, aSignalName) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    console.log(TP.name(anElement));
-
     //  Check to see if the supplied element has a 'tibet:captures' attribute.
     //  If so, split on space (' ') and use those values as the list of signals.
     if (TP.elementHasAttribute(anElement, 'tibet:captures', true)) {
