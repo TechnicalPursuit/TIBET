@@ -76,7 +76,7 @@
     "nano": "*",
     "node-forge": "TechnicalPursuit/forge",
     "phantomjs": "*",
-    "pouchdb": "TechnicalPursuit/pouchdb#4.0.0",
+    "pouchdb": "TechnicalPursuit/pouchdb#4.0.3",
     "pouchdb-all-dbs": "TechnicalPursuit/pouchdb-all-dbs",
     "readline-sync": "^1.2.19",
     "shelljs": "TechnicalPursuit/shelljs",
