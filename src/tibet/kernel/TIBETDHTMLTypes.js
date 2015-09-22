@@ -881,94 +881,12 @@ function(aSignal, aPoint) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('setActionElement',
-function(anElement) {
-
-    /**
-     * @method setActionElement
-     * @summary Sets the 'action element' for the receiver. This defined setter
-     *     method also configured internal responder state based on the element
-     *     provided.
-     * @param {HTMLElement} anElement The Element to use as the the action
-     *     element.
-     * @returns {TP.core.DragResponder} The receiver.
-     */
-
-    var actionElem;
-
-    if (TP.notValid(anElement)) {
-        this.$set('actionElement', null);
-        this.set('actionWindow', null);
-
-        return this;
-    }
-
-    //  If we receive a valid value then it must resolve successfully to an
-    //  element or we've got an error condition.
-    actionElem = TP.unwrap(anElement);
-    if (!TP.isElement(actionElem)) {
-        //  Try to resolve the source as a DOM query of some form.
-        actionElem = TP.byPath(anElement);
-
-        //  The source must resolve to a native element.
-        actionElem = TP.elem(actionElem);
-        if (!TP.isElement(actionElem)) {
-            return this.raise('TP.sig.InvalidParameter',
-                'Could not resolve anElement to an element: ' +
-                anElement);
-        }
-    }
-
-    //  To avoid recursion, use '$set()'
-    this.$set('actionElement', actionElem);
-
-    this.set('actionWindow', TP.nodeGetWindow(actionElem));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragResponder.Inst.defineMethod('setupDataModifiers',
-function() {
-
-    /**
-     * @method setupDataModifiers
-     * @summary Sets up any installed data modifiers in preparation for a 'drag
-     *     session'.
-     * @returns {TP.core.DragResponder} The receiver.
-     */
-
-    var modifiers;
-
-    //  If there's no action element, we can't go very far here - bail out
-    if (!TP.isElement(this.get('actionElement'))) {
-        return this;
-    }
-
-    if (TP.isEmpty(modifiers = this.get('modifiers'))) {
-        return this;
-    }
-
-    //  Make sure that any installed modifers get a fresh 'temp data'
-    //  TP.core.Hash
-    modifiers.perform(
-            function(aModifierFunc) {
-
-                aModifierFunc.tempData = TP.hc();
-            });
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragResponder.Inst.defineMethod('setupFrom',
+TP.core.DragResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
-     * @method setupFrom
-     * @summary Sets up the receiver by using well-known attributes present on
+     * @method prepareFrom
+     * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -1171,6 +1089,88 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         //  Note here how we do *not* run any modifiers. Therefore, the
         //  start point will remain unchanged.
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DragResponder.Inst.defineMethod('setActionElement',
+function(anElement) {
+
+    /**
+     * @method setActionElement
+     * @summary Sets the 'action element' for the receiver. This defined setter
+     *     method also configured internal responder state based on the element
+     *     provided.
+     * @param {HTMLElement} anElement The Element to use as the the action
+     *     element.
+     * @returns {TP.core.DragResponder} The receiver.
+     */
+
+    var actionElem;
+
+    if (TP.notValid(anElement)) {
+        this.$set('actionElement', null);
+        this.set('actionWindow', null);
+
+        return this;
+    }
+
+    //  If we receive a valid value then it must resolve successfully to an
+    //  element or we've got an error condition.
+    actionElem = TP.unwrap(anElement);
+    if (!TP.isElement(actionElem)) {
+        //  Try to resolve the source as a DOM query of some form.
+        actionElem = TP.byPath(anElement);
+
+        //  The source must resolve to a native element.
+        actionElem = TP.elem(actionElem);
+        if (!TP.isElement(actionElem)) {
+            return this.raise('TP.sig.InvalidParameter',
+                'Could not resolve anElement to an element: ' +
+                anElement);
+        }
+    }
+
+    //  To avoid recursion, use '$set()'
+    this.$set('actionElement', actionElem);
+
+    this.set('actionWindow', TP.nodeGetWindow(actionElem));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DragResponder.Inst.defineMethod('setupDataModifiers',
+function() {
+
+    /**
+     * @method setupDataModifiers
+     * @summary Sets up any installed data modifiers in preparation for a 'drag
+     *     session'.
+     * @returns {TP.core.DragResponder} The receiver.
+     */
+
+    var modifiers;
+
+    //  If there's no action element, we can't go very far here - bail out
+    if (!TP.isElement(this.get('actionElement'))) {
+        return this;
+    }
+
+    if (TP.isEmpty(modifiers = this.get('modifiers'))) {
+        return this;
+    }
+
+    //  Make sure that any installed modifers get a fresh 'temp data'
+    //  TP.core.Hash
+    modifiers.perform(
+            function(aModifierFunc) {
+
+                aModifierFunc.tempData = TP.hc();
+            });
 
     return this;
 });
@@ -1466,44 +1466,12 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.MoveResponder} The receiver.
-     */
-
-    var stateMachine;
-
-    this.set('mainState', 'moving');
-
-    stateMachine = this.get('stateMachine');
-
-    //  The state machine will transition to 'moving' when it is activated.
-    stateMachine.defineState('idle', 'moving');
-    stateMachine.defineState('moving', 'idle');
-
-    this.observe(stateMachine,
-                    TP.ac('TP.sig.MovingEnter', 'TP.sig.MovingExit'));
-
-    this.setID('MoveService');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.MoveResponder.Inst.defineMethod('setupFrom',
+TP.core.MoveResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
-     * @method setupFrom
-     * @summary Sets up the receiver by using well-known attributes present on
+     * @method prepareFrom
+     * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -1555,6 +1523,38 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
     //  to pass it along.
     return this.callNextMethod(infoTPElement, srcTPElement,
                                 evtTPElement, initialSignal, attrs);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.MoveResponder.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.MoveResponder} The receiver.
+     */
+
+    var stateMachine;
+
+    this.set('mainState', 'moving');
+
+    stateMachine = this.get('stateMachine');
+
+    //  The state machine will transition to 'moving' when it is activated.
+    stateMachine.defineState('idle', 'moving');
+    stateMachine.defineState('moving', 'idle');
+
+    this.observe(stateMachine,
+                    TP.ac('TP.sig.MovingEnter', 'TP.sig.MovingExit'));
+
+    this.setID('MoveService');
+
+    return this;
 });
 
 //  ========================================================================
@@ -2383,44 +2383,12 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.MoveResponder} The receiver.
-     */
-
-    var stateMachine;
-
-    this.set('mainState', 'resizing');
-
-    stateMachine = this.get('stateMachine');
-
-    //  The state machine will transition to 'resizing' when it is activated.
-    stateMachine.defineState('idle', 'resizing');
-    stateMachine.defineState('resizing', 'idle');
-
-    this.observe(stateMachine,
-                    TP.ac('TP.sig.ResizingEnter', 'TP.sig.ResizingExit'));
-
-    this.setID('ResizeService');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ResizeResponder.Inst.defineMethod('setupFrom',
+TP.core.ResizeResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
-     * @method setupFrom
-     * @summary Sets up the receiver by using well-known attributes present on
+     * @method prepareFrom
+     * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -2509,6 +2477,38 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
     //  to pass it along.
     return this.callNextMethod(infoTPElement, srcTPElement,
                                 evtTPElement, initialSignal, attrs);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeResponder.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.MoveResponder} The receiver.
+     */
+
+    var stateMachine;
+
+    this.set('mainState', 'resizing');
+
+    stateMachine = this.get('stateMachine');
+
+    //  The state machine will transition to 'resizing' when it is activated.
+    stateMachine.defineState('idle', 'resizing');
+    stateMachine.defineState('resizing', 'idle');
+
+    this.observe(stateMachine,
+                    TP.ac('TP.sig.ResizingEnter', 'TP.sig.ResizingExit'));
+
+    this.setID('ResizeService');
+
+    return this;
 });
 
 //  ========================================================================
@@ -3188,45 +3188,12 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.MoveResponder} The receiver.
-     */
-
-    var stateMachine;
-
-    this.set('mainState', 'dragdropping');
-
-    stateMachine = this.get('stateMachine');
-
-    //  The state machine will transition to 'resizing' when it is activated.
-    stateMachine.defineState('idle', 'dragdropping');
-    stateMachine.defineState('dragdropping', 'idle');
-
-    this.observe(
-            stateMachine,
-            TP.ac('TP.sig.DragDroppingEnter', 'TP.sig.DragDroppingExit'));
-
-    this.setID('DNDService');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DNDResponder.Inst.defineMethod('setupFrom',
+TP.core.DNDResponder.Inst.defineMethod('prepareFrom',
 function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
-     * @method setupFrom
-     * @summary Sets up the receiver by using well-known attributes present on
+     * @method prepareFrom
+     * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
      * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
      *     configuration information from.
@@ -3276,6 +3243,39 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     //  NB: We do *not* call up to the TP.core.MoveResponder's method here,
     //  since we have different logic for setup.
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DNDResponder.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.MoveResponder} The receiver.
+     */
+
+    var stateMachine;
+
+    this.set('mainState', 'dragdropping');
+
+    stateMachine = this.get('stateMachine');
+
+    //  The state machine will transition to 'resizing' when it is activated.
+    stateMachine.defineState('idle', 'dragdropping');
+    stateMachine.defineState('dragdropping', 'idle');
+
+    this.observe(
+            stateMachine,
+            TP.ac('TP.sig.DragDroppingEnter', 'TP.sig.DragDroppingExit'));
+
+    this.setID('DNDService');
 
     return this;
 });
@@ -3386,10 +3386,10 @@ function(aTargetElem, anEvent) {
 
             //  Set up the responder using the info, source and event
             //  target native elements
-            moveResponder.setupFrom(infoTPElem,
-                                    sourceTPElem,
-                                    evtTargetTPElem,
-                                    TP.wrap(anEvent));
+            moveResponder.prepareFrom(infoTPElem,
+                                        sourceTPElem,
+                                        evtTargetTPElem,
+                                        TP.wrap(anEvent));
         }
 
         if (!moveResponder.get('stateMachine').isActive()) {
@@ -3417,7 +3417,7 @@ function(aTargetElem, anEvent) {
 
             //  Set up the responder using the info, source and event
             //  target native elements
-            resizeResponder.setupFrom(infoTPElem,
+            resizeResponder.prepareFrom(infoTPElem,
                                         sourceTPElem,
                                         evtTargetTPElem,
                                         TP.wrap(anEvent));
@@ -3465,10 +3465,10 @@ function(aTargetElem, anEvent) {
 
                 //  Note here how we make the 'action element' be the rep
                 //  element that was computed from the item element.
-                dndResponder.setupFrom(infoTPElem,
-                                        sourceTPElem,
-                                        evtTargetTPElem,
-                                        TP.wrap(anEvent));
+                dndResponder.prepareFrom(infoTPElem,
+                                            sourceTPElem,
+                                            evtTargetTPElem,
+                                            TP.wrap(anEvent));
                 dndResponder.set('actionElement', actionElem);
 
                 //  Some filter functions need a handle to the item element
