@@ -757,6 +757,12 @@ TP.META_TYPE_OWNER[TP.ID] = 'MetaType';
 TP.META_TYPE_OWNER[TP.NAME] = 'MetaType';
 TP.META_TYPE_OWNER.getID = function() {return 'MetaType'; };
 TP.META_TYPE_OWNER.getName = function() {return 'MetaType'; };
+TP.META_TYPE_OWNER.getSupertype = function() {return; };
+TP.META_TYPE_OWNER.getSupertypeName = function() {return ''; };
+TP.META_TYPE_OWNER.getSupertypeNames = function() {return []; };
+TP.META_TYPE_OWNER.getType = function() {return; };
+TP.META_TYPE_OWNER.getTypeName = function() {return; };
+TP.META_TYPE_OWNER.getConstructor = function() {return Object; };
 
 TP.META_TYPE_OWNER.meta_methods = {};
 
@@ -776,6 +782,12 @@ TP.META_INST_OWNER[TP.ID] = 'MetaInst';
 TP.META_INST_OWNER[TP.NAME] = 'MetaInst';
 TP.META_INST_OWNER.getID = function() {return 'MetaInst'; };
 TP.META_INST_OWNER.getName = function() {return 'MetaInst'; };
+TP.META_INST_OWNER.getSupertype = function() {return; };
+TP.META_INST_OWNER.getSupertypeName = function() {return ''; };
+TP.META_INST_OWNER.getSupertypeNames = function() {return []; };
+TP.META_INST_OWNER.getType = function() {return; };
+TP.META_INST_OWNER.getTypeName = function() {return; };
+TP.META_INST_OWNER.getConstructor = function() {return Object; };
 
 TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
