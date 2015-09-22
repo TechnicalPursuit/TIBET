@@ -12,134 +12,6 @@
  */
 
 //  ========================================================================
-//  Dragging State Machine Signals
-//  ========================================================================
-
-TP.sig.StateEnter.defineSubtype('TP.sig.DraggingEnter');
-TP.sig.StateExit.defineSubtype('TP.sig.DraggingExit');
-
-//  ========================================================================
-//  TP.core.DragMachine
-//  ========================================================================
-
-/**
- * @type {TP.core.DragMachine}
- * @summary A StateMachine specific to managing "dragging" states.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.core.StateMachine.defineSubtype('DragMachine');
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.core.DragMachine.Inst.defineAttribute('triggerSignals',
-    TP.ac('TP.sig.DOMDragDown',
-            'TP.sig.DOMDragHover',
-            'TP.sig.DOMDragMove',
-            'TP.sig.DOMDragUp'));
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.DragMachine.Inst.defineMethod('init',
-function(source) {
-
-    /**
-     * @method init
-     * @summary Initializes a new instance of the receiver. The optional source
-     *     parameter can be used to define which object the receiver will use as
-     *     the data source for its event stream.
-     * @param {HTMLElement|String|TP.core.Mouse} [source] The source object the
-     *     receiver will be observing. The source must resolve to either an
-     *     Element or the Mouse object. The default is TP.core.Mouse.
-     * @returns {TP.core.DragMachine} A new instance.
-     */
-
-    var obj;
-
-    this.callNextMethod();
-
-    if (TP.notValid(source)) {
-        obj = TP.core.Mouse;
-    } else {
-        //  Try to resolve the source as a DOM query of some form.
-        obj = TP.byPath(source);
-
-        //  The source must resolve to a native element.
-        obj = TP.elem(obj);
-        if (!TP.isElement(obj)) {
-            return this.raise('TP.sig.InvalidParameter',
-                'Could not resolve source to an element: ' + source);
-        }
-    }
-
-    //  Assign our resolved source object as the eventSource.
-    this.set('triggerOrigins', TP.ac(obj));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragMachine.Inst.defineMethod('acceptDragging',
-function(signalOrParams) {
-
-    /**
-     * @method acceptDragging
-     * @summary Returns true if a state transition to "dragging" is valid.
-     * @param {TP.sig.Signal|Object} signalOrParams Input data which can
-     *     influence the result of the test.
-     * @returns {Boolean} True if we can transition to the state.
-     */
-
-    return TP.isKindOf(signalOrParams, 'TP.sig.DOMDragDown');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragMachine.Inst.defineMethod('acceptIdle',
-function(signalOrParams) {
-
-    /**
-     * @method acceptIdle
-     * @summary Returns true if a state transition to "idle" is valid.
-     * @param {TP.sig.Signal|Object} signalOrParams Input data which can
-     *     influence the result of the test.
-     * @returns {Boolean} True if we can transition to the state.
-     */
-
-    if (TP.notValid(signalOrParams)) {
-        return true;
-    }
-
-    return TP.isKindOf(signalOrParams, 'TP.sig.DOMDragUp');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragMachine.Inst.defineMethod('defineStates',
-function() {
-
-    /**
-     * @method defineStates
-     * @summary Invoked by the init method to set up initial states for the
-     *     receiver.
-     */
-
-    //  We can transition to dragging from idle and vice versa.
-    this.defineState(null, 'idle');         //  start-able state
-    this.defineState('idle', 'dragging');
-    this.defineState('dragging', 'idle');
-    this.defineState('idle');               //  final-able state
-
-    return;
-});
-
-//  ========================================================================
 //  TP.core.DragResponder
 //  ========================================================================
 
@@ -150,7 +22,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('TP.core.DragResponder');
+TP.core.StateResponder.defineSubtype('TP.core.DragResponder');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -498,6 +370,58 @@ function(aDragResponder, aSignal, xyPoint) {
 });
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  A state machine shared amongst all of the dragging responders.
+TP.core.DragResponder.Type.defineAttribute('dragStateMachine');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.DragResponder.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time setup for the type on startup/import.
+     */
+
+    var dragSM;
+
+    //  Construct a new state machine that will be shared amongst the various
+    //  drag responders.
+    dragSM = TP.core.StateMachine.construct();
+
+    //  For our state machine, the only trigger signals are DOMDragHover and
+    //  DOMDragMove. We handle putting the state machine into the proper state
+    //  (via calling 'transition()' manually) in the 'ondragdown' below and
+    //  transitioning it out of that in 'ondragup' below.
+
+    dragSM.setTriggerSignals(
+                TP.ac('TP.sig.DOMDragHover', 'TP.sig.DOMDragMove'));
+    dragSM.setTriggerOrigins(TP.ac(TP.core.Mouse));
+
+    dragSM.defineState(null, 'idle');         //  start-able state
+    dragSM.defineState('idle');               //  final-able state
+
+    dragSM.defineMethod('acceptIdle',
+        function(signalOrParams) {
+
+            if (TP.notValid(signalOrParams)) {
+                return true;
+            }
+
+            return TP.isKindOf(signalOrParams, 'TP.sig.DOMDragUp');
+        });
+
+    this.set('dragStateMachine', dragSM);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -550,20 +474,7 @@ function(stateMachine) {
      * @returns {TP.core.DragResponder} A new instance.
      */
 
-    var obj,
-        actionElem;
-
     this.callNextMethod();
-
-    if (TP.notValid(stateMachine)) {
-        return this.raise('InvalidParameter');
-    }
-
-    this.$set('stateMachine', stateMachine);
-
-    this.observe(stateMachine, TP.sig.DraggingEnter);
-    this.observe(stateMachine, TP.sig.StateInput);
-    this.observe(stateMachine, TP.sig.DraggingExit);
 
     this.set('currentPoint', TP.pc(0, 0));
 
@@ -780,6 +691,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DragResponder.Inst.defineMethod('executeTriggerSignalHandler',
+function(aSignal) {
+
+    /**
+     * @method executeTriggerSignalHandler
+     * @summary Executes the handler on the receiver (if there is one) for the
+     *     trigger signal (the underlying signal that caused a StateInput signal
+     *     to be fired from the state machine to this object).
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.KeyResponder} The receiver.
+     */
+
+    //  At this level, this type only handles subtypes of TP.sig.DOMDragMove and
+    //  TP.sig.DOMDragHover
+    if (TP.isKindOf(aSignal, TP.sig.DOMDragMove)) {
+        return this.handleDOMDragMove(aSignal);
+    } else if (TP.isKindOf(aSignal, TP.sig.DOMDragHover)) {
+        return this.handleDOMDragHover(aSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DragResponder.Inst.defineMethod('handleDOMDragHover',
 function(aSignal) {
 
@@ -819,77 +758,6 @@ function(aSignal) {
 
     //  Capture the current signal.
     this.set('currentSignal', aSignal);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragResponder.Inst.defineMethod('handleDraggingEnter',
-function(aSignal) {
-
-    /**
-     * @method handleDraggingEnter
-     * @summary Executed when the state machine associated with this receiver
-     *     enters the 'dragging' state. This method performs whatever processing
-     *     is necessary to start the dragging process.
-     * @param {TP.sig.StateSignal} aSignal The state signal generated by the
-     *     state machine machinery when triggering this state.
-     */
-
-    var startSignal,
-        startPoint;
-
-    //  The DOMDragDown signal that started us dragging
-    startSignal = aSignal.getPayload().at('trigger');
-
-    if (TP.isValid(startSignal)) {
-        this.set('startSignal', startSignal);
-        this.set('currentSignal', startSignal);
-
-        startPoint = startSignal.getPagePoint();
-        this.set('startPoint', startPoint);
-
-        //  Compute the offset point (after we set the corner)
-        this.computeOffsetPoint();
-
-        //  Set up any installed data modifiers
-        this.setupDataModifiers();
-
-        //  Note here how we do *not* run any modifiers. Therefore, the
-        //  start point will remain unchanged.
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragResponder.Inst.defineMethod('handleStateInput',
-function(aSignal) {
-
-    /**
-     * @method handleStateInput
-     */
-
-    return this.handle(aSignal.at('trigger'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragResponder.Inst.defineMethod('handleDraggingExit',
-function(aSignal) {
-
-    /**
-     * @method handleDraggingExit
-     * @summary Executed when the state machine associated with this receiver
-     *     exits the 'dragging' state. This method performs whatever processing
-     *     is necessary to stop the dragging process.
-     * @param {TP.sig.StateSignal} aSignal The state signal generated by the
-     *     state machine machinery when triggering this state.
-     */
-
-    //  Ignore the mouse to stop the dragging process.
 
     return;
 });
@@ -1096,7 +964,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.DragResponder.Inst.defineMethod('setupFrom',
-function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
+function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     /**
      * @method setupFrom
@@ -1109,6 +977,9 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
      * @param {TP.core.ElementNode} evtTPElement The TPElement that the
      *     originating event occurred in and which might be used as the action
      *     element.
+     * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
+     *     dragging session. Usually this will be an instance of
+     *     TP.sig.DOMDragDown.
      * @param {TP.core.Hash} attrHash An optional hash that this method will use
      *     instead of the attribute data from the info element.
      * @returns {TP.core.DragResponder} The receiver.
@@ -1129,7 +1000,9 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
 
         i,
 
-        attrVals;
+        attrVals,
+
+        startPoint;
 
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
@@ -1278,6 +1151,25 @@ function(infoTPElement, srcTPElement, evtTPElement, attrHash) {
                         this.addDataModifier(constraintFunc);
                     }
                 }.bind(this));
+    }
+
+    //  initialSignal will be the DOMDragDown signal that started us dragging
+
+    if (TP.isValid(initialSignal)) {
+        this.set('startSignal', initialSignal);
+        this.set('currentSignal', initialSignal);
+
+        startPoint = initialSignal.getPagePoint();
+        this.set('startPoint', startPoint);
+
+        //  Compute the offset point (after we set the corner)
+        this.computeOffsetPoint();
+
+        //  Set up any installed data modifiers
+        this.setupDataModifiers();
+
+        //  Note here how we do *not* run any modifiers. Therefore, the
+        //  start point will remain unchanged.
     }
 
     return this;
