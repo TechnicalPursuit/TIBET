@@ -11022,11 +11022,11 @@ function(anElement, aSignalName) {
      *     the signal themselves and not allow targeted descendants underneath
      *     them to handle it.
      * @description At this level, the supplied element is checked for a
-     *     'tibet:captures' attribute, which should contain a space-separated
+     *     'tibet:opaque' attribute, which should contain a space-separated
      *     set of TIBET signal names that will be captured by this element. If
      *     that attribute is not present, it will check the 'opaqueSignalNames'
      *     type attribute for a list of signal names.
-     * @param {Element} anElem The element to check for the 'tibet:captures'
+     * @param {Element} anElem The element to check for the 'tibet:opaque'
      *     attribute.
      * @param {String} aSignalName The name of the signal to check.
      * @returns {Boolean} Whether or not the receiver is opaque for the named
@@ -11041,10 +11041,10 @@ function(anElement, aSignalName) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Check to see if the supplied element has a 'tibet:captures' attribute.
+    //  Check to see if the supplied element has a 'tibet:opaque' attribute.
     //  If so, split on space (' ') and use those values as the list of signals.
-    if (TP.elementHasAttribute(anElement, 'tibet:captures', true)) {
-        attrVal = TP.elementGetAttribute(anElement, 'tibet:captures', true);
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque', true)) {
+        attrVal = TP.elementGetAttribute(anElement, 'tibet:opaque', true);
         opaqueSigNames = attrVal.split(' ');
     } else {
         //  Otherwise, ask the type.

@@ -278,7 +278,7 @@ function(anEvent) {
      *     - Whether the native target is a Document
      *     - Whether the native target or any of its ancestors are disabled.
      *     - Whether the native target or any of its ancestors have a
-     *     'tibet:captures' attribute that allows them to capture a particular
+     *     'tibet:opaque' attribute that allows them to capture a particular
      *     signal and therefore designates them as the 'proper target'.
      * @param {Event} anEvent The event to resolve the target of.
      * @exception TP.sig.InvalidEvent
@@ -291,7 +291,6 @@ function(anEvent) {
         current,
 
         computedTarget,
-        sigNames,
         targetType;
 
     if (!TP.isEvent(anEvent)) {
@@ -368,8 +367,7 @@ function(anEvent) {
     //  'original' (unless it was a Node.TEXT_NODE) event target, since we
     //  couldn't find any elements that had the attribute we were searching for.
     //  This allows a nice defaulting behavior when we're in a page (or DOM
-    //  section) that's not using the 'tibet:captures' attribute and doesn't
-    //  care.
+    //  section) that's not using the 'tibet:opaque' attribute and doesn't care.
     return computedTarget || target;
 });
 
