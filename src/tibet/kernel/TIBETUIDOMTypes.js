@@ -2075,82 +2075,6 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getNextResponder',
-function(aSignal, isCapturing) {
-
-    /**
-     * @method getNextResponder
-     * @summary Returns the next responder as computed by the receiver.
-     * @description The default implementation of this method is to check to see
-     *     if the receiver has defined a 'tibet:ctrl' attribute. If so, a
-     *     responder reference is derived from that. If it does not have this
-     *     attribute or a responder cannot be derived from that, then the
-     *     receiver's 'next closest ancestor responder' (i.e. its closest
-     *     ancestor that has either a 'tibet:ctrl' or 'tibet:tag').
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Object} The next responder as computed by the receiver.
-     */
-
-    var ctrl,
-
-        node,
-        parentNode,
-        elementWin,
-        frame,
-        frameElem;
-
-    //  If we have a 'tibet:ctrl' attribute, then try to obtain an object
-    //  reference from it. If that's valid, then use it - otherwise, move on.
-    if (this.hasAttribute('tibet:ctrl')) {
-
-        ctrl = TP.bySystemId(this.getAttribute('tibet:ctrl'),
-                                this.getNativeWindow());
-
-        if (TP.isValid(ctrl)) {
-            return ctrl;
-        }
-    }
-
-    node = this.getNativeNode();
-
-    //  Check for a parent node or ancestor element responder we can wrap.
-    parentNode = node.parentNode;
-    if (TP.isElement(parentNode) &&
-            TP.isElement(ctrl = TP.nodeGetResponderElement(parentNode))) {
-
-        return TP.wrap(ctrl);
-    }
-
-    //  Check for a containing iframe element we can leverage as a "screen". We
-    //  only return the iframe if it has a specific responder, otherwise we
-    //  continue searching upward from the iframe.
-    elementWin = TP.nodeGetWindow(this.getNativeDocument());
-
-    if (TP.isIFrameWindow(elementWin)) {
-        frameElem = elementWin.frameElement;
-
-        if (TP.isElement(frameElem)) {
-            frame = TP.wrap(frameElem);
-
-            if (frame.isResponderFor(aSignal, isCapturing)) {
-                return frame;
-            } else {
-                //  Recurse, calling the iframe's 'getNextResponder' method to
-                //  work our way 'up' the tree.
-                return frame.getNextResponder(aSignal, isCapturing);
-            }
-        }
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.UIElementNode.Inst.defineMethod('getOffsetParent',
 function() {
 
@@ -2506,33 +2430,6 @@ function() {
      */
 
     return TP.elementIsVisible(this.getNativeNode());
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('isResponderFor',
-function(aSignal, isCapturing) {
-
-    /**
-     * @method isResponderFor
-     * @summary Whether or not the receiver is a responder for the supplied
-     *     signal and capturing mode.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Boolean} Whether or not the receiver is a valid responder for
-     *     the supplied signal and capturing mode.
-     */
-
-    //  The default is that we don't participate in capturing responder chains
-    //  unless there is an 'ev:phase' attribute on us that says otherwise.
-    if (TP.isTrue(isCapturing) && !this.shouldCaptureSignal(aSignal)) {
-        return false;
-    }
-
-    return TP.isCallable(this.getHandler(aSignal));
 });
 
 //  ------------------------------------------------------------------------

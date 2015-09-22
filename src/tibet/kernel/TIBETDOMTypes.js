@@ -10655,11 +10655,11 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getNativeObserver',
+TP.core.ElementNode.Type.defineMethod('getXMLObserver',
 function(aSignal) {
 
     /**
-     * @method getNativeObserver
+     * @method getXMLObserver
      * @summary Attempts to extract the actual observer of the signal from the
      *     supplied signal. This is very useful in cases where the target of the
      *     signal has been set to a type.
@@ -11003,13 +11003,7 @@ function(aSignal) {
 
     //  if the signal has an observer instance we can identify and acquire
     //  then we can leverage that, otherwise we shouldn't have been targeted
-    observer = this.getNativeObserver(aSignal);
-
-    //  Shouldn't have been targeted if we can't find an observer.
-    if (TP.notValid(observer)) {
-        return this.raise('TP.sig.InvalidHandler',
-            'Unable to obtain observer.');
-    }
+    observer = this.getXMLObserver(aSignal);
 
     //  Guard against recursion by invoking this indirectly again.
     if (observer === this) {
@@ -11017,7 +11011,11 @@ function(aSignal) {
             'Recursive observer definition.');
     }
 
-    return TP.handle(observer, aSignal);
+    if (TP.isValid(observer)) {
+        return TP.handle(observer, aSignal);
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

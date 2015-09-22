@@ -5659,17 +5659,54 @@ function(aNode, joinChar) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeGetResponderChain',
+function(aNode) {
+
+    /**
+     * @method nodeGetResponderChain
+     * @summary Compiles a list of all the responder elements along the
+     *     containment hierarchy for aNode. This method essentially iterates via
+     *     nodeGetResponderElement until no more responder elements are found.
+     * @param {Node} aNode The DOM node to operate on.
+     * @returns {Array} The list of responder elements found. The order of the
+     *     list is from first (closest to the element) to last (furthest from
+     *     element), essentially the order for event bubbling phase processing.
+     */
+
+    var arr,
+        node;
+
+    arr = TP.ac();
+
+    node = TP.nodeGetResponderElement(aNode);
+    while (TP.isValid(node)) {
+        arr.push(node);
+        node = TP.nodeGetResponderElement(node.parentNode);
+    }
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeGetResponderElement',
 function(aNode) {
 
     /**
      * @method nodeGetResponderElement
-     * @summary Finds the 'responder' element for aNode and returns it. This is
-     *     typically invoked by DOM elements during event processing which
-     *     requires them to find a responder to handle an event.
+     * @summary Finds the 'responder' element for aNode and returns it. A
+     *     responder element is an element with either tibet:ctrl or tibet:tag
+     *     attribute data indicating it is a component of some kind. If the node
+     *     provided has one or more of these attributes it is returned directly.
+     *     NOTE that this method will also traverse up through iframe containers
+     *     to locate a potential component element.
      * @param {Node} aNode The DOM node to operate on.
      * @returns {Element} A valid element or null.
      */
+
+    var node,
+        win,
+        frame;
 
     if (TP.isElement(aNode) &&
         (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
@@ -5677,7 +5714,24 @@ function(aNode) {
         return aNode;
     }
 
-    return TP.nodeGetFirstAncestorByAttribute(aNode, 'tibet:tag tibet:ctrl');
+    node = TP.nodeGetFirstAncestorByAttribute(aNode, 'tibet:tag tibet:ctrl');
+    if (TP.isValid(node)) {
+        return node;
+    }
+
+    //  Check for a containing iframe element often used as a "screen".
+    //  We only return the iframe if it fits our criteria for tag/ctrl,
+    //  otherwise we continue searching upward from the iframe.
+    win = TP.nodeGetWindow(aNode);
+
+    if (TP.isIFrameWindow(win)) {
+        frame = win.frameElement;
+        if (TP.isElement(frame)) {
+            return TP.nodeGetResponderElement(frame);
+        }
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

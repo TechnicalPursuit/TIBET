@@ -5749,6 +5749,10 @@ function(aRequest) {
  * @type {TP.core.Controller}
  * @summary This type is a common supertype for all 'TIBET controllers',
  *     objects which form the top layers of the TIBET responder chain.
+ *     Per the original Smalltalk-style definition a Controller is an object
+ *     responsible primarily for event handling. As such TP.core.Controller
+ *     instances are typically used in the "controller chain" or attached to
+ *     elements via the tibet:ctrl attribute for "responder chain" usage.
  */
 
 //  ------------------------------------------------------------------------
@@ -6056,29 +6060,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('isResponderFor',
-function(aSignal, isCapturing) {
-
-    /**
-     * @method isResponderFor
-     * @summary Whether or not the receiver is a responder for the supplied
-     *     signal and capturing mode.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Boolean} Whether or not the receiver is a valid responder for
-     *     the supplied signal and capturing mode.
-     */
-
-    //  The application instance is the backstop responder for all signals, but
-    //  does not involve itself in capturing mode by default.
-    return TP.notTrue(isCapturing);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Application.Inst.defineMethod('popController',
 function() {
 
@@ -6119,6 +6100,30 @@ function(aController) {
 
     //  TODO: should we unique these?
     this.$get('controllers').unshift(aController);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('setControllers',
+function(aList) {
+
+    /**
+     * @method setControllers
+     * @summary Defines the list of controllers that are currently active.
+     * @param {Array} aList The new list of controllers.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    var controllers;
+
+    controllers = TP.ifInvalid(aList, TP.ac());
+    if (!TP.isArray(controllers)) {
+        return this.raise('InvalidParameter');
+    }
+
+    this.$set('controllers', controllers);
 
     return this;
 });

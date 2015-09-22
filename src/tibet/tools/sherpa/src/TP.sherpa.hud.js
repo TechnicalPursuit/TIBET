@@ -21,8 +21,7 @@ TP.sherpa.hud.addTraits(TP.core.TemplatedNode);
 TP.sherpa.hud.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 TP.sherpa.hud.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
+        TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.xctrls.Element);
 
 TP.sherpa.hud.Inst.resolveTraits(
