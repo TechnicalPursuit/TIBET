@@ -20,6 +20,13 @@ TP.core.UIElementNode.defineSubtype('xctrls:splitbar');
 TP.xctrls.splitbar.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.splitbar.Type.defineAttribute('opaqueSignalNames',
+        TP.ac('TP.sig.DOMDragMove'));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

@@ -10395,33 +10395,6 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getCapturingSignalNames',
-function(anElem) {
-
-    /**
-     * @method getCapturingSignalNames
-     * @summary Returns an Array of signal names that are captured by elements
-     *     wrapped by the receiving type.
-     * @description At this level, the supplied element is checked for a
-     *     'tibet:captures' attribute, which should contain a space-separated
-     *     set of TIBET signal names that will be captured by this element.
-     * @param {Element} anElem The element to check for the 'tibet:captures'
-     *     attribute.
-     * @returns {String[]} An Array of signal names.
-     */
-
-    var attrVal;
-
-    if (TP.elementHasAttribute(anElem, 'tibet:captures', true)) {
-        attrVal = TP.elementGetAttribute(anElem, 'tibet:captures', true);
-        return attrVal.split(' ');
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Type.defineMethod('getConcreteType',
 function(aNode) {
 
@@ -11033,6 +11006,54 @@ function() {
      */
 
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('isOpaqueForSignal',
+function(anElement, aSignalName) {
+
+    /**
+     * @method isOpaqueForSignal
+     * @summary Returns whether the elements of this type are considered to be
+     *     'opaque' for the supplied signal. This means that they will handle
+     *     the signal themselves and not allow targeted descendants underneath
+     *     them to handle it.
+     * @description At this level, the supplied element is checked for a
+     *     'tibet:opaque' attribute, which should contain a space-separated
+     *     set of TIBET signal names that will be captured by this element. If
+     *     that attribute is not present, it will check the 'opaqueSignalNames'
+     *     type attribute for a list of signal names.
+     * @param {Element} anElem The element to check for the 'tibet:opaque'
+     *     attribute.
+     * @param {String} aSignalName The name of the signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque for the named
+     *     signal.
+     */
+
+    var attrVal,
+
+        opaqueSigNames;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Check to see if the supplied element has a 'tibet:opaque' attribute.
+    //  If so, split on space (' ') and use those values as the list of signals.
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque', true)) {
+        attrVal = TP.elementGetAttribute(anElement, 'tibet:opaque', true);
+        opaqueSigNames = attrVal.split(' ');
+    } else {
+        //  Otherwise, ask the type.
+        opaqueSigNames = this.get('opaqueSignalNames');
+    }
+
+    if (TP.isEmpty(opaqueSigNames)) {
+        return false;
+    }
+
+    return opaqueSigNames.indexOf(aSignalName) !== TP.NOT_FOUND;
 });
 
 //  ------------------------------------------------------------------------

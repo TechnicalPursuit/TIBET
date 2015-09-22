@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 
 <xctrls:textinput xmlns="http://www.w3.org/1999/xhtml"
-    tibet:captures="TP.sig.DOMMouseDown TP.sig.DOMMouseUp TP.sig.DOMMouseOver TP.sig.DOMMouseOut TP.sig.DOMFocus TP.sig.DOMBlur TP.sig.DOMClick"
     hidefocus="true">
     {{$SOURCE.(./xctrls:label)}}
     <html:input id="{{$SOURCE.(@id)}}_value" type="text" tibet:pelem="value" xsi:type="{{$SOURCE.(@xsi:type)}}" tibet:incremental="{{$SOURCE.(@tibet:incremental)}}" disabled="{{$SOURCE.(@disabled)}}"/>

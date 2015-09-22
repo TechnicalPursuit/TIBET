@@ -31,6 +31,19 @@ TP.xctrls.Element.Inst.resolveTraits(
 TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Element.Type.defineAttribute('opaqueSignalNames',
+        TP.ac('TP.sig.DOMMouseDown',
+                'TP.sig.DOMMouseUp',
+                'TP.sig.DOMMouseOver',
+                'TP.sig.DOMMouseOut',
+                'TP.sig.DOMFocus',
+                'TP.sig.DOMBlur',
+                'TP.sig.DOMClick'));
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
