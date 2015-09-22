@@ -1527,7 +1527,8 @@ function(aSignal) {
                                 ' right: ', insetRight + 'px;',
                                 ' bottom: ', insetBottom + 'px;',
                                 ' left: ', insetLeft + 'px;',
-                                ' background-color: ', 'transparent;'));
+                                ' background-color: ', 'transparent;',
+                                ' cursor: ', 'default;'));
 
     this.set('$overlayElement', overlayElem);
 
@@ -1555,15 +1556,9 @@ function(aSignal) {
         return;
     }
 
-    //  Make sure and disable the user select on the action element so
-    //  that we don't get weird selection behavior from the host
-    //  platform.
-    TP.elementDisableUserSelect(actionElem);
-
-    //  If there is a target element, do the same for it
-    if (TP.isElement(targetElem = this.get('targetElement'))) {
-        TP.elementDisableUserSelect(targetElem);
-    }
+    //  Make sure and disable the user select on the body element so that we
+    //  don't get weird selection behavior from the host platform.
+    TP.elementDisableUserSelect(TP.nodeGetDocument(actionElem).body);
 
     //  A reusable point that we can use in our dragging computations.
     this.set('$computedPoint', TP.pc());
@@ -1605,13 +1600,8 @@ function(aSignal) {
     //  'moving' it.
     TP.elementRemoveAttribute(actionElem, 'pclass:moving', true);
 
-    //  Reenable the user select behavior for the action element
-    TP.elementEnableUserSelect(actionElem);
-
-    if (TP.isElement(targetElem = this.get('targetElement'))) {
-        //  Reenable the user select behavior for the target element
-        TP.elementEnableUserSelect(targetElem);
-    }
+    //  Reenable the user select behavior for the body element
+    TP.elementEnableUserSelect(TP.nodeGetDocument(actionElem).body);
 
     //  Remove the element that was overlaying the action element
     overlayElem = this.get('$overlayElement');
