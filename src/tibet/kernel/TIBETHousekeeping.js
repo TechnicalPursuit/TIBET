@@ -503,10 +503,13 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 //  ------------------------------------------------------------------------
 
 //  Faking out a load info here for the builtins
+
+/* eslint-disable vars-on-top */
 var currentLoadPath,
     currentSourcePath,
     currentLoadPackage,
     currentLoadConfig;
+/* eslint-enable vars-on-top */
 
 currentLoadPath = TP.boot[TP.LOAD_PATH];
 currentSourcePath = TP.boot[TP.SOURCE_PATH];
@@ -517,6 +520,8 @@ TP.boot[TP.LOAD_PATH] = '';
 TP.boot[TP.SOURCE_PATH] = '';
 TP.boot[TP.LOAD_PACKAGE] = '';
 TP.boot[TP.LOAD_CONFIG] = '';
+
+//  Go ahead and instrument the builtins by 'defining' them, according to TIBET
 
 Array.Type.defineMethod('isArray', Array.isArray);
 
