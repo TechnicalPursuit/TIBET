@@ -8484,5 +8484,66 @@ function(aSignal, isCapturing) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sig.Signal.Type.defineMethod('getHandlerName2',
+function(aDescriptor) {
+
+    /**
+     * @method defineHandler
+     * @summary Defines a new signal handler.
+     * @description Note that the 'descriptor' parameter is a property
+     *     descriptor. That property descriptor can be one of the following:
+     *
+     *          origin (Object or String ID)
+     *          signal (TIBET Type or String signal name)
+     *          state (String state name)
+     *
+     * @param {Function} aHandler The function body for the event handler.
+     * @param {Object} descriptor
+     */
+
+    var signal,
+        signame,
+
+        handlerName,
+
+        origin,
+        state;
+
+    if (!TP.isPlainObject(aDescriptor)) {
+        return this.raise('InvalidDescriptor', aDescriptor);
+    }
+
+    signal = aDescriptor.signal;
+
+    //  Ask the inbound signal what signal name it should be using.
+    if (TP.isKindOf(signal, TP.sig.Signal)) {
+        signame = signal.getSignalName();
+    } else if (TP.canInvoke(signal, 'getSignalName')) {
+        signame = signal.getSignalName();
+    } else {
+        signame = this.getSignalName();
+    }
+
+    handlerName = 'handle' + TP.escapeTypeName(TP.expandSignalName(signame));
+
+    //  Add optional From clause for origin filtering.
+    if (TP.isValid(origin = aDescriptor.origin)) {
+        handlerName += 'From' + TP.gid(origin);
+    } else {
+        handlerName += 'From' + TP.ANY;
+    }
+
+    //  Add optional When clause for state filtering.
+    if (TP.notEmpty(state = aDescriptor.state)) {
+        handlerName += 'When' + TP.str(state).asTitleCase();
+    } else {
+        handlerName += 'When' + TP.ANY;
+    }
+
+    return handlerName;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

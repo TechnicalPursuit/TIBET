@@ -50,6 +50,7 @@
     <config ref="oo"/>
     <config ref="service"/>
     <config ref="requests"/>
+    <config ref="signaling"/>
     <config ref="states"/>
     <config ref="values"/>
     <config ref="validation"/>
@@ -164,6 +165,10 @@
 
 <config id="requests">
     <script src="~lib_tst/src/tibet/requests/TP.sig.Request_Tests.js" />
+</config>
+
+<config id="signaling">
+    <script src="~lib_tst/src/tibet/signaling/TP.lang.Object_Tests.js" />
 </config>
 
 <config id="xslt">
