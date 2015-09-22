@@ -9609,18 +9609,29 @@ function(aSize, aChar, aSide) {
 
 //  ------------------------------------------------------------------------
 
-String.Inst.defineMethod('startsWith',
-function(aPrefix) {
+//  ECMA E6 defines 'startsWith', so only install here if it doesn't exist.
 
-    /**
-     * @method startsWith
-     * @summary Returns true if the receiver begins with the prefix provided.
-     * @param {String} aPrefix A String containing the characters to test.
-     * @returns {Boolean}
-     */
+if (!TP.isFunction(TP.StringProto.startsWith)) {
+    String.Inst.defineMethod('startsWith',
+    function(aPrefix, fromIndex) {
 
-    return this.indexOf(aPrefix) === 0;
-});
+        /**
+         * @method startsWith
+         * @summary Returns true if the receiver begins with the prefix
+         *     provided.
+         * @param {String} aPrefix A String containing the characters to test.
+         * @param {Number} [fromIndex] An optional position to start the search
+         *     from.
+         * @returns {Boolean} Whether or not the receiver starts with the
+         *     supplied index.
+         */
+
+        return this.indexOf(aPrefix, fromIndex) === 0;
+    });
+} else {
+    //  Otherwise, just register the builtin.
+    String.Inst.defineMethod('startsWith', TP.StringProto.startsWith); // E6
+}
 
 //  ------------------------------------------------------------------------
 

@@ -503,10 +503,13 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 //  ------------------------------------------------------------------------
 
 //  Faking out a load info here for the builtins
+
+/* eslint-disable vars-on-top */
 var currentLoadPath,
     currentSourcePath,
     currentLoadPackage,
     currentLoadConfig;
+/* eslint-enable vars-on-top */
 
 currentLoadPath = TP.boot[TP.LOAD_PATH];
 currentSourcePath = TP.boot[TP.SOURCE_PATH];
@@ -518,14 +521,23 @@ TP.boot[TP.SOURCE_PATH] = '';
 TP.boot[TP.LOAD_PACKAGE] = '';
 TP.boot[TP.LOAD_CONFIG] = '';
 
-Array.Type.defineMethod('isArray', Array.isArray);
+//  Go ahead and instrument the builtins by 'defining' them, according to TIBET
 
+//Array.Type.defineMethod('from', Array.from); // E6
+Array.Type.defineMethod('isArray', Array.isArray);
+//Array.Type.defineMethod('of', Array.of); // E6
+
+//Array.Inst.defineMethod('copyWithin', TP.ArrayProto.copyWithin); // E6
 Array.Inst.defineMethod('concat', TP.ArrayProto.concat);
 Array.Inst.defineMethod('every', TP.ArrayProto.every);
 Array.Inst.defineMethod('filter', TP.ArrayProto.filter);
+//Array.Inst.defineMethod('fill', TP.ArrayProto.fill); // E6
+//Array.Inst.defineMethod('find', TP.ArrayProto.find); // E6
+//Array.Inst.defineMethod('findIndex', TP.ArrayProto.findIndex); // E6
 Array.Inst.defineMethod('forEach', TP.ArrayProto.forEach);
 Array.Inst.defineMethod('indexOf', TP.ArrayProto.indexOf);
 Array.Inst.defineMethod('join', TP.ArrayProto.join);
+//Array.Inst.defineMethod('keys', TP.ArrayProto.keys); // E6
 Array.Inst.defineMethod('lastIndexOf', TP.ArrayProto.lastIndexOf);
 Array.Inst.defineMethod('map', TP.ArrayProto.map);
 Array.Inst.defineMethod('pop', TP.ArrayProto.pop);
@@ -541,6 +553,7 @@ Array.Inst.defineMethod('splice', TP.ArrayProto.splice);
 Array.Inst.defineMethod('toLocaleString', TP.ArrayProto.toLocaleString);
 Array.Inst.defineMethod('toString', TP.ArrayProto.toString);
 Array.Inst.defineMethod('unshift', TP.ArrayProto.unshift);
+//Array.Inst.defineMethod('values', TP.ArrayProto.values); // E6
 
 Boolean.Inst.defineMethod('toString', TP.BooleanProto.toString);
 Boolean.Inst.defineMethod('valueOf', TP.BooleanProto.valueOf);
@@ -606,6 +619,10 @@ Function.Inst.defineMethod('toString', TP.FunctionProto.toString);
 
 //  Math Object: don't expose publicly. See Number extensions.
 
+//Number.Inst.defineMethod('isFinite', TP.NumberProto.isFinite); // E6
+//Number.Inst.defineMethod('isInteger', TP.NumberProto.isInteger); // E6
+//Number.Inst.defineMethod('isNaN', TP.NumberProto.isNaN); // E6
+//Number.Inst.defineMethod('isSafeInteger', TP.NumberProto.isSafeInteger); // E6
 Number.Inst.defineMethod('toExponential', TP.NumberProto.toExponential);
 Number.Inst.defineMethod('toFixed', TP.NumberProto.toFixed);
 Number.Inst.defineMethod('toLocaleString', TP.NumberProto.toLocaleString);
@@ -613,19 +630,23 @@ Number.Inst.defineMethod('toPrecision', TP.NumberProto.toPrecision);
 Number.Inst.defineMethod('toString', TP.NumberProto.toString);
 Number.Inst.defineMethod('valueOf', TP.NumberProto.valueOf);
 
+//Object.Type.defineMethod('assign', Object.assign); // E6
 Object.Type.defineMethod('create', Object.create);
 Object.Type.defineMethod('defineProperty', Object.defineProperty);
 Object.Type.defineMethod('defineProperties', Object.defineProperties);
 Object.Type.defineMethod('freeze', Object.freeze);
 Object.Type.defineMethod('getOwnPropertyDescriptor', Object.getOwnPropertyDescriptor);
 Object.Type.defineMethod('getOwnPropertyNames', Object.getOwnPropertyNames);
+//Object.Type.defineMethod('getOwnPropertySymbols', Object.getOwnPropertySymbols); // E6
 Object.Type.defineMethod('getPrototypeOf', Object.getPrototypeOf);
+//Object.Type.defineMethod('is', Object.is); // E6
 Object.Type.defineMethod('isExtensible', Object.isExtensible);
 Object.Type.defineMethod('isFrozen', Object.isFrozen);
 Object.Type.defineMethod('isSealed', Object.isSealed);
 Object.Type.defineMethod('keys', Object.keys);
 Object.Type.defineMethod('preventExtensions', Object.preventExtensions);
 Object.Type.defineMethod('seal', Object.seal);
+//Object.Type.defineMethod('setPrototypeOf', Object.setPrototypeOf); // E6
 
 //  We don't expose an 'Object.Inst', but we need to register these methods...
 TP.defineMethodSlot(TP.ObjectProto, 'hasOwnProperty',
@@ -652,6 +673,8 @@ RegExp.Inst.defineMethod('test', TP.RegExpProto.test);
 RegExp.Inst.defineMethod('toString', TP.RegExpProto.toString);
 
 String.Type.defineMethod('fromCharCode', String.fromCharCode);
+//String.Type.defineMethod('fromCodePoint', String.fromCodePoint); // E6
+//String.Type.defineMethod('raw', String.raw); // E6
 
 String.Inst.defineMethod('anchor', TP.StringProto.anchor);
 String.Inst.defineMethod('big', TP.StringProto.big);
@@ -669,11 +692,15 @@ String.Inst.defineMethod('sup', TP.StringProto.sup);
 
 String.Inst.defineMethod('charAt', TP.StringProto.charAt);
 String.Inst.defineMethod('charCodeAt', TP.StringProto.charCodeAt);
+//String.Inst.defineMethod('codePointAt', TP.StringProto.codePointAt); // E6
 String.Inst.defineMethod('concat', TP.StringProto.concat);
+//String.Inst.defineMethod('includes', TP.StringProto.includes); // E6
 String.Inst.defineMethod('indexOf', TP.StringProto.indexOf);
 String.Inst.defineMethod('lastIndexOf', TP.StringProto.lastIndexOf);
 String.Inst.defineMethod('localeCompare', TP.StringProto.localeCompare);
 String.Inst.defineMethod('match', TP.StringProto.match);
+//String.Inst.defineMethod('normalize', TP.StringProto.normalize); // E6
+//String.Inst.defineMethod('repeat', TP.StringProto.repeat); // E6
 String.Inst.defineMethod('replace', TP.StringProto.replace);
 String.Inst.defineMethod('search', TP.StringProto.search);
 String.Inst.defineMethod('slice', TP.StringProto.slice);

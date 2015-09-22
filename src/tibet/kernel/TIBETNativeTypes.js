@@ -4594,30 +4594,40 @@ function(aFilter) {
 
 //  ------------------------------------------------------------------------
 
-String.Inst.defineMethod('endsWith',
-function(aSuffix) {
+//  ECMA E6 defines 'endsWith', so only install here if it doesn't exist.
 
-    /**
-     * @method endsWith
-     * @summary Returns true if the receiver ends with the suffix provided.
-     * @param {String} aSuffix The string to check as a suffix.
-     * @returns {Boolean}
-     */
+if (!TP.isFunction(TP.StringProto.endsWith)) {
+    String.Inst.defineMethod('endsWith',
+    function(aSuffix, fromIndex) {
 
-    var ind;
+        /**
+         * @method endsWith
+         * @summary Returns true if the receiver ends with the suffix provided.
+         * @param {String} aSuffix The string to check as a suffix.
+         * @param {Number} [fromIndex] An optional position to start the search
+         *     from.
+         * @returns {Boolean} Whether or not the receiver ends with the
+         *     supplied index.
+         */
 
-    if (TP.isEmpty(aSuffix)) {
-        return false;
-    }
+        var ind;
 
-    if ((ind = this.lastIndexOf(aSuffix)) === TP.NOT_FOUND) {
-        return false;
-    }
+        if (TP.isEmpty(aSuffix)) {
+            return false;
+        }
 
-    /* eslint-disable no-extra-parens */
-    return ind === (this.length - aSuffix.length);
-    /* eslint-enable no-extra-parens */
-});
+        if ((ind = this.lastIndexOf(aSuffix, fromIndex)) === TP.NOT_FOUND) {
+            return false;
+        }
+
+        /* eslint-disable no-extra-parens */
+        return ind === (this.length - aSuffix.length);
+        /* eslint-enable no-extra-parens */
+    });
+} else {
+    //  Otherwise, just register the builtin.
+    String.Inst.defineMethod('endsWith', TP.StringProto.endsWith); // E6
+}
 
 //  ------------------------------------------------------------------------
 
