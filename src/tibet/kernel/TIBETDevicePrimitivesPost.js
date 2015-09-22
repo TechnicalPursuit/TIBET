@@ -286,8 +286,10 @@ function(anEvent) {
      */
 
     var target,
-        signal,
-        ancestor,
+        signalTypeName,
+
+        current,
+
         computedTarget,
         sigNames,
         targetType;
@@ -304,73 +306,73 @@ function(anEvent) {
         return null;
     }
 
-    //  If the event target is a Document node, then just return that, since
-    //  no traversal makes sense.
+    //  If the event target is a Document node, then just return that, since no
+    //  traversal makes sense.
     if (target.nodeType === Node.DOCUMENT_NODE) {
         return target;
     } else if (TP.isTextNode(target)) {
-        //  text nodes aren't useful targets but some browsers like to
-        //  report them as the target/srcElement (even when they're not
-        //  really an element). We adjust for that here.
+        //  text nodes aren't useful targets but some browsers like to report
+        //  them as the target/srcElement (even when they're not really an
+        //  element). We adjust for that here.
         target = TP.ifInvalid(target.parentNode, target);
     }
 
     //  we'll search for capturing on the TIBET name for the event
-    signal = TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent));
-    if (TP.notValid(signal)) {
+    signalTypeName = TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent));
+    if (TP.notValid(signalTypeName)) {
         return target;
     }
 
-    //  Starting at the target, traverse up the parent chain to the
-    //  Document node (or the nearest DocumentFragment node).
-    ancestor = target;
+    //  Starting at the target, traverse up the parent chain to the Document
+    //  node (or the nearest DocumentFragment node).
+    current = target;
 
     //  Make sure to skip over Node.TEXT_NODE nodes.
-    if (!TP.isElement(ancestor)) {
-        ancestor = ancestor.parentNode;
+    if (!TP.isElement(current)) {
+        current = current.parentNode;
     }
 
-    while (ancestor &&
-            ancestor.nodeType !== Node.DOCUMENT_NODE &&
-            ancestor.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
+    while (current &&
+            current.nodeType !== Node.DOCUMENT_NODE &&
+            current.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
 
-        //  If the element at this level is 'disabled', then nothing we do
-        //  here matters, so we bail out returning null.
-        if (TP.elementIsDisabled(ancestor)) {
+        //  If the element at this level is 'disabled', then nothing we do here
+        //  matters, so we bail out returning null.
+        if (TP.elementIsDisabled(current)) {
             return null;
         }
 
-        //  unless we found a capturing container we keep searching until we
-        //  run out of options or run into a disabled element.
+        //  unless we found a capturing container we keep searching until we run
+        //  out of options or run into a disabled element.
         if (TP.notValid(computedTarget)) {
 
             //  Grab the TIBET wrapper type for the element and query it for
             //  signal names that this type might capture.
             if (TP.isType(targetType =
-                            TP.core.ElementNode.getConcreteType(ancestor))) {
-                sigNames = targetType.getCapturingSignalNames(ancestor);
+                            TP.core.ElementNode.getConcreteType(current))) {
+                sigNames = targetType.getCapturingSignalNames(current);
             }
 
             if (TP.isValid(sigNames) &&
-                sigNames.indexOf(signal) !== TP.NOT_FOUND) {
-                //  set computedTarget to the ancestor, but NOTE NO BREAK
-                //  here so the iteration will continue up the tree until
-                //  we're sure we're not under a disabled element.
-                computedTarget = ancestor;
+                sigNames.indexOf(signalTypeName) !== TP.NOT_FOUND) {
+                //  set computedTarget to the current, but NOTE NO BREAK here so
+                //  the iteration will continue up the tree until we're sure
+                //  we're not under a disabled element.
+                computedTarget = current;
             }
         }
 
-        //  Notice how we do *not* break out of this loop so that if any
-        //  parent is disabled, we will still return null
-        ancestor = ancestor.parentNode;
+        //  Notice how we do *not* break out of this loop so that if any parent
+        //  is disabled, we will still return null
+        current = current.parentNode;
     }
 
     //  If we couldn't compute a target element, then go ahead and return the
     //  'original' (unless it was a Node.TEXT_NODE) event target, since we
-    //  couldn't find any elements that had the attribute we were searching
-    //  for. This allows a nice defaulting behavior when we're in a page
-    //  (or DOM section) that's not using the 'tibet:captures' attribute and
-    //  doesn't care.
+    //  couldn't find any elements that had the attribute we were searching for.
+    //  This allows a nice defaulting behavior when we're in a page (or DOM
+    //  section) that's not using the 'tibet:captures' attribute and doesn't
+    //  care.
     return computedTarget || target;
 });
 
