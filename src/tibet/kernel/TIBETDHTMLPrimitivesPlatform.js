@@ -979,7 +979,7 @@ TP.hc(
          *     insertAdjacentHTML() calls for 'table', 'thead', 'tbody',
          *     'tfoot', 'th', 'tr' and 'td' elements. See
          *     'htmlElementSetContent()', 'htmlElementInsertContent()' and
-         *     'htmlElementReplaceContent()' for usage of this routine.
+         *     'htmlElementReplaceWith()' for usage of this routine.
          * @param {String} elemTagName The tag name of the element that we're
          *     generating content for. NOTE: This method expects this name to be
          *     *lower case*.

@@ -30,7 +30,7 @@ function(aRequest) {
     newElem = TP.xhtmlnode(
         '<h1 tibet:tag="{{nsname}}:{{tagname}}">Compiled Tag!</h1>');
 
-    TP.elementReplaceContent(elem, newElem);
+    TP.elementReplaceWith(elem, newElem);
 
     return;
 });
