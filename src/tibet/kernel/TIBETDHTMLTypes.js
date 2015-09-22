@@ -540,20 +540,13 @@ TP.core.DragResponder.Inst.defineAttribute('yOffset', 0);
 //  ------------------------------------------------------------------------
 
 TP.core.DragResponder.Inst.defineMethod('init',
-function(stateMachine, actionElement) {
+function(stateMachine) {
 
     /**
      * @method init
      * @summary Initializes a new instance of the receiver.
      * @param {TP.core.StateMachine} stateMachine The state machine this
      *     responder should observe.
-     * @param {HTMLElement|String} actionElement The action element the
-     *     receiver will actually be modifying the style of to perform the drag.
-     *     This is an optional parameter and if omitted will be set to the state
-     *     machine's 'source' object. If the state machine's 'source' object is
-     *     *not* an Element, this method will just set the action element to
-     *     null. The action element will then have to be set before the receiver
-     *     is fully operational.
      * @returns {TP.core.DragResponder} A new instance.
      */
 
@@ -574,21 +567,9 @@ function(stateMachine, actionElement) {
 
     this.set('currentPoint', TP.pc(0, 0));
 
-    obj = stateMachine.get('eventSource');
-    if (obj !== TP.core.Mouse) {
-        //  Event sources for DragMachine resolve to Elements.
-        this.set('targetElement', obj);
-    }
-
-    if (TP.isElement(actionElement)) {
-        this.set('actionElement', actionElem);
-    } else if (TP.isElement(obj)) {
-        this.set('actionElement', obj);
-    } else {
-        //  Invoke the setter here with null to force other related
-        //  attribute settings to be updated by the setter.
-        this.set('actionElement', null);
-    }
+    //  Invoke the setter here with null to force other related attribute
+    //  settings to be updated by the setter.
+    this.set('actionElement', null);
 
     this.set('modifiers', TP.ac());
     this.set('$frameOffsetPoint', TP.pc(0, 0));
@@ -1799,13 +1780,6 @@ function(stateMachine, actionElement) {
      * @summary Initializes a new instance of the receiver.
      * @param {TP.core.StateMachine} stateMachine The state machine this
      *     responder should observe.
-     * @param {HTMLElement|String} actionElement The action element the
-     *     receiver will actually be modifying the style of to perform the drag.
-     *     This is an optional parameter and if omitted will be set to the state
-     *     machine's 'source' object. If the state machine's 'source' object is
-     *     *not* an Element, this method will just set the action element to
-     *     null. The action element will then have to be set before the receiver
-     *     is fully operational.
      * @returns {TP.core.ResizeResponder} A new instance.
      */
 
