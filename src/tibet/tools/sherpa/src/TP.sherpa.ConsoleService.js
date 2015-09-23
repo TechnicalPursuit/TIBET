@@ -2017,7 +2017,7 @@ function() {
      *     receiver wants to do of the state machine it will be using should be
      *     done here before the receiver becomes a registered object and begins
      *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.KeyResponder} The receiver.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
      */
 
     var stateMachine;
@@ -2049,7 +2049,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.KeyResponder} The receiver.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
      */
 
     var consoleGUI,
@@ -2168,7 +2168,7 @@ function() {
      *     receiver wants to do of the state machine it will be using should be
      *     done here before the receiver becomes a registered object and begins
      *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.KeyResponder} The receiver.
+     * @returns {TP.core.EvalMarkingKeyResponder} The receiver.
      */
 
     var stateMachine,
