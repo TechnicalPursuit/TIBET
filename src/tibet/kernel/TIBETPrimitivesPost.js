@@ -5191,6 +5191,9 @@ function(aDescriptor) {
 
     if (TP.isString(aDescriptor)) {
         signal = aDescriptor;
+    } else if (TP.isNumber(aDescriptor)) {
+        //  Handle 404 for example :)
+        signal = '' + aDescriptor;
     } else if (!TP.isPlainObject(aDescriptor)) {
         return this.raise('InvalidDescriptor', aDescriptor);
     } else {

@@ -4604,7 +4604,7 @@ function(aSignal) {
     //  At this level, this type only handles subtypes of TP.sig.DOMKeySignal
     if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
 
-        handlerName = 'handle' + aSignal.getKeyName();
+        handlerName = TP.computeHandlerName(aSignal.getKeyName());
 
         if (TP.canInvoke(this, handlerName)) {
             this[handlerName](aSignal);

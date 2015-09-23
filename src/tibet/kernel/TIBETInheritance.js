@@ -1895,6 +1895,9 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
 
     if (TP.isCallable(handlerFunc)) {
         return handlerFunc.call(this, aSignal);
+/*
+ * BILL: find a way to remove this :)
+ *
     } else if (TP.isKindOf(this, TP.core.Node)) {
         //  TODO: This is a hack to make binding to Nodes inside of a GUI page
         //  (i.e. to an attribute of an actual visible Element). In this case,
@@ -1908,12 +1911,11 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
             handlerFunc = target.getHandler(
                 aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
             if (TP.isCallable(handlerFunc)) {
-                // TODO: BILL - commented out below. Binding someone else's
-                // handler to a different object throws due to missing refs.
-                //return handlerFunc.call(this, aSignal);
-                return handlerFunc.call(target, aSignal);
+                //  BILL - this throws on URI getResource bound to a Node.
+                return handlerFunc.call(this, aSignal);
             }
         }
+*/
     }
 
     return;

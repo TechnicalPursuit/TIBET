@@ -2077,7 +2077,7 @@ function(aSignal) {
             //  Update the 'keyboardInfo' part of the status.
             consoleGUI.updateStatus(aSignal, 'keyboardInfo');
 
-            handlerName = 'handle' + aSignal.getKeyName();
+            handlerName = TP.computeHandlerName(aSignal.getKeyName());
 
             if (TP.canInvoke(this, handlerName)) {
                 TP.eventPreventDefault(evt);
