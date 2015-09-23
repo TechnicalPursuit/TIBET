@@ -2307,6 +2307,7 @@ TP.sherpa.NormalKeyResponder.defineSubtype('AutoCompletionKeyResponder');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$changeHandler');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$finishedCompletion');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$popupContainer');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$showingHint');
@@ -2324,13 +2325,12 @@ function() {
      *     receiver wants to do of the state machine it will be using should be
      *     done here before the receiver becomes a registered object and begins
      *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.KeyResponder} The receiver.
+     * @returns {TP.core.AutoCompletionKeyResponder} The receiver.
      */
 
     var stateMachine,
 
-        backgroundElem,
-        hintFunc;
+        backgroundElem;
 
     this.set('mainState', 'autocompletion');
 
@@ -2346,18 +2346,6 @@ function() {
 
     backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
     this.set('$popupContainer', backgroundElem);
-
-    hintFunc = this.showHint.bind(this);
-
-    TP.extern.CodeMirror.commands.autocomplete = function(cm) {
-        cm.showHint(
-            {
-                hint: hintFunc,
-                container: backgroundElem,  //  undocumented property
-                completeSingle: false,
-                closeOnUnfocus: false
-            });
-    };
 
     this.set('$showingHint', false);
     this.set('$finishedCompletion', false);
@@ -2375,18 +2363,28 @@ function(aSignal) {
      * @summary Invoked when the receiver enters it's 'main state'.
      * @param {TP.sig.StateEnter} aSignal The signal that caused the state
      *     machine to enter a state that matches the receiver's 'main state'.
-     * @returns {TP.core.KeyResponder} The receiver.
+     * @returns {TP.core.AutoCompletionKeyResponder} The receiver.
      */
 
     var consoleGUI,
-        editorObj;
+        editorObj,
+
+        backgroundElem,
+        hintFunc,
+
+        handler;
 
     consoleGUI = this.get('$consoleGUI');
     editorObj = consoleGUI.get('consoleInput').get('$editorObj');
 
+    backgroundElem = this.get('$popupContainer');
+    hintFunc = this.showHint.bind(this);
+
+    //  We manually manage the showing of the autocomplete popup to get better
+    //  control.
     editorObj.on(
-        'keyup',
-        function(cm, evt) {
+        'change',
+        handler = function(cm, evt) {
 
             var hintsElem;
 
@@ -2397,7 +2395,7 @@ function(aSignal) {
             }
 
             hintsElem = TP.byCSSPath('.CodeMirror-hints',
-                                        this.get('$popupContainer'),
+                                        backgroundElem,
                                         true,
                                         false);
 
@@ -2411,8 +2409,47 @@ function(aSignal) {
                 return;
             }
 
-            cm.execCommand('autocomplete');
+            cm.showHint(
+                {
+                    hint: hintFunc,
+                    container: backgroundElem,  //  undocumented property
+                    completeSingle: false,
+                    closeOnUnfocus: false
+                });
+
         }.bind(this));
+
+    this.set('$changeHandler', handler);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('didExit',
+function(aSignal) {
+
+    /**
+     * @method didExit
+     * @summary Invoked when the receiver exits it's 'main state'.
+     * @param {TP.sig.StateExit} aSignal The signal that caused the state
+     *     machine to exit a state that matches the receiver's 'main state'.
+     * @returns {TP.sherpa.AutoCompletionKeyResponder} The receiver.
+     */
+
+    var consoleGUI,
+        editorObj;
+
+    consoleGUI = this.get('$consoleGUI');
+    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    //  Remove the change handler that manages the autocomplete popup. We
+    //  installed it when we entered this state.
+    editorObj.off(
+        'change',
+        this.get('$changeHandler'));
+
+    this.set('$changeHandler', null);
 
     return this;
 });
