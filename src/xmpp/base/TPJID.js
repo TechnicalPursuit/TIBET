@@ -444,7 +444,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.JID.Inst.defineMethod('handleXMPPPresenceInput',
+TP.xmpp.JID.Inst.defineHandler('XMPPPresenceInput',
 function(aSignal) {
 
     /**
@@ -481,7 +481,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.JID.Inst.defineMethod('handleXMPPPubsubNodeChange',
+TP.xmpp.JID.Inst.defineHandler('XMPPPubsubNodeChange',
 function(aSignal) {
 
     /**

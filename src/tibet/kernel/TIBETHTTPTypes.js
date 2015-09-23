@@ -183,7 +183,7 @@ function(aResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.HTTPRequest.Inst.defineMethod('handleIOFailed',
+TP.sig.HTTPRequest.Inst.defineHandler('IOFailed',
 function(aSignal) {
 
     /**
@@ -256,7 +256,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.HTTPRequest.Inst.defineMethod('handleIOSucceeded',
+TP.sig.HTTPRequest.Inst.defineHandler('IOSucceeded',
 function(aSignal) {
 
     /**
@@ -798,7 +798,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('handleHTTPRequest',
+TP.core.HTTPService.Inst.defineHandler('HTTPRequest',
 function(aRequest) {
 
     /**

@@ -799,7 +799,7 @@ function(aState) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateMachine.Inst.defineMethod('handleSignal',
+TP.core.StateMachine.Inst.defineHandler('Signal',
 function(aSignal) {
 
     /**
@@ -1400,7 +1400,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('handleStateEnter',
+TP.core.StateResponder.Inst.defineHandler('StateEnter',
 function(aSignal) {
 
     /**
@@ -1423,7 +1423,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('handleStateExit',
+TP.core.StateResponder.Inst.defineHandler('StateExit',
 function(aSignal) {
 
     /**
@@ -1446,7 +1446,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('handleStateInput',
+TP.core.StateResponder.Inst.defineHandler('StateInput',
 function(aSignal) {
 
     /**

@@ -1099,7 +1099,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 //  TP.core.DocumentNode
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('handleDOMRefresh',
+TP.core.DocumentNode.Inst.defineHandler('DOMRefresh',
 function(aSignal) {
 
     /**
@@ -1583,7 +1583,7 @@ function(attrName, attrValue, scopeVals, direction, unregisterURIs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('handleDOMRebuild',
+TP.core.ElementNode.Inst.defineHandler('DOMRebuild',
 function(aSignal) {
 
     /**
@@ -1600,7 +1600,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('handleDOMRefresh',
+TP.core.ElementNode.Inst.defineHandler('DOMRefresh',
 function(aSignal) {
 
     /**
@@ -2426,7 +2426,7 @@ function(aSignalOrHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('handleDOMDblClick',
+TP.core.ElementNode.Inst.defineHandler('DOMDblClick',
 function(aSignal) {
 
     /**

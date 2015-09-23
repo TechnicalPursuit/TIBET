@@ -66,7 +66,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.tabbar.Inst.defineMethod('handleDOMClick',
+TP.xctrls.tabbar.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     /**

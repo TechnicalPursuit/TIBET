@@ -69,10 +69,10 @@
  *     Package and fire the request:
  *
  *     jsonReq = TP.sig.JSONRequest.construct(requestParams);
- *     jsonReq.defineMethod('handleRequestSucceeded', function(aResponse) {
+ *     jsonReq.defineHandler('RequestSucceeded', function(aResponse) {
  *
  *     TP.info('Success! Result: ' + TP.json(aResponse.getResult())
- *     ); }); jsonReq.defineMethod('handleRequestFailed',
+ *     ); }); jsonReq.defineHandler('RequestFailed',
  *     function(aResponse) {
  *
  *     TP.info('Failure... Result: ' + aResponse.getFaultText()

@@ -357,7 +357,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Stanza.Inst.defineMethod('handleXMPPInput',
+TP.xmpp.Stanza.Inst.defineHandler('XMPPInput',
 function(aSignal) {
 
     /**

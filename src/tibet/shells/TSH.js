@@ -309,7 +309,7 @@ TP.core.TSH.register();
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Type.defineMethod('handleActivationKeyUp',
+TP.core.TSH.Type.defineHandler('ActivationKeyUp',
 function(aSignal) {
 
     /**
@@ -696,7 +696,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('handleShellRequest',
+TP.core.TSH.Inst.defineHandler('ShellRequest',
 function(aRequest) {
 
     /**
@@ -717,7 +717,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('handleShellRequestCompleted',
+TP.core.TSH.Inst.defineHandler('ShellRequestCompleted',
 function(aSignal) {
 
     /**
@@ -3913,12 +3913,12 @@ function(aRequest) {
 
     req = url.constructRequest();
 
-    req.defineMethod('handleRequestSucceeded',
+    req.defineHandler('RequestSucceeded',
                         function() {
                             aRequest.stdout(req.getResult());
                             aRequest.complete();
                         });
-    req.defineMethod('handleRequestFailed',
+    req.defineHandler('RequestFailed',
                         function() {
                             aRequest.stderr(req.getResult());
                             aRequest.complete();

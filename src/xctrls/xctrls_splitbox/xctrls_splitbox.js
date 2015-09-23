@@ -56,7 +56,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.splitbox.Inst.defineMethod('handleValueChange',
+TP.xctrls.splitbox.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**

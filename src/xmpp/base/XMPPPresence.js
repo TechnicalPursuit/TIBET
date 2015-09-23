@@ -242,7 +242,7 @@ where certain packet types require specific responses.
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Presence.Inst.defineMethod('handleArrival',
+TP.xmpp.Presence.Inst.defineHandler('Arrival',
 function(aSignal) {
 
     /**
@@ -272,7 +272,7 @@ function(aSignal) {
         //  have to observe input signal to be able to respond
         //uir.observe(null, 'TP.sig.UserInput');
 
-        uir.defineMethod('handleUserInput',
+        uir.defineHandler('UserInput',
             function(sig) {
 
                 var res,

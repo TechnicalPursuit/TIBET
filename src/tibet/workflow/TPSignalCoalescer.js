@@ -215,7 +215,7 @@ function(anOrigin, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalCoalescer.Inst.defineMethod('handleSignal',
+TP.sig.SignalCoalescer.Inst.defineHandler('Signal',
 function(aSignal) {
 
     /**

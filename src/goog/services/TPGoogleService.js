@@ -156,7 +156,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineMethod('handleRequestSucceeded',
+TP.goog.GoogleService.Inst.defineHandler('RequestSucceeded',
 function(aSignal) {
 
     /**
@@ -217,7 +217,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineMethod('handleHTTPRequest',
+TP.goog.GoogleService.Inst.defineHandler('HTTPRequest',
 function(aRequest) {
 
     /**
@@ -254,7 +254,7 @@ function(aRequest) {
 
                 //  Call 'up' to our instance handler to parse out the
                 //  'authToken' for use further down.
-                this.handleRequestSucceeded(authResponse);
+                this[TP.computeHandlerName('RequestSucceeded')](authResponse);
 
                 //  Now that we've manually called the handler method, we
                 //  can stopPropation() on the response so that it doesn't

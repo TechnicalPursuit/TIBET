@@ -1975,7 +1975,7 @@ TP.registerLoadInfo(TP.defineSlot);
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot =
-function(target, name, value, track, desc, display, owner) {
+function(target, name, value, track, desc, display, owner, $handler) {
 
     /**
      * @method defineMethodSlot
@@ -1991,6 +1991,8 @@ function(target, name, value, track, desc, display, owner) {
      * @param {String} display The method display name. Defaults to the owner
      *     ID plus the track and name.
      * @param {Object} owner The owner object. Defaults to target.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
@@ -2028,7 +2030,10 @@ function(target, name, value, track, desc, display, owner) {
     //  Ensure metadata is attached along with owner/track etc.
     value.asMethod(own, name, trk, display);
 
-    if (/^handle[0-9A-Z]/.test(name) && TP.canInvoke(TP, 'deprecated')) {
+    //  Warn about deprecated use of method definition for handler definition
+    //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
+    if (!$handler && /^handle[0-9A-Z]/.test(name) &&
+            TP.canInvoke(TP, 'deprecated')) {
         TP.deprecated('Use defineHandler for handler: ' +
             TP.objectGetMetadataName(value));
     }
@@ -2683,7 +2688,9 @@ function(anObj) {
     //  Based on jQuery 2.X isPlainObject with additional checks for TIBET
     //  objects.
 
-    if (anObj[TP.TYPE] ||
+    if (anObj === null ||
+        anObj === undefined ||
+        anObj[TP.TYPE] ||
         typeof anObj !== 'object' ||
         anObj.nodeType ||
         TP.isWindow(anObj)) {
@@ -4836,7 +4843,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'defineMethod',
-function(methodName, methodBody, desc, display) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -4851,11 +4858,14 @@ function(methodName, methodBody, desc, display) {
      *     to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
+            TP, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
+            $handler);
 });
 
 //  ------------------------------------------------------------------------
@@ -4968,7 +4978,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.sys, 'defineMethod',
-function(methodName, methodBody, desc, display) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -4983,11 +4993,14 @@ function(methodName, methodBody, desc, display) {
      *     to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP.sys, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
+            TP.sys, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
+            $handler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5034,7 +5047,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.boot, 'defineMethod',
-function(methodName, methodBody, desc, display) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -5049,11 +5062,14 @@ function(methodName, methodBody, desc, display) {
      *     to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP.boot, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
+            TP.boot, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
+            $handler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5100,7 +5116,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(APP, 'defineMethod',
-function(methodName, methodBody, desc, display) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -5115,11 +5131,14 @@ function(methodName, methodBody, desc, display) {
      *     to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            APP, methodName, methodBody, TP.LOCAL_TRACK, desc, display);
+            APP, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
+            $handler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5197,7 +5216,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineMethod',
-function(methodName, methodBody, desc) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -5209,11 +5228,16 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
+     * @param {String} display Optional string defining the public display name
+     *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            this, methodName, methodBody, TP.LOCAL_TRACK, desc, null, this);
+        this, methodName, methodBody, TP.LOCAL_TRACK, desc, display, this,
+        $handler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5311,7 +5335,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.FunctionProto, 'defineMethod',
-function(methodName, methodBody, desc) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -5324,6 +5348,10 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
+     * @param {String} display Optional string defining the public display name
+     *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
@@ -5353,7 +5381,9 @@ function(methodName, methodBody, desc) {
     }
 
     return TP.defineMethodSlot(
-            target, methodName, methodBody, track, desc, null, owner);
+            target, methodName, methodBody, track, desc, display, owner,
+            $handler);
+
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineMethod');
 
 //  ------------------------------------------------------------------------
@@ -5421,7 +5451,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineMethod',
-function(methodName, methodBody, desc) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -5432,6 +5462,10 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
+     * @param {String} display Optional string defining the public display name
+     *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
@@ -5460,7 +5494,9 @@ function(methodName, methodBody, desc) {
     }
 
     return TP.defineMethodSlot(
-                this, methodName, methodBody, track, desc, null, owner);
+        this, methodName, methodBody, track, desc, display, owner,
+        $handler);
+
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineMethod');
 
 //  ------------------------------------------------------------------------
@@ -5526,7 +5562,7 @@ function(constantName, constantValue) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineMethod',
-function(methodName, methodBody, desc) {
+function(methodName, methodBody, desc, display, $handler) {
 
     /**
      * @method defineMethod
@@ -5537,6 +5573,10 @@ function(methodName, methodBody, desc) {
      * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
      *     is supplied here, it is ignored in favor of the methodBody parameter
      *     to this method.
+     * @param {String} display Optional string defining the public display name
+     *     for the function.
+     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
@@ -5565,7 +5605,8 @@ function(methodName, methodBody, desc) {
     }
 
     return TP.defineMethodSlot(
-                this, methodName, methodBody, track, desc, null, owner);
+        this, methodName, methodBody, track, desc, display, owner,
+        $handler);
 
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineMethod');
 

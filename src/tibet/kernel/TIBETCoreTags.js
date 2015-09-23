@@ -95,7 +95,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.Type.defineMethod('handleValueChange',
+TP.core.CustomTag.Type.defineHandler('ValueChange',
 function(aSignal) {
 
     /**

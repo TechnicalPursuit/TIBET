@@ -69,7 +69,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.clipbox.Inst.defineMethod('handleSlide',
+TP.xctrls.clipbox.Inst.defineHandler('Slide',
 function(aSignal) {
 
     /**
@@ -92,7 +92,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.clipbox.Inst.defineMethod('handleValueChange',
+TP.xctrls.clipbox.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**

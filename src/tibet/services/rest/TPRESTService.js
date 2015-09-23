@@ -44,7 +44,7 @@
  *
  *     request = TP.sig.RESTRequest.construct(
  *     TP.hc('uri','http://www.google.com'));
- *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
+ *     request.defineHandler('RequestSucceeded', function(aResponse) {
  *
  *     TP.info(aResponse.getResult()); }); request.fire();
  *
@@ -55,7 +55,7 @@
  *
  *     request = TP.sig.RESTRequest.construct( TP.hc('uri',
  *     'http://www.google.com', 'async', false));
- *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
+ *     request.defineHandler('RequestSucceeded', function(aResponse) {
  *
  *     TP.info(aResponse.getResult()); }); request.fire();
  *

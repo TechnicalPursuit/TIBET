@@ -288,7 +288,7 @@ function(aValue) {
 //  PubSub sharing
 //  ------------------------------------------------------------------------
 
-TP.xctrls.richtext.Inst.defineMethod('handleXMPPPubsubEventInput',
+TP.xctrls.richtext.Inst.defineHandler('XMPPPubsubEventInput',
 function(aSignal) {
 
     /**

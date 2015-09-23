@@ -129,7 +129,7 @@ function(aRequestID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UserIOService.Inst.defineMethod('handleNextRequest',
+TP.core.UserIOService.Inst.defineHandler('NextRequest',
 function(aRequest) {
 
     /**
@@ -165,7 +165,7 @@ function(aRequest) {
 
     //  deal with running out of requests to process
     if (TP.notValid(req = this.getNextRequest(aRequest))) {
-        return this.handleNoMoreRequests(aRequest);
+        return this[TP.computeHandlerName('NoMoreRequests')](aRequest);
     }
 
     handler = this.getHandler(req);
@@ -178,7 +178,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UserIOService.Inst.defineMethod('handleNoMoreRequests',
+TP.core.UserIOService.Inst.defineHandler('NoMoreRequests',
 function(aRequest) {
 
     /**
@@ -194,7 +194,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UserIOService.Inst.defineMethod('handleUserInputRequest',
+TP.core.UserIOService.Inst.defineHandler('UserInputRequest',
 function(aSignal) {
 
     /**
@@ -209,7 +209,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UserIOService.Inst.defineMethod('handleUserInputSeries',
+TP.core.UserIOService.Inst.defineHandler('UserInputSeries',
 function(aSignal) {
 
     /**
@@ -224,7 +224,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UserIOService.Inst.defineMethod('handleUserOutputRequest',
+TP.core.UserIOService.Inst.defineHandler('UserOutputRequest',
 function(aSignal) {
 
     /**

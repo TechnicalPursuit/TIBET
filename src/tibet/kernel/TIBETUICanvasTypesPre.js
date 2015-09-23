@@ -1947,7 +1947,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Window.Inst.defineMethod('handleDOMClose',
+TP.core.Window.Inst.defineHandler('DOMClose',
 function(aSignal) {
 
     /**

@@ -691,7 +691,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  automatically, since by emptying the content of the document above, we
     //  blew away the Mutation Observer registration.
     if (TP.isElement(docElem) && awakenContent) {
-        TP.core.MutationSignalSource.handleMutationEvent(
+        TP.core.MutationSignalSource[TP.computeHandlerName('MutationEvent')](
             {
                 type: 'childList',
                 target: docElem,

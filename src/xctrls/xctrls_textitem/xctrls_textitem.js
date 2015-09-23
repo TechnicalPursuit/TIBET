@@ -23,7 +23,7 @@ TP.xctrls.textitem.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.textitem.Inst.defineMethod('handleDOMClick',
+TP.xctrls.textitem.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     /**

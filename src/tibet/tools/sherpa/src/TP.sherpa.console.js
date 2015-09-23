@@ -266,7 +266,8 @@ function() {
 //  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
+TP.sherpa.console.Inst.defineHandler(
+{signal: 'HiddenChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**

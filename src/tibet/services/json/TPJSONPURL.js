@@ -27,7 +27,7 @@
  *     TP.uc('jsonp://api.crunchbase.com/v/1/company/facebook.js');
  *
  *     jsonRequest = TP.request('refresh', true);
- *     jsonRequest.defineMethod('handleRequestSucceeded', function(aRequest) {
+ *     jsonRequest.defineHandler('RequestSucceeded', function(aRequest) {
  *
  *     TP.ifInfo() ? TP.info('The results are: ' +
  *     TP.str(aRequest.getResult())): 0; });

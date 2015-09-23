@@ -633,7 +633,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Resource.Inst.defineMethod('handleRequest',
+TP.core.Resource.Inst.defineHandler('Request',
 function(aRequest) {
 
     /**
@@ -1388,7 +1388,9 @@ function(aRequest) {
         for (i = 0; i < len; i++) {
             key = keys.at(i);
             if (TP.regex.HANDLER_NAME.test(key)) {
-                this.defineMethod(key, request.at(key));
+                this.defineMethod(key,
+                    request.at(key),
+                    null, null, true);
             }
         }
     }
@@ -1810,7 +1812,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Request.Inst.defineMethod('handleResponse',
+TP.sig.Request.Inst.defineHandler('Response',
 function(aSignal) {
 
     /**
@@ -2832,8 +2834,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
 
         sigType,
 
-        shortHandler,
-        fullHandler,
+        handlerName,
 
         joins,
         ancestor,
@@ -2898,17 +2899,13 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 continue;
             }
 
-            shortHandler = sigType.getHandlerName(null, null, null, false) +
-                suffix;
-            fullHandler = sigType.getHandlerName(null, null, null, true) +
-                suffix;
+            handlerName = TP.computeHandlerName({signal: signame + suffix});
 
             response.setSignalName(signame + suffix);
 
             //  notify the request itself, it will often be locally
             //  programmed with custom callback hooks
-            TP.handle(request, response, shortHandler, true);
-            TP.handle(request, response, fullHandler, true);
+            TP.handle(request, response, handlerName, true);
             if (response.shouldPrevent() || response.shouldStop()) {
                 break;
             }
@@ -2916,14 +2913,12 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
             //  notify responder...typically the service which did the
             //  actual processing. we give it one last chance to finish up
             //  any housekeeping for the request/response before requestor
-            TP.handle(responder, response, shortHandler, true);
-            TP.handle(responder, response, fullHandler, true);
+            TP.handle(responder, response, handlerName, true);
             if (response.shouldPrevent() || response.shouldStop()) {
                 break;
             }
 
-            TP.handle(requestor, response, shortHandler, true);
-            TP.handle(requestor, response, fullHandler, true);
+            TP.handle(requestor, response, handlerName, true);
             if (response.shouldPrevent() || response.shouldStop()) {
                 break;
             }
@@ -4507,7 +4502,7 @@ function(aServiceID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Service.Type.defineMethod('handleRequest',
+TP.core.Service.Type.defineHandler('Request',
 function(aSignal) {
 
     /**
@@ -4842,7 +4837,7 @@ TP.core.FunctionService.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.FunctionService.Inst.defineMethod('handleFunctionRequest',
+TP.core.FunctionService.Inst.defineHandler('FunctionRequest',
 function(aRequest) {
 
     /**
@@ -5056,7 +5051,7 @@ function(aJob) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.IOService.Inst.defineMethod('handleRequestFailed',
+TP.core.IOService.Inst.defineHandler('RequestFailed',
 function(aSignal) {
 
     /**
@@ -5078,7 +5073,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.IOService.Inst.defineMethod('handleRequestSucceeded',
+TP.core.IOService.Inst.defineHandler('RequestSucceeded',
 function(aSignal) {
 
     /**
@@ -6044,7 +6039,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleAppWillStart',
+TP.core.Application.Inst.defineHandler('AppWillStart',
 function(aSignal) {
 
     /**

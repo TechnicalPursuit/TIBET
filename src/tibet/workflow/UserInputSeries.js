@@ -557,7 +557,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.UserInputSeries.Inst.defineMethod('handleUserInput',
+TP.sig.UserInputSeries.Inst.defineHandler('UserInput',
 function(aSignal) {
 
     /**

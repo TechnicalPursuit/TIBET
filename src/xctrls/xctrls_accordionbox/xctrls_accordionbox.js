@@ -65,7 +65,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.accordionbox.Inst.defineMethod('handleValueChange',
+TP.xctrls.accordionbox.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -86,7 +86,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.accordionbox.Inst.defineMethod('handleDOMClick',
+TP.xctrls.accordionbox.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     /**

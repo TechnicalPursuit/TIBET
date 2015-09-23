@@ -60,7 +60,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.tabbox.Inst.defineMethod('handleValueChange',
+TP.xctrls.tabbox.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**

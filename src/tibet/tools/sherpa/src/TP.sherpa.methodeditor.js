@@ -85,7 +85,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('handleTP_sig_MethodAccept',
+TP.sherpa.methodeditor.Inst.defineHandler('MethodAccept',
 function(aSignal) {
 
     this.acceptMethod();
@@ -95,7 +95,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('handleTP_sig_MethodPush',
+TP.sherpa.methodeditor.Inst.defineHandler('MethodPush',
 function(aSignal) {
 
     var newSourceText,

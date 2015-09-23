@@ -379,7 +379,7 @@ function(aResourceID, aRequest) {
     this.notify(TP.sys.cfg('project.ident'));
 
     //  Process whatever initial request(s) might be sitting in the queue
-    this.handleNextRequest();
+    this[TP.computeHandlerName('NextRequest')]();
 
     //  Note that we do *not* focus the input cell here because there is further
     //  setup to do and we don't want the browser to think that the cell has
@@ -1029,7 +1029,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleCommandEvent',
+TP.core.ConsoleService.Inst.defineHandler('CommandEvent',
 function(anEvent) {
 
     /**
@@ -1044,27 +1044,27 @@ function(anEvent) {
 
     switch (keyname) {
         case 'DOM_Tab_Up':
-            this.handleTab(anEvent);
+            this[TP.computeHandlerName('Tab')](anEvent);
             break;
 
         case 'DOM_Shift_Enter_Up':
-            this.handleRawInput(anEvent);
+            this[TP.computeHandlerName('RawInput')](anEvent);
             break;
 
         case 'DOM_Shift_Down_Up':
-            this.handleHistoryNext(anEvent);
+            this[TP.computeHandlerName('HistoryNext')](anEvent);
             break;
 
         case 'DOM_Shift_Up_Up':
-            this.handleHistoryPrev(anEvent);
+            this[TP.computeHandlerName('HistoryPrev')](anEvent);
             break;
 
         case 'DOM_Shift_Backspace_Up':
-            this.handleClearInput(anEvent);
+            this[TP.computeHandlerName('ClearInput')](anEvent);
             break;
 
         case 'DOM_Shift_Esc_Up':
-            this.handleCancel(anEvent);
+            this[TP.computeHandlerName('Cancel')](anEvent);
             break;
 
         default:
@@ -1078,7 +1078,7 @@ function(anEvent) {
 //  Key Handling
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMKeyDown',
+TP.core.ConsoleService.Inst.defineHandler('DOMKeyDown',
 function(aSignal) {
 
     /**
@@ -1109,7 +1109,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMKeyPress',
+TP.core.ConsoleService.Inst.defineHandler('DOMKeyPress',
 function(aSignal) {
 
     /**
@@ -1141,7 +1141,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMKeyUp',
+TP.core.ConsoleService.Inst.defineHandler('DOMKeyUp',
 function(aSignal) {
 
     /**
@@ -1169,7 +1169,7 @@ function(aSignal) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
 
-        this.handleCommandEvent(evt);
+        this[TP.computeHandlerName('CommandEvent')](evt);
     } else if (this.shouldConcealInput()) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
@@ -1201,7 +1201,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMUndo',
+TP.core.ConsoleService.Inst.defineHandler('DOMUndo',
 function(aSignal) {
 
     /**
@@ -1223,7 +1223,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMCut',
+TP.core.ConsoleService.Inst.defineHandler('DOMCut',
 function(aSignal) {
 
     /**
@@ -1244,7 +1244,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMPaste',
+TP.core.ConsoleService.Inst.defineHandler('DOMPaste',
 function(aSignal) {
 
     /**
@@ -1265,7 +1265,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleDOMModifierKeyChange',
+TP.core.ConsoleService.Inst.defineHandler('DOMModifierKeyChange',
 function(aSignal) {
 
     /**
@@ -1306,7 +1306,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleTab',
+TP.core.ConsoleService.Inst.defineHandler('Tab',
 function(anEvent) {
 
     /**
@@ -1371,14 +1371,14 @@ function(aRequest) {
     //this.showInputCell();
 
     //  process whatever might be sitting in the input request queue
-    this.handleNextRequest();
+    this[TP.computeHandlerName('NextRequest')]();
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleConsoleRequest',
+TP.core.ConsoleService.Inst.defineHandler('ConsoleRequest',
 function(aRequest) {
 
     /**
@@ -1426,7 +1426,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleNoMoreRequests',
+TP.core.ConsoleService.Inst.defineHandler('NoMoreRequests',
 function(aRequest) {
 
     /**
@@ -1453,7 +1453,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleRequestCompleted',
+TP.core.ConsoleService.Inst.defineHandler('RequestCompleted',
 function(aSignal) {
 
     /**
@@ -1495,14 +1495,14 @@ function(aSignal) {
         }
     }
 
-    this.handleNextRequest();
+    this[TP.computeHandlerName('NextRequest')]();
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleRequestModified',
+TP.core.ConsoleService.Inst.defineHandler('RequestModified',
 function(aSignal) {
 
     /**
@@ -1524,7 +1524,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleShellRequestCompleted',
+TP.core.ConsoleService.Inst.defineHandler('ShellRequestCompleted',
 function(aSignal) {
 
     /**
@@ -1535,14 +1535,14 @@ function(aSignal) {
      */
 
     this.updateStatus(aSignal.getRequest());
-    this.handleNextRequest(aSignal);
+    this[TP.computeHandlerName('NextRequest')](aSignal);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleUserInputRequest',
+TP.core.ConsoleService.Inst.defineHandler('UserInputRequest',
 function(aSignal) {
 
     /**
@@ -1608,7 +1608,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleUserInputSeries',
+TP.core.ConsoleService.Inst.defineHandler('UserInputSeries',
 function(aSignal) {
 
     /**
@@ -1620,12 +1620,12 @@ function(aSignal) {
      *     triggered this call.
      */
 
-    return this.handleUserInputRequest(aSignal);
+    return this[TP.computeHandlerName('UserInputRequest')](aSignal);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleUserOutputRequest',
+TP.core.ConsoleService.Inst.defineHandler('UserOutputRequest',
 function(aRequest) {
 
     /**
@@ -1699,7 +1699,7 @@ function(aRequest) {
 //  Model Signals
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleCancel',
+TP.core.ConsoleService.Inst.defineHandler('Cancel',
 function(anEvent) {
 
     /**
@@ -1723,7 +1723,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleChange',
+TP.core.ConsoleService.Inst.defineHandler('Change',
 function(aSignal) {
 
     /**
@@ -1744,7 +1744,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleClearInput',
+TP.core.ConsoleService.Inst.defineHandler('ClearInput',
 function(anEvent) {
 
     /**
@@ -1761,7 +1761,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleHistoryNext',
+TP.core.ConsoleService.Inst.defineHandler('HistoryNext',
 function(anEvent) {
 
     /**
@@ -1793,7 +1793,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleHistoryPrev',
+TP.core.ConsoleService.Inst.defineHandler('HistoryPrev',
 function(anEvent) {
 
     /**
@@ -1825,7 +1825,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ConsoleService.Inst.defineMethod('handleRawInput',
+TP.core.ConsoleService.Inst.defineHandler('RawInput',
 function(anEvent) {
 
     /**

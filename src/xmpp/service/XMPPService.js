@@ -1934,7 +1934,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('handleXMPPConnectionException',
+TP.core.XMPPService.Inst.defineHandler('XMPPConnectionException',
 function(aSignal) {
 
     /**
@@ -1960,7 +1960,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('handleXMPPConnectionReady',
+TP.core.XMPPService.Inst.defineHandler('XMPPConnectionReady',
 function(aSignal) {
 
     /**
@@ -1990,7 +1990,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('handleXMPPPubsubInput',
+TP.core.XMPPService.Inst.defineHandler('XMPPPubsubInput',
 function(aSignal) {
 
     /**
@@ -2057,7 +2057,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Inst.defineMethod('handleXMPPRequest',
+TP.core.XMPPService.Inst.defineHandler('XMPPRequest',
 function(aRequest) {
 
     /**

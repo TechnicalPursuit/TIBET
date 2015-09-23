@@ -82,7 +82,7 @@ TP.core.LocalDBStorageService.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.LocalDBStorageService.Inst.defineMethod('handleLocalDBStorageRequest',
+TP.core.LocalDBStorageService.Inst.defineHandler('LocalDBStorageRequest',
 function(aRequest) {
 
     /**

@@ -32,7 +32,7 @@ TP.xctrls.checkitem.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.checkitem.Inst.defineMethod('handleDOMClick',
+TP.xctrls.checkitem.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     /**

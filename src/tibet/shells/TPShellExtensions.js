@@ -1095,7 +1095,7 @@ function(aRequest, cmdType) {
             //  We rely on the result resource object to filter or transform
             //  the data so we need a slightly more complex handler for
             //  success in this case.
-            subrequest.defineMethod('handleRequestSucceeded',
+            subrequest.defineHandler('RequestSucceeded',
                 function(aSignal) {
 
                     var res,
@@ -1183,7 +1183,7 @@ function(aRequest, cmdType) {
             if (/!/.test(pipe)) {
                 commitreq = TP.request();
 
-                commitreq.defineMethod('handleRequestFailed',
+                commitreq.defineHandler('RequestFailed',
                     function(aSignal) {
 
                         aRequest.fail(aSignal.getResult());
@@ -1191,7 +1191,7 @@ function(aRequest, cmdType) {
                         return;
                     });
 
-                commitreq.defineMethod('handleRequestSucceeded',
+                commitreq.defineHandler('RequestSucceeded',
                     function(aSignal) {
 
                         aRequest.complete(aSignal.getResult());
@@ -1208,7 +1208,7 @@ function(aRequest, cmdType) {
             //  is to take that data and append the new content to the URIs
             //  content cache. The final step is to save the resulting data
             //  when a commit operation has been requested.
-            subrequest.defineMethod('handleRequestSucceeded',
+            subrequest.defineHandler('RequestSucceeded',
                 function(aSignal) {
 
                     var input,

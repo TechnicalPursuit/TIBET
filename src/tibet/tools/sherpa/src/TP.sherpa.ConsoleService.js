@@ -164,7 +164,7 @@ function(aResourceID, aRequest) {
     this.notify(TP.sys.cfg('project.ident'));
 
     //  Process whatever initial request(s) might be sitting in the queue
-    this.handleNextRequest();
+    this[TP.computeHandlerName('NextRequest')]();
 
     //  Not sure why we need this... probably some coordination in how observes
     //  get set up.
@@ -400,7 +400,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleCommandEvent',
+TP.sherpa.ConsoleService.Inst.defineHandler('CommandEvent',
 function(anEvent) {
 
     /**
@@ -417,14 +417,14 @@ function(anEvent) {
 
     switch (keyname) {
         case 'DOM_Shift_Enter_Up':
-            this.handleRawInput(anEvent);
+            this[TP.computeHandlerName('RawInput')](anEvent);
             break;
 
         case 'DOM_Shift_Down_Up':
             if (consoleGUI.showingEvalMark()) {
                 consoleGUI.shiftEvalMark(TP.DOWN, TP.ANCHOR);
             } else {
-                this.handleHistoryNext(anEvent);
+                this[TP.computeHandlerName('HistoryNext')](anEvent);
             }
             break;
 
@@ -432,7 +432,7 @@ function(anEvent) {
             if (consoleGUI.showingEvalMark()) {
                 consoleGUI.shiftEvalMark(TP.UP, TP.ANCHOR);
             } else {
-                this.handleHistoryPrev(anEvent);
+                this[TP.computeHandlerName('HistoryPrev')](anEvent);
             }
             break;
 
@@ -473,7 +473,7 @@ function(anEvent) {
             break;
 
         case 'DOM_Ctrl_U_Up':
-            this.handleClearInput(anEvent);
+            this[TP.computeHandlerName('ClearInput')](anEvent);
             break;
 
         case 'DOM_Ctrl_K_Up':
@@ -481,7 +481,7 @@ function(anEvent) {
             break;
 
         case 'DOM_Shift_Esc_Up':
-            this.handleCancel(anEvent);
+            this[TP.computeHandlerName('Cancel')](anEvent);
             break;
 
         default:
@@ -493,7 +493,8 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleHiddenChangeFromSherpaConsole',
+TP.sherpa.ConsoleService.Inst.defineHandler(
+{signal: 'HiddenChange', origin: 'SherpaConsole'},
 function(aSignal) {
 
     /**
@@ -520,7 +521,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleHaloDidFocus',
+TP.sherpa.ConsoleService.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
     /**
@@ -540,7 +541,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleHaloDidBlur',
+TP.sherpa.ConsoleService.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
     /**
@@ -558,7 +559,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleConsoleCommand',
+TP.sherpa.ConsoleService.Inst.defineHandler('ConsoleCommand',
 function(aSignal) {
 
     /**
@@ -634,7 +635,7 @@ function() {
 //  Other Key Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMModifierKeyChange',
+TP.sherpa.ConsoleService.Inst.defineHandler('DOMModifierKeyChange',
 function(aSignal) {
 
     /**
@@ -653,7 +654,7 @@ function(aSignal) {
 //  Mouse Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleDOMMouseMove',
+TP.sherpa.ConsoleService.Inst.defineHandler('DOMMouseMove',
 function(aSignal) {
 
     /**
@@ -727,14 +728,14 @@ function(aRequest) {
     consoleGUI.setPrompt(this.get('model').getPrompt());
 
     //  process whatever might be sitting in the input request queue
-    this.handleNextRequest();
+    this[TP.computeHandlerName('NextRequest')]();
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleConsoleRequest',
+TP.sherpa.ConsoleService.Inst.defineHandler('ConsoleRequest',
 function(aRequest) {
 
     /**
@@ -786,7 +787,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleNoMoreRequests',
+TP.sherpa.ConsoleService.Inst.defineHandler('NoMoreRequests',
 function(aRequest) {
 
     /**
@@ -812,7 +813,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleRequestCompleted',
+TP.sherpa.ConsoleService.Inst.defineHandler('RequestCompleted',
 function(aSignal) {
 
     /**
@@ -862,14 +863,14 @@ function(aSignal) {
         }
     }
 
-    this.handleNextRequest();
+    this[TP.computeHandlerName('NextRequest')]();
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleRequestModified',
+TP.sherpa.ConsoleService.Inst.defineHandler('RequestModified',
 function(aSignal) {
 
     /**
@@ -891,7 +892,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleShellRequestCompleted',
+TP.sherpa.ConsoleService.Inst.defineHandler('ShellRequestCompleted',
 function(aSignal) {
 
     /**
@@ -903,14 +904,14 @@ function(aSignal) {
      */
 
     this.get('$consoleGUI').updateStatus(aSignal.getRequest());
-    this.handleNextRequest(aSignal);
+    this[TP.computeHandlerName('NextRequest')](aSignal);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleUserInputRequest',
+TP.sherpa.ConsoleService.Inst.defineHandler('UserInputRequest',
 function(aSignal) {
 
     /**
@@ -977,7 +978,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleUserInputSeries',
+TP.sherpa.ConsoleService.Inst.defineHandler('UserInputSeries',
 function(aSignal) {
 
     /**
@@ -989,12 +990,12 @@ function(aSignal) {
      *     triggered this call.
      */
 
-    return this.handleUserInputRequest(aSignal);
+    return this[TP.computeHandlerName('UserInputRequest')](aSignal);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleUserOutputRequest',
+TP.sherpa.ConsoleService.Inst.defineHandler('UserOutputRequest',
 function(aRequest) {
 
     /**
@@ -1070,7 +1071,7 @@ function(aRequest) {
 //  Model Signals
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleCancel',
+TP.sherpa.ConsoleService.Inst.defineHandler('Cancel',
 function(anEvent) {
 
     /**
@@ -1094,7 +1095,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleChange',
+TP.sherpa.ConsoleService.Inst.defineHandler('Change',
 function(aSignal) {
 
     /**
@@ -1115,7 +1116,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleClearInput',
+TP.sherpa.ConsoleService.Inst.defineHandler('ClearInput',
 function(anEvent) {
 
     /**
@@ -1132,7 +1133,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleHistoryNext',
+TP.sherpa.ConsoleService.Inst.defineHandler('HistoryNext',
 function(anEvent) {
 
     /**
@@ -1167,7 +1168,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleHistoryPrev',
+TP.sherpa.ConsoleService.Inst.defineHandler('HistoryPrev',
 function(anEvent) {
 
     /**
@@ -1202,7 +1203,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineMethod('handleRawInput',
+TP.sherpa.ConsoleService.Inst.defineHandler('RawInput',
 function(anEvent) {
 
     /**
@@ -2063,7 +2064,7 @@ function(aSignal) {
 
         if (aSignal.getSignalName() ===
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
-            this.handleDOMShiftUp__DOMShiftUp(aSignal);
+            this[TP.computeHandlerName('DOMShiftUp__DOMShiftUp')](aSignal);
         } else {
 
             evt = aSignal.getEvent();
@@ -2092,14 +2093,14 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Enter_Up',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Enter_Up',
 function(aSignal) {
-    this.get('$consoleService').handleRawInput(aSignal);
+    this.get('$consoleService')[TP.computeHandlerName('RawInput')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOMShiftUp__DOMShiftUp',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOMShiftUp__DOMShiftUp',
 function(aSignal) {
     var consoleGUI;
 
@@ -2116,37 +2117,39 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Down_Up',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
 function(aSignal) {
-    this.get('$consoleService').handleHistoryNext(aSignal);
+    this.get('$consoleService')[TP.computeHandlerName('HistoryNext')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Up_Up',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
 function(aSignal) {
-    this.get('$consoleService').handleHistoryPrev(aSignal);
+    this.get('$consoleService')[TP.computeHandlerName('HistoryPrev')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Ctrl_U_Up',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_U_Up',
 function(aSignal) {
-    this.get('$consoleService').handleClearInput(aSignal.getEvent());
+    this.get('$consoleService')[TP.computeHandlerName('ClearInput')](
+            aSignal.getEvent());
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Ctrl_K_Up',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_K_Up',
 function(aSignal) {
     this.get('$consoleService').clearConsole(true);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('handleDOM_Shift_Esc_Up',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Esc_Up',
 function(aSignal) {
-    this.get('$consoleService').handleCancel(aSignal.getEvent());
+    this.get('$consoleService')[TP.computeHandlerName('Cancel')](
+            aSignal.getEvent());
 });
 
 //  ========================================================================
@@ -2243,56 +2246,56 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Down_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Up_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Right_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Right_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Shift_Left_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Left_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Down_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Down_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.HEAD);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Up_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Up_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.HEAD);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Right_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Right_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.HEAD);
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('handleDOM_Alt_Shift_Left_Up',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Left_Up',
 function(anEvent) {
     this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.HEAD);
 });

@@ -1521,7 +1521,7 @@ function() {
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'async', true));
 
-                pouchRequest.defineMethod('handleRequestSucceeded',
+                pouchRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         var result;
@@ -1556,14 +1556,14 @@ function() {
                         resolver();
                     });
 
-                pouchRequest.defineMethod('handleRequestFailed',
+                pouchRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                pouchRequest.defineMethod('handleRequestCompleted',
+                pouchRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -1597,7 +1597,7 @@ function() {
                                                 'verb', TP.HTTP_HEAD,
                                                 'async', true));
 
-                pouchRequest.defineMethod('handleRequestSucceeded',
+                pouchRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         var result;
@@ -1618,14 +1618,14 @@ function() {
                         resolver();
                     });
 
-                pouchRequest.defineMethod('handleRequestFailed',
+                pouchRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                pouchRequest.defineMethod('handleRequestCompleted',
+                pouchRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -1659,7 +1659,7 @@ function() {
                 pouchRequest = TP.request(TP.hc('uri', url,
                                                 'async', true));
 
-                pouchRequest.defineMethod('handleRequestSucceeded',
+                pouchRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         var result;
@@ -1686,14 +1686,14 @@ function() {
                         resolver();
                     });
 
-                pouchRequest.defineMethod('handleRequestFailed',
+                pouchRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                pouchRequest.defineMethod('handleRequestCompleted',
+                pouchRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -1884,7 +1884,7 @@ function() {
                 putParams = params.copy().atPut('verb', TP.HTTP_PUT);
                 putRequest = url.constructRequest(putParams);
 
-                putRequest.defineMethod('handleRequestSucceeded',
+                putRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         test.assert.isEqualTo(
@@ -1895,14 +1895,14 @@ function() {
                         resolver();
                     });
 
-                putRequest.defineMethod('handleRequestFailed',
+                putRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                putRequest.defineMethod('handleRequestCompleted',
+                putRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -1949,7 +1949,7 @@ function() {
 
                 postRequest = url.constructRequest(params);
 
-                postRequest.defineMethod('handleRequestSucceeded',
+                postRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         test.assert.isEqualTo(
@@ -1960,14 +1960,14 @@ function() {
                         resolver();
                     });
 
-                postRequest.defineMethod('handleRequestFailed',
+                postRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                postRequest.defineMethod('handleRequestCompleted',
+                postRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2016,7 +2016,7 @@ function() {
                 postParams = params.copy().atPut('mimetype', TP.URL_ENCODED);
                 postRequest = url.constructRequest(postParams);
 
-                postRequest.defineMethod('handleRequestSucceeded',
+                postRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         test.assert.isEqualTo(
@@ -2027,14 +2027,14 @@ function() {
                         resolver();
                     });
 
-                postRequest.defineMethod('handleRequestFailed',
+                postRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                postRequest.defineMethod('handleRequestCompleted',
+                postRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2085,7 +2085,7 @@ function() {
                                 TP.MP_FORMDATA_ENCODED);
                 postRequest = url.constructRequest(postParams);
 
-                postRequest.defineMethod('handleRequestSucceeded',
+                postRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         test.assert.isEqualTo(
@@ -2096,14 +2096,14 @@ function() {
                         resolver();
                     });
 
-                postRequest.defineMethod('handleRequestFailed',
+                postRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                postRequest.defineMethod('handleRequestCompleted',
+                postRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2158,7 +2158,7 @@ function() {
                                 TP.MP_RELATED_ENCODED);
                 postRequest = url.constructRequest(postParams);
 
-                postRequest.defineMethod('handleRequestSucceeded',
+                postRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         test.assert.isEqualTo(
@@ -2169,14 +2169,14 @@ function() {
                         resolver();
                     });
 
-                postRequest.defineMethod('handleRequestFailed',
+                postRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                postRequest.defineMethod('handleRequestCompleted',
+                postRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2219,7 +2219,7 @@ function() {
 
                 deleteRequest = url.constructRequest(params);
 
-                deleteRequest.defineMethod('handleRequestSucceeded',
+                deleteRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         test.assert.isEqualTo(
@@ -2230,14 +2230,14 @@ function() {
                         resolver();
                     });
 
-                deleteRequest.defineMethod('handleRequestFailed',
+                deleteRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                deleteRequest.defineMethod('handleRequestCompleted',
+                deleteRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2503,7 +2503,7 @@ function() {
 
                 url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
 
-                pouchRequest.defineMethod('handleRequestSucceeded',
+                pouchRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         var result;
@@ -2518,14 +2518,14 @@ function() {
                         resolver();
                     });
 
-                pouchRequest.defineMethod('handleRequestFailed',
+                pouchRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                pouchRequest.defineMethod('handleRequestCompleted',
+                pouchRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2555,7 +2555,7 @@ function() {
 
                 url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
 
-                pouchRequest.defineMethod('handleRequestSucceeded',
+                pouchRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         var result;
@@ -2570,14 +2570,14 @@ function() {
                         resolver();
                     });
 
-                pouchRequest.defineMethod('handleRequestFailed',
+                pouchRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                pouchRequest.defineMethod('handleRequestCompleted',
+                pouchRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2606,7 +2606,7 @@ function() {
 
                 url.setResource(null);
 
-                pouchRequest.defineMethod('handleRequestSucceeded',
+                pouchRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         var result;
@@ -2621,14 +2621,14 @@ function() {
                         resolver();
                     });
 
-                pouchRequest.defineMethod('handleRequestFailed',
+                pouchRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                pouchRequest.defineMethod('handleRequestCompleted',
+                pouchRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });
@@ -2658,7 +2658,7 @@ function() {
 
                 url.setResource(null);
 
-                pouchRequest.defineMethod('handleRequestSucceeded',
+                pouchRequest.defineHandler('RequestSucceeded',
                     function(aResponse) {
 
                         var result;
@@ -2677,14 +2677,14 @@ function() {
                         resolver();
                     });
 
-                pouchRequest.defineMethod('handleRequestFailed',
+                pouchRequest.defineHandler('RequestFailed',
                     function(aResponse) {
                         test.failUsingResponse(aResponse);
 
                         rejector();
                     });
 
-                pouchRequest.defineMethod('handleRequestCompleted',
+                pouchRequest.defineHandler('RequestCompleted',
                     function(aResponse) {
                         url.unregister();
                     });

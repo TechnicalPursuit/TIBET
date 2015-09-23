@@ -312,77 +312,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Type.defineMethod('getHandlerName',
-function(anOrigin, aSignal, aState, wantsFullName) {
-
-    /**
-     * @method getHandlerName
-     * @summary Computes and returns the standard handler name defined by the
-     *     origin and signal combination. If no signal is provided the
-     *     receiver's signal name is used as a default. Handler names follow a
-     *     convention of 'handle' + signalName + 'From' + origin + 'When' +
-     *     state. The state defaults to the current application controller
-     *     state value.
-     * @param {String} anOrigin An origin ID that should be used as part
-     *     of the handler computation.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @param {String} aState The application state to use. Defaults to the
-     *     current application controller state.
-     * @param {Boolean} wantsFullName Whether or not to use the signal's 'full
-     *     name' when computing the handler name. Defaults to false.
-     * @returns {String}
-     */
-
-    var signame,
-        handlerName;
-
-    //  Ask the inbound signal what signal name it should be using.
-    if (TP.isKindOf(aSignal, TP.sig.Signal)) {
-        signame = aSignal.getSignalName();
-    } else if (TP.canInvoke(aSignal, 'getSignalName')) {
-        signame = aSignal.getSignalName();
-    } else {
-        signame = this.getSignalName();
-    }
-
-    //  We can do short versions if they match either TP.sig. or APP.sig. for
-    //  prefixing, otherwise only a full name can be matched. Also make sure
-    //  that all handlerName values start with 'handle'.
-    if (TP.regex.SIGNAL_PREFIX.test(signame)) {
-        if (TP.notTrue(wantsFullName)) {
-            //  Contracting will remove any prefixing in splits between key
-            //  sequences or other signal chains.
-            handlerName = 'handle' + TP.contractSignalName(signame);
-        } else {
-            handlerName = 'handle' + TP.escapeTypeName(signame);
-        }
-    } else {
-        handlerName = 'handle' +
-            TP.escapeTypeName(signame).asTitleCase();
-    }
-
-    //  Add optional From clause for origin filtering.
-    if (TP.notEmpty(anOrigin)) {
-        handlerName += 'From' + TP.gid(anOrigin);
-    }
-
-    //  Add optional When clause for state filtering.
-    if (TP.notEmpty(aState)) {
-        handlerName += 'When' + TP.str(aState).asTitleCase();
-    }
-
-    if (TP.notTrue(wantsFullName)) {
-        // Strip out any embedded underscores as one aspect of having a more
-        // compact name.
-        handlerName = handlerName.replace(/__/g, '@@').replace(
-                /_/g, '').replace(/@@/g, '__');
-    }
-
-    return handlerName;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Type.defineMethod('getPhases',
 function() {
 
@@ -7480,9 +7409,10 @@ function(aDocument) {
                     function(mutationRecords, obs) {
                         var len,
                             i,
-
+                            method,
                             record;
 
+                        method = TP.computeHandlerName('MutationEvent');
                         len = mutationRecords.length;
                         for (i = 0; i < len; i++) {
                             record = mutationRecords[i];
@@ -7494,7 +7424,7 @@ function(aDocument) {
                             //  https://bugs.webkit.org/show_bug.cgi?id=103916
                             if (!record.handled) {
                                 record.handled = true;
-                                this.handleMutationEvent(record);
+                                this[method](record);
                             }
                         }
                     }.bind(this));
@@ -7549,7 +7479,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationSignalSource.Type.defineMethod('handleMutationEvent',
+TP.core.MutationSignalSource.Type.defineHandler('MutationEvent',
 function(aMutationRecord) {
 
     /**
@@ -8423,98 +8353,31 @@ TP.sig.RemoteSourceSignal.defineSubtype('SourceReconnecting');
 TP.sig.RemoteSourceSignal.defineSubtype('SourceError');
 
 //  ========================================================================
-//  Object Extensions
+//  RootObject Extensions
 //  ========================================================================
 
-/**
- * @type {Object}
- * @summary Responder Computation API extensions for Object.
- * @description These allow any Object in the system to respond to the responder
- *     computation machinery. They are typically overridden to provide real
- *     functionality.
- * @subject Responder Computation Extensions
- */
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.lang.Object.Inst.defineMethod('getNextResponder',
-function(aSignal, isCapturing) {
+TP.lang.RootObject.Type.defineHandler('Signal',
+function(aSignal) {
 
     /**
-     * @method getNextResponder
-     * @summary Returns the next responder as computed by the receiver.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Object} The next responder as computed by the receiver.
+     * @method handleSignal
+     * @summary Handles notification of an incoming signal. For types the
+     *     standard handle call will try to locate a signal-specific handler
+     *     function just like with instances, but the default method for
+     *     handling them defers to an instance rather than the type itself.
+     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @returns {Object} The function's return value.
      */
 
-    return null;
-});
+    var inst;
 
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Type.defineMethod('getHandlerName2',
-function(aDescriptor) {
-
-    /**
-     * @method defineHandler
-     * @summary Defines a new signal handler.
-     * @description Note that the 'descriptor' parameter is a property
-     *     descriptor. That property descriptor can be one of the following:
-     *
-     *          origin (Object or String ID)
-     *          signal (TIBET Type or String signal name)
-     *          state (String state name)
-     *
-     * @param {Function} aHandler The function body for the event handler.
-     * @param {Object} descriptor
-     */
-
-    var signal,
-        signame,
-
-        handlerName,
-
-        origin,
-        state;
-
-    if (!TP.isPlainObject(aDescriptor)) {
-        return this.raise('InvalidDescriptor', aDescriptor);
+    //  try to construct an instance and get it to handle things
+    if (TP.notValid(inst = this.from(aSignal))) {
+        return this.raise('TP.sig.InvalidHandler',
+                            'Unable to construct handler instance');
     }
 
-    signal = aDescriptor.signal;
-
-    //  Ask the inbound signal what signal name it should be using.
-    if (TP.isKindOf(signal, TP.sig.Signal)) {
-        signame = signal.getSignalName();
-    } else if (TP.canInvoke(signal, 'getSignalName')) {
-        signame = signal.getSignalName();
-    } else {
-        signame = this.getSignalName();
-    }
-
-    handlerName = 'handle' + TP.escapeTypeName(TP.expandSignalName(signame));
-
-    //  Add optional From clause for origin filtering.
-    if (TP.isValid(origin = aDescriptor.origin)) {
-        handlerName += 'From' + TP.gid(origin);
-    } else {
-        handlerName += 'From' + TP.ANY;
-    }
-
-    //  Add optional When clause for state filtering.
-    if (TP.notEmpty(state = aDescriptor.state)) {
-        handlerName += 'When' + TP.str(state).asTitleCase();
-    } else {
-        handlerName += 'When' + TP.ANY;
-    }
-
-    return handlerName;
+    return inst.handle(aSignal);
 });
 
 //  ------------------------------------------------------------------------

@@ -10959,7 +10959,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('handleSignal',
+TP.core.ElementNode.Type.defineHandler('Signal',
 function(aSignal) {
 
     /**
@@ -12010,7 +12010,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('handleValueChange',
+TP.core.ElementNode.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -13942,7 +13942,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('handleValueChange',
+TP.core.DocumentNode.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -14393,7 +14393,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('handleDOMClose',
+TP.core.HTMLDocumentNode.Inst.defineHandler('DOMClose',
 function(aSignal) {
 
     /**
@@ -14685,7 +14685,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XHTMLDocumentNode.Inst.defineMethod('handleDOMClose',
+TP.core.XHTMLDocumentNode.Inst.defineHandler('DOMClose',
 function(aSignal) {
 
     /**
@@ -15411,7 +15411,7 @@ function(aSignal) {
     request = this.constructActRequest(aSignal);
 
     shell = TP.core.TSH.getDefaultInstance();
-    shell.handleShellRequest(request);
+    shell[TP.computeHandlerName('ShellRequest')](request);
 
     return;
 });
@@ -15609,7 +15609,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('handleSignal',
+TP.core.ActionElementNode.Inst.defineHandler('Signal',
 function(aSignal) {
 
     /**

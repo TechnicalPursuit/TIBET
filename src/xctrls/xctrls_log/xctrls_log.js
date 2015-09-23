@@ -64,7 +64,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.log.Inst.defineMethod('handleChange',
+TP.xctrls.log.Inst.defineHandler('Change',
 function(aSignal) {
 
     /**

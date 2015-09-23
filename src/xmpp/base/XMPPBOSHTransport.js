@@ -859,7 +859,7 @@ function(aStr, extraAttrs) {
                         'timeout', TP.MAX_TIMEOUT,
                         'async', true);
 
-            request.defineMethod('handleIOSucceeded',
+            request.defineHandler('IOSucceeded',
                         function() {
 
                             this.$processResults(href, request);
@@ -916,7 +916,7 @@ function() {
                     'timeout', TP.MAX_TIMEOUT,
                     'async', true);
 
-        request.defineMethod('handleIOSucceeded',
+        request.defineHandler('IOSucceeded',
                     function() {
 
                         this.$processResults(href, request);
