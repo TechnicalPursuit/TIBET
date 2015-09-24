@@ -250,7 +250,7 @@ function() {
 
     //  ---  autocomplete
 
-    //  'evalmarking' is the state used...
+    //  'autocomplete' is the state used...
 
     newResponder = TP.sherpa.AutoCompletionKeyResponder.construct(keyboardSM);
     newResponder.set('$consoleService', this);
