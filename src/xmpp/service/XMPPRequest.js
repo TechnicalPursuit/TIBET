@@ -201,7 +201,7 @@
  *     Package and fire the request:
  *
  *     msgReq = TP.sig.XMPPRequest.construct(requestParams);
- *     msgReq.defineMethod('handleRequestSucceeded', function(aResponse) {
+ *     msgReq.defineHandler('RequestSucceeded', function(aResponse) {
  *
  *     TP.info(aResponse.getResult()); }); msgReq.fire();
  */

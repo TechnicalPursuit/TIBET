@@ -2075,82 +2075,6 @@ function(startGroupName, alwaysWrap, wantsNested) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getNextResponder',
-function(aSignal, isCapturing) {
-
-    /**
-     * @method getNextResponder
-     * @summary Returns the next responder as computed by the receiver.
-     * @description The default implementation of this method is to check to see
-     *     if the receiver has defined a 'tibet:ctrl' attribute. If so, a
-     *     responder reference is derived from that. If it does not have this
-     *     attribute or a responder cannot be derived from that, then the
-     *     receiver's 'next closest ancestor responder' (i.e. its closest
-     *     ancestor that has either a 'tibet:ctrl' or 'tibet:tag').
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Object} The next responder as computed by the receiver.
-     */
-
-    var ctrl,
-
-        node,
-        parentNode,
-        elementWin,
-        frame,
-        frameElem;
-
-    //  If we have a 'tibet:ctrl' attribute, then try to obtain an object
-    //  reference from it. If that's valid, then use it - otherwise, move on.
-    if (this.hasAttribute('tibet:ctrl')) {
-
-        ctrl = TP.bySystemId(this.getAttribute('tibet:ctrl'),
-                                this.getNativeWindow());
-
-        if (TP.isValid(ctrl)) {
-            return ctrl;
-        }
-    }
-
-    node = this.getNativeNode();
-
-    //  Check for a parent node or ancestor element responder we can wrap.
-    parentNode = node.parentNode;
-    if (TP.isElement(parentNode) &&
-            TP.isElement(ctrl = TP.nodeGetResponderElement(parentNode))) {
-
-        return TP.wrap(ctrl);
-    }
-
-    //  Check for a containing iframe element we can leverage as a "screen". We
-    //  only return the iframe if it has a specific responder, otherwise we
-    //  continue searching upward from the iframe.
-    elementWin = TP.nodeGetWindow(this.getNativeDocument());
-
-    if (TP.isIFrameWindow(elementWin)) {
-        frameElem = elementWin.frameElement;
-
-        if (TP.isElement(frameElem)) {
-            frame = TP.wrap(frameElem);
-
-            if (frame.isResponderFor(aSignal, isCapturing)) {
-                return frame;
-            } else {
-                //  Recurse, calling the iframe's 'getNextResponder' method to
-                //  work our way 'up' the tree.
-                return frame.getNextResponder(aSignal, isCapturing);
-            }
-        }
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.UIElementNode.Inst.defineMethod('getOffsetParent',
 function() {
 
@@ -2506,33 +2430,6 @@ function() {
      */
 
     return TP.elementIsVisible(this.getNativeNode());
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('isResponderFor',
-function(aSignal, isCapturing) {
-
-    /**
-     * @method isResponderFor
-     * @summary Whether or not the receiver is a responder for the supplied
-     *     signal and capturing mode.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Boolean} Whether or not the receiver is a valid responder for
-     *     the supplied signal and capturing mode.
-     */
-
-    //  The default is that we don't participate in capturing responder chains
-    //  unless there is an 'ev:phase' attribute on us that says otherwise.
-    if (TP.isTrue(isCapturing) && !this.shouldCaptureSignal(aSignal)) {
-        return false;
-    }
-
-    return TP.isCallable(this.getHandler(aSignal));
 });
 
 //  ------------------------------------------------------------------------
@@ -4524,7 +4421,7 @@ function() {
 //  Focus Computation Handlers
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirst',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusFirst',
 function(aSignal) {
 
     /**
@@ -4544,7 +4441,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusLast',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusLast',
 function(aSignal) {
 
     /**
@@ -4564,7 +4461,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusNext',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusNext',
 function(aSignal) {
 
     /**
@@ -4584,7 +4481,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusPrevious',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusPrevious',
 function(aSignal) {
 
     /**
@@ -4604,7 +4501,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFollowing',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusFollowing',
 function(aSignal) {
 
     /**
@@ -4624,7 +4521,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusPreceding',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusPreceding',
 function(aSignal) {
 
     /**
@@ -4644,7 +4541,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirstInGroup',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusFirstInGroup',
 function(aSignal) {
 
     /**
@@ -4664,7 +4561,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusLastInGroup',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusLastInGroup',
 function(aSignal) {
 
     /**
@@ -4684,7 +4581,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirstInPreviousGroup',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusFirstInPreviousGroup',
 function(aSignal) {
 
     /**
@@ -4704,7 +4601,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusFirstInNextGroup',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusFirstInNextGroup',
 function(aSignal) {
 
     /**
@@ -4726,7 +4623,7 @@ function(aSignal) {
 //  Action Event Handlers
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIActivate',
+TP.core.UIElementNode.Inst.defineHandler('UIActivate',
 function(aSignal) {
 
     /**
@@ -4744,7 +4641,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIAlert',
+TP.core.UIElementNode.Inst.defineHandler('UIAlert',
 function(aSignal) {
 
     /**
@@ -4766,7 +4663,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIBlur',
+TP.core.UIElementNode.Inst.defineHandler('UIBlur',
 function(aSignal) {
 
     /**
@@ -4812,7 +4709,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIBusy',
+TP.core.UIElementNode.Inst.defineHandler('UIBusy',
 function(aSignal) {
 
     /**
@@ -4833,7 +4730,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIClose',
+TP.core.UIElementNode.Inst.defineHandler('UIClose',
 function(aSignal) {
 
     /**
@@ -4852,7 +4749,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUICollapse',
+TP.core.UIElementNode.Inst.defineHandler('UICollapse',
 function(aSignal) {
 
     /**
@@ -4871,7 +4768,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDeactivate',
+TP.core.UIElementNode.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
     /**
@@ -4889,7 +4786,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDelete',
+TP.core.UIElementNode.Inst.defineHandler('UIDelete',
 function(aSignal) {
 
     /**
@@ -4903,7 +4800,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDeselect',
+TP.core.UIElementNode.Inst.defineHandler('UIDeselect',
 function(aSignal) {
 
     /**
@@ -4935,7 +4832,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDidBlur',
+TP.core.UIElementNode.Inst.defineHandler('UIDidBlur',
 function(aSignal) {
 
     /**
@@ -4954,7 +4851,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDidFocus',
+TP.core.UIElementNode.Inst.defineHandler('UIDidFocus',
 function(aSignal) {
 
     /**
@@ -4973,7 +4870,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDidPopFocus',
+TP.core.UIElementNode.Inst.defineHandler('UIDidPopFocus',
 function(aSignal) {
 
     /**
@@ -4998,7 +4895,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDidPushFocus',
+TP.core.UIElementNode.Inst.defineHandler('UIDidPushFocus',
 function(aSignal) {
 
     /**
@@ -5023,7 +4920,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDisabled',
+TP.core.UIElementNode.Inst.defineHandler('UIDisabled',
 function(aSignal) {
 
     /**
@@ -5042,7 +4939,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIDuplicate',
+TP.core.UIElementNode.Inst.defineHandler('UIDuplicate',
 function(aSignal) {
 
     /**
@@ -5056,7 +4953,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIEnabled',
+TP.core.UIElementNode.Inst.defineHandler('UIEnabled',
 function(aSignal) {
 
     /**
@@ -5075,7 +4972,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIExpand',
+TP.core.UIElementNode.Inst.defineHandler('UIExpand',
 function(aSignal) {
 
     /**
@@ -5094,7 +4991,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocus',
+TP.core.UIElementNode.Inst.defineHandler('UIFocus',
 function(aSignal) {
 
     /**
@@ -5129,7 +5026,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIFocusAndSelect',
+TP.core.UIElementNode.Inst.defineHandler('UIFocusAndSelect',
 function(aSignal) {
 
     /**
@@ -5154,7 +5051,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIHelp',
+TP.core.UIElementNode.Inst.defineHandler('UIHelp',
 function(aSignal) {
 
     /**
@@ -5176,7 +5073,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIHide',
+TP.core.UIElementNode.Inst.defineHandler('UIHide',
 function(aSignal) {
 
     /**
@@ -5195,7 +5092,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIHint',
+TP.core.UIElementNode.Inst.defineHandler('UIHint',
 function(aSignal) {
 
     /**
@@ -5217,7 +5114,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIIdle',
+TP.core.UIElementNode.Inst.defineHandler('UIIdle',
 function(aSignal) {
 
     /**
@@ -5236,7 +5133,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIInRange',
+TP.core.UIElementNode.Inst.defineHandler('UIInRange',
 function(aSignal) {
 
     /**
@@ -5255,7 +5152,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIInsert',
+TP.core.UIElementNode.Inst.defineHandler('UIInsert',
 function(aSignal) {
 
     /**
@@ -5269,7 +5166,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIInvalid',
+TP.core.UIElementNode.Inst.defineHandler('UIInvalid',
 function(aSignal) {
 
     /**
@@ -5288,7 +5185,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIOpen',
+TP.core.UIElementNode.Inst.defineHandler('UIOpen',
 function(aSignal) {
 
     /**
@@ -5307,7 +5204,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIOptional',
+TP.core.UIElementNode.Inst.defineHandler('UIOptional',
 function(aSignal) {
 
     /**
@@ -5326,7 +5223,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIOutOfRange',
+TP.core.UIElementNode.Inst.defineHandler('UIOutOfRange',
 function(aSignal) {
 
     /**
@@ -5345,7 +5242,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIReadonly',
+TP.core.UIElementNode.Inst.defineHandler('UIReadonly',
 function(aSignal) {
 
     /**
@@ -5364,7 +5261,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIReadwrite',
+TP.core.UIElementNode.Inst.defineHandler('UIReadwrite',
 function(aSignal) {
 
     /**
@@ -5383,7 +5280,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIRequired',
+TP.core.UIElementNode.Inst.defineHandler('UIRequired',
 function(aSignal) {
 
     /**
@@ -5402,7 +5299,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIScroll',
+TP.core.UIElementNode.Inst.defineHandler('UIScroll',
 function(aSignal) {
 
     /**
@@ -5416,7 +5313,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUISelect',
+TP.core.UIElementNode.Inst.defineHandler('UISelect',
 function(aSignal) {
 
     /**
@@ -5448,7 +5345,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIShow',
+TP.core.UIElementNode.Inst.defineHandler('UIShow',
 function(aSignal) {
 
     /**
@@ -5467,7 +5364,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIValid',
+TP.core.UIElementNode.Inst.defineHandler('UIValid',
 function(aSignal) {
 
     /**
@@ -5486,7 +5383,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('handleUIValueChange',
+TP.core.UIElementNode.Inst.defineHandler('UIValueChange',
 function(aSignal) {
 
     /**

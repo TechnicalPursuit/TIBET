@@ -29,7 +29,7 @@ TP.xmpp.Message.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Message.Inst.defineMethod('handleRequest',
+TP.xmpp.Message.Inst.defineHandler('Request',
 function() {
 
     /**

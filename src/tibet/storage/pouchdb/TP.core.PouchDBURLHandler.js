@@ -461,7 +461,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('handleAppShutdown',
+TP.core.PouchDBURLHandler.Type.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**

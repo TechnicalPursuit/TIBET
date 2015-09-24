@@ -1337,14 +1337,14 @@ function(normalizedEvent) {
 
     this.$$updateModifierStates(normalizedEvent);
 
-    this.handleKeyDown(normalizedEvent);
+    this[TP.computeHandlerName('KeyDown')](normalizedEvent);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Keyboard.Type.defineMethod('handleKeyDown',
+TP.core.Keyboard.Type.defineHandler('KeyDown',
 function(normalizedEvent) {
 
     /**
@@ -1368,14 +1368,14 @@ function(normalizedEvent) {
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
-    this.handleKeyPress(normalizedEvent);
+    this[TP.computeHandlerName('KeyPress')](normalizedEvent);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Keyboard.Type.defineMethod('handleKeyPress',
+TP.core.Keyboard.Type.defineHandler('KeyPress',
 function(normalizedEvent) {
 
     /**
@@ -1401,14 +1401,14 @@ function(normalizedEvent) {
 
     this.$$updateModifierStates(normalizedEvent);
 
-    this.handleKeyUp(normalizedEvent);
+    this[TP.computeHandlerName('KeyUp')](normalizedEvent);
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Keyboard.Type.defineMethod('handleKeyUp',
+TP.core.Keyboard.Type.defineHandler('KeyUp',
 function(normalizedEvent) {
 
     /**
@@ -2028,7 +2028,7 @@ TP.core.Keyboard.defineSubtype('USAscii101Keyboard');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.USAscii101Keyboard.Type.defineMethod('handleKeyDown',
+TP.core.USAscii101Keyboard.Type.defineHandler('KeyDown',
 function(normalizedEvent) {
 
     /**
@@ -2110,7 +2110,7 @@ function(normalizedEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.USAscii101Keyboard.Type.defineMethod('handleKeyPress',
+TP.core.USAscii101Keyboard.Type.defineHandler('KeyPress',
 function(normalizedEvent) {
 
     /**
@@ -2199,7 +2199,7 @@ function(normalizedEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.USAscii101Keyboard.Type.defineMethod('handleKeyUp',
+TP.core.USAscii101Keyboard.Type.defineHandler('KeyUp',
 function(normalizedEvent) {
 
     /**

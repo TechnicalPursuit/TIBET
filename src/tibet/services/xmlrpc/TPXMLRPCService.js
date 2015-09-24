@@ -20,7 +20,7 @@
  *     'http://api.flickr.com/services/xmlrpc/');
  *     request.atPut('method','flickr.test.echo'); request.atPut('body',
  *     TP.hc('api_key', '67769adc70ee70b5f666167c9d3b11db', 'test','echo' ));
- *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
+ *     request.defineHandler('RequestSucceeded', function(aResponse) {
  *
  *     TP.info(aResponse.getResult()); });
  *

@@ -92,7 +92,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('handleTDSFileChangeSignal',
+TP.tds.TDSURLHandler.Type.defineHandler('TDSFileChangeSignal',
 function(aSignal) {
 
     /**

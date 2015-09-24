@@ -2347,10 +2347,10 @@ function(aRequest) {
         roots.perform(
             function(request) {
 
-                service.handleTSHRunRequest(request);
+                service[TP.computeHandlerName('TSHRunRequest')](request);
             });
     } else {
-        service.handleTSHRunRequest(cmds.first());
+        service[TP.computeHandlerName('TSHRunRequest')](cmds.first());
     }
 
     //  return a break to keep from having shell loop descend into children
@@ -3425,7 +3425,7 @@ TP.tsh.RunService.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.RunService.Inst.defineMethod('handleTSHRunRequest',
+TP.tsh.RunService.Inst.defineHandler('TSHRunRequest',
 function(aRequest) {
 
     /**

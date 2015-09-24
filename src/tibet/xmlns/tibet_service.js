@@ -271,7 +271,7 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('handleValueChange',
+TP.tibet.service.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -500,7 +500,7 @@ function() {
 
     //  Add a 'local' method on the individual object that defines a handler for
     //  job completion
-    request.defineMethod('handleRequestSucceeded',
+    request.defineHandler('RequestSucceeded',
         function(aResponse) {
 
             var resultType,
@@ -551,7 +551,7 @@ function() {
             }
         });
 
-    request.defineMethod('handleRequestFailed',
+    request.defineHandler('RequestFailed',
         function(aResponse) {
 
             var errorRecord,
@@ -570,7 +570,7 @@ function() {
             thisArg.signal('TP.sig.UIDataFailed', errorRecord);
         });
 
-    request.defineMethod('handleRequestCompleted',
+    request.defineHandler('RequestCompleted',
         function(aResponse) {
 
             var statusCode,

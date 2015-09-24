@@ -57,7 +57,7 @@ TP.core.JSONService.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONService.Inst.defineMethod('handleJSONRequest',
+TP.core.JSONService.Inst.defineHandler('JSONRequest',
 function(aRequest) {
 
     /**

@@ -121,7 +121,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.quickbar.Inst.defineMethod('handleDOMClick',
+TP.sherpa.quickbar.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     var currentResultItem;
@@ -438,7 +438,7 @@ function() {
 //  Key Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.quickbar.Inst.defineMethod('handleDOMKeyDown',
+TP.sherpa.quickbar.Inst.defineHandler('DOMKeyDown',
 function(aSignal) {
 
     /**
@@ -471,7 +471,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.quickbar.Inst.defineMethod('handleDOMKeyPress',
+TP.sherpa.quickbar.Inst.defineHandler('DOMKeyPress',
 function(aSignal) {
 
     /**
@@ -505,7 +505,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.quickbar.Inst.defineMethod('handleDOMKeyUp',
+TP.sherpa.quickbar.Inst.defineHandler('DOMKeyUp',
 function(aSignal) {
 
     /**
@@ -533,7 +533,7 @@ function(aSignal) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
 
-        this.handleSpecialKeyEvent(evt);
+        this[TP.computeHandlerName('SpecialKeyEvent')](evt);
     } else if (TP.isTrue(this.get('searchMode'))) {
         this.drawSearchResults(editor.getValue());
     }
@@ -577,7 +577,7 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.quickbar.Inst.defineMethod('handleSpecialKeyEvent',
+TP.sherpa.quickbar.Inst.defineHandler('SpecialKeyEvent',
 function(anEvent) {
 
     /**
@@ -592,11 +592,11 @@ function(anEvent) {
 
     switch (keyname) {
         case 'DOM_Shift_Down_Up':
-            this.handleHistoryNext(anEvent);
+            this[TP.computeHandlerName('HistoryNext')](anEvent);
             break;
 
         case 'DOM_Shift_Up_Up':
-            this.handleHistoryPrev(anEvent);
+            this[TP.computeHandlerName('HistoryPrev')](anEvent);
             break;
 
         case 'DOM_Shift_Backspace_Up':

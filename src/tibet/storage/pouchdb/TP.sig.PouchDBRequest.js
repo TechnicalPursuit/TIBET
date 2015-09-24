@@ -87,12 +87,12 @@
  *
  *     req = TP.sig.PouchDBRequest.construct(requestParams);
  *
- *     req.defineMethod('handleRequestSucceeded',
+ *     req.defineHandler('RequestSucceeded',
  *          function(aResponse) {
  *              TP.info('Success! Result: ' + TP.json(aResponse.getResult()));
  *          });
  *
- *     req.defineMethod('handleRequestFailed',
+ *     req.defineHandler('RequestFailed',
  *          function(aResponse) {
  *              TP.info('Failure... Result: ' + TP.json(aResponse.getResult()));
  *          });

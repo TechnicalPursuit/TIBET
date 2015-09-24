@@ -93,8 +93,7 @@
  *     Package and fire the request:
  *
  *     s3Req = TP.sig.AmazonS3Request.construct(requestParams);
- *     s3Req.defineMethod(
- *              'handleRequestSucceeded',
+ *     s3Req.defineHandler('RequestSucceeded',
  *              function(aResponse) {
  *                  TP.info(aResponse.getResult());
  *              });
@@ -259,7 +258,7 @@ function(aRequest, aResourceID, aThreadID) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.AmazonS3PutItemRequest.Inst.defineMethod('handle404',
+TP.sig.AmazonS3PutItemRequest.Inst.defineHandler('404',
 function(aResponse) {
 
     /**
@@ -298,7 +297,7 @@ function(aResponse) {
 
         //  If the create bucket request succeeds, then retry the put item
         //  request.
-        createBucketRequest.defineMethod('handleRequestSucceeded',
+        createBucketRequest.defineHandler('RequestSucceeded',
             function(successResponse) {
                 var putItemRetryRequest;
 

@@ -36,7 +36,7 @@
  *
  *     request.atPut('body', payload);
  *
- *     request.defineMethod('handleRequestSucceeded', function(aResponse) {
+ *     request.defineHandler('RequestSucceeded', function(aResponse) {
  *
  *     TP.info(aResponse.getResult()); });
  *

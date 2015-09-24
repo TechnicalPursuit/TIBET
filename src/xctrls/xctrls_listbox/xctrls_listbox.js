@@ -96,7 +96,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.listbox.Inst.defineMethod('handleValueChange',
+TP.xctrls.listbox.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -117,7 +117,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.listbox.Inst.defineMethod('handleDOMClick',
+TP.xctrls.listbox.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     /**

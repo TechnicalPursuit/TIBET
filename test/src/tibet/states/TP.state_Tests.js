@@ -540,7 +540,7 @@ function() {
         machine.defineMethod('acceptFinish', function(details) {
             return false;
         });
-        machine.defineMethod('handleStateInput', function(details) {
+        machine.defineHandler('StateInput', function(details) {
             called = true;
         });
 
@@ -570,7 +570,7 @@ function() {
         });
 
         //  Add state-specific handler method for input processing.
-        machine.defineMethod('handleStateInputWhenStart', function(details) {
+        machine.defineHandler('StateInputWhenStart', function(details) {
             called = true;
         });
 

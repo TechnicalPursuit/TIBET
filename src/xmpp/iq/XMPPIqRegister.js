@@ -33,7 +33,7 @@ TP.xmpp.IqRegister.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xmpp.IqRegister.Inst.defineMethod('handleArrival',
+TP.xmpp.IqRegister.Inst.defineHandler('Arrival',
 function(aSignal) {
 
     /**

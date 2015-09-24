@@ -64,7 +64,7 @@ TP.core.PouchDBService.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBService.Inst.defineMethod('handlePouchDBRequest',
+TP.core.PouchDBService.Inst.defineHandler('PouchDBRequest',
 function(aRequest) {
 
     /**

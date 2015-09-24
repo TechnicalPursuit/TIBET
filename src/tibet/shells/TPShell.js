@@ -278,7 +278,7 @@ function(aRequest) {
 
 
     //  Go ahead and tell the shell to handle the shell request.
-    shell.handleShellRequest(request);
+    shell[TP.computeHandlerName('ShellRequest')](request);
 
     return request;
 });
@@ -357,7 +357,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Type.defineMethod('handleUpdateAvailable',
+TP.core.Shell.Type.defineHandler('UpdateAvailable',
 function(aSignal) {
 
     /**
@@ -645,7 +645,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('handleAppShutdown',
+TP.core.Shell.Inst.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**
@@ -1315,7 +1315,7 @@ function(aName) {
 //  REQUEST HANDLING
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('handleShellRequest',
+TP.core.Shell.Inst.defineHandler('ShellRequest',
 function(aRequest) {
 
     /**
@@ -1401,7 +1401,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Shell.Inst.defineMethod('handleUserInput',
+TP.core.Shell.Inst.defineHandler('UserInput',
 function(aSignal) {
 
     /**

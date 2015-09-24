@@ -799,7 +799,7 @@ function(aState) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateMachine.Inst.defineMethod('handleSignal',
+TP.core.StateMachine.Inst.defineHandler('Signal',
 function(aSignal) {
 
     /**
@@ -968,7 +968,7 @@ function(details) {
 
         triggerTime,
         lastTriggerTime,
-
+        skip,
         internal,
         trigger,
         handler,
@@ -991,6 +991,9 @@ function(details) {
     //  If we are triggered try to directly respond to that triggering
     //  signal as our first priority.
     trigger = details.at('trigger');
+
+    //  Build a handler skip name for the generic handler to avoid recursions.
+    skip = TP.computeHandlerName('Signal');
 
     //  If we can obtain a time from the trigger (i.e. it's a TP.sig.Signal of
     //  some sort), then we do so. We'll use this in a comparison below.
@@ -1024,15 +1027,14 @@ function(details) {
         if (TP.isKindOf(trigger, 'TP.sig.Signal')) {
 
             //  Try to handle locally within this state machine.
-            handler = this.getHandler(
-                            trigger, null, null, null, 'handleSignal');
+            handler = this.getHandler(trigger, null, null, null, skip);
             if (TP.isFunction(handler)) {
                 handler.call(this, trigger);
             } else {
                 //  Try bubbling to parent if not handled.
                 if (TP.isValid(parent = this.get('parent'))) {
                     handler = parent.getHandler(
-                            trigger, null, null, null, 'handleSignal');
+                        trigger, null, null, null, skip);
                     if (TP.isFunction(handler)) {
                         handler.call(parent, trigger);
                     }
@@ -1049,8 +1051,7 @@ function(details) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getHandler(
-                            signal, null, null, null, 'handleSignal');
+        handler = this.getHandler(signal, null, null, null, skip);
         if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
@@ -1058,8 +1059,7 @@ function(details) {
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getHandler(
-                            signal, null, null, null, 'handleSignal');
+                handler = parent.getHandler(signal, null, null, null, skip);
                 if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }
@@ -1081,8 +1081,7 @@ function(details) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getHandler(
-                            signal, null, null, null, 'handleSignal');
+        handler = this.getHandler(signal, null, null, null, skip);
         if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
@@ -1090,8 +1089,7 @@ function(details) {
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getHandler(
-                            signal, null, null, null, 'handleSignal');
+                handler = parent.getHandler(signal, null, null, null, skip);
                 if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }
@@ -1400,7 +1398,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('handleStateEnter',
+TP.core.StateResponder.Inst.defineHandler('StateEnter',
 function(aSignal) {
 
     /**
@@ -1423,7 +1421,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('handleStateExit',
+TP.core.StateResponder.Inst.defineHandler('StateExit',
 function(aSignal) {
 
     /**
@@ -1446,7 +1444,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('handleStateInput',
+TP.core.StateResponder.Inst.defineHandler('StateInput',
 function(aSignal) {
 
     /**

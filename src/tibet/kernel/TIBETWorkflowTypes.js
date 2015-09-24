@@ -633,7 +633,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Resource.Inst.defineMethod('handleRequest',
+TP.core.Resource.Inst.defineHandler('Request',
 function(aRequest) {
 
     /**
@@ -1388,7 +1388,9 @@ function(aRequest) {
         for (i = 0; i < len; i++) {
             key = keys.at(i);
             if (TP.regex.HANDLER_NAME.test(key)) {
-                this.defineMethod(key, request.at(key));
+                this.defineMethod(key,
+                    request.at(key),
+                    null, null, true);
             }
         }
     }
@@ -1810,7 +1812,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Request.Inst.defineMethod('handleResponse',
+TP.sig.Request.Inst.defineHandler('Response',
 function(aSignal) {
 
     /**
@@ -2832,8 +2834,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
 
         sigType,
 
-        shortHandler,
-        fullHandler,
+        handlerName,
 
         joins,
         ancestor,
@@ -2898,17 +2899,13 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 continue;
             }
 
-            shortHandler = sigType.getHandlerName(null, null, null, false) +
-                suffix;
-            fullHandler = sigType.getHandlerName(null, null, null, true) +
-                suffix;
+            handlerName = TP.computeHandlerName({signal: signame + suffix});
 
             response.setSignalName(signame + suffix);
 
             //  notify the request itself, it will often be locally
             //  programmed with custom callback hooks
-            TP.handle(request, response, shortHandler, true);
-            TP.handle(request, response, fullHandler, true);
+            TP.handle(request, response, handlerName, true);
             if (response.shouldPrevent() || response.shouldStop()) {
                 break;
             }
@@ -2916,14 +2913,12 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
             //  notify responder...typically the service which did the
             //  actual processing. we give it one last chance to finish up
             //  any housekeeping for the request/response before requestor
-            TP.handle(responder, response, shortHandler, true);
-            TP.handle(responder, response, fullHandler, true);
+            TP.handle(responder, response, handlerName, true);
             if (response.shouldPrevent() || response.shouldStop()) {
                 break;
             }
 
-            TP.handle(requestor, response, shortHandler, true);
-            TP.handle(requestor, response, fullHandler, true);
+            TP.handle(requestor, response, handlerName, true);
             if (response.shouldPrevent() || response.shouldStop()) {
                 break;
             }
@@ -4507,7 +4502,7 @@ function(aServiceID) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Service.Type.defineMethod('handleRequest',
+TP.core.Service.Type.defineHandler('Request',
 function(aSignal) {
 
     /**
@@ -4842,7 +4837,7 @@ TP.core.FunctionService.register();
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.FunctionService.Inst.defineMethod('handleFunctionRequest',
+TP.core.FunctionService.Inst.defineHandler('FunctionRequest',
 function(aRequest) {
 
     /**
@@ -5056,7 +5051,7 @@ function(aJob) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.IOService.Inst.defineMethod('handleRequestFailed',
+TP.core.IOService.Inst.defineHandler('RequestFailed',
 function(aSignal) {
 
     /**
@@ -5078,7 +5073,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.IOService.Inst.defineMethod('handleRequestSucceeded',
+TP.core.IOService.Inst.defineHandler('RequestSucceeded',
 function(aSignal) {
 
     /**
@@ -5749,6 +5744,10 @@ function(aRequest) {
  * @type {TP.core.Controller}
  * @summary This type is a common supertype for all 'TIBET controllers',
  *     objects which form the top layers of the TIBET responder chain.
+ *     Per the original Smalltalk-style definition a Controller is an object
+ *     responsible primarily for event handling. As such TP.core.Controller
+ *     instances are typically used in the "controller chain" or attached to
+ *     elements via the tibet:ctrl attribute for "responder chain" usage.
  */
 
 //  ------------------------------------------------------------------------
@@ -6040,7 +6039,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineMethod('handleAppWillStart',
+TP.core.Application.Inst.defineHandler('AppWillStart',
 function(aSignal) {
 
     /**
@@ -6052,29 +6051,6 @@ function(aSignal) {
      */
 
     TP.core.Application.get('singleton').start(aSignal);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('isResponderFor',
-function(aSignal, isCapturing) {
-
-    /**
-     * @method isResponderFor
-     * @summary Whether or not the receiver is a responder for the supplied
-     *     signal and capturing mode.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Boolean} Whether or not the receiver is a valid responder for
-     *     the supplied signal and capturing mode.
-     */
-
-    //  The application instance is the backstop responder for all signals, but
-    //  does not involve itself in capturing mode by default.
-    return TP.notTrue(isCapturing);
 });
 
 //  ------------------------------------------------------------------------
@@ -6119,6 +6095,30 @@ function(aController) {
 
     //  TODO: should we unique these?
     this.$get('controllers').unshift(aController);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('setControllers',
+function(aList) {
+
+    /**
+     * @method setControllers
+     * @summary Defines the list of controllers that are currently active.
+     * @param {Array} aList The new list of controllers.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    var controllers;
+
+    controllers = TP.ifInvalid(aList, TP.ac());
+    if (!TP.isArray(controllers)) {
+        return this.raise('InvalidParameter');
+    }
+
+    this.$set('controllers', controllers);
 
     return this;
 });

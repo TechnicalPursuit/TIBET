@@ -474,7 +474,7 @@ where certain packet types require specific responses.
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Node.Inst.defineMethod('handleArrival',
+TP.xmpp.Node.Inst.defineHandler('Arrival',
 function(aSignal) {
 
     /**

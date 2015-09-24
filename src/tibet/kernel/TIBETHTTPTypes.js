@@ -183,7 +183,7 @@ function(aResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.HTTPRequest.Inst.defineMethod('handleIOFailed',
+TP.sig.HTTPRequest.Inst.defineHandler('IOFailed',
 function(aSignal) {
 
     /**
@@ -203,6 +203,7 @@ function(aSignal) {
         code,
         defer,
         faultCode,
+        handlerCode,
         result;
 
     request = aSignal.getPayload();
@@ -226,12 +227,13 @@ function(aSignal) {
         //  function as needed.
         this.set('faultText', httpObj.statusText);
 
-        if (TP.canInvoke(request, 'handle' + code)) {
+        handlerName = TP.computeHandlerName(code);
+        if (TP.canInvoke(request, handlerName)) {
             defer = true;
-            request['handle' + code](aSignal);
-        } else if (TP.canInvoke(this, 'handle' + code)) {
+            request[handlerName](aSignal);
+        } else if (TP.canInvoke(this, handlerName)) {
             defer = true;
-            this['handle' + code](aSignal);
+            this[handlerName](aSignal);
         }
     } finally {
         //  When we've deferred to a status-specific handler that handler is
@@ -256,7 +258,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.HTTPRequest.Inst.defineMethod('handleIOSucceeded',
+TP.sig.HTTPRequest.Inst.defineHandler('IOSucceeded',
 function(aSignal) {
 
     /**
@@ -273,6 +275,7 @@ function(aSignal) {
         code,
         defer,
         faultCode,
+        handlerCode,
         result;
 
     //  first step is to make sure that if the incoming signal's request
@@ -290,12 +293,13 @@ function(aSignal) {
         //  question, which lets us defer to handle304 etc.
         code = httpObj.status;
 
-        if (TP.canInvoke(request, 'handle' + code)) {
+        handlerName = TP.computeHandlerName(code);
+        if (TP.canInvoke(request, handlerName)) {
             defer = true;
-            request['handle' + code](aSignal);
-        } else if (TP.canInvoke(this, 'handle' + code)) {
+            request[handlerName](aSignal);
+        } else if (TP.canInvoke(this, handlerName)) {
             defer = true;
-            this['handle' + code](aSignal);
+            this[handlerName](aSignal);
         }
     } finally {
         //  When we've deferred to a status-specific handler that handler is
@@ -798,7 +802,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('handleHTTPRequest',
+TP.core.HTTPService.Inst.defineHandler('HTTPRequest',
 function(aRequest) {
 
     /**

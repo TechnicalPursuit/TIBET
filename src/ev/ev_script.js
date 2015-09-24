@@ -189,7 +189,7 @@ function(aRequest) {
             shell.setVariable('TARGET', signal.getTarget());
         }
 
-        shell.handleShellRequest(req);
+        shell[TP.computeHandlerName('ShellRequest')](req);
     } else if (type === TP.ietf.Mime.JS) {
         //  Build a function and cache it on the receiver's window, updating the
         //  node to hold it's ID for next time

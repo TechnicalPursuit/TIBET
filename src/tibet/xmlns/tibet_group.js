@@ -332,7 +332,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.group.Inst.defineMethod('handleAttributeChange',
+TP.tibet.group.Inst.defineHandler('AttributeChange',
 function(aSignal) {
 
     /**

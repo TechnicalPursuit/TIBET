@@ -130,7 +130,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('handleCouchDBChangeSignal',
+TP.couchdb.CouchDBURLHandler.Type.defineHandler('CouchDBChangeSignal',
 function(aSignal) {
 
     /**

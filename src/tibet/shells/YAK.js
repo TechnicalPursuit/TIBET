@@ -986,13 +986,13 @@ function(aRequest) {
 
     //  if the user hit 'Shift-Esc', then we need to make sure everything is
     //  closed out.
-    req.defineMethod('handleRequestCancelled',
+    req.defineHandler('RequestCancelled',
         function() {
 
             shell.logout(aRequest);
         });
 
-    req.defineMethod('handleUserInput',
+    req.defineHandler('UserInput',
         function(anotherSignal) {
 
             var result;
@@ -1650,7 +1650,7 @@ function(aRequest) {
 //  INBOUND TRAFFIC
 //  ------------------------------------------------------------------------
 
-TP.core.YAK.Inst.defineMethod('handleXMPPInput',
+TP.core.YAK.Inst.defineHandler('XMPPInput',
 function(aSignal) {
 
     /**
@@ -1721,7 +1721,7 @@ function(aSignal) {
         //  give the node a chance to respond to arrival
         if (TP.canInvoke(node, 'handleArrival')) {
             aSignal.set('console', this);
-            node.handleArrival(aSignal);
+            node[TP.computeHandlerName('Arrival')](aSignal);
         }
     } catch (e) {
         TP.sig.UserOutputRequest.construct(

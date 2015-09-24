@@ -159,7 +159,7 @@
  *     Package and fire the request:
  *
  *     davReq = TP.sig.WebDAVRequest.construct(requestParams);
- *     davReq.defineMethod('handleRequestSucceeded',
+ *     davReq.defineHandler('RequestSucceeded',
  *              function(aResponse) {
  *                  TP.info(aResponse.getResult());
  *              });

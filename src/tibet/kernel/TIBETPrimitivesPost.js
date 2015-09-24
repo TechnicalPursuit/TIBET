@@ -1384,366 +1384,6 @@ function(aString) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.definePrimitive('expandSignalName',
-function(signame) {
-
-    /**
-     * @method expandSignalName
-     * @summary Produces the 'long form' of the supplied signal name.
-     * @description Given a signal name of 'fooSignal', this method will produce
-     *     'TP.sig.fooSignal'. If the signal name already has a period ('.'),
-     *     this method will just prepend 'TP.'.
-     * @param {String} signame The signal name.
-     * @returns {String} The lengthened signal name.
-     */
-
-    var parts,
-        i,
-        newparts;
-
-    if (TP.isEmpty(signame)) {
-        return '';
-    }
-
-    //  Event sequences (i.e. typically keyboard sequences) will have a
-    //  double underscore between each part of the sequence. We need to make
-    //  sure to expand each part.
-    if (/__/.test(signame)) {
-        newparts = TP.ac();
-        parts = signame.split('__');
-
-        for (i = 0; i < parts.length; i++) {
-            //  Note the recursive call here.
-            newparts.push(TP.expandSignalName(parts.at(i)));
-        }
-
-        return newparts.join('__');
-    }
-
-    if (/^(TP|APP)\.(.+)/.test(signame)) {
-        return signame;
-    } else if (/\.(.+)/.test(signame)) {
-        return 'TP.' + signame;
-    }
-
-    return 'TP.sig.' + signame;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('contractSignalName',
-function(signame) {
-
-    /**
-     * @method contractSignalName
-     * @summary Produces the 'short form' of the supplied signal name.
-     * @description Given a signal name of 'TP.sig.fooSignal', this method will
-     *     produce 'fooSignal'.
-     * @param {String} signame The signal name.
-     * @returns {String} The shortened signal name.
-     */
-
-    var parts,
-        i,
-        newparts;
-
-    if (TP.isEmpty(signame)) {
-        return '';
-    }
-
-    //  Event sequences (i.e. typically keyboard sequences) will have a
-    //  double underscore between each part of the sequence. We need to make
-    //  sure to contract each part.
-    if (/__/.test(signame)) {
-        newparts = TP.ac();
-        parts = signame.split('__');
-
-        for (i = 0; i < parts.length; i++) {
-            //  Note the recursive call here.
-            newparts.push(TP.contractSignalName(parts.at(i)));
-        }
-
-        return newparts.join('__');
-    }
-
-    if (/\.(.+)/.test(signame)) {
-        return signame.slice(signame.lastIndexOf('.') + 1);
-    }
-
-    return signame;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('eventAsHTMLString',
-function(eventObj) {
-
-    /**
-     * @method eventAsHTMLString
-     * @summary Returns an HTML String representation of the supplied event
-     *     object.
-     * @param {event} eventObj The event object to produce the HTML String
-     *     representation of.
-     * @returns {String} An HTML String representation of the supplied event
-     *     object.
-     */
-
-    var arr,
-        keys,
-        len,
-        i;
-
-    arr = TP.ac();
-
-    keys = TP.keys(eventObj);
-    len = keys.length;
-
-    arr.push('<span',
-                ' class="Event ', TP.escapeTypeName(TP.tname(eventObj)), '">');
-
-    for (i = 0; i < len; i++) {
-        try {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(eventObj[keys[i]]), '<\/span>');
-        } catch (e) {
-            arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(undefined), '<\/span>');
-        }
-    }
-
-    arr.push('<\/span>');
-
-    return arr.join('').toString();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('eventAsJSONSource',
-function(eventObj) {
-
-    /**
-     * @method eventAsJSONSource
-     * @summary Returns a JSON String representation of the supplied event
-     *     object.
-     * @param {event} eventObj The event object to produce the JSON String
-     *     representation of.
-     * @returns {String} An JSON String representation of the supplied event
-     *     object.
-     */
-
-    var arr,
-        keys,
-        len,
-        i;
-
-    arr = TP.ac();
-
-    keys = TP.keys(eventObj);
-    len = keys.length;
-
-    arr.push('{"type":"', TP.tname(eventObj), '","data":{');
-
-    for (i = 0; i < len; i++) {
-        try {
-            arr.push(keys[i].quoted('"'), ':', TP.jsonsrc(eventObj[keys[i]]));
-        } catch (e) {
-            arr.push(keys[i].quoted('"'), ':"undefined"');
-        } finally {
-            arr.push(',');
-        }
-    }
-
-    //  Pop off the trailing comma
-    arr.pop();
-
-    arr.push('}}');
-
-    return arr.join('').toString();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('eventAsPrettyString',
-function(eventObj) {
-
-    /**
-     * @method eventAsPrettyString
-     * @summary Returns a 'pretty print' representation of the supplied event
-     *     object.
-     * @param {event} eventObj The event object to produce the pretty print
-     *     representation of.
-     * @returns {String} A pretty print representation of the supplied event
-     *     object.
-     */
-
-    var arr,
-        keys,
-        len,
-        i;
-
-    arr = TP.ac();
-
-    keys = TP.keys(eventObj);
-    len = keys.length;
-
-    arr.push('<dl class="pretty ', TP.escapeTypeName(TP.tname(eventObj)), '">',
-                '<dt>Type name<\/dt>',
-                '<dd class="pretty typename">', TP.tname(eventObj), '<\/dd>');
-
-    for (i = 0; i < len; i++) {
-        try {
-            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
-                        '<dd>', TP.pretty(eventObj[keys[i]]), '<\/dd>');
-        } catch (e) {
-            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
-                        '<dd>', TP.pretty(undefined), '<\/dd>');
-        }
-    }
-
-    arr.push('<\/dl>');
-
-    return arr.join('').toString();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('eventAsSource',
-function(eventObj) {
-
-    /**
-     * @method eventAsSource
-     * @summary Returns a TIBET source string representation of the supplied
-     *     event object.
-     * @param {event} eventObj The event object to produce the TIBET source
-     *     representation of.
-     * @returns {String} A TIBET source string representation of the supplied
-     *     event object.
-     */
-
-    var arr,
-
-        target,
-
-        keys,
-        len,
-        i;
-
-    arr = TP.ac();
-
-    if (TP.isNode(target = eventObj.target)) {
-        arr.push('TP.documentCreateEvent(',
-                    TP.gid(TP.nodeGetWindow(target)),
-                    '.document,');
-    } else {
-        arr.push('TP.documentCreateEvent(top.document, ');
-    }
-
-    keys = TP.keys(eventObj);
-    len = keys.length;
-
-    arr.push('TP.hc(');
-
-    for (i = 0; i < len; i++) {
-        try {
-            arr.push(keys[i], ', ', TP.src(eventObj[keys[i]]), ', ');
-        } catch (e) {
-            arr.push(keys[i], ', ', 'undefined', ', ');
-        }
-    }
-
-    //  Pop off the last comma
-    arr.pop();
-
-    arr.push(')');
-
-    return arr.join('').toString();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('eventAsString',
-function(eventObj) {
-
-    /**
-     * @method eventAsString
-     * @summary Returns a String representation of the supplied event
-     *     object.
-     * @param {event} eventObj The event object to produce the String
-     *     representation of.
-     * @returns {String} A String representation of the supplied event
-     *     object.
-     */
-
-    var arr,
-        keys,
-        len,
-        i;
-
-    arr = TP.ac();
-
-    keys = TP.keys(eventObj);
-    len = keys.length;
-
-    arr.push(TP.eventGetType(eventObj), ' : ', '(');
-
-    for (i = 0; i < len; i++) {
-        try {
-            arr.push(keys[i], ' => ', TP.str(eventObj[keys[i]]), ', ');
-        } catch (e) {
-            arr.push(keys[i], ' => undefined', ', ');
-        }
-    }
-
-    //  Pop off the last comma
-    arr.pop();
-
-    arr.push(')');
-
-    return arr.join('').toString();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('eventAsXMLString',
-function(eventObj) {
-
-    /**
-     * @method eventAsXMLString
-     * @summary Returns an XML String representation of the supplied event
-     *     object.
-     * @param {event} eventObj The event object to produce the XML String
-     *     representation of.
-     * @returns {String} An XML String representation of the supplied event
-     *     object.
-     */
-
-    var arr,
-        keys,
-        len,
-        i;
-
-    arr = TP.ac();
-
-    keys = TP.keys(eventObj);
-    len = keys.length;
-
-    arr.push('<event', ' typename="', TP.tname(eventObj), '"');
-
-    for (i = 0; i < len; i++) {
-        try {
-            arr.push(' ', keys[i], '="', TP.xmlstr(eventObj[keys[i]]), '"');
-        } catch (e) {
-            arr.push(' ', keys[i], '="undefined"');
-        }
-    }
-
-    arr.push('\/>');
-
-    return arr.join('').toString();
-});
-
-//  ------------------------------------------------------------------------
 //  ID/NAME FUNCTIONS
 //  ------------------------------------------------------------------------
 
@@ -5428,6 +5068,442 @@ function(prefixStr, aScriptStr) {
     TP.regex.JS_ASSIGNMENT.lastIndex = 0;
     return aScriptStr.replace(TP.regex.JS_ASSIGNMENT,
                                 '$1' + prefixStr + '$2$3');
+});
+
+//  ------------------------------------------------------------------------
+//  Signaling
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('expandSignalName',
+function(signame) {
+
+    /**
+     * @method expandSignalName
+     * @summary Produces the 'long form' of the supplied signal name.
+     * @description Given a signal name of 'fooSignal', this method will produce
+     *     'TP.sig.fooSignal'. If the signal name already has a period ('.'),
+     *     this method will just prepend 'TP.'.
+     * @param {String} signame The signal name.
+     * @returns {String} The lengthened signal name.
+     */
+
+    var parts,
+        i,
+        newparts;
+
+    if (TP.isEmpty(signame)) {
+        return '';
+    }
+
+    //  Event sequences (i.e. typically keyboard sequences) will have a
+    //  double underscore between each part of the sequence. We need to make
+    //  sure to expand each part.
+    if (/__/.test(signame)) {
+        newparts = TP.ac();
+        parts = signame.split('__');
+
+        for (i = 0; i < parts.length; i++) {
+            //  Note the recursive call here.
+            newparts.push(TP.expandSignalName(parts.at(i)));
+        }
+
+        return newparts.join('__');
+    }
+
+    if (/^(TP|APP)\.(.+)/.test(signame)) {
+        return signame;
+    } else if (/\.(.+)/.test(signame)) {
+        return 'TP.' + signame;
+    }
+
+    return 'TP.sig.' + signame;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('contractSignalName',
+function(signame) {
+
+    /**
+     * @method contractSignalName
+     * @summary Produces the 'short form' of the supplied signal name.
+     * @description Given a signal name of 'TP.sig.fooSignal', this method will
+     *     produce 'fooSignal'.
+     * @param {String} signame The signal name.
+     * @returns {String} The shortened signal name.
+     */
+
+    var parts,
+        i,
+        newparts;
+
+    if (TP.isEmpty(signame)) {
+        return '';
+    }
+
+    //  Event sequences (i.e. typically keyboard sequences) will have a
+    //  double underscore between each part of the sequence. We need to make
+    //  sure to contract each part.
+    if (/__/.test(signame)) {
+        newparts = TP.ac();
+        parts = signame.split('__');
+
+        for (i = 0; i < parts.length; i++) {
+            //  Note the recursive call here.
+            newparts.push(TP.contractSignalName(parts.at(i)));
+        }
+
+        return newparts.join('__');
+    }
+
+    if (/\.(.+)/.test(signame)) {
+        return signame.slice(signame.lastIndexOf('.') + 1);
+    }
+
+    return signame;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('computeHandlerName',
+function(aDescriptor) {
+
+    /**
+     * @method computeHandlerName
+     * @summary Computes and returns the standard handler name defined by the
+     *     signal handler descriptor provided. This method defaults the signal
+     *     name used for the descriptor so the parameter is optional.
+     * @param {Object} [aDescriptor] The 'descriptor' parameter is a property
+     *     descriptor. Properties can be any combination of the following:
+     *          signal (tibet type or string signal name)
+     *          origin (object or string id)
+     *          state (string state name)
+     *          capturing (boolean for whether the handler is capturing).
+     * @return {String} The handler name defined by the descriptor.
+     */
+
+    var descriptor,
+        signal,
+        typename,
+        sigtype,
+        typename,
+        handler;
+
+    if (TP.isString(aDescriptor)) {
+        signal = aDescriptor;
+    } else if (TP.isNumber(aDescriptor)) {
+        //  Handle 404 for example :)
+        signal = '' + aDescriptor;
+    } else if (!TP.isPlainObject(aDescriptor)) {
+        return this.raise('InvalidDescriptor', aDescriptor);
+    } else {
+        signal = aDescriptor.signal;
+    }
+
+    //  Signal types, signal instances, and strings all respond to this.
+    if (TP.canInvoke(signal, 'getSignalName')) {
+        signame = signal.getSignalName();
+    } else {
+        return this.raise('InvalidSignal', signal);
+    }
+
+    //  Simplify for internal signals. APP.sig. prefixing has to remain in
+    //  place and should be specified explicitly.
+    signame = signame.replace(/^TP\.sig\./, '');
+
+    //  Regardless of how it got here, don't let signame carry anything that
+    //  isn't a valid JS identifier character as part of the handler name.
+    handler = 'handle' + signame.asJSIdentifier();
+
+    //  Add optional Capture phrase
+    if (descriptor && TP.isTrue(descriptor.capturing)) {
+        handler += 'Capture';
+    }
+
+    //  Add optional From clause for origin filtering.
+    if (descriptor && TP.isValid(origin = descriptor.origin)) {
+        handler += 'From' + TP.gid(origin);
+    } else {
+        handler += 'From' + TP.ANY;
+    }
+
+    //  Add optional When clause for state filtering.
+    if (descriptor && TP.notEmpty(state = descriptor.state)) {
+        handler += 'When' + TP.str(state).asTitleCase();
+    } else {
+        handler += 'When' + TP.ANY;
+    }
+
+    return handler;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('eventAsHTMLString',
+function(eventObj) {
+
+    /**
+     * @method eventAsHTMLString
+     * @summary Returns an HTML String representation of the supplied event
+     *     object.
+     * @param {event} eventObj The event object to produce the HTML String
+     *     representation of.
+     * @returns {String} An HTML String representation of the supplied event
+     *     object.
+     */
+
+    var arr,
+        keys,
+        len,
+        i;
+
+    arr = TP.ac();
+
+    keys = TP.keys(eventObj);
+    len = keys.length;
+
+    arr.push('<span',
+                ' class="Event ', TP.escapeTypeName(TP.tname(eventObj)), '">');
+
+    for (i = 0; i < len; i++) {
+        try {
+            arr.push('<span data-name="', keys[i], '">',
+                        TP.htmlstr(eventObj[keys[i]]), '<\/span>');
+        } catch (e) {
+            arr.push('<span data-name="', keys[i], '">',
+                        TP.htmlstr(undefined), '<\/span>');
+        }
+    }
+
+    arr.push('<\/span>');
+
+    return arr.join('').toString();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('eventAsJSONSource',
+function(eventObj) {
+
+    /**
+     * @method eventAsJSONSource
+     * @summary Returns a JSON String representation of the supplied event
+     *     object.
+     * @param {event} eventObj The event object to produce the JSON String
+     *     representation of.
+     * @returns {String} An JSON String representation of the supplied event
+     *     object.
+     */
+
+    var arr,
+        keys,
+        len,
+        i;
+
+    arr = TP.ac();
+
+    keys = TP.keys(eventObj);
+    len = keys.length;
+
+    arr.push('{"type":"', TP.tname(eventObj), '","data":{');
+
+    for (i = 0; i < len; i++) {
+        try {
+            arr.push(keys[i].quoted('"'), ':', TP.jsonsrc(eventObj[keys[i]]));
+        } catch (e) {
+            arr.push(keys[i].quoted('"'), ':"undefined"');
+        } finally {
+            arr.push(',');
+        }
+    }
+
+    //  Pop off the trailing comma
+    arr.pop();
+
+    arr.push('}}');
+
+    return arr.join('').toString();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('eventAsPrettyString',
+function(eventObj) {
+
+    /**
+     * @method eventAsPrettyString
+     * @summary Returns a 'pretty print' representation of the supplied event
+     *     object.
+     * @param {event} eventObj The event object to produce the pretty print
+     *     representation of.
+     * @returns {String} A pretty print representation of the supplied event
+     *     object.
+     */
+
+    var arr,
+        keys,
+        len,
+        i;
+
+    arr = TP.ac();
+
+    keys = TP.keys(eventObj);
+    len = keys.length;
+
+    arr.push('<dl class="pretty ', TP.escapeTypeName(TP.tname(eventObj)), '">',
+                '<dt>Type name<\/dt>',
+                '<dd class="pretty typename">', TP.tname(eventObj), '<\/dd>');
+
+    for (i = 0; i < len; i++) {
+        try {
+            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
+                        '<dd>', TP.pretty(eventObj[keys[i]]), '<\/dd>');
+        } catch (e) {
+            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
+                        '<dd>', TP.pretty(undefined), '<\/dd>');
+        }
+    }
+
+    arr.push('<\/dl>');
+
+    return arr.join('').toString();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('eventAsSource',
+function(eventObj) {
+
+    /**
+     * @method eventAsSource
+     * @summary Returns a TIBET source string representation of the supplied
+     *     event object.
+     * @param {event} eventObj The event object to produce the TIBET source
+     *     representation of.
+     * @returns {String} A TIBET source string representation of the supplied
+     *     event object.
+     */
+
+    var arr,
+
+        target,
+
+        keys,
+        len,
+        i;
+
+    arr = TP.ac();
+
+    if (TP.isNode(target = eventObj.target)) {
+        arr.push('TP.documentCreateEvent(',
+                    TP.gid(TP.nodeGetWindow(target)),
+                    '.document,');
+    } else {
+        arr.push('TP.documentCreateEvent(top.document, ');
+    }
+
+    keys = TP.keys(eventObj);
+    len = keys.length;
+
+    arr.push('TP.hc(');
+
+    for (i = 0; i < len; i++) {
+        try {
+            arr.push(keys[i], ', ', TP.src(eventObj[keys[i]]), ', ');
+        } catch (e) {
+            arr.push(keys[i], ', ', 'undefined', ', ');
+        }
+    }
+
+    //  Pop off the last comma
+    arr.pop();
+
+    arr.push(')');
+
+    return arr.join('').toString();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('eventAsString',
+function(eventObj) {
+
+    /**
+     * @method eventAsString
+     * @summary Returns a String representation of the supplied event
+     *     object.
+     * @param {event} eventObj The event object to produce the String
+     *     representation of.
+     * @returns {String} A String representation of the supplied event
+     *     object.
+     */
+
+    var arr,
+        keys,
+        len,
+        i;
+
+    arr = TP.ac();
+
+    keys = TP.keys(eventObj);
+    len = keys.length;
+
+    arr.push(TP.eventGetType(eventObj), ' : ', '(');
+
+    for (i = 0; i < len; i++) {
+        try {
+            arr.push(keys[i], ' => ', TP.str(eventObj[keys[i]]), ', ');
+        } catch (e) {
+            arr.push(keys[i], ' => undefined', ', ');
+        }
+    }
+
+    //  Pop off the last comma
+    arr.pop();
+
+    arr.push(')');
+
+    return arr.join('').toString();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('eventAsXMLString',
+function(eventObj) {
+
+    /**
+     * @method eventAsXMLString
+     * @summary Returns an XML String representation of the supplied event
+     *     object.
+     * @param {event} eventObj The event object to produce the XML String
+     *     representation of.
+     * @returns {String} An XML String representation of the supplied event
+     *     object.
+     */
+
+    var arr,
+        keys,
+        len,
+        i;
+
+    arr = TP.ac();
+
+    keys = TP.keys(eventObj);
+    len = keys.length;
+
+    arr.push('<event', ' typename="', TP.tname(eventObj), '"');
+
+    for (i = 0; i < len; i++) {
+        try {
+            arr.push(' ', keys[i], '="', TP.xmlstr(eventObj[keys[i]]), '"');
+        } catch (e) {
+            arr.push(' ', keys[i], '="undefined"');
+        }
+    }
+
+    arr.push('\/>');
+
+    return arr.join('').toString();
 });
 
 //  ------------------------------------------------------------------------

@@ -10628,11 +10628,11 @@ function(mimeType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('getNativeObserver',
+TP.core.ElementNode.Type.defineMethod('getXMLObserver',
 function(aSignal) {
 
     /**
-     * @method getNativeObserver
+     * @method getXMLObserver
      * @summary Attempts to extract the actual observer of the signal from the
      *     supplied signal. This is very useful in cases where the target of the
      *     signal has been set to a type.
@@ -10959,7 +10959,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('handleSignal',
+TP.core.ElementNode.Type.defineHandler('Signal',
 function(aSignal) {
 
     /**
@@ -10976,13 +10976,7 @@ function(aSignal) {
 
     //  if the signal has an observer instance we can identify and acquire
     //  then we can leverage that, otherwise we shouldn't have been targeted
-    observer = this.getNativeObserver(aSignal);
-
-    //  Shouldn't have been targeted if we can't find an observer.
-    if (TP.notValid(observer)) {
-        return this.raise('TP.sig.InvalidHandler',
-            'Unable to obtain observer.');
-    }
+    observer = this.getXMLObserver(aSignal);
 
     //  Guard against recursion by invoking this indirectly again.
     if (observer === this) {
@@ -10990,7 +10984,11 @@ function(aSignal) {
             'Recursive observer definition.');
     }
 
-    return TP.handle(observer, aSignal);
+    if (TP.isValid(observer)) {
+        return TP.handle(observer, aSignal);
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -12012,7 +12010,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('handleValueChange',
+TP.core.ElementNode.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -13944,7 +13942,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineMethod('handleValueChange',
+TP.core.DocumentNode.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
     /**
@@ -14395,7 +14393,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTMLDocumentNode.Inst.defineMethod('handleDOMClose',
+TP.core.HTMLDocumentNode.Inst.defineHandler('DOMClose',
 function(aSignal) {
 
     /**
@@ -14687,7 +14685,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XHTMLDocumentNode.Inst.defineMethod('handleDOMClose',
+TP.core.XHTMLDocumentNode.Inst.defineHandler('DOMClose',
 function(aSignal) {
 
     /**
@@ -15413,7 +15411,7 @@ function(aSignal) {
     request = this.constructActRequest(aSignal);
 
     shell = TP.core.TSH.getDefaultInstance();
-    shell.handleShellRequest(request);
+    shell[TP.computeHandlerName('ShellRequest')](request);
 
     return;
 });
@@ -15611,7 +15609,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.Inst.defineMethod('handleSignal',
+TP.core.ActionElementNode.Inst.defineHandler('Signal',
 function(aSignal) {
 
     /**

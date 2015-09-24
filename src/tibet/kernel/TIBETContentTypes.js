@@ -449,7 +449,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineMethod('handleChange',
+TP.core.Content.Inst.defineHandler('Change',
 function(aSignal) {
 
     /**
@@ -567,7 +567,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineMethod('handleCreateItem',
+TP.core.Content.Inst.defineHandler('CreateItem',
 function(aSignal) {
 
     /**
@@ -610,7 +610,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineMethod('handleDeleteItem',
+TP.core.Content.Inst.defineHandler('DeleteItem',
 function(aSignal) {
 
     /**

@@ -63,7 +63,7 @@ function() {
 
             return;
         } else if (this.contains(aSignal.getTarget())) {
-            this.handleHaloClick(aSignal);
+            this[TP.computeHandlerName('HaloClick')](aSignal);
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
 
@@ -171,7 +171,7 @@ function(target) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleTP_sig_DOMScroll',
+TP.sherpa.halo.Inst.defineHandler('DOMScroll',
 function(aSignal) {
 
     this.moveAndSizeToTarget();
@@ -179,7 +179,8 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
+TP.sherpa.halo.Inst.defineHandler(
+{signal: 'HiddenChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**
@@ -194,7 +195,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleHaloClick',
+TP.sherpa.halo.Inst.defineHandler('HaloClick',
 function(aSignal) {
 
     /**
@@ -248,7 +249,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleDOMMouseMove',
+TP.sherpa.halo.Inst.defineHandler('DOMMouseMove',
 function(aSignal) {
 
     /**
@@ -265,7 +266,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleDOMMouseOver',
+TP.sherpa.halo.Inst.defineHandler('DOMMouseOver',
 function(aSignal) {
 
     /**
@@ -282,7 +283,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleDOMMouseOut',
+TP.sherpa.halo.Inst.defineHandler('DOMMouseOut',
 function(aSignal) {
 
     /**
@@ -299,7 +300,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('handleDOMMouseWheel',
+TP.sherpa.halo.Inst.defineHandler('DOMMouseWheel',
 function(aSignal) {
 
     /**

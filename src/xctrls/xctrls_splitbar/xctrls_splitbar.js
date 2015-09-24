@@ -59,7 +59,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.splitbar.Inst.defineMethod('handleDOMDragMove',
+TP.xctrls.splitbar.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**

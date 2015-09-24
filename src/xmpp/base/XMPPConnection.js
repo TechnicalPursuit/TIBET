@@ -939,7 +939,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Connection.Inst.defineMethod('handleXMPPDataAvailable',
+TP.xmpp.Connection.Inst.defineHandler('XMPPDataAvailable',
 function(aSignal) {
 
     /**
@@ -1063,7 +1063,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Connection.Inst.defineMethod('handleXMPPRosterInput',
+TP.xmpp.Connection.Inst.defineHandler('XMPPRosterInput',
 function(aSignal) {
 
     /**
@@ -1114,7 +1114,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Connection.Inst.defineMethod('handleXMPPTransportReady',
+TP.xmpp.Connection.Inst.defineHandler('XMPPTransportReady',
 function(aSignal) {
 
     /**
@@ -1131,7 +1131,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Connection.Inst.defineMethod('handleXMPPTransportException',
+TP.xmpp.Connection.Inst.defineHandler('XMPPTransportException',
 function(aSignal) {
 
     /**

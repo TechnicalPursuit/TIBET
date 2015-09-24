@@ -709,9 +709,9 @@ function(aSignal) {
     //  At this level, this type only handles subtypes of TP.sig.DOMDragMove and
     //  TP.sig.DOMDragHover
     if (TP.isKindOf(aSignal, TP.sig.DOMDragMove)) {
-        return this.handleDOMDragMove(aSignal);
+        return this[TP.computeHandlerName('DOMDragMove')](aSignal);
     } else if (TP.isKindOf(aSignal, TP.sig.DOMDragHover)) {
-        return this.handleDOMDragHover(aSignal);
+        return this[TP.computeHandlerName('DOMDragHover')](aSignal);
     }
 
     return this;
@@ -719,7 +719,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('handleDOMDragHover',
+TP.core.DragResponder.Inst.defineHandler('DOMDragHover',
 function(aSignal) {
 
     /**
@@ -735,7 +735,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineMethod('handleDOMDragMove',
+TP.core.DragResponder.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -1256,7 +1256,7 @@ TP.core.MoveResponder.Inst.defineAttribute('$computedPoint');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('handleDOMDragMove',
+TP.core.MoveResponder.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -1320,7 +1320,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('handleMovingEnter',
+TP.core.MoveResponder.Inst.defineHandler('MovingEnter',
 function(aSignal) {
 
     /**
@@ -1417,7 +1417,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MoveResponder.Inst.defineMethod('handleMovingExit',
+TP.core.MoveResponder.Inst.defineHandler('MovingExit',
 function(aSignal) {
 
     /**
@@ -1993,7 +1993,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('handleDOMDragMove',
+TP.core.ResizeResponder.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -2233,7 +2233,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('handleResizingEnter',
+TP.core.ResizeResponder.Inst.defineHandler('ResizingEnter',
 function(aSignal) {
 
     /**
@@ -2329,7 +2329,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ResizeResponder.Inst.defineMethod('handleResizingExit',
+TP.core.ResizeResponder.Inst.defineHandler('ResizingExit',
 function(aSignal) {
 
     /**
@@ -2933,7 +2933,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('handleDragDroppingEnter',
+TP.core.DNDResponder.Inst.defineHandler('DragDroppingEnter',
 function(aSignal) {
 
     /**
@@ -2969,7 +2969,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('handleDragDroppingExit',
+TP.core.DNDResponder.Inst.defineHandler('DragDroppingExit',
 function(aSignal) {
 
     /**
@@ -3052,7 +3052,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('handleTargetIn',
+TP.core.DNDResponder.Inst.defineHandler('TargetIn',
 function(aSignal) {
 
     //TP.info('Signaled: ' + TP.str(aSignal)),
@@ -3077,7 +3077,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineMethod('handleTargetOut',
+TP.core.DNDResponder.Inst.defineHandler('TargetOut',
 function(aSignal) {
 
     //TP.info('Signaled: ' + TP.str(aSignal)),
@@ -4343,7 +4343,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('handleDraggingEnter',
+TP.core.DragTracker.Inst.defineHandler('DraggingEnter',
 function(aSignal) {
 
     /**
@@ -4364,7 +4364,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('handleDraggingExit',
+TP.core.DragTracker.Inst.defineHandler('DraggingExit',
 function(aSignal) {
 
     /**
@@ -4386,7 +4386,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('handleDOMDragHover',
+TP.core.DragTracker.Inst.defineHandler('DOMDragHover',
 function(aSignal) {
 
     /**
@@ -4402,7 +4402,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DragTracker.Inst.defineMethod('handleDOMDragMove',
+TP.core.DragTracker.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
@@ -4604,7 +4604,7 @@ function(aSignal) {
     //  At this level, this type only handles subtypes of TP.sig.DOMKeySignal
     if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
 
-        handlerName = 'handle' + aSignal.getKeyName();
+        handlerName = TP.computeHandlerName(aSignal.getKeyName());
 
         if (TP.canInvoke(this, handlerName)) {
             this[handlerName](aSignal);

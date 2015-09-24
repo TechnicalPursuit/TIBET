@@ -108,8 +108,7 @@
  *     Package and fire the request:
  *
  *     simpleDBReq = TP.sig.AmazonSimpleDBRequest.construct( requestParams);
- *     simpleDBReq.defineMethod(
- *              'handleRequestSucceeded',
+ *     simpleDBReq.defineHandler('RequestSucceeded',
  *              function(aResponse) {
  *                  TP.info(aResponse.getResult());
  *              });

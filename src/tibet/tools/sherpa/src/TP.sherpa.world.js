@@ -136,7 +136,8 @@ function(anID, position) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineMethod('handleHiddenChangeFromSherpaHUD',
+TP.sherpa.world.Inst.defineHandler(
+{signal: 'HiddenChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**

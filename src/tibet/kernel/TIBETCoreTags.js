@@ -45,8 +45,7 @@ TP.core.UIElementNode.defineSubtype('TP.core.CustomTag');
 TP.core.CustomTag.addTraits(TP.core.NonNativeUIElementNode);
 
 TP.core.CustomTag.Inst.resolveTraits(
-        TP.ac('$setAttribute', 'getNextResponder', 'isResponderFor',
-                'removeAttribute', 'select', 'signal'),
+        TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
 //  ------------------------------------------------------------------------
@@ -96,7 +95,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.Type.defineMethod('handleValueChange',
+TP.core.CustomTag.Type.defineHandler('ValueChange',
 function(aSignal) {
 
     /**

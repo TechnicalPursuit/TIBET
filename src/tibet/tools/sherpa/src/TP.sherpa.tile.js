@@ -50,7 +50,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.Inst.defineMethod('handleTP_sig_DetachTile',
+TP.sherpa.tile.Inst.defineHandler('DetachTile',
 function(aSignal) {
 
     var docBody,
@@ -81,7 +81,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.Inst.defineMethod('handleTP_sig_CloseTile',
+TP.sherpa.tile.Inst.defineHandler('CloseTile',
 function(aSignal) {
 
     this.teardown();

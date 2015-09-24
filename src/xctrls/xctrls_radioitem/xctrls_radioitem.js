@@ -31,7 +31,7 @@ TP.xctrls.radioitem.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Inst.defineMethod('handleDOMClick',
+TP.xctrls.radioitem.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     /**

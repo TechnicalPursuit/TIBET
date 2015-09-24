@@ -3167,7 +3167,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('handleChange',
+TP.core.URI.Inst.defineHandler('Change',
 function(aSignal) {
 
     /**
@@ -10914,7 +10914,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('handleAppShutdown',
+TP.core.RemoteURLWatchHandler.Type.defineHandler('AppShutdown',
 function(aSignal) {
 
     /**

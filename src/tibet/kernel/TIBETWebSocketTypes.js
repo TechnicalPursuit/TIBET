@@ -183,7 +183,7 @@ function(aResult) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.WebSocketRequest.Inst.defineMethod('handleIOFailed',
+TP.sig.WebSocketRequest.Inst.defineHandler('IOFailed',
 function(aSignal) {
 
     /**
@@ -232,7 +232,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.WebSocketRequest.Inst.defineMethod('handleIOSucceeded',
+TP.sig.WebSocketRequest.Inst.defineHandler('IOSucceeded',
 function(aSignal) {
 
     /**
@@ -482,7 +482,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.WebSocketService.Inst.defineMethod('handleWebSocketRequest',
+TP.core.WebSocketService.Inst.defineHandler('WebSocketRequest',
 function(aRequest) {
 
     /**

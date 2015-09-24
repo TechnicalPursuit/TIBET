@@ -237,7 +237,7 @@ function(aString, aShell, aRequest, asTokens) {
                             info);
                     });
 
-                aShell.handleShellRequest(req);
+                aShell[TP.computeHandlerName('ShellRequest')](req);
 
                 return;
             } else {
@@ -381,7 +381,7 @@ function(aString, aShell, aRequest, asTokens) {
                             return aRequest.stdout(output, request);
                         });
 
-                    aShell.handleShellRequest(req);
+                    aShell[TP.computeHandlerName('ShellRequest')](req);
 
                     return;
                 } else {

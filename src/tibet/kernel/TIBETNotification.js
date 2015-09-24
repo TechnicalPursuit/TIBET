@@ -312,77 +312,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Type.defineMethod('getHandlerName',
-function(anOrigin, aSignal, aState, wantsFullName) {
-
-    /**
-     * @method getHandlerName
-     * @summary Computes and returns the standard handler name defined by the
-     *     origin and signal combination. If no signal is provided the
-     *     receiver's signal name is used as a default. Handler names follow a
-     *     convention of 'handle' + signalName + 'From' + origin + 'When' +
-     *     state. The state defaults to the current application controller
-     *     state value.
-     * @param {String} anOrigin An origin ID that should be used as part
-     *     of the handler computation.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @param {String} aState The application state to use. Defaults to the
-     *     current application controller state.
-     * @param {Boolean} wantsFullName Whether or not to use the signal's 'full
-     *     name' when computing the handler name. Defaults to false.
-     * @returns {String}
-     */
-
-    var signame,
-        handlerName;
-
-    //  Ask the inbound signal what signal name it should be using.
-    if (TP.isKindOf(aSignal, TP.sig.Signal)) {
-        signame = aSignal.getSignalName();
-    } else if (TP.canInvoke(aSignal, 'getSignalName')) {
-        signame = aSignal.getSignalName();
-    } else {
-        signame = this.getSignalName();
-    }
-
-    //  We can do short versions if they match either TP.sig. or APP.sig. for
-    //  prefixing, otherwise only a full name can be matched. Also make sure
-    //  that all handlerName values start with 'handle'.
-    if (TP.regex.SIGNAL_PREFIX.test(signame)) {
-        if (TP.notTrue(wantsFullName)) {
-            //  Contracting will remove any prefixing in splits between key
-            //  sequences or other signal chains.
-            handlerName = 'handle' + TP.contractSignalName(signame);
-        } else {
-            handlerName = 'handle' + TP.escapeTypeName(signame);
-        }
-    } else {
-        handlerName = 'handle' +
-            TP.escapeTypeName(signame).asTitleCase();
-    }
-
-    //  Add optional From clause for origin filtering.
-    if (TP.notEmpty(anOrigin)) {
-        handlerName += 'From' + TP.gid(anOrigin);
-    }
-
-    //  Add optional When clause for state filtering.
-    if (TP.notEmpty(aState)) {
-        handlerName += 'When' + TP.str(aState).asTitleCase();
-    }
-
-    if (TP.notTrue(wantsFullName)) {
-        // Strip out any embedded underscores as one aspect of having a more
-        // compact name.
-        handlerName = handlerName.replace(/__/g, '@@').replace(
-                /_/g, '').replace(/@@/g, '__');
-    }
-
-    return handlerName;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Type.defineMethod('getPhases',
 function() {
 
@@ -1298,30 +1227,6 @@ function() {
      */
 
     return this.$get('elapsed') || NaN;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Inst.defineMethod('getFirstResponder',
-function() {
-
-    /**
-     * @method getFirstResponder
-     * @summary Returns the first responder as computed by the receiver. For
-     *     events originating in the DOM this is typically the object
-     *     responsible for the event target. For non-DOM events the responder
-     *     will typically default to the current controller instance, either a
-     *     URI controller, App controller, or other type.
-     * @returns {Object} The first responder as computed by the receiver.
-     */
-
-    var targetElem;
-
-    if (!TP.isElement(targetElem = this.getTarget())) {
-        return null;
-    }
-
-    return TP.wrap(targetElem);
 });
 
 //  ------------------------------------------------------------------------
@@ -3185,67 +3090,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.defineMethod('$computeResponderChain',
-function(aSignal, startResponder, isCapturing) {
-
-    /**
-     * @method $computeResponderChain
-     * @summary Computes the 'responder chain' for the supplied signal. All
-     *     signals have a responder chain of sorts although signals with an
-     *     originating DOM element tend to have more interesting ones since
-     *     they include one or more DOM elements starting at the event target.
-     * @param {TP.sig.Signal} aSignal The signal to compute the chain for.
-     * @param {Object} startResponder The responder to start the traversal.
-     * @param {Boolean} isCapturing Whether or not we're computing for a
-     *     'capturing' chain. If that's the case, we reverse our result so the
-     *     outer-most responder is first in the returned list.
-     * @returns {Array} The chain of responders as computed from the supplied
-     *     startResponder.
-     */
-
-    var responders,
-        nextResponder;
-
-    responders = TP.ac();
-
-    nextResponder = startResponder;
-
-    //  Traverse up our responder chain
-    while (TP.isValid(nextResponder)) {
-        //  If we can invoke 'isResponderFor', do it and check the return
-        //  value. If its true, this responder can handle the signal in some
-        //  fashion.
-        if (TP.canInvoke(nextResponder, 'isResponderFor') &&
-            nextResponder.isResponderFor(aSignal, isCapturing)) {
-            responders.push(nextResponder);
-        }
-
-        //  If we can invoke 'getNextResponder', do it and grab the next
-        //  responder in the chain.
-        if (TP.canInvoke(nextResponder, 'getNextResponder')) {
-            nextResponder = nextResponder.getNextResponder(aSignal,
-                                                            isCapturing);
-        } else {
-            break;
-        }
-    }
-
-    //  We built this from the 'start responder out', but if the isCapturing
-    //  flag is 'true', the caller is in capturing mode and likes to see it
-    //  from the outside-in (because it will process 'capturing' event
-    //  handlers first), so we reverse it here.
-    if (TP.isTrue(isCapturing)) {
-        responders.reverse();
-    }
-
-    //  Make sure to configure it as an origin set.
-    responders.isOriginSet(true);
-
-    return responders;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.SignalMap.defineMethod('$getPolicyName',
 function(aPolicy) {
 
@@ -3479,14 +3323,15 @@ function(anOrigin, aSignal) {
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
     entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+
     if (TP.isValid(entry)) {
         return entry.suspend === true;
     } else if (!TP.regex.HAS_PERIOD.test(signame)) {
         //  If the signame didn't have a period, then it might be a spoofed
         //  signal name, but the registration would've been made using a
         //  'full signal' name (i.e. prefixed by 'TP.sig.').
-        entry = TP.sig.SignalMap.INTERESTS[
-                            orgid + '.' + 'TP.sig.' + signame];
+        entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + 'TP.sig.' + signame];
+
         if (TP.isValid(entry)) {
             return entry.suspend === true;
         }
@@ -4457,7 +4302,7 @@ function(anOrigin, aSignal, captureState) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.Type.defineMethod('notifyControllers',
-function(anOrigin, aSignalName, aSignal, captureState, aSigEntry, checkTarget) {
+function(anOrigin, aSignalName, aSignal, captureState, explicitOnly) {
 
     /**
      * @method notifyControllers
@@ -4465,6 +4310,16 @@ function(anOrigin, aSignalName, aSignal, captureState, aSigEntry, checkTarget) {
      *     current application instance. This method is the link between the
      *     standard observe/ignore signal notification process and the
      *     larger-scale application responder-chain notification sequence.
+     * @param {String} anOrigin The origin to use for lookup.
+     * @param {String} aSignalName The signal name to lookup.
+     * @param {Signal} aSignal The signal passed to handlers.
+     * @param {Boolean} [captureState=false] True to notify for a capturing
+     *     phase, which reverses the controller chain and only triggers
+     *     capturing handlers. False to notify for a bubbling phase which uses
+     *     the standard controller stack and notifies non-capturing handlers.
+     * @param {Boolean} [explicitOnly=false] True to tell this routine not to
+     *     get handlers via spoofed or traversed signal names but to use only
+     *     the explicit signal name of the signal provided.
      */
 
     var app,
@@ -4485,9 +4340,16 @@ function(anOrigin, aSignalName, aSignal, captureState, aSigEntry, checkTarget) {
 
         controller = controllers.at(i);
 
-        //  Look for handlers, but only explicit ones. This routing is called by
-        //  policies which handle all looping of inheritance chains etc for us.
-        handler = controller.getHandler(aSignal, null, true, true);
+        if (TP.isTrue(explicitOnly)) {
+            //  Some routines which invoke this method will be looping
+            //  themselves so we don't want to do that here if flagged.
+            handler = controller.getHandler(aSignal, null, true, true);
+        } else {
+            //  Firing policies which don't loop over signal names should
+            //  let handler lookup check for all possible inherited matches.
+            handler = controller.getHandler(aSignal);
+        }
+
         if (TP.isCallable(handler)) {
             try {
                 handler.call(controller, aSignal);
@@ -4601,6 +4463,7 @@ aSigEntry, checkTarget) {
         //  in XML, and across multiple content display invocations,
         //  meaning they're called only once in most cases
         entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+
         if (TP.notValid(entry)) {
 
             //  If the signame didn't have a period, then it might be a spoofed
@@ -4608,7 +4471,7 @@ aSigEntry, checkTarget) {
             //  'full signal' name (i.e. prefixed by 'TP.sig.').
             if (!TP.regex.HAS_PERIOD.test(signame)) {
                 entry = TP.sig.SignalMap.INTERESTS[
-                                    orgid + '.' + 'TP.sig.' + signame];
+                    orgid + '.' + 'TP.sig.' + signame];
             }
 
             if (TP.notValid(entry)) {
@@ -5420,9 +5283,6 @@ function(originSet, aSignal, aPayload, aType) {
                                     false, false,
                                     null, true);
 
-    //  Final step is to notify controllers which completes the responder chain.
-    TP.sig.SignalMap.notifyControllers(orgid, signame, sig);
-
     return sig;
 });
 
@@ -5434,10 +5294,13 @@ function(originSet, aSignal, aPayload, aType) {
 
     /**
      * @method RESPONDER_FIRING
-     * @summary Fires signals across a series of responders which should be
-     *     computed by asking the signal for its 'first responder' and then
-     *     asking each responder to 'get its next responder' and then using that
-     *     to go up the chain.
+     * @summary Fires signals across a series of responders. Responder chain
+     *     computation is based on the DOM but is sparse, including only those
+     *     elements with either a tibet:ctrl or tibet:tag (or both). Unlike
+     *     DOM_FIRING the RESPONDER_FIRING policy also includes the application
+     *     controller stack in the capture and bubble phase processing. As a
+     *     result RESPONDER_FIRING is a general purpose policy that can handle
+     *     application widgets and their controllers very effectively.
      * @param {Array|Object} originSet The originator(s) of the signal. Unused
      *     for this firing policy.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
@@ -5449,110 +5312,112 @@ function(originSet, aSignal, aPayload, aType) {
      */
 
     var sig,
-        firstResponder,
-        respChain,
-        responder,
-        i;
+        target,
+        origin,
+        responders,
+        i,
+        len,
+        responder;
 
     if (TP.notValid(aSignal)) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
     }
 
-    //  get a valid signal instance configured
+    //  Must be able to create a signal instance or no point in continuing.
     sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
     if (!TP.isKindOf(sig, TP.sig.Signal)) {
         return;
     }
 
-    //  get the first responder prior to looping since we'll be doing checks
-    //  against this in the loop.
-    firstResponder = sig.getFirstResponder();
+    //  Capture initial target and origin data. We use these to ensure we
+    //  message controllers properly during both capturing and bubbling.
+    target = sig.getTarget();
+    origin = sig.getOrigin();
 
-    //  compute a responder chain. note here how we pass 'true' to tell the
-    //  computation algorithm that we're computing for the 'capturing'
-    //  phase.
-    if (TP.notEmpty(respChain = TP.sig.SignalMap.$computeResponderChain(
-                                        sig, firstResponder, true))) {
-        //  store the currently computed chain with the signal instance so
-        //  handlers can access/alter it as needed.
-        sig.set('responderChain', respChain);
+    //  ---
+    //  Capturing phase...controllers
+    //  ---
 
-        //  if the firstResponder itself is the last responder (because we
-        //  passed 'true' above for 'capturing' phase, the responder chain
-        //  Array will have been reverse()ed), then shift it off of there.
+    TP.sig.SignalMap.notifyControllers(origin, sig.getSignalName(), sig, true);
 
-        //  We don't run its handler in capturing mode, but only in bubbling
-        //  mode (after setting the phase to TP.AT_TARGET)
-        if (TP.unwrap(respChain.last()) === TP.unwrap(firstResponder)) {
-            respChain.shift();
-        }
+    //  After processing make sure we should continue with the next phase.
+    if (sig.shouldStop() || sig.shouldStopImmediately()) {
+        return;
+    }
 
-        //  start the process
+    //  ---
+    //  Capturing phase...responders
+    //  ---
 
-        //  set the phase to capturing to get started
-        sig.setPhase(TP.CAPTURING_PHASE);
+    //  If the signal has a target and that's an element then we can do a
+    //  responder-chain computation.
+    if (TP.isElement(target)) {
 
-        //  NB: We do *not* cache the responder chain size, but check it
-        //  each time through the loop in case a handler has added or
-        //  removed a responder during firing.
-        for (i = 0; i < respChain.getSize(); i++) {
-            //  be sure to update the signal with the current origin as we
-            //  traverse the responders
-            sig.setOrigin(TP.gid(respChain.at(i)));
+        responders = TP.nodeGetResponderChain(target);
 
-            //  execute the handler
-            responder = respChain.at(i);
-            if (TP.canInvoke(responder, 'handle')) {
-                responder.handle(sig);
+        if (TP.notEmpty(responders)) {
+
+            //  If the target is the first object in the list remove it. We don't
+            //  want to process it during capturing...it's really the 'at target'.
+            if (responders.at(0) === target) {
+                responders = responders.slice(1);
             }
 
-            //  if any of the handlers at this origin "level" said to stop
-            //  then we stop now before traversing to a new level
-            if (sig.shouldStop() || sig.shouldStopImmediately()) {
-                return sig;
+            //  Initial array comes in target-to-parent order which is inverted
+            //  from what we want for capturing phase so once we've removed the
+            //  target (if present) we can reverse to get the right ordering.
+            responders.reverse();
+
+            //  set the phase to capturing to get started
+            sig.setPhase(TP.CAPTURING_PHASE);
+
+            len = responders.getSize();
+            for (i = 0; i < len; i++) {
+                responder = responders.at(i);
+
+                //  Each responder is an element. We want to notify any
+                //  tibet:ctrl and tibet:tag found on the element.
+                TP.sig.SignalMap.$notifyResponders(responder, sig);
+
+                //  Always check whether we should continue. Any form of stop
+                //  propagation setting will cause responder signals to stop.
+                if (sig.shouldStop() || sig.shouldStopImmediately()) {
+                    return sig;
+                }
             }
         }
     }
 
-    //  Recompute the responder chain again -- this time, passing 'false' as
-    //  the parameter that determines whether we're capturing or not.
-    if (TP.notEmpty(respChain = TP.sig.SignalMap.$computeResponderChain(
-                                        sig, firstResponder, false))) {
+    //  ---
+    //  At-target phase...responders
+    //  ---
 
-        //  store the currently computed chain with the signal instance so
-        //  handlers can access/alter it as needed.
-        sig.set('responderChain', respChain);
+    //  NOTE that we only do this if the target is a responder
+    //  element...otherwise we don't really have a valid 'at target' step.
+    if (TP.isValid(target) && TP.nodeGetResponderElement(target) === target) {
 
-        //  if the firstResponder itself is the current responder (in
-        //  'bubbling phase' it should always be the first one, if its a
-        //  valid responder), then set the phase to TP.AT_TARGET and
-        //  execute the handler.
-        if (TP.unwrap(respChain.first()) === TP.unwrap(firstResponder)) {
+        sig.setPhase(TP.AT_TARGET);
 
-            sig.setPhase(TP.AT_TARGET);
+        //  tibet:ctrl and tibet:tag found on the element.
+        TP.sig.SignalMap.$notifyResponders(target, sig);
 
-            //  be sure to update the signal with the origin
-            sig.setOrigin(TP.gid(respChain.first()));
-
-            //  execute the handler
-            responder = respChain.first();
-            if (TP.canInvoke(responder, 'handle')) {
-                responder.handle(sig);
-            }
-
-            //  if any of the handlers at this origin "level" said to stop
-            //  then we stop now before executing the bubbling handlers.
-            if (sig.shouldStop() || sig.shouldStopImmediately()) {
-                return sig;
-            }
-
-            //  We don't want to run this handler again, so shift it off the
-            //  front
-            respChain.shift();
+        //  if any of the handlers at this origin "level" said to stop
+        //  then we stop now before executing the bubbling handlers.
+        if (sig.shouldStop() || sig.shouldStopImmediately()) {
+            return sig;
         }
+    }
+
+    //  ---
+    //  Bubbling phase...responders
+    //  ---
+
+    if (TP.notEmpty(responders)) {
+
+        //  convert back to target-to-ancestor ordering for bubbling phase.
+        responders.reverse();
 
         //  if the signal bubbles then we continue, otherwise we'll stop
-        //  here
         if (!sig.isBubbling()) {
             return sig;
         }
@@ -5560,37 +5425,94 @@ function(originSet, aSignal, aPayload, aType) {
         //  we're bubbling... we're bubbling...
         sig.setPhase(TP.BUBBLING_PHASE);
 
-        //  NB: We do *not* cache the responder chain size, but check it
-        //  each time through the loop in case a handler has added or
-        //  removed a responder.
-        for (i = 0; i < respChain.getSize(); i++) {
-            //  be sure to update the signal with the current origin as we
-            //  traverse the responders
-            sig.setOrigin(TP.gid(respChain.at(i)));
+        len = responders.getSize();
+        for (i = 0; i < len; i++) {
+            responder = responders.at(i);
 
-            //  execute the handler
-            responder = respChain.at(i);
-            if (TP.canInvoke(responder, 'handle')) {
-                responder.handle(sig);
-            }
+            //  Each responder is an element. We want to notify any
+            //  tibet:ctrl and tibet:tag found on the element.
+            TP.sig.SignalMap.$notifyResponders(responder, sig);
 
-            //  if any of the handlers at this origin "level" said to stop
-            //  then we stop now before traversing to a new level
+            //  Always check whether we should continue. Any form of stop
+            //  propagation setting will cause responder signals to stop.
             if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 return sig;
             }
         }
     }
 
-    //  reset the signal's origin so we don't confuse things in the final
-    //  notification process by making it the original target ID
-    sig.setOrigin(firstResponder);
+    //  ---
+    //  Bubbling phase...controllers
+    //  ---
 
-    //  final check is for controllers which may want to handle this.
-    TP.sig.SignalMap.notifyControllers(
-        TP.lid(firstResponder), sig.getSignalName(), sig);
+    sig.setOrigin(origin);
+    TP.sig.SignalMap.notifyControllers(origin, sig.getSignalName(), sig, false);
 
     return sig;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('$notifyResponders',
+function(target, signal) {
+
+    /**
+     * @method $notifyResponders
+     * @summary Notifies any tibet:ctrl and/or tibet:tag objects associated with
+     *     a specific target element. This method is a helper for the
+     *     RESPONDER_FIRING policy and not typically invoked directly.
+     * @param {Element} target The element to notify for.
+     */
+
+    var id,
+        responder;
+
+    //  tibet:ctrl
+
+    id = TP.elementGetAttribute(target, 'tibet:ctrl', true);
+    if (TP.notEmpty(id)) {
+        responder = TP.bySystemId(id);
+        if (TP.notValid(responder)) {
+            TP.ifWarn() ?
+                TP.warn('Unable to resolve tibet:ctrl ' + id + '.') : 0;
+        } else {
+            //  TODO:   tibet:ctrl is often going to be a type name. Do we
+            //  really want to make these type methods for controllers?
+            if (TP.canInvoke(responder, 'handle')) {
+                signal.setOrigin(TP.gid(target));
+                responder.handle(signal);
+
+                //  Don't proceed to tibet:tag without checking for propagation.
+                if (signal.shouldStop() || signal.shouldStopImmediately()) {
+                    return;
+                }
+            }
+        }
+    }
+
+    //  tibet:tag
+
+    id = TP.elementGetAttribute(target, 'tibet:tag', true);
+    if (TP.notEmpty(id)) {
+        responder = TP.bySystemId(id);
+        if (TP.notValid(responder)) {
+            TP.ifWarn() ?
+                TP.warn('Unable to resolve tibet:tag ' + id + '.') : 0;
+        } else {
+            //  tibet:tag is typically a type name reference but we want to wrap
+            //  the element in an instance and get it to respond.
+            if (TP.isType(responder)) {
+                responder = responder.construct(target);
+            }
+
+            if (TP.canInvoke(responder, 'handle')) {
+                signal.setOrigin(TP.gid(target));
+                responder.handle(signal);
+            }
+        }
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5669,6 +5591,7 @@ function(anOrigin, signalSet, aPayload, aType) {
 
         //  notify specific observers for the signal/origin combo
         TP.sig.SignalMap.notifyHandlers(orgid, signame, sig, true);
+
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
             break;
         }
@@ -5680,6 +5603,7 @@ function(anOrigin, signalSet, aPayload, aType) {
             //  observation results won't change as we iterate)
             if (i === 0) {
                 TP.sig.SignalMap.notifyHandlers(orgid, null, sig, true);
+
                 if (sig.shouldStop() || sig.shouldStopImmediately()) {
                     break;
                 }
@@ -5689,6 +5613,7 @@ function(anOrigin, signalSet, aPayload, aType) {
         //  notify observers of the signal from any origin
         if (orgid !== TP.ANY) {
             TP.sig.SignalMap.notifyHandlers(null, signame, sig, true);
+
             if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 break;
             }
@@ -5801,6 +5726,7 @@ function(anOrigin, aSignal, aPayload, aType) {
 
         //  notify specific observers for the signal/origin combo
         TP.sig.SignalMap.notifyHandlers(orgid, signame, sig, true);
+
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
             break;
         }
@@ -5812,6 +5738,7 @@ function(anOrigin, aSignal, aPayload, aType) {
             //  observation results won't change as we iterate)
             if (i === 0) {
                 TP.sig.SignalMap.notifyHandlers(orgid, null, sig, true);
+
                 if (sig.shouldStop() || sig.shouldStopImmediately()) {
                     break;
                 }
@@ -5821,6 +5748,7 @@ function(anOrigin, aSignal, aPayload, aType) {
         //  notify observers of the signal from any origin
         if (orgid !== TP.ANY) {
             TP.sig.SignalMap.notifyHandlers(null, signame, sig, true);
+
             if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 break;
             }
@@ -6170,14 +6098,15 @@ function(anOrigin, aSignal) {
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
     entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+
     if (TP.isValid(entry)) {
         delete entry.suspend;
     } else if (!TP.regex.HAS_PERIOD.test(signame)) {
         //  If the signame didn't have a period, then it might be a spoofed
         //  signal name, but the registration would've been made using a
         //  'full signal' name (i.e. prefixed by 'TP.sig.').
-        entry = TP.sig.SignalMap.INTERESTS[
-                            orgid + '.' + 'TP.sig.' + signame];
+        entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + 'TP.sig.' + signame];
+
         if (TP.isValid(entry)) {
             delete entry.suspend;
         }
@@ -6207,14 +6136,15 @@ function(anOrigin, aSignal) {
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
     entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+
     if (TP.isValid(entry)) {
         entry.suspend = true;
     } else if (!TP.regex.HAS_PERIOD.test(signame)) {
         //  If the signame didn't have a period, then it might be a spoofed
         //  signal name, but the registration would've been made using a
         //  'full signal' name (i.e. prefixed by 'TP.sig.').
-        entry = TP.sig.SignalMap.INTERESTS[
-                            orgid + '.' + 'TP.sig.' + signame];
+        entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + 'TP.sig.' + signame];
+
         if (TP.isValid(entry)) {
             entry.suspend = true;
         }
@@ -7479,9 +7409,10 @@ function(aDocument) {
                     function(mutationRecords, obs) {
                         var len,
                             i,
-
+                            method,
                             record;
 
+                        method = TP.computeHandlerName('MutationEvent');
                         len = mutationRecords.length;
                         for (i = 0; i < len; i++) {
                             record = mutationRecords[i];
@@ -7493,7 +7424,7 @@ function(aDocument) {
                             //  https://bugs.webkit.org/show_bug.cgi?id=103916
                             if (!record.handled) {
                                 record.handled = true;
-                                this.handleMutationEvent(record);
+                                this[method](record);
                             }
                         }
                     }.bind(this));
@@ -7548,7 +7479,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.MutationSignalSource.Type.defineMethod('handleMutationEvent',
+TP.core.MutationSignalSource.Type.defineHandler('MutationEvent',
 function(aMutationRecord) {
 
     /**
@@ -8422,126 +8353,31 @@ TP.sig.RemoteSourceSignal.defineSubtype('SourceReconnecting');
 TP.sig.RemoteSourceSignal.defineSubtype('SourceError');
 
 //  ========================================================================
-//  Object Extensions
+//  RootObject Extensions
 //  ========================================================================
 
-/**
- * @type {Object}
- * @summary Responder Computation API extensions for Object.
- * @description These allow any Object in the system to respond to the responder
- *     computation machinery. They are typically overridden to provide real
- *     functionality.
- * @subject Responder Computation Extensions
- */
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.lang.Object.Inst.defineMethod('isResponderFor',
-function(aSignal, isCapturing) {
+TP.lang.RootObject.Type.defineHandler('Signal',
+function(aSignal) {
 
     /**
-     * @method isResponderFor
-     * @summary Whether or not the receiver is a responder for the supplied
-     *     signal and capturing mode.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Boolean} Whether or not the receiver is a valid responder for
-     *     the supplied signal and capturing mode. The default at this level is
-     *     false.
+     * @method handleSignal
+     * @summary Handles notification of an incoming signal. For types the
+     *     standard handle call will try to locate a signal-specific handler
+     *     function just like with instances, but the default method for
+     *     handling them defers to an instance rather than the type itself.
+     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @returns {Object} The function's return value.
      */
 
-    //  The default is that we don't participate in capturing responder chains
-    //  unless there is an 'ev:phase' attribute on us that says otherwise.
-    if (TP.isTrue(isCapturing)) {
-        return false;
+    var inst;
+
+    //  try to construct an instance and get it to handle things
+    if (TP.notValid(inst = this.from(aSignal))) {
+        return this.raise('TP.sig.InvalidHandler',
+                            'Unable to construct handler instance');
     }
 
-    return TP.isCallable(this.getHandler(aSignal));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.Object.Inst.defineMethod('getNextResponder',
-function(aSignal, isCapturing) {
-
-    /**
-     * @method getNextResponder
-     * @summary Returns the next responder as computed by the receiver.
-     * @param {TP.sig.ResponderSignal} aSignal The signal to check to see if the
-     *     receiver is an appropriate responder.
-     * @param {Boolean} isCapturing Whether or not the responder computation
-     *     machinery is computing the chain for the 'capturing' phase of the
-     *     event dispatch.
-     * @returns {Object} The next responder as computed by the receiver.
-     */
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Type.defineMethod('getHandlerName2',
-function(aDescriptor) {
-
-    /**
-     * @method defineHandler
-     * @summary Defines a new signal handler.
-     * @description Note that the 'descriptor' parameter is a property
-     *     descriptor. That property descriptor can be one of the following:
-     *
-     *          origin (Object or String ID)
-     *          signal (TIBET Type or String signal name)
-     *          state (String state name)
-     *
-     * @param {Function} aHandler The function body for the event handler.
-     * @param {Object} descriptor
-     */
-
-    var signal,
-        signame,
-
-        handlerName,
-
-        origin,
-        state;
-
-    if (!TP.isPlainObject(aDescriptor)) {
-        return this.raise('InvalidDescriptor', aDescriptor);
-    }
-
-    signal = aDescriptor.signal;
-
-    //  Ask the inbound signal what signal name it should be using.
-    if (TP.isKindOf(signal, TP.sig.Signal)) {
-        signame = signal.getSignalName();
-    } else if (TP.canInvoke(signal, 'getSignalName')) {
-        signame = signal.getSignalName();
-    } else {
-        signame = this.getSignalName();
-    }
-
-    handlerName = 'handle' + TP.escapeTypeName(TP.expandSignalName(signame));
-
-    //  Add optional From clause for origin filtering.
-    if (TP.isValid(origin = aDescriptor.origin)) {
-        handlerName += 'From' + TP.gid(origin);
-    } else {
-        handlerName += 'From' + TP.ANY;
-    }
-
-    //  Add optional When clause for state filtering.
-    if (TP.notEmpty(state = aDescriptor.state)) {
-        handlerName += 'When' + TP.str(state).asTitleCase();
-    } else {
-        handlerName += 'When' + TP.ANY;
-    }
-
-    return handlerName;
+    return inst.handle(aSignal);
 });
 
 //  ------------------------------------------------------------------------

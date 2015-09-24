@@ -144,7 +144,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.slidebar.Inst.defineMethod('handleDOMClick',
+TP.xctrls.slidebar.Inst.defineHandler('DOMClick',
 function(aSignal) {
 
     /**
@@ -179,7 +179,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.slidebar.Inst.defineMethod('handleDOMDragMove',
+TP.xctrls.slidebar.Inst.defineHandler('DOMDragMove',
 function(aSignal) {
 
     /**
