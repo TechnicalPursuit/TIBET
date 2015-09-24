@@ -248,8 +248,8 @@ function(aRequest) {
         //  request's parameters when the token is obtained.
         authRequest = TP.sig.GoogleRequest.construct(
                                             TP.hc('action', 'login'));
-        authRequest.defineMethod(
-            'handleRequestSucceeded',
+        authRequest.defineHandler(
+            'RequestSucceeded',
             function(authResponse) {
 
                 //  Call 'up' to our instance handler to parse out the

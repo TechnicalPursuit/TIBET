@@ -5041,7 +5041,7 @@ function(aSignal) {
             aSignal.preventDefault();
         } else {
             //  NB: This should automatically focus and, through a series of
-            //  events, 'handleUIFocus' above will be called.
+            //  events, the 'UIFocus' handler above will be called.
             this.select();
         }
     }

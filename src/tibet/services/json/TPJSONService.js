@@ -202,8 +202,8 @@ function(aRequest) {
         //  We default 'async' to true
         request.atPutIfAbsent('async', true);
 
-        request.defineMethod(
-            'handleIOSucceeded',
+        request.defineHandler(
+            'IOSucceeded',
             function(aSignal) {
 
                 var result,
@@ -228,8 +228,8 @@ function(aRequest) {
                 this.complete(result);
             });
 
-        request.defineMethod(
-            'handleIOFailed',
+        request.defineHandler(
+            'IOFailed',
             function(aSignal) {
 
                 var result,

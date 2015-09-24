@@ -306,16 +306,16 @@ function(aURI, resultType) {
                             subrequest = TP.request(
                                             TP.hc('resultType', resultType));
 
-                            subrequest.defineMethod(
-                                'handleRequestSucceeded',
+                            subrequest.defineHandler(
+                                'RequestSucceeded',
                                 function(aResponse) {
                                     //  We succeeded - call the Promise's
                                     //  resolver.
                                     resolver(aResponse.getResult());
                                 });
 
-                            subrequest.defineMethod(
-                                'handleRequestFailed',
+                            subrequest.defineHandler(
+                                'RequestFailed',
                                 function(aResponse) {
                                     //  We failed - call the Promise's rejector.
                                     rejector(aResponse.getResult());

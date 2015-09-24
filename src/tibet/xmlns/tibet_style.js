@@ -416,8 +416,8 @@ function(anHref) {
                 //  The style is some LESS CSS. Go fetch it and, when it's
                 //  returned, compile and insert it into the document.
                 fetchRequest = TP.request('async', true, 'refresh', true);
-                fetchRequest.defineMethod(
-                        'handleRequestSucceeded',
+                fetchRequest.defineHandler(
+                        'RequestSucceeded',
                             function(aResponse) {
                                 var fetchLoc,
                                     fetchResult;

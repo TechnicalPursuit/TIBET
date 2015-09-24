@@ -344,14 +344,14 @@ function(publishName) {
         'payload', payload);
 
     msgReq = TP.sig.XMPPRequest.construct(requestParams);
-    msgReq.defineMethod(
-        'handleRequestSucceeded',
+    msgReq.defineHandler(
+        'RequestSucceeded',
         function(aResponse) {
             TP.info(aResponse.getResponseText());
         });
 
-    msgReq.defineMethod(
-        'handleRequestFailed',
+    msgReq.defineHandler(
+        'RequestFailed',
         function(aResponse) {
             TP.ifError() ?
                 TP.error(aResponse.getResponseText()) : 0;
@@ -400,14 +400,14 @@ function(shareFlag, shareName) {
     }
 
     msgReq = TP.sig.XMPPRequest.construct(requestParams);
-    msgReq.defineMethod(
-        'handleRequestSucceeded',
+    msgReq.defineHandler(
+        'RequestSucceeded',
         function(aResponse) {
             TP.info(aResponse.getResponseText());
         });
 
-    msgReq.defineMethod(
-        'handleRequestFailed',
+    msgReq.defineHandler(
+        'RequestFailed',
         function(aResponse) {
             TP.ifError() ?
                 TP.error(aResponse.getResponseText()) : 0;

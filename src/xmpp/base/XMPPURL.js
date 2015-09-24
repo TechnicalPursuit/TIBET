@@ -409,8 +409,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  This will be called when the request succeeds. We need to add the
     //  pubsub node to the user's list of remote subscriptions.
-    subReq.defineMethod(
-        'handleRequestSucceeded',
+    subReq.defineHandler(
+        'RequestSucceeded',
         function(aResponse) {
 
             //  Make an entry for the pubsub node in the subscription
@@ -424,8 +424,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  This will be called when the request fails. This may be because the
     //  node being subscribed to has not been created.
-    subReq.defineMethod(
-        'handleRequestFailed',
+    subReq.defineHandler(
+        'RequestFailed',
         function(aResponse) {
 
             var errorTPElem,
@@ -453,14 +453,14 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
                 createReq = TP.sig.XMPPRequest.construct(
                                 createReqParams, this.get('resourceID'));
 
-                createReq.defineMethod(
-                    'handleRequestSucceeded',
+                createReq.defineHandler(
+                    'RequestSucceeded',
                     function(successResponse) {
 
                         //  Reset the request failed handler so that we
                         //  don't endlessly loop.
-                        subReq.defineMethod(
-                            'handleRequestFailed',
+                        subReq.defineHandler(
+                            'RequestFailed',
                             function(failureResponse) {
 
                                 return this.raise(
@@ -670,8 +670,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  This will be called when the request succeeds. We need to remove the
     //  pubsub node from the user's list of remote subscriptions.
-    unsubReq.defineMethod(
-        'handleRequestSucceeded',
+    unsubReq.defineHandler(
+        'RequestSucceeded',
         function(aResponse) {
 
             //  Remove all entries for the pubsub node in the subscription
@@ -681,8 +681,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  This will be called when the request fails. This may be because the
     //  node being unsubscribed from has not been created.
-    unsubReq.defineMethod(
-        'handleRequestFailed',
+    unsubReq.defineHandler(
+        'RequestFailed',
         function(aResponse) {
 
             var errorTPElem,

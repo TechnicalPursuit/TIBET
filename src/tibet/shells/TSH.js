@@ -542,8 +542,8 @@ function(aRequest) {
                                             'async', true));
 
     //  response comes as a TP.sig.UserInput signal, so add a local handler
-    usernameReq.defineMethod(
-        'handleUserInput',
+    usernameReq.defineHandler(
+        'UserInput',
         function(aSignal) {
 
             var invalidUsernameReq,
@@ -591,8 +591,8 @@ function(aRequest) {
 
             //  add a local input handler to the second-stage request which will
             //  be called when the password has been entered
-            passwordReq.defineMethod(
-                'handleUserInput',
+            passwordReq.defineHandler(
+                'UserInput',
                 function(anotherSignal) {
 
                     var invalidPasswordReq,
