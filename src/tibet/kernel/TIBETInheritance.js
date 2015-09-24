@@ -1592,7 +1592,6 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
     var orgid,
 
         signame,
-        sigType,
 
         handlers,
 
@@ -1628,7 +1627,6 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
     }
 
     signame = aSignal.getSignalName();
-    sigType = aSignal.getType();
     capturing = aSignal.getPhase() === TP.CAPTURING_PHASE;
 
     //  Build the handler cache for the receiver.
@@ -1792,7 +1790,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
             typeName = sigTypeNames.at(i);
 
-            if (TP.isType(sigType = TP.sys.getTypeByName(typeName))) {
+            if (TP.isType(TP.sys.getTypeByName(typeName))) {
 
                 //  Note here how we do *not* supply aSignal as the second
                 //  parameter to these methods... we want to use just the signal
@@ -6351,9 +6349,7 @@ TP.definePrimitive('$$marker',
 function(aNote, aPrefix, anException) {
 
     var prefix,
-        note,
-
-        stackInfo;
+        note;
 
     prefix = TP.isString(aPrefix) ? aPrefix + ': ' : '';
     note = aNote || '';

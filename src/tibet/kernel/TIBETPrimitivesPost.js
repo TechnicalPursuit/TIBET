@@ -5184,10 +5184,13 @@ function(aDescriptor) {
 
     var descriptor,
         signal,
-        typename,
-        sigtype,
-        typename,
-        handler;
+
+        signame,
+
+        handler,
+
+        origin,
+        state;
 
     if (TP.isString(aDescriptor)) {
         signal = aDescriptor;

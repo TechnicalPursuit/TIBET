@@ -2832,8 +2832,6 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         lenj,
         suffix,
 
-        sigType,
-
         handlerName,
 
         joins,
@@ -2895,7 +2893,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
             suffix = suffixes.at(j);
 
             //  Make sure that we have a real signal type.
-            if (!TP.isType(sigType = TP.sys.getTypeByName(signame))) {
+            if (!TP.isType(TP.sys.getTypeByName(signame))) {
                 continue;
             }
 

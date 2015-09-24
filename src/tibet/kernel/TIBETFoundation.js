@@ -2605,9 +2605,6 @@ function(aDescriptor, aHandler) {
      */
 
     var descriptor,
-        signal,
-        sigName,
-        sigType,
         name;
 
     if (!TP.isFunction(aHandler)) {

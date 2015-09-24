@@ -201,9 +201,9 @@ function(aSignal) {
     var request,
         httpObj,
         code,
+        handlerName,
         defer,
         faultCode,
-        handlerCode,
         result;
 
     request = aSignal.getPayload();
@@ -274,8 +274,8 @@ function(aSignal) {
         httpObj,
         code,
         defer,
+        handlerName,
         faultCode,
-        handlerCode,
         result;
 
     //  first step is to make sure that if the incoming signal's request

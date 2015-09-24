@@ -3167,10 +3167,12 @@ function(aRequest) {
 
     //  One common case is name=value which will mean value is empty and name
     //  isn't the real name...
+    /* eslint-disable no-div-regex */
     if (/=/.test(name)) {
         value = name.slice(name.indexOf('=') + 1);
         name = name.slice(0, name.indexOf('='));
     }
+    /* eslint-enable no-div-regex */
 
     if (TP.isEmpty(name)) {
         //  listing....here we combine both env and cfg data
