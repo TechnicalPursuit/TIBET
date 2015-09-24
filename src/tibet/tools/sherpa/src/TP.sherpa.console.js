@@ -989,6 +989,10 @@ function() {
         marker = this.get('currentInputMarker');
     }
 
+    if (TP.notValid(marker)) {
+        return this;
+    }
+
     editor = this.get('consoleInput').$get('$editorObj');
     range = marker.find();
 
