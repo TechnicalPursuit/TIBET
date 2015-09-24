@@ -1640,9 +1640,16 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
     hasOrigin = TP.isEmpty(orgid) ? false : true;
 
-    //  Get the state list and force at least one iteration to happen even if
-    //  there's no current state machine/state value.
-    states = TP.sys.getApplication().getCurrentStates();
+    //  Get the state list from either the receiver or the application (with
+    //  preference given to the receiver).
+    if (TP.canInvoke(this, 'getCurrentStates')) {
+        states = this.getCurrentStates();
+    } else {
+        states = TP.sys.getApplication().getCurrentStates();
+    }
+
+    //  Force at least one iteration to happen even if there's no current state
+    //  machine/state value.
     if (TP.isEmpty(states)) {
         states.push(null);
     }
