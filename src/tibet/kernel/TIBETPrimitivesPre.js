@@ -1741,7 +1741,7 @@ TP.objectGetMetadataName = function(anObject) {
 
 //  Manual method registration.
 TP.objectGetMetadataName[TP.NAME] = 'objectGetMetadataName';
-TP.objectGetMetadataName[TP.OWNER] = TP.sys;
+TP.objectGetMetadataName[TP.OWNER] = TP;
 TP.objectGetMetadataName[TP.TRACK] = TP.LOCAL_TRACK;
 TP.objectGetMetadataName[TP.DISPLAY] = 'TP.objectGetMetadataName';
 TP.registerLoadInfo(TP.objectGetMetadataName);
