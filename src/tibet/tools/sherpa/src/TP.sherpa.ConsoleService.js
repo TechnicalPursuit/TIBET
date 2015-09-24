@@ -2553,6 +2553,9 @@ function(editor, options) {
         resolutionChunks,
         chunk,
 
+        closestMatchIndex,
+        closestMatchMatcher,
+
         cursor,
 
         fromPos,
@@ -2646,17 +2649,24 @@ function(editor, options) {
 
         if (TP.notEmpty(matchers)) {
 
+            //  Note that matchInput could be empty here... and that's ok.
             matchers.forEach(
                 function(matcher) {
                     matcher.prepareForMatch();
                     matches = matcher.match(matchInput);
 
                     matches.forEach(
-                            function(anItem) {
+                            function(anItem, anIndex) {
+                                var itemEntry;
+
+                                if (TP.isArray(itemEntry = anItem.original)) {
+                                    itemEntry = itemEntry.at(2);
+                                }
+
                                 completions.push(
                                     {
                                         input: matchInput,
-                                        text: anItem.original,
+                                        text: itemEntry,
                                         score: anItem.score,
                                         className: anItem.cssClass,
                                         displayText: anItem.string,
@@ -2668,6 +2678,9 @@ function(editor, options) {
                 });
 
             if (TP.notEmpty(matchInput)) {
+
+                //  Sort all of the completions together using a custom sorting
+                //  function to go after parts of the completion itself.
                 completions.sort(
                     function(completionA, completionB) {
 
@@ -2690,6 +2703,23 @@ function(editor, options) {
 
                         return completionB.score - completionA.score;
                     });
+
+                closestMatchIndex = TP.NOT_FOUND;
+                closestMatchMatcher = TP.rc('^' + matchInput);
+
+                //  Try to determine if we have a 'best match' here and set the
+                //  'exact match' index to it.
+                completions.forEach(
+                        function(aCompletion, anIndex) {
+
+                            //  Test each completion to see if it starts with
+                            //  text matching matchInput. Note here that we stop
+                            //  at the first one.
+                            if (closestMatchMatcher.test(aCompletion.text) &&
+                                closestMatchIndex === TP.NOT_FOUND) {
+                                closestMatchIndex = anIndex;
+                            }
+                        });
             }
         }
     }
@@ -2703,7 +2733,17 @@ function(editor, options) {
     fromPos = TP.extern.CodeMirror.Pos(cursor.line, fromIndex);
     toPos = TP.extern.CodeMirror.Pos(cursor.line, cursor.ch);
 
-    return {list: completions, from: fromPos, to: toPos};
+    //  CodeMirror doesn't like values less than 0
+    if (closestMatchIndex === TP.NOT_FOUND) {
+        closestMatchIndex = 0;
+    }
+
+    return {
+        list: completions,
+        from: fromPos,
+        to: toPos,
+        selectedHint: closestMatchIndex
+    };
 });
 
 //  ------------------------------------------------------------------------
