@@ -1294,7 +1294,11 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         }
     } else {
         if (!aPrefix) {
-            key = aKey;
+            if (TP.boot.$$PROP_KEY_REGEX.test(aKey) === false) {
+                key = 'tmp.' + aKey;
+            } else {
+                key = aKey;
+            }
         } else {
             key = aPrefix + '.' + aKey;
         }
