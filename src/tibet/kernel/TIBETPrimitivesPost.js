@@ -5200,6 +5200,7 @@ function(aDescriptor) {
     } else if (!TP.isPlainObject(aDescriptor)) {
         return this.raise('InvalidDescriptor', aDescriptor);
     } else {
+        descriptor = aDescriptor;
         signal = aDescriptor.signal;
     }
 
