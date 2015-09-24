@@ -2658,8 +2658,7 @@ function() {
         return;
     }
 
-    return TP.signal(it.at(0), it.at(1), it.at(2),
-                        it.at(3), it.at(4));
+    return TP.signal(it.at(0), it.at(1), it.at(2), it.at(3), it.at(4));
 });
 
 //  ------------------------------------------------------------------------
