@@ -64,7 +64,7 @@ function(propName) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.Inst.describe('Signaling - getHandler',
+TP.lang.Object.Inst.describe('Signaling - getBestHandler',
 function() {
 
     var sigOrigin,
@@ -198,14 +198,14 @@ function() {
                 });
         });
 
-    this.it('getHandler - Level 1 - ANY origin / ANY signal / ANY state', function(test, options) {
+    this.it('getBestHandler - Level 1 - ANY origin / ANY signal / ANY state', function(test, options) {
 
         var signal,
             handler;
 
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(
@@ -220,7 +220,7 @@ function() {
 
     //  ---
 
-    this.it('getHandler - Level 1 - SignalTestOrigin origin / ANY signal / ANY state', function(test, options) {
+    this.it('getBestHandler - Level 1 - SignalTestOrigin origin / ANY signal / ANY state', function(test, options) {
 
         var signal,
             handler;
@@ -228,7 +228,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
         signal.setOrigin(sigOrigin.getID());
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,
@@ -240,14 +240,14 @@ function() {
                 1);
     });
 
-    this.it('getHandler - Level 1 - ANY origin / TP.test.SignalTestFull signal / ANY state', function(test, options) {
+    this.it('getBestHandler - Level 1 - ANY origin / TP.test.SignalTestFull signal / ANY state', function(test, options) {
 
         var signal,
             handler;
 
         signal = TP.sig.SignalMap.$getSignalInstance('TP.test.SignalTestFull');
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,
@@ -259,7 +259,7 @@ function() {
                 1);
     });
 
-    this.it('getHandler - Level 1 - ANY origin / ANY signal / TestState state', function(test, options) {
+    this.it('getBestHandler - Level 1 - ANY origin / ANY signal / TestState state', function(test, options) {
 
         var machine,
             signal,
@@ -272,7 +272,7 @@ function() {
 
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(
@@ -290,7 +290,7 @@ function() {
 
     //  ---
 
-    this.it('getHandler - Level 1 - SignalTestOrigin origin / TP.test.SignalTestFull signal / ANY state', function(test, options) {
+    this.it('getBestHandler - Level 1 - SignalTestOrigin origin / TP.test.SignalTestFull signal / ANY state', function(test, options) {
 
         var signal,
             handler;
@@ -298,7 +298,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('TP.test.SignalTestFull');
         signal.setOrigin(sigOrigin.getID());
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,
@@ -310,7 +310,7 @@ function() {
                 1);
     });
 
-    this.it('getHandler - Level 1 - SignalTestOrigin origin / ANY signal / TestState state', function(test, options) {
+    this.it('getBestHandler - Level 1 - SignalTestOrigin origin / ANY signal / TestState state', function(test, options) {
 
         var machine,
             signal,
@@ -324,7 +324,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
         signal.setOrigin(sigOrigin.getID());
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,
@@ -339,7 +339,7 @@ function() {
         TP.sys.getApplication().setStateMachine(null);
     });
 
-    this.it('getHandler - Level 1 - ANY origin / TP.test.SignalTestFull signal / TestState state', function(test, options) {
+    this.it('getBestHandler - Level 1 - ANY origin / TP.test.SignalTestFull signal / TestState state', function(test, options) {
 
         var machine,
             signal,
@@ -352,7 +352,7 @@ function() {
 
         signal = TP.sig.SignalMap.$getSignalInstance('TP.test.SignalTestFull');
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,
@@ -367,7 +367,7 @@ function() {
         TP.sys.getApplication().setStateMachine(null);
     });
 
-    this.it('getHandler - Level 1 - SignalTestOrigin origin / TP.test.SignalTestFull signal / TestState state', function(test, options) {
+    this.it('getBestHandler - Level 1 - SignalTestOrigin origin / TP.test.SignalTestFull signal / TestState state', function(test, options) {
 
         var machine,
             signal,
@@ -381,7 +381,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('TP.test.SignalTestFull');
         signal.setOrigin(sigOrigin.getID());
 
-        handler = TP.test.HandlerTestLevel1.getHandler2(signal);
+        handler = TP.test.HandlerTestLevel1.getBestHandler2(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,

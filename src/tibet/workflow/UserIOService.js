@@ -168,7 +168,7 @@ function(aRequest) {
         return this[TP.computeHandlerName('NoMoreRequests')](aRequest);
     }
 
-    handler = this.getHandler(req);
+    handler = this.getBestHandler(req);
     if (TP.isFunction(handler)) {
         handler.call(this);
     }

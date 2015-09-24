@@ -4343,11 +4343,11 @@ function(anOrigin, aSignalName, aSignal, captureState, explicitOnly) {
         if (TP.isTrue(explicitOnly)) {
             //  Some routines which invoke this method will be looping
             //  themselves so we don't want to do that here if flagged.
-            handler = controller.getHandler(aSignal, null, true, true);
+            handler = controller.getBestHandler(aSignal, null, true, true);
         } else {
             //  Firing policies which don't loop over signal names should
             //  let handler lookup check for all possible inherited matches.
-            handler = controller.getHandler(aSignal);
+            handler = controller.getBestHandler(aSignal);
         }
 
         if (TP.isCallable(handler)) {
@@ -4664,7 +4664,7 @@ aSigEntry, checkTarget) {
                         //  see if we can get the actual function in
                         //  question so we have better debugging
                         //  capability
-                        hFunc = handler.getHandler(aSignal);
+                        hFunc = handler.getBestHandler(aSignal);
 
                         if (TP.isCallable(hFunc)) {
                             TP.ifError() ?
@@ -5886,7 +5886,7 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  Look for handlers, but only explicit ones. This routing is called by
     //  policies which handle all looping of inheritance chains etc for us.
-    handler = resource.getHandler(sig, null, true, true);
+    handler = resource.getBestHandler(sig, null, true, true);
     if (TP.isCallable(handler)) {
         try {
             handler.call(resource, sig);

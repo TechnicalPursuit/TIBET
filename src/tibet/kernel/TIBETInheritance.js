@@ -1559,11 +1559,11 @@ function(aString, transformParams) {
 //  TP.ObjectProto - SIGNAL HANDLING
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('getHandler',
+TP.defineMetaInstMethod('getBestHandler',
 function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
     /**
-     * @method getHandler
+     * @method getBestHandler
      * @summary Returns the specific function or method which the receiver
      *     would (or did) leverage to respond to the signal provided.
      * @description Note that the startSignalName parameter contains an optional
@@ -1890,7 +1890,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
     var handlerFunc,
         target;
 
-    handlerFunc = this.getHandler(
+    handlerFunc = this.getBestHandler(
         aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
 
     if (TP.isCallable(handlerFunc)) {
@@ -1908,7 +1908,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
         //  that resource's URI.
         if (this.hasWindow()) {
             target = TP.uc(TP.gid(this));
-            handlerFunc = target.getHandler(
+            handlerFunc = target.getBestHandler(
                 aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
             if (TP.isCallable(handlerFunc)) {
                 //  BILL - this throws on URI getResource bound to a Node.
@@ -3143,11 +3143,11 @@ function() {
 //  TP.FunctionProto - SIGNAL HANDLING
 //  ------------------------------------------------------------------------
 
-TP.FunctionProto.defineMethod('getHandler',
+TP.FunctionProto.defineMethod('getBestHandler',
 function(aSignal) {
 
     /**
-     * @method getHandler
+     * @method getBestHandler
      * @summary Returns the specific function or method which the receiver
      *     would (or did) leverage to respond to the signal provided.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
