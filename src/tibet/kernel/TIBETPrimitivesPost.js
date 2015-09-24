@@ -5204,15 +5204,16 @@ function(aDescriptor) {
         signal = aDescriptor.signal;
     }
 
-    //  Signal types, signal instances, and strings all respond to this.
+    //  Signal types, signal instances, and Strings all respond to this.
     if (TP.canInvoke(signal, 'getSignalName')) {
         signame = signal.getSignalName();
     } else {
         return this.raise('InvalidSignal', signal);
     }
 
-    //  Simplify for internal signals. APP.sig. prefixing has to remain in
-    //  place and should be specified explicitly.
+    //  Simplify for internal signals. 'APP.sig.' prefixing (or signal types
+    //  from another namespace) has to remain in place and should be specified
+    //  explicitly.
     signame = signame.replace(/^TP\.sig\./, '');
 
     //  Regardless of how it got here, don't let signame carry anything that

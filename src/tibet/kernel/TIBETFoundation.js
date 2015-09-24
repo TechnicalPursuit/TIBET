@@ -2594,12 +2594,14 @@ function(aDescriptor, aHandler) {
      *     Hash or Object defining additional criteria such as origin, state,
      *     capturing, etc. which further restrict when the handler should be
      *     matched for use with a signal.
-     * @param {Object} descriptor the 'descriptor' parameter is a property
-     *     descriptor. that property descriptor can be one of the following:
-     *          signal (tibet type or string signal name)
-     *          origin (object or string id)
-     *          state (string state name)
-     *          capturing (boolean for whether the handler is capturing).
+     * @param {String|Object} descriptor The 'descriptor' parameter can be
+     *     either a simple String denoting signal name or a property descriptor.
+     *     That property descriptor should be a plain JS object containing one
+     *     or more of the following properties:
+     *          signal (TIBET type or String signal name)
+     *          origin (object or String id)
+     *          state (String state name)
+     *          capturing (Boolean for whether the handler is capturing).
      * @param {Function} aHandler The function body for the event handler.
      * @return {Object} The receiver.
      */
