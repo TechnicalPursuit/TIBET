@@ -247,7 +247,7 @@
         <div id="logLevelInfo" class="info"/>
 
         <!-- The markup used for command toolbar -->
-        <div id="SherpaConsoleCommandToolbar" pclass:hidden="true" tibet:ctrl="SherpaConsoleService">
+        <div id="SherpaConsoleCommandToolbar" tibet:ctrl="SherpaConsoleService">
             <div id="clearButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':clear'})"/>
             <div id="watchButton" class="toolbarButton" on:click="ConsoleCommand({cmdText:':toggleRemoteWatch'})"/>
         </div>
@@ -256,7 +256,7 @@
         <div id="mouseInfo" class="info"/>
 
         <!-- The markup used for output toolbar -->
-        <div id="SherpaConsoleOutputToolbar" pclass:hidden="true">
+        <div id="SherpaConsoleOutputToolbar">
             <div id="splitBottomButton" class="toolbarButton" mode="h_split_bottom"/>
             <div id="splitTopButton" class="toolbarButton" mode="h_split_top"/>
             <div id="splitLeftButton" class="toolbarButton" mode="v_split_left"/>

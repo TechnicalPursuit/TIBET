@@ -51,12 +51,6 @@ function() {
                         TP.elementGetAttribute(aSignal.getTarget(), 'mode'));
         }.bind(this));
 
-    toolbarElem.toggle('hidden');
-
-    toolbarElem = TP.byId('SherpaConsoleCommandToolbar',
-                            this.getNativeWindow());
-    toolbarElem.toggle('hidden');
-
     return this;
 });
 
