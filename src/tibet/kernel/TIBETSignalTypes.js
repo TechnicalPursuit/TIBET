@@ -613,28 +613,28 @@ TP.sig.ApplicationSignal.defineSubtype('TargetIn');
 TP.sig.ApplicationSignal.defineSubtype('TargetOut');
 
 //  ========================================================================
-//  CRUD SIGNALS
+//  BIND SIGNALS
 //  ========================================================================
 
-TP.sig.Signal.defineSubtype('CRUDSignal');
+TP.sig.Signal.defineSubtype('BINDSignal');
 
-// Don't rotate above CRUDSignal for signal names.
-TP.sig.CRUDSignal.isSignalingRoot(true);
+// Don't rotate above BINDSignal for signal names.
+TP.sig.BINDSignal.isSignalingRoot(true);
 
-TP.sig.CRUDSignal.Type.defineAttribute('defaultPolicy', TP.CRUD_FIRING);
+TP.sig.BINDSignal.Type.defineAttribute('defaultPolicy', TP.BIND_FIRING);
 
-TP.sig.CRUDSignal.Type.defineAttribute('bubbling', true);
-TP.sig.CRUDSignal.Type.defineAttribute('cancelable', true);
+TP.sig.BINDSignal.Type.defineAttribute('bubbling', true);
+TP.sig.BINDSignal.Type.defineAttribute('cancelable', true);
 
-TP.sig.CRUDSignal.defineSubtype('CRUDItemSignal');
+TP.sig.BINDSignal.defineSubtype('BINDItemSignal');
 
-TP.sig.CRUDItemSignal.defineSubtype('CreateItem');
-TP.sig.CRUDItemSignal.defineSubtype('DeleteItem');
+TP.sig.BINDItemSignal.defineSubtype('CreateItem');
+TP.sig.BINDItemSignal.defineSubtype('DeleteItem');
 
-TP.sig.CRUDSignal.defineSubtype('CRUDSelectionSignal');
+TP.sig.BINDSignal.defineSubtype('BINDSelectionSignal');
 
-TP.sig.CRUDSelectionSignal.defineSubtype('UpdateSelection');
-TP.sig.CRUDSelectionSignal.defineSubtype('DeleteSelection');
+TP.sig.BINDSelectionSignal.defineSubtype('UpdateSelection');
+TP.sig.BINDSelectionSignal.defineSubtype('DeleteSelection');
 
 //  ========================================================================
 //  RESPONDER SIGNALS

@@ -5787,12 +5787,12 @@ function(anOrigin, aSignal, aPayload, aType) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.defineMethod('CRUD_FIRING',
+TP.sig.SignalMap.defineMethod('BIND_FIRING',
 function(originSet, aSignal, aPayload, aType) {
 
 
     /**
-     * @method CRUD_FIRING
+     * @method BIND_FIRING
      * @summary
      * @param {Array|Object} originSet The originator(s) of the signal. Unused
      *     for this firing policy.
