@@ -122,14 +122,19 @@ function(aString) {
 
             case 'identifier':
             case 'string':
+            case 'uri':
+
                 if (TP.isValid(context)) {
                     context = context[val];
                 } else {
                     if (self[val]) {
                         context = self[val];
                     } else {
-                        //  identifier (key) or String - quote it.
-                        str += val.quoted('"');
+                        //  identifier (key) or String - quote it (but first
+                        //  make sure that if it's surrounded by any kind of
+                        //  quotes, those are stripped - this will *not* strip
+                        //  quotes that are not the first and last characters).
+                        str += val.unquoted().quoted('"');
                     }
                 }
                 break;
