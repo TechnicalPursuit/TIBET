@@ -4434,8 +4434,8 @@ aSigEntry, checkTarget) {
         return;
     }
 
-    //  don't let signals get passed with TP.ANY as an origin, but ensure
-    //  we can put things back the way they were once we're finished
+    //  don't let signals get passed with TP.ANY as an origin, but ensure we can
+    //  put things back the way they were once we're finished
     originalOrigin = aSignal.getOrigin();
     if (originalOrigin === TP.ANY) {
         aSignal.setOrigin(null);
@@ -4456,12 +4456,12 @@ aSigEntry, checkTarget) {
     if (TP.isValid(aSigEntry)) {
         entry = aSigEntry;
     } else {
-        //  note we don't bother with sorting out capture vs. bubble here,
-        //  we put the burden of that on the observe process which manages
-        //  order in the listener node list for a particular interest.
-        //  this optimizes for runtime dispatch since observes can persist
-        //  in XML, and across multiple content display invocations,
-        //  meaning they're called only once in most cases
+        //  note we don't bother with sorting out capture vs. bubble here, we
+        //  put the burden of that on the observe process which manages order in
+        //  the listener node list for a particular interest. this optimizes for
+        //  runtime dispatch since observes can persist in XML, and across
+        //  multiple content display invocations, meaning they're called only
+        //  once in most cases
         entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
 
         if (TP.notValid(entry)) {
@@ -4500,8 +4500,8 @@ aSigEntry, checkTarget) {
         }
     }
 
-    // Get a shallow copy of the listeners so any handler activity that affects
-    // the list won't affect our current iteration work.
+    //  Get a shallow copy of the listeners so any handler activity that affects
+    //  the list won't affect our current iteration work.
     items = entry.listeners.slice(0);
 
     //  try/finally for signal stack
@@ -4525,8 +4525,8 @@ aSigEntry, checkTarget) {
 
             item = items[i];
 
-            //  if the specific handler is suspended or flagged for
-            //  removal then just skip it
+            //  if the specific handler is suspended or flagged for removal then
+            //  just skip it
             if (item.suspend === true || item.remove === true) {
                 TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
                         TP.trace('Listener ' + i +
@@ -4537,8 +4537,7 @@ aSigEntry, checkTarget) {
             }
 
             if (TP.isFalse(capture)) {
-                //  if capturing handlers are masked off, check and
-                //  skip
+                //  if capturing handlers are masked off, check and skip
                 if (item.phase === 'capture') {
                     continue;
                 }
@@ -4548,9 +4547,9 @@ aSigEntry, checkTarget) {
                 }
             }
 
-            //  if we're using strict XMLEvent or DOM firing then
-            //  we have to check to see if the signal's target matches
-            //  the specified dom_target if there is one
+            //  if we're using strict XMLEvent or DOM firing then we have to
+            //  check to see if the signal's target matches the specified
+            //  dom_target if there is one
             if (checkTarget) {
                 xml_target = item.xml_target;
                 observer = item.observer;
@@ -4571,11 +4570,10 @@ aSigEntry, checkTarget) {
                 }
             }
 
-            //  acquire a handle to an actual handler instance by
-            //  asking TIBET for whatever object is found at that ID.
-            //  Note that this allows handlers to be swapped out from
-            //  under observations without affecting the signal map
-            //  itself.
+            //  acquire a handle to an actual handler instance by asking TIBET
+            //  for whatever object is found at that ID. Note that this allows
+            //  handlers to be swapped out from under observations without
+            //  affecting the signal map itself.
             handler = TP.bySystemId(item.handler);
 
             //  a side effect of having objects registered under 'tibet:urn's is
@@ -4598,16 +4596,15 @@ aSigEntry, checkTarget) {
                 //  check for multiple notification bypass, or even a
                 //  signal-configured ignore hook prior to firing
                 if (!aSignal.isIgnoring(handler)) {
-                    //  set up so we won't tell it again unless it
-                    //  resets
+                    //  set up so we won't tell it again unless it resets
                     aSignal.ignoreHandler(handler);
 
-                    //  put a reference to the listener node itself
-                    //  where the handler(s) can get to it when needed
+                    //  put a reference to the listener node itself where the
+                    //  handler(s) can get to it when needed
                     aSignal.set('listener', item);
 
-                    //  run the handler, making sure we can catch any
-                    //  exceptions that are signaled
+                    //  run the handler, making sure we can catch any exceptions
+                    //  that are signaled
 
                     //  NOTE that if we're observing TP.ANY signals, we
                     //  don't supply a 'starting signal name' or skip
@@ -4620,20 +4617,18 @@ aSigEntry, checkTarget) {
                 }
             } else {
                 try {
-                    //  check for multiple notification bypass, or even
-                    //  a signal-configured ignore hook prior to firing
+                    //  check for multiple notification bypass, or even a
+                    //  signal-configured ignore hook prior to firing
                     if (!aSignal.isIgnoring(handler)) {
-                        //  set up so we won't tell it again unless it
-                        //  resets
+                        //  set up so we won't tell it again unless it resets
                         aSignal.ignoreHandler(handler);
 
-                        //  put a reference to the listener node itself
-                        //  where the handler(s) can get to it when
-                        //  needed
+                        //  put a reference to the listener node itself where
+                        //  the handler(s) can get to it when needed
                         aSignal.set('listener', item);
 
-                        //  run the handler, making sure we can catch
-                        //  any exceptions that are signaled
+                        //  run the handler, making sure we can catch any
+                        //  exceptions that are signaled
 
                         //  NOTE that if we're observing TP.ANY signals, we
                         //  don't supply a 'starting signal name' or skip
@@ -4645,25 +4640,22 @@ aSigEntry, checkTarget) {
                         }
                     }
 
-                    //  TODO:   add check here regarding removal of the
-                    //          handler? this would be an alternative to
-                    //          cleanup policies, simply setting state
-                    //          or adding functions to the handlers
-                    //          themselves which return true when the
-                    //          handler should be removed.
+                    //  TODO:   add check here regarding removal of the handler?
+                    //          this would be an alternative to cleanup
+                    //          policies, simply setting state or adding
+                    //          functions to the handlers themselves which
+                    //          return true when the handler should be removed.
 
-                    //          if so we can simply suspend the item so
-                    //          it is skipped rather than removing the
-                    //          node
+                    //          if so we can simply suspend the item so it is
+                    //          skipped rather than removing the node
                 } catch (e) {
 
                     //  TODO: handler exception
                     //  TODO: Add a callback check at the handler/owner level?
 
                     try {
-                        //  see if we can get the actual function in
-                        //  question so we have better debugging
-                        //  capability
+                        //  see if we can get the actual function in question so
+                        //  we have better debugging capability
                         hFunc = handler.getBestHandler(aSignal);
 
                         if (TP.isCallable(hFunc)) {
@@ -4696,9 +4688,9 @@ aSigEntry, checkTarget) {
                                 TP.SIGNAL_LOG) : 0;
                     }
 
-                    //  register the handler if TIBET is configured for
-                    //  that so that the suspended function can be
-                    //  acquired by the developer for debugging
+                    //  register the handler if TIBET is configured for that so
+                    //  that the suspended function can be acquired by the
+                    //  developer for debugging
                     if (TP.sys.shouldRegisterLoggers()) {
                         TP.sys.registerObject(handler, null, true, false);
                     }
@@ -4728,9 +4720,8 @@ aSigEntry, checkTarget) {
             throw e;
         }
     } finally {
-        //  "pop" the signal stack, throwing away the last signal
-        //  and making the current signal the one at the end of the
-        //  stack (or null)
+        //  "pop" the signal stack, throwing away the last signal and making the
+        //  current signal the one at the end of the stack (or null)
         $signal_stack.pop();
     }
 
@@ -5462,6 +5453,7 @@ function(target, signal) {
      *     a specific target element. This method is a helper for the
      *     RESPONDER_FIRING policy and not typically invoked directly.
      * @param {Element} target The element to notify for.
+     * @param {TP.sig.Signal} signal The signal to handle.
      */
 
     var id,

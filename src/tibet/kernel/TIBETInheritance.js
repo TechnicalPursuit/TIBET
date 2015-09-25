@@ -1577,12 +1577,12 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
      *     handlers if the supplied signal has more than one signal name. This
      *     parameter is optional and, if not supplied, all of the signal names
      *     as computed from the supplied signal will be used.
-     * @param {Boolean} [dontTraverseSpoofs] True will mean that traversing up
-     *     the supertype chain will be disabled for 'spoofed' signals (i.e.
-     *     signals where the signal name doesn't match the type name). The
-     *     default is false.
-     * @param {Boolean} [dontTraverse] Turn off any form of signal hierarchy
-     *     traversal. Default is false.
+     * @param {Boolean} [dontTraverseSpoofs=false] True will mean that
+     *     traversing up the supertype chain will be disabled for 'spoofed'
+     *     signals (i.e. signals where the signal name doesn't match the type
+     *     name).
+     * @param {Boolean} [dontTraverse=false] True will turn off any form of
+     *     signal hierarchy traversal.
      * @param {String} [skip] A string used to mask off certain handler names
      *     such as high-level default handlers.
      * @returns {Function} The specific function or method that would be (or
@@ -1883,12 +1883,12 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
      *     handlers if the supplied signal has more than one signal name. This
      *     parameter is optional and, if not supplied, all of the signal names
      *     as computed from the supplied signal will be used.
-     * @param {Boolean} [dontTraverseSpoofs] True will mean that traversing up
-     *     the supertype chain will be disabled for 'spoofed' signals (i.e.
-     *     signals where the signal name doesn't match the type name). The
-     *     default is false.
-     * @param {Boolean} [dontTraverse] Turn off any form of signal hierarchy
-     *     traversal. Default is false.
+     * @param {Boolean} [dontTraverseSpoofs=false] True will mean that
+     *     traversing up the supertype chain will be disabled for 'spoofed'
+     *     signals (i.e. signals where the signal name doesn't match the type
+     *     name).
+     * @param {Boolean} [dontTraverse=false] True will turn off any form of
+     *     signal hierarchy traversal.
      * @returns {Object} The handler function's results.
      */
 
