@@ -4606,11 +4606,12 @@ aSigEntry, checkTarget) {
                     //  run the handler, making sure we can catch any exceptions
                     //  that are signaled
 
-                    //  NOTE that if we're observing TP.ANY signals, we
-                    //  don't supply a 'starting signal name' or skip
-                    //  spoofs, as that doesn't make sense.
+                    //  NOTE that if we're observing TP.ANY signals, we don't
+                    //  supply a 'starting signal name' and we skip spoofs and
+                    //  traversing the signal hierarchy, as that doesn't make
+                    //  sense.
                     if (signame === TP.ANY) {
-                        handler.handle(aSignal);
+                        handler.handle(aSignal, TP.ANY, true, true);
                     } else {
                         handler.handle(aSignal, signame, false);
                     }
@@ -4631,10 +4632,11 @@ aSigEntry, checkTarget) {
                         //  exceptions that are signaled
 
                         //  NOTE that if we're observing TP.ANY signals, we
-                        //  don't supply a 'starting signal name' or skip
-                        //  spoofs, as that doesn't make sense.
+                        //  don't supply a 'starting signal name' and we skip
+                        //  spoofs and traversing the signal hierarchy, as that
+                        //  doesn't make sense.
                         if (signame === TP.ANY) {
-                            handler.handle(aSignal);
+                            handler.handle(aSignal, TP.ANY, true, true);
                         } else {
                             handler.handle(aSignal, signame, false);
                         }

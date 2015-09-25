@@ -1684,10 +1684,12 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
         /* eslint-disable indent */
 
         //  If the startSignalName wasn't supplied or it's the same as the
-        //  signal's 'direct' signal name, then go ahead and consider that the
-        //  receiver may have the handler directly on it without traversing the
-        //  type chain.
-        if (TP.isEmpty(startSignalName) || startSignalName === signame) {
+        //  signal's 'direct' signal name, or it's TP.ANY, then go ahead and
+        //  consider that the receiver may have the handler directly on it
+        //  without traversing the signal type chain.
+        if (TP.isEmpty(startSignalName) ||
+            startSignalName === signame ||
+            startSignalName === TP.ANY) {
 
             //  check first for explicit one to avoid overhead when the handler
             //  is specific to the signal
@@ -1697,12 +1699,12 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                 //  Specific origin, specific state
                 if (state !== null) {
                     fName = TP.computeHandlerName({
-                                                        origin: orgid,
-                                                        signal: aSignal,
-                                                        state: state,
-                                                        capturing: capturing
-                                                    });
-                    if (fName !== skip && TP.canInvoke(this, fName)) {
+                                origin: orgid,
+                                signal: startSignalName || signame,
+                                state: state,
+                                capturing: capturing
+                            });
+                if (fName !== skip && TP.canInvoke(this, fName)) {
                         handler = this[fName];
                         handlers.atPut(key, handler);
                         return handler;
@@ -1711,10 +1713,10 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
                 //  Specific origin, no specific state
                 fName = TP.computeHandlerName({
-                                                    origin: orgid,
-                                                    signal: aSignal,
-                                                    capturing: capturing
-                                                });
+                            origin: orgid,
+                            signal: startSignalName || signame,
+                            capturing: capturing
+                        });
                 if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
@@ -1725,10 +1727,10 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
             //  No specific origin, specific state
             if (state !== null) {
                 fName = TP.computeHandlerName({
-                                                    signal: aSignal,
-                                                    state: state,
-                                                    capturing: capturing
-                                                });
+                            signal: startSignalName || signame,
+                            state: state,
+                            capturing: capturing
+                        });
                 if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];
                     handlers.atPut(key, handler);
@@ -1738,9 +1740,9 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
             //  No specific origin, no specific state
             fName = TP.computeHandlerName({
-                                                signal: aSignal,
-                                                capturing: capturing
-                                            });
+                        signal: startSignalName || signame,
+                        capturing: capturing
+                    });
             if (fName !== skip && TP.canInvoke(this, fName)) {
                 handler = this[fName];
                 handlers.atPut(key, handler);
@@ -1792,20 +1794,20 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
             if (TP.isType(TP.sys.getTypeByName(typeName))) {
 
-                //  Note here how we do *not* supply aSignal as the second
-                //  parameter to these methods... we want to use just the signal
-                //  type's signal name, not any override supplied by the aSignal
-                //  instance.
+                //  Note here how we do *not* use aSignal's signal name as the
+                //  'signal' property to these methods... we want to use just
+                //  the signal type's signal name, not any override (i.e.
+                //  spoofed name) supplied by the aSignal instance.
 
                 if (hasOrigin) {
 
                     if (state !== null) {
                         fName = TP.computeHandlerName({
-                            signal: typeName,
-                            origin: orgid,
-                            state: state,
-                            capturing: capturing
-                        });
+                                    signal: typeName,
+                                    origin: orgid,
+                                    state: state,
+                                    capturing: capturing
+                                });
 
                         if (fName !== skip && TP.canInvoke(this, fName)) {
                             handler = this[fName];
@@ -1815,10 +1817,10 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                     }
 
                     fName = TP.computeHandlerName({
-                        signal: typeName,
-                        origin: orgid,
-                        capturing: capturing
-                    });
+                                signal: typeName,
+                                origin: orgid,
+                                capturing: capturing
+                            });
 
                     if (fName !== skip && TP.canInvoke(this, fName)) {
                         handler = this[fName];
@@ -1829,10 +1831,10 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
 
                 if (state !== null) {
                     fName = TP.computeHandlerName({
-                        signal: typeName,
-                        state: state,
-                        capturing: capturing
-                    });
+                                signal: typeName,
+                                state: state,
+                                capturing: capturing
+                            });
 
                     if (fName !== skip && TP.canInvoke(this, fName)) {
                         handler = this[fName];
@@ -1842,9 +1844,9 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
                 }
 
                 fName = TP.computeHandlerName({
-                    signal: typeName,
-                    capturing: capturing
-                });
+                        signal: typeName,
+                        capturing: capturing
+                    });
 
                 if (fName !== skip && TP.canInvoke(this, fName)) {
                     handler = this[fName];

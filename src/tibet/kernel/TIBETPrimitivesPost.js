@@ -5208,7 +5208,7 @@ function(aDescriptor) {
     if (TP.canInvoke(signal, 'getSignalName')) {
         signame = signal.getSignalName();
     } else {
-        return this.raise('InvalidSignal', signal);
+        signame = TP.ANY;
     }
 
     //  Simplify for internal signals. 'APP.sig.' prefixing (or signal types
