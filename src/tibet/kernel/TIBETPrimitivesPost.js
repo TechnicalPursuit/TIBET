@@ -5165,6 +5165,11 @@ function(signame) {
 
 //  ------------------------------------------------------------------------
 
+TP.$$computedHandlers = new TP.PHash;
+TP.$$computedHandlers.atPut('LOOKUPS', 0);
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('computeHandlerName',
 function(aDescriptor) {
 
@@ -5204,6 +5209,15 @@ function(aDescriptor) {
         signal = aDescriptor.signal;
     }
 
+    if (!descriptor) {
+        handler = TP.$$computedHandlers.at(signal);
+        if (handler) {
+            TP.$$computedHandlers.atPut('LOOKUPS',
+                TP.$$computedHandlers.at('LOOKUPS') + 1);
+            return handler;
+        }
+    }
+
     //  Signal types, signal instances, and Strings all respond to this.
     if (TP.canInvoke(signal, 'getSignalName')) {
         signame = signal.getSignalName();
@@ -5218,7 +5232,11 @@ function(aDescriptor) {
 
     //  Regardless of how it got here, don't let signame carry anything that
     //  isn't a valid JS identifier character as part of the handler name.
-    handler = 'handle' + signame.asJSIdentifier();
+    if (TP.isNumber(aDescriptor)) {
+        handler = 'handle' + signame;
+    } else {
+        handler = 'handle' + signame.asJSIdentifier();
+    }
 
     //  Add optional Capture phrase
     if (descriptor && TP.isTrue(descriptor.capturing)) {
@@ -5237,6 +5255,11 @@ function(aDescriptor) {
         handler += 'When' + TP.str(state).asTitleCase();
     } else {
         handler += 'When' + TP.ANY;
+    }
+
+    //  Simple handlers (very common) are cached.
+    if (!descriptor) {
+        TP.$$computedHandlers.atPut(signal, handler);
     }
 
     return handler;
