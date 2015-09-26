@@ -88,9 +88,13 @@ Cmd.prototype.HELP =
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': [],
+        'boolean': ['comments', 'ignorecase'],
+        'number': ['limit'],
         'string': [],
-        'default': {}
+        'default': {
+            comments: false,
+            ignorecase: true
+        }
     },
     Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
@@ -148,6 +152,20 @@ Cmd.prototype.getScript = function() {
     }, '');
 
     script = prefix + suffix;
+
+    if (this.options.limit) {
+        script += ' -limit=' + this.options.limit;
+    }
+
+    if (this.options.ignorecase) {
+        script += ' -ignorecase=true';
+    } else {
+        script += ' -ignorecase=false';
+    }
+
+    if (this.options.comments) {
+        script += ' -comments=true';
+    }
 
     return script;
 };
