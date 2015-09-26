@@ -2751,7 +2751,7 @@ function(anObj) {
     if ((anObj === Function) ||
                 (TP.isValid(anObj[TP.TYPE]) &&
                 (anObj[TP.TYPE] !== TP.FunctionProto[TP.TYPE]))) {
-        return true;
+        return !TP.isNamespace(anObj);
     }
     /* eslint-enable no-extra-parens */
 
