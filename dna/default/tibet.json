@@ -1,11 +1,13 @@
 {
     "//" : "TIBET project file. Set configuration parameters here.",
-
+    "project": {
+        "name": "{{appname}}"
+    },
     "tibet": {
         "dna": "{{dna}}"
     },
     "boot": {
-        "profile": "standard"
+        "profile": "{{appname}}"
     },
     "escodegen": {
         "format": {

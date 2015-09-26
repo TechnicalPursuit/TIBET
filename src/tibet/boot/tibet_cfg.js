@@ -277,9 +277,6 @@
     //  profile is taken from boot.profile.
     TP.sys.setcfg('boot.package', null);
 
-    //  Default value for the package if no package is otherwise specified.
-    TP.sys.setcfg('boot.default_package', '~app_cfg/standard.xml');
-
     //  What package config do we start from? This will default to whatever is
     //  given in the boot.package file. The package tag's "default" attribute
     //  defines the config we should default to for each package.

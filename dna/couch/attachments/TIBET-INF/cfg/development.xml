@@ -20,27 +20,27 @@
 
 <config id="base">
     <config ref="properties"/>
-    <package src="standard.xml" config="base"/>
+    <package src="{{appname}}.xml" config="base"/>
 </config>
 
 <config id="full">
     <config ref="properties"/>
-    <package src="standard.xml" config="full"/>
+    <package src="{{appname}}.xml" config="full"/>
 </config>
 
 <config id="developer">
     <config ref="properties"/>
-    <package src="standard.xml" config="developer"/>
+    <package src="{{appname}}.xml" config="developer"/>
 </config>
 
 <config id="contributor">
     <config ref="properties"/>
-    <package src="standard.xml" config="contributor"/>
+    <package src="{{appname}}.xml" config="contributor"/>
 </config>
 
 <config id="test">
     <config ref="properties"/>
-    <package src="standard.xml" config="test"/>
+    <package src="{{appname}}.xml" config="test"/>
 </config>
 
 </package>
