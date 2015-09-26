@@ -230,7 +230,7 @@ function() {
 
     var testDataLoc;
 
-    testDataLoc = '~lib_tst/src/tibet/tagprocessor/testmarkup.xml';
+    testDataLoc = '~lib_test/src/tibet/tagprocessor/testmarkup.xml';
 
     //  ---
 
@@ -416,7 +416,7 @@ function() {
 
     this.it('XML Base processing', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XMLBaseTest1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XMLBaseTest1.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -460,7 +460,7 @@ function() {
 
     this.it('TIBET stylesheet PI processing - single level', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/EmbedXSL1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/EmbedXSL1.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -516,7 +516,7 @@ function() {
 
     this.it('whole file inclusion', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude1.xml');
+        loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XInclude1.xml');
 
         test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
@@ -547,7 +547,7 @@ function() {
 
                 server = TP.test.fakeServer.create();
 
-                loc = TP.uc('~lib_tst/src/tibet/tagprocessor/XIncludePart10.xml').getConcreteURI().get('path');
+                loc = TP.uc('~lib_test/src/tibet/tagprocessor/XIncludePart10.xml').getConcreteURI().get('path');
                 if (loc.charAt(0) !== '/') {
                     loc = '/' + loc;
                 }
@@ -616,7 +616,7 @@ function() {
 
     this.it('partial file inclusion', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/tagprocessor/XInclude2.xml');
+        loadURI = TP.uc('~lib_test/src/tibet/tagprocessor/XInclude2.xml');
 
         test.getDriver().setLocation(loadURI);
 

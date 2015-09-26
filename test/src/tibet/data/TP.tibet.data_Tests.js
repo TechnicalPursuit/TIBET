@@ -90,7 +90,7 @@ function() {
 
     this.it('No specific result type - XML content', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/data/Data1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data1.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -129,7 +129,7 @@ function() {
 
     this.it('No specific result type - JSON content', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/data/Data2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data2.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -168,7 +168,7 @@ function() {
 
     this.it('Specific result type - XML content', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/data/Data3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data3.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -208,7 +208,7 @@ function() {
 
     this.it('Specific result type - JSON content', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/data/Data4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data4.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -248,7 +248,7 @@ function() {
 
     this.it('No specific result type - XML content then resetting via setContent()', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/data/Data1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data1.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -324,7 +324,7 @@ function() {
 
     this.it('No specific result type - JSON content then resetting via setContent()', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/data/Data2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/data/Data2.xhtml');
 
         test.getDriver().setLocation(loadURI);
 

@@ -18,7 +18,7 @@ function() {
     var loadURI,
         winContext;
 
-    loadURI = TP.uc('~lib_tst/src/tibet/lifecycle/LoadUnload_Test.xhtml');
+    loadURI = TP.uc('~lib_test/src/tibet/lifecycle/LoadUnload_Test.xhtml');
 
     //  ---
 

@@ -22,7 +22,7 @@ function() {
 
         windowContext;
 
-    loadURI = TP.uc('~lib_tst/src/html/HTMLContent.xhtml');
+    loadURI = TP.uc('~lib_test/src/html/HTMLContent.xhtml');
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -789,7 +789,7 @@ function() {
         TP.$$setupCommonObjectValues();
         testData = TP.$$commonObjectValues;
 
-        testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
+        testDataLoc = '~lib_test/src/html/HTMLContent.xhtml';
         loadURI = TP.uc(testDataLoc);
 
         windowContext = this.getDriver().get('windowContext');
@@ -1924,7 +1924,7 @@ function() {
 
         TP.$$setupCommonObjectValues();
 
-        testDataLoc = '~lib_tst/src/html/HTMLContent.xhtml';
+        testDataLoc = '~lib_test/src/html/HTMLContent.xhtml';
         loadURI = TP.uc(testDataLoc);
 
         windowContext = this.getDriver().get('windowContext');
