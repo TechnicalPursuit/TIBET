@@ -2625,7 +2625,7 @@ function(aDescriptor, aHandler) {
         return this.raise('InvalidParameter');
     }
 
-    //  NOTE this will throw if things are proper in the descriptor re signal.
+    //  NOTE this will throw if things aren't proper in the descriptor.
     name = TP.computeHandlerName(descriptor);
 
     //  Throw out any handler cache, we just defined a new one.
