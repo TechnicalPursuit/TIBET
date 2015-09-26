@@ -64,21 +64,35 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 Cmd.prototype.HELP =
 'Runs the TSH :apropos command to find methods related to one or more topics.\n\n' +
 
-'You can provide one or more search terms and the command will use them all\n' +
-'to construct a total match count which serves to sort results. Methods with\n' +
-'higher match counts are returned first. Match counts are provided behind\n' +
-'each result line so you have a sense of which methods are most relevant.\n\n' +
+'By default this command searches method names for matches to search terms.\n' +
+'The terms provided can be simple strings or the foundation for a RegExp. If\n' +
+'a method name matches a term it is always included in the output regardless\n' +
+'of any other flag settings.\n\n' +
 
-'For example, you can find methods which may relate to \'clipping\' via:\n\n' +
+'Use the --comments to search comment text in addition to the method name.\n\n' +
 
-'$ tibet apropos clipping\n' +
-'...\n' +
-'TP_Primitive_elementGetClipRect (5)\n' +
-'TP_Primitive_elementSetClipRect (5)\n' +
-'TP_Primitive_elementWrapToContent (1)\n' +
-'TP.core.MultiTransition_Inst_step (1)\n' +
-'...\n\n';
+'When searching comment text the --limit flag can be used to set a minimum\n' +
+'match count for success. Items which don\'t match the search term at least\n' +
+'--limit number of times will be discarded.\n\n' +
 
+'You can use a case-sensitive search by using --no-ignorecase. Searches are\n' +
+'normally case-insensitive to improve the chances you will find appropriate\n' +
+'suggestions in the result list.\n\n' +
+
+'For example\n\n' +
+'tibet apropos clip --comments --limit 1\n' +
+'# Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT\n' +
+'# TIBET loaded in 3516 ms. Starting execution.\n' +
+'# - by name\n' +
+'#\n' +
+'# TP_Primitive_elementSetClipRect (8)\n' +
+'# TP_Primitive_elementGetClipRect (7)\n' +
+'#\n' +
+'# - by comment\n' +
+'#\n' +
+'# TP.core.MultiTransition_Inst_step (1)\n' +
+'# TP.xctrls.clipbox_Inst_setDisplayValue (1)\n' +
+'# TP_Primitive_elementWrapToContent (1)\n';
 
 /**
  * Command argument parsing options.
@@ -104,7 +118,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet apropos [terms]';
+    'tibet apropos [terms] [--limit=N] [--comments] [--no-ignorecase]';
 
 //  ---
 //  Instance Methods
