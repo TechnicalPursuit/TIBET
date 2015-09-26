@@ -2727,7 +2727,7 @@ function(aFlag) {
 
     //  set global handled flag so other external processing can see that
     //  we've been properly managed. the result for an
-    this.getType().set('handled', true);
+    this.getType().set('$handled', true);
 
     return this.callNextMethod();
 });
@@ -7307,7 +7307,7 @@ function(anOrigin, anException, aPayload) {
     //  signal is going to be processed. The TP.EXCEPTION_FIRING policy
     //  performs a list-oriented process which stops when the signal is
     //  "handled" at a particular exception.
-    TP.sig.Exception.set('handled', false);
+    TP.sig.Exception.set('$handled', false);
     TP.signal(orig, exceptions, aPayload, TP.EXCEPTION_FIRING);
 
     //  if the type's handled flag is still false then we throw a real error
@@ -7315,7 +7315,7 @@ function(anOrigin, anException, aPayload) {
         //  one issue is that we want assertion throwing managed by its own
         //  flag so we do a secondary check here
         if (aSignal.getSignalName() !== 'AssertionFailed') {
-            TP.sig.Exception.set('handled', true);
+            TP.sig.Exception.set('$handled', true);
             str = aSignal.asString();
             if (TP.isValid(aPayload)) {
                 str += ' - ' + TP.str(aPayload);
