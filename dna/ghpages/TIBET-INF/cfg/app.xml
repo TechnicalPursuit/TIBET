@@ -16,6 +16,7 @@
 </config>
 
 <config id="app_img">
+    <!-- put your source scripts here -->
     <script src="~app_src/APP.{{appname}}.js" />
     <script src="~app_src/APP.{{appname}}.Application.js" />
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
@@ -27,7 +28,8 @@
 </config>
 
 <config id="tests">
-  <!-- put your test scripts here -->
+    <!-- put your test scripts here -->
+    <script src="~app_test/APP.js" />
 </config>
 
 </package>
