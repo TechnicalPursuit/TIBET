@@ -663,7 +663,7 @@ function(src, ops, tsh, exp, alias, args) {
                             if (uriParenCount === 0) {
                                 //  various "end of URI" signifiers
                                 if (c === '\n' || c === '\r' || c === '' ||
-                                    c === '}' ||
+                                    c === '}' || c === ',' ||
                                     c <= ' ' || c.charCodeAt(0) === 160) {
                                     break;
                                 }
