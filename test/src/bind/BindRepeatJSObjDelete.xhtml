@@ -38,10 +38,10 @@
     <span bind:scope="urn:tibet:test_person#tibet(people)">
         <span id="repeater" bind:repeat=".">
             <label for="firstNameField">First name: </label>
-            <input type="text" id="firstNameField" bind:io="value: firstname" tabindex="0"/><br/>
+            <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>
 
             <label for="lastNameField">Last name: </label>
-            <input type="text" id="lastNameField" bind:io="value: lastname" tabindex="0"/><br/>
+            <input type="text" id="lastNameField" bind:io="{value: lastname}" tabindex="0"/><br/>
         </span>
 
         <button id="deleteFirstRow" on:click="TP.sig.DeleteItem({index:0})">Click to delete the first row</button>

@@ -57,13 +57,13 @@
 
     <span bind:repeat="urn:tibet:test_person#xpath1(/people/person)">
         <label for="firstNameField">First name: </label>
-        <input type="text" id="firstNameField" bind:io="value: firstname" tabindex="0"/><br/>
+        <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>
 
         <label for="lastNameField">Last name: </label>
-        <input type="text" id="lastNameField" bind:io="value: lastname" tabindex="0"/><br/>
+        <input type="text" id="lastNameField" bind:io="{value: lastname}" tabindex="0"/><br/>
         <span bind:repeat="addresses/address">
-            <input type="text" id="addressStreetField" bind:io="value: street" tabindex="0"/><br/>
-            <input type="text" id="addressCityField" bind:io="value: city" tabindex="0"/><br/>
+            <input type="text" id="addressStreetField" bind:io="{value: street}" tabindex="0"/><br/>
+            <input type="text" id="addressCityField" bind:io="{value: city}" tabindex="0"/><br/>
         </span>
     </span>
 

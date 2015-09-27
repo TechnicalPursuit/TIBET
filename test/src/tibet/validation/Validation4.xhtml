@@ -61,19 +61,19 @@
 
     <tibet:group id="EmployeeGroup" invalidwhen="any">
         <label for="GenderField">Gender: </label>
-        <input type="text" id="GenderField" bind:io="value: urn:tibet:Validation4_person#tibet(gender)" tabindex="0"/><br/>
+        <input type="text" id="GenderField" bind:io="{value: urn:tibet:Validation4_person#tibet(gender)}" tabindex="0"/><br/>
 
         <label for="uscitizenField">U.S. Citizen?: </label>
-        <input type="checkbox" id="uscitizenCheckbox" bind:io="checked: urn:tibet:Validation4_person#tibet(uscitizen)" tabindex="0"/><br/>
+        <input type="checkbox" id="uscitizenCheckbox" bind:io="checked: urn:tibet:Validation4_person#tibet(uscitizen)}" tabindex="0"/><br/>
 
         <label for="SSNField">SSN: </label>
-        <input type="text" id="SSNField" bind:io="value: urn:tibet:Validation4_person#tibet(SSN)" tabindex="0"/><br/>
+        <input type="text" id="SSNField" bind:io="{value: urn:tibet:Validation4_person#tibet(SSN)}" tabindex="0"/><br/>
 
         <tibet:group id="AddressGroup" invalidwhen="any">
 
-            <input type="text" id="CityField" bind:io="value: urn:tibet:Validation4_person#tibet(city)" tabindex="0"/><br/>
+            <input type="text" id="CityField" bind:io="{value: urn:tibet:Validation4_person#tibet(city)}" tabindex="0"/><br/>
 
-            <input type="text" id="StateField" bind:io="value: urn:tibet:Validation4_person#tibet(state)" tabindex="0"/><br/>
+            <input type="text" id="StateField" bind:io="{value: urn:tibet:Validation4_person#tibet(state)}" tabindex="0"/><br/>
         </tibet:group>
 
     </tibet:group>
