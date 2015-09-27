@@ -1894,8 +1894,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
      * @returns {Object} The handler function's results.
      */
 
-    var handlerFunc,
-        target;
+    var handlerFunc;
 
     handlerFunc = this.getBestHandler(
         aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);

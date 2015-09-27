@@ -767,7 +767,6 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
         sig,
         id,
 
-        signalFailure,
         throwExceptions,
 
         willLogError,
@@ -792,8 +791,6 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
     //  make sure the IO log contains this data to show a complete record
     //  for access to the targetUrl
     args.atPut('message', 'HTTP request exception.');
-
-    signalFailure = TP.ifInvalid(shouldSignal, true);
 
     //  get a response object for the request that we can use to convey the
     //  bad news in a consistent fashion with normal success processing.

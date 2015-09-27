@@ -2130,7 +2130,7 @@ function(aRequest) {
         ignorecase,
         minified,
         byName,
-        byComment,
+        byComments,
         results;
 
     terms = this.getArgument(aRequest, 'ARGV');
