@@ -330,26 +330,28 @@ function(src, ops, tsh, exp, alias, args) {
                 allows us to have reasonable control over the source for
                 condensing or other processing without resorting immediately
                 to a full parser.
-    @param      {String} src            The JavaScript source to process.
-    @param      {String} [ops]          An optional array of additional
-                                        operator strings which should be
-                                        considered valid for the source.
-    @param      {Boolean} [tsh=false]   True to support extensions specific
-                                        to the TIBET Shell (tsh) which
-                                        includes ${var} and `cmd` syntax as
-                                        well as limited markup processing.
-    @param      {Boolean} [exp=false]   True to signify that the content is
-                                        being tokenized for expansion, which
-                                        means certain clues for strings and
-                                        regular expressions won't be found.
-    @param      {Boolean} [alias=false] True to signify content is being
-                                        tokenized for aliasing purposes. This
-                                        causes substitutions to always
-                                        terminate an ongoing string or URI.
-    @param      {Boolean} [args=false]  True to signify content is being
-                                        tokenized for 'shell arguments'.
-    @returns    {Array} An array of token objects, simple objects which
-                        represent one token within the source string.
+    @param      {String}    src             The JavaScript source to process.
+    @param      {String[]}  [ops]           An optional array of the operator
+                                            strings which should be considered
+                                            valid for the source. If this isn't
+                                            supplied, the set of JS operators is
+                                            assumed.
+    @param      {Boolean}   [tsh=false]     True to support extensions specific
+                                            to the TIBET Shell (tsh) which
+                                            includes ${var} and `cmd` syntax as
+                                            well as limited markup processing.
+    @param      {Boolean}   [exp=false]     True to signify that the content is
+                                            being tokenized for expansion, which
+                                            means certain clues for strings and
+                                            regular expressions won't be found.
+    @param      {Boolean}   [alias=false]   True to signify content is being
+                                            tokenized for aliasing purposes.
+                                            This causes substitutions to always
+                                            terminate an ongoing string or URI.
+    @param      {Boolean}   [args=false]    True to signify content is being
+                                            tokenized for 'shell arguments'.
+    @returns    {Array}     An array of token objects, simple objects which
+                            represent one token within the source string.
     */
 
     var digit,
@@ -402,11 +404,15 @@ function(src, ops, tsh, exp, alias, args) {
     //  easily tested strings used for identifier/operator testing
     keywords = TP.boot.$keywordString;
     reserved = TP.boot.$futureReservedString;
-    operators = TP.boot.$operatorString;
+
+    //  if operators were supplied, then join them all together into our
+    //  detection string.
     if (ops) {
-        //  merge in any operators that may have been passed in to augment
-        //  the list we should tokenize
-        operators += ops.join('__') + '__';
+        operators = '__' + ops.join('__') + '__';
+    } else {
+        //  otherwise, use the precomputed detection string that consists of JS
+        //  operators.
+        operators = TP.boot.$operatorString;
     }
 
     //  ---
@@ -1237,22 +1243,28 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
                 simple tokenizing process to segment the original source and
                 then remove comments, extraneous whitespace, and optionally
                 remove newlines.
-    @param      {String} src                The JavaScript source to process.
-    @param      {Boolean} [newlines=false]  True to remove newlines. Default is
-                                            false to limit the potential for
-                                            introducing bugs, but blank lines
-                                            are still removed in all cases.
-    @param      {Boolean} [spaces=true]     True to remove spaces. Default is
-                                            true to create minimal output size.
-    @param      {Array} [operators]         An optional array of additional
-                                            operator token strings.
-    @param      {Boolean} [tokens=false]    True forces tokens back into the
-                                            output array rather than values.
-    @param      {Boolean} [nojoin=false]    True turns off join processing so
-                                            the result is the processed token
-                                            array rather than a string.
-    @param      {Boolean} [tsh=false]       True if TIBET Shell (TSH) semantics
-                                            should be observed.
+    @param      {String}    src                 The JavaScript source to process.
+    @param      {Boolean}   [newlines=false]    True to remove newlines. Default
+                                                is false to limit the potential
+                                                for introducing bugs, but blank
+                                                lines are still removed in all
+                                                cases.
+    @param      {Boolean}   [spaces=true]       True to remove spaces. Default
+                                                is true to create minimal output
+                                                size.
+    @param      {String[]}  [operators]         An optional array of the
+                                                operator strings which should be
+                                                considered valid for the source.
+                                                If this isn't supplied, the set
+                                                of JS operators is assumed.
+    @param      {Boolean}   [tokens=false]      True forces tokens back into the
+                                                output array rather than values.
+    @param      {Boolean}   [nojoin=false]      True turns off join processing
+                                                so the result is the processed
+                                                token array rather than a
+                                                string.
+    @param      {Boolean}   [tsh=false]         True if TIBET Shell (TSH)
+                                                semantics should be observed.
     @returns    {String|Array} The condensed source code or token array.
     */
 

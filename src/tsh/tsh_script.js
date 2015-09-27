@@ -591,9 +591,11 @@ function(source, shell, sibling, request) {
     //  we'd have to just tokenize again.
     arr = TP.isArray(source) ?
                 source :
-                TP.$condenseJS(source, false, false,
-                                this.$tshOperators,
-                                true, true, true);
+                TP.$condenseJS(
+                        source, false, false,
+                        //  All of the JS operators *and* the TSH operators
+                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        true, true, true);
 
     cmdns = 'tsh';
 
@@ -2400,7 +2402,11 @@ function(src, shell, request) {
     }
 
     //  tokenize and do our best...
-    arr = TP.$tokenize(src, this.$tshOperators, true, false, false, false);
+    arr = TP.$tokenize(
+                src,
+                //  All of the JS operators *and* the TSH operators
+                TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                true, false, false, false);
 
     i = 0;
     token = arr[i];

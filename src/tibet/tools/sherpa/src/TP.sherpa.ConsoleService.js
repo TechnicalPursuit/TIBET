@@ -2772,9 +2772,11 @@ function(inputText) {
         noMatches;
 
     //  Invoke the tokenizer
-    tokens = TP.$condenseJS(inputText,
-                            false, false, TP.tsh.cmd.Type.$tshOperators,
-                            true, true, true);
+    tokens = TP.$condenseJS(
+                    inputText, false, false,
+                    //  All of the JS operators *and* the TSH operators
+                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    true, true, true);
 
     //  Reverse the tokens to start from the back
     tokens.reverse();

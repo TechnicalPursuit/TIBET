@@ -2685,8 +2685,11 @@ function(aRequest, allForms) {
                     //  Note here how we pass 'true' as the sixth argument,
                     //  telling the tokenize routine that we're parsing for
                     //  shell arguments.
-                    parts = TP.$tokenize(last, TP.tsh.script.$tshOperators,
-                                            true, false, false, true);
+                    parts = TP.$tokenize(
+                        last,
+                        //  All of the JS operators *and* the TSH operators
+                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        true, false, false, true);
                 } else {
                     //  One special case here is any argument which appears to
                     //  be a valid JS identifier but which is, in fact, a TSH
