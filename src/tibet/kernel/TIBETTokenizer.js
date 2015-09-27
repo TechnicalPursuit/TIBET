@@ -1204,9 +1204,9 @@ function(src, ops, tsh, exp, alias, args) {
             i += 2;
             c = src.charAt(i);
         } else {
-            //  try to construct the longest possible operator from the
-            //  characters remaining in the string. note that we don't allow
-            //  for operators longer than 4 characters in length
+            //  try to construct the longest possible operator or string from
+            //  the characters remaining in the string. note that we don't
+            //  allow for operators longer than 4 characters in length
 
             str = src.slice(i, i + 4);
             for (j = 3; j > 0; j--) {
@@ -1216,7 +1216,12 @@ function(src, ops, tsh, exp, alias, args) {
                 str = str.slice(0, j);
             }
 
-            result.push(new_token('operator', str));
+            //  if the str is not an operator, it's a string
+            if (operators.indexOf('__' + str + '__') === TP.NOT_FOUND) {
+                result.push(new_token('string', str));
+            } else {
+                result.push(new_token('operator', str));
+            }
 
             i += str.length;
             c = src.charAt(i);
