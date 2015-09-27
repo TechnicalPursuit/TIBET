@@ -187,6 +187,23 @@
     //  the home page.
     TP.sys.setcfg('boot.show_ide', false);
 
+    //  allow unsupported browsers to boot but log, or force supported list.
+    TP.sys.setcfg('boot.supported', true);
+
+    //  list of supported boot contexts
+    TP.sys.setcfg('boot.supported_contexts', [
+        'browser', 'electron', 'phantomjs'
+    ]);
+
+    //  dictionary of data used by the isSupported call in the loader to
+    //  determine if a browser should be considered supported.
+    TP.sys.setcfg('boot.supported_browsers', {
+        ie: [{ major: 11 }],
+        chrome: [{ major: 39 }],
+        firefox: [{ major: 34 }],
+        safari: [{ major: 7 }]
+    });
+
     //  the toggle key for the boot console
     TP.sys.setcfg('boot.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
@@ -259,9 +276,6 @@
     //  What package file should we load? This defaults to {{profile}}.xml where
     //  profile is taken from boot.profile.
     TP.sys.setcfg('boot.package', null);
-
-    //  Default value for the package if no package is otherwise specified.
-    TP.sys.setcfg('boot.default_package', '~app_cfg/standard.xml');
 
     //  What package config do we start from? This will default to whatever is
     //  given in the boot.package file. The package tag's "default" attribute
@@ -375,6 +389,10 @@
     TP.sys.setcfg('log.color.debug', 'magenta');
     TP.sys.setcfg('log.color.verbose', 'grey');
 
+    //  ---
+    //  browser context
+    //  ---
+
     // Inadequate, but sufficient to help determine if we're in node, Phantom,
     // or a browser. Note these tests are unlikely to work in other contexts.
     if (typeof navigator === 'undefined') {
@@ -412,7 +430,6 @@
         TP.sys.setcfg('log.color.mode', 'browser');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
     }
-
 
     //  ---
     //  ui page initialization files
@@ -617,8 +634,8 @@
     TP.sys.setcfg('path.app_tsh', '~app_inf/tsh');
     TP.sys.setcfg('path.lib_tsh', '~lib_lib/tsh');
 
-    TP.sys.setcfg('path.app_tst', '~app/test');
-    TP.sys.setcfg('path.lib_tst', '~lib/test');
+    TP.sys.setcfg('path.app_test', '~app/test');
+    TP.sys.setcfg('path.lib_test', '~lib/test');
 
     TP.sys.setcfg('path.app_xhtml', '~app/xhtml');
     TP.sys.setcfg('path.lib_xhtml', '~lib_lib/xhtml');

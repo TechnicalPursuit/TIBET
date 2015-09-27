@@ -2727,7 +2727,7 @@ function(aFlag) {
 
     //  set global handled flag so other external processing can see that
     //  we've been properly managed. the result for an
-    this.getType().set('handled', true);
+    this.getType().set('$handled', true);
 
     return this.callNextMethod();
 });
@@ -5331,6 +5331,9 @@ function(originSet, aSignal, aPayload, aType) {
     //  Capturing phase...controllers
     //  ---
 
+    //  set the phase to capturing to get started
+    sig.setPhase(TP.CAPTURING_PHASE);
+
     TP.sig.SignalMap.notifyControllers(origin, sig.getSignalName(), sig, true);
 
     //  After processing make sure we should continue with the next phase.
@@ -5361,9 +5364,6 @@ function(originSet, aSignal, aPayload, aType) {
             //  target (if present) we can reverse to get the right ordering.
             responders.reverse();
 
-            //  set the phase to capturing to get started
-            sig.setPhase(TP.CAPTURING_PHASE);
-
             len = responders.getSize();
             for (i = 0; i < len; i++) {
                 responder = responders.at(i);
@@ -5385,11 +5385,11 @@ function(originSet, aSignal, aPayload, aType) {
     //  At-target phase...responders
     //  ---
 
+    sig.setPhase(TP.AT_TARGET);
+
     //  NOTE that we only do this if the target is a responder
     //  element...otherwise we don't really have a valid 'at target' step.
     if (TP.isValid(target) && TP.nodeGetResponderElement(target) === target) {
-
-        sig.setPhase(TP.AT_TARGET);
 
         //  tibet:ctrl and tibet:tag found on the element.
         TP.sig.SignalMap.$notifyResponders(target, sig);
@@ -5405,6 +5405,9 @@ function(originSet, aSignal, aPayload, aType) {
     //  Bubbling phase...responders
     //  ---
 
+    //  we're bubbling... we're bubbling...
+    sig.setPhase(TP.BUBBLING_PHASE);
+
     if (TP.notEmpty(responders)) {
 
         //  convert back to target-to-ancestor ordering for bubbling phase.
@@ -5414,9 +5417,6 @@ function(originSet, aSignal, aPayload, aType) {
         if (!sig.isBubbling()) {
             return sig;
         }
-
-        //  we're bubbling... we're bubbling...
-        sig.setPhase(TP.BUBBLING_PHASE);
 
         len = responders.getSize();
         for (i = 0; i < len; i++) {
@@ -7307,7 +7307,7 @@ function(anOrigin, anException, aPayload) {
     //  signal is going to be processed. The TP.EXCEPTION_FIRING policy
     //  performs a list-oriented process which stops when the signal is
     //  "handled" at a particular exception.
-    TP.sig.Exception.set('handled', false);
+    TP.sig.Exception.set('$handled', false);
     TP.signal(orig, exceptions, aPayload, TP.EXCEPTION_FIRING);
 
     //  if the type's handled flag is still false then we throw a real error
@@ -7315,7 +7315,7 @@ function(anOrigin, anException, aPayload) {
         //  one issue is that we want assertion throwing managed by its own
         //  flag so we do a secondary check here
         if (aSignal.getSignalName() !== 'AssertionFailed') {
-            TP.sig.Exception.set('handled', true);
+            TP.sig.Exception.set('$handled', true);
             str = aSignal.asString();
             if (TP.isValid(aPayload)) {
                 str += ' - ' + TP.str(aPayload);

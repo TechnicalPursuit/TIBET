@@ -19,7 +19,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/xslt/XMLArray2XHTMLTable.xsl');
+        loadURI = TP.uc('~lib_test/src/tibet/xslt/XMLArray2XHTMLTable.xsl');
 
         test.getDriver().fetchResource(loadURI, TP.WRAP).then(
             function(tpXSLTDoc) {
@@ -65,7 +65,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
+        loadURI = TP.uc('~lib_test/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
 
         test.getDriver().fetchResource(loadURI, TP.WRAP).then(
             function(tpXSLTDoc) {
@@ -107,7 +107,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
+        loadURI = TP.uc('~lib_test/src/tibet/xslt/XMLRPCArray2XHTMLTable.xsl');
 
         test.getDriver().fetchResource(loadURI, TP.WRAP).then(
             function(tpXSLTDoc) {
@@ -155,7 +155,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/xslt/ReflectNodeParam.xsl');
+        loadURI = TP.uc('~lib_test/src/tibet/xslt/ReflectNodeParam.xsl');
 
         test.getDriver().fetchResource(loadURI, TP.WRAP).then(
             function(tpXSLTDoc) {

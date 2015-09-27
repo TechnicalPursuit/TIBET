@@ -47,7 +47,7 @@ function() {
 
     this.it('Explicit simple query with body context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping1.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -93,7 +93,7 @@ function() {
 
     this.it('Explicit complex query with body context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping2.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -133,7 +133,7 @@ function() {
 
     this.it('Explicit complex query with body context and implicit query with element context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping3.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -194,7 +194,7 @@ function() {
 
     this.it('Implicit query with element context and explicit simple queries with element context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping4.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -264,7 +264,7 @@ function() {
 
     this.it('Explicit complex queries with element context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping5.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -319,7 +319,7 @@ function() {
 
     this.it('Reporting chain with implicit query with nested element context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping6.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -349,7 +349,7 @@ function() {
 
     this.it('Reporting chain with implicit query with nested element context and explicit simple query with body context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping7.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -385,7 +385,7 @@ function() {
 
     this.it('Reporting chain with implicit query with nested element context and explicit simple query with body context nested in element context', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping8.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping8.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -421,7 +421,7 @@ function() {
 
     this.it('Reporting chain with implicit query with multiple nested element contexts computing next and previous groups', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping9.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping9.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -486,7 +486,7 @@ function() {
 
     this.it('Reporting chain with implicit query with multiple nested element contexts computing next and previous groups with wrapping', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping10.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping10.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -554,7 +554,7 @@ function() {
 
         TP.isFluffy = true;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/grouping/Grouping11.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/grouping/Grouping11.xhtml');
 
         test.getDriver().setLocation(loadURI);
 

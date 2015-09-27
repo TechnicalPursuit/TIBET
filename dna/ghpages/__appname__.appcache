@@ -91,7 +91,7 @@ TIBET-INF/cfg/app.xml
 TIBET-INF/cfg/development.xml
 TIBET-INF/cfg/phantom.xml
 TIBET-INF/cfg/production.xml
-TIBET-INF/cfg/standard.xml
+TIBET-INF/cfg/{{appname}}.xml
 TIBET-INF/cfg/tibet.xml
 
 # src/tags/APP.{{appname}}.app.js

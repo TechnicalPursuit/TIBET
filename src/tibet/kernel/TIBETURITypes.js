@@ -1710,7 +1710,13 @@ function(aURIString) {
     //  defer to other methods to handle things each subtype likely needs to
     //  override to finalize instance initialization.
     parts = this.$parseSchemeSpecificPart(ssp);
-    this.$initURIComponents(parts);
+
+    if (!this.$initURIComponents(parts)) {
+        //  before we try to raise we need at least a uri slot.
+        this.$set('uri', aURIString);
+
+        return this.raise('TP.sig.InvalidURI', 'Invalid URL: ' + aURIString);
+    }
 
     return this;
 });
@@ -7371,10 +7377,10 @@ function(aURIString) {
     //  make sure we come in with tibet: scheme or that we add it
     if (TP.regex.TIBET_SCHEME.test(aURIString) &&
         TP.regex.TIBET_URL_SPLITTER.test(aURIString)) {
-        this.callNextMethod();
+        return this.callNextMethod();
     } else if (TP.regex.VIRTUAL_URI_PREFIX.test(aURIString)) {
         //  URIs starting with ~ don't resolve to a canvas.
-        this.callNextMethod('tibet:///' + aURIString);
+        return this.callNextMethod('tibet:///' + aURIString);
     } else {
         //  before we try to raise we need at least a uri slot.
         this.$set('uri', aURIString);
@@ -7382,8 +7388,6 @@ function(aURIString) {
         return this.raise('TP.sig.InvalidURI',
                     'Invalid TIBET URL prefix or scheme: ' + aURIString);
     }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -7402,8 +7406,12 @@ function(parts) {
      */
 
     //  force ID expansion if it didn't already happen. this will also force
-    //  our parts to be encached for us
-    this.getID();
+    //  our parts to be encached for us.
+    if (TP.isEmpty(this.getID())) {
+        //  If no ID could be produced then the URI isn't truly valid and we
+        //  don't want to return a proper instance.
+        return;
+    }
 
     return this;
 });
@@ -7620,7 +7628,7 @@ function() {
 
     var id,
         url,
-
+        concrete,
         parts,
         canvas,
         loc;
@@ -7665,8 +7673,11 @@ function() {
     //  needs to be expanded before we have all the components of the ID
     if (TP.isEmpty(canvas)) {
         //  when we have a concrete uri we can ask it for the location
-        url = this.getConcreteURI();
-        loc = url.getLocation();
+        concrete = this.getConcreteURI();
+        if (TP.notValid(concrete)) {
+            return TP.raise(url, 'TP.sig.InvalidURI', url);
+        }
+        loc = concrete.getLocation();
     } else {
         //  the path and pointer portions of our regex match are the
         //  location when there wasn't a valid resource URI value

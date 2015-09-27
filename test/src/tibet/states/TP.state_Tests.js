@@ -570,7 +570,8 @@ function() {
         });
 
         //  Add state-specific handler method for input processing.
-        machine.defineHandler('StateInputWhenStart', function(details) {
+        machine.defineHandler(
+            {signal: 'StateInput', state: 'Start'}, function(details) {
             called = true;
         });
 
@@ -656,7 +657,8 @@ function() {
         machine.setTriggerSignals(TP.ac('Fluffy'));
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StateExitWhenStart',
+        TP.sys.getApplication().defineHandler(
+            {signal: 'StateExit', state: 'Start'},
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -720,7 +722,8 @@ function() {
         machine.setTriggerSignals(TP.ac('Fluffy'));
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('FinishTransitionWhenStart',
+        TP.sys.getApplication().defineHandler(
+            {signal: 'FinishTransition', state: 'Start'},
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -784,7 +787,8 @@ function() {
         machine.setTriggerSignals(TP.ac('Fluffy'));
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StateEnterWhenFinish',
+        TP.sys.getApplication().defineHandler(
+            {signal: 'StateEnter', state: 'Finish'},
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -906,7 +910,9 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.defineHandler('FluffyWhenChildstart', function() {
+        machine.defineHandler(
+            {signal: 'Fluffy', state: 'Childstart'},
+        function() {
             called = true;
         });
 
@@ -946,7 +952,9 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.defineHandler('FluffyWhenStart', function() {
+        machine.defineHandler(
+            {signal: 'Fluffy', state: 'Start'},
+        function() {
             called = true;
         });
 

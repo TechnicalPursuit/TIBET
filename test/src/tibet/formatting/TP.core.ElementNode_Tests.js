@@ -133,7 +133,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting1.xhtml');
 
         driver = test.getDriver();
         windowContext = driver.get('windowContext');
@@ -299,7 +299,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting2.xhtml');
 
         driver = test.getDriver();
         windowContext = driver.get('windowContext');
@@ -368,7 +368,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting3.xhtml');
 
         driver = test.getDriver();
         windowContext = driver.get('windowContext');
@@ -415,7 +415,7 @@ function() {
         var driver,
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting4.xhtml');
 
         driver = test.getDriver();
         windowContext = driver.get('windowContext');
@@ -604,7 +604,7 @@ function() {
 
     this.it('get content - single format - simple substitutions', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting5.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -777,7 +777,7 @@ function() {
 
     this.it('get content - single format - templating', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting6.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -834,7 +834,7 @@ function() {
 
     this.it('get content - multiple formats - simple substitutions', function(test, options) {
 
-        loadURI = TP.uc('~lib_tst/src/tibet/formatting/Formatting7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/formatting/Formatting7.xhtml');
 
         test.getDriver().setLocation(loadURI);
 

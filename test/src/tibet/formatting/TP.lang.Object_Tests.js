@@ -348,7 +348,7 @@ function() {
 
         //  ---
 
-        testRep = TP.uc('~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate').transform(googleDogData).get('result');
+        testRep = TP.uc('~lib_test/src/tibet/formatting/google_results_template.xml#totalTemplate').transform(googleDogData).get('result');
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
@@ -360,7 +360,7 @@ function() {
         //  ---
 
         //  Same test, but as a formatting expression.
-        testRep = '{{value .% ~lib_tst/src/tibet/formatting/google_results_template.xml#totalTemplate}}'.transform(googleDogData);
+        testRep = '{{value .% ~lib_test/src/tibet/formatting/google_results_template.xml#totalTemplate}}'.transform(googleDogData);
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="totalTemplate"><span class="estimatedResultCount">Result count: 53,700,000</span>Results:<br/>[object Object], [object Object], [object Object], [object Object]</span>';
 
@@ -371,7 +371,7 @@ function() {
 
         //  ---
 
-        testRep = TP.uc('~lib_tst/src/tibet/formatting/google_results_template.xml#rowTemplate').transform(googleDogData.get('responseData.results.0')).get('result');
+        testRep = TP.uc('~lib_test/src/tibet/formatting/google_results_template.xml#rowTemplate').transform(googleDogData.get('responseData.results.0')).get('result');
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="rowTemplate"><tr class="googleResultRow"><td>http://en.wikipedia.org/wiki/Dog</td><td><b>Dog</b> - Wikipedia, the free encyclopedia</td><td>The domestic <b>dog</b> (Canis lupus familiaris) is a subspecies of the gray wolf (Canis lupus), a member of the Canidae family of the mammalian order Carnivora.</td></tr></span>';
 
@@ -383,7 +383,7 @@ function() {
         //  ---
 
         //  Same test, but as a formatting expression.
-        testRep = '{{value.responseData.results.0 .% ~lib_tst/src/tibet/formatting/google_results_template.xml#rowTemplate}}'.transform(googleDogData);
+        testRep = '{{value.responseData.results.0 .% ~lib_test/src/tibet/formatting/google_results_template.xml#rowTemplate}}'.transform(googleDogData);
 
         correctRep = '<span xmlns="http://www.w3.org/1999/xhtml" id="rowTemplate"><tr class="googleResultRow"><td>http://en.wikipedia.org/wiki/Dog</td><td><b>Dog</b> - Wikipedia, the free encyclopedia</td><td>The domestic <b>dog</b> (Canis lupus familiaris) is a subspecies of the gray wolf (Canis lupus), a member of the Canidae family of the mammalian order Carnivora.</td></tr></span>';
 

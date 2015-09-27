@@ -50,7 +50,7 @@ function() {
         var loadURI,
             driver;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents1.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents1.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -149,7 +149,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents2.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents2.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -245,7 +245,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents3.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents3.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -361,7 +361,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents4.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents4.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -485,7 +485,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents5.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents5.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -577,7 +577,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents6.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents6.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -738,7 +738,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents7.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents7.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -885,7 +885,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents8.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents8.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -991,7 +991,7 @@ function() {
 
             windowContext;
 
-        loadURI = TP.uc('~lib_tst/src/ev/XMLEvents9.xhtml');
+        loadURI = TP.uc('~lib_test/src/ev/XMLEvents9.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);

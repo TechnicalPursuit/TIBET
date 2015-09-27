@@ -37,7 +37,7 @@ function() {
             driver,
             seq;
 
-        uri = TP.uc('~lib_tst/src/tibet/driver/testmarkup.xml');
+        uri = TP.uc('~lib_test/src/tibet/driver/testmarkup.xml');
         test.getDriver().setBodyContent(uri);
 
         test.then(

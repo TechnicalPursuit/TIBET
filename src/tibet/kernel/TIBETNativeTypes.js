@@ -4150,7 +4150,7 @@ function() {
      */
 
     if (TP.notValid(this.$substitutions)) {
-        this.$substitutions = new TP.PHash();
+        this.$substitutions = new TP.boot.PHash();
     }
 
     return this.$substitutions;

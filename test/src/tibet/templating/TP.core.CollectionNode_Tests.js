@@ -55,7 +55,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating1.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -86,7 +86,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating2.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -118,7 +118,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating3.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -149,7 +149,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating4.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -181,7 +181,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating5.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -232,7 +232,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating6.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -283,7 +283,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating7.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -334,7 +334,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating8.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating8.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -423,7 +423,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating9.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating9.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -492,7 +492,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating10.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating10.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -599,7 +599,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating11.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating11.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -652,7 +652,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating12.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating12.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -706,7 +706,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating13.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating13.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -803,7 +803,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating14.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating14.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -859,7 +859,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/templating/Templating15.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating15.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);

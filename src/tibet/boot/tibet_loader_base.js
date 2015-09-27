@@ -1388,31 +1388,67 @@ TP.sys.isSupported = function() {
      *     executing browser.
      */
 
-    if (TP.$browser === 'ie' && TP.$browserMajor >= 11) {
+    var context,
+        cfg,
+        options,
+        len,
+        i,
+        config,
+        flag;
+
+    //  PhantomJS and Electron checks are based on boot.context.
+    context = TP.sys.cfg('boot.context');
+    if (TP.sys.cfg('boot.supported_contexts').indexOf(context) !== -1) {
+        //  Don't assume success for browsers. We do further checks below.
+        if (context !== 'browser') {
+            return true;
+        }
+    }
+
+    cfg = TP.sys.cfg('boot.supported_browsers');
+
+    //  Browser name must be a key in the supported data set.
+    if (!(TP.$browser in cfg)) {
+        return false;
+    }
+
+    //  Data should be an array of configuration blocks. Each block can
+    //  either accept or deny access.
+    options = cfg[TP.$browser];
+    len = options.length;
+
+    //  If no specific option list but browser key is found it's considered
+    //  supported across all known versions.
+    if (len === 0) {
         return true;
     }
 
-    if (TP.$browser === 'chrome' && TP.$browserMajor >= 39) {
-        return true;
+    flag = true;
+
+    for (i = 0; i < len; i++) {
+        config = options[i];
+
+        //  Must at least match major version.
+        if ('major' in config && TP.$browserMajor >= (1 * config.major)) {
+            if ('minor' in config) {
+                if (TP.$browserMinor >= (1 * config.minor)) {
+                    //  Major passed, minor passed. We're good.
+                    flag = flag && true;
+                } else {
+                    //  Major passed, minor failed.
+                    flag = flag && false;
+                }
+            } else {
+                //  Major passed, no minor exists. We're good.
+                flag = flag && true;
+            }
+        } else {
+            //  No major version, or major versions don't match up.
+            flag = flag && false;
+        }
     }
 
-    if (TP.$browser === 'firefox' && TP.$browserMajor >= 34) {
-        return true;
-    }
-
-    if (TP.$browser === 'safari' && TP.$browserMajor >= 7) {
-        return true;
-    }
-
-    if (TP.$browser === 'opera' && TP.$browserMajor >= 39) {
-        return true;
-    }
-
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
-        return true;
-    }
-
-    return false;
+    return flag;
 };
 
 //  ============================================================================
@@ -8220,7 +8256,7 @@ TP.boot.$configurePackage = function() {
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
-            package = TP.sys.cfg('boot.default_package');
+            package = '~app_cfg/' + TP.sys.cfg('project.name');
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
                 package + '.', TP.DEBUG);
@@ -9694,6 +9730,18 @@ TP.boot.$config = function() {
         TP.boot.$stdout(TP.sys.overrides, TP.DEBUG);
     }
 
+    //  warn about unsupported platforms but don't halt the boot process
+    if (!TP.sys.isSupported()) {
+        if (TP.sys.cfg('boot.supported')) {
+            TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent +
+                '. Boot sequence terminated.', TP.FATAL);
+            return;
+        } else {
+            TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent,
+                TP.SEVERE);
+        }
+    }
+
     return;
 };
 
@@ -10661,13 +10709,6 @@ TP.boot.launch = function(options) {
                 window.$$TIBET.getFullName() :
                 window.$$TIBET.name) +
                 '. Boot sequence terminated.', TP.FATAL);
-        return;
-    }
-
-    //  warn about unsupported platforms but don't halt the boot process
-    if (!TP.sys.isSupported()) {
-        TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent,
-                        TP.SEVERE);
         return;
     }
 

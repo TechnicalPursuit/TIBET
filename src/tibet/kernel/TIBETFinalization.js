@@ -14,9 +14,11 @@ Kernel finalization. Any last configuration and processing is done here.
 
 /* JSHint checking */
 
+/* eslint-disable no-unused-vars */
 /* global $signal_stack:true,
           $focus_stack:true
 */
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 //  GLOBAL INIT's

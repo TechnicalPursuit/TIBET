@@ -209,7 +209,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -287,7 +287,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLAllXHTMLControls.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLAllXHTMLControls.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -478,7 +478,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLNoFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLNoFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -669,7 +669,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLSingleFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLSingleFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -860,7 +860,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleXMLMultiFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLMultiFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1051,7 +1051,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1129,7 +1129,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONAllXHTMLControls.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONAllXHTMLControls.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1320,7 +1320,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONNoFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONNoFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1511,7 +1511,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONSingleFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONSingleFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1702,7 +1702,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSONMultiFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONMultiFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1893,7 +1893,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1971,7 +1971,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjAllXHTMLControls.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjAllXHTMLControls.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2162,7 +2162,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjNoFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjNoFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2353,7 +2353,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjSingleFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjSingleFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2544,7 +2544,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindSimpleJSObjMultiFragment.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjMultiFragment.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -2773,7 +2773,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedXML.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -2890,7 +2890,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedXMLWithScopes.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedXMLWithScopes.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3007,7 +3007,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3124,7 +3124,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSONWithScopes.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSONWithScopes.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3241,7 +3241,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3358,7 +3358,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindNumericIndexedJSObjWithScopes.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSObjWithScopes.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3505,7 +3505,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3610,7 +3610,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLNested.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLNested.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3793,7 +3793,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -3898,7 +3898,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONNested.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONNested.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4081,7 +4081,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4186,7 +4186,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjNested.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjNested.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4369,7 +4369,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLPaging.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4537,7 +4537,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLNestedPaging.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLNestedPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4771,7 +4771,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONPaging.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -4939,7 +4939,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONNestedPaging.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONNestedPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5173,7 +5173,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjPaging.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5341,7 +5341,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjNestedPaging.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjNestedPaging.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5595,7 +5595,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindStaticTableXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindStaticTableXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5660,7 +5660,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindStaticTableJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindStaticTableJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5724,7 +5724,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindStaticTableJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindStaticTableJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5808,7 +5808,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5870,7 +5870,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeNoFragmentXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeNoFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5933,7 +5933,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeSingleFragmentXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeSingleFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -5996,7 +5996,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeMultiFragmentXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeMultiFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6059,7 +6059,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6138,7 +6138,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeNoFragmentXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeNoFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6218,7 +6218,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeSingleFragmentXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeSingleFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6297,7 +6297,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeMultiFragmentXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeMultiFragmentXML.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6376,7 +6376,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6439,7 +6439,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeNoFragmentJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeNoFragmentJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6502,7 +6502,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeSingleFragmentJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeSingleFragmentJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6565,7 +6565,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeMultiFragmentJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeMultiFragmentJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6628,7 +6628,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6707,7 +6707,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeNoFragmentJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeNoFragmentJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6787,7 +6787,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeSingleFragmentJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeSingleFragmentJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6866,7 +6866,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeMultiFragmentJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeMultiFragmentJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -6945,7 +6945,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7008,7 +7008,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeNoFragmentJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeNoFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7071,7 +7071,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeSingleFragmentJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeSingleFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7134,7 +7134,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindWholeAttributeMultiFragmentJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeMultiFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7197,7 +7197,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7276,7 +7276,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeNoFragmentJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeNoFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7356,7 +7356,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeSingleFragmentJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeSingleFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7435,7 +7435,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindPartialAttributeMultiFragmentJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeMultiFragmentJSObj.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7535,7 +7535,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsNoLiterals.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsNoLiterals.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7596,7 +7596,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsWithLiterals.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsWithLiterals.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7657,7 +7657,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsEmbedded.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsEmbedded.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7718,7 +7718,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsAndLiteralsEmbedded.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsAndLiteralsEmbedded.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7779,7 +7779,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsIOAttrsRepeating.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsIOAttrsRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7871,7 +7871,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsAndLiteralsIOAttrsRepeating.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsAndLiteralsIOAttrsRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -7963,7 +7963,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsEmbeddedRepeating.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsEmbeddedRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8055,7 +8055,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindExprsWithVarsAndLiteralsEmbeddedRepeating.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsAndLiteralsEmbeddedRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8148,7 +8148,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindTableXMLRepeating.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindTableXMLRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8225,7 +8225,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindTableJSONRepeating.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindTableJSONRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8301,7 +8301,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindTableJSObjRepeating.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindTableJSObjRepeating.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8401,7 +8401,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindFullExpressionsXML.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsXML.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -8438,7 +8438,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindFullExpressionsJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSON.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -8475,7 +8475,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindFullExpressionsJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSObj.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -8543,7 +8543,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLInsert.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLInsert.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8642,7 +8642,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONInsert.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONInsert.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8741,7 +8741,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjInsert.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjInsert.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8870,7 +8870,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatXMLDelete.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLDelete.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -8946,7 +8946,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSONDelete.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONDelete.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -9022,7 +9022,7 @@ function() {
 
         var loadURI;
 
-        loadURI = TP.uc('~lib_tst/src/bind/BindRepeatJSObjDelete.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjDelete.xhtml');
 
         test.getDriver().setLocation(loadURI);
 

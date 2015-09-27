@@ -21,8 +21,9 @@
  * the default logger for each branch (TP.debug vs. APP.debug for example).
  */
 
-/* global $STATUS:true
-*/
+/* eslint-disable no-unused-vars */
+/* global $STATUS:true */
+/* eslint-enable no-unused-vars */
 
 //  ----------------------------------------------------------------------------
 

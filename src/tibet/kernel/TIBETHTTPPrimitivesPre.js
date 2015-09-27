@@ -767,7 +767,6 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
         sig,
         id,
 
-        signalFailure,
         throwExceptions,
 
         willLogError,
@@ -792,8 +791,6 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
     //  make sure the IO log contains this data to show a complete record
     //  for access to the targetUrl
     args.atPut('message', 'HTTP request exception.');
-
-    signalFailure = TP.ifInvalid(shouldSignal, true);
 
     //  get a response object for the request that we can use to convey the
     //  bad news in a consistent fashion with normal success processing.
@@ -883,7 +880,7 @@ function() {
 
     //  NOTE that we build a new hash each time so it can be modified as
     //  needed by each request. Also note that this is done lazily so that
-    //  we're sure we're getting a full hash object, not a TP.PHash
+    //  we're sure we're getting a full hash object, not a TP.boot.PHash.
     return TP.hc('Pragma', 'no-cache',
                     'Cache-Control', TP.ac('no-cache', 'no-store'),
                     'Accept', TP.ac(TP.JS_TEXT_ENCODED,

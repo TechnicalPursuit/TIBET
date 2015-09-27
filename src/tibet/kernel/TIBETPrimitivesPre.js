@@ -828,7 +828,7 @@ TP.core.Hashes so early-stage dictionaries can be upgraded to their more
 functional cousins.
 */
 
-TP.PHash = function() {
+TP.boot.PHash = function() {
 
     var i,
         obj,
@@ -882,9 +882,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.isAccessPath[TP.NAME] = 'isAccessPath';
-    this.isAccessPath[TP.OWNER] = TP.PHash;
+    this.isAccessPath[TP.OWNER] = TP.boot.PHash;
     this.isAccessPath[TP.TRACK] = TP.INST_TRACK;
-    this.isAccessPath[TP.DISPLAY] = 'TP.PHash.' +
+    this.isAccessPath[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.isAccessPath';
 
     //  ---
@@ -907,9 +907,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.$$isCollection[TP.NAME] = '$$isCollection';
-    this.$$isCollection[TP.OWNER] = TP.PHash;
+    this.$$isCollection[TP.OWNER] = TP.boot.PHash;
     this.$$isCollection[TP.TRACK] = TP.INST_TRACK;
-    this.$$isCollection[TP.DISPLAY] = 'TP.PHash.' +
+    this.$$isCollection[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.$$isCollection';
 
     //  ---
@@ -934,9 +934,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.$$isMemberOf[TP.NAME] = '$$isMemberOf';
-    this.$$isMemberOf[TP.OWNER] = TP.PHash;
+    this.$$isMemberOf[TP.OWNER] = TP.boot.PHash;
     this.$$isMemberOf[TP.TRACK] = TP.INST_TRACK;
-    this.$$isMemberOf[TP.DISPLAY] = 'TP.PHash.' +
+    this.$$isMemberOf[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.$$isMemberOf';
 
     //  ---
@@ -966,9 +966,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.as[TP.NAME] = 'as';
-    this.as[TP.OWNER] = TP.PHash;
+    this.as[TP.OWNER] = TP.boot.PHash;
     this.as[TP.TRACK] = TP.INST_TRACK;
-    this.as[TP.DISPLAY] = 'TP.PHash.' +
+    this.as[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.as';
 
     //  ---
@@ -1010,9 +1010,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.asString[TP.NAME] = 'asString';
-    this.asString[TP.OWNER] = TP.PHash;
+    this.asString[TP.OWNER] = TP.boot.PHash;
     this.asString[TP.TRACK] = TP.INST_TRACK;
-    this.asString[TP.DISPLAY] = 'TP.PHash.' +
+    this.asString[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.asString';
 
     //  ---
@@ -1034,9 +1034,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.asJSONSource[TP.NAME] = 'asJSONSource';
-    this.asJSONSource[TP.OWNER] = TP.PHash;
+    this.asJSONSource[TP.OWNER] = TP.boot.PHash;
     this.asJSONSource[TP.TRACK] = TP.INST_TRACK;
-    this.asJSONSource[TP.DISPLAY] = 'TP.PHash.' +
+    this.asJSONSource[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.asJSONSource';
 
     //  ---
@@ -1059,9 +1059,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.asSource[TP.NAME] = 'asSource';
-    this.asSource[TP.OWNER] = TP.PHash;
+    this.asSource[TP.OWNER] = TP.boot.PHash;
     this.asSource[TP.TRACK] = TP.INST_TRACK;
-    this.asSource[TP.DISPLAY] = 'TP.PHash.' +
+    this.asSource[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.asSource';
 
     //  ---
@@ -1087,9 +1087,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.asTP_core_Hash[TP.NAME] = 'asTP_core_Hash';
-    this.asTP_core_Hash[TP.OWNER] = TP.PHash;
+    this.asTP_core_Hash[TP.OWNER] = TP.boot.PHash;
     this.asTP_core_Hash[TP.TRACK] = TP.INST_TRACK;
-    this.asTP_core_Hash[TP.DISPLAY] = 'TP.PHash.' +
+    this.asTP_core_Hash[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.asTP_core_Hash';
 
     //  ---
@@ -1118,9 +1118,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.at[TP.NAME] = 'at';
-    this.at[TP.OWNER] = TP.PHash;
+    this.at[TP.OWNER] = TP.boot.PHash;
     this.at[TP.TRACK] = TP.INST_TRACK;
-    this.at[TP.DISPLAY] = 'TP.PHash.' +
+    this.at[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.at';
 
     //  ---
@@ -1134,7 +1134,7 @@ TP.PHash = function() {
          * @summary Sets the value at aKey to aValue.
          * @param {Object} aKey The key/index to put aValue into.
          * @param {Object} aValue The value to register under aKey.
-         * @returns {TP.PHash} The receiver.
+         * @returns {TP.boot.PHash} The receiver.
          */
 
         this.$$hash[aKey] = aValue;
@@ -1144,9 +1144,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.atPut[TP.NAME] = 'atPut';
-    this.atPut[TP.OWNER] = TP.PHash;
+    this.atPut[TP.OWNER] = TP.boot.PHash;
     this.atPut[TP.TRACK] = TP.INST_TRACK;
-    this.atPut[TP.DISPLAY] = 'TP.PHash.' +
+    this.atPut[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.atPut';
 
     //  ---
@@ -1168,9 +1168,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.$get[TP.NAME] = '$get';
-    this.$get[TP.OWNER] = TP.PHash;
+    this.$get[TP.OWNER] = TP.boot.PHash;
     this.$get[TP.TRACK] = TP.INST_TRACK;
-    this.$get[TP.DISPLAY] = 'TP.PHash.' +
+    this.$get[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.$get';
 
     //  ---
@@ -1236,9 +1236,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.get[TP.NAME] = 'get';
-    this.get[TP.OWNER] = TP.PHash;
+    this.get[TP.OWNER] = TP.boot.PHash;
     this.get[TP.TRACK] = TP.INST_TRACK;
-    this.get[TP.DISPLAY] = 'TP.PHash.' +
+    this.get[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.get';
 
     //  ---
@@ -1258,9 +1258,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.getName[TP.NAME] = 'getName';
-    this.getName[TP.OWNER] = TP.PHash;
+    this.getName[TP.OWNER] = TP.boot.PHash;
     this.getName[TP.TRACK] = TP.INST_TRACK;
-    this.getName[TP.DISPLAY] = 'TP.PHash.' +
+    this.getName[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.getName';
 
     //  ---
@@ -1294,9 +1294,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.getItems[TP.NAME] = 'getItems';
-    this.getItems[TP.OWNER] = TP.PHash;
+    this.getItems[TP.OWNER] = TP.boot.PHash;
     this.getItems[TP.TRACK] = TP.INST_TRACK;
-    this.getItems[TP.DISPLAY] = 'TP.PHash.' +
+    this.getItems[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.getItems';
 
     //  ---
@@ -1318,9 +1318,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.getKeys[TP.NAME] = 'getKeys';
-    this.getKeys[TP.OWNER] = TP.PHash;
+    this.getKeys[TP.OWNER] = TP.boot.PHash;
     this.getKeys[TP.TRACK] = TP.INST_TRACK;
-    this.getKeys[TP.DISPLAY] = 'TP.PHash.' +
+    this.getKeys[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.getKeys';
 
     //  ---
@@ -1343,9 +1343,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.getParameters[TP.NAME] = 'getParameters';
-    this.getParameters[TP.OWNER] = TP.PHash;
+    this.getParameters[TP.OWNER] = TP.boot.PHash;
     this.getParameters[TP.TRACK] = TP.INST_TRACK;
-    this.getParameters[TP.DISPLAY] = 'TP.PHash.' +
+    this.getParameters[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.getParameters';
 
     //  ---
@@ -1366,9 +1366,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.getSize[TP.NAME] = 'getSize';
-    this.getSize[TP.OWNER] = TP.PHash;
+    this.getSize[TP.OWNER] = TP.boot.PHash;
     this.getSize[TP.TRACK] = TP.INST_TRACK;
-    this.getSize[TP.DISPLAY] = 'TP.PHash.' +
+    this.getSize[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.getSize';
 
     //  ---
@@ -1384,14 +1384,14 @@ TP.PHash = function() {
          */
 
         //  one of the few places we'll admit this :)
-        return 'TP.PHash';
+        return 'TP.boot.PHash';
     };
 
     //  register with TIBET by hand
     this.getTypeName[TP.NAME] = 'getTypeName';
-    this.getTypeName[TP.OWNER] = TP.PHash;
+    this.getTypeName[TP.OWNER] = TP.boot.PHash;
     this.getTypeName[TP.TRACK] = TP.INST_TRACK;
-    this.getTypeName[TP.DISPLAY] = 'TP.PHash.' +
+    this.getTypeName[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.getTypeName';
 
     //  ---
@@ -1425,9 +1425,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.getValues[TP.NAME] = 'getValues';
-    this.getValues[TP.OWNER] = TP.PHash;
+    this.getValues[TP.OWNER] = TP.boot.PHash;
     this.getValues[TP.TRACK] = TP.INST_TRACK;
-    this.getValues[TP.DISPLAY] = 'TP.PHash.' +
+    this.getValues[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.getValues';
 
     //  ---
@@ -1450,9 +1450,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.hasKey[TP.NAME] = 'hasKey';
-    this.hasKey[TP.OWNER] = TP.PHash;
+    this.hasKey[TP.OWNER] = TP.boot.PHash;
     this.hasKey[TP.TRACK] = TP.INST_TRACK;
-    this.hasKey[TP.DISPLAY] = 'TP.PHash.' +
+    this.hasKey[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.hasKey';
 
     //  ---
@@ -1500,9 +1500,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.perform[TP.NAME] = 'perform';
-    this.perform[TP.OWNER] = TP.PHash;
+    this.perform[TP.OWNER] = TP.boot.PHash;
     this.perform[TP.TRACK] = TP.INST_TRACK;
-    this.perform[TP.DISPLAY] = 'TP.PHash.' +
+    this.perform[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.perform';
 
     //  ---
@@ -1517,7 +1517,7 @@ TP.PHash = function() {
          * @param {Object} aKey The key to use for locating the value. Note this
          *     is usually a String, but could be any object with a valid
          *     toString method.
-         * @returns {TP.PHash} The receiver.
+         * @returns {TP.boot.PHash} The receiver.
          */
 
         //  we don't want to call delete on a non-existent property
@@ -1539,9 +1539,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.removeKey[TP.NAME] = 'removeKey';
-    this.removeKey[TP.OWNER] = TP.PHash;
+    this.removeKey[TP.OWNER] = TP.boot.PHash;
     this.removeKey[TP.TRACK] = TP.INST_TRACK;
-    this.removeKey[TP.DISPLAY] = 'TP.PHash.' +
+    this.removeKey[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.removeKey';
 
     //  ---
@@ -1588,9 +1588,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.$set[TP.NAME] = '$set';
-    this.$set[TP.OWNER] = TP.PHash;
+    this.$set[TP.OWNER] = TP.boot.PHash;
     this.$set[TP.TRACK] = TP.INST_TRACK;
-    this.$set[TP.DISPLAY] = 'TP.PHash.' +
+    this.$set[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.$set';
 
     //  ---
@@ -1614,9 +1614,9 @@ TP.PHash = function() {
 
     //  register with TIBET by hand
     this.set[TP.NAME] = 'set';
-    this.set[TP.OWNER] = TP.PHash;
+    this.set[TP.OWNER] = TP.boot.PHash;
     this.set[TP.TRACK] = TP.INST_TRACK;
-    this.set[TP.DISPLAY] = 'TP.PHash.' +
+    this.set[TP.DISPLAY] = 'TP.boot.PHash.' +
             TP.INST_TRACK + '.set';
 
     return this;
@@ -1625,7 +1625,7 @@ TP.PHash = function() {
 //  ------------------------------------------------------------------------
 
 //  define the prototype's reference to properly show it's a prototype
-TP.PHash.prototype.$$prototype = TP.PHash.prototype;
+TP.boot.PHash.prototype.$$prototype = TP.boot.PHash.prototype;
 
 //  ------------------------------------------------------------------------
 
@@ -1650,12 +1650,12 @@ TP.hc = function() {
         len,
         i;
 
-    // If we get invoked on a PHash just return it like a noop.
-    if (arguments[0] instanceof TP.PHash) {
+    // If we get invoked on a TP.boot.PHash just return it like a noop.
+    if (arguments[0] instanceof TP.boot.PHash) {
         return arguments[0];
     }
 
-    dict = new TP.PHash();
+    dict = new TP.boot.PHash();
     len = arguments.length;
 
     for (i = 0; i < len; i = i + 2) {
@@ -2751,7 +2751,7 @@ function(anObj) {
     if ((anObj === Function) ||
                 (TP.isValid(anObj[TP.TYPE]) &&
                 (anObj[TP.TYPE] !== TP.FunctionProto[TP.TYPE]))) {
-        return true;
+        return !TP.isNamespace(anObj);
     }
     /* eslint-enable no-extra-parens */
 

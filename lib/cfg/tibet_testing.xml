@@ -65,119 +65,119 @@
 </config>
 
 <config id="selftests">
-    <script src="~lib_tst/src/tibet/testharness/TPTestSamples.js" />
-    <script src="~lib_tst/src/tibet/testharness/TP.test.Suite_Tests.js" />
-    <script src="~lib_tst/src/tibet/driver/TP.gui.Driver_Tests.js" />
+    <script src="~lib_test/src/tibet/testharness/TPTestSamples.js" />
+    <script src="~lib_test/src/tibet/testharness/TP.test.Suite_Tests.js" />
+    <script src="~lib_test/src/tibet/driver/TP.gui.Driver_Tests.js" />
 </config>
 
 <config id="commonvalues">
-    <script src="~lib_tst/src/TIBETObjectValues.js" />
+    <script src="~lib_test/src/TIBETObjectValues.js" />
 </config>
 
 <config id="lifecycle">
-    <script src="~lib_tst/src/tibet/lifecycle/TP.Lifecycle_Tests.js" />
+    <script src="~lib_test/src/tibet/lifecycle/TP.Lifecycle_Tests.js" />
 </config>
 
 <config id="tagprocessor">
-    <script src="~lib_tst/src/tibet/tagprocessor/TP.core.TagProcessor_Tests.js" />
+    <script src="~lib_test/src/tibet/tagprocessor/TP.core.TagProcessor_Tests.js" />
 </config>
 
 <config id="templating">
-    <script src="~lib_tst/src/tibet/templating/TP.core.CollectionNode_Tests.js" />
+    <script src="~lib_test/src/tibet/templating/TP.core.CollectionNode_Tests.js" />
 
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.js" />
 
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello1.js" />
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello2.js" />
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello3.js" />
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello4.js" />
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello5.js" />
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello6.js" />
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hello7.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello1.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello2.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello3.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello4.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello5.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello6.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hello7.js" />
 
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hellonested.js" />
-    <script src="~lib_tst/src/tibet/templating/src/TP.templatetest.hellonestedvars.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hellonested.js" />
+    <script src="~lib_test/src/tibet/templating/src/TP.templatetest.hellonestedvars.js" />
 </config>
 
 <config id="data">
-    <script src="~lib_tst/src/tibet/data/TP.tibet.data_Tests.js" />
+    <script src="~lib_test/src/tibet/data/TP.tibet.data_Tests.js" />
 </config>
 
 <config id="databinding">
-    <script src="~lib_tst/src/tibet/databinding/TP.core.DataPath_Tests.js" />
-    <script src="~lib_tst/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
+    <script src="~lib_test/src/tibet/databinding/TP.core.DataPath_Tests.js" />
+    <script src="~lib_test/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
 </config>
 
 <config id="focusing">
-    <script src="~lib_tst/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
+    <script src="~lib_test/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
 </config>
 
 <config id="logging">
-    <script src="~lib_tst/src/tibet/logging/TP.log_Tests.js" />
+    <script src="~lib_test/src/tibet/logging/TP.log_Tests.js" />
 </config>
 
 <config id="formatting">
-    <script src="~lib_tst/src/tibet/formatting/String_Tests.js" />
-    <script src="~lib_tst/src/tibet/formatting/TP.lang.Object_Tests.js" />
-    <script src="~lib_tst/src/tibet/formatting/TP.core.ElementNode_Tests.js" />
-    <script src="~lib_tst/src/tibet/formatting/TP.templateParser_Tests.js" />
+    <script src="~lib_test/src/tibet/formatting/String_Tests.js" />
+    <script src="~lib_test/src/tibet/formatting/TP.lang.Object_Tests.js" />
+    <script src="~lib_test/src/tibet/formatting/TP.core.ElementNode_Tests.js" />
+    <script src="~lib_test/src/tibet/formatting/TP.templateParser_Tests.js" />
 </config>
 
 <config id="oo">
-    <script src="~lib_tst/src/tibet/oo/Inheritance_Reflection_Tests.js" />
+    <script src="~lib_test/src/tibet/oo/Inheritance_Reflection_Tests.js" />
 </config>
 
 <config id="states">
-    <script src="~lib_tst/src/tibet/states/TP.state_Tests.js" />
+    <script src="~lib_test/src/tibet/states/TP.state_Tests.js" />
 </config>
 
 <config id="values">
-    <script src="~lib_tst/src/tibet/values/Value_Tests.js" />
+    <script src="~lib_test/src/tibet/values/Value_Tests.js" />
 </config>
 
 <config id="validation">
-    <script src="~lib_tst/src/tibet/validation/TP.lang.Object_Tests.js" />
+    <script src="~lib_test/src/tibet/validation/TP.lang.Object_Tests.js" />
 </config>
 
 <config id="bind">
-    <script src="~lib_tst/src/bind/bind_Tests.js" />
+    <script src="~lib_test/src/bind/bind_Tests.js" />
 </config>
 
 <config id="grouping">
-    <script src="~lib_tst/src/tibet/grouping/TP.tibet.group_Tests.js" />
+    <script src="~lib_test/src/tibet/grouping/TP.tibet.group_Tests.js" />
 </config>
 
 <config id="ev">
-    <script src="~lib_tst/src/ev/ev_Tests.js" />
+    <script src="~lib_test/src/ev/ev_Tests.js" />
 </config>
 
 <config id="html">
-    <script src="~lib_tst/src/html/html_Tests.js" />
+    <script src="~lib_test/src/html/html_Tests.js" />
 </config>
 
 <config id="service">
-    <script src="~lib_tst/src/tibet/service/TP.tibet.service_Tests.js" />
+    <script src="~lib_test/src/tibet/service/TP.tibet.service_Tests.js" />
 </config>
 
 <config id="shell">
-    <script src="~lib_tst/src/tsh/tsh_Tests.js" />
+    <script src="~lib_test/src/tsh/tsh_Tests.js" />
 </config>
 
 <config id="requests">
-    <script src="~lib_tst/src/tibet/requests/TP.sig.Request_Tests.js" />
+    <script src="~lib_test/src/tibet/requests/TP.sig.Request_Tests.js" />
 </config>
 
 <config id="signaling">
-    <script src="~lib_tst/src/tibet/signaling/TP.lang.Object_Tests.js" />
+    <script src="~lib_test/src/tibet/signaling/TP.lang.Object_Tests.js" />
 </config>
 
 <config id="xslt">
-    <script src="~lib_tst/src/tibet/xslt/TP.core.XSLDocumentNode_Tests.js" />
+    <script src="~lib_test/src/tibet/xslt/TP.core.XSLDocumentNode_Tests.js" />
 </config>
 
 <config id="uri">
-    <script src="~lib_tst/src/tibet/uri/TP.URI_Tests.js" />
-    <script src="~lib_tst/src/tibet/uri/TP.core.URI_Tests.js" />
+    <script src="~lib_test/src/tibet/uri/TP.URI_Tests.js" />
+    <script src="~lib_test/src/tibet/uri/TP.core.URI_Tests.js" />
 </config>
 
 </package>

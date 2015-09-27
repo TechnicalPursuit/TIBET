@@ -73,7 +73,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service1.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -176,7 +176,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service2.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -288,7 +288,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service3.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -391,7 +391,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service4.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -494,7 +494,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service5.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -606,7 +606,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service6.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -722,7 +722,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service7.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -833,7 +833,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service8.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service8.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -945,7 +945,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service9.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service9.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1057,7 +1057,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service10.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service10.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1168,7 +1168,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service11.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service11.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
@@ -1272,7 +1272,7 @@ function() {
 
         var handler;
 
-        loadURI = TP.uc('~lib_tst/src/tibet/service/Service12.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/service/Service12.xhtml');
 
         test.getDriver().setLocation(loadURI);
 
