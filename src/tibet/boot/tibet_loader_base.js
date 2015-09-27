@@ -1429,9 +1429,12 @@ TP.sys.isSupported = function() {
         config = options[i];
 
         //  Must at least match major version.
+
+        /* eslint-disable no-extra-parens */
         if ('major' in config && TP.$browserMajor >= (1 * config.major)) {
             if ('minor' in config) {
                 if (TP.$browserMinor >= (1 * config.minor)) {
+        /* eslint-enable no-extra-parens */
                     //  Major passed, minor passed. We're good.
                     flag = flag && true;
                 } else {

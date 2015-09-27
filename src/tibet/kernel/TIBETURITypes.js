@@ -9558,7 +9558,7 @@ function(route) {
 
     paths = this.get('paths');
     paths.detect(
-        function(path) {
+            function(path) {
                 var pattern,
                     processor,
                     names,

@@ -144,7 +144,8 @@ function(aRequest) {
             if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
 
                 //  Type first, then Inst, then Local
-                obj.Type.runTestSuites(options).then(function() {
+                obj.Type.runTestSuites(options).then(
+                        function() {
                             return obj.Inst.runTestSuites(options);
                         }).then(function() {
                             return obj.runTestSuites(options);

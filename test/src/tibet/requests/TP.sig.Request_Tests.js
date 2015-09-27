@@ -30,9 +30,10 @@ function() {
 
         testResult = '';
 
-        testFunction = function() {
-                            return 'Hi there!';
-                        };
+        testFunction =
+                function() {
+                    return 'Hi there!';
+                };
 
         testRequest = testFunction.asFunctionRequest();
         testResponse = testRequest.fire();

@@ -630,8 +630,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                textField.clearValue();
-                            }).
+                        textField.clearValue();
+                    }).
                     sendKeys('jones', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
                     perform();
@@ -649,8 +649,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                textArea.clearValue();
-                            }).
+                        textArea.clearValue();
+                    }).
                     sendKeys(TP.str(TP.dc()), textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
                     perform();
@@ -792,8 +792,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                textField.clearValue();
-                            }).
+                        textField.clearValue();
+                    }).
                     sendKeys('foo', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
                     perform();
@@ -811,8 +811,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                textArea.clearValue();
-                            }).
+                        textArea.clearValue();
+                    }).
                     sendKeys('bill', textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
                     perform();
@@ -849,8 +849,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                textField.clearValue();
-                            }).
+                        textField.clearValue();
+                    }).
                     sendKeys('Bill', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
                     perform();
@@ -868,8 +868,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                textArea.clearValue();
-                            }).
+                        textArea.clearValue();
+                    }).
                     sendKeys('foo,bar,baz', textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
                     perform();

@@ -2135,10 +2135,12 @@ function() {
                 //  ---
 
                 docOrderResults =
-                    TP.byCSSPath('#testGroup1 input', windowContext, false, false).
-                        collect(function(anElem) {
-                                    return anElem.getAttribute('id');
-                                });
+                    TP.byCSSPath('#testGroup1 input',
+                                    windowContext, false, false).
+                                    collect(
+                                        function(anElem) {
+                                            return anElem.getAttribute('id');
+                                        });
 
                 test.assert.isEqualTo(
                     docOrderResults,
@@ -2159,10 +2161,12 @@ function() {
                 //  ---
 
                 docOrderResults =
-                    TP.byCSSPath('#testGroup2 input', windowContext, false, false).
-                        collect(function(anElem) {
-                                    return anElem.getAttribute('id');
-                                });
+                    TP.byCSSPath('#testGroup2 input',
+                                    windowContext, false, false).
+                                    collect(
+                                        function(anElem) {
+                                            return anElem.getAttribute('id');
+                                        });
 
                 test.assert.isEqualTo(
                     docOrderResults,
@@ -2183,10 +2187,12 @@ function() {
                 //  ---
 
                 docOrderResults =
-                    TP.byCSSPath('#testGroup3 input', windowContext, false, false).
-                        collect(function(anElem) {
-                                    return anElem.getAttribute('id');
-                                });
+                    TP.byCSSPath('#testGroup3 input',
+                                    windowContext, false, false).
+                                    collect(
+                                        function(anElem) {
+                                            return anElem.getAttribute('id');
+                                        });
 
                 test.assert.isEqualTo(
                     docOrderResults,
@@ -2209,10 +2215,12 @@ function() {
                 //  ---
 
                 docOrderResults =
-                    TP.byCSSPath('#testGroup4 input', windowContext, false, false).
-                        collect(function(anElem) {
-                                    return anElem.getAttribute('id');
-                                });
+                    TP.byCSSPath('#testGroup4 input',
+                                    windowContext, false, false).
+                                    collect(
+                                        function(anElem) {
+                                            return anElem.getAttribute('id');
+                                        });
 
                 test.assert.isEqualTo(
                     docOrderResults,

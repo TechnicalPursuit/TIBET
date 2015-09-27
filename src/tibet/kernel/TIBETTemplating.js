@@ -133,9 +133,10 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
     //  string.
     if (!TP.regex.HAS_ACP.test(str)) {
 
-        func = function(aDataSource) {
-                    return str;
-                };
+        func =
+            function(aDataSource) {
+                return str;
+            };
 
     } else {
         //  Tokenize the String template. {{}} constructs will appear in the

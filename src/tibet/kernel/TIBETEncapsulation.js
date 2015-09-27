@@ -62,9 +62,10 @@ function() {
         re.lastIndex = 0;
         results = this.toString().match(re);
 
-        results.perform(function(item) {
-                arr.push(item.strip('this.'));
-            });
+        results.perform(
+                function(item) {
+                    arr.push(item.strip('this.'));
+                });
 
         arr = arr.unique();
     }

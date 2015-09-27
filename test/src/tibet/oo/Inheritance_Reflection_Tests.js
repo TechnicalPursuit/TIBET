@@ -5171,9 +5171,10 @@ function() {
         //  ---
 
         //  Resolve the conflict using an alternate value
-        TP.test.Rectangle.Inst.resolveTrait('getRgb', function() {
-                inlineCount = 1;
-            });
+        TP.test.Rectangle.Inst.resolveTrait('getRgb',
+                function() {
+                    inlineCount = 1;
+                });
 
         //  Test again. Because we now supply an alterative value (an
         //  implementation of 'getRgb') using the resolveTrait() above, the slot
@@ -5312,9 +5313,10 @@ function() {
         TP.test.Hexagon.Inst.defineMethod('smaller', function() {});
 
         //  This is TP.test.Hexagon's own implementation of 'getRgb'
-        TP.test.Hexagon.Inst.defineMethod('getRgb', function() {
-                inlineCount = 1;
-            });
+        TP.test.Hexagon.Inst.defineMethod('getRgb',
+                function() {
+                    inlineCount = 1;
+                });
 
         //  Construct an instance.
         obj = TP.test.Hexagon.construct();
@@ -5423,9 +5425,10 @@ function() {
         TP.test.Pentagon.Inst.defineMethod('smaller', function() {});
 
         //  This is TP.test.Pentagon's own implementation of 'getRgb'
-        TP.test.Pentagon.Inst.defineMethod('getRgb', function() {
-                inlineCount = 1;
-            });
+        TP.test.Pentagon.Inst.defineMethod('getRgb',
+                function() {
+                    inlineCount = 1;
+                });
 
         //  Construct an instance.
         obj = TP.test.Pentagon.construct();

@@ -249,8 +249,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -367,8 +367,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -391,8 +391,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -558,8 +558,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -582,8 +582,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -749,8 +749,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -773,8 +773,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -940,8 +940,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -964,8 +964,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1091,8 +1091,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1209,8 +1209,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1233,8 +1233,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1400,8 +1400,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1424,8 +1424,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1591,8 +1591,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1615,8 +1615,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1782,8 +1782,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1806,8 +1806,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1933,8 +1933,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2051,8 +2051,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2075,8 +2075,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2242,8 +2242,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2266,8 +2266,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2433,8 +2433,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2457,8 +2457,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2624,8 +2624,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2648,8 +2648,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2831,8 +2831,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2852,8 +2852,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2948,8 +2948,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2969,8 +2969,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3065,8 +3065,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3086,8 +3086,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3182,8 +3182,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3203,8 +3203,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3299,8 +3299,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3320,8 +3320,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3416,8 +3416,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3437,8 +3437,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3551,8 +3551,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3572,8 +3572,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3694,8 +3694,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3715,8 +3715,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3736,8 +3736,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressStreetField11.clearValue();
-                            }).
+                        addressStreetField11.clearValue();
+                    }).
                     sendKeys('555 3rd Av', addressStreetField11).
                     sendEvent(TP.hc('type', 'change'), addressStreetField11).
                     perform();
@@ -3757,8 +3757,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressCityField22.clearValue();
-                            }).
+                        addressCityField22.clearValue();
+                    }).
                     sendKeys('The Main Town', addressCityField22).
                     sendEvent(TP.hc('type', 'change'), addressCityField22).
                     perform();
@@ -3841,8 +3841,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3862,8 +3862,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3982,8 +3982,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -4003,8 +4003,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -4024,8 +4024,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressStreetField00.clearValue();
-                            }).
+                        addressStreetField00.clearValue();
+                    }).
                     sendKeys('555 3rd Av', addressStreetField00).
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
                     perform();
@@ -4045,8 +4045,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressCityField11.clearValue();
-                            }).
+                        addressCityField11.clearValue();
+                    }).
                     sendKeys('The Main Town', addressCityField11).
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
                     perform();
@@ -4129,8 +4129,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -4150,8 +4150,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -4270,8 +4270,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -4291,8 +4291,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -4312,8 +4312,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressStreetField00.clearValue();
-                            }).
+                        addressStreetField00.clearValue();
+                    }).
                     sendKeys('555 3rd Av', addressStreetField00).
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
                     perform();
@@ -4333,8 +4333,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressCityField11.clearValue();
-                            }).
+                        addressCityField11.clearValue();
+                    }).
                     sendKeys('The Main Town', addressCityField11).
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
                     perform();
@@ -4425,8 +4425,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -4468,16 +4468,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -4609,8 +4609,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -4677,16 +4677,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -4827,8 +4827,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -4870,16 +4870,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5011,8 +5011,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -5079,16 +5079,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5229,8 +5229,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -5272,16 +5272,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5413,8 +5413,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -5481,16 +5481,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5835,8 +5835,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -5898,8 +5898,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -5961,8 +5961,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6024,8 +6024,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6097,8 +6097,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6177,8 +6177,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6256,8 +6256,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6335,8 +6335,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6404,8 +6404,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6467,8 +6467,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6530,8 +6530,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6593,8 +6593,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6666,8 +6666,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6746,8 +6746,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6825,8 +6825,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6904,8 +6904,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6973,8 +6973,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7036,8 +7036,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7099,8 +7099,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7162,8 +7162,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7235,8 +7235,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7315,8 +7315,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7394,8 +7394,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7473,8 +7473,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();

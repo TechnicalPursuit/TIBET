@@ -199,29 +199,30 @@ function(aRequest) {
 
         stdioProvider.defineMethod('report',
              function(aSignal, results) {
-                results.forEach(function(item) {
-                    if (TP.notValid(item)) {
-                        return;
-                    }
+                 results.forEach(
+                        function(item) {
+                            if (TP.notValid(item)) {
+                                return;
+                            }
 
-                    switch (item.meta) {
-                        case 'notify':
-                            top.console.info(TP.str(item.data));
-                            break;
-                        case 'stdin':
-                            top.console.log(TP.str(item.data));
-                            break;
-                        case 'stdout':
-                            top.console.log(TP.str(item.data));
-                            break;
-                        case 'stderr':
-                            top.console.error(TP.str(item.data));
-                            break;
-                        default:
-                            break;
-                    }
-                });
-            });
+                            switch (item.meta) {
+                                case 'notify':
+                                    top.console.info(TP.str(item.data));
+                                    break;
+                                case 'stdin':
+                                    top.console.log(TP.str(item.data));
+                                    break;
+                                case 'stdout':
+                                    top.console.log(TP.str(item.data));
+                                    break;
+                                case 'stderr':
+                                    top.console.error(TP.str(item.data));
+                                    break;
+                                default:
+                                    break;
+                            }
+                        });
+             });
     } else {
         stdioProvider = aRequest.at('cmdStdio');
     }
