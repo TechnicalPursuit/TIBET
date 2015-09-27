@@ -5165,7 +5165,7 @@ function(signame) {
 
 //  ------------------------------------------------------------------------
 
-TP.$$computedHandlers = new TP.PHash();
+TP.$$computedHandlers = new TP.boot.PHash();
 TP.$$computedHandlers.atPut('LOOKUPS', 0);
 
 //  ------------------------------------------------------------------------

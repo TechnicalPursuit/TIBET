@@ -880,7 +880,7 @@ function() {
 
     //  NOTE that we build a new hash each time so it can be modified as
     //  needed by each request. Also note that this is done lazily so that
-    //  we're sure we're getting a full hash object, not a TP.PHash
+    //  we're sure we're getting a full hash object, not a TP.boot.PHash.
     return TP.hc('Pragma', 'no-cache',
                     'Cache-Control', TP.ac('no-cache', 'no-store'),
                     'Accept', TP.ac(TP.JS_TEXT_ENCODED,
