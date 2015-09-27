@@ -10712,6 +10712,8 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  Primitives
+//  ------------------------------------------------------------------------
 
 TP.definePrimitive('defineNamespace',
 function(namespaceName, forceDefinition) {
@@ -10901,6 +10903,36 @@ function(namespaceName, forceDefinition) {
 //  -----------------------------------------------------------------------
 
 TP.defineNamespace('TP.api');
+
+//  ------------------------------------------------------------------------
+//  TP.sys Metadata Overrides
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getCustomTypeNames',
+function() {
+
+    /**
+     * @method getCustomTypeNames
+     * @summary Returns the list of all known custom type names in the system.
+     * @returns {Array[TP.meta.*]} A list of type names.
+     */
+
+    return TP.sys.getCustomTypes().getKeys();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getTypeNames',
+function() {
+
+    /**
+     * @method getTypeNames
+     * @summary Returns the list of all known types in the system.
+     * @returns {Array[TP.meta.*]} A list of type names.
+     */
+
+    return TP.sys.getTypes().getKeys();
+});
 
 //  ------------------------------------------------------------------------
 //  end
