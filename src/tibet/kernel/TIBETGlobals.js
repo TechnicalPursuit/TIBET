@@ -2677,10 +2677,14 @@ TP.regex.NON_PREFIXED_NS_ATTR =
 TP.regex.PREFIXED_NS_ATTR =
         /\s+xmlns:\w+=(['"])([\x00-\x7F]*?)\1/g;    //  needs reset
 
-//  A RegExp that matches content in between quotes that must be at the
-//  beginning or end.
+//  RegExps that match content in between quotes that must be at the beginning
+//  or end.
 TP.regex.QUOTED_CONTENT = /^(['"])(.*)\1$/;
-TP.regex.ESCAPED_QUOTED_CONTENT = /^\\(['"])(.*)\\\1$/;
+TP.regex.ESCAPED_QUOTED_CONTENT = /^\\(['"])(.*)\1$/;
+
+//  RegExps that match content in between quotes that can be anywhere.
+TP.regex.CONTENT_WITH_QUOTES = /(['"])(.*)\1/;
+TP.regex.CONTENT_WITH_ESCAPED_QUOTES = /\\(['"])(.*)\1/;
 
 //  ---
 //  mime
