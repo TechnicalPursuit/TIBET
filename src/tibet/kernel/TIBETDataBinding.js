@@ -737,7 +737,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  with. This allows a set of source aspects to share a single change
         //  handler function.
         handler.$observationsMap = TP.hc();
-        finalTarget.defineMethod(methodName, handler);
+        finalTarget.defineHandler(signalName, handler);
     }
 
     if (facetName !== TP.ALL) {
