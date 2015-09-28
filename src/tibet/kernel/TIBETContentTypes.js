@@ -3659,6 +3659,10 @@ function(targetObj, varargs) {
             }
         }
 
+        if (TP.isPlainObject(retVal)) {
+            retVal = TP.hc(retVal);
+        }
+
         //  Make sure to process the final value using converters, etc.
         //  configured for this object.
         return this.processFinalValue(retVal, target);
