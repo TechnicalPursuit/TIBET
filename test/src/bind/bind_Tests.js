@@ -172,6 +172,36 @@ function() {
         test.assert.hasKey(info, 'bar|moo');
         test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(foo.bar)');
     });
+
+    this.it('binding attribute parsing tests - literal content', function(test, options) {
+        var testMarkup,
+            info;
+
+        //  Literal content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The canonical name: [[urn:tibet:test_person_xml#tibet(canonicalName)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The canonical name: [[urn:tibet:test_person_xml#tibet(canonicalName)]]\'');
+
+        //  Literal with vars content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The canonical name: [[urn:tibet:test_person_xml#tibet($TAG.canonicalName)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The canonical name: [[urn:tibet:test_person_xml#tibet($TAG.canonicalName)]]\'');
+
+        //  Literal with escaped quotes content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet(value .% upperCase)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet(value .% upperCase)]]\'');
+
+        //  Literal with vars and escaped quotes content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet($TAG.(.//lastname).value .% upperCase)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet($TAG.(.//lastname).value .% upperCase)]]\'');
+
+    });
 });
 
 //  ------------------------------------------------------------------------
