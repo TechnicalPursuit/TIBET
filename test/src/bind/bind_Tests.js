@@ -7819,32 +7819,42 @@ function() {
                 var windowContext,
 
                     xmlField,
-                    jsonField;
+                    jsonField,
+                    jsobjField;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'JOE');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'BOB');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'SMITH');
 
                 xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'JOHN');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'JAY');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'JONES');
 
                 xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
                 jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
+                jsobjField = TP.byId('jsobjBindIndexAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7852,9 +7862,13 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     '0');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    '0');
 
                 xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
                 jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
+                jsobjField = TP.byId('jsobjBindIndexAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7862,25 +7876,36 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     '1');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    '1');
 
                 xmlField = TP.byId('firstNameField1', windowContext);
-                jsonField = TP.byId('lastNameField0', windowContext);
+                jsonField = TP.byId('middleNameField0', windowContext);
+                jsobjField = TP.byId('lastNameField0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'Joe');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'Bob');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'Smith');
 
                 xmlField = TP.byId('firstNameField2', windowContext);
-                jsonField = TP.byId('lastNameField1', windowContext);
+                jsonField = TP.byId('middleNameField1', windowContext);
+                jsobjField = TP.byId('lastNameField1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'John');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'Jay');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'Jones');
 
                 //  Unload the current page by setting it to the blank

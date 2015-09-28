@@ -27,6 +27,15 @@
     <tibet:data name="urn:tibet:test_person_json">
         <![CDATA[
             {"people": [
+                {"lastname": "Smith", "middlename": "Bob", "firstname": "Joe"},
+                {"lastname": "Jones", "middlename": "Jay", "firstname": "John"}
+            ]}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_person_jsobj">
+        <![CDATA[
+            {"people": [
                 {"lastname": "Smith", "firstname": "Joe"},
                 {"lastname": "Jones", "firstname": "John"}
             ]}
@@ -49,7 +58,7 @@
 
     <span bind:repeat="urn:tibet:test_person_xml#xpath1(/people/person)">
         <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
-        <input type="text" id="xmlBindStdinAttr" bind:io="{value: '$_.(.//firstname).value .% upperCase'}" tabindex="0"/><br/>
+        <input type="text" id="xmlBindStdinAttr" bind:io="{value: '[[$_.(.//firstname).value .% upperCase]]'}" tabindex="0"/><br/>
 
         <label for="xmlBindIndexAttr">Binding to XML data with $INDEX variable reference:</label>
         <input type="text" id="xmlBindIndexAttr" bind:io="{value: $INDEX}" tabindex="0"/><br/>
@@ -58,12 +67,23 @@
         <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>
     </span>
 
-    <span bind:repeat="urn:tibet:test_person_json#tibet(people)">
+    <span bind:repeat="urn:tibet:test_person_json#json($.people)">
         <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
-        <input type="text" id="jsonBindStdinAttr" bind:io="{value: '$_.lastname .% upperCase'}" tabindex="0"/><br/>
+        <input type="text" id="jsonBindStdinAttr" bind:io="{value: '[[$_.(middlename).value .% upperCase]]'}" tabindex="0"/><br/>
 
         <label for="jsonBindIndexAttr">Binding to JSON data with $INDEX variable reference:</label>
         <input type="text" id="jsonBindIndexAttr" bind:io="{value: $INDEX}" tabindex="0"/><br/>
+
+        <label for="middleNameField">Last name: </label>
+        <input type="text" id="middleNameField" bind:io="{value: middlename}" tabindex="0"/><br/>
+    </span>
+
+    <span bind:repeat="urn:tibet:test_person_jsobj#tibet(people)">
+        <label for="jsobjBindStdinAttr">Binding to JavaScript Object data with $_ variable reference:</label>
+        <input type="text" id="jsobjBindStdinAttr" bind:io="{value: '[[$_.lastname .% upperCase]]'}" tabindex="0"/><br/>
+
+        <label for="jsobjBindIndexAttr">Binding to JavaScript Object data with $INDEX variable reference:</label>
+        <input type="text" id="jsobjBindIndexAttr" bind:io="{value: $INDEX}" tabindex="0"/><br/>
 
         <label for="lastNameField">Last name: </label>
         <input type="text" id="lastNameField" bind:io="{value: lastname}" tabindex="0"/><br/>
