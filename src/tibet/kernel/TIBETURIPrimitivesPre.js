@@ -1152,8 +1152,16 @@ function(aPath, aFragment) {
                 break;
 
             case 'tibet':
-            case 'json':
                 joinChar = '.';
+                break;
+
+            case 'json':
+                if (expr.charAt(0) === '[') {
+                    joinChar = '';
+                } else {
+                    joinChar = '.';
+                }
+
                 break;
 
             case 'xpath1':
