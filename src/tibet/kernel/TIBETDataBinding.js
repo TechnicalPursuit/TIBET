@@ -1299,6 +1299,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
             expandedExpr = expandedExpr.replace(
                             exprWithBrackets,
                             '{{' + exprToExecute + '}}');
+            expandedExpr = expandedExpr.unquoted();
         }
 
         //  Make sure to trim off any format before using this as the URI - note
