@@ -21,24 +21,24 @@ function() {
 
         //  NB: These tests test only for 'bind:in', not 'bind:out' or
         //  'bind:io', but they're all subject to the same rules.
-        //  Also, note how we pass 'true' as a second parameter - this forces
-        //  the call to return the 'fully scoped value'
+        //  Also, note how, for some of these tests, we pass 'true' as a second
+        //  parameter - this forces the call to return the 'fully scoped value'
 
         //  Fully formed URI, no fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo');
 
         //  Fully formed URI, with fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo#tibet(foo)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Fully formed URI, no fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo, bar: urn:tibet:bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo');
         test.assert.hasKey(info, 'bar');
@@ -46,7 +46,7 @@ function() {
 
         //  Fully formed URI, with fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo#tibet(foo), bar: urn:tibet:bar#tibet(bar)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
         test.assert.hasKey(info, 'bar');
@@ -104,19 +104,19 @@ function() {
 
         //  Fully formed URI, no fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo|moo');
         test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo');
 
         //  Fully formed URI, with fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo#tibet(foo)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo|moo');
         test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Fully formed URI, no fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo, bar|moo: urn:tibet:bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo|moo');
         test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo');
         test.assert.hasKey(info, 'bar|moo');
@@ -124,7 +124,7 @@ function() {
 
         //  Fully formed URI, with fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo#tibet(foo), bar|moo: urn:tibet:bar#tibet(bar)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo|moo');
         test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
         test.assert.hasKey(info, 'bar|moo');
