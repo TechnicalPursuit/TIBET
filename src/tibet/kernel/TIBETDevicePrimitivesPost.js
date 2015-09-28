@@ -1381,6 +1381,29 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$$handleSubmit',
+function(anEvent) {
+
+    /**
+     * @method $$handleSubmit
+     * @summary Document-level submit handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    //  TIBET does not support sending data to the server via a form submit.
+    //  Warn here and prevent default on the event.
+
+    TP.ifWarn() ?
+        TP.warn('Form not submitted.' +
+                ' Use other TIBET mechanisms to send data to the server.') : 0;
+
+    TP.eventPreventDefault(anEvent);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$$handleTransitionEnd',
 function(anEvent) {
 

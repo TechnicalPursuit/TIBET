@@ -1111,6 +1111,10 @@ TP.boot.$$documentSetup = function(aDocument) {
                             'scroll',
                             TP.$$handleScroll);
 
+    TP.boot.$$addUIHandler(aDocument,
+                            'submit',
+                            TP.$$handleSubmit);
+
     //  Add a mutation signal source for mutations to this document
     TP.boot.$$addMutationSource(aDocument);
 
@@ -1169,6 +1173,8 @@ TP.boot.$$documentTeardown = function(aDocument) {
     TP.boot.$$removeUIHandler(aDocument, 'transitionend');
 
     TP.boot.$$removeUIHandler(aDocument, 'scroll');
+
+    TP.boot.$$removeUIHandler(aDocument, 'submit');
 
     //  Remove a mutation signal source for mutations to this document
     TP.boot.$$removeMutationSource(aDocument);
