@@ -49,24 +49,24 @@
 
     <span bind:repeat="urn:tibet:test_person_xml#xpath1(/people/person)">
         <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
-        <input type="text" id="xmlBindStdinAttr" value="The first name: [[$_.(.//firstname).value .% upperCase]]" tabindex="0"/><br/>
+        <input type="text" id="xmlBindStdinAttr" value="'The first name: [[$_.(.//firstname).value .% upperCase]]'" tabindex="0"/><br/>
 
         <label for="xmlBindIndexAttr">Binding to XML data with $INDEX variable reference:</label>
-        <input type="text" id="xmlBindIndexAttr" value="The index: [[$INDEX]]" tabindex="0"/><br/>
+        <input type="text" id="xmlBindIndexAttr" value="'The index: [[$INDEX]]'" tabindex="0"/><br/>
 
         <label for="firstNameField">First name: </label>
-        <input type="text" id="firstNameField" value="The first name: [[firstname]]" tabindex="0"/><br/>
+        <input type="text" id="firstNameField" value="'The first name: [[firstname]]'" tabindex="0"/><br/>
     </span>
 
     <span bind:repeat="urn:tibet:test_person_json#tibet(people)">
         <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
-        <input type="text" id="jsonBindStdinAttr" value="The last name: [[$_.lastname .% upperCase]]" tabindex="0"/><br/>
+        <input type="text" id="jsonBindStdinAttr" value="'The last name: [[$_.lastname .% upperCase]]'" tabindex="0"/><br/>
 
         <label for="jsonBindIndexAttr">Binding to JSON data with $INDEX variable reference:</label>
-        <input type="text" id="jsonBindIndexAttr" value="The index: [[$INDEX]]" tabindex="0"/><br/>
+        <input type="text" id="jsonBindIndexAttr" value="'The index: [[$INDEX]]'" tabindex="0"/><br/>
 
         <label for="lastNameField">Last name: </label>
-        <input type="text" id="lastNameField" value="The last name: [[lastname]]" tabindex="0"/><br/>
+        <input type="text" id="lastNameField" value="'The last name: [[lastname]]'" tabindex="0"/><br/>
     </span>
 
 </body>
