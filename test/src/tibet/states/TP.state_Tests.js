@@ -571,9 +571,10 @@ function() {
 
         //  Add state-specific handler method for input processing.
         machine.defineHandler(
-            {signal: 'StateInput', state: 'Start'}, function(details) {
-            called = true;
-        });
+            {signal: 'StateInput', state: 'Start'},
+            function(details) {
+                called = true;
+            });
 
         machine.activate();
 

@@ -602,17 +602,18 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
             //  Otherwise, it was a media query, so define a handler that will
             //  signal CSSMediaActive or CSSMediaInactive depending on whether
             //  the query matches or not.
-            mqHandler = function(aQuery) {
-                            if (aQuery.matches) {
-                                TP.signal(originStr,
-                                            'TP.sig.CSSMediaActive',
-                                            aQuery.media);
-                            } else {
-                                TP.signal(originStr,
-                                            'TP.sig.CSSMediaInactive',
-                                            aQuery.media);
-                            }
-                        };
+            mqHandler =
+                function(aQuery) {
+                    if (aQuery.matches) {
+                        TP.signal(originStr,
+                                    'TP.sig.CSSMediaActive',
+                                    aQuery.media);
+                    } else {
+                        TP.signal(originStr,
+                                    'TP.sig.CSSMediaInactive',
+                                    aQuery.media);
+                    }
+                };
 
             //  Perform the query and get the MediaQueryList back. Note that
             //  this will also register the handler so that the callback fires

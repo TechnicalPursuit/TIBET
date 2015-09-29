@@ -133,9 +133,10 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
     //  string.
     if (!TP.regex.HAS_ACP.test(str)) {
 
-        func = function(aDataSource) {
-                    return str;
-                };
+        func =
+            function(aDataSource) {
+                return str;
+            };
 
     } else {
         //  Tokenize the String template. {{}} constructs will appear in the
@@ -701,7 +702,7 @@ function(aDataSource, transformParams) {
 
         //  If there is escaped quoted content, then double escape it to avoid
         //  problems when the Function is created from the string.
-        if (TP.regex.ESCAPED_QUOTED_CONTENT.test(template)) {
+        if (TP.regex.CONTENT_WITH_ESCAPED_QUOTES.test(template)) {
             template = template.replace(/\\/g, '\\\\');
         }
 

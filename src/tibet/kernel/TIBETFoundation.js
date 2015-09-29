@@ -4867,9 +4867,10 @@ function(aHash, aLevel) {
         return this.toString();
     }
 
-    nullTransform = function(it) {
-                                return it;
-                            };
+    nullTransform =
+            function(it) {
+                return it;
+            };
 
     header = TP.ifInvalid(params.at('header'), '');
     itemPrefix = TP.ifInvalid(params.at('itemPrefix'), '');

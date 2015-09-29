@@ -104,7 +104,12 @@ function(aString) {
 
         i;
 
-    tokens = TP.$tokenize(aString);
+    //  Tokenize the input string, supplying our own set of 'operators'.
+    tokens = TP.$tokenize(
+                    aString,
+                    TP.ac('{', ':', '}', '.', ','),
+                    true);  //  We specify 'tsh' (meaning that we want URI
+                            //  parsing)
 
     str = '';
 
@@ -130,11 +135,11 @@ function(aString) {
                     if (self[val]) {
                         context = self[val];
                     } else {
-                        //  identifier (key) or String - quote it (but first
-                        //  make sure that if it's surrounded by any kind of
-                        //  quotes, those are stripped - this will *not* strip
-                        //  quotes that are not the first and last characters).
-                        str += val.unquoted().quoted('"');
+                        //  There was no context or value that resolved to a
+                        //  context, so first we escape any existing quotes and
+                        //  then trim the value.
+                        val = val.replace(/\\/g, '\\\\');
+                        str += TP.trim(val);
                     }
                 }
                 break;
@@ -145,18 +150,32 @@ function(aString) {
                         context = tokens.at(i - 1).value;
                     }
                     break;
-                } else if (val === '}' && TP.isValid(context)) {
-                    val = context;
-                    str += val.quoted('"') + '}';
+                } else if (val === '{') {
+                    str += '{"';
                     context = null;
+                } else if (val === ':') {
+                    str += '":"';
+                    context = null;
+                } else if (val === ',') {
+                    str += '","';
+                    context = null;
+                } else if (val === '}') {
+                    if (TP.isValid(context)) {
+                        val = context;
+                        context = null;
+
+                        str += val + '"}';
+                    } else {
+                        str += '"}';
+                    }
                 } else {
                     str += val;
                 }
                 break;
 
             default:
-                //  leave everything else alone.
-                str += val;
+                //  leave everything else alone - but trim it.
+                str += TP.trim(val);
 
                 break;
         }

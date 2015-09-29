@@ -1132,9 +1132,10 @@ function(anEntry) {
 
     appenders = this.getAppenders();
     if (TP.notEmpty(appenders)) {
-        appenders.forEach(function(appender) {
-                                appender.log(entry);
-                            });
+        appenders.forEach(
+                    function(appender) {
+                        appender.log(entry);
+                    });
     }
 
     return this;

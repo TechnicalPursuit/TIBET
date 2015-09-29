@@ -737,7 +737,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  with. This allows a set of source aspects to share a single change
         //  handler function.
         handler.$observationsMap = TP.hc();
-        finalTarget.defineMethod(methodName, handler);
+        finalTarget.defineHandler(signalName, handler);
     }
 
     if (facetName !== TP.ALL) {
@@ -1299,6 +1299,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
             expandedExpr = expandedExpr.replace(
                             exprWithBrackets,
                             '{{' + exprToExecute + '}}');
+            expandedExpr = expandedExpr.unquoted();
         }
 
         //  Make sure to trim off any format before using this as the URI - note
@@ -1637,7 +1638,6 @@ function(attributeName, wantsFullScope) {
         attrNodes,
         attrVal,
 
-        results,
         bindEntries,
 
         scopeVals,
@@ -1657,11 +1657,10 @@ function(attributeName, wantsFullScope) {
         //  Otherwise, grab the value and parse out each name: value pair using
         //  this global RegExp.
         attrVal = attrNodes[0].value;
-        bindEntries = TP.hc();
-        while (TP.notEmpty(
-                    results = TP.regex.BIND_ATTR_SPLITTER.exec(attrVal))) {
-            bindEntries.atPut(results.at(1), results.at(4));
-        }
+
+        //  Parse the "JSON"-like content that was authored by the page author
+        //  into a TP.core.Hash.
+        bindEntries = TP.json2js(TP.formatUnquotedJSON(attrVal));
     }
 
     if (TP.notTrue(wantsFullScope)) {
@@ -1709,7 +1708,7 @@ function(attributeName, wantsFullScope) {
 
                 //  If we weren't able to compute a real URI from the fully
                 //  expanded URI value, then raise an exception and return here.
-                if (!TP.isURI(bindVal)) {
+                if (!TP.isURI(bindVal = TP.trim(bindVal))) {
                     this.raise('TP.sig.InvalidURI');
 
                     return TP.BREAK;

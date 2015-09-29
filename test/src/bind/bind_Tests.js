@@ -21,51 +21,51 @@ function() {
 
         //  NB: These tests test only for 'bind:in', not 'bind:out' or
         //  'bind:io', but they're all subject to the same rules.
-        //  Also, note how we pass 'true' as a second parameter - this forces
-        //  the call to return the 'fully scoped value'
+        //  Also, note how, for some of these tests, we pass 'true' as a second
+        //  parameter - this forces the call to return the 'fully scoped value'
 
         //  Fully formed URI, no fragment, single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo: urn:tibet:foo"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo');
 
         //  Fully formed URI, with fragment, single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo: urn:tibet:foo#tibet(foo)"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo#tibet(foo)}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Fully formed URI, no fragment, multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo: urn:tibet:foo; bar: urn:tibet:bar"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo, bar: urn:tibet:bar}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo');
         test.assert.hasKey(info, 'bar');
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:bar');
 
         //  Fully formed URI, with fragment, multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo: urn:tibet:foo#tibet(foo); bar: urn:tibet:bar#tibet(bar)"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo#tibet(foo), bar: urn:tibet:bar#tibet(bar)}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
         test.assert.hasKey(info, 'bar');
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:bar#tibet(bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo: #tibet(foo)"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: #tibet(foo)}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo: foo"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: foo}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo: #tibet(foo); bar: #tibet(bar)"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: #tibet(foo), bar: #tibet(bar)}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
@@ -73,7 +73,7 @@ function() {
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(bar)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo: foo; bar: bar"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: foo, bar: bar}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
@@ -81,13 +81,13 @@ function() {
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value, split path
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="bar: bar"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{bar: bar}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
         test.assert.hasKey(info, 'bar');
         test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(foo.bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values, split path
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="foo: foo; bar: bar"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{foo: foo, bar: bar}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo.foo)');
@@ -103,74 +103,104 @@ function() {
         //  'bind:io', but they're all subject to the same rules.
 
         //  Fully formed URI, no fragment, single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo');
 
         //  Fully formed URI, with fragment, single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo#tibet(foo)"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo#tibet(foo)}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Fully formed URI, no fragment, multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo; bar:moo: urn:tibet:bar"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo');
-        test.assert.hasKey(info, 'bar:moo');
-        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:bar');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo, bar|moo: urn:tibet:bar}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo');
+        test.assert.hasKey(info, 'bar|moo');
+        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:bar');
 
         //  Fully formed URI, with fragment, multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="foo:moo: urn:tibet:foo#tibet(foo); bar:moo: urn:tibet:bar#tibet(bar)"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
-        test.assert.hasKey(info, 'bar:moo');
-        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:bar#tibet(bar)');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo#tibet(foo), bar|moo: urn:tibet:bar#tibet(bar)}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'bar|moo');
+        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:bar#tibet(bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: #tibet(foo)"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: #tibet(foo)}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), single value
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: foo"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: foo}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: #tibet(foo); bar:moo: #tibet(bar)"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: #tibet(foo), bar|moo: #tibet(bar)}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
-        test.assert.hasKey(info, 'bar:moo');
-        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(bar)');
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'bar|moo');
+        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(bar)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), multiple values
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="foo:moo: foo; bar:moo: bar"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: foo, bar|moo: bar}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo)');
-        test.assert.hasKey(info, 'bar:moo');
-        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(bar)');
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.hasKey(info, 'bar|moo');
+        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value, split path
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="bar:moo: bar"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{bar|moo: bar}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'bar:moo');
-        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(foo.bar)');
+        test.assert.hasKey(info, 'bar|moo');
+        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(foo.bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values, split path
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="foo:moo: foo; bar:moo: bar"/>');
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{foo|moo: foo, bar|moo: bar}"/>');
         info = testMarkup.getBindingInfoFrom('in', true);
-        test.assert.hasKey(info, 'foo:moo');
-        test.assert.isEqualTo(info.at('foo:moo'), 'urn:tibet:foo#tibet(foo.foo)');
-        test.assert.hasKey(info, 'bar:moo');
-        test.assert.isEqualTo(info.at('bar:moo'), 'urn:tibet:foo#tibet(foo.bar)');
+        test.assert.hasKey(info, 'foo|moo');
+        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo.foo)');
+        test.assert.hasKey(info, 'bar|moo');
+        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(foo.bar)');
+    });
+
+    this.it('binding attribute parsing tests - literal content', function(test, options) {
+        var testMarkup,
+            info;
+
+        //  Literal content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The canonical name: [[urn:tibet:test_person_xml#tibet(canonicalName)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The canonical name: [[urn:tibet:test_person_xml#tibet(canonicalName)]]\'');
+
+        //  Literal with vars content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The canonical name: [[urn:tibet:test_person_xml#tibet($TAG.canonicalName)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The canonical name: [[urn:tibet:test_person_xml#tibet($TAG.canonicalName)]]\'');
+
+        //  Literal with escaped quotes content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet(value .% upperCase)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet(value .% upperCase)]]\'');
+
+        //  Literal with vars and escaped quotes content
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet($TAG.(.//lastname).value .% upperCase)]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom('in', false);
+        test.assert.hasKey(info, 'foo');
+        test.assert.isEqualTo(info.at('foo'), '\'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet($TAG.(.//lastname).value .% upperCase)]]\'');
+
     });
 });
 
@@ -249,8 +279,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -367,8 +397,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -391,8 +421,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -558,8 +588,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -582,8 +612,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -749,8 +779,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -773,8 +803,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -940,8 +970,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -964,8 +994,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1091,8 +1121,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1209,8 +1239,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1233,8 +1263,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1400,8 +1430,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1424,8 +1454,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1591,8 +1621,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1615,8 +1645,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1782,8 +1812,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -1806,8 +1836,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -1933,8 +1963,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2051,8 +2081,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2075,8 +2105,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2242,8 +2272,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2266,8 +2296,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2433,8 +2463,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2457,8 +2487,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2624,8 +2654,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField.clearValue();
-                            }).
+                        lastNameField.clearValue();
+                    }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
                     perform();
@@ -2648,8 +2678,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                descriptionField.clearValue();
-                            }).
+                        descriptionField.clearValue();
+                    }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
                     perform();
@@ -2831,8 +2861,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2852,8 +2882,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -2948,8 +2978,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -2969,8 +2999,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3065,8 +3095,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3086,8 +3116,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3182,8 +3212,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3203,8 +3233,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3299,8 +3329,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3320,8 +3350,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3416,8 +3446,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3437,8 +3467,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3551,8 +3581,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3572,8 +3602,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3694,8 +3724,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3715,8 +3745,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3736,8 +3766,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressStreetField11.clearValue();
-                            }).
+                        addressStreetField11.clearValue();
+                    }).
                     sendKeys('555 3rd Av', addressStreetField11).
                     sendEvent(TP.hc('type', 'change'), addressStreetField11).
                     perform();
@@ -3757,8 +3787,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressCityField22.clearValue();
-                            }).
+                        addressCityField22.clearValue();
+                    }).
                     sendKeys('The Main Town', addressCityField22).
                     sendEvent(TP.hc('type', 'change'), addressCityField22).
                     perform();
@@ -3841,8 +3871,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -3862,8 +3892,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -3982,8 +4012,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -4003,8 +4033,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -4024,8 +4054,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressStreetField00.clearValue();
-                            }).
+                        addressStreetField00.clearValue();
+                    }).
                     sendKeys('555 3rd Av', addressStreetField00).
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
                     perform();
@@ -4045,8 +4075,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressCityField11.clearValue();
-                            }).
+                        addressCityField11.clearValue();
+                    }).
                     sendKeys('The Main Town', addressCityField11).
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
                     perform();
@@ -4129,8 +4159,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -4150,8 +4180,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -4270,8 +4300,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField1.clearValue();
-                            }).
+                        lastNameField1.clearValue();
+                    }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
@@ -4291,8 +4321,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                lastNameField2.clearValue();
-                            }).
+                        lastNameField2.clearValue();
+                    }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
                     perform();
@@ -4312,8 +4342,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressStreetField00.clearValue();
-                            }).
+                        addressStreetField00.clearValue();
+                    }).
                     sendKeys('555 3rd Av', addressStreetField00).
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
                     perform();
@@ -4333,8 +4363,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                addressCityField11.clearValue();
-                            }).
+                        addressCityField11.clearValue();
+                    }).
                     sendKeys('The Main Town', addressCityField11).
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
                     perform();
@@ -4425,8 +4455,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -4468,16 +4498,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -4609,8 +4639,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -4677,16 +4707,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -4827,8 +4857,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -4870,16 +4900,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5011,8 +5041,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -5079,16 +5109,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5229,8 +5259,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -5272,16 +5302,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5413,8 +5443,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
@@ -5481,16 +5511,16 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatSizeField.clearValue();
-                            }).
+                        repeatSizeField.clearValue();
+                    }).
                     sendKeys('2', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                repeatIndexField.clearValue();
-                            }).
+                        repeatIndexField.clearValue();
+                    }).
                     sendKeys('1', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
@@ -5835,8 +5865,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -5898,8 +5928,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -5961,8 +5991,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6024,8 +6054,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6097,8 +6127,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6177,8 +6207,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6256,8 +6286,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6335,8 +6365,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6404,8 +6434,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6467,8 +6497,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6530,8 +6560,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6593,8 +6623,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6666,8 +6696,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6746,8 +6776,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6825,8 +6855,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6904,8 +6934,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -6973,8 +7003,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7036,8 +7066,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7099,8 +7129,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7162,8 +7192,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7235,8 +7265,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7315,8 +7345,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7394,8 +7424,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7473,8 +7503,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                colorField.clearValue();
-                            }).
+                        colorField.clearValue();
+                    }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
                     perform();
@@ -7789,32 +7819,42 @@ function() {
                 var windowContext,
 
                     xmlField,
-                    jsonField;
+                    jsonField,
+                    jsobjField;
 
                 windowContext = test.getDriver().get('windowContext');
 
                 xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'JOE');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'BOB');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'SMITH');
 
                 xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
                 jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
+                jsobjField = TP.byId('jsobjBindStdinAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'JOHN');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'JAY');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'JONES');
 
                 xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
                 jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
+                jsobjField = TP.byId('jsobjBindIndexAttr0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7822,9 +7862,13 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     '0');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    '0');
 
                 xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
                 jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
+                jsobjField = TP.byId('jsobjBindIndexAttr1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
@@ -7832,25 +7876,36 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     '1');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
+                    '1');
 
                 xmlField = TP.byId('firstNameField1', windowContext);
-                jsonField = TP.byId('lastNameField0', windowContext);
+                jsonField = TP.byId('middleNameField0', windowContext);
+                jsobjField = TP.byId('lastNameField0', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'Joe');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'Bob');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'Smith');
 
                 xmlField = TP.byId('firstNameField2', windowContext);
-                jsonField = TP.byId('lastNameField1', windowContext);
+                jsonField = TP.byId('middleNameField1', windowContext);
+                jsobjField = TP.byId('lastNameField1', windowContext);
 
                 test.assert.isEqualTo(
                     xmlField.getValue(),
                     'John');
                 test.assert.isEqualTo(
                     jsonField.getValue(),
+                    'Jay');
+                test.assert.isEqualTo(
+                    jsobjField.getValue(),
                     'Jones');
 
                 //  Unload the current page by setting it to the blank

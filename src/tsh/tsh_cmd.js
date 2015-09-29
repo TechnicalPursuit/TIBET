@@ -96,9 +96,11 @@ function(aString, aShell, aRequest, asTokens) {
 
     //  use the condense routine to tokenize our content for runtime parse
     //  but explicitly turn off whitespace removal.
-    arr = TP.$condenseJS(str, false, false,
-                            this.$tshOperators,
-                            true, true, true);
+    arr = TP.$condenseJS(
+                    str, false, false,
+                    //  All of the JS operators *and* the TSH operators
+                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    true, true, true);
 
     len = arr.length;
     i = 0;
@@ -730,9 +732,11 @@ function(aliasString, aTokenArray) {
     //  phase two is to iterate over the alias string's token stream
     //  replacing any substitutions we can while consuming them from the
     //  params and argv containers.
-    tokens = TP.$tokenize(aliasString,
-                            TP.tsh.script.$tshOperators,
-                            true, false, true, true);
+    tokens = TP.$tokenize(
+                    aliasString,
+                    //  All of the JS operators *and* the TSH operators
+                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    true, false, true, true);
 
     i = 0;
     token = tokens[i];
@@ -976,9 +980,11 @@ function(REQUEST$$) {
     }
 
     //  tokenize what's left so we can check for identifiers etc.
-    TOKENS$$ = TP.$condenseJS($SCRIPT, false, false,
-                                this.$tshOperators,
-                                true, true, true);
+    TOKENS$$ = TP.$condenseJS(
+                    $SCRIPT, false, false,
+                    //  All of the JS operators *and* the TSH operators
+                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    true, true, true);
 
     if (this.isAccessPath(TOKENS$$)) {
 
@@ -1222,9 +1228,11 @@ function(REQUEST$$, CMDTYPE$$) {
         case 'set':
 
             //  tokenize what's left so we can check for identifiers etc.
-            TOKENS$$ = TP.$condenseJS($SCRIPT, false, false,
-                                        this.$tshOperators,
-                                        true, true, true);
+            TOKENS$$ = TP.$condenseJS(
+                        $SCRIPT, false, false,
+                        //  All of the JS operators *and* the TSH operators
+                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        true, true, true);
 
             //  one special case for sinks is when sugaring for setting a
             //  variable or property. in those cases we're looking for a strict
@@ -1280,9 +1288,11 @@ function(REQUEST$$, CMDTYPE$$) {
             //  look for single-token literals which indicate a sugared
             //  filter or tranformation
             if (TP.notEmpty(PIPE$$)) {
-                TOKENS$$ = TP.$condenseJS($SCRIPT, false, false,
-                                            this.$tshOperators,
-                                            true, true, true);
+                TOKENS$$ = TP.$condenseJS(
+                        $SCRIPT, false, false,
+                        //  All of the JS operators *and* the TSH operators
+                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        true, true, true);
 
                 //  all literal token representations are single tokens
 

@@ -7147,10 +7147,11 @@ function(anEvent) {
             min = indexes.length + 1;
             max = -1;
 
-            indexes.forEach(function(ind) {
-                                min = Math.min(min, ind);
-                                max = Math.max(max, ind);
-                            });
+            indexes.forEach(
+                    function(ind) {
+                        min = Math.min(min, ind);
+                        max = Math.max(max, ind);
+                    });
 
             if (min > index) {
                 this.set('direction', 'forward');
@@ -7688,26 +7689,27 @@ function(srcText, options) {
     }
 
     //  Define a Function that will process the result.
-    resultFunc = function(results) {
-                    var error,
-                        output,
-                        resultOpts;
+    resultFunc =
+        function(results) {
+            var error,
+                output,
+                resultOpts;
 
-                    error = results[0];
-                    output = results[1];
-                    resultOpts = results[2];
+            error = results[0];
+            output = results[1];
+            resultOpts = results[2];
 
-                    if (TP.notEmpty(error)) {
-                        TP.ifError() ?
-                            TP.error('Error processing LESSCSS: ' +
-                                TP.str(error)) : 0;
-                        return;
-                    }
+            if (TP.notEmpty(error)) {
+                TP.ifError() ?
+                    TP.error('Error processing LESSCSS: ' +
+                        TP.str(error)) : 0;
+                return;
+            }
 
-                    return TP.hc('css', output.css,
-                                    'imports', output.imports,
-                                    'compilationOptions', TP.hc(resultOpts));
-                };
+            return TP.hc('css', output.css,
+                            'imports', output.imports,
+                            'compilationOptions', TP.hc(resultOpts));
+        };
 
     workerPromise = this.get('$workerPromise');
 

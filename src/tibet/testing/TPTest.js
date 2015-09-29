@@ -2329,13 +2329,14 @@ function(verbose, wantsRequests) {
     str = this.getFiredSignalInfos(verbose, wantsRequests).asDisplayString(
                 TP.hc('itemSeparator', '\n',
                         'kvSeparator', '  :  ',
-                        'valueTransform', function(it) {
-                                                if (TP.isArray(it)) {
-                                                    return it.join(', ');
-                                                }
+                        'valueTransform',
+                                function(it) {
+                                    if (TP.isArray(it)) {
+                                        return it.join(', ');
+                                    }
 
-                                                return TP.str(it);
-                                            }));
+                                    return TP.str(it);
+                                }));
 
     return str;
 });
@@ -2407,9 +2408,10 @@ function(signalIndex, verbose, wantsRequests) {
     info = TP.hc();
 
     if (TP.isArray(sigOrigin = signalArgs.at(0))) {
-        sigOrigin = sigOrigin.collect(function(item) {
-                                            return TP.id(item);
-                                        });
+        sigOrigin = sigOrigin.collect(
+                                function(item) {
+                                    return TP.id(item);
+                                });
     } else {
         sigOrigin = TP.id(sigOrigin);
     }

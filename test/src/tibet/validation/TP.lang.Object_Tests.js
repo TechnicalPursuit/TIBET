@@ -1210,8 +1210,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                ageField.clearValue();
-                            }).
+                        ageField.clearValue();
+                    }).
                     sendKeys('Not A Number', ageField).
                     sendEvent(TP.hc('type', 'change'), ageField).
                     perform();
@@ -1247,8 +1247,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                ageField.clearValue();
-                            }).
+                        ageField.clearValue();
+                    }).
                     sendKeys('25', ageField).
                     sendEvent(TP.hc('type', 'change'), ageField).
                     perform();
@@ -1523,8 +1523,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                ssnField.clearValue();
-                            }).
+                        ssnField.clearValue();
+                    }).
                     sendKeys('333-33-3333', ssnField).
                     sendEvent(TP.hc('type', 'change'), ssnField).
                     perform();
@@ -1739,8 +1739,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                stateField.clearValue();
-                            }).
+                        stateField.clearValue();
+                    }).
                     sendKeys('CA', stateField).
                     sendEvent(TP.hc('type', 'change'), stateField).
                     perform();
@@ -1810,8 +1810,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                ssnField.clearValue();
-                            }).
+                        ssnField.clearValue();
+                    }).
                     sendKeys('333-33-3333', ssnField).
                     sendEvent(TP.hc('type', 'change'), ssnField).
                     perform();
@@ -1919,8 +1919,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                codeNumField.clearValue();
-                            }).
+                        codeNumField.clearValue();
+                    }).
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
                     perform();
@@ -2027,8 +2027,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                codeNumField.clearValue();
-                            }).
+                        codeNumField.clearValue();
+                    }).
                     sendKeys('4', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
                     perform();
@@ -2135,8 +2135,8 @@ function() {
 
                 test.getDriver().startSequence().
                     exec(function() {
-                                codeNumField.clearValue();
-                            }).
+                        codeNumField.clearValue();
+                    }).
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
                     perform();

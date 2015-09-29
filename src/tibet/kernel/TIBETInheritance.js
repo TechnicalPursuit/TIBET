@@ -372,9 +372,10 @@ function(name) {
         parts = nsName.split('.');
         root = self[root].meta;
 
-        parts.forEach(function(part) {
-                root = root[part];
-            });
+        parts.forEach(
+                function(part) {
+                    root = root[part];
+                });
 
         root[subtypeName] = typeConstructor;
     } else {
@@ -4620,7 +4621,8 @@ function(entry, installName, targetObject, track) {
 
                     //  TP.BEFORE means run the resolved method first, then the
                     //  version on the main type.
-                    dispatchFunc = function() {
+                    dispatchFunc =
+                        function() {
                             dispatchFunc.$resolutionMethod.apply(
                                     this, arguments);
                             return dispatchFunc.$mainMethod.apply(
@@ -4636,7 +4638,8 @@ function(entry, installName, targetObject, track) {
 
                     //  TP.AFTER means run the main method first, then the
                     //  version on the resolved type.
-                    dispatchFunc = function() {
+                    dispatchFunc =
+                        function() {
                             dispatchFunc.$mainMethod.apply(
                                     this, arguments);
                             return dispatchFunc.$resolutionMethod.apply(
@@ -4680,7 +4683,8 @@ function(entry, installName, targetObject, track) {
         //  If we didn't assign a dispatch Function earlier, that means that we
         //  are doing a 'simple resolution'.
         if (TP.notValid(dispatchFunc)) {
-            dispatchFunc = function() {
+            dispatchFunc =
+                function() {
                     return dispatchFunc.$resolutionMethod.apply(
                             this, arguments);
                 };

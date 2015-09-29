@@ -1863,8 +1863,7 @@ function() {
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd `{{x .% #{##.00}}}`',
-            function(test, options) {
+    this.it(':testCmd `{{x .% #{##.00}}}`', function(test, options) {
         inputVal = ':testCmd `{{x .% #{##.00}}}`';
         shellDriver.execOutputTest(
             test,

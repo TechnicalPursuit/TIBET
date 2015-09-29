@@ -13162,7 +13162,7 @@ function(aRequest) {
                                         TP.w3.Xmlns.XHTML);
     TP.elementSetAttribute(newSpan,
                             'bind:in',
-                            'content: ' + str.slice(2, -2),
+                            '{content: ' + str.slice(2, -2) + '}',
                             true);
 
     //  Replace that text node with the span, leaving the text nodes to the left

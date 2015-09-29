@@ -198,10 +198,10 @@
     //  dictionary of data used by the isSupported call in the loader to
     //  determine if a browser should be considered supported.
     TP.sys.setcfg('boot.supported_browsers', {
-        ie: [{ major: 11 }],
-        chrome: [{ major: 39 }],
-        firefox: [{ major: 34 }],
-        safari: [{ major: 7 }]
+        ie: [{major: 11}],
+        chrome: [{major: 39}],
+        firefox: [{major: 34}],
+        safari: [{major: 7}]
     });
 
     //  the toggle key for the boot console

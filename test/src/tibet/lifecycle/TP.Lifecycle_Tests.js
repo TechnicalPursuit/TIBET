@@ -126,7 +126,68 @@ function() {
                     'TP.sig.AttachComplete');
             });
     });
+});
 
+//  ------------------------------------------------------------------------
+
+TP.describe('TP: form management',
+function() {
+
+    var unloadURI,
+        windowContext,
+
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    loadURI = TP.uc('~lib_test/src/tibet/lifecycle/FormSubmit_Test.xhtml');
+
+    //  ---
+
+    this.before(
+        function() {
+            windowContext = this.getDriver().get('windowContext');
+        });
+
+    //  ---
+
+    this.it('form - block submission', function(test, options) {
+
+        var driver;
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var submitButton;
+
+                submitButton = TP.byId('submitButton', windowContext, false);
+
+                driver.startSequence().click(submitButton).perform();
+
+                test.then(
+                    function() {
+                        //  Note here how we re-obtain the submit button so that
+                        //  we can test its presence again. The submit event
+                        //  should've been blocked, so the page should've
+                        //  remained where it was and this element should still
+                        //  be on the page.
+                        submitButton = TP.byId('submitButton',
+                                                windowContext,
+                                                false);
+
+                        test.assert.isElement(submitButton);
+                    });
+
+                //  Unload the current page by setting it to the blank
+                driver.setLocation(unloadURI);
+
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+            });
+    });
 });
 
 //  ========================================================================

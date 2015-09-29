@@ -3303,7 +3303,9 @@ function(targetObj, varargs) {
      *     object using the receiver.
      */
 
-    var tpXMLDoc,
+    var target,
+
+        tpXMLDoc,
 
         currentJSONData,
 
@@ -3319,14 +3321,19 @@ function(targetObj, varargs) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
+    target = targetObj;
+
     //  This kind of path will only work against TP.core.JSONContent objects
-    if (!TP.isKindOf(targetObj, TP.core.JSONContent)) {
-        return this.raise('TP.sig.InvalidPath');
+    if (!TP.isKindOf(target, TP.core.JSONContent)) {
+        target = target.$get('$$realData');
+        if (!TP.isKindOf(target, TP.core.JSONContent)) {
+            return this.raise('TP.sig.InvalidPath');
+        }
     }
 
     //  See if the JSONContent object already has corresponding XML content. If
     //  not, create it.
-    tpXMLDoc = targetObj.$get('data');
+    tpXMLDoc = target.$get('data');
     if (!TP.isKindOf(tpXMLDoc, TP.core.XMLDocumentNode)) {
 
         //  Some sleight-of-hand to get our target content object to hold XML
@@ -3342,7 +3349,7 @@ function(targetObj, varargs) {
         //  'plain JSON'. Note that the regular getData() call will package this
         //  an 'enhanced' JSON, which is why - if the data isn't a String - we
         //  get a JSON String representation and then turn it into 'plain JSON'.
-        if (TP.isString(currentJSONData = targetObj.$get('data'))) {
+        if (TP.isString(currentJSONData = target.$get('data'))) {
             currentJSONData = TP.json2js(currentJSONData, false);
         } else if (!TP.isKindOf(currentJSONData, TP.core.Node)) {
             currentJSONData = TP.json2js(TP.js2json(currentJSONData), false);
@@ -3355,7 +3362,7 @@ function(targetObj, varargs) {
         //  object. Note that this is very rarely done - normally a 'slice' of
         //  the data will be retrieved by executing the path and just that slice
         //  will be converted.
-        targetObj.defineMethod(
+        target.defineMethod(
             'getData',
             function() {
                 var tpValueDoc,
@@ -3387,7 +3394,7 @@ function(targetObj, varargs) {
 
         //  Define a local version of 'setData' to set the supplied JavaScript
         //  Object data as an XML representation under the covers.
-        targetObj.defineMethod(
+        target.defineMethod(
             'setData',
             function(aDataObject, shouldSignal) {
                 var rootObj,
@@ -3419,7 +3426,7 @@ function(targetObj, varargs) {
         //  data representation* to signal Change (with the JSONPath as the
         //  aspect - yes, weird, but it works). Note the "this.$get('data')"
         //  here to get that XML representation.
-        targetObj.defineMethod(
+        target.defineMethod(
             'changed',
             function(anAspect, anAction, aDescription) {
 
@@ -3437,7 +3444,7 @@ function(targetObj, varargs) {
         //  JSON, but it is the underlying XML data representation that needs to
         //  be changed and, therefore, we need to adjust those indexes and use
         //  XPaths against that representation.
-        targetObj.defineMethod('insertRowIntoAt',
+        target.defineMethod('insertRowIntoAt',
         function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
             var xpath,
@@ -3516,7 +3523,7 @@ function(targetObj, varargs) {
         //  JSON, but it is the underlying XML data representation that needs to
         //  be changed and, therefore, we need to adjust those indexes and use
         //  XPaths against that representation.
-        targetObj.defineMethod('removeRowFromAt',
+        target.defineMethod('removeRowFromAt',
         function(aCollectionURI, aDeleteIndex) {
 
             var xpath,
@@ -3572,12 +3579,12 @@ function(targetObj, varargs) {
 
         //  Note here how we pass 'false' to not signal change, since all we're
         //  doing is a data conversion.
-        targetObj.set('data', currentJSONData, false);
+        target.set('data', currentJSONData, false);
 
         //  Now, retrieve the XML representation that is sitting in the actual
         //  'data' slot (using $get() to bypass the redefined getData() call
         //  above).
-        tpXMLDoc = targetObj.$get('data');
+        tpXMLDoc = target.$get('data');
     }
 
     //  Make sure that we're holding wrapped XML node
@@ -3590,7 +3597,7 @@ function(targetObj, varargs) {
     //  If the path is empty or just '.', then that's the shortcut to just
     //  return the target object itself.
     if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
-        return targetObj;
+        return target;
     }
 
     //  If we don't have a valid XPath representation of ourself, then try to
@@ -3652,9 +3659,13 @@ function(targetObj, varargs) {
             }
         }
 
+        if (TP.isPlainObject(retVal)) {
+            retVal = TP.hc(retVal);
+        }
+
         //  Make sure to process the final value using converters, etc.
         //  configured for this object.
-        return this.processFinalValue(retVal, targetObj);
+        return this.processFinalValue(retVal, target);
     }
 
     return null;

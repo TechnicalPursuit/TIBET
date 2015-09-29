@@ -41,16 +41,16 @@
     <span bind:scope="urn:tibet:test_person">
 
         <label for="firstNameField">First name: </label>
-        <input type="text" id="firstNameField" bind:io="value: #xpath1(/person/firstname)" tabindex="0"/><br/>
+        <input type="text" id="firstNameField" bind:io="{value: #xpath1(/person/firstname)}" tabindex="0"/><br/>
 
         <label for="lastNameField">Last name: </label>
-        <input type="text" id="lastNameField" bind:io="value: #xpath1(/person/lastname)" tabindex="0"/><br/>
+        <input type="text" id="lastNameField" bind:io="{value: #xpath1(/person/lastname)}" tabindex="0"/><br/>
 
         <label for="descriptionField">Description: </label>
-        <textarea id="descriptionField" bind:io="value: #xpath1(/person/description)" tabindex="0"></textarea><br/>
+        <textarea id="descriptionField" bind:io="{value: #xpath1(/person/description)}" tabindex="0"></textarea><br/>
 
         <label for="genderField">Gender: </label>
-        <select id="genderField" bind:io="value: #xpath1(/person/gender)" tabindex="0">
+        <select id="genderField" bind:io="{value: #xpath1(/person/gender)}" tabindex="0">
             <option value="m">Male</option>
             <option value="f">Female</option>
         </select>
@@ -59,7 +59,7 @@
         <span>Favorite Pet:</span>
         <br/>
 
-        <input type="radio" name="input_radio" value="dog" id="petRadio1" bind:io="checked: #xpath1(/person/pet)"/><label for="petRadio1">Dog</label>
+        <input type="radio" name="input_radio" value="dog" id="petRadio1" bind:io="{checked: #xpath1(/person/pet)}"/><label for="petRadio1">Dog</label>
         <input type="radio" name="input_radio" value="cat" id="petRadio2"/><label for="petRadio2">Cat</label>
         <input type="radio" name="input_radio" value="fish" id="petRadio3"/><label for="petRadio3">Fish</label>
 
@@ -67,7 +67,7 @@
         <span>Favorite Color:</span>
         <br/>
 
-        <input type="checkbox" name="input_checkbox" value="red" id="colorCheckbox1" bind:io="checked: #xpath1(/person/color)"/><label for="colorCheckbox1">Red</label>
+        <input type="checkbox" name="input_checkbox" value="red" id="colorCheckbox1" bind:io="{checked: #xpath1(/person/color)}"/><label for="colorCheckbox1">Red</label>
         <input type="checkbox" name="input_checkbox" value="blue" id="colorCheckbox2"/><label for="colorCheckbox2">Blue</label>
         <input type="checkbox" name="input_checkbox" value="yellow" id="colorCheckbox3"/><label for="colorCheckbox3">Yellow</label>
 
