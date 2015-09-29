@@ -8876,6 +8876,30 @@ function(aThis, anArgArray, whenError, stopOnError) {
 
 //  ------------------------------------------------------------------------
 
+Array.Inst.defineMethod('removeValue',
+function(aValue) {
+
+    /**
+     * @method removeValue
+     * @summary Removes all values in the receiver which are exact matches for
+     *     the value provided. This is a specialized form of compact in which
+     *     the filter function is prebuilt and filters for === aValue;
+     * @param {Object} aValue The value to filter out of the array.
+     * @return {Array} The receiver.
+     */
+
+    if (aValue === undefined) {
+        return this.raise('InvalidParameter');
+    }
+
+    return this.compact(function(val) {
+        return val === aValue;
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 Number.Inst.defineMethod('by',
 function(aStep, aFunction) {
 
