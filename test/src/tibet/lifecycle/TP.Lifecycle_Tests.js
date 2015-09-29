@@ -188,7 +188,10 @@ function() {
                 loadURI.unregister();
             });
     });
-});
+
+    //  Can't test "submit" in PhantomJS because we're not launch from an HTTP
+    //  server.
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
