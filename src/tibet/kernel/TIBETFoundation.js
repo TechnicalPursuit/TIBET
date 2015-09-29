@@ -2628,9 +2628,6 @@ function(aDescriptor, aHandler) {
     //  NOTE this will throw if things aren't proper in the descriptor.
     name = TP.computeHandlerName(descriptor);
 
-    //  Throw out any handler cache, we just defined a new one.
-    this.$set('$$handlers', null);
-
     //  Simple method definition once we have a normalized handler name. Note
     //  however that we need to pass a special flag to keep defineMethod from
     //  whining about us defining a method starting with 'handle'.
