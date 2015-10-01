@@ -530,6 +530,12 @@
 
         msg = '' + message;
 
+        //  Sherpa output in the client uses a signifying value which we don't
+        //  want to output to other console logs so strip that if found.
+        if (/__TSH__NO_VALUE__TSH__/.test(msg)) {
+            return;
+        }
+
         // Determine the level of the message, if any. The parse here depends on
         // TIBET sending a level as a part of the message output, which is
         // normally only done by the phantomReporter in the TIBET boot code.
@@ -790,6 +796,12 @@
     PhantomTSH.tap = function(msg) {
         var str,
             level;
+
+        //  Sherpa output in the client uses a signifying value which we don't
+        //  want to output to other console logs so strip that if found.
+        if (/__TSH__NO_VALUE__TSH__/.test(msg)) {
+            return;
+        }
 
         if (/^#/.test(msg)) {
             // comment
