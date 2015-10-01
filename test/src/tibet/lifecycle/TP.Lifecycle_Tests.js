@@ -189,8 +189,8 @@ function() {
             });
     });
 
-    //  Can't test "submit" in PhantomJS because we're not launch from an HTTP
-    //  server.
+    //  Can't test "submit" in PhantomJS because we're not launching from an
+    //  HTTP server.
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
