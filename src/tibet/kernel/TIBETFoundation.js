@@ -2608,25 +2608,19 @@ function(aDescriptor, aHandler) {
      * @return {Object} The receiver.
      */
 
-    var descriptor,
-        name;
+    var name;
 
     if (!TP.isFunction(aHandler)) {
         return this.raise('InvalidFunction');
     }
 
-    if (TP.isString(aDescriptor) || TP.isType(aDescriptor)) {
-        descriptor = {
-            signal: aDescriptor
-        };
-    } else if (TP.isPlainObject(aDescriptor)) {
-        descriptor = aDescriptor;
-    } else {
+    if (!TP.isString(aDescriptor) &&
+            !TP.isPlainObject(aDescriptor)) {
         return this.raise('InvalidParameter');
     }
 
     //  NOTE this will throw if things aren't proper in the descriptor.
-    name = TP.computeHandlerName(descriptor);
+    name = TP.computeHandlerName(aDescriptor);
 
     //  Simple method definition once we have a normalized handler name. Note
     //  however that we need to pass a special flag to keep defineMethod from

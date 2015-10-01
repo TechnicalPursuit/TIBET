@@ -225,7 +225,18 @@ function() {
     keyboardSM = TP.core.StateMachine.construct();
 
     this.set('keyboardStateMachine', keyboardSM);
+/*
+ * with these the keyboard runs fast again...but fails to find handlers. sigh.
+    keyboardSM.defineHandler('NormalInput', function(aSignal) {
+        aSignal.shouldStop(true);
+        return;
+    });
 
+    keyboardSM.defineHandler('EvalmarkingInput', function(aSignal) {
+        aSignal.shouldStop(true);
+        return;
+    });
+*/
     keyboardSM.setTriggerSignals(TP.ac('TP.sig.DOMKeyDown', 'TP.sig.DOMKeyUp'));
     keyboardSM.setTriggerOrigins(TP.ac(TP.core.Keyboard));
 

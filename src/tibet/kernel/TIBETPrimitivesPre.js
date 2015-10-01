@@ -1798,7 +1798,8 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         itemkey;
 
     //  Need a name for metadata key.
-    if (TP.notValid(iname = anItem[TP.NAME])) {
+    //if (TP.notValid(iname = anItem[TP.NAME])) {
+    if (!(iname = anItem[TP.NAME])) {
         return;
     }
 
@@ -1813,7 +1814,9 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (/^handle/.test(iname)) {
-                TP.sys.$$meta_handlers.atPut(iname, iname);
+                // if (TP.notValid(TP.sys.$$meta_handlers.at(iname))) {
+                    TP.sys.$$meta_handlers.atPut(iname, iname);
+                //}
             }
 
             // if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
@@ -2191,6 +2194,9 @@ function(target, name, value, track, desc, display, owner, $handler) {
     //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         TP.sys.addMetadata(own, value, TP.METHOD, trk);
+    } else if (name.match(/^handle/)) {
+        //  still make sure we track handler names for getBestHandlerNames call.
+        TP.sys.$$meta_handlers.atPut(name, name);
     }
 
     return method;

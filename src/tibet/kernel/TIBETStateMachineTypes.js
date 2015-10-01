@@ -1067,7 +1067,9 @@ function(details) {
         }
 
         //  Note that if the signal has been stopped this won't do much.
-        signal.fire();
+        if (!signal.shouldStop() && !signal.shouldStopImmediately()) {
+            signal.fire();
+        }
 
     } else {
 
@@ -1097,11 +1099,11 @@ function(details) {
         }
 
         //  Note that if the signal has been stopped this won't do much.
-        signal.fire();
-
+        if (!signal.shouldStop() && !signal.shouldStopImmediately()) {
+            signal.fire();
+        }
 
         //  Now go ahead and do the state transition
-
 
         //  When processing a start state there is no state to exit.
         if (TP.notEmpty(oldState)) {

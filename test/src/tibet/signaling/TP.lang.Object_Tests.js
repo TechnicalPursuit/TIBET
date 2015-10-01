@@ -217,7 +217,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
 
         //  We could've also used
-        handler = TP.test.HandlerTestLevel1.getBestHandler(signal, TP.ANY)
+        handler = TP.test.HandlerTestLevel1.getBestHandler(signal)
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(
@@ -240,7 +240,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
         signal.setOrigin(sigOrigin.getID());
 
-        handler = TP.test.HandlerTestLevel1.getBestHandler(signal, TP.ANY);
+        handler = TP.test.HandlerTestLevel1.getBestHandler(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,
@@ -284,7 +284,7 @@ function() {
 
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
 
-        handler = TP.test.HandlerTestLevel1.getBestHandler(signal, TP.ANY);
+        handler = TP.test.HandlerTestLevel1.getBestHandler(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(
@@ -336,7 +336,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
         signal.setOrigin(sigOrigin.getID());
 
-        handler = TP.test.HandlerTestLevel1.getBestHandler(signal, TP.ANY);
+        handler = TP.test.HandlerTestLevel1.getBestHandler(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(handler,
