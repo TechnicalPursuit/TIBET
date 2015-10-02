@@ -212,22 +212,43 @@ function(aRequest) {
      *     produced by this type when it is compiled. The default is to compute
      *     an XHTML class name from this type's typename and supply it under the
      *     'class' key.
-     * @param {TP.sig.ShellRequest} aRequest The request containing command
-     *     input for the shell.
-     * @returns {TP.core.Hash} A hash of attributes to be added to the compiled
-     *     output from this type.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {TP.core.Hash|null} A hash of attributes to be added to the
+     *     compiled output from this type.
      */
 
-    var elem;
+    var elem,
+
+        sources,
+        sourceElem,
+
+        classes;
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        return TP.hc();
+        return null;
     }
 
-    return TP.hc('class', TP.qname(elem).replace(':', '-') + ' ' +
-                            TP.elementGetAttribute(elem, 'class'),
-                    'tibet:phase', 'Compile');
+    //  If we have source elements, grab the first one and get it's 'class name'
+    //  values.
+    if (TP.isArray(sources = aRequest.getPayload().at('sources'))) {
+        if (TP.isElement(sourceElem = sources.first())) {
+            classes = TP.elementGetAttribute(sourceElem, 'class').split(' ');
+        }
+    }
+
+    //  If we have class names, add them to the destination element if they're
+    //  not already there.
+    if (TP.isArray(classes)) {
+        classes.forEach(
+                function(aClassName) {
+                    //  This will only add the class if it isn't already there.
+                    TP.elementAddClass(elem, aClassName);
+                });
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
