@@ -65,10 +65,12 @@ function(aRequest) {
 
     elem = aRequest.at('node');
 
-    //  TODO: why stamp? isn't it enough to have tibet:tag on the element?
     //  Make sure that the element gets stamped with a 'tibet:ctrl' of
-    //  its tag's QName
-    TP.elementSetAttribute(elem, 'tibet:ctrl', TP.qname(elem), true);
+    //  its tag type's type name.
+    TP.elementSetAttribute(elem,
+                            'tibet:ctrl',
+                            TP.core.ElementNode.getConcreteType(elem).getName(),
+                            true);
 
     //  If the type (but not inherited - just at the individual type level)
     //  has specified 'required attributes' that need to be populated on all
