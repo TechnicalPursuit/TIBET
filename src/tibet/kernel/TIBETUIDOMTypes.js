@@ -3965,6 +3965,12 @@ function(beDisabled) {
      */
 
     if (TP.isTrue(beDisabled)) {
+
+        //  Make sure to remove the pseudoclass attributes for active and focus
+        //  when disabling.
+        this.$isInState('pclass:active', false, false);
+        this.$isInState('pclass:focus', false, false);
+
         //  We go ahead and set a generic 'disabled' attribute here that is used
         //  for (X)HTML. Note the '$setAttribute()' call to avoid calling back
         //  into ourself here. Note also how we do *not* signal change here.
