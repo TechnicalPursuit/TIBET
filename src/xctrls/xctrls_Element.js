@@ -119,6 +119,46 @@ function(aRequest) {
     return;
 });
 
+//  ========================================================================
+//  TP.xctrls.CompiledXCtrlsTag
+//  ========================================================================
+
+/**
+ * @type {TP.xctrls.CompiledXCtrlsTag}
+ * @summary A tag type that is compiled and also has the common aspect of all
+ *     XControls tags.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompiledTag.defineSubtype('xctrls.CompiledXCtrlsTag');
+TP.xctrls.CompiledXCtrlsTag.addTraits(TP.xctrls.Element);
+
+//  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
+//  and execute the one inherited from TP.core.CompiledTag afterwards as well.
+TP.xctrls.CompiledXCtrlsTag.Type.resolveTrait(
+                                'tagCompile', TP.xctrls.Element, TP.BEFORE);
+
+//  ========================================================================
+//  TP.xctrls.TemplatedXCtrlsTag
+//  ========================================================================
+
+/**
+ * @type {TP.xctrls.TemplatedXCtrlsTag}
+ * @summary A tag type that is templated and also has the common aspect of all
+ *     XControls tags.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.defineSubtype('xctrls.TemplatedXCtrlsTag');
+TP.xctrls.TemplatedXCtrlsTag.addTraits(TP.xctrls.Element);
+
+//  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
+//  and execute the one inherited from TP.core.TemplatedTag afterwards as well.
+TP.xctrls.TemplatedXCtrlsTag.Type.resolveTrait(
+                                'tagCompile', TP.xctrls.Element, TP.BEFORE);
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
