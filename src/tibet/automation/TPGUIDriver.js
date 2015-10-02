@@ -664,12 +664,12 @@ function(mouseLocation, mouseButton) {
      *     to is executed* (which won't happen until the 'perform()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
-     *     The mouse location, given as either a target Element, an AccessPath
-     *     that can be used to find the element, a Point that will be used with
-     *     the currently focused element or as a mouse button constant, in which
-     *     case the currently focused element will be used. If this parameter is
-     *     not supplied or null, the currently focused element will be used as
-     *     well.
+     *     The mouse target location, given as either a target Element, an
+     *     AccessPath that can be used to find the element, a Point that will be
+     *     used with the currently focused element or as a mouse button
+     *     constant, in which case the currently focused element will be used.
+     *     If this parameter is not supplied or null, the currently focused
+     *     element will be used as well.
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
@@ -798,12 +798,12 @@ function(mouseLocation, mouseButton) {
      *     to is executed* (which won't happen until the 'perform()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
-     *     The mouse location, given as either a target Element, an AccessPath
-     *     that can be used to find the element, a Point that will be used with
-     *     the currently focused element or as a mouse button constant, in which
-     *     case the currently focused element will be used. If this parameter is
-     *     not supplied or null, the currently focused element will be used as
-     *     well.
+     *     The mouse target location, given as either a target Element, an
+     *     AccessPath that can be used to find the element, a Point that will be
+     *     used with the currently focused element or as a mouse button
+     *     constant, in which case the currently focused element will be used.
+     *     If this parameter is not supplied or null, the currently focused
+     *     element will be used as well.
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
@@ -1069,12 +1069,12 @@ function(mouseLocation, mouseButton) {
      *     to is executed* (which won't happen until the 'perform()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
-     *     The mouse location, given as either a target Element, an AccessPath
-     *     that can be used to find the element, a Point that will be used with
-     *     the currently focused element or as a mouse button constant, in which
-     *     case the currently focused element will be used. If this parameter is
-     *     not supplied or null, the currently focused element will be used as
-     *     well.
+     *     The mouse target location, given as either a target Element, an
+     *     AccessPath that can be used to find the element, a Point that will be
+     *     used with the currently focused element or as a mouse button
+     *     constant, in which case the currently focused element will be used.
+     *     If this parameter is not supplied or null, the currently focused
+     *     element will be used as well.
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
@@ -1168,12 +1168,12 @@ function(mouseLocation, mouseButton) {
      *     to is executed* (which won't happen until the 'perform()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
-     *     The mouse location, given as either a target Element, an AccessPath
-     *     that can be used to find the element, a Point that will be used with
-     *     the currently focused element or as a mouse button constant, in which
-     *     case the currently focused element will be used. If this parameter is
-     *     not supplied or null, the currently focused element will be used as
-     *     well.
+     *     The mouse target location, given as either a target Element, an
+     *     AccessPath that can be used to find the element, a Point that will be
+     *     used with the currently focused element or as a mouse button
+     *     constant, in which case the currently focused element will be used.
+     *     If this parameter is not supplied or null, the currently focused
+     *     element will be used as well.
      * @param {Constant} mouseButton A mouse button constant. This parameter is
      *     usually used if the mouseLocation parameter has a real value and
      *     can't be used to specify the mouse button.
