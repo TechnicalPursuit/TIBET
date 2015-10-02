@@ -545,6 +545,30 @@ TP.sys.$windowglobals = [
     'window'
 ];
 
+//  Unfortunately, some user-agents like to report accessing of certain global
+//  slots to the console and the only way to prevent this is to have a
+//  user-agent-specific list of these slots.
+TP.sys.$excludedGlobals = [];
+
+//  Chrome 46
+if (TP.sys.isUA('chrome')) {
+    TP.sys.$excludedGlobals.push(
+            'webkitAudioContext',
+            'webkitIDBCursor',
+            'webkitIDBDatabase',
+            'webkitIDBFactory',
+            'webkitIDBIndex',
+            'webkitIDBKeyRange',
+            'webkitIDBObjectStore',
+            'webkitIDBRequest',
+            'webkitIDBTransaction',
+            'webkitIndexedDB',
+            'webkitOfflineAudioContext',
+            'webkitStorageInfo',
+            'webkitURL'
+    );
+}
+
 //  Any remaining globally-accessible slots will be placed by the finalization
 //  code into a structure under TP.sys.$extraglobals. Slots that you might see
 //  in that structure include the following (taken from Firefox 27):
