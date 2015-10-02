@@ -4878,13 +4878,15 @@ function(propertyName, resolution, resolutionOption) {
         entry.atPut('resolvesToType', aType);
     };
 
+    //  Make sure to obtain any previous value that this slot had, but don't
+    //  trip the resolution machinery doing so.
+    TP.$$no_exec_trait_resolution = true;
+    prevValue = this[propertyName];
+    TP.$$no_exec_trait_resolution = false;
+
     //  If this property already had a resolutions entry, then we get any
     //  previous value that would've gotten computed.
     if (TP.isValid(resolutions.at(propertyName))) {
-
-        TP.$$no_exec_trait_resolution = true;
-        prevValue = this[propertyName];
-        TP.$$no_exec_trait_resolution = false;
 
         //  If there's already an ECMA5 'getter' at that slot and it has a
         //  'finalVal', slot then clear it.
@@ -5118,13 +5120,15 @@ function(propertyName, resolution, resolutionOption) {
         entry.atPut('resolvesToType', aType);
     };
 
+    //  Make sure to obtain any previous value that this slot had, but don't
+    //  trip the resolution machinery doing so.
+    TP.$$no_exec_trait_resolution = true;
+    prevValue = this[propertyName];
+    TP.$$no_exec_trait_resolution = false;
+
     //  If this property already had a resolutions entry, then we get any
     //  previous value that would've gotten computed.
     if (TP.isValid(resolutions.at(propertyName))) {
-
-        TP.$$no_exec_trait_resolution = true;
-        prevValue = this[propertyName];
-        TP.$$no_exec_trait_resolution = false;
 
         //  If there's already an ECMA5 'getter' at that slot and it has a
         //  'finalVal', slot then clear it.
