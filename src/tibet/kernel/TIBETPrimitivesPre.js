@@ -1707,12 +1707,14 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
     TP.sys.$$meta_types = TP.hc();
     TP.sys.$$meta_attributes = TP.hc();
+    TP.sys.$$meta_handlers = TP.hc();
     TP.sys.$$meta_methods = TP.hc();
     TP.sys.$$meta_owners = TP.hc();
     TP.sys.$$meta_pathinfo = TP.hc();
 
     TP.sys.$$metadata = TP.hc('types', TP.sys.$$meta_types,
                                 'attributes', TP.sys.$$meta_attributes,
+                                'handlers', TP.sys.$$meta_handlers,
                                 'methods', TP.sys.$$meta_methods,
                                 'owners', TP.sys.$$meta_owners,
                                 'pathinfo', TP.sys.$$meta_pathinfo);
@@ -1796,7 +1798,8 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         itemkey;
 
     //  Need a name for metadata key.
-    if (TP.notValid(iname = anItem[TP.NAME])) {
+    //if (TP.notValid(iname = anItem[TP.NAME])) {
+    if (!(iname = anItem[TP.NAME])) {
         return;
     }
 
@@ -1810,7 +1813,13 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
 
-            if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
+            if (/^handle/.test(iname)) {
+                // if (TP.notValid(TP.sys.$$meta_handlers.at(iname))) {
+                    TP.sys.$$meta_handlers.atPut(iname, iname);
+                //}
+            }
+
+            // if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
                 TP.sys.$$meta_methods.atPut(gname, anItem);
 
                 //  owners are keyed by name and point to a vertical-bar
@@ -1825,7 +1834,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                     TP.sys.$$meta_owners.atPut(iname,
                         owners += TP.JOIN + tname);
                 }
-            }
+            //}
 
             break;
 
@@ -1834,7 +1843,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
 
-            if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
+            //if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
                 TP.sys.$$meta_attributes.atPut(gname, anItem);
 
                 //  If the item has a 'value' slot and the value there responds
@@ -1866,16 +1875,16 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
                     pathinfo[itemkey].push(iname);
                 }
-            }
+            //}
 
             break;
 
         case TP.SUBTYPE:
 
             //  don't overlay information we've already collected
-            if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
+//            if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
                 TP.sys.$$meta_types.atPut(iname, anItem);
-            }
+ //           }
 
             break;
 
@@ -2185,6 +2194,9 @@ function(target, name, value, track, desc, display, owner, $handler) {
     //  Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         TP.sys.addMetadata(own, value, TP.METHOD, trk);
+    } else if (name.match(/^handle/)) {
+        //  still make sure we track handler names for getBestHandlerNames call.
+        TP.sys.$$meta_handlers.atPut(name, name);
     }
 
     return method;

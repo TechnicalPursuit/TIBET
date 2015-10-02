@@ -92,7 +92,7 @@ function(ensureUniqueness) {
         id = TP.genID(id);
     }
 
-    return id;
+    return '' + id;
 });
 
 //  ------------------------------------------------------------------------
@@ -1561,20 +1561,20 @@ function(aString, transformParams) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getBestHandler',
-function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
+function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skip) {
 
     /**
      * @method getBestHandler
      * @summary Returns the specific function or method which the receiver
      *     would (or did) leverage to respond to the signal provided.
-     * @description Note that the startSignalName parameter contains an optional
+     * @description Note that the startSignal parameter contains an optional
      *     signal name to 'start consideration' from. The computation machinery
      *     in this method will always derive it's signal names by querying
      *     aSignal, but sometimes the caller already knows that it wants to
      *     'skip ahead' to consider signals further down in the chain (the
      *     INHERITANCE_FIRING policy in the notification system does this).
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @param {String} [startSignalName] The signal name to start considering
+     * @param {String} [startSignal] The signal name to start considering
      *     handlers if the supplied signal has more than one signal name. This
      *     parameter is optional and, if not supplied, all of the signal names
      *     as computed from the supplied signal will be used.
@@ -1590,32 +1590,134 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
      *     was) invoked.
      */
 
+    var handlerNames,
+        len,
+        i,
+        name;
+
+    handlerNames = this.getBestHandlerNames(
+        aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skip);
+
+    len = handlerNames.length;
+    switch (len) {
+        case 0:
+            //  TODO:   add cfg flag check here
+            TP.ifTrace() ? TP.trace('Handlers: none') : 0;
+            return;
+        case 1:
+            //  A lot of signals end up resolving to 'handleSignalFromANYWhenANY'
+            name = handlerNames[0];
+            //  TODO:   add cfg flag check here
+            TP.ifTrace() ? TP.trace('Handlers: ' + name) : 0;
+            if (TP.canInvoke(this, name)) {
+                return this[name];
+            }
+            return;
+        default:
+            //  TODO:   add cfg flag check here
+            TP.ifTrace() ? TP.trace('Handlers: ' + handlerNames.join(', ')) : 0;
+            for (i = 0; i < len; i++) {
+                name = handlerNames[i];
+                if (TP.canInvoke(this, name)) {
+                    return this[name];
+                }
+            }
+            return;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getBestHandlerNames',
+function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
+
+    /**
+     * @method getBestHandlerNames
+     * @summary Scans handler metadata and returns a sorted array of handler
+     *     names which are viable for the signal and conditions provided.
+     * @param {TP.core.Signal} aSignal The signal instance to respond to.
+     * @param {String} [startSignal] The signal name to start considering
+     *     handlers if the supplied signal has more than one signal name. This
+     *     parameter is optional and, if not supplied, all of the signal names
+     *     as computed from the supplied signal will be used.
+     * @param {Boolean} [dontTraverseSpoofs=false] True will mean that
+     *     traversing up the supertype chain will be disabled for 'spoofed'
+     *     signals (i.e. signals where the signal name doesn't match the type
+     *     name).
+     * @param {Boolean} [dontTraverse=false] True will turn off any form of
+     *     signal hierarchy traversal.
+     * @param {String} [skipName] A string used to mask off certain handler names
+     *     such as high-level default handlers.
+     * @return {Array.<String>} An array of viable signal handler names.
+     */
+
     var orgid,
-
-        signame,
-
-        handlers,
-
-        hasOrigin,
-
-        states,
-
-        j,
-        state,
+        signalNames,
         capturing,
-
-        key,
-        handler,
-
-        fName,
-        sigTypeNames,
-        typeName,
-        startNameIndex,
-        i;
+        states,
+        expression,
+        index,
+        regex,
+        names,
+        obj;
 
     if (TP.notValid(aSignal)) {
         return;
     }
+
+    expression = 'handle';
+
+    //  ---
+    //  Signal
+    //  ---
+
+    //  TODO: ensure we collect the right list when spoofing is in place.
+    //  getSignalNames usually masks the actual signal with spoofs.
+
+    //  If we're not traversing or the signal is spoofing its name and we're
+    //  not traversing for spoofed instances it's a single signal check.
+    if (TP.isTrue(dontTraverse) ||
+            TP.isTrue(dontTraverseSpoofs) && aSignal.isSpoofed()) {
+        signalNames = [aSignal.getSignalName()];
+    } else {
+        signalNames = aSignal.getTypeSignalNames();
+        if (aSignal.isSpoofed()) {
+            //  Type signal name list is most-to-least-specific.
+            signalNames.unshift(aSignal.getSignalName());
+        }
+
+        //  We're going to be checking a list of one or more signals. The list
+        //  has to take into account the startSignal and any skipName.
+        if (TP.notEmpty(startSignal) &&
+                (index = signalNames.indexOf(startSignal)) !== TP.NOT_FOUND) {
+            signalNames = signalNames.slice(index);
+        }
+    }
+
+    signalNames = signalNames.map(function(name) {
+        //  NOTE that if we don't use '' prefix we get back String objects and
+        //  indexOf won't work later on.
+        return '' + name.replace(/^TP\.sig\./, '').asJSIdentifier();
+    });
+
+    if (TP.notEmpty(skipName)) {
+        signalNames.removeValue(skipName.replace(/^TP\.sig\./, ''));
+    }
+
+    expression += '(' + signalNames.join('|') + ')';
+
+    //  ---
+    //  Phase
+    //  ---
+
+    capturing = aSignal.getPhase() === TP.CAPTURING_PHASE;
+    if (capturing) {
+        expression += 'Capture';
+    }
+
+    //  ---
+    //  From
+    //  ---
 
     //  Process the origin.
     orgid = TP.ifInvalid(aSignal.getOrigin(), '');
@@ -1627,17 +1729,15 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
         orgid = '';
     }
 
-    signame = aSignal.getSignalName();
-    capturing = aSignal.getPhase() === TP.CAPTURING_PHASE;
-
-    //  Build the handler cache for the receiver.
-    handlers = this.$get('$$handlers');
-    if (TP.notValid(handlers)) {
-        handlers = TP.hc();
-        this.$set('$$handlers', handlers, false);
+    if (TP.isEmpty(orgid)) {
+        expression += 'From(' + TP.ANY + ')';
+    } else {
+        expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' + TP.ANY + ')';
     }
 
-    hasOrigin = TP.isEmpty(orgid) ? false : true;
+    //  ---
+    //  When
+    //  ---
 
     //  Get the state list from either the receiver or the application (with
     //  preference given to the receiver).
@@ -1647,229 +1747,94 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse, skip) {
         states = TP.sys.getApplication().getCurrentStates();
     }
 
-    //  Force at least one iteration to happen even if there's no current state
-    //  machine/state value.
     if (TP.isEmpty(states)) {
-        states.push(null);
+        expression += 'When(' + TP.ANY + ')';
+    } else {
+        states = states.map(function(state) {
+            return state.asTitleCase();
+        });
+        expression += 'When(' + states.join('|') + '|' + TP.ANY + ')';
     }
 
-    for (j = 0; j < states.getSize(); j++) {
-        state = states.at(j);
+    //  ---
+    //  Scan Handler Metadata
+    //  ---
 
-        //  Create a key we can use for cache lookups to avoid name generation
-        //  overhead for repeated queries.
-        key = signame + '.' + aSignal.getTypeName() + '.' +
-                    TP.ifEmpty(orgid, TP.ANY) + '.' +
-                    TP.ifEmpty(state, TP.ANY) + '.' +
-                    capturing + '.' +
-                    (dontTraverseSpoofs || false) + '.' +
-                    (dontTraverse || false) + '.' +
-                    (startSignalName || signame);
-
-        //  Check the receiver's handler cache.
-        handler = handlers.at(key);
-        if (handler === TP.NO_RESULT) {
-            return;
-        } else if (TP.isValid(handler)) {
-            //  We have to observe skip semantics or risk things like
-            //  recursions even if we've previously cached a value.
-            if (skip) {
-                if (TP.name(handler) !== skip) {
-                    return handler;
-                }
-            } else {
-                return handler;
-            }
-        }
-
-        /* eslint-disable indent */
-
-        //  If the startSignalName wasn't supplied or it's the same as the
-        //  signal's 'direct' signal name, or it's TP.ANY, then go ahead and
-        //  consider that the receiver may have the handler directly on it
-        //  without traversing the signal type chain.
-        if (TP.isEmpty(startSignalName) ||
-            startSignalName === signame ||
-            startSignalName === TP.ANY) {
-
-            //  check first for explicit one to avoid overhead when the handler
-            //  is specific to the signal
-
-            if (hasOrigin) {
-
-                //  Specific origin, specific state
-                if (state !== null) {
-                    fName = TP.computeHandlerName({
-                                origin: orgid,
-                                signal: startSignalName || signame,
-                                state: state,
-                                capturing: capturing
-                            });
-                if (fName !== skip && TP.canInvoke(this, fName)) {
-                        handler = this[fName];
-                        handlers.atPut(key, handler);
-                        return handler;
-                    }
-                }
-
-                //  Specific origin, no specific state
-                fName = TP.computeHandlerName({
-                            origin: orgid,
-                            signal: startSignalName || signame,
-                            capturing: capturing
-                        });
-                if (fName !== skip && TP.canInvoke(this, fName)) {
-                    handler = this[fName];
-                    handlers.atPut(key, handler);
-                    return handler;
-                }
-            }
-
-            //  No specific origin, specific state
-            if (state !== null) {
-                fName = TP.computeHandlerName({
-                            signal: startSignalName || signame,
-                            state: state,
-                            capturing: capturing
-                        });
-                if (fName !== skip && TP.canInvoke(this, fName)) {
-                    handler = this[fName];
-                    handlers.atPut(key, handler);
-                    return handler;
-                }
-            }
-
-            //  No specific origin, no specific state
-            fName = TP.computeHandlerName({
-                        signal: startSignalName || signame,
-                        capturing: capturing
-                    });
-            if (fName !== skip && TP.canInvoke(this, fName)) {
-                handler = this[fName];
-                handlers.atPut(key, handler);
-                return handler;
-            }
-        }
-
-        if (dontTraverse) {
-            if (!handlers.hasKey(key)) {
-                handlers.atPut(key, TP.NO_RESULT);
-            }
-            return;
-        }
-
-        //  If the signal is spoofed, then we want all of the signal names based
-        //  on type, including the one for the actual type of the signal. This
-        //  is because the *signal* name of the signal will be the spoofed name,
-        //  whereas the *type* name of the signal will be it's real concrete
-        //  type and we want that to be considered as well.
-        if (aSignal.isSpoofed()) {
-            if (dontTraverseSpoofs) {
-                if (!handlers.hasKey(key)) {
-                    handlers.atPut(key, TP.NO_RESULT);
-                }
-                return;
-            }
-
-            //  Since the type name isn't the same as the signal name, we must
-            //  start checking at the actual type name of the signal.
-            sigTypeNames = aSignal.getTypeSignalNames();
-        } else {
-            //  Since the type name is the same as the signal name, we can start
-            //  checking at the supertype name of the signal.
-            sigTypeNames = aSignal.getSupertypeSignalNames();
-        }
-
-        //  If a startSignalName was supplied and it can be found in the list of
-        //  computed signal names, then slice off all signal names in the list
-        //  *before* that.
-        if (TP.notEmpty(startSignalName) &&
-                (startNameIndex = sigTypeNames.indexOf(startSignalName)) !==
-                                                                TP.NOT_FOUND) {
-            sigTypeNames = sigTypeNames.slice(startNameIndex);
-        }
-
-        for (i = 0; i < sigTypeNames.getSize(); i++) {
-
-            typeName = sigTypeNames.at(i);
-
-            if (TP.isType(TP.sys.getTypeByName(typeName))) {
-
-                //  Note here how we do *not* use aSignal's signal name as the
-                //  'signal' property to these methods... we want to use just
-                //  the signal type's signal name, not any override (i.e.
-                //  spoofed name) supplied by the aSignal instance.
-
-                if (hasOrigin) {
-
-                    if (state !== null) {
-                        fName = TP.computeHandlerName({
-                                    signal: typeName,
-                                    origin: orgid,
-                                    state: state,
-                                    capturing: capturing
-                                });
-
-                        if (fName !== skip && TP.canInvoke(this, fName)) {
-                            handler = this[fName];
-                            handlers.atPut(key, handler);
-                            return handler;
-                        }
-                    }
-
-                    fName = TP.computeHandlerName({
-                                signal: typeName,
-                                origin: orgid,
-                                capturing: capturing
-                            });
-
-                    if (fName !== skip && TP.canInvoke(this, fName)) {
-                        handler = this[fName];
-                        handlers.atPut(key, handler);
-                        return handler;
-                    }
-                }
-
-                if (state !== null) {
-                    fName = TP.computeHandlerName({
-                                signal: typeName,
-                                state: state,
-                                capturing: capturing
-                            });
-
-                    if (fName !== skip && TP.canInvoke(this, fName)) {
-                        handler = this[fName];
-                        handlers.atPut(key, handler);
-                        return handler;
-                    }
-                }
-
-                fName = TP.computeHandlerName({
-                        signal: typeName,
-                        capturing: capturing
-                    });
-
-                if (fName !== skip && TP.canInvoke(this, fName)) {
-                    handler = this[fName];
-                    handlers.atPut(key, handler);
-                    return handler;
-                }
-            }
-        }
-        /* eslint-enable indent */
-
-        if (!handlers.hasKey(key)) {
-            handlers.atPut(key, TP.NO_RESULT);
-        }
+    regex = RegExp.construct(expression);
+    if (TP.notValid(regex)) {
+        //  TODO:   expression problems...
+        return;
     }
 
-    return;
-});
+//  TODO: make this "official". but BEWARE!!! you can't log these to the DOM or
+//  things go to hell in a hurry.
+/*
+if (!expression.match(/DOMMouse/)) {
+top.console.log('getBestHandlerNames: ' + expression);
+}
+*/
+
+    //  This is where the magic happens ;)
+    obj = this;
+    names = TP.sys.$$meta_handlers.getKeys().filter(function(key) {
+        return regex.test(key) && TP.canInvoke(obj, key);
+    });
+
+    //  ---
+    //  Sort
+    //  ---
+
+    names.sort(function(a, b) {
+        var aMatch,
+            bMatch,
+            aIndex,
+            bIndex;
+
+        aMatch = TP.regex.SPLIT_HANDLER_NAME.match(a);
+        bMatch = TP.regex.SPLIT_HANDLER_NAME.match(b);
+
+        aIndex = signalNames.indexOf(aMatch[1]);
+        bIndex = signalNames.indexOf(bMatch[1]);
+
+        if (aIndex === -1 || bIndex === -1) {
+            //  TODO:   log a nice warning/error here. shouldn't happen.
+            void 0;
+        }
+
+        //  Signal types need to be ordered via inheritance/spoof order and the
+        //  signal name is always the first sort index.
+        if (aIndex < bIndex) {
+            return -1;
+        }
+
+        if (aIndex === bIndex) {
+
+            //  Secondary option is origins. Concrete before TP.ANY :)
+            if (aMatch[4] === bMatch[4]) {
+                //  Ternary index is state. Should be concrete before TP.ANY.
+                if (aMatch[6] === bMatch[6]) {
+                    return 0;
+                } else if (aMatch[6] === TP.ANY) {
+                    return 1;
+                }
+                return -1;
+            } else if (aMatch[4] === TP.ANY) {
+                return 1;
+            }
+            return -1;
+        }
+
+        //  aIndex > bIndex
+        return 1;
+    });
+
+    return names;
+})
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('handle',
-function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
+function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse) {
 
     /**
      * @method handle
@@ -1882,7 +1847,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
      *     to serve as a generic signal catcher or handleChange() as a generic
      *     Change handler for example.
      * @param {TP.core.Signal} aSignal The specific signal to handle.
-     * @param {String} [startSignalName] The signal name to start considering
+     * @param {String} [startSignal] The signal name to start considering
      *     handlers if the supplied signal has more than one signal name. This
      *     parameter is optional and, if not supplied, all of the signal names
      *     as computed from the supplied signal will be used.
@@ -1898,7 +1863,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
     var handlerFunc;
 
     handlerFunc = this.getBestHandler(
-        aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
+        aSignal, startSignal, dontTraverseSpoofs, dontTraverse);
 
     if (TP.isCallable(handlerFunc)) {
         return handlerFunc.call(this, aSignal);
@@ -1916,7 +1881,7 @@ function(aSignal, startSignalName, dontTraverseSpoofs, dontTraverse) {
         if (this.hasWindow()) {
             target = TP.uc(TP.gid(this));
             handlerFunc = target.getBestHandler(
-                aSignal, startSignalName, dontTraverseSpoofs, dontTraverse);
+                aSignal, startSignal, dontTraverseSpoofs, dontTraverse);
             if (TP.isCallable(handlerFunc)) {
                 //  BILL - this throws on URI getResource bound to a Node.
                 return handlerFunc.call(this, aSignal);
@@ -3150,32 +3115,6 @@ function() {
 //  TP.FunctionProto - SIGNAL HANDLING
 //  ------------------------------------------------------------------------
 
-TP.FunctionProto.defineMethod('getBestHandler',
-function(aSignal) {
-
-    /**
-     * @method getBestHandler
-     * @summary Returns the specific function or method which the receiver
-     *     would (or did) leverage to respond to the signal provided.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @returns {Function} The specific function or method that would be (or
-     *     was) invoked.
-     */
-
-    //  non-type function objects simply return themselves since they're what
-    //  will be invoked to produce the response
-    if (!TP.isType(this)) {
-        return this;
-    }
-
-    //  find the best handle* method, and fallback with handleSignal*
-    return this.getBestMethod(arguments, aSignal,
-                                'handle', '',
-                                TP.computeHandlerName('Signal'));
-});
-
-//  ------------------------------------------------------------------------
-
 TP.FunctionProto.defineMethod('handle',
 function(aSignal) {
 
@@ -3199,11 +3138,14 @@ function(aSignal) {
         return this(aSignal);
     }
 
+    if (!TP.canInvoke(this, 'construct')) {
+        return this.raise('TP.sig.InvalidHandler', 'Unable to construct handler instance.');
+    }
+
     //  if we're a type then we try to construct an instance and get it to
     //  handle things
     if (TP.notValid(inst = this.construct())) {
-        return this.raise('TP.sig.InvalidHandler',
-                            'Unable to construct handler instance.');
+        return this.raise('TP.sig.InvalidHandler', 'Unable to construct handler instance.');
     }
 
     return inst.handle(aSignal);

@@ -2608,28 +2608,19 @@ function(aDescriptor, aHandler) {
      * @return {Object} The receiver.
      */
 
-    var descriptor,
-        name;
+    var name;
 
     if (!TP.isFunction(aHandler)) {
         return this.raise('InvalidFunction');
     }
 
-    if (TP.isString(aDescriptor) || TP.isType(aDescriptor)) {
-        descriptor = {
-            signal: aDescriptor
-        };
-    } else if (TP.isPlainObject(aDescriptor)) {
-        descriptor = aDescriptor;
-    } else {
+    if (!TP.isString(aDescriptor) &&
+            !TP.isPlainObject(aDescriptor)) {
         return this.raise('InvalidParameter');
     }
 
     //  NOTE this will throw if things aren't proper in the descriptor.
-    name = TP.computeHandlerName(descriptor);
-
-    //  Throw out any handler cache, we just defined a new one.
-    this.$set('$$handlers', null);
+    name = TP.computeHandlerName(aDescriptor);
 
     //  Simple method definition once we have a normalized handler name. Note
     //  however that we need to pass a special flag to keep defineMethod from
@@ -8873,6 +8864,30 @@ function(aThis, anArgArray, whenError, stopOnError) {
     runner();
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('removeValue',
+function(aValue) {
+
+    /**
+     * @method removeValue
+     * @summary Removes all values in the receiver which are exact matches for
+     *     the value provided. This is a specialized form of compact in which
+     *     the filter function is prebuilt and filters for === aValue;
+     * @param {Object} aValue The value to filter out of the array.
+     * @return {Array} The receiver.
+     */
+
+    if (aValue === undefined) {
+        return this.raise('InvalidParameter');
+    }
+
+    return this.compact(function(val) {
+        return val === aValue;
+    });
+
 });
 
 //  ------------------------------------------------------------------------

@@ -3349,6 +3349,10 @@ function(anEntry) {
     layout = this.getLayout();
     content = layout.layout(anEntry).at('content');
 
+    if (TP.TSH_NO_VALUE.match(content)) {
+        return this;
+    }
+
     try {
         top.console[writer](content);
     } catch (e) {
@@ -3532,6 +3536,10 @@ function(anEntry) {
     layout = this.getLayout();
     content = layout.layout(anEntry).at('content');
 
+    if (TP.TSH_NO_VALUE.match(content)) {
+        return this;
+    }
+
     top.console.log(content);
 
     return this;
@@ -3679,6 +3687,11 @@ function(anEntry) {
 
     // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
+
+        if (TP.TSH_NO_VALUE.match(content)) {
+            return this;
+        }
+
         try {
             top.console[writer](content);
         } catch (e) {

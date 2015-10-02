@@ -709,17 +709,21 @@ function() {
      */
 
     var arr,
-        child;
+        child,
+        state;
 
     if (TP.isValid(child = this.get('child'))) {
         arr = child.getCurrentStates();
     } else {
         arr = TP.ac();
     }
-    arr.push(this.get('state'));
+    state = this.get('state');
+
+    if (TP.isValid(state)) {
+        arr.push(state);
+    }
 
     return arr;
-
 });
 
 //  ------------------------------------------------------------------------
@@ -968,7 +972,6 @@ function(details) {
 
         triggerTime,
         lastTriggerTime,
-        skip,
         internal,
         trigger,
         handler,
@@ -991,9 +994,6 @@ function(details) {
     //  If we are triggered try to directly respond to that triggering
     //  signal as our first priority.
     trigger = details.at('trigger');
-
-    //  Build a handler skip name for the generic handler to avoid recursions.
-    skip = TP.computeHandlerName('Signal');
 
     //  If we can obtain a time from the trigger (i.e. it's a TP.sig.Signal of
     //  some sort), then we do so. We'll use this in a comparison below.
@@ -1027,14 +1027,14 @@ function(details) {
         if (TP.isKindOf(trigger, 'TP.sig.Signal')) {
 
             //  Try to handle locally within this state machine.
-            handler = this.getBestHandler(trigger, null, null, null, skip);
+            handler = this.getBestHandler(trigger, null, null, null, 'Signal');
             if (TP.isFunction(handler)) {
                 handler.call(this, trigger);
             } else {
                 //  Try bubbling to parent if not handled.
                 if (TP.isValid(parent = this.get('parent'))) {
                     handler = parent.getBestHandler(
-                        trigger, null, null, null, skip);
+                        trigger, null, null, null, 'Signal');
                     if (TP.isFunction(handler)) {
                         handler.call(parent, trigger);
                     }
@@ -1051,7 +1051,7 @@ function(details) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getBestHandler(signal, null, null, null, skip);
+        handler = this.getBestHandler(signal, null, null, null, 'Signal');
         if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
@@ -1059,7 +1059,7 @@ function(details) {
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getBestHandler(signal, null, null, null, skip);
+                handler = parent.getBestHandler(signal, null, null, null, 'Signal');
                 if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }
@@ -1067,7 +1067,9 @@ function(details) {
         }
 
         //  Note that if the signal has been stopped this won't do much.
-        signal.fire();
+        if (!signal.shouldStop() && !signal.shouldStopImmediately()) {
+            signal.fire();
+        }
 
     } else {
 
@@ -1081,7 +1083,7 @@ function(details) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getBestHandler(signal, null, null, null, skip);
+        handler = this.getBestHandler(signal, null, null, null, 'Signal');
         if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
@@ -1089,7 +1091,7 @@ function(details) {
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getBestHandler(signal, null, null, null, skip);
+                handler = parent.getBestHandler(signal, null, null, null, 'Signal');
                 if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }
@@ -1097,11 +1099,11 @@ function(details) {
         }
 
         //  Note that if the signal has been stopped this won't do much.
-        signal.fire();
-
+        if (!signal.shouldStop() && !signal.shouldStopImmediately()) {
+            signal.fire();
+        }
 
         //  Now go ahead and do the state transition
-
 
         //  When processing a start state there is no state to exit.
         if (TP.notEmpty(oldState)) {

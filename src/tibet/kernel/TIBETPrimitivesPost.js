@@ -5224,7 +5224,8 @@ function(aDescriptor) {
     if (TP.canInvoke(signal, 'getSignalName')) {
         signame = signal.getSignalName();
     } else {
-        signame = TP.ANY;
+        //  Default is 'handleSignal', not handleANY.
+        signame = 'Signal';
     }
 
     //  Simplify for internal signals. 'APP.sig.' prefixing (or signal types
