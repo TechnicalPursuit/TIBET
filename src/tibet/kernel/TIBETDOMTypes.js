@@ -957,17 +957,14 @@ function(aRequest) {
         result = str.transform(tpNode, info);
 
         //  If the result contains 'element' markup (and does *not* contain more
-        //  ACP expressions), then try to create a TP.core.ElementNode from it
-        //  and compile that.
+        //  ACP expressions), then try to create an Element from it and use that
+        //  to replace the node.
         if (!TP.regex.HAS_ACP.test(result) &&
             TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
 
-            elem = TP.tpelem(result);
-            elem.compile(aRequest);
+            elem = TP.elem(result);
 
-            //  If we got a real Element back from the compilation process,
-            //  replace the original node's content with it.
-            if (TP.isElement(elem = TP.unwrap(elem))) {
+            if (TP.isElement(elem)) {
                 TP.nodeReplaceChild(node.parentNode, elem, node, false);
             }
         } else {
