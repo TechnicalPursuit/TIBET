@@ -301,11 +301,11 @@ function(aString, smartConversion, shouldReport) {
                             value.constructor.prototype === TP.ObjectProto) {
 
                             //  Create a new value to replace the object handed
-                            //  to us by the parse routine.
-                            newVal = {};
+                            //  to us by the parse routine and set its prototype
+                            //  to the hash prototype obtained above.
+                            newVal = Object.create(tpHashProto);
 
                             newVal.$$type = TP.core.Hash;
-                            newVal.__proto__ = tpHashProto;
 
                             //  Note here that set an ID here because real
                             //  TP.core.Hashes are required to have an unique ID
