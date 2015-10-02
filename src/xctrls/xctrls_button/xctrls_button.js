@@ -15,9 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:button');
-
-TP.xctrls.button.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.TemplatedXCtrlsTag.defineSubtype('xctrls:button');
 
 //  ------------------------------------------------------------------------
 //  end
