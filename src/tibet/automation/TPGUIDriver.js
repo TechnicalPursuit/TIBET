@@ -968,24 +968,55 @@ function(entries) {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('keyDown',
-function(aKey, aPath) {
+function(keyLocation, aKey) {
 
     /**
      * @method keyDown
      * @summary Simulate the act of pressing the supplied key down.
+     * @param {Element|TP.core.AccessPath|String} keyLocation
+     *     The key target location, given as either a target Element or as an
+     *     AccessPath that can be used to find the element. If this parameter is
+     *     not supplied or null, the currently focused element will be used.
      * @param {String} aKey The key to simulate pressing down.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
-     *     that should have the keys pressed down over. If this isn't supplied,
-     *     the currently focused element in the receiver's owning driver's
-     *     window context will be used as the target for this event.
      * @returns {TP.gui.Sequence} The receiver.
      */
 
-    var target;
+    var target,
+        key;
 
-    target = TP.ifInvalid(aPath, TP.CURRENT);
+    //  If there was no valid location supplied, then we just set the target to
+    //  TP.CURRENT, which means to use the currently focused element whenever
+    //  the sequence is executed.
+    if (TP.notValid(keyLocation)) {
+        target = TP.CURRENT;
+    } else if (TP.isElement(keyLocation)) {
+        //  Otherwise, if an Element has been supplied, use that.
+        target = keyLocation;
+    } else if (TP.isKindOf(keyLocation, TP.core.ElementNode)) {
+        //  Otherwise, if a TP.core.ElementNode has been supplied, unwrap and use
+        //  that.
+        target = TP.unwrap(keyLocation);
+    } else if (keyLocation.isAccessPath()) {
+        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  used to determine the target element.
+        target = keyLocation;
+    } else if (TP.isKindOf(keyLocation, String)) {
+        //  Otherwise, if a String has been supplied then we set the target to
+        //  TP.CURRENT, which tells the sequence performing routine to use
+        //  whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        key = keyLocation;
+        target = TP.CURRENT;
+    } else {
+        //  TODO: Raise an exception
+        return this;
+    }
 
-    this.get('sequenceEntries').add(TP.ac('keydown', target, aKey));
+    if (TP.notValid(key)) {
+        key = aKey;
+    }
+
+    this.get('sequenceEntries').add(TP.ac('keydown', target, key));
 
     return this;
 });
@@ -993,24 +1024,55 @@ function(aKey, aPath) {
 //  ------------------------------------------------------------------------
 
 TP.gui.Sequence.Inst.defineMethod('keyUp',
-function(aKey, aPath) {
+function(keyLocation, aKey) {
 
     /**
      * @method keyUp
      * @summary Simulate the act of releasing the supplied key up.
+     * @param {Element|TP.core.AccessPath|String} keyLocation
+     *     The key target location, given as either a target Element or as an
+     *     AccessPath that can be used to find the element. If this parameter is
+     *     not supplied or null, the currently focused element will be used.
      * @param {String} aKey The key to simulate releasing up.
-     * @param {TP.core.AccessPath} aPath The access path to the target element
-     *     that should have the keys released up over. If this isn't supplied,
-     *     the currently focused element in the receiver's owning driver's
-     *     window context will be used as the target for this event.
      * @returns {TP.gui.Sequence} The receiver.
      */
 
-    var target;
+    var target,
+        key;
 
-    target = TP.ifInvalid(aPath, TP.CURRENT);
+    //  If there was no valid location supplied, then we just set the target to
+    //  TP.CURRENT, which means to use the currently focused element whenever
+    //  the sequence is executed.
+    if (TP.notValid(keyLocation)) {
+        target = TP.CURRENT;
+    } else if (TP.isElement(keyLocation)) {
+        //  Otherwise, if an Element has been supplied, use that.
+        target = keyLocation;
+    } else if (TP.isKindOf(keyLocation, TP.core.ElementNode)) {
+        //  Otherwise, if a TP.core.ElementNode has been supplied, unwrap and use
+        //  that.
+        target = TP.unwrap(keyLocation);
+    } else if (keyLocation.isAccessPath()) {
+        //  Otherwise, if a TP.core.AccessPath has been supplied, that will be
+        //  used to determine the target element.
+        target = keyLocation;
+    } else if (TP.isKindOf(keyLocation, String)) {
+        //  Otherwise, if a String has been supplied then we set the target to
+        //  TP.CURRENT, which tells the sequence performing routine to use
+        //  whatever the currently focused element is at the time it is
+        //  executing the sequence.
+        key = keyLocation;
+        target = TP.CURRENT;
+    } else {
+        //  TODO: Raise an exception
+        return this;
+    }
 
-    this.get('sequenceEntries').add(TP.ac('keyup', target, aKey));
+    if (TP.notValid(key)) {
+        key = aKey;
+    }
+
+    this.get('sequenceEntries').add(TP.ac('keyup', target, key));
 
     return this;
 });
