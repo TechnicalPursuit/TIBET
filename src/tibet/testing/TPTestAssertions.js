@@ -143,8 +143,9 @@ function(aCondition, aComment, aFaultString) {
     if (this.get('isRefuter')) {
         condition = !aCondition;
         if (TP.isString(aFaultString)) {
-            faultStr = aFaultString.replace(/to be/, 'to not be');
-            faultStr = faultStr.replace(/to contain/, 'to not contain');
+            faultStr = aFaultString.replace(
+                            /to (be|contain|have|match|raise|signal|throw)/,
+                            'to not $1');
         } else {
             faultStr = aFaultString;
         }
