@@ -4144,6 +4144,10 @@ function() {
     //  'onblur' method as the starting point.
     if (TP.canInvoke(node, 'blur')) {
         node.blur();
+    } else {
+        //  This is an element that cannot respond to blur calls (a non
+        //  HTMLELement). So just signal manually here.
+        this.signal('TP.sig.UIBlur');
     }
 
     return this;
@@ -4185,6 +4189,10 @@ function(moveAction) {
     //  'onfocus' method as the starting point.
     if (TP.canInvoke(node, 'focus')) {
         node.focus();
+    } else {
+        //  This is an element that cannot respond to focus calls (a non
+        //  HTMLELement). So just signal manually here.
+        this.signal('TP.sig.UIFocus');
     }
 
     return this;
