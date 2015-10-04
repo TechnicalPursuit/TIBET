@@ -15,7 +15,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.TemplatedXCtrlsTag.defineSubtype('xctrls:button');
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:button');
 
 //  ------------------------------------------------------------------------
 //  end

@@ -68,7 +68,7 @@ function(aRequest) {
     //  Make sure that the element gets stamped with a 'tibet:ctrl' of
     //  its tag type's type name.
     TP.elementSetAttribute(elem,
-                            'tibet:ctrl',
+                            'tibet:tag',
                             TP.core.ElementNode.getConcreteType(elem).getName(),
                             true);
 
@@ -120,43 +120,43 @@ function(aRequest) {
 });
 
 //  ========================================================================
-//  TP.xctrls.CompiledXCtrlsTag
+//  TP.xctrls.CompiledTag
 //  ========================================================================
 
 /**
- * @type {TP.xctrls.CompiledXCtrlsTag}
+ * @type {TP.xctrls.CompiledTag}
  * @summary A tag type that is compiled and also has the common aspect of all
  *     XControls tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('xctrls.CompiledXCtrlsTag');
-TP.xctrls.CompiledXCtrlsTag.addTraits(TP.xctrls.Element);
+TP.core.CompiledTag.defineSubtype('xctrls.CompiledTag');
+TP.xctrls.CompiledTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
 //  and execute the one inherited from TP.core.CompiledTag afterwards as well.
-TP.xctrls.CompiledXCtrlsTag.Type.resolveTrait(
+TP.xctrls.CompiledTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
 //  ========================================================================
-//  TP.xctrls.TemplatedXCtrlsTag
+//  TP.xctrls.TemplatedTag
 //  ========================================================================
 
 /**
- * @type {TP.xctrls.TemplatedXCtrlsTag}
+ * @type {TP.xctrls.TemplatedTag}
  * @summary A tag type that is templated and also has the common aspect of all
  *     XControls tags.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.defineSubtype('xctrls.TemplatedXCtrlsTag');
-TP.xctrls.TemplatedXCtrlsTag.addTraits(TP.xctrls.Element);
+TP.core.TemplatedTag.defineSubtype('xctrls.TemplatedTag');
+TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 
 //  Resolve the 'tagCompile' method in favor of TP.xctrls.Element, but go ahead
 //  and execute the one inherited from TP.core.TemplatedTag afterwards as well.
-TP.xctrls.TemplatedXCtrlsTag.Type.resolveTrait(
+TP.xctrls.TemplatedTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
 //  ------------------------------------------------------------------------
