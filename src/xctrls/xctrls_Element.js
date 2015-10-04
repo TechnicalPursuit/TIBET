@@ -65,12 +65,9 @@ function(aRequest) {
 
     elem = aRequest.at('node');
 
-    //  Make sure that the element gets stamped with a 'tibet:ctrl' of
-    //  its tag type's type name.
-    TP.elementSetAttribute(elem,
-                            'tibet:tag',
-                            TP.core.ElementNode.getConcreteType(elem).getName(),
-                            true);
+    //  Make sure that the element gets stamped with a 'tibet:tag' of its tag's
+    //  fully qualified *canonical* name.
+    TP.elementSetAttribute(elem, 'tibet:tag', TP.canonical(elem), true);
 
     //  If the type (but not inherited - just at the individual type level)
     //  has specified 'required attributes' that need to be populated on all
