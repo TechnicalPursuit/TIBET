@@ -5166,7 +5166,7 @@ function(signame) {
 //  ------------------------------------------------------------------------
 
 TP.$$computedHandlers = new TP.boot.PHash();
-TP.$$computedHandlers.atPut('LOOKUPS', 0);
+TP.$$computedHandlers.$lookups = 0;
 
 //  ------------------------------------------------------------------------
 
@@ -5212,8 +5212,7 @@ function(aDescriptor) {
     if (!descriptor) {
         handler = TP.$$computedHandlers.at(signal);
         if (handler) {
-            TP.$$computedHandlers.atPut('LOOKUPS',
-                TP.$$computedHandlers.at('LOOKUPS') + 1);
+            TP.$$computedHandlers.$lookups += 1;
             return handler;
         }
     }
