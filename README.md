@@ -39,11 +39,9 @@ TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring
 let your team focus on standards-compliant markup, not JavaScript coding,
 reducing the need for costly gurus, ninjas, and rock stars.
 
-<a href="http://www.technicalpursuit.com/html/support.xhtml">Commercial support</a>,
-open source <a href="http://www.technicalpursuit.com/html/license.xhtml">privacy
-waivers</a>, and
+<a href="http://www.technicalpursuit.com/html/support.xhtml">Affordable support</a> and
 <a href="http://www.technicalpursuit.com/html/solutions.xhtml">development services</a> are available
-from Technical Pursuit Inc., the company behind TIBET.
+from Technical Pursuit Inc., the company behind TIBET since 1999.
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
