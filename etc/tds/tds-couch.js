@@ -18,7 +18,7 @@
     'use strict';
 
     var path,
-        fs,
+        //fs,
         gaze,
         zlib,
         crypto,
@@ -33,7 +33,7 @@
     Promise = require('bluebird');
 
     path = require('path');
-    fs = require('fs');
+    //fs = require('fs');
     zlib = require('zlib');
 
     nano = require('nano');
@@ -55,7 +55,7 @@
             baseline,
             db,
             root,
-            ready,
+            //ready,
             inserting,
 
             applyChanges,
@@ -64,7 +64,7 @@
             couchDigest,
 
             readFile,
-            writeFile,
+            //writeFile,
 
             dbGet,
             dbAdd,
@@ -77,8 +77,8 @@
             escaper,
             watchParams;
 
-        readFile = Promise.promisify(fs.readFile);
-        writeFile = Promise.promisify(fs.writeFile);
+        //readFile = Promise.promisify(fs.readFile);
+        //writeFile = Promise.promisify(fs.writeFile);
 
         //  ---
         //  CouchDB-To-File
@@ -105,9 +105,9 @@
             //console.log('CouchDB changes:\n' + beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
-                var fullpath;
+                //var fullpath;
 
-                fullpath = path.join(root, item.name);
+                //fullpath = path.join(root, item.name);
 
                 switch (item.action) {
                     case 'added':
@@ -379,18 +379,19 @@
                         console.log('Inserting attachment ' + name);
 
                         //  TODO: couch.app_name
-                        db.attachment.insert('_design/app', name, data,
-                                type, {rev: rev}, function(err, body) {
+                        db.attachment.insert(
+                                '_design/app', name, data, type, {rev: rev},
+                                function(err, body) {
 
-                            if (err) {
-                                console.log('err: ' + err);
-                                reject(err);
-                                return;
-                            }
+                                    if (err) {
+                                        console.log('err: ' + err);
+                                        reject(err);
+                                        return;
+                                    }
 
-                            console.log(beautify(JSON.stringify(body)));
-                            resolve();
-                        });
+                                    console.log(beautify(JSON.stringify(body)));
+                                    resolve();
+                                });
                     },
                     function(err) {
                         reject(err);
@@ -487,17 +488,19 @@
                             console.log('Updating attachment ' + name);
 
                             db.attachment.insert('_design/app', name, data,
-                                    type, {rev: rev}, function(err, body) {
+                                    type, {rev: rev},
+                                    function(err, body) {
 
-                                if (err) {
-                                    console.log('err: ' + err);
-                                    reject(err);
-                                    return;
-                                }
+                                        if (err) {
+                                            console.log('err: ' + err);
+                                            reject(err);
+                                            return;
+                                        }
 
-                                console.log(beautify(JSON.stringify(body)));
-                                resolve();
-                            });
+                                        console.log(
+                                                beautify(JSON.stringify(body)));
+                                        resolve();
+                                    });
                         });
                     });
                 });
@@ -544,20 +547,21 @@
 
                     console.log('Removing attachment ' + name);
 
-                    db.attachment.destroy('_design/app', name, {rev: rev},
+                    db.attachment.destroy(
+                            '_design/app', name, {rev: rev},
                             function(err, body) {
 
-                        if (err) {
-                            console.log('err: ' + err);
-                            reject(err);
-                            return;
-                        }
+                                if (err) {
+                                    console.log('err: ' + err);
+                                    reject(err);
+                                    return;
+                                }
 
-                        //console.log('deleted ' + file);
-                        console.log(beautify(JSON.stringify(body)));
+                                //console.log('deleted ' + file);
+                                console.log(beautify(JSON.stringify(body)));
 
-                        resolve();
-                    });
+                                resolve();
+                            });
                 });
             });
         };
