@@ -12,6 +12,10 @@
     <script>
         <![CDATA[
         TP.extern.d3 = d3;
+        TP.extern.d3.ns.prefix.html =
+                        'http://www.w3.org/1999/xhtml';
+        TP.extern.d3.ns.prefix.xctrls =
+                        'http://www.technicalpursuit.com/2005/xcontrols';
         ]]>
     </script>
 
