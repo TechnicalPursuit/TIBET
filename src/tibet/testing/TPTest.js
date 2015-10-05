@@ -556,7 +556,8 @@ function(target, options) {
 
         if (suitelist.length > 1) {
             TP.sys.logTest('# ' + suitelist.length +
-                ' exclusive suite(s) found.', TP.WARN);
+                ' exclusive suite(s) found for ' +
+                TP.name(target) + '.', TP.WARN);
         }
     }
 
@@ -621,7 +622,8 @@ function(target, options) {
         TP.sys.setcfg('test.running', false);
     };
 
-    TP.sys.logTest('# ' + suitelist.length + ' suite(s) found.', TP.DEBUG);
+    TP.sys.logTest('# ' + suitelist.length + ' suite(s) found for ' +
+                TP.name(target) + '.', TP.DEBUG);
 
     cases = 0;
     suitelist.perform(
