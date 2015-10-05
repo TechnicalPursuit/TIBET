@@ -5726,43 +5726,6 @@ function(newContent, aRequest, stdinContent) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('setContentFromTagType',
-function(tagType, aRequest) {
-
-    /**
-     * @method setContent
-     * @summary Sets the content of the receiver's native DOM counterpart to
-     *     the content supplied.
-     * @param {TP.meta.core.ElementNode} tagType The subtype of
-     *     TP.meta.ElementNode which will be asked for it's "empty markup".
-     * @param {TP.sig.Request} aRequest An optional request object which defines
-     *     further parameters.
-     * @returns {TP.core.ElementNode} The result of setting the content of the
-     *     receiver.
-     */
-
-    var content,
-        request;
-
-    if (!TP.isSubtypeOf(tagType, 'TP.core.ElementNode')) {
-        return this.raise('TP.sig.InvalidType',
-                            'Not a subtype of TP.core.ElementNode.');
-    }
-
-    content = tagType.generateEmptyMarkup();
-
-    if (TP.isEmpty(content)) {
-        return this;
-    }
-
-    request = TP.request(aRequest);
-    request.atPutIfAbsent('tagType', tagType);
-
-    return this.setContent(content, request);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.CollectionNode.Inst.defineMethod('setRawContent',
 function(newContent, aRequest, shouldSignal) {
 
@@ -10289,35 +10252,6 @@ function(anObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('generateEmptyMarkup',
-function() {
-
-    /**
-     * @method generateEmptyMarkup
-     * @summary Generates the 'empty markup' representation of the receiver.
-     *     The empty representation contains no attributes or child node
-     *     content, but does contain the proper 'xmlns' attribute so that the
-     *     receiver can be properly placed in any document that has that
-     *     namespace defined.
-     * @returns {String} The 'empty markup' representation of the receiver.
-     */
-
-    var str;
-
-    str = TP.join('<',
-                this.getNamespacePrefix(),
-                ':',
-                this.getLocalName(),
-                ' xmlns:', this.getNamespacePrefix(),
-                '="',
-                TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
-                '"/>');
-
-    return str;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) {
 
@@ -10386,6 +10320,35 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         //  Perform the transformation.
         str = template.transform(anObject, theRequest);
     }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('generateMarkupContent',
+function() {
+
+    /**
+     * @method generateMarkupContent
+     * @summary Generates the 'empty markup' representation of the receiver.
+     *     The empty representation contains no attributes or child node
+     *     content, but does contain the proper 'xmlns' attribute so that the
+     *     receiver can be properly placed in any document that has that
+     *     namespace defined.
+     * @returns {String} The 'empty markup' representation of the receiver.
+     */
+
+    var str;
+
+    str = TP.join('<',
+                this.getNamespacePrefix(),
+                ':',
+                this.getLocalName(),
+                ' xmlns:', this.getNamespacePrefix(),
+                '="',
+                TP.w3.Xmlns.getPrefixURI(this.getNamespacePrefix()),
+                '"/>');
 
     return str;
 });
