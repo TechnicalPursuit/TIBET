@@ -9633,11 +9633,12 @@ function(aURI, aDirection) {
         signal,
         home,
         config,
+        configInfo,
+        content,
 
         route,
-        routeParts,
         routeTarget,
-        routeTPElem;
+        targetTPElem;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
@@ -9774,6 +9775,9 @@ function(aURI, aDirection) {
 
         if (canvas.getLocation() !== url) {
             canvas.setLocation(TP.uriHead(url));
+
+            //  Goodbye TIBET...
+            return;
         }
 
         //  We changed pages. The question is, did we change back to the home
@@ -9809,69 +9813,92 @@ function(aURI, aDirection) {
     }
 
     //  See if the value is a route configuration key.
-    config = TP.sys.cfg('route.' + fragPath.toLowerCase() + '.content');
+    config = TP.sys.cfg('route.info.' + fragPath.toLowerCase());
 
     if (TP.notEmpty(config)) {
+
         if (TP.sys.cfg('log.routes')) {
             TP.debug('route \'' + route + '\' mapped to: ' + config);
         }
-        route = config;
+
+        //  The config entry will be a JS-formatted String. Parse it into a
+        //  TP.core.Hash.
+        configInfo = TP.json2js(TP.reformatJSToJSON(config));
+        if (TP.isEmpty(configInfo)) {
+            this.raise('InvalidObject',
+                        'Unable to build config data from entry: ' + config);
+            return;
+        }
+
+        //  The content can be a tag type name, a URI or a String
+        content = configInfo.at('content');
+        if (TP.isEmpty(content)) {
+            this.raise('InvalidObject',
+                        'Unable to resolve a content entry from: ' + config);
+            return;
+        }
+
+        routeTarget = configInfo.at('target');
+        if (TP.notEmpty(routeTarget)) {
+
+            //  NB: We want autocollapsed, but wrapped content here.
+            targetTPElem = TP.byPath(routeTarget, canvas, true);
+            if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
+                this.raise('InvalidElement',
+                            'Unable to find route target: ' + routeTarget);
+                return;
+            }
+        }
+
+        //  See if the content is a tag type name.
+        type = TP.sys.getTypeByName(content);
+        if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
+
+            if (TP.notValid(targetTPElem)) {
+                targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
+            }
+
+            //  Inject the content.
+            targetTPElem.setContentFromTagType(type);
+
+        } else {
+
+            //  Otherwise, see if the value looks like a URL for set location.
+            url = TP.uc(content);
+            if (TP.isURI(url)) {
+
+                url = TP.uriExpandHome(url);
+                if (TP.sys.cfg('log.routes')) {
+                    TP.debug('setting location to: ' + TP.str(url));
+                }
+
+                //  If we weren't able to obtain a target, then just set the
+                //  location of the canvas to the head of the URL.
+                if (TP.notValid(targetTPElem)) {
+                    canvas.setLocation(TP.uriHead(url));
+                } else {
+                    //  Otherwise, set the content of the target to the content
+                    //  of the URL
+                    targetTPElem.setContent(url);
+                }
+            } else {
+
+                //  Otherwise, the content was a String. If we couldn't get a
+                //  target, then use the document's body as the target and set
+                //  the content.
+
+                if (TP.notValid(targetTPElem)) {
+                    targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
+                }
+
+                targetTPElem.setContent(content);
+            }
+        }
+
+        //  We won't proceed any further here - we were a configured route.
+        return;
     } else {
         route = fragPath;
-    }
-
-    //  If the route has an '=' in it, then it's a 'directed injection'
-    if (/\=/.test(route)) {
-        routeParts = route.split('=');
-
-        //  The target will be the ID of the element to inject the content into
-        //  and the 'route' is the type name of the TP.core.ElementNode to
-        //  inject in there.
-
-        //  Make sure to slice off the leading '#'
-        routeTarget = routeParts.first();
-        if (routeTarget.startsWith('#')) {
-            routeTarget = routeTarget.slice(1);
-        }
-
-        route = routeParts.last();
-    }
-
-    //  See if the value is a tag type for injection. It may be whether it's a
-    //  'directed' or 'undirected' injection (undirected injections go into the
-    //  'body' element of the UI canvas).
-    type = TP.sys.getTypeByName(route);
-
-    if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
-        //  If we got a routeTarget above, then its a directed injection.
-        if (TP.notEmpty(routeTarget)) {
-            routeTPElem = TP.byId(routeTarget);
-        }
-
-        //  If we can't resolve a routeTarget, then just grab the body element
-        //  for an undirected injection.
-        if (!TP.isKindOf(routeTPElem, 'TP.core.ElementNode')) {
-            TP.warn('Unable to find route target: ' +
-                    routeTarget +
-                    '. Defaulting to body');
-            routeTPElem = TP.sys.getUICanvas().getDocument().getBody();
-        }
-
-        //  Inject the content.
-        routeTPElem.setContentFromTagType(type);
-
-    } else {
-
-        //  See if the value looks like a URL for set location.
-        url = TP.uc(route);
-        if (TP.isURI(url)) {
-
-            url = TP.uriExpandHome(url);
-            if (TP.sys.cfg('log.routes')) {
-                TP.debug('setting location to: ' + TP.str(url));
-            }
-            canvas.setLocation(TP.uriHead(url));
-        }
     }
 
     if (TP.isEmpty(route)) {

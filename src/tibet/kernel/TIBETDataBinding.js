@@ -1658,9 +1658,9 @@ function(attributeName, wantsFullScope) {
         //  this global RegExp.
         attrVal = attrNodes[0].value;
 
-        //  Parse the "JSON"-like content that was authored by the page author
+        //  Parse the JS-formatted String that was authored by the page author
         //  into a TP.core.Hash.
-        bindEntries = TP.json2js(TP.formatUnquotedJSON(attrVal));
+        bindEntries = TP.json2js(TP.reformatJSToJSON(attrVal));
     }
 
     if (TP.notTrue(wantsFullScope)) {
