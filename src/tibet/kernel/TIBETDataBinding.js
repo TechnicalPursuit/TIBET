@@ -1638,6 +1638,8 @@ function(attributeName, wantsFullScope) {
         attrNodes,
         attrVal,
 
+        entryStr,
+
         bindEntries,
 
         scopeVals,
@@ -1658,9 +1660,30 @@ function(attributeName, wantsFullScope) {
         //  this global RegExp.
         attrVal = attrNodes[0].value;
 
-        //  Parse the JS-formatted String that was authored by the page author
-        //  into a TP.core.Hash.
-        bindEntries = TP.json2js(TP.reformatJSToJSON(attrVal));
+        //  First, try to get the attribute as a JSON string. This allows for
+        //  attribute values like:
+        //
+        //      {value: urn:tibet:fluffy}
+        //
+        //      which are converted to:
+        //
+        //      {"value": "urn:tibet:fluffy"}
+        entryStr = TP.reformatJSToJSON(attrVal);
+
+        //  If we couldn't get a JSON String, try to default it to
+        //  {"value":"..."}
+        if (!TP.isJSONString(entryStr)) {
+            entryStr = '{"value":"' + attrVal + '"}';
+        }
+
+        //  Try to parse the entry string into a TP.core.Hash.
+        bindEntries = TP.json2js(entryStr);
+
+        if (TP.isEmpty(bindEntries)) {
+            return this.raise('TP.sig.InvalidBinding',
+                                'Source Element: ' + TP.str(elem) +
+                                ' Generated bindings: ' + entryStr);
+        }
     }
 
     if (TP.notTrue(wantsFullScope)) {
