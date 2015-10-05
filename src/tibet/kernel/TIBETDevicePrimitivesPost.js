@@ -1367,6 +1367,20 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$$handleReset',
+function(anEvent) {
+
+    /**
+     * @method $$handleReset
+     * @summary Document-level reset handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$$handleScroll',
 function(anEvent) {
 
