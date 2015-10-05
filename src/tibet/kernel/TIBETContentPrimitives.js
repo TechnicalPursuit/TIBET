@@ -136,10 +136,9 @@ function(aString) {
                         context = self[val];
                     } else {
                         //  There was no context or value that resolved to a
-                        //  context, so first we escape any existing quotes and
-                        //  then trim the value.
-                        val = val.replace(/\\/g, '\\\\');
-                        str += TP.trim(val);
+                        //  context, so we trim the value and then unquote the
+                        //  result.
+                        str += TP.trim(val).unquoted();
                     }
                 }
                 break;
