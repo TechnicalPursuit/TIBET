@@ -6699,7 +6699,8 @@ function(anEvent) {
      * @param {Event} anEvent The native event that caused this handler to trip.
      */
 
-    var router;
+    var router,
+        loc;
 
     //  We use a flag to turn off handling on Chrome in particular since it has
     //  a habit of signaling this for a number of incorrect cases.
@@ -6707,12 +6708,13 @@ function(anEvent) {
         return;
     }
 
+    loc = TP.uriNormalize(anEvent.target.location.toString());
+
     //  Just because we got this event doesn't mean location actually changed.
     //  At least one browser will trigger these even if you set the window
     //  location to the same value it currently holds so we have to verify a
     //  true change to avoid extra overhead/duplicate work.
-    if (TP.uriNormalize(anEvent.target.location.toString()) ===
-            TP.sys.getHistory().getLocation()) {
+    if (loc === TP.sys.getHistory().getLocation()) {
         return;
     }
 
@@ -6720,10 +6722,22 @@ function(anEvent) {
     //  ensure we get the right index adjustments in our internal history.
     this.updateIndex(anEvent);
 
-    //  Trigger the router.
-    router = TP.sys.getRouter();
-    if (TP.canInvoke(router, 'route')) {
-        router.route(TP.uriNormalize(anEvent.target.location.toString()));
+    //  If we get a "route" rather than a full URI update the hash and let the
+    //  system respond to that to route correctly.
+    if (/^#/.test(loc)) {
+
+        //  A route has to be '#/' or '#?', so only trigger the router if we see
+        //  that pattern.
+        if (/^#(\/|\?)/.test(loc)) {
+            router = TP.sys.getRouter();
+            if (TP.isValid(router)) {
+                router.route(loc);
+            }
+            anEvent.preventDefault();
+        } else {
+            //  This is a link anchor target - act accordingly
+            return;
+        }
     }
 
     return;
