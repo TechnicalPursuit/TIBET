@@ -1462,6 +1462,16 @@
 
 
     //  ---
+    //  routing
+    //  ---
+
+    //  should we try to route any initial path content on startup?
+    TP.sys.setcfg('route.onstart', true);
+
+    //  should the base url be updated during route/pushState changes?
+    TP.sys.setcfg('route.baseurl', false);
+
+    //  ---
     //  uri/url
     //  ---
 
@@ -1482,9 +1492,6 @@
 
     //  the default type used to handle URI routing decisions.
     TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
-
-    //  should we try to route any initial path content on startup?
-    TP.sys.setcfg('uri.routing_onstart', true);
 
     //  should we watch remote resources?
     TP.sys.setcfg('uri.remote_watch', true);
