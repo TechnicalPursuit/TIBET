@@ -5361,8 +5361,8 @@ function() {
 
         //  ---
 
-        //  Resolve the conflict in favor of TP.test.Color, but executing the
-        //  one on TP.test.Hexagon first.
+        //  Resolve the conflict in favor of TP.test.Color, but go ahead and
+        //  execute the one on TP.test.Hexagon afterwards as well.
         TP.test.Hexagon.Inst.resolveTrait('getRgb', TP.test.Color, TP.BEFORE);
 
         //  Now we have the implementation of 'getRgb' on TP.test.Hexagon that
@@ -5473,8 +5473,8 @@ function() {
 
         //  ---
 
-        //  Resolve the conflict in favor of TP.test.Color, but executing the
-        //  one on TP.test.Pentagon first.
+        //  Resolve the conflict in favor of TP.test.Color, but go ahead and
+        //  execute the one on TP.test.Pentagon beforehand as well.
         TP.test.Pentagon.Inst.resolveTrait('getRgb', TP.test.Color, TP.AFTER);
 
         //  Now we have the implementation of 'getRgb' on TP.test.Pentagon that

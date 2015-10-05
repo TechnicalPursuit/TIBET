@@ -2,8 +2,8 @@
 	CSS styles for 'xctrls:button' controls.
 */
 
-@import url('../xctrls_common.css');
-@import url('../xctrls_mixins.less');
+@import (reference) url('../xctrls_common.css');
+@import (reference) url('../xctrls_mixins.less');
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
@@ -17,67 +17,67 @@ xctrls|button {
     align-items: center;
 
     .user-select(none);
-}
 
-/* Hovering over the button */
+    /* Hovering over the button */
 
-xctrls|button:hover {
-}
+    &:hover {
+    }
 
-/* Focusing on the button */
+    /* Focusing on the button */
 
-/* doesn't work in any browser:
-xctrls|button:focus
-*/
-xctrls|button[pclass|focus] {
-}
+    /* doesn't work in any browser:
+    &:focus
+    */
+    &[pclass|focus] {
+    }
 
-/* Clicking down on the button */
+    /* Clicking down on the button */
 
-/* doesn't work in IE9:
-xctrls|button:active
-*/
-xctrls|button[pclass|active] {
-}
+    /* doesn't work in IE9:
+    &:active
+    */
+    &[pclass|active] {
+    }
 
-/* The button is disabled */
+    /* The button is disabled */
 
-/* doesn't work in any browser:
-xctrls|button:disabled
-*/
-xctrls|button[pclass|disabled] {
-}
+    /* doesn't work in any browser:
+    &:disabled
+    */
+    &[pclass|disabled] {
+    }
 
-/* The button label */
+    /* The button label */
 
-xctrls|button > xctrls|label {
-}
+    & > xctrls|label {
+    }
 
-/* Hovering over the button, label must highlight */
+    /* Hovering over the button, label must highlight */
 
-xctrls|button:hover > xctrls|label {
-}
+    &:hover > xctrls|label {
+    }
 
-/* Focusing on the button, label must highlight */
+    /* Focusing on the button, label must highlight */
 
-/* doesn't work in any browser:
-xctrls|button:focus > xctrls|label
-*/
-xctrls|button[pclass|focus] > xctrls|label {
-}
+    /* doesn't work in any browser:
+    &:focus > xctrls|label
+    */
+    &[pclass|focus] > xctrls|label {
+    }
 
-/* Clicking down on the button, label must highlight */
+    /* Clicking down on the button, label must highlight */
 
-/* doesn't work in IE9:
-xctrls|button:active > xctrls|label
-*/
-xctrls|button[pclass|active] > xctrls|label {
-}
+    /* doesn't work in IE9:
+    &:active > xctrls|label
+    */
+    &[pclass|active] > xctrls|label {
+    }
 
-/* The button is disabled, so is the label */
+    /* The button is disabled, so is the label */
 
-/* doesn't work in any browser:
-xctrls|button:disabled > xctrls|label
-*/
-xctrls|button[pclass|disabled] > xctrls|label {
+    /* doesn't work in any browser:
+    &:disabled > xctrls|label
+    */
+    &[pclass|disabled] > xctrls|label {
+    }
 }

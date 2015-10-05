@@ -4,92 +4,94 @@
 
 @import (reference) url('xctrls_variables_tpi.less');
 
-@import url('../xctrls_button_all.less');
-@import url('xctrls_common_tpi.less');
+@import (reference) url('../xctrls_button_all.less');
+@import (reference) url('xctrls_common_tpi.less');
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
 /* The button */
 
-*[data-theme="tpi"] xctrls|button {
+*[data-theme="tpi"] {
 
-    border-width: @xctrls_button-border-width;
-    border-style: @xctrls_button-border-style;
-    border-radius: @xctrls_button-border-radius;
+    xctrls|button {
+
+        border-width: @xctrls_button-border-width;
+        border-style: @xctrls_button-border-style;
+        border-radius: @xctrls_button-border-radius;
+
+        /* Hovering over the button */
+
+        &:hover {
+        }
+
+        /* Focusing on the button */
+
+        /* doesn't work in any browser:
+        &:focus
+        */
+        &[pclass|focus] {
+        }
+
+        /* Clicking down on the button */
+
+        /* doesn't work in IE9:
+        &:active
+        */
+        &[pclass|active] {
+        }
+
+        /* The button is disabled */
+
+        /* doesn't work in any browser:
+        &:disabled
+        */
+        &[pclass|disabled] {
+        }
+
+        /* The button label */
+
+        & > xctrls|label {
+
+            font-family: @xctrls_button-font-family;
+            color: @xctrls_button-font-color-normal;
+        }
+
+        /* Hovering over the button, label must highlight */
+
+        &:hover > xctrls|label {
+
+            color: @xctrls_button-font-color-hover;
+        }
+
+        /* Focusing on the button, label must highlight */
+
+        /* doesn't work in any browser
+        &:focus > xctrls|label
+        */
+        &[pclass|focus] > xctrls|label {
+
+            color: @xctrls_button-font-color-focus;
+        }
+
+        /* Clicking down on the button, label must highlight */
+
+        /* doesn't work in IE9:
+        &:active > xctrls|label
+        */
+        &[pclass|active] > xctrls|label {
+
+            color: @xctrls_button-font-color-active;
+        }
+
+        /* The button is disabled, so is the label */
+
+        /* doesn't work in any browser:
+        &:disabled > xctrls|label
+        */
+        &[pclass|disabled] > xctrls|label {
+
+            color: @xctrls_button-font-color-disabled;
+        }
+    }
 }
-
-/* Hovering over the button */
-
-*[data-theme="tpi"] xctrls|button:hover {
-}
-
-/* Focusing on the button */
-
-/* doesn't work in any browser:
-*[data-theme="tpi"] xctrls|button:focus
-*/
-*[data-theme="tpi"] xctrls|button[pclass|focus] {
-}
-
-/* Clicking down on the button */
-
-/* doesn't work in IE9:
-*[data-theme="tpi"] xctrls|button:active
-*/
-*[data-theme="tpi"] xctrls|button[pclass|active] {
-}
-
-/* The button is disabled */
-
-/* doesn't work in any browser:
-*[data-theme="tpi"] xctrls|button:disabled
-*/
-*[data-theme="tpi"] xctrls|button[pclass|disabled] {
-}
-
-/* The button label */
-
-*[data-theme="tpi"] xctrls|button > xctrls|label {
-
-    font-family: @xctrls_button-font-family;
-    color: @xctrls_button-font-color-normal;
-}
-
-/* Hovering over the button, label must highlight */
-
-*[data-theme="tpi"] xctrls|button:hover > xctrls|label {
-
-    color: @xctrls_button-font-color-hover;
-}
-
-/* Focusing on the button, label must highlight */
-
-/* doesn't work in any browser
-*[data-theme="tpi"] xctrls|button:focus > xctrls|label
-*/
-*[data-theme="tpi"] xctrls|button[pclass|focus] > xctrls|label {
-
-    color: @xctrls_button-font-color-focus;
-}
-
-/* Clicking down on the button, label must highlight */
-
-/* doesn't work in IE9:
-*[data-theme="tpi"] xctrls|button:active > xctrls|label
-*/
-*[data-theme="tpi"] xctrls|button[pclass|active] > xctrls|label {
-
-    color: @xctrls_button-font-color-active;
-}
-
-/* The button is disabled, so is the label */
-
-/* doesn't work in any browser:
-*[data-theme="tpi"] xctrls|button:disabled > xctrls|label
-*/
-*[data-theme="tpi"] xctrls|button[pclass|disabled] > xctrls|label {
-
-    color: @xctrls_button-font-color-disabled;
-}
-

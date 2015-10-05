@@ -926,9 +926,11 @@ function() {
     //  Filter out keys here where the first character isn't an uppercase letter
     //  (like a native type name would have) or where it starts with '__'.
     nativeTypesKeys = TP.sys.$extraglobals.getKeys().select(
-                function(aKey) {
+            function(aKey) {
+                if (TP.sys.$excludedGlobals.indexOf(aKey) === TP.NOT_FOUND) {
                     return TP.isNativeType(TP.global[aKey]);
-                });
+                }
+            });
 
     //  Allocate the native types hash and initialize with the key and the value
     //  obtained by accessing that key on the global object.

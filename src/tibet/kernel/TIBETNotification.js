@@ -5448,16 +5448,26 @@ function(target, signal) {
             TP.ifWarn() ?
                 TP.warn('Unable to resolve tibet:ctrl ' + id + '.') : 0;
         } else {
-            //  TODO:   tibet:ctrl is often going to be a type name. Do we
-            //  really want to make these type methods for controllers?
+
+            if (TP.isType(responder)) {
+                responder = responder.construct();
+            }
+
             if (TP.canInvoke(responder, 'handle')) {
                 signal.setOrigin(TP.gid(target));
                 responder.handle(signal);
+            } else {
+                this.raise('InvalidController',
+                        TP.sc('Controller: ', id,
+                                ' cannot handle: ', signal.getSignalName()));
+            }
 
-                //  Don't proceed to tibet:tag without checking for propagation.
-                if (signal.shouldStop() || signal.shouldStopImmediately()) {
-                    return;
-                }
+            //  Don't proceed to tibet:tag without checking for propagation.
+            //  Note that we only check for 'stop immediately' here because
+            //  we're at the same 'DOM element' level for the next check of
+            //  'tibet:tag'.
+            if (signal.shouldStopImmediately()) {
+                return;
             }
         }
     }
@@ -5480,6 +5490,10 @@ function(target, signal) {
             if (TP.canInvoke(responder, 'handle')) {
                 signal.setOrigin(TP.gid(target));
                 responder.handle(signal);
+            } else {
+                this.raise('InvalidResponder',
+                        TP.sc('Responder: ', id,
+                                ' cannot handle: ', signal.getSignalName()));
             }
         }
     }

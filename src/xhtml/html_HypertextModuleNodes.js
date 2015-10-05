@@ -73,7 +73,7 @@ function(aRequest) {
     //  want that, we want to have them do nothing. We set '#' here and let the
     //  check further down add a return false click handler.
     if (TP.isEmpty(href)) {
-        TP.elementSetAttribute(elem, 'href', '#');
+        TP.elementSetAttribute(elem, 'href', '#', true);
     }
 
     //  Links with an empty anchor will try to reset at the top of page. Don't

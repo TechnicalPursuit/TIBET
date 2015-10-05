@@ -3,55 +3,34 @@
 	CSS styles common across 'xctrls:button' controls for any theme.
 */
 
-@import url('../xctrls_button/xctrls_button.less');
+@import (reference) url('../xctrls_button/xctrls_button.less');
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-/* All themed 'xctrls:button' controls */
+*[data-theme] {
 
-*[data-theme] xctrls|button {
+    /* All themed 'xctrls:button' controls */
 
-	text-align: center;
+    xctrls|button {
 
-	cursor: pointer;
-}
+        text-align: center;
 
-/* All themed, non-disabled 'xctrls:button' controls */
+        cursor: pointer;
+    }
 
-*[data-theme] xctrls|button {
+    /* All themed, non-disabled 'xctrls:button' controls */
 
-	background: transparent;
+    xctrls|button:not([pclass|disabled]) {
 
-	text-decoration: none;
-}
+        background: transparent;
 
-/* All themed, non-disabled 'xctrls:button' control labels */
+        text-decoration: none;
+    }
 
-*[data-theme] xctrls|button xctrls|label {
-}
+    /* All themed, non-disabled 'xctrls:button' control labels */
 
-/* All themed, non-disabled 'xctrls:button' controls with an image but no
-	label */
-
-*[data-theme] xctrls|button[image]:not([label]) {
-}
-
-/* All themed, non-disabled 'xctrls:button' control image elements with an
-	image but no label */
-
-*[data-theme] xctrls|button[image]:not([label]) xctrls|image {
-}
-
-*[data-theme] xctrls|button[image="left"] xctrls|image {
-}
-
-*[data-theme] xctrls|button[image="right"] xctrls|image {
-}
-
-*[data-theme] xctrls|button[image="top"] xctrls|image {
-}
-
-*[data-theme] xctrls|button[image="bottom"] xctrls|image {
+    xctrls|button:not([pclass|disabled]) xctrls|label {
+    }
 }
 
