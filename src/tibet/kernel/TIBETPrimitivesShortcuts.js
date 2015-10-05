@@ -2666,11 +2666,19 @@ function(aURIOrRoute, linkContext) {
     //  If we get a "route" rather than a full URI update the hash and let the
     //  system respond to that to route correctly.
     if (/^#/.test(aURIOrRoute)) {
-        router = TP.sys.getRouter();
-        if (TP.isValid(router)) {
-            router.setRoute(TP.str(aURIOrRoute).slice(1));
+
+        //  A route has to be '#/' or '#?', so only trigger the router if we see
+        //  that pattern.
+        if (/^#(\/|\?)/.test(aURIOrRoute)) {
+            router = TP.sys.getRouter();
+            if (TP.isValid(router)) {
+                router.setRoute(TP.str(aURIOrRoute).slice(1));
+            }
+            return false;
+        } else {
+            //  This is a link anchor target - act accordingly
+            return true;
         }
-        return false;
     }
 
     if (!TP.isURI(aURIOrRoute)) {
