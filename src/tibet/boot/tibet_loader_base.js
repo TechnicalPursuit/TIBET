@@ -8452,48 +8452,57 @@ TP.boot.$configureEnvironment = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$configureOptions = function(anObject) {
+TP.boot.$configureOptions = function(anObject, aPrefix) {
+
+    var prefix;
+
+    //  Default the prefix to '', but if it's not empty, tack a '.' onto the end
+    //  of it, since this must be a recursive call from ourself below to process
+    //  a nested structure.
+    prefix = aPrefix || '';
+    if (prefix !== '') {
+        prefix = prefix + '.';
+    }
 
     Object.keys(anObject).forEach(
             function(key) {
-                var value;
+                var name,
+                    value;
 
+                //  JSON comment - move on
+                if (key.indexOf('//') === 0) {
+                    return;
+                }
+
+                name = prefix + key;
                 value = anObject[key];
+
                 //  If the value isn't a primitive we assume the key is a prefix
                 //  and that we need to nest the data appropriately.
                 if (Object.prototype.toString.call(value) ===
                     '[object Object]') {
 
-                    Object.keys(value).forEach(
-                            function(subkey) {
-                                var name;
-
-                                name = key + '.' + subkey;
-                                TP.sys.setcfg(name, value[subkey]);
-
-                                TP.boot.$stdout('$configureOption ' + name +
-                                                ' = ' + value[subkey],
-                                                TP.DEBUG);
-
-                                //  Update cached values as needed.
-                                if (name === 'path.app_root') {
-                                    TP.boot.$stdout(
-                                    'Overriding path.app_root cache with: ' +
-                                    value[subkey],
-                                    TP.DEBUG);
-                                    TP.boot.$$approot =
-                                        TP.boot.$uriExpandPath(value[subkey]);
-                                } else if (name === 'path.lib_root') {
-                                    TP.boot.$stdout(
-                                    'Overriding path.lib_root cache with: ' +
-                                    value[subkey],
-                                    TP.DEBUG);
-                                    TP.boot.$$libroot =
-                                        TP.boot.$uriExpandPath(value[subkey]);
-                                }
-                            });
+                    //  Note the recursive call to process the nested structure.
+                    return TP.boot.$configureOptions(value, name);
                 } else {
-                    TP.sys.setcfg(key, value);
+                    TP.boot.$stdout('$configureOption ' + name +
+                                    ' = ' + value,
+                                    TP.DEBUG);
+
+                    TP.sys.setcfg(name, value);
+
+                    //  Update cached values as needed.
+                    if (name === 'path.app_root') {
+                        TP.boot.$stdout(
+                            'Overriding path.app_root cache with: ' + value,
+                            TP.DEBUG);
+                        TP.boot.$$approot = TP.boot.$uriExpandPath(value);
+                    } else if (name === 'path.lib_root') {
+                        TP.boot.$stdout(
+                            'Overriding path.lib_root cache with: ' + value,
+                            TP.DEBUG);
+                        TP.boot.$$libroot = TP.boot.$uriExpandPath(value);
+                    }
                 }
             });
 };
