@@ -5132,9 +5132,9 @@ function(originSet, aSignal, aPayload, aType) {
                     //  off the leading '(' and trailing ')', leaving '{...}'
                     sigdata = sigdata.slice(dataidx + 1, -1);
 
-                    //  Convert from that String into a real JSON string and
-                    //  from there into a real Hash.
-                    sigParams = TP.json2js(TP.formatUnquotedJSON(sigdata));
+                    //  What's left is a JS-formatted String. Parse that into a
+                    //  TP.core.Hash.
+                    sigParams = TP.json2js(TP.reformatJSToJSON(sigdata));
                 } else {
 
                     //  No signal payload - the signal name is all of the signal

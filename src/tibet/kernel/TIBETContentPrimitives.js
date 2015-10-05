@@ -76,14 +76,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('formatUnquotedJSON',
+TP.definePrimitive('reformatJSToJSON',
 function(aString) {
 
     /**
-     * @method formatUnquotedJSON
-     * @summary Formats an 'unquoted JSON string' into a real JSON String that
-     *     can then be parsed. This routine also 'TP.' values to be resolved
-     *     into their real values.
+     * @method reformatJSToJSON
+     * @summary Formats a JS string into a JSON String that can then be parsed
+     *     as JSON. This routine also 'TP.' values to be resolved into their
+     *     real values.
      * @description An example of an unquoted JSON string with 'TP.' references
      *     is:
      *          {index:1,position:TP.BEFORE}
