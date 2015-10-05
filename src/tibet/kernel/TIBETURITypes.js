@@ -9852,14 +9852,15 @@ function(aURI, aDirection) {
 
         //  See if the content is a tag type name.
         type = TP.sys.getTypeByName(content);
-        if (TP.isSubtypeOf(type, 'TP.core.ElementNode')) {
+        if (TP.canInvoke(type, 'generateMarkupContent')) {
 
             if (TP.notValid(targetTPElem)) {
                 targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
             }
 
             //  Inject the content.
-            targetTPElem.setContentFromTagType(type);
+            targetTPElem.setContent(type.generateMarkupContent(),
+                                    TP.hc('sourceType', type));
 
         } else {
 
