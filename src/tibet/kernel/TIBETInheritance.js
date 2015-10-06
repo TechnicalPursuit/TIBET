@@ -4705,7 +4705,12 @@ function(entry, installName, targetObject, track) {
             dispatchFunc.$resolutionMethod = resolutionTypeVal;
         }
 
-        targetObject.defineMethod(installName, dispatchFunc);
+        //  NB: Note here how we supply null for the descriptor and for the
+        //  display name (these will be automatically defaulted) but true for
+        //  the 'could we be a handler method?' parameter. This allows
+        //  ".defineMethod('handle...')" calls to occur without logging
+        //  warnings.
+        targetObject.defineMethod(installName, dispatchFunc, null, null, true);
 
         //  Note here how we manually wire the owner of the Function we just put
         //  on the targetObject to be the resolutionType. This is due to the
