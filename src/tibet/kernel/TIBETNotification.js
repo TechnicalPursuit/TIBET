@@ -4668,7 +4668,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                     } catch (e2) {
                         TP.ifError() ?
                                 TP.error(
-                                TP.ec(e,
+                                TP.ec(e2,
                                 TP.join('Error getting handler for: ', orgid,
                                         '.', signame)),
                                 TP.SIGNAL_LOG) : 0;
