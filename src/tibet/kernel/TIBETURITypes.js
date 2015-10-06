@@ -10991,7 +10991,7 @@ function(aSignal) {
                     //  Ignore the source for the signal type.
                     signalTarget.ignore(signalSource, signalType);
                 }
-            }.bind(this));
+            });
 
     //  Make sure to remove our observation of AppShutdown.
     this.ignore(TP.sys, 'TP.sig.AppShutdown');
