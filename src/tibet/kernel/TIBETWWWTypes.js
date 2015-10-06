@@ -491,7 +491,7 @@ function() {
         function(item) {
 
             this.Type.defineConstant(
-                    item.last().toUpperCase().replace(' ', '_', 'g'),
+                    item.last().toUpperCase().replace(/ /g, '_'),
                     item.first());
         }.bind(this));
 
