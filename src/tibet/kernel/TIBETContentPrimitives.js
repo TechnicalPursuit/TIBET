@@ -102,6 +102,8 @@ function(aString) {
 
         context,
 
+        useGlobalContext,
+
         i;
 
     //  Tokenize the input string, supplying our own set of 'operators'.
@@ -118,6 +120,10 @@ function(aString) {
     //  properly.
     context = null;
 
+    //  When this flag is true, we can use identifier/string/uri values to look
+    //  up properties on the global object to set the context.
+    useGlobalContext = true;
+
     for (i = 0; i < tokens.getSize(); i++) {
 
         token = tokens.at(i);
@@ -132,7 +138,9 @@ function(aString) {
                 if (TP.isValid(context)) {
                     context = context[val];
                 } else {
-                    if (self[val]) {
+                    //  If useGlobalContext is true and the value is a property
+                    //  on the global, then the context to it.
+                    if (useGlobalContext && self[val]) {
                         context = self[val];
                     } else {
                         //  There was no context or value that resolved to a
@@ -141,6 +149,10 @@ function(aString) {
                         str += TP.trim(val).unquoted();
                     }
                 }
+
+                //  Flip useGlobalContext to false - we won't allow it anymore
+                useGlobalContext = false;
+
                 break;
 
             case 'operator':
