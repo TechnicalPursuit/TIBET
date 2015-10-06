@@ -20,7 +20,7 @@ TP.core.UIElementNode.defineSubtype('xctrls:label');
 TP.xctrls.label.addTraits(TP.xctrls.Element);
 
 //  ------------------------------------------------------------------------
-//  Type Attribute
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
