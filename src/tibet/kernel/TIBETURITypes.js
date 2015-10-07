@@ -9850,7 +9850,7 @@ function(aURI, aDirection) {
             }
         }
 
-        //  See if the content is a tag type name.
+        //  See if the content is a type name.
         type = TP.sys.getTypeByName(content);
         if (TP.canInvoke(type, 'generateMarkupContent')) {
 
