@@ -30,6 +30,11 @@ TP.xctrls.Element.Inst.resolveTraits(
 //  new instances of the tag.
 TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 
+//  This tag has the CSS common to all XCtrls elements as its associated CSS.
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.Element.defineAttribute('styleURI',
+                                    '~TP.xctrls.Element/xctrls_common.css');
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
