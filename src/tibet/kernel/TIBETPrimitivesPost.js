@@ -3592,9 +3592,21 @@ function(anObject, anAspect, autoCollapse) {
     }
 
     if (TP.isValid(val)) {
-        return TP.isArray(val) && val.getSize() === 1 &&
-                                                TP.isTrue(autoCollapse) ?
-                val.at(0) : val;
+        if (TP.isArray(val)) {
+            //  Make sure that if autoCollapse is turned on that we either
+            //  return the only item if there is only one or null if the Array
+            //  is empty, to be consistent with 'collapse' usage elsewhere in
+            //  TIBET.
+            if (TP.isTrue(autoCollapse)) {
+                if (val.getSize() === 1) {
+                    return val.at(0);
+                } else if (TP.isEmpty(val)) {
+                    return null;
+                }
+            }
+        }
+
+        return val;
     }
 
     //  there was no computed value and an object's value defaults to itself,
