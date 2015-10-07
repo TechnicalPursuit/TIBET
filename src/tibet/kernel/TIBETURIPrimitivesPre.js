@@ -305,8 +305,13 @@ function(parts) {
             url += '/';
         }
 
-        url += '#' +
-            (fragPath.charAt(0) === '/' ? fragPath.slice(1) : fragPath);
+        //  If the fragment doesn't have a leading '/', put one on.
+        if (fragPath.charAt(0) !== '/') {
+            fragPath = '/' + fragPath;
+        }
+
+        //  Make sure that the fragment also has a leading '#', thereby
+        url += '#' + fragPath;
     }
 
     //  Fragment parameters, aka boot parameters, are parameters which are part
