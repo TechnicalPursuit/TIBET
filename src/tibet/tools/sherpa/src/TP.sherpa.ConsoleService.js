@@ -2786,7 +2786,7 @@ function(inputText) {
     tokens = TP.$condenseJS(
                     inputText, false, false,
                     //  All of the JS operators *and* the TSH operators
-                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    TP.tsh.script.$tshAndJSOperators,
                     true, true, true);
 
     //  Reverse the tokens to start from the back

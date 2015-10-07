@@ -99,7 +99,7 @@ function(aString, aShell, aRequest, asTokens) {
     arr = TP.$condenseJS(
                     str, false, false,
                     //  All of the JS operators *and* the TSH operators
-                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    TP.tsh.script.$tshAndJSOperators,
                     true, true, true);
 
     len = arr.length;
@@ -735,7 +735,7 @@ function(aliasString, aTokenArray) {
     tokens = TP.$tokenize(
                     aliasString,
                     //  All of the JS operators *and* the TSH operators
-                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    TP.tsh.script.$tshAndJSOperators,
                     true, false, true, true);
 
     i = 0;
@@ -983,7 +983,7 @@ function(REQUEST$$) {
     TOKENS$$ = TP.$condenseJS(
                     $SCRIPT, false, false,
                     //  All of the JS operators *and* the TSH operators
-                    TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                    TP.tsh.script.$tshAndJSOperators,
                     true, true, true);
 
     if (this.isAccessPath(TOKENS$$)) {
@@ -1231,7 +1231,7 @@ function(REQUEST$$, CMDTYPE$$) {
             TOKENS$$ = TP.$condenseJS(
                         $SCRIPT, false, false,
                         //  All of the JS operators *and* the TSH operators
-                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        TP.tsh.script.$tshAndJSOperators,
                         true, true, true);
 
             //  one special case for sinks is when sugaring for setting a
@@ -1291,7 +1291,7 @@ function(REQUEST$$, CMDTYPE$$) {
                 TOKENS$$ = TP.$condenseJS(
                         $SCRIPT, false, false,
                         //  All of the JS operators *and* the TSH operators
-                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        TP.tsh.script.$tshAndJSOperators,
                         true, true, true);
 
                 //  all literal token representations are single tokens

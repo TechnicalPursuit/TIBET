@@ -37,6 +37,9 @@ TP.tsh.script.addTraits(TP.tsh.Element);
 //  the sugared command input.
 TP.tsh.script.Type.defineAttribute('$tshOperators');
 
+//  A list of both TSH and JS operators
+TP.tsh.script.Type.defineAttribute('$tshAndJSOperators');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -85,6 +88,9 @@ function() {
             '<![', ']]>',               //  XML CDATA open and close
             '</', '/>'                  //  XML tag close operators
             ));
+
+    this.set('$tshAndJSOperators',
+               TP.boot.$operators.concat(this.$tshOperators));
 
     //  A regular expression which can be used as either a test or splitting
     //  function for simple pipe constructions.
@@ -594,7 +600,7 @@ function(source, shell, sibling, request) {
                 TP.$condenseJS(
                         source, false, false,
                         //  All of the JS operators *and* the TSH operators
-                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        TP.tsh.script.$tshAndJSOperators,
                         true, true, true);
 
     cmdns = 'tsh';
@@ -2405,7 +2411,7 @@ function(src, shell, request) {
     arr = TP.$tokenize(
                 src,
                 //  All of the JS operators *and* the TSH operators
-                TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                TP.tsh.script.$tshAndJSOperators,
                 true, false, false, false);
 
     i = 0;

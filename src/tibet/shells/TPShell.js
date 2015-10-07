@@ -2689,7 +2689,7 @@ function(aRequest, allForms) {
                     parts = TP.$tokenize(
                         last,
                         //  All of the JS operators *and* the TSH operators
-                        TP.boot.$operators.concat(TP.tsh.script.$tshOperators),
+                        TP.tsh.script.$tshAndJSOperators,
                         true, false, false, true);
                 } else {
                     //  One special case here is any argument which appears to
