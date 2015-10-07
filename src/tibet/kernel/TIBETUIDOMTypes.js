@@ -4285,20 +4285,26 @@ function(oldItem, newItem) {
      *     selected.
      * @param {Element} oldItem The old element to deselect.
      * @param {Element} newItem The new element to select.
-     * @exception TP.sig.InvalidElement
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var item;
+    var item,
+        deselectSignal;
 
     if (TP.isValid(oldItem)) {
         item = TP.wrap(oldItem);
-        item.set('selected', false);
+        deselectSignal = item.signal('TP.sig.UIDeselect');
+
+        //  Note how we make sure that the UIDeselect signal doesn't want it's
+        //  default prevented before we proceed.
+        if (deselectSignal.shouldPrevent()) {
+            return this;
+        }
     }
 
     if (TP.isValid(newItem)) {
         item = TP.wrap(newItem);
-        item.set('selected', true);
+        item.signal('TP.sig.UISelect');
     }
 
     return this;
