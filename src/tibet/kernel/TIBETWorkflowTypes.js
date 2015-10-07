@@ -6722,22 +6722,17 @@ function(anEvent) {
     //  ensure we get the right index adjustments in our internal history.
     this.updateIndex(anEvent);
 
-    //  If we get a "route" rather than a full URI update the hash and let the
-    //  system respond to that to route correctly.
-    if (/^#/.test(loc)) {
-
-        //  A route has to be '#/' or '#?', so only trigger the router if we see
-        //  that pattern.
-        if (/^#(\/|\?)/.test(loc)) {
-            router = TP.sys.getRouter();
-            if (TP.isValid(router)) {
-                router.route(loc);
-            }
-            anEvent.preventDefault();
-        } else {
-            //  This is a link anchor target - act accordingly
-            return;
+    //  A route has to be '#/' or '#?', so only trigger the router if we see
+    //  that pattern.
+    if (/#(\/|\?)/.test(loc)) {
+        router = TP.sys.getRouter();
+        if (TP.isValid(router)) {
+            router.route(loc);
         }
+        anEvent.preventDefault();
+    } else {
+        //  This is a link anchor target - act accordingly
+        return;
     }
 
     return;
