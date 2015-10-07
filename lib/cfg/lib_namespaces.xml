@@ -196,6 +196,10 @@
     <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/xctrls_curtain.less"/>
     <property name="path.TP.xctrls.curtain.template" value="~TP.xctrls.curtain/xctrls_curtain.xhtml"/>
 
+    <script src="xctrls/xctrls_panelbox/xctrls_panelbox.js"/>
+    <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/xctrls_panelbox.less"/>
+    <property name="path.TP.xctrls.panelbox.template" value="~TP.xctrls.panelbox/xctrls_panelbox.xhtml"/>
+
     <script src="xctrls/xctrls_dialog/xctrls_dialog.js"/>
     <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/xctrls_dialog.css"/>
     <property name="path.TP.xctrls.dialog.template" value="~TP.xctrls.dialog/xctrls_dialog.xsl"/>
