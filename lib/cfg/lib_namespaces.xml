@@ -156,6 +156,7 @@
     <script src="xctrls/xctrls_Element.js"/>
     <script src="xctrls/xctrls_FramedElement.js"/>
     <script src="xctrls/xctrls_MultiItemElement.js"/>
+    <script src="xctrls/xctrls_SwitchableElement.js"/>
 
     <script src="xctrls/xctrls_label/xctrls_label.js"/>
     <script src="xctrls/xctrls_panel/xctrls_panel.js"/>
