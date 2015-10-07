@@ -36,7 +36,7 @@ TP.xctrls.log.Inst.defineAttribute(
 
 TP.xctrls.log.Inst.defineAttribute(
         'transformWithName',
-        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
+        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{0}}"]/..', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Type Methods

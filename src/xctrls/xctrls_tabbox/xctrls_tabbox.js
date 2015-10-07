@@ -37,7 +37,7 @@ TP.xctrls.tabbox.Inst.defineAttribute(
 
 TP.xctrls.tabbox.Inst.defineAttribute(
         'panelWithValue',
-        {value: TP.xpc('./xctrls:panel/xctrls:value[text() = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
+        {value: TP.xpc('./xctrls:panel/xctrls:value[text() = "{{0}}"]/..', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

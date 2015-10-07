@@ -40,7 +40,7 @@ TP.xctrls.tabbar.Inst.defineAttribute(
 
 TP.xctrls.tabbar.Inst.defineAttribute(
         'tabWithValue',
-        {value: TP.xpc('./xctrls:tabitem/xctrls:value[text() = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
+        {value: TP.xpc('./xctrls:tabitem/xctrls:value[text() = "{{0}}"]/..', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.tabbar.Inst.defineAttribute(
         'selectedValue',

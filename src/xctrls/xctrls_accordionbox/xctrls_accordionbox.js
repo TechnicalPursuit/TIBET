@@ -34,7 +34,7 @@ TP.xctrls.accordionbox.Inst.defineAttribute(
 TP.xctrls.accordionbox.Inst.defineAttribute(
         'itemWithValue',
         {value:
-            TP.xpc('./xctrls:accordionitem/xctrls:value[text() = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
+            TP.xpc('./xctrls:accordionitem/xctrls:value[text() = "{{0}}"]/..', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.accordionbox.Inst.defineAttribute(
         'selectedValue',

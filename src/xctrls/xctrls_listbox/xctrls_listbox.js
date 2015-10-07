@@ -36,7 +36,7 @@ TP.xctrls.listbox.Inst.defineAttribute(
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'itemWithValue',
-        {value: TP.xpc('./html:div/xctrls:textitem/xctrls:value[text() = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
+        {value: TP.xpc('./html:div/xctrls:textitem/xctrls:value[text() = "{{0}}"]/..', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'selectedValue',
@@ -54,7 +54,7 @@ TP.xctrls.listbox.Inst.defineAttribute(
 
 TP.xctrls.listbox.Inst.defineAttribute(
         'transformWithName',
-        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{1}}"]/..', TP.hc('shouldCollapse', true))});
+        {value: TP.xpc('.//tsh:transform/tsh:template[@tsh:name = "{{0}}"]/..', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 
