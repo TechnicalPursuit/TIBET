@@ -5938,8 +5938,10 @@ function() {
     var controllers,
         route,
         config,
+        configInfo,
         controller,
-        url;
+        controllerName,
+        defaulted;
 
     controllers = this.$get('controllers');
 
@@ -5952,25 +5954,52 @@ function() {
         return controllers;
     }
 
-    config = TP.sys.cfg('route.' + route.toLowerCase() + '.controller');
+    //  See if the value is a route configuration key.
+    config = TP.sys.cfg('route.info.' + route.toLowerCase());
+
     if (TP.isEmpty(config)) {
         return controllers;
     }
 
-    controller = TP.sys.getTypeByName(config);
-    if (TP.notValid(controller)) {
-        url = TP.uc(config);
-        if (TP.isValid(url)) {
-            //  NB: We assume 'async' of false here.
-            controller = url.getResource().get('result');
-        }
-    }
-
-    if (TP.notValid(controller)) {
-        TP.warn('InvalidRouteController', config);
+    //  The config entry will be a JS-formatted String. Parse it into a
+    //  TP.core.Hash.
+    configInfo = TP.json2js(TP.reformatJSToJSON(config));
+    if (TP.isEmpty(configInfo)) {
+        this.raise('InvalidObject',
+                    'Unable to build config data from entry: ' + config);
         return controllers;
     }
 
+    //  Try to obtain a controller type name
+    controllerName = configInfo.at('controller');
+    defaulted = false;
+
+    //  If there was no controller type name entry, default one by concatenating
+    //  'APP' with the project and route name and the word 'Controller.
+    if (TP.isEmpty(controllerName)) {
+        controllerName = 'APP.' +
+                            TP.sys.cfg('project.name') +
+                            '.' +
+                            route.asTitleCase() +
+                            'Controller';
+        defaulted = true;
+    }
+
+    //  See if the controller is a type name.
+    controller = TP.sys.getTypeByName(controllerName);
+
+    if (TP.notValid(controller)) {
+
+        //  Note here how we only warn if the controller name was specified and
+        //  not generated here.
+        TP.ifWarn() && !defaulted ?
+            TP.warn('InvalidRouteController', controllerName) : 0;
+
+        return controllers;
+    }
+
+    //  Copy the controllers Array and unshift the new controller onto the front
+    //  of it.
     controllers = controllers.slice(0);
     controllers.unshift(controller);
 
