@@ -158,6 +158,7 @@
     <script src="xctrls/xctrls_MultiItemElement.js"/>
 
     <script src="xctrls/xctrls_label/xctrls_label.js"/>
+    <script src="xctrls/xctrls_panel/xctrls_panel.js"/>
 
     <script src="xctrls/xctrls_accordionbox/xctrls_accordionbox.js"/>
     <property name="path.TP.xctrls.accordionbox.style" value="~TP.xctrls.accordionbox/xctrls_accordionbox.css"/>
