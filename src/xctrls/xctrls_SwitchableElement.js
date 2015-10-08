@@ -18,6 +18,9 @@
 
 TP.xctrls.Element.defineSubtype('SwitchableElement');
 
+//  can't construct concrete instances of this
+TP.xctrls.SwitchableElement.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
