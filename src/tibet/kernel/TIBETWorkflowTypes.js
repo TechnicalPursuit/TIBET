@@ -6066,22 +6066,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineHandler('AppWillStart',
-function(aSignal) {
-
-    /**
-     * @method handleAppWillStart
-     * @summary A handler that is called when the system has set up everything
-     *     required to run a TIBET application.
-     * @param {TP.sig.AppWillStart} aSignal The startup signal.
-     * @returns {TP.core.Application} The receiver.
-     */
-
-    TP.core.Application.get('singleton').start(aSignal);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Application.Inst.defineMethod('popController',
 function() {
 
@@ -6266,6 +6250,24 @@ function(aSignal) {
     }.bind(this).afterUnwind(aSignal));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Handlers
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('AppWillStart',
+function(aSignal) {
+
+    /**
+     * @method handleAppWillStart
+     * @summary A handler that is called when the system has set up everything
+     *     required to run a TIBET application.
+     * @param {TP.sig.AppWillStart} aSignal The startup signal.
+     * @returns {TP.core.Application} The receiver.
+     */
+
+    TP.core.Application.get('singleton').start(aSignal);
 });
 
 //  ========================================================================
