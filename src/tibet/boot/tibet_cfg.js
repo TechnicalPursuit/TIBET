@@ -122,9 +122,6 @@
     //  do we start with a login page?
     TP.sys.setcfg('boot.use_login', false);
 
-    //  if so, what is the URL?
-    TP.sys.setcfg('boot.login_page', null);
-
     //  when using a login page do we boot in parallel, meaning we start loading
     //  the tibet code (phase one) in parallel or wait until login succeeds?
     TP.sys.setcfg('boot.parallel', true);
@@ -1438,7 +1435,7 @@
     //  your server on successful login.
     TP.sys.setcfg('path.index_page', '~/index.html');
 
-    TP.sys.setcfg('path.login_page', '~app_xhtml/login.xhtml');
+    TP.sys.setcfg('path.login_page', '~boot_xhtml/login.xhtml');
 
 
     //  ---

@@ -7067,7 +7067,7 @@ TP.boot.hideUIBoot = function() {
         elem.style.display = 'none';
     }
 
-    TP.byId('UIROOT', top, false).focus();
+    TP.boot.$byId('UIROOT').focus();
 };
 
 //  ----------------------------------------------------------------------------
@@ -7178,15 +7178,13 @@ TP.boot.showUICanvas = function(aURI) {
     var win,
         file;
 
-    TP.boot.hideContent();
-
     win = TP.sys.getWindowById(TP.sys.cfg('tibet.uicanvas'));
     if (TP.boot.$isValid(win)) {
         if (TP.boot.$isValid(aURI)) {
             file = TP.boot.$uriExpandPath(aURI);
 
             //  pretend this page never hit the history
-            window.location.replace(file);
+            win.location.replace(file);
         }
 
         //  make sure iframes are visible when used in this fashion
@@ -7194,6 +7192,8 @@ TP.boot.showUICanvas = function(aURI) {
             win.frameElement.style.visibility = 'visible';
         }
     }
+
+    TP.boot.hideUIBoot();
 
     return;
 };
@@ -9621,9 +9621,10 @@ TP.boot.$$importPhase = function() {
     TP.boot.$$workload = nodelist.length;
 
     TP.boot.$$totalwork += nodelist.length;
-
+/*
     //  TODO: this should happen based on a return value being provided.
     window.$$phase_two = true;
+*/
 
     TP.boot.$importComponents();
 /*
@@ -10652,6 +10653,15 @@ TP.boot.launch = function(options) {
     //  information can then help drive the remaining parts of the process
     TP.boot.$configureEnvironment();
 
+    //  loads the tibet.json file which typically contains profile and lib_root
+    //  data. with those two values the system can find the primary package and
+    //  configuration that will ultimately drive what we load.
+    TP.boot.$configureBootstrap();
+
+    //  Update any cached variable content. We do this each time we've read in
+    //  new configuration values regardless of their source.
+    TP.boot.$updateDependentVars();
+
     //  Process each option provided as a configuration parameter setting.
     //  NOTE that this has to happen before we setStage since that triggers
     //  things like app_root and lib_root computations which must be allowed to
@@ -10981,7 +10991,7 @@ TP.boot.$uiRootReady = function() {
         TP.boot.boot();
     } else {
         //  login was explicitly true
-        file = TP.sys.cfg('boot.login_page');
+        file = TP.sys.cfg('path.login_page');
         file = TP.boot.$uriExpandPath(file);
 
         parallel = TP.sys.cfg('boot.parallel');
