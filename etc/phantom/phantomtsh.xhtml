@@ -40,6 +40,9 @@ function init() {
     // itself. As a result we need to adjust app head based on context.
 
     TP.boot.launch({
+        boot: {
+            no_login_file: true
+        },
         path: {
             head_offset: '../../..',
             app_xhtml: '~lib_etc/phantom'

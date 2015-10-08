@@ -10653,15 +10653,6 @@ TP.boot.launch = function(options) {
     //  information can then help drive the remaining parts of the process
     TP.boot.$configureEnvironment();
 
-    //  loads the tibet.json file which typically contains profile and lib_root
-    //  data. with those two values the system can find the primary package and
-    //  configuration that will ultimately drive what we load.
-    TP.boot.$configureBootstrap();
-
-    //  Update any cached variable content. We do this each time we've read in
-    //  new configuration values regardless of their source.
-    TP.boot.$updateDependentVars();
-
     //  Process each option provided as a configuration parameter setting.
     //  NOTE that this has to happen before we setStage since that triggers
     //  things like app_root and lib_root computations which must be allowed to
@@ -10670,6 +10661,15 @@ TP.boot.launch = function(options) {
         TP.boot.$$configureOverrides(options);
         TP.boot.$updateDependentVars();
     }
+
+    //  loads the tibet.json file which typically contains profile and lib_root
+    //  data. with those two values the system can find the primary package and
+    //  configuration that will ultimately drive what we load.
+    TP.boot.$configureBootstrap();
+
+    //  Update any cached variable content. We do this each time we've read in
+    //  new configuration values regardless of their source.
+    TP.boot.$updateDependentVars();
 
     try {
         //  set the initial stage. this will also capture a start time.
