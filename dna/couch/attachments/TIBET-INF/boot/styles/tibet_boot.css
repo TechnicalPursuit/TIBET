@@ -247,3 +247,41 @@ body.full_console #BOOT-CONSOLE {
     top: 48px;
 }
 
+#LOGIN-SPLASH {
+    display: block;
+    position: absolute;
+    top: 148px;
+    bottom: 64px;
+    right: 0;
+    left: 0;
+    margin: 0 48px;
+    color: black;
+    overflow: hidden;
+    background: url(../media/tibet_world.gif) center center no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#LOGIN-FORM form {
+    display: flex;
+    flex-flow: row wrap;
+    width: 408px;
+}
+
+#LOGIN-FORM label {
+    display: block;
+    width: 150px;
+}
+
+#LOGIN-FORM input {
+    width: 250px;
+    margin-bottom: 7px;
+}
+
+#LOGIN-FORM button {
+    margin-left: auto;
+    width: 250px;
+    margin-top: 3em;
+}
+
