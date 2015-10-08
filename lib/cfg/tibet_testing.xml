@@ -50,6 +50,7 @@
     <config ref="oo"/>
     <config ref="service"/>
     <config ref="requests"/>
+    <config ref="routing"/>
     <config ref="signaling"/>
     <config ref="states"/>
     <config ref="values"/>
@@ -163,12 +164,16 @@
     <script src="~lib_test/src/tsh/tsh_Tests.js" />
 </config>
 
+<config id="signaling">
+    <script src="~lib_test/src/tibet/signaling/TP.lang.Object_Tests.js" />
+</config>
+
 <config id="requests">
     <script src="~lib_test/src/tibet/requests/TP.sig.Request_Tests.js" />
 </config>
 
-<config id="signaling">
-    <script src="~lib_test/src/tibet/signaling/TP.lang.Object_Tests.js" />
+<config id="routing">
+    <script src="~lib_test/src/tibet/routing/TP.core.URIRouter_Tests.js" />
 </config>
 
 <config id="xslt">

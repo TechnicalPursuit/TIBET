@@ -96,11 +96,41 @@ function() {
         var result;
 
         result = router.compilePattern('fluffy');
+        test.assert.isEqualTo(result.first(), /(fluffy)/.toString());
+    });
+
+    this.it('compiles regex strings', function(test, options) {
+        var result;
+
+        result = router.compilePattern('/fluffy/');
         test.assert.isEqualTo(result.first(), /fluffy/.toString());
+    });
+
+    this.it('compiles simple token strings', function(test, options) {
+        var result;
+
+        result = router.compilePattern(':fluffy');
+        test.assert.isEqualTo(result.first(), /(.*?)/.toString());
+    });
+
+    this.it('compiles regex token strings', function(test, options) {
+        var result;
+
+        router.defineToken('fluffy', /\d{3}/);
+        result = router.compilePattern(':fluffy');
+        test.assert.isEqualTo(result.first(), /(\d{3})/.toString());
+    });
+
+    this.it('compiles complex strings', function(test, options) {
+        var result;
+
+        router.defineToken('fluffy', /\d{3}/);
+        result = router.compilePattern('/foo/:fluffy/bar');
+        test.assert.isEqualTo(result.first(), /\/(foo)\/(\d{3})\/(bar)/.toString());
     });
 });
 
-TP.core.URIRouter.Type.describe('processMatch',
+TP.core.URIRouter.Type.describe('processRoute',
 function() {
     var router;
 
@@ -109,6 +139,13 @@ function() {
     });
 
     this.it('', function(test, options) {
+        var result;
+
+        router.defineToken('fluffy', /\d{3}/);
+        router.defineProcessor('/foo/:fluffy/bar');
+        result = router.processRoute('/foo/231/bar');
+console.log(JSON.stringify(result));
+        test.assert.isTrue(true);
     });
 });
 

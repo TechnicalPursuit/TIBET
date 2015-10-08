@@ -9220,7 +9220,7 @@ TP.lang.Object.defineSubtype('core.URIRouter');
  * to use for translating matched URLs and any token names for parameters.
  * @type {Array[RegExp, Function, String[]]}
  */
-TP.core.URIRouter.Type.defineAttribute('paths');
+TP.core.URIRouter.Type.defineAttribute('processors');
 
 /**
  * The route name to use for the "Root" or "/" route. Default is 'Home'.
@@ -9247,14 +9247,14 @@ function() {
      */
 
     this.$set('tokens', TP.hc());
-    this.$set('paths', TP.ac());
+    this.$set('processors', TP.ac());
 
     //  Always need a route to match "anything" as our backstop. If no routes
     //  are ever defined this routine should still produce something reasonable.
-    this.definePath(/.*/, this.processMatch.bind(this));
+    this.defineProcessor(/.*/, this.processMatch.bind(this));
 
     //  Define the root pattern route for "empty paths".
-    this.definePath(
+    this.defineProcessor(
         /^\/$/,
         function() {
             return TP.ac(this.get('root'), TP.hc());
@@ -9265,11 +9265,100 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('definePath',
+TP.core.URIRouter.Type.defineMethod('compilePattern',
+function(pattern) {
+
+    /**
+     * @method compilePattern
+     * @summary Converts a pattern into a fully-functional regular expression
+     *     for use in route matching and returns the pattern and a list of token
+     *     names to assign to matched positions. The resulting data is used to
+     *     detect matching routes and to process them to ensure proper names are
+     *     assigned to any token segments.
+     * @param {String|RegExp} pattern The pattern to process.
+     * @returns {Array} An array containing the pattern and zero or more string
+     *     names for embedded token values being matched.
+     */
+
+    var str,
+        regex,
+        parts,
+        mappedParts,
+        tokens,
+        names;
+
+    if (TP.isRegExp(pattern)) {
+        return TP.ac(pattern, TP.ac());
+    }
+
+    if (!TP.isString(pattern)) {
+        this.raise('InvalidParameter', pattern);
+    }
+
+    tokens = this.get('tokens');
+    names = TP.hc();
+
+    if (pattern.charAt(0) === '/') {
+        if (pattern.last() === '/') {
+            regex = RegExp.construct(pattern);
+            if (TP.notValid(regex)) {
+                this.raise('InvalidRegExp', pattern);
+            }
+            return TP.ac(regex, names);
+        }
+        str = pattern.slice(1);
+    } else {
+        str = pattern;
+    }
+
+    //  TODO:   need to parse rather than split to avoid embedded / impact. Done
+    //  properly we could potentially mix regex, token, and "normal" segments.
+    parts = str.split('/');
+
+    mappedParts = parts.map(
+            function(item, index) {
+                var re,
+                    val;
+
+                //  Check for a token pattern of this name.
+                if (item.charAt(0) === ':') {
+
+                    names.atPut(index, item.slice(1));
+                    re = tokens.at(item.slice(1));
+
+                    if (TP.isValid(re)) {
+                        val = TP.str(re);
+
+                        return '(' + val.slice(1, val.lastIndexOf('/')) + ')';
+                    } else {
+                        return '(.*?)';
+                    }
+                }
+
+                //  NOTE we capture each item, even when static, to keep
+                //  indexing and name construction functional.
+                return '(' + item + ')';
+            });
+
+    //  don't put leading / on if pattern didn't have it...
+    str = pattern.charAt(0) === '/' ? '\\/' : '';
+    str += mappedParts.join('\\/');
+
+    regex = RegExp.construct(str);
+    if (TP.notValid(regex)) {
+        this.raise('InvalidRegExp', str);
+    }
+
+    return TP.ac(regex, names);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URIRouter.Type.defineMethod('defineProcessor',
 function(pattern, processor) {
 
     /**
-     * @method definePath
+     * @method defineProcessor
      * @summary Expresses interest in a specific URL pattern, optionally
      *     defining a function used to produce the signal and payload values to
      *     be fired when the pattern is matched by the routing engine.
@@ -9287,7 +9376,7 @@ function(pattern, processor) {
 
     //  We need patterns to be in regex form and to watch for tokens so we
     //  process any string values into regular expression form.
-    result = this.processPattern(pattern);
+    result = this.compilePattern(pattern);
     regex = result.at(0);
     names = result.at(1);
 
@@ -9302,7 +9391,7 @@ function(pattern, processor) {
 
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
-    this.get('paths').unshift(TP.ac(regex, func, names));
+    this.get('processors').unshift(TP.ac(regex, func, names));
 
     return this;
 });
@@ -9398,8 +9487,8 @@ function(path, match, names) {
     /**
      * @method processMatch
      * @summary Invoked when a defined path is matched. This function provides a
-     *     default processor for definePath which can produce a signal name and
-     *     payload for the majority of use cases.
+     *     default processor for defineProcessor which can produce a signal
+     *     name and payload for the majority of use cases.
      * @param {String} path The full URL path being processed.
      * @param {Array} match The "match" Array returned by RegExp match() calls.
      *     The first slot is the "full match" while any parenthesized capture
@@ -9470,73 +9559,6 @@ function(path, match, names) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('processPattern',
-function(pattern) {
-
-    /**
-     * @method processPattern
-     * @summary Converts a pattern into a fully-functional regular expression
-     *     for use in route matching and returns the pattern and a list of token
-     *     names to assign to matched positions. The resulting data is used to
-     *     detect matching routes and to process them to ensure proper names are
-     *     assigned to any token segments.
-     * @param {String|RegExp} pattern The pattern to process.
-     * @returns {Array} An array containing the pattern and zero or more string
-     *     names for embedded token values being matched.
-     */
-
-    var str,
-        parts,
-        tokens,
-        names;
-
-    if (TP.isRegExp(pattern)) {
-        return TP.ac(pattern, TP.ac());
-    }
-
-    if (!TP.isString(pattern)) {
-        this.raise('InvalidParameter', pattern);
-    }
-
-    tokens = this.get('tokens');
-    names = TP.hc();
-
-    str = pattern.slice(1);
-
-    //  TODO:   need to parse rather than split to avoid embedded / impact. Done
-    //  properly we could potentially mix regex, token, and "normal" segments.
-    parts = str.split('/');
-
-    parts = parts.map(
-            function(item, index) {
-                var re,
-                    val;
-
-                //  Check for a token pattern of this name.
-                if (item.charAt(0) === ':') {
-
-                    names.atPut(index, item.slice(1));
-                    re = tokens.at(item.slice(1));
-
-                    if (TP.isValid(re)) {
-                        val = TP.str(re);
-
-                        return '(' + val.slice(1, val.lastIndexOf('/') + ')');
-                    } else {
-                        return '(.*?)';
-                    }
-                }
-
-                return '(' + item + ')';
-            });
-
-    str = '\\/' + parts.join('\\/');
-
-    return TP.ac(RegExp.construct(str), names);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.URIRouter.Type.defineMethod('processRoute',
 function(route) {
 
@@ -9549,15 +9571,15 @@ function(route) {
      * @returns {Array[String, TP.core.Hash]} The signal name/payload pair.
      */
 
-    var paths,
+    var processors,
         result;
 
     if (route === '/') {
         return TP.ac('Home', TP.hc());
     }
 
-    paths = this.get('paths');
-    paths.detect(
+    processors = this.get('processors');
+    processors.detect(
             function(path) {
                 var pattern,
                     processor,
@@ -9571,7 +9593,7 @@ function(route) {
                 match = pattern.match(route);
 
                 if (TP.isValid(match)) {
-                    // NOTE we update the outer variable here.
+                    // NOTE we update the outer 'result' variable here.
                     if (TP.isFunction(processor)) {
                         try {
                             result = processor(route, match, names);
@@ -9635,7 +9657,10 @@ function(aURI, aDirection) {
         config,
         configInfo,
         content,
-
+        urlParams,
+        lastParams,
+        paramDiff,
+        bootParams,
         route,
         routeTarget,
         targetTPElem;
@@ -9743,10 +9768,36 @@ function(aURI, aDirection) {
     //  ---
 
     if (TP.isValid(lastParts) &&
-        urlParts.at('fragmentParams') !== lastParts.at('fragmentParams')) {
+            urlParts.at('fragmentParams') !== lastParts.at('fragmentParams')) {
+
+        //  Goal is to see if any boot parameters actually changed so we diff
+        //  the two and then scan for keys in the diff that include boot.
+        urlParams = urlParts.at('fragmentParams');
+        lastParams = lastParts.at('fragmentParams');
+        paramDiff = TP.hc(urlParams).difference(TP.hc(lastParams));
+
+        if (TP.sys.cfg('log.routes') && TP.notEmpty(paramDiff)) {
+            TP.debug('client param change(\'' + TP.str(paramDiff) + '\');');
+        }
+
+        bootParams = paramDiff.detect(function(pair) {
+            return pair.first().startsWith('boot.');
+        })
+
+        //  If a boot-related parameter changed restart, otherwise update.
+        if (TP.notEmpty(bootParams)) {
+            top.location = url;
+        } else {
+            //  If we just altered other values then use setcfg to update.
+            paramDiff.perform(function(pair) {
+                TP.sys.setcfg(pair.first(), pair.last());
+            });
+        }
+/*
         if (TP.uriNormalize(top.location.toString()) !== url) {
             top.location = url;
         }
+*/
         return;
     }
 
@@ -9781,7 +9832,7 @@ function(aURI, aDirection) {
         }
 
         //  We changed pages. The question is, did we change back to the home
-        //  page? If so we want to fall through and let it signal RouteHome.
+        //  page? If so we want to fall through and let it signal HomeRoute.
         if (TP.uriExpandPath(url) !== home &&
                 TP.uriExpandPath(url) !==
                 TP.uriExpandHome(TP.sys.getLaunchURL())) {
@@ -9909,10 +9960,10 @@ function(aURI, aDirection) {
     name = TP.str(route);
     payload = TP.isValid(result) ? result.at(1) : TP.hc();
 
-    //  All route signals should be prefixed with 'Route'. Add that prefix here
+    //  All route signals should be suffixed with 'Route'. Add that suffix here
     //  as needed.
-    if (!/^Route/.test(name)) {
-        name = 'Route' + name.asCamelCase().asTitleCase();
+    if (!/Route$/.test(name)) {
+        name = name.asCamelCase().asTitleCase() + 'Route';
     }
 
     //  Try to find a custom route change subtype for the named route.
@@ -9934,7 +9985,7 @@ function(aURI, aDirection) {
     signal.setOrigin(TP.ANY);
 
     if (TP.sys.cfg('log.routes')) {
-        TP.info('RouteChange: ' + signal.getSignalName() + ' with: ' +
+        TP.info('Signaling: ' + signal.getSignalName() + ' with: ' +
             TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
     }
 
