@@ -228,11 +228,11 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
             //  any stage of loading we'll create a function that either
             //  of the two sides can invoke to finish things
             TP.boot.bootPhaseTwo = function() {
-
+/*
                 //  make sure the canvas is set up while the rest of the
                 //  process runs to load the application code
                 TP.boot.initializeCanvas(window);
-
+*/
                 //  notify the main boot code logic that phase two
                 //  should be imported. we'll leave it up to that code
                 //  to do the real work :)
