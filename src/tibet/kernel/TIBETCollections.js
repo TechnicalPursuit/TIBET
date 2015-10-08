@@ -8399,6 +8399,916 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 //  ========================================================================
 
 /**
+ * @type {TP.core.Iterator}
+ * @synopsis TP.core.Iterator supports collection iteration.
+ * @description TP.core.Iterator implements the TP.api.IterationAPI protocol as
+ *     well as defining some basic constants and function implementions.
+ * @example
+ // to alert out a collection's elements var it =
+ *     aCollection.asIterator(); while (!it.atEnd()) { TP.alert(it.nextValue());
+ *     };
+ *
+ *     // to do it in reverse var it = aCollection.asIterator(); it.reverse();
+ *     while (!it.atEnd()) { TP.alert(it.nextValue()); };
+ *
+ *     // to locate a value and get the index of it while(!it.atEnd()) { if
+ *     (it.nextValue() == aValue) { return it.currentKey(); }; };
+ *
+ *     // slicing it.seek(start); while (!it.atEnd() && (it.currentKey() !=
+ *     end) { arr.push(it.nextValue()); };
+ *
+ *     // get current value (what nextValue() last returned) it.currentValue();
+ * @todo
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('core:Iterator');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  the current step amount, always a positive increment
+TP.core.Iterator.Inst.defineAttribute('step');
+
+//  create the range we're working with, the "viewport" of indices
+TP.core.Iterator.Inst.defineAttribute('range');
+
+//  the collection we're iterating on
+TP.core.Iterator.Inst.defineAttribute('coll');
+
+//  are we "active", i.e. have we started iterating??
+TP.core.Iterator.Inst.defineAttribute('active', false);
+
+//  the keys for the collection, which is what we really iterate on
+TP.core.Iterator.Inst.defineAttribute('keys');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('init',
+function(aCollection, aStep) {
+
+    /**
+     * @name init
+     * @synopsis Initialize the iterator instance.
+     * @param {TP.api.CollectionAPI} aCollection The collection to iterate over.
+     * @param {Number} aStep The step size to use. Iteration can occur in
+     *     "steps" by setting a size other than 1. The default is 1.
+     * @raises TP.sig.InvalidCollection
+     * @returns {TP.core.Iterator} A new instance.
+     * @todo
+     */
+
+    var i,
+        step,
+        range;
+
+    if (TP.notValid(aCollection)) {
+        return TP.raise(this, 'TP.sig.InvalidCollection', arguments);
+    }
+
+    this.callNextMethod();
+
+    step = TP.ifInvalid(aStep, 1);
+    this.$set('step', (1).max(step));
+    step = this.$get('step');
+
+    //  range is our internal set of indices
+    range = TP.ac();
+    this.$set('range', range);
+
+    //  set up for 0 thru step-1 as starting range "ready" but not "active"
+    for (i = 0; i < step; i++) {
+        range.atPut(i, i);
+    }
+
+    //  capture the collection reference
+    this.$set('coll', aCollection);
+
+    //  no filtering but we force iteration on all keys via includeUndef
+    this.$set('keys', aCollection.getKeys(null, true));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('atEnd',
+function() {
+
+    /**
+     * @name atEnd
+     * @synopsis Returns true if the iterator is positioned at the end. The
+     *     'end' may be the front of the collection if reverse() has been
+     *     called.
+     * @returns {Boolean}
+     */
+
+    var range;
+
+    //  where we are only matters if we've been activated via next*()
+    if (this.get('active')) {
+        range = this.get('range');
+
+        //  if no new data can be reached by incrementing the range then
+        //  we're 'atEnd'
+        return range.at(range.getSize() - 1) >=
+                (this.get('keys').getSize() - 1);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('atStart',
+function() {
+
+    /**
+     * @name atStart
+     * @synopsis Returns true if the iterator is positioned at the start. The
+     *     'start' may be the end of the collection if reverse() has been
+     *     called.
+     * @returns {Boolean}
+     */
+
+    return this.get('range').at(0) === 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('currentItem',
+function() {
+
+    /**
+     * @name currentItem
+     * @synopsis Returns the current "item" of the iterator. Items consist of a
+     *     key/value pair i.e. they are "ordered pairs".
+     * @returns {Object} The item of the underlying collection at the current
+     *     iterator location or undefined.
+     */
+
+    var arr;
+
+    if (!this.get('active')) {
+        return;
+    }
+
+    if (this.get('step') > 1) {
+        return;
+    }
+
+    arr = TP.ac();
+    arr.atPut(0, this.currentKey());
+    arr.atPut(1, this.get('coll').at(this.currentKey()));
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('currentItems',
+function() {
+
+    /**
+     * @name currentItems
+     * @synopsis Returns the current "items" of the iterator. Items consist of a
+     *     key/value pair i.e. they are "ordered pairs".
+     * @returns {Array} The items of the underlying collection at the current
+     *     iterator location or undefined.
+     * @todo
+     */
+
+    var i,
+        k,
+        arr,
+        tmparr,
+        coll;
+
+    if (!this.get('active')) {
+        return;
+    }
+
+    k = this.currentKeys();
+    if (TP.notValid(k)) {
+        return;
+    }
+
+    coll = this.get('coll');
+    tmparr = TP.ac();
+    for (i = 0; i < k.getSize(); i++) {
+        arr = TP.ac();
+        arr.atPut(0, k.at(i));
+        arr.atPut(1, coll.at(k.at(i)));
+
+        tmparr.add(arr);
+    }
+
+    return tmparr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('currentKey',
+function() {
+
+    /**
+     * @name currentKey
+     * @synopsis Returns the current key of the iterator.
+     * @description Iterators work from the keys/indices of thier underlying
+     *     collection. This method returns the current key rather than the
+     *     current value. If the iterator has a step greater than 1 this method
+     *     returns undefined; use currentKeys() to get the set of keys. If the
+     *     iterator hasn't yet been used via next*(), this method will return
+     *     undefined.
+     * @returns {Object} The key/index of the underlying collection at the
+     *     current iterator location or undefined.
+     */
+
+    if (!this.get('active')) {
+        return;
+    }
+
+    if (this.get('step') > 1) {
+        return;
+    }
+
+    return this.get('keys').at(this.get('range').at(0));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('currentKeys',
+function() {
+
+    /**
+     * @name currentKeys
+     * @synopsis Returns an array containing the current keys of the iterator.
+     * @description This array will contain "step" number of keys so if the
+     *     iterator has a step of five an array of five keys will be returned.
+     *     If the iterator hasn't yet been used via next*(), this method returns
+     *     undefined.
+     * @returns {Array} An array of keys or undefined.
+     * @todo
+     */
+
+    var i,
+        tmparr,
+        step,
+        keys,
+        coll,
+        range,
+        len;
+
+    if (!this.get('active')) {
+        return;
+    }
+
+    tmparr = TP.ac();
+
+    step = this.get('step');
+    keys = this.get('keys');
+    coll = this.get('coll');
+    range = this.get('range');
+    len = coll.getSize();
+
+    for (i = 0; i < step; i++) {
+        if (range.at(i) < len) {
+            tmparr.add(keys.at(range.at(i)));
+        }
+    }
+
+    return tmparr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('currentValue',
+function() {
+
+    /**
+     * @name currentValue
+     * @synopsis Returns the element of the collection at the iterator's
+     *     currentKey().
+     * @description If the iterator hasn't been used via next*() this method
+     *     returns undefined. If the iterator has a step value > 1 this method
+     *     returns undefined -- use currentValues() for iterators with larger
+     *     step sizes.
+     * @raises TP.sig.InvalidIndex
+     * @returns {Object} An object or undefined.
+     */
+
+    if (!this.get('active')) {
+        return;
+    }
+
+    if (this.get('step') > 1) {
+        return;
+    }
+
+    return this.get('coll').at(this.currentKey());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('currentValues',
+function() {
+
+    /**
+     * @name currentValues
+     * @synopsis Returns an array of elements from the currentKeys(). If the
+     *     iterator hasn't yet been used this method returns undefined.
+     * @returns {Array} An array, or undefined.
+     * @todo
+     */
+
+    if (!this.get('active')) {
+        return;
+    }
+
+    return this.get('coll').atAll(this.currentKeys());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('nextItem',
+function() {
+
+    /**
+     * @name nextItem
+     * @synopsis Returns the next key/value pair from the iterator.
+     * @returns {Object} An ordered pair/item.
+     */
+
+    if (TP.notValid(this.nextKey())) {
+        return;
+    }
+
+    //  note that the previous line (nextKey()) incremented for us
+    return this.currentItem();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('nextItems',
+function() {
+
+    /**
+     * @name nextItems
+     * @synopsis Returns an array of items from the currentKeys() locations in
+     *     the underlying collection.
+     * @returns {Array} An array of items or undefined.
+     * @todo
+     */
+
+    if (TP.notValid(this.nextKeys())) {
+        return;
+    }
+
+    //  note that the previous line (nextKeys()) incremented for us
+    return this.currentItems();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('nextKey',
+function() {
+
+    /**
+     * @name nextKey
+     * @synopsis Returns the next available key from the iterator or undefined
+     *     if atEnd(). If the iterator has a step size > 1 this method returns
+     *     undefined. Use nextKeys() in cases where the iterator has a larger
+     *     step size.
+     * @returns {Object} An object or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var i,
+        range;
+
+    if (this.atEnd()) {
+        return;
+    }
+
+    if (this.get('step') > 1) {
+        return;
+    }
+
+    range = this.get('range');
+    if (this.get('active')) {
+        for (i = 0; i < range.getSize(); i++) {
+            range.atPut(i, range.at(i) + this.get('step'));
+        }
+    } else {
+        this.set('active', true);
+    }
+
+    this.changed('position', TP.UPDATE);
+
+    return this.currentKey();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('nextKeys',
+function() {
+
+    /**
+     * @name nextKeys
+     * @synopsis Returns an array containing the next "step" number of keys for
+     *     the iterator. If the iterator is atEnd() the result is undefined.
+     * @returns {Array} An array or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var i,
+        range;
+
+    if (this.atEnd()) {
+        return;
+    }
+
+    range = this.get('range');
+    if (this.get('active')) {
+        for (i = 0; i < range.getSize(); i++) {
+            range.atPut(i, range.at(i) + this.get('step'));
+        }
+    } else {
+        this.set('active', true);
+    }
+
+    this.changed('position', TP.UPDATE);
+
+    return this.currentKeys();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('nextValue',
+function() {
+
+    /**
+     * @name nextValue
+     * @synopsis Returns the next available element from the iterator or
+     *     undefined if the element doesn't exist. This method also returns
+     *     undefined if the iterator has a step size > 1.
+     * @raises TP.sig.InvalidIndex
+     * @returns {Object} An object or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var k;
+
+    if (this.get('step') > 1) {
+        return;
+    }
+
+    k = this.nextKey();
+    if (TP.notValid(k)) {
+        return;
+    }
+
+    return this.get('coll').at(k);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('nextValues',
+function() {
+
+    /**
+     * @name nextValues
+     * @synopsis Returns an array containing the next "step" number of elements
+     *     from the collection. This is the preferred method to call when using
+     *     a step size other than 1.
+     * @raises TP.sig.InvalidIndex
+     * @returns {Array} An array or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var k;
+
+    k = this.nextKeys();
+    if (TP.notValid(k)) {
+        return;
+    }
+
+    return this.get('coll').atAll(k);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('peekNextKeys',
+function() {
+
+    /**
+     * @name peekNextKeys
+     * @synopsis Returns an array containing the current keys of the iterator
+     *     (but DOES NOT advance the iterator!).
+     * @description This array will contain "step" number of keys so if the
+     *     iterator has a step of five an array of five keys will be returned.
+     *     If the iterator hasn't yet been used via next*(), this method returns
+     *     undefined.
+     * @returns {Array} An array of keys or undefined.
+     * @todo
+     */
+
+    var i,
+        tmparr,
+        step,
+        range,
+        keys;
+
+    if (!this.get('active')) {
+        return;
+    }
+
+    if (this.atEnd()) {
+        return;
+    }
+
+    tmparr = TP.ac();
+
+    step = this.get('step');
+    range = this.get('range');
+    keys = this.get('keys');
+
+    if (this.get('active')) {
+        for (i = 0; i < step; i++) {
+            tmparr.add(keys.at(range.at(i) + step));
+        }
+    } else {
+        this.set('active', true);
+    }
+
+    return tmparr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('previousItem',
+function() {
+
+    /**
+     * @name previousItem
+     * @synopsis Returns the previous item from the iterator's collection or
+     *     undefined.
+     * @returns {Object} An object or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    if (TP.notValid(this.previousKey())) {
+        return;
+    }
+
+    //  note that the previous line (previousKey()) decremented for us
+    return this.currentItem();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('previousItems',
+function() {
+
+    /**
+     * @name previousItems
+     * @synopsis Returns an array containing the previous items from the
+     *     iterators collection.
+     * @returns {Array} An Array or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    if (TP.notValid(this.previousKeys())) {
+        return;
+    }
+
+    //  note that the previous line (previousKeys()) decremented for us
+    return this.currentItems();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('previousKey',
+function() {
+
+    /**
+     * @name previousKey
+     * @synopsis Returns the previous available key from the iterator or
+     *     undefined if atStart(). If the iterator has a step size > 1 this
+     *     method returns undefined. Use previousKeys() in cases where the
+     *     iterator has a larger step size.
+     * @returns {Object} An object or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var i,
+        range,
+        step;
+
+    //  avoid decrementing below 0
+    if (this.atStart()) {
+        return;
+    }
+
+    if (this.get('step') > 1) {
+        return;
+    }
+
+    range = this.get('range');
+    step = this.get('step');
+
+    if (this.get('active')) {
+        for (i = 0; i < range.getSize(); i++) {
+            range.atPut(i, range.at(i) - step);
+        }
+        this.changed('position', TP.UPDATE);
+    }
+
+    return this.currentKey();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('previousKeys',
+function() {
+
+    /**
+     * @name previousKeys
+     * @synopsis Returns an array containing the previous "step" number of keys
+     *     for the iterator. If the iterator is atEnd() the result is undefined.
+     * @returns {Array} An array or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var i,
+        step,
+        range;
+
+    //  avoid decrementing below 0
+    if (this.atStart()) {
+        return;
+    }
+
+    step = this.get('step');
+    range = this.get('range');
+
+    if (this.get('active')) {
+        for (i = 0; i < range.getSize(); i++) {
+            range.atPut(i, range.at(i) - step);
+        }
+        this.changed('position', TP.UPDATE);
+    }
+
+    return this.currentKeys();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('previousValue',
+function() {
+
+    /**
+     * @name previousValue
+     * @synopsis Returns the previous element from the iterator or undefined.
+     *     This method also returns undefined if the iterator has a step value >
+     *     1.
+     * @returns {Object} An object or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var k;
+
+    if (this.get('step') > 1) {
+        return;
+    }
+
+    k = this.previousKey();
+    if (TP.notValid(k)) {
+        return;
+    }
+
+    return this.get('coll').at(k);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('previousValues',
+function() {
+
+    /**
+     * @name previousValues
+     * @synopsis Returns an array containing the previous "step" number of
+     *     elements from the collection. If the iterator is atStart() or hasn't
+     *     yet be used via next*() this method returns undefined.
+     * @returns {Array} An array or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var k;
+
+    k = this.previousKeys();
+    if (TP.notValid(k)) {
+        return;
+    }
+
+    return this.get('coll').atAll(k);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('reverse',
+function() {
+
+    /**
+     * @name reverse
+     * @synopsis Changes the direction of the iterator. This method can only be
+     *     used when the iterator is atEnd() or atStart().
+     * @returns {TP.core.Iterator} The receiver or undefined.
+     * @signals PositionChange
+     * @todo
+     */
+
+    if (!this.atEnd() && !this.atStart()) {
+        return;
+    }
+
+    this.get('keys').reverse();
+    this.seek(0);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('rewind',
+function() {
+
+    /**
+     * @name rewind
+     * @synopsis Sets the iterator back to the start of the collection if
+     *     iterating forward or to the end if iterating backwards.
+     * @returns {TP.core.Iterator} The receiver.
+     * @signals PositionChange
+     * @todo
+     */
+
+    return this.seek(0);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('seek',
+function(anIndex) {
+
+    /**
+     * @name seek
+     * @synopsis Sets the iterator to the index location provided. If no
+     *     index/key is provided the iterator 'rewinds' to the starting
+     *     location.
+     * @param {Number} anIndex A numerical index to seek.
+     * @returns {TP.core.Iterator} The receiver.
+     * @signals PositionChange
+     * @todo
+     */
+
+    var ind,
+        i,
+        range;
+
+    ind = TP.ifInvalid(anIndex, 0);
+
+    if (ind < 0) {
+        //  deal with negative indexes
+        ind = (0).max(this.get('keys').getSize() + ind);
+    }
+
+    range = this.get('range');
+    for (i = 0; i < range.getSize(); i++) {
+        range.atPut(i, ind + i);
+    }
+
+    if (ind === 0) {
+        this.set('active', false);
+    }
+
+    this.changed('position', TP.SEEK);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('seekToKey',
+function(aKey) {
+
+    /**
+     * @name seekToKey
+     * @synopsis Sets the iterator to the index of the key provided. If no key
+     *     is provided (or the key cannot be found) the iterator 'rewinds' to
+     *     the starting location.
+     * @param {The} aKey key to seek to.
+     * @returns {TP.core.Iterator} The receiver.
+     * @signals PositionChange
+     * @todo
+     */
+
+    this.seek(this.get('keys').indexOf(aKey));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Iterator.Inst.defineMethod('sort',
+function(aSortFunction) {
+
+    /**
+     * @name sort
+     * @synopsis Sorts the iterator's internal keys so that subsequent iteration
+     *     occurs in a sorted fashion. As with reverse() this operation can only
+     *     be performed when the iterator is atStart() or atEnd().
+     * @param {Function} aSortFunction A function conforming to the rules for
+     *     array sort functions used to sort the keys.
+     * @returns {TP.core.Iterator} The receiver.
+     * @signals OrderChange, PositionChange
+     * @todo
+     */
+
+    if (!this.atEnd() && !this.atStart()) {
+        return;
+    }
+
+    //  apparently "undefined" isn't a "valid sort argument" :)
+    if (TP.isCallable(aSortFunction)) {
+        this.get('keys').sort(aSortFunction);
+    } else {
+        this.get('keys').sort();
+    }
+
+    this.seek(0);
+    this.changed('order', TP.SORTED);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+/*
+TP.core.Iterator.Inst.defineMethod('getCurrentItem',
+                TP.core.Iterator.getInstPrototype().currentItem.copy());
+TP.core.Iterator.Inst.defineMethod('getCurrentItems',
+                TP.core.Iterator.getInstPrototype().currentItems.copy());
+TP.core.Iterator.Inst.defineMethod('getCurrentKey',
+                TP.core.Iterator.getInstPrototype().currentKey.copy());
+TP.core.Iterator.Inst.defineMethod('getCurrentKeys',
+                TP.core.Iterator.getInstPrototype().currentKeys.copy());
+TP.core.Iterator.Inst.defineMethod('getCurrentValue',
+                TP.core.Iterator.getInstPrototype().currentValue.copy());
+TP.core.Iterator.Inst.defineMethod('getCurrentValues',
+                TP.core.Iterator.getInstPrototype().currentValues.copy());
+
+TP.core.Iterator.Inst.defineMethod('getNextItem',
+                TP.core.Iterator.getInstPrototype().currentItem.copy());
+TP.core.Iterator.Inst.defineMethod('getNextItems',
+                TP.core.Iterator.getInstPrototype().currentItems.copy());
+TP.core.Iterator.Inst.defineMethod('getNextKey',
+                TP.core.Iterator.getInstPrototype().currentKey.copy());
+TP.core.Iterator.Inst.defineMethod('getNextKeys',
+                TP.core.Iterator.getInstPrototype().currentKeys.copy());
+TP.core.Iterator.Inst.defineMethod('getNextValue',
+                TP.core.Iterator.getInstPrototype().currentValue.copy());
+TP.core.Iterator.Inst.defineMethod('getNextValues',
+                TP.core.Iterator.getInstPrototype().currentValues.copy());
+
+TP.core.Iterator.Inst.defineMethod('getPreviousItem',
+                TP.core.Iterator.getInstPrototype().currentItem.copy());
+TP.core.Iterator.Inst.defineMethod('getPreviousItems',
+                TP.core.Iterator.getInstPrototype().currentItems.copy());
+TP.core.Iterator.Inst.defineMethod('getPreviousKey',
+                TP.core.Iterator.getInstPrototype().currentKey.copy());
+TP.core.Iterator.Inst.defineMethod('getPreviousKeys',
+                TP.core.Iterator.getInstPrototype().currentKeys.copy());
+TP.core.Iterator.Inst.defineMethod('getPreviousValue',
+                TP.core.Iterator.getInstPrototype().currentValue.copy());
+TP.core.Iterator.Inst.defineMethod('getPreviousValues',
+                TP.core.Iterator.getInstPrototype().currentValues.copy());
+*/
+//  ========================================================================
+
+/**
  * @type {TP.core.Range}
  * @summary TP.core.Range provides a simple interface to a range of numbers.
  *     This allows for interesting iteration possibilities such as:
