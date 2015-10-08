@@ -4485,7 +4485,8 @@ function(aString) {
         function(wholeMatch, aKey, aValue) {
 
             if (TP.notEmpty(aKey)) {
-                dict.atPut(aKey, decodeURIComponent(aValue));
+                dict.atPut(aKey,
+                    TP.ifEmpty(decodeURIComponent(aValue), true));
             }
         });
 
