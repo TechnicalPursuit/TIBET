@@ -138,14 +138,13 @@ function() {
         router = TP.sys.getRouter();
     });
 
-    this.it('', function(test, options) {
+    this.it('properly assigned token values', function(test, options) {
         var result;
 
         router.defineToken('fluffy', /\d{3}/);
         router.defineProcessor('/foo/:fluffy/bar');
         result = router.processRoute('/foo/231/bar');
-console.log(JSON.stringify(result));
-        test.assert.isTrue(true);
+        test.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
     });
 });
 
