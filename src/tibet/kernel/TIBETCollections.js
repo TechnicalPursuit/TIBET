@@ -1249,11 +1249,8 @@ function(anItem, aTest) {
 
             switch (aTest) {
                 case TP.IDENTITY:
-
                     return TP.identical(item, anItem);
-
                 default:
-
                     return TP.equal(item, anItem);
             }
         }).getSize();
@@ -1297,7 +1294,6 @@ function(aCollection, aTest) {
 
     return this.select(
         function(item, index) {
-
             return !arr.contains(item, aTest);
         });
 });
@@ -1310,7 +1306,7 @@ function(aCollection, aTest) {
     /**
      * @method disjunction
      * @summary Returns the 'symmetric difference' or those elements which are
-     *     disjunct between the two collections.
+     *     disjunct between the collections (in one or the other but not both).
      * @description This method returns a new array containing the disjunction
      *     between the receiver and aCollection. This means that only those
      *     elements which occur in one of the collections but not the other are
@@ -1597,21 +1593,16 @@ function(anItem, aTest) {
         val = this[i];
         switch (aTest) {
             case TP.IDENTITY:
-
                 if (!TP.identical(val, anItem)) {
                     this[wi] = val;
                     wi++;
                 }
-
                 break;
-
             default:
-
                 if (!TP.equal(val, anItem)) {
                     this[wi] = val;
                     wi++;
                 }
-
                 break;
         }
     }
@@ -1733,21 +1724,16 @@ function(oldValue, newValue, aTest) {
 
                 switch (aTest) {
                     case TP.IDENTITY:
-
                         if (TP.identical(item, oldValue)) {
                             replaced++;
                             return newValue;
                         }
-
                         break;
-
                     default:
-
                         if (TP.equal(item, oldValue)) {
                             replaced++;
                             return newValue;
                         }
-
                         break;
                 }
 
@@ -2284,15 +2270,12 @@ function(anItem, startIndex, aTest) {
 
             switch (aTest) {
                 case TP.IDENTITY:
-
                     if (TP.identical(item, anItem)) {
                         found = index;
                         return true;
                     }
                     break;
-
                 default:
-
                     if (TP.equal(item, anItem)) {
                         found = index;
                         return true;
@@ -2338,14 +2321,11 @@ function(anItem, startIndex, aTest) {
 
             switch (aTest) {
                 case TP.IDENTITY:
-
                     if (TP.identical(item, anItem)) {
                         tmparr.push(index);
                     }
                     break;
-
                 default:
-
                     if (TP.equal(item, anItem)) {
                         tmparr.push(index);
                     }
@@ -2770,21 +2750,16 @@ function(anItem, startIndex, aTest) {
 
             switch (aTest) {
                 case TP.IDENTITY:
-
                     if (TP.identical(item, anItem)) {
                         found = index;
                         return TP.BREAK;
                     }
-
                     break;
-
                 default:
-
                     if (TP.equal(item, anItem)) {
                         found = index;
                         return TP.BREAK;
                     }
-
                     break;
             }
         },
@@ -5691,26 +5666,18 @@ function(oldValue, newValue, aTest) {
     try {
         this.convert(
             function(item, index) {
-
                 switch (aTest) {
                     case TP.IDENTITY:
-
                         if (TP.identical(item.last(), oldValue)) {
                             replaced++;
-
                             return newValue;
                         }
-
                         break;
-
                     default:
-
                         if (TP.equal(item.last(), oldValue)) {
                             replaced++;
-
                             return newValue;
                         }
-
                         break;
                 }
 
@@ -6704,6 +6671,73 @@ function(anItem, aTest) {
 
     //  since it's an item...key/value...the answer is either 0 or 1...
     return this.contains(anItem, aTest) ? 1 : 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Hash.Inst.defineMethod('deltas',
+function(aHash, aTest) {
+
+    /**
+     * @method deltas
+     * @summary Compares two hashes as if they are "versions" of the same hash.
+     *     The result is an array of triplets containing key, value, and
+     *     operation where operation is TP.INSERT, TP.UPDATE, or TP.DELETE.
+     *     The incoming hash is treated as the target version while the receiver
+     *     is considered the source version. For updates the value provided is
+     *     the new value to set in the source to produce the target.
+     * @param {TP.core.Hash} aHash The hash to be compared.
+     * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
+     *     default is TP.EQUALITY.
+     * @returns {Array} The change set from aHash to the receiver.
+     */
+
+    var sourceKeys,
+        targetKeys,
+        sourceItem,
+        targetItem,
+        changeSet,
+        source;
+
+    if (!TP.isKindOf(aHash, TP.core.Hash)) {
+        return this.raise('InvalidHash', aHash);
+    }
+
+    source = this;
+    changeSet = TP.ac();
+    sourceKeys = this.getKeys();
+    targetKeys = aHash.getKeys();
+
+    //  Things in the source missing from target were "deleted".
+    sourceKeys.difference(targetKeys).forEach(function(key) {
+        changeSet.push(TP.ac(key, source.at(key), TP.DELETE));
+    });
+
+    //  Things in the target missing from the source were "inserted".
+    targetKeys.difference(sourceKeys).forEach(function(key) {
+        changeSet.push(TP.ac(key, aHash.at(key), TP.INSERT));
+    });
+
+    //  Keys in both are compared by value equality/identity for "updates"
+    sourceKeys.intersection(targetKeys).forEach(function(key) {
+        sourceItem = source.at(key);
+        targetItem = aHash.at(key);
+
+        switch (aTest) {
+            case TP.IDENTITY:
+                if (!TP.identical(sourceItem, targetItem)) {
+                    changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
+                }
+                break;
+            default:
+                if (!TP.equal(sourceItem, targetItem)) {
+                    changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
+                }
+                break;
+        }
+    });
+
+    return changeSet;
 });
 
 //  ------------------------------------------------------------------------
@@ -8015,11 +8049,8 @@ function(aValue, aTest) {
 
             switch (aTest) {
                 case TP.IDENTITY:
-
                     return TP.identical(item.last(), aValue);
-
                 default:
-
                     return TP.equal(item.last(), aValue);
             }
 
@@ -8056,11 +8087,8 @@ function(aValue, aTest) {
 
             switch (aTest) {
                 case TP.IDENTITY:
-
                     return TP.identical(item.last(), aValue);
-
                 default:
-
                     return TP.equal(item.last(), aValue);
             }
 

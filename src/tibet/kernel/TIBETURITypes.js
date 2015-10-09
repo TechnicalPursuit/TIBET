@@ -9774,12 +9774,14 @@ function(aURI, aDirection) {
         //  the two and then scan for keys in the diff that include boot.
         urlParams = urlParts.at('fragmentParams');
         lastParams = lastParts.at('fragmentParams');
-        paramDiff = TP.hc(urlParams).difference(TP.hc(lastParams));
+        paramDiff = TP.hc(lastParams).deltas(TP.hc(urlParams));
 
-        if (TP.sys.cfg('log.routes') && TP.notEmpty(paramDiff)) {
-            TP.debug('client param change(\'' + TP.str(paramDiff) + '\');');
+        if (TP.sys.cfg('log.routes')) {
+            TP.debug('client param change(\'' +
+                TP.str(paramDiff) + '\');');
         }
 
+        //  Find any boot-related key. We only need to find one to restart.
         bootParams = paramDiff.detect(function(pair) {
             return pair.first().startsWith('boot.');
         })
@@ -9789,15 +9791,36 @@ function(aURI, aDirection) {
             top.location = url;
         } else {
             //  If we just altered other values then use setcfg to update.
-            paramDiff.perform(function(pair) {
-                TP.sys.setcfg(pair.first(), pair.last());
+            paramDiff.perform(function(triple) {
+                var operation,
+                    value;
+
+                operation = triple.last();
+                switch (operation) {
+                    case TP.INSERT:
+                        TP.sys.setcfg(triple.first(), triple.at(1));
+                        break;
+                    case TP.UPDATE:
+                        TP.sys.setcfg(triple.first(), triple.at(1));
+                        break;
+                    case TP.DELETE:
+                        value = triple.at(1);
+                        if (TP.isTrue(value)) {
+                            TP.sys.setcfg(triple.first(), false);
+                        } else if (TP.isFalse(value)) {
+                            TP.sys.setcfg(triple.first(), true);
+                        } else {
+                            //  No real way to do this. We don't track "defaults".
+                            void 0;
+                        }
+                        break;
+                    default:
+                        //  TODO: raise? invalid operation.
+                        break;
+                }
             });
         }
-/*
-        if (TP.uriNormalize(top.location.toString()) !== url) {
-            top.location = url;
-        }
-*/
+
         return;
     }
 
