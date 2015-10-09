@@ -1482,7 +1482,9 @@ TP.sys.getcfg = function(aKey, aDefault) {
      * @summary Returns the value of the named configuration property, or the
      *     default value when the property is undefined. Values with no '.' are
      *     considered to be prefixes and will return the list of all
-     *     configuration parameters with that prefix. An empty key will return
+     *     configuration parameters with that prefix. If no values are found for
+     *     the prefix a secondary check is done to see if the key is a value in
+     *     the 'tmp.' prefix used as the default prefix. An empty key returns
      *     the full configuration dictionary.
      * @param {String} aKey The property name to retrieve.
      * @param {String} aDefault The default value to use when the named property
@@ -1498,6 +1500,10 @@ TP.sys.getcfg = function(aKey, aDefault) {
 
     if (aKey.indexOf('.') === -1) {
         val = TP.boot.$$getprop(TP.sys.configuration, null, aDefault, aKey);
+        //  Fallback to let system try to find 'tmp.{key}' as alternate.
+        if (val === undefined) {
+            val = TP.boot.$$getprop(TP.sys.configuration, aKey, aDefault);
+        }
     } else {
         val = TP.boot.$$getprop(TP.sys.configuration, aKey, aDefault);
     }
@@ -1524,7 +1530,6 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
      *     properties set in this fashion are NOT persistent. To make a property
      *     persistent you must add it to the proper 'rc' file in your app's
      *     configuration path) or to the tibet.xml file for your application.
-     *     Unprefixed values receive a prefix of 'cfg'.
      * @param {Object} aHash The object dictionary to update.
      * @param {String} aKey The property name to set.
      * @param {Object} aValue The value to assign.
@@ -1534,7 +1539,7 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
      * @returns {Object} The value of the named property.
      */
 
-    return TP.boot.$$setprop(TP.sys.configuration, aKey, aValue, 'cfg',
+    return TP.boot.$$setprop(TP.sys.configuration, aKey, aValue, null,
                                 shouldSignal, override);
 };
 
