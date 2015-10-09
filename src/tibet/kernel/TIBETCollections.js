@@ -8545,7 +8545,7 @@ function() {
         //  if no new data can be reached by incrementing the range then
         //  we're 'atEnd'
         return range.at(range.getSize() - 1) >=
-                (this.get('keys').getSize() - 1);
+            this.get('keys').getSize() - 1;
     }
 
     return false;

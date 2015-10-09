@@ -5246,7 +5246,7 @@ function(aDescriptor) {
 
     //  Regardless of how it got here, don't let signame carry anything that
     //  isn't a valid JS identifier character as part of the handler name.
-    if (TP.isNumber(aDescriptor) || TP.notNaN(parseInt(aDescriptor))) {
+    if (TP.isNumber(aDescriptor) || TP.notNaN(parseInt(aDescriptor, 10))) {
         handler = 'handle' + signame;
     } else {
         handler = 'handle' + signame.asJSIdentifier();

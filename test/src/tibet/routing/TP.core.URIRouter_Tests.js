@@ -228,11 +228,6 @@ function() {
 
 TP.core.URIRouter.Type.describe('route resolution',
 function() {
-    var router;
-
-    this.before(function() {
-        router = TP.sys.getRouter();
-    });
 
     //  TODO:   processRoute
 
