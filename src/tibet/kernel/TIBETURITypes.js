@@ -9215,6 +9215,32 @@ TP.lang.Object.defineSubtype('core.URIRouter');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+TP.core.URIRouter.Type.defineAttribute('BEST_ROUTE_SORT',
+function(a, b) {
+    var aMatch,
+        bMatch;
+
+    aMatch = a.first();
+    bMatch = b.first();
+
+    //  First criteria is number of parts matches.
+    if (aMatch.length > bMatch.length) {
+        return -1;
+    } else if (aMatch.length < bMatch.length) {
+        return 1;
+    } else {
+        //  Second criteria is length of the full match string.
+        if (aMatch.first().length < bMatch.first().length) {
+            return -1;
+        } else if (aMatch.first().length > bMatch.first().length) {
+            return 1;
+        } else {
+            //  All else being equal last definition wins.
+            return -1;
+        }
+    }
+});
+
 /**
  * An array of path-matching patterns to be processed coupled to a function
  * to use for translating matched URLs and any token names for parameters.
@@ -9251,14 +9277,10 @@ function() {
 
     //  Always need a route to match "anything" as our backstop. If no routes
     //  are ever defined this routine should still produce something reasonable.
-    this.defineProcessor(/.*/, this.processMatch.bind(this));
+    this.definePath(/.*/, this.processMatch.bind(this));
 
     //  Define the root pattern route for "empty paths".
-    this.defineProcessor(
-        /^\/$/,
-        function() {
-            return TP.ac(this.get('root'), TP.hc());
-        }.bind(this));
+    this.definePath(/^\/$/, this.get('root'));
 
     return;
 });
@@ -9354,25 +9376,32 @@ function(pattern) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIRouter.Type.defineMethod('defineProcessor',
-function(pattern, processor) {
+TP.core.URIRouter.Type.defineMethod('definePath',
+function(pattern, signalOrProcessor, processor) {
 
     /**
-     * @method defineProcessor
+     * @method definePath
      * @summary Expresses interest in a specific URL pattern, optionally
      *     defining a function used to produce the signal and payload values to
      *     be fired when the pattern is matched by the routing engine.
      * @param {String|RegExp} pattern The string or regular expression to match.
+     * @param {String|Function} signalOrProcessor Either a signal name to use
+     *     for the path when matched, or a path processor function.
      * @param {Function} [processor] A function taking a path, match result, and
      *     token names which should function as a replacement for the default
      *     processMatch function of the router for this path.
-     * @return {TP.core.URIRouter} The receiver.
+     * @return {Object} A route entry consisting of pattern, signal, processor,
+     *     and parameter names/positions.
      */
 
     var result,
         regex,
         names,
-        func;
+        signal,
+        func,
+        entry,
+        processors,
+        index;
 
     //  We need patterns to be in regex form and to watch for tokens so we
     //  process any string values into regular expression form.
@@ -9383,17 +9412,49 @@ function(pattern, processor) {
     //  Exception will have raised during processing, just exit.
     if (TP.notValid(regex)) {
         return this.raise('InvalidRoute',
-                            'Unable to produce RegExp for ' + pattern);
+            'Unable to produce RegExp for path/pattern ' + pattern);
+    }
+
+    //  Check param 2 for either signal name or processor function.
+    if (TP.isString(signalOrProcessor)) {
+        signal = signalOrProcessor;
+        func = processor;
+    } else if (TP.isFunction(signalOrProcessor)) {
+        func = signalOrProcessor;
+    } else if (TP.isValid(signalOrProcessor)) {
+        return this.raise('InvalidParameter',
+            'Should provide signal name or path processor function: ' +
+            signalOrProcessor);
     }
 
     //  Default the processor function to our standard one.
-    func = TP.ifInvalid(processor, this.processMatch.bind(this));
+    func = TP.ifInvalid(func, this.processMatch.bind(this));
 
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
-    this.get('processors').unshift(TP.ac(regex, func, names));
+    entry = TP.hc('pattern', regex,
+            'signal', signal,
+            'processor', func,
+            'parameters', names);
 
-    return this;
+    //  If a pattern is already identical in the list then replace it, otherwise
+    //  push the new pattern into place.
+    processors = this.get('processors');
+    index = TP.NOT_FOUND;
+    processors.some(function(item, i) {
+        if (TP.equal(item.at('pattern'), regex)) {
+            index = i;
+            return true;
+        }
+    });
+
+    if (index !== TP.NOT_FOUND) {
+        processors.atPut(index, entry);
+    } else {
+        this.get('processors').unshift(entry);
+    }
+
+    return entry;
 });
 
 //  ------------------------------------------------------------------------
@@ -9467,7 +9528,7 @@ function(aURI) {
         route = this.processRoute(path);
         if (TP.notEmpty(route)) {
             //  Route matches are returned as an array containing the route name
-            //  and a hash of route parameters. We just want the name.
+            //  and a hash of route parameters. We just want the name for now.
             return route.at(0);
         }
 
@@ -9482,14 +9543,14 @@ function(aURI) {
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('processMatch',
-function(path, match, names) {
+function(signal, match, names) {
 
     /**
      * @method processMatch
      * @summary Invoked when a defined path is matched. This function provides a
-     *     default processor for defineProcessor which can produce a signal
+     *     default processor for definePath which can produce a signal
      *     name and payload for the majority of use cases.
-     * @param {String} path The full URL path being processed.
+     * @param {String} signal An optional signal name to always be used.
      * @param {Array} match The "match" Array returned by RegExp match() calls.
      *     The first slot is the "full match" while any parenthesized capture
      *     portions will populate slots 1 through N.
@@ -9554,71 +9615,74 @@ function(path, match, names) {
                 '');
     }
 
-    return TP.ac(name, params);
+    return TP.ac(TP.ifEmpty(signal, name), params);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('processRoute',
-function(route) {
+function(path) {
 
     /**
      * @method processRoute
-     * @summary Processes a route, searching for the first matching handler.
+     * @summary Processes a route, searching for the best matching route.
      *     If the route matches a path pattern the associated processor function
      *     is invoked to convert the route into a signal name/payload pair.
-     * @param {String} route The URL path segment (route) to process.
+     * @param {String} path The URL fragment path segment (route) to process.
      * @returns {Array[String, TP.core.Hash]} The signal name/payload pair.
      */
 
     var processors,
+        matches,
+        best,
+        match,
+        entry,
+        signal,
+        processor,
+        parameters,
         result;
 
-    if (route === '/') {
-        return TP.ac('Home', TP.hc());
+    if (path === '/') {
+        return TP.ac(this.get('root'), TP.hc());
     }
 
     processors = this.get('processors');
-    processors.detect(
-            function(path) {
-                var pattern,
-                    processor,
-                    names,
-                    match;
+    matches = TP.ac();
 
-                pattern = path.at(0);
-                processor = path.at(1);
-                names = path.at(2);
+    //  First step is finding all patterns that match the inbound
+    //  fragment/route.
+    processors.forEach(function(mapping) {
+        var pattern,
+            arr;
 
-                match = pattern.match(route);
+        pattern = mapping.at('pattern');
+        arr = pattern.match(path);
 
-                if (TP.isValid(match)) {
-                    // NOTE we update the outer 'result' variable here.
-                    if (TP.isFunction(processor)) {
-                        try {
-                            result = processor(route, match, names);
-                            if (TP.isValid(result) &&
-                                    TP.notEmpty(result.at(0))) {
-                                return true;
-                            } else {
-                                result = null;
-                                return false;
-                            }
-                        } catch (e) {
-                            this.raise('RouteProcessingException', e);
-                            return false;
-                        }
-                    } else if (TP.isString(processor)) {
-                        result = processor;
-                        return true;
-                    } else {
-                        this.raise('InvalidRouteProcessor', processor);
-                        return false;
-                    }
-                }
+        if (TP.notEmpty(arr)) {
+            matches.push(TP.ac(arr, mapping));
+        }
+    });
 
-                return false;
-            });
+    //  Now the fun part...sorting to get the best matches.
+    matches.sort(TP.core.URIRouter.BEST_ROUTE_SORT);
+
+    best = matches.first();
+    if (TP.notValid(best)) {
+        return;
+    }
+
+    match = best.first();
+    entry = best.last();
+
+    signal = entry.at('signal');
+    processor = entry.at('processor');
+    parameters = entry.at('parameters');
+
+    try {
+        result = processor(signal, match, parameters);
+    } catch (e) {
+        this.raise('RouteProcessingException', e);
+    }
 
     return result;
 });
@@ -9774,12 +9838,14 @@ function(aURI, aDirection) {
         //  the two and then scan for keys in the diff that include boot.
         urlParams = urlParts.at('fragmentParams');
         lastParams = lastParts.at('fragmentParams');
-        paramDiff = TP.hc(urlParams).difference(TP.hc(lastParams));
+        paramDiff = TP.hc(lastParams).deltas(TP.hc(urlParams));
 
-        if (TP.sys.cfg('log.routes') && TP.notEmpty(paramDiff)) {
-            TP.debug('client param change(\'' + TP.str(paramDiff) + '\');');
+        if (TP.sys.cfg('log.routes')) {
+            TP.debug('client param change(\'' +
+                TP.str(paramDiff) + '\');');
         }
 
+        //  Find any boot-related key. We only need to find one to restart.
         bootParams = paramDiff.detect(function(pair) {
             return pair.first().startsWith('boot.');
         })
@@ -9789,15 +9855,36 @@ function(aURI, aDirection) {
             top.location = url;
         } else {
             //  If we just altered other values then use setcfg to update.
-            paramDiff.perform(function(pair) {
-                TP.sys.setcfg(pair.first(), pair.last());
+            paramDiff.perform(function(triple) {
+                var operation,
+                    value;
+
+                operation = triple.last();
+                switch (operation) {
+                    case TP.INSERT:
+                        TP.sys.setcfg(triple.first(), triple.at(1));
+                        break;
+                    case TP.UPDATE:
+                        TP.sys.setcfg(triple.first(), triple.at(1));
+                        break;
+                    case TP.DELETE:
+                        value = triple.at(1);
+                        if (TP.isTrue(value)) {
+                            TP.sys.setcfg(triple.first(), false);
+                        } else if (TP.isFalse(value)) {
+                            TP.sys.setcfg(triple.first(), true);
+                        } else {
+                            //  No real way to do this. We don't track "defaults".
+                            void 0;
+                        }
+                        break;
+                    default:
+                        //  TODO: raise? invalid operation.
+                        break;
+                }
             });
         }
-/*
-        if (TP.uriNormalize(top.location.toString()) !== url) {
-            top.location = url;
-        }
-*/
+
         return;
     }
 

@@ -9,7 +9,7 @@ router = require('express').Router();
 router.get('/login', function(req, res) {
     var str;
 
-    str = fs.readFileSync(path.join(__dirname, './login.xhtml'), 'utf8');
+    str = fs.readFileSync(path.join(__dirname, './login_success.xhtml'), 'utf8');
 
     res.type('.xhtml');
     res.send(str);

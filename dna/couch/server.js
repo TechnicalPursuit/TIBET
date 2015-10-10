@@ -4,8 +4,7 @@
  *     faster and more fluid including support for live sourcing and storing
  *     client-side changes back to the server. The TDS is also engineered to be
  *     a complementary server to a TIBET client in that it focuses on serving
- *     data, not "pages", in a purely RESTful fashion. As part of this latter
- *     feature the TDS integrates pouchdb and supports CouchDB APIs natively.
+ *     data, not "pages", in a purely RESTful fashion.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -49,12 +48,10 @@
         compression,        // Express gzip/compression.
         cookieParser,       // Express cookie parser.
         csurf,              // Express cross-site protection.
-        DefaultPouch,       // PouchDB.defaults instance.
         env,                // Current execution environment.
         express,            // Express web framework.
         helmet,             // Security blanket.
         http,               // Web server baseline.
-        io,                 // Socket.io support.
         jsonParser,         // Express body parser.
         logo,               // Text logo.
         minimist,           // Argument processing.
@@ -62,7 +59,6 @@
         morgan,             // Express logging.
         path,               // The path module.
         port,               // Port to listen on.
-        PouchDB,            // PouchDB interface.
         project,            // Project name.
         requireDir,         // Directory loader.
         router,             // Express route processor.
@@ -70,7 +66,6 @@
         serveStatic,        // Express file-system serving.
         session,            // Express session management.
         TDS,                // TIBET middleware addons.
-        tdsDB,              // PouchDB instance for TDS.
         urlencodedParser,   // Express body parser.
         version,            // TIBET version.
         winston;            // File-level logging.
@@ -135,8 +130,6 @@
     routes = requireDir('./routes');
 
     TDS = require('tibet/etc/tds/tds-couch');
-    io = require('socket.io');
-    PouchDB = require('pouchdb');
 
     //  ---
     //  Environment base
@@ -231,22 +224,6 @@
     Object.keys(routes).forEach(function(route) {
         app.use('/', routes[route]);
     });
-
-    //  ---
-    //  PouchDB Integration
-    //  ---
-
-    //  TODO: probably want to support memory based option by default and
-    //  include the option to simply "route through" to backend couchdb.
-    //  TODO: allow the storage directory name to be set via config parameter.
-    DefaultPouch = PouchDB.defaults({prefix: './pouch/'});
-    app.use('/db', require('express-pouchdb')(DefaultPouch));
-
-    tdsDB = new DefaultPouch('tds');
-
-    //  ---
-    //  Socket.io
-    //  ---
 
     //  TODO: add websocket support so we can manage file watch events etc. in a
     //  more instantaneous fashion.
