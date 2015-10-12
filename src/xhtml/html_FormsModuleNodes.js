@@ -531,7 +531,8 @@ function() {
      * @method $getVisualToggle
      * @summary Returns the low-level primitive 'toggle value' used by the
      *     receiver to display a 'selected' state.
-     * @returns {String} The primitive value of the receiver.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
      */
 
     return this.getNativeNode().selected;
@@ -591,9 +592,9 @@ function(aToggleValue) {
     /**
      * @method $setVisualToggle
      * @summary Sets the low-level primitive 'toggle value' used by the receiver
-     *     to display a 'checked' state.
+     *     to display a 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
-     *     'checked' state.
+     *     'selected' state.
      * @returns {TP.html.select} The receiver.
      */
 
@@ -1712,7 +1713,8 @@ function() {
      * @method $getVisualToggle
      * @summary Returns the low-level primitive 'toggle value' used by the
      *     receiver to display a 'checked' state.
-     * @returns {String} The primitive value of the receiver.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
      */
 
     return this.getNativeNode().checked;

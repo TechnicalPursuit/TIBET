@@ -5132,7 +5132,8 @@ function() {
      * @method $getVisualToggle
      * @summary Returns the low-level primitive 'toggle value' used by the
      *     receiver to display a 'selected' state.
-     * @returns {String} The primitive value of the receiver.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
      */
 
     return TP.override();
