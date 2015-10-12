@@ -34,6 +34,8 @@ function() {
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
+            windowContext = this.getDriver().get('windowContext');
+
             this.getDriver().setLocation(loadURI);
         });
 
