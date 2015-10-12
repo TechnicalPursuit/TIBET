@@ -63,6 +63,7 @@
 
     <config ref="shell"/>
     <config ref="uri"/>
+    <config ref="xctrls"/>
     <config ref="xslt"/>
 </config>
 
@@ -179,6 +180,10 @@
 
 <config id="routing">
     <script src="~lib_test/src/tibet/routing/TP.core.URIRouter_Tests.js" />
+</config>
+
+<config id="xctrls">
+    <script src="~lib_test/src/xctrls/TP.xctrls_Tests.js" />
 </config>
 
 <config id="xslt">
