@@ -2387,11 +2387,38 @@ function() {
 TP.html.XMLNS.Type.describe('html: data binding of standard elements',
 function() {
 
-    var windowContext;
+    var loadURI,
+        unloadURI,
 
-    this.before(function() {
-        windowContext = this.getDriver().get('windowContext');
-    });
+        windowContext;
+
+    loadURI = TP.uc('~lib_test/src/html/HTMLContent.xhtml');
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = this.getDriver().get('windowContext');
+
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
 
     this.it('data binding to scalar values', function(test, options) {
 
