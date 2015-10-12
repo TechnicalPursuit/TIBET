@@ -665,7 +665,7 @@ function() {
                 //  ---
 
                 selectSingle = TP.byId('select_single', windowContext);
-                optionToSelect = selectSingle.getElementArray().at(1);
+                optionToSelect = selectSingle.getValueElements().at(1);
 
                 test.getDriver().startSequence().
                     click(optionToSelect).
@@ -681,7 +681,7 @@ function() {
                 //  ---
 
                 selectMultiple = TP.byId('select_multiple', windowContext);
-                optionToSelect = selectMultiple.getElementArray().at(1);
+                optionToSelect = selectMultiple.getValueElements().at(1);
 
                 test.getDriver().startSequence().
                     click(optionToSelect).

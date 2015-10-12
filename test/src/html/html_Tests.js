@@ -2051,10 +2051,13 @@ function() {
             if (natElem.selectedOptions) {
                 selectedOptions = natElem.selectedOptions;
             } else {
-                selectedOptions = aTPElem.getElementArray().collect(
-                                        function(anElem) {
-                                            if (anElem.selected) {
-                                                return anElem;
+                selectedOptions = aTPElem.getValueElements().collect(
+                                        function(valueTPElem) {
+                                            var valueElem;
+
+                                            valueElem = TP.unwrap(valueTPElem);
+                                            if (valueElem.selected) {
+                                                return valueElem;
                                             }
                                         });
 
@@ -2274,12 +2277,15 @@ function() {
         getSelectedIndices = function(aTPElem) {
             var checkboxIndices;
 
-            checkboxIndices = aTPElem.getElementArray().collect(
-                                    function(anElem, anIndex) {
-                                        if (anElem.checked) {
-                                            return anIndex;
-                                        }
-                                    });
+            checkboxIndices = aTPElem.getValueElements().collect(
+                                        function(valueTPElem, anIndex) {
+                                            var valueElem;
+
+                                            valueElem = TP.unwrap(valueTPElem);
+                                            if (valueElem.checked) {
+                                                return anIndex;
+                                            }
+                                        });
 
             //  Removes nulls and undefineds
             return checkboxIndices.compact();

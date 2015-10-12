@@ -439,7 +439,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -630,7 +630,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -821,7 +821,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -1012,7 +1012,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -1281,7 +1281,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -1472,7 +1472,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -1663,7 +1663,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -1854,7 +1854,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -2123,7 +2123,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -2314,7 +2314,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -2505,7 +2505,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
@@ -2696,7 +2696,7 @@ function() {
                     });
 
                 genderField = TP.byId('genderField', windowContext);
-                genderFieldOption1 = genderField.getElementArray().at(0);
+                genderFieldOption1 = genderField.getValueElements().at(0);
 
                 test.getDriver().startSequence().
                     click(genderFieldOption1).
