@@ -197,16 +197,9 @@ function() {
      * @summary Returns the Array of native elements. In the case of a form
      *     object this is the elements[] Array.
      * @returns {Array} The array of native items.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return TP.ac(node.elements);
+    return TP.ac(this.getNativeNode().elements);
 });
 
 //  ------------------------------------------------------------------------
@@ -221,7 +214,6 @@ function() {
      *     the form.
      * @returns {TP.core.Hash} A hash containing keys and values which represent
      *     the overall value of the form.
-     * @exception TP.sig.InvalidNode
      */
 
     var i,
@@ -230,9 +222,7 @@ function() {
         node,
         dict;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     dict = TP.hc();
     list = node.elements;
@@ -266,7 +256,6 @@ function(aValue) {
      * @param {TP.core.Hash} aValue Hash containing key/value pairs where the
      *     keys need to map to ids or names in the form.
      * @returns {TP.html.form} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -274,9 +263,7 @@ function(aValue) {
         i,
         el;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     if (!TP.isKindOf(aValue, TP.core.Hash)) {
         return this.raise('TP.sig.InvalidParameter',
@@ -311,14 +298,11 @@ function() {
      * @method reset
      * @summary Resets the form. As a node component, however, this method
      *     provides the opportunity for custom reset pre/post processing.
-     * @exception TP.sig.InvalidNode
      */
 
     var node;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     //  TODO:   need to deal with bound element/form reset
 
@@ -335,14 +319,11 @@ function() {
      * @method submit
      * @summary Submits the form. As a node component, however, this method
      *     provides the opportunity for custom submit pre/post processing.
-     * @exception TP.sig.InvalidNode
      */
 
     var node;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     //  TODO:   validation hook? parameters to control submit
     //          method/etc?
@@ -519,16 +500,9 @@ function() {
      * @method isSelected
      * @summary Returns true if the receiver is selected.
      * @returns {Boolean} Whether or not the receiver is selected.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.selected;
+    return this.getNativeNode().selected;
 });
 
 //  ------------------------------------------------------------------------
@@ -540,17 +514,9 @@ function() {
      * @method on
      * @summary Sets the receiver's selected state to 'true'.
      * @returns {TP.html.option} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.selected = true;
-    this.setAttribute('selected', 'selected');
+    this.getNativeNode().selected = true;
 
     return this;
 });
@@ -629,16 +595,13 @@ function() {
      * @method clearValue
      * @summary Clears the entire value of the receiver.
      * @returns {TP.html.textUtilities} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
     var node,
 
         oldVal;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     oldVal = node.value;
     node.value = '';
@@ -658,19 +621,13 @@ function() {
      * @method clearSelection
      * @summary Clears the currently selected text.
      * @returns {TP.html.textUtilities} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node,
-        oldVal;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    var oldVal;
 
     oldVal = this.getSelection();
 
-    TP.textElementReplaceSelection(node, '');
+    TP.textElementReplaceSelection(this.getNativeNode(), '');
 
     this.changed('selection', TP.DELETE,
                         TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, ''));
@@ -690,14 +647,11 @@ function(toStart) {
      *     start of itself. This defaults to false (i.e. the selection will
      *     collapse to the end).
      * @returns {TP.html.textUtilities} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
     var node;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     if (TP.sys.isUA('IE')) {
         //  Nasty code to get the current indices of the selection in IE,
@@ -723,15 +677,12 @@ function() {
      * @method getSelection
      * @summary Returns the currently selected text.
      * @returns {String} The currently selected text.
-     * @exception TP.sig.InvalidNode
      */
 
     var node,
         sel;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     if (TP.sys.isUA('IE')) {
         if (TP.notValid(sel = this.getNativeDocument().selection)) {
@@ -753,20 +704,13 @@ function() {
      * @method getSelectionEnd
      * @summary Returns the ending index of the currently selected text.
      * @returns {Number} The ending index of the current selection.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node,
-
-        range,
+    var range,
         rangeDup,
 
         start,
         end;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
 
     if (TP.sys.isUA('IE')) {
         range = this.getNativeDocument().selection.createRange();
@@ -778,7 +722,7 @@ function() {
         return end;
     }
 
-    return node.selectionEnd;
+    return this.getNativeNode().selectionEnd;
 });
 
 //  ------------------------------------------------------------------------
@@ -790,19 +734,12 @@ function() {
      * @method getSelectionStart
      * @summary Returns the starting index of the currently selected text.
      * @returns {Number} The starting index of the current selection.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node,
-
-        range,
+    var range,
         rangeDup,
 
         start;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
 
     if (TP.sys.isUA('IE')) {
         range = this.getNativeDocument().selection.createRange();
@@ -813,7 +750,7 @@ function() {
         return start;
     }
 
-    return node.selectionStart;
+    return this.getNativeNode().selectionStart;
 });
 
 //  ------------------------------------------------------------------------
@@ -918,7 +855,6 @@ function(aText) {
      * @summary Replaces the current selection with the supplied text.
      * @param {String} aText The text to replace the current selection with.
      * @returns {TP.html.textUtilities} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
     var node,
@@ -926,9 +862,7 @@ function(aText) {
         oldVal,
         newVal;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     oldVal = this.getSelection();
 
@@ -960,9 +894,7 @@ function(aStartIndex, anEndIndex) {
 
         range;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     if (TP.sys.isUA('IE')) {
         range = node.createTextRange();
@@ -993,9 +925,7 @@ function(aPosition) {
 
     var node;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     try {
         node.focus();
@@ -1025,14 +955,8 @@ function() {
      * @returns {TP.html.textUtilities} The receiver.
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
     try {
-        node.focus();
+        this.getNativeNode().focus();
     } catch (e) {
         TP.ifError() ?
             TP.error(
@@ -1056,14 +980,8 @@ function() {
      * @returns {TP.html.textUtilities} The receiver.
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
     try {
-        node.focus();
+        this.getNativeNode().focus();
     } catch (e) {
         TP.ifError() ?
             TP.error(
@@ -1457,7 +1375,6 @@ function(aTargetElem, anEvent) {
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @exception TP.sig.InvalidNode
      * @returns {TP.html.input} The receiver.
      * @abstract
      */
@@ -2908,16 +2825,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -2929,16 +2839,9 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputEmail} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.value = TP.str(aValue);
+    this.getNativeNode().value = TP.str(aValue);
 
     return this;
 });
@@ -2995,16 +2898,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -3016,16 +2912,9 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputNumber} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.value = TP.str(aValue);
+    this.getNativeNode().value = TP.str(aValue);
 
     return this;
 });
@@ -3069,16 +2958,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -3090,12 +2972,7 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputPassword} The receiver.
-     * @exception TP.sig.InvalidNode
      */
-
-    if (TP.notValid(this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
 
     //  You can't set the value of a <input type="password"/> field
 
@@ -3128,16 +3005,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -3149,16 +3019,9 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputSearch} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.value = TP.str(aValue);
+    this.getNativeNode().value = TP.str(aValue);
 
     return this;
 });
@@ -3189,7 +3052,6 @@ function() {
      * @summary Returns false since radio buttons, by their very nature, don't
      *     allow multiple selection.
      * @returns {Boolean} Whether or not the receiver allows multiple selection.
-     * @exception TP.sig.InvalidNode
      */
 
     return false;
@@ -3247,16 +3109,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -3268,16 +3123,9 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputTel} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.value = TP.str(aValue);
+    this.getNativeNode().value = TP.str(aValue);
 
     return this;
 });
@@ -3320,16 +3168,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -3341,16 +3182,9 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputText} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.value = TP.str(aValue);
+    this.getNativeNode().value = TP.str(aValue);
 
     return this;
 });
@@ -3419,16 +3253,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -3440,16 +3267,9 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.inputUrl} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.value = TP.str(aValue);
+    this.getNativeNode().value = TP.str(aValue);
 
     return this;
 });
@@ -4631,16 +4451,9 @@ function() {
      * @method getDisplayValue
      * @summary Returns the value of the receiver.
      * @returns {String} The receiver's formatted input value.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.value;
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------
@@ -4653,7 +4466,6 @@ function(aTargetElem, anEvent) {
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
-     * @exception TP.sig.InvalidNode
      * @returns {TP.html.textarea} The receiver.
      * @abstract
      */
@@ -4707,16 +4519,9 @@ function(aValue) {
      * @method setDisplayValue
      * @summary Sets the value of the receiver.
      * @returns {TP.html.textarea} The receiver.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    node.value = TP.str(aValue);
+    this.getNativeNode().value = TP.str(aValue);
 
     return this;
 });
