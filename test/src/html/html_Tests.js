@@ -1945,6 +1945,13 @@ function() {
 
         //  ---
 
+        //  allowsMultiples
+
+        //  by default, select elements don't allow multiples
+        test.assert.isFalse(tpElem.allowsMultiples());
+
+        //  ---
+
         //  addSelection
 
         //  (property defaults to 'value')
@@ -2063,6 +2070,14 @@ function() {
 
         //  ---
 
+        //  allowsMultiples
+
+        //  when configured with 'multiple="multiple"', select elements allow
+        //  multiples
+        test.assert.isTrue(tpElem.allowsMultiples());
+
+        //  ---
+
         //  addSelection
 
         //  (property defaults to 'value')
@@ -2160,6 +2175,13 @@ function() {
         //  'baz'.
 
         tpElem = TP.byId('input_radio_3', windowContext);
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  radio button elements don't allow multiples
+        test.assert.isFalse(tpElem.allowsMultiples());
 
         //  ---
 
@@ -2263,6 +2285,13 @@ function() {
 
         //  ---
 
+        //  allowsMultiples
+
+        //  checkbox elements allow multiples
+        test.assert.isTrue(tpElem.allowsMultiples());
+
+        //  ---
+
         //  addSelection
 
         //  (property defaults to 'value')
@@ -2349,7 +2378,6 @@ function() {
         tpElem.removeSelection(0, 'index');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
     });
-
 });
 
 //  ------------------------------------------------------------------------
