@@ -114,7 +114,7 @@ function() {
         var result;
 
         result = router.compilePattern(':fluffy');
-        this.assert.isEqualTo(result.first(), /(.*?)/.toString());
+        this.assert.isEqualTo(result.first(), /([^/]*?)/.toString());
     });
 
     this.it('compiles regex token strings', function(test, options) {
@@ -221,7 +221,7 @@ function() {
 
     this.it('can define simple tokens', function(test, options) {
         router.defineToken('fluffy', /\d{3}/);
-        this.assert.isEqualTo(router.get('tokens').at('fluffy'),
+        this.assert.isEqualTo(TP.sys.cfg('route.tokens.fluffy'),
             /\d{3}/);
     });
 });

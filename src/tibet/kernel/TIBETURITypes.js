@@ -9254,12 +9254,6 @@ TP.core.URIRouter.Type.defineAttribute('processors');
  */
 TP.core.URIRouter.Type.defineAttribute('root', 'Home');
 
-/**
- * A list of token patterns used for parsing token values found in routes.
- * @type {TP.core.Hash}
- */
-TP.core.URIRouter.Type.defineAttribute('tokens');
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -9272,7 +9266,6 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    this.$set('tokens', TP.hc());
     this.$set('processors', TP.ac());
 
     //  Always need a route to match "anything" as our backstop. If no routes
@@ -9281,6 +9274,12 @@ function() {
 
     //  Define the root pattern route for "empty paths".
     this.definePath(/^\/$/, this.get('root'));
+
+    //  TODO:   process config-based token definitions
+
+    //  TODO:   process config-based path-to-routename definitions
+
+    //  TODO:   process config-based route-to-controller/target/content
 
     return;
 });
@@ -9306,7 +9305,6 @@ function(pattern) {
         regex,
         parts,
         mappedParts,
-        tokens,
         names;
 
     if (TP.isRegExp(pattern)) {
@@ -9317,7 +9315,6 @@ function(pattern) {
         this.raise('InvalidParameter', pattern);
     }
 
-    tokens = this.get('tokens');
     names = TP.hc();
 
     if (pattern.charAt(0) === '/') {
@@ -9346,7 +9343,7 @@ function(pattern) {
                 if (item.charAt(0) === ':') {
 
                     names.atPut(index, item.slice(1));
-                    re = tokens.at(item.slice(1));
+                    re = TP.sys.cfg('route.tokens.' + item.slice(1));
 
                     if (TP.isValid(re)) {
                         val = TP.str(re);
@@ -9480,7 +9477,7 @@ function(token, pattern) {
         this.raise('InvalidPattern', pattern);
     }
 
-    this.get('tokens').atPut(token, pattern);
+    TP.sys.setcfg('route.tokens.' + token, pattern);
 
     return this;
 });
@@ -9663,11 +9660,12 @@ function(path) {
         }
     });
 
-    //  Now the fun part...sorting to get the best matches.
+    //  TODO:   make the sort here configurable. Maybe by weight but maybe by
+    //          simple definition order, etc.
     matches.sort(TP.core.URIRouter.BEST_ROUTE_SORT);
 
     best = matches.first();
-    if (TP.notValid(best)) {
+    if (TP.isEmpty(best)) {
         return;
     }
 
@@ -9874,13 +9872,12 @@ function(aURI, aDirection) {
                         } else if (TP.isFalse(value)) {
                             TP.sys.setcfg(triple.first(), true);
                         } else {
-                            //  No real way to do this. We don't track "defaults".
+                            //  No way to do this. We don't track "defaults".
                             void 0;
                         }
                         break;
                     default:
-                        //  TODO: raise? invalid operation.
-                        break;
+                        return this.raise('InvalidOperation', operation);
                 }
             });
         }
@@ -9912,9 +9909,8 @@ function(aURI, aDirection) {
         urlParts.at('basePath') !== lastParts.at('basePath')) {
 
         if (canvas.getLocation() !== url) {
-            canvas.setLocation(TP.uriHead(url));
-
             //  Goodbye TIBET...
+            canvas.setLocation(TP.uriHead(url));
             return;
         }
 
