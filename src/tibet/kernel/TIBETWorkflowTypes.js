@@ -6844,7 +6844,7 @@ function(aURL, fromDoc) {
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('pushState',
-function(stateObj, title, aURL, fromDoc) {
+function(stateObj, aTitle, aURL, fromDoc) {
 
     /**
      * @method pushState
@@ -6861,9 +6861,13 @@ function(stateObj, title, aURL, fromDoc) {
         current,
         entry,
         index,
+        title,
         router,
         result,
-        history;
+        history,
+        root,
+        fragment,
+        pushable;
 
     if (!TP.isURI(aURL)) {
         TP.raise(this, 'TP.sig.InvalidURI');
@@ -6872,6 +6876,7 @@ function(stateObj, title, aURL, fromDoc) {
 
     url = TP.str(aURL);
     current = this.getLocation();
+    title = aTitle || '';
 
     //  Dampen changes that aren't really changes.
     if (current === url) {
@@ -6893,8 +6898,10 @@ function(stateObj, title, aURL, fromDoc) {
 
     state = stateObj || {};
     state.index = index + 1;
+    state.title = title;
+    state.url = url;
 
-    entry = TP.ac(state, title || '', url);
+    entry = TP.ac(state, title, url);
     history.push(entry);
 
     this.set('index', index + 1);
@@ -6909,8 +6916,18 @@ function(stateObj, title, aURL, fromDoc) {
                     ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
+        //  Compute the right path to push. We don't push changes to the base
+        //  URL unless configured explicitly for that feature.
+        if (TP.notFalse(TP.sys.cfg('route.fragment_only'))) {
+            root = TP.uriHead(top.location.toString());
+            fragment = TP.uriFragment(url);
+            pushable = TP.isEmpty(fragment) ? root : root + '#' + fragment;
+        } else {
+            pushable = url;
+        }
+
         result = this.getNativeWindow().history.pushState(
-                    state, title || '', url);
+            state, title, pushable);
 
         if (TP.isTrue(fromDoc)) {
             return;
@@ -6950,7 +6967,7 @@ function(aURL) {
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('replaceState',
-function(stateObj, title, aURL) {
+function(stateObj, aTitle, aURL) {
 
     /**
      * @method replaceLocation
@@ -6962,6 +6979,7 @@ function(stateObj, title, aURL) {
 
     var url,
         state,
+        title,
         index,
         current,
         result,
@@ -6971,6 +6989,7 @@ function(stateObj, title, aURL) {
 
     url = TP.str(aURL);
     url = decodeURIComponent(url);
+    title = aTitle || '';
 
     //  Capture this before the replace so we have something to compare.
     current = this.getLocation();
@@ -6988,8 +7007,10 @@ function(stateObj, title, aURL) {
 
     state = stateObj || {};
     state.index = index;
+    state.title = title;
+    state.url = url;
 
-    entry = TP.ac(state, title || '', url);
+    entry = TP.ac(state, title, url);
     history.atPut(index, entry);
 
     //  work around bug(s) on chrome et. al. which fire popstate on pushState
@@ -7002,8 +7023,7 @@ function(stateObj, title, aURL) {
                 ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
-        result = this.getNativeWindow().history.replaceState(
-                                            state, title || '', url);
+        result = this.getNativeWindow().history.replaceState(state, title, url);
 
         router = TP.sys.getRouter();
         if (TP.canInvoke(router, 'route')) {
@@ -7042,7 +7062,13 @@ function(anIndex) {
     entry = this.get('history').at(index);
     local = entry.at(2);
 
-    method = local === native ? 'debug' : 'error';
+    if (TP.notFalse(TP.sys.cfg('route.fragment_only'))) {
+        //  when using fragment-only updates we'll often fail to match if
+        //  alternative pages have been loading in the UICANVAS.
+        method = 'debug';
+    } else {
+        method = local === native ? 'debug' : 'error';
+    }
 
     if (TP.isValid(entry)) {
         TP[method]('history.at(' + index + ') -> ' + local + '.');
