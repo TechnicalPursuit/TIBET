@@ -4222,11 +4222,11 @@ TP.definePrimitive('type', TP.objectType);
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('objectSuperType',
+TP.definePrimitive('objectSupertype',
 function(anObject) {
 
     /**
-     * @method objectSuperType
+     * @method objectSupertype
      * @alias stype
      * @summary Returns the supertype object for the object provided.
      * @param {Object} anObject The object to return the supertype for.
@@ -4240,8 +4240,8 @@ function(anObject) {
         return;
     }
 
-    if (TP.canInvoke(anObject, 'getSuperType')) {
-        return anObject.getSuperType();
+    if (TP.canInvoke(anObject, 'getSupertype')) {
+        return anObject.getSupertype();
     }
 
     if (TP.isValid(supertype = anObject[TP.SUPER])) {
@@ -4254,7 +4254,7 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('stype', TP.objectSuperType);
+TP.definePrimitive('stype', TP.objectSupertype);
 
 //  ------------------------------------------------------------------------
 
