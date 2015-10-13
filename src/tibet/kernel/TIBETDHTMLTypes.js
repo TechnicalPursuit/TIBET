@@ -4875,11 +4875,20 @@ function() {
      * @summary Returns an Array TP.core.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes.
+     *     TP.core.UIElementNodes. By default, this method will return other
+     *     elements that are part of the same 'tibet:group'.
      * @returns {TP.core.UIElementNode[]} The Array of shared value items.
      */
 
-    return TP.override();
+    var valueTPElems;
+
+    valueTPElems = this.getGroupElements();
+
+    if (TP.isEmpty(valueTPElems)) {
+        valueTPElems.push(this);
+    }
+
+    return valueTPElems;
 });
 
 //  ------------------------------------------------------------------------
