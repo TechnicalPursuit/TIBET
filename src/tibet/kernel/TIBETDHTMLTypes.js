@@ -5542,10 +5542,24 @@ function(aValue) {
     separator = TP.ifEmpty(this.getAttribute('bind:separator'),
                             TP.sys.cfg('bind.value_separator'));
 
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
+    value = aValue;
+
+    //  If the value is an Array and has a size of 1, just use that item.
+    //  Otherwise, turn the Array into String representations of the objects it
+    //  contains.
+    if (TP.isArray(value)) {
+        if (value.getSize() === 1) {
+            value = value.first();
+        } else {
+            value = value.collect(
+                            function(aVal) {
+                                return TP.str(aVal);
+                            });
+        }
+    }
+
+    if (TP.isString(value)) {
+        value = value.split(separator).collapse();
     }
 
     //  watch for multiple selection issues
