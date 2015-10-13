@@ -5588,6 +5588,12 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
+    //  If we didn't get an Array back and this control allows for multiples,
+    //  then wrap the newValue in an Array for consistency in value checking.
+    if (!TP.isArray(newValue) && this.allowsMultiples()) {
+        newValue = TP.ac(newValue);
+    }
+
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
         return this;
