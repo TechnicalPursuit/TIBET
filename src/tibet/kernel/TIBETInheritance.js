@@ -4835,7 +4835,11 @@ function(propertyName, resolution, resolutionOption) {
         entry,
 
         desc,
-        prevValue;
+        prevValue,
+
+        /* eslint-disable no-unused-vars */
+        val;
+        /* eslint-enable no-unused-vars */
 
     //  Because we're executing this in the context of the 'instance prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
@@ -4925,6 +4929,7 @@ function(propertyName, resolution, resolutionOption) {
                         this,
                         propertyName,
                         TP.INST_TRACK);
+
     } else if (TP.isType(resolution) && TP.isString(resolutionOption)) {
 
         if (resolutionOption !== TP.BEFORE && resolutionOption !== TP.AFTER) {
@@ -4971,6 +4976,13 @@ function(propertyName, resolution, resolutionOption) {
         //  Case #1: The resolution is a valid value - install it as the value
         entry.atPut('definedValue', resolution);
     }
+
+    //  Go ahead and access this value, causing the resolver to execute. This is
+    //  done because we want subtypes to be able to reliably hook into a value
+    //  that has been manually resolved (i.e. forced)
+    //  Note that we do this assignment to avoid having JS engines possibly
+    //  optimize an unassigned slot access away and not executing the resolver.
+    val = this[propertyName];
 
     return this;
 });
@@ -5077,7 +5089,11 @@ function(propertyName, resolution, resolutionOption) {
         entry,
 
         desc,
-        prevValue;
+        prevValue,
+
+        /* eslint-disable no-unused-vars */
+        val;
+        /* eslint-enable no-unused-vars */
 
     //  Because we're executing this in the context of the 'type prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
@@ -5167,6 +5183,7 @@ function(propertyName, resolution, resolutionOption) {
                         this,
                         propertyName,
                         TP.TYPE_TRACK);
+
     } else if (TP.isType(resolution) && TP.isString(resolutionOption)) {
 
         if (resolutionOption !== TP.BEFORE && resolutionOption !== TP.AFTER) {
@@ -5213,6 +5230,13 @@ function(propertyName, resolution, resolutionOption) {
         //  Case #1: The resolution is a valid value - install it as the value
         entry.atPut('definedValue', resolution);
     }
+
+    //  Go ahead and access this value, causing the resolver to execute. This is
+    //  done because we want subtypes to be able to reliably hook into a value
+    //  that has been manually resolved (i.e. forced)
+    //  Note that we do this assignment to avoid having JS engines possibly
+    //  optimize an unassigned slot access away and not executing the resolver.
+    val = this[propertyName];
 
     return this;
 });
