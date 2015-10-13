@@ -5110,6 +5110,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
@@ -5298,20 +5314,19 @@ function() {
         item = valueTPElems.at(i);
 
         if (item.$getVisualToggle()) {
-            //  NB: We check the value attribute *of the native node* here
-            //  because we want to see if the author specified a 'value='
-            //  attribute - some platforms will return Strings like 'on' if the
-            //  author has not. We don't want to consider those.
-            if (TP.isEmpty(val = item.getAttribute('value'))) {
+            //  NB: We check the original markup value here because we want to
+            //  see if the author specified a value in the originally authored
+            //  markup.
+            if (TP.isEmpty(val = item.$getMarkupValue())) {
                 val = true;
             }
             selectionArray.push(val);
         } else {
-            //  If it's not checked, *and doesn't have a 'value=' attribute on
-            //  the native node*, then we go ahead and add a "false" at that
-            //  spot in the Array (to keep things consistent with the logic
-            //  above).
-            if (TP.isEmpty(val = item.getAttribute('value'))) {
+            //  If it's not checked, *and doesn't have a markup value in the
+            //  originally authored markup* then we go ahead and add a "false"
+            //  at that spot in the Array (to keep things consistent with the
+            //  logic above).
+            if (TP.isEmpty(val = item.$getMarkupValue())) {
                 selectionArray.push(false);
             }
         }

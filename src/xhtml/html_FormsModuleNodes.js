@@ -509,6 +509,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.option.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return this.getAttribute('value');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.option.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
@@ -1662,6 +1678,22 @@ function() {
     }
 
     return results;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return this.getAttribute('value');
 });
 
 //  ------------------------------------------------------------------------
