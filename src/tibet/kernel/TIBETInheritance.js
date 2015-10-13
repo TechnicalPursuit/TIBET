@@ -3656,6 +3656,9 @@ function(varargs) {
         traitProps,
 
         propName,
+        checkProp1,
+        checkProp2,
+
         entry,
         desc;
 
@@ -3746,10 +3749,33 @@ function(varargs) {
 
             propName = traitProps[j];
 
-            //  If the slots have the exact same value, then they're pointing at
-            //  exactly the same object - just exit here.
-            if (mainTypeTarget[propName] === traitTypeTarget[propName]) {
+            //  If the mainTypeTarget has this property, then we need to check
+            //  whether the traitTypeTarget has it too *and that the values
+            //  exactly match* (i.e. they are the same object/value). In that
+            //  case, we just proceed on.
+            checkProp1 = mainTypeTarget[propName];
+            checkProp2 = traitTypeTarget[propName];
+
+            if (checkProp1 === checkProp2) {
                 continue;
+            }
+
+            //  If they both really exist, then we need to drill in and see if
+            //  they have '$resolutionMethod' slots that would match the
+            //  other's slot (or '$resolutionMethod' slot). This is critical to
+            //  avoid problems with traits cascading down the inheritance
+            //  hierarchy.
+            if (checkProp1 && checkProp2) {
+                checkProp1 = checkProp1.$resolutionMethod ?
+                                checkProp1.$resolutionMethod :
+                                checkProp1;
+                checkProp2 = checkProp2.$resolutionMethod ?
+                                checkProp2.$resolutionMethod :
+                                checkProp2;
+
+                if (checkProp1 === checkProp2) {
+                    continue;
+                }
             }
 
             //  If there's already an ECMA5 'getter' at that slot and it has a
@@ -3811,10 +3837,33 @@ function(varargs) {
 
             propName = traitProps[j];
 
-            //  If the slots have the exact same value, then they're pointing at
-            //  exactly the same object - just exit here.
-            if (mainTypeTarget[propName] === traitTypeTarget[propName]) {
+            //  If the mainTypeTarget has this property, then we need to check
+            //  whether the traitTypeTarget has it too *and that the values
+            //  exactly match* (i.e. they are the same object/value). In that
+            //  case, we just proceed on.
+            checkProp1 = mainTypeTarget[propName];
+            checkProp2 = traitTypeTarget[propName];
+
+            if (checkProp1 === checkProp2) {
                 continue;
+            }
+
+            //  If they both really exist, then we need to drill in and see if
+            //  they have '$resolutionMethod' slots that would match the
+            //  other's slot (or '$resolutionMethod' slot). This is critical to
+            //  avoid problems with traits cascading down the inheritance
+            //  hierarchy.
+            if (checkProp1 && checkProp2) {
+                checkProp1 = checkProp1.$resolutionMethod ?
+                                checkProp1.$resolutionMethod :
+                                checkProp1;
+                checkProp2 = checkProp2.$resolutionMethod ?
+                                checkProp2.$resolutionMethod :
+                                checkProp2;
+
+                if (checkProp1 === checkProp2) {
+                    continue;
+                }
             }
 
             //  If there's already an ECMA5 'getter' at that slot and it has a
