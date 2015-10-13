@@ -4713,11 +4713,11 @@ function(entry, installName, targetObject, track) {
         targetObject.defineMethod(installName, dispatchFunc, null, null, true);
 
         //  Note here how we manually wire the owner of the Function we just put
-        //  on the targetObject to be the resolutionType. This is due to the
-        //  fact that we want 'callNextMethod()' to traverse the 'correct tree',
-        //  as it were, and it looks at the Function's TP.OWNER for this
+        //  on the targetObject to be the owner of the targetObject. This is due
+        //  to the fact that we want 'callNextMethod()' to traverse the 'correct
+        //  tree', as it were, and it looks at the Function's TP.OWNER for this
         //  information (as it should).
-        dispatchFunc[TP.OWNER] = resolutionType;
+        dispatchFunc[TP.OWNER] = targetObject[TP.OWNER];
 
         //  We also add to the TP.DISPLAY name to indicate that this is a trait
         //  wired in from another type.
