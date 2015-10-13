@@ -73,7 +73,7 @@ function(aDataSource, transformParams) {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('compile',
-function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
+function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) {
 
     /**
      * @method compile
@@ -91,12 +91,15 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
      *     treat as coming from the data source instead of the params (the
      *     engine will usually treat '$' variables specially and draw their data
      *     from the 'params' argument instead of the source).
+     * @param {Boolean} [echoFormat=true] Whether or not to 'echo' the format
+     *     out to the result if no source object can be computed for it.
      * @returns {Function} The compiled template Function.
      */
 
     var str,
         regName,
         uri,
+        shouldEcho,
         func,
         tokens;
 
@@ -129,6 +132,8 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
         }
     }
 
+    shouldEcho = TP.ifInvalid(echoFormat, true);
+
     //  No dynamic ACP content? The function is one that returns a simple static
     //  string.
     if (!TP.regex.HAS_ACP.test(str)) {
@@ -153,7 +158,8 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
         }
 
         //  Compile the tokenized template into a Function object
-        func = this.$compileTemplateTokens(tokens, templateName, sourceVarNames);
+        func = this.$compileTemplateTokens(
+                        tokens, templateName, sourceVarNames, shouldEcho);
     }
 
     //  Compilation/creation of a template function failed.
@@ -176,7 +182,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames) {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('$compileTemplateTokens',
-function(tokenList, templateName, sourceVarNames) {
+function(tokenList, templateName, sourceVarNames, echoFormat) {
 
     /**
      * @method $compileTemplateTokens
@@ -190,6 +196,8 @@ function(tokenList, templateName, sourceVarNames) {
      *     treat as coming from the data source instead of the params (the
      *     engine will usually treat '$' variables specially and draw their data
      *     from the 'params' argument instead of the source).
+     * @param {Boolean} [echoFormat] Whether or not to 'echo' the format out to
+     *     the result if no source object can be computed for it.
      * @returns {Function} The compiled template Function.
      */
 
@@ -232,23 +240,42 @@ function(tokenList, templateName, sourceVarNames) {
             if (isRepeating) {
 
                 //  It's a repeating format
-                retVal = '(TP.format(TP.ifInvalid(arg, ' +
-                                        '\'{{' + argName + '}}\'),' +
-                                ' "' + argFormat + '", ' +
-                                'params.atPut(\'repeat\', true)))';
+                if (echoFormat) {
+                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                                            '\'{{' + argName + '}}\'),' +
+                                    ' "' + argFormat + '", ' +
+                                    'params.atPut(\'repeat\', true)))';
+                } else {
+                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                                            '\'\'),' +
+                                    ' "' + argFormat + '", ' +
+                                    'params.atPut(\'repeat\', true)))';
+                }
             } else {
 
                 //  It's a non-repeating format
-                retVal = '(TP.format(TP.ifInvalid(arg, ' +
-                                        '\'{{' + argName + '}}\'),' +
-                                ' "' + argFormat + '", params))';
+                if (echoFormat) {
+                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                                            '\'{{' + argName + '}}\'),' +
+                                    ' "' + argFormat + '", params))';
+                } else {
+                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                                            '\'\'),' +
+                                    ' "' + argFormat + '", params))';
+                }
             }
         } else {
 
             //  No format - just the value 'formatted' as a String
-            retVal = '(TP.format(TP.ifInvalid(arg, ' +
-                                        '\'{{' + argName + '}}\'),' +
-                                ' "' + 'String' + '"))';
+            if (echoFormat) {
+                retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                                            '\'{{' + argName + '}}\'),' +
+                                    ' "' + 'String' + '"))';
+            } else {
+                retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                                            '\'\'),' +
+                                    ' "' + 'String' + '"))';
+            }
         }
 
         return retVal;
@@ -714,7 +741,11 @@ function(aDataSource, transformParams) {
         //  source).
         if (TP.isValid(transformParams)) {
             template = template.compile(
-                        null, false, true, transformParams.at('sourcevars'));
+                        null,
+                        false,
+                        true,
+                        transformParams.at('sourcevars'),
+                        transformParams.at('shouldEcho'));
         } else {
             template = template.compile(null, false, true);
         }
