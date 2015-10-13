@@ -4614,6 +4614,1001 @@ function(aSignal) {
     return this;
 });
 
+//  ========================================================================
+//  TP.core.SelectingUIElementNode
+//  ========================================================================
+
+TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
+
+//  can't construct concrete instances of this
+TP.core.SelectingUIElementNode.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
+function(aValue, elementProperty) {
+
+    /**
+     * @method addSelection
+     * @summary Adds a selection to the grouping of elements that the receiver
+     *     is a part of (as matched by their 'name' attribute) matching the
+     *     criteria if found. Note that this method does not clear existing
+     *     selections when processing the value(s) provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used with each grouped element to determine which of
+     *      them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to add to the selection. Note that this can be an Array.
+     * @param {String} elementProperty The property of the elements to use to
+     *      determine which elements should be selected.
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @returns {Boolean} Whether or not a selection was added.
+     */
+
+    var separator,
+        value,
+        valueTPElems,
+
+        aspect,
+        dict,
+        dirty,
+
+        len,
+        i,
+        item,
+        val;
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator).collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(elementProperty, 'value');
+
+    dirty = false;
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        switch (aspect) {
+            case 'label':
+                val = item.getLabelText();
+                break;
+
+            case 'id':
+                val = item.getLocalID();
+                break;
+
+            case 'index':
+                val = i;
+                break;
+
+            case 'value':
+            default:
+                val = item.$getPrimitiveValue();
+                break;
+        }
+
+        //  NOTE that we don't clear ones that don't match, we just add the
+        //  new items to the selection
+        if (dict.containsKey(val)) {
+            if (!item.$getVisualToggle()) {
+                dirty = true;
+            }
+
+            item.$setVisualToggle(true);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @method allowsMultiples
+     * @summary Returns true by default.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
+function(aValue) {
+
+    /**
+     * @method deselect
+     * @summary De-selects (clears) the option with the value provided.
+     * @param {Object} aValue The value to de-select. Note that this can be an
+     *     array. Also note that if no value is provided this will deselect
+     *     (clear) all selected items.
+     * @exception TP.sig.InvalidValueElements
+     * @returns {Boolean} Whether or not a selection was deselected.
+     */
+
+    if (TP.isEmpty(aValue)) {
+        return this.deselectAll();
+    }
+
+    return this.removeSelection(aValue, 'value');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('deselectAll',
+function() {
+
+    /**
+     * @method deselectAll
+     * @summary Clears any current selection(s).
+     * @exception TP.sig.InvalidValueElements
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    var valueTPElems,
+        dirty,
+        len,
+        i,
+
+        item;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    dirty = false;
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        if (item.$getVisualToggle()) {
+            dirty = true;
+        }
+        item.$setVisualToggle(false);
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
+function(aValue) {
+
+    /**
+     * @method $generateSelectionHashFrom
+     * @summary Returns a Hash that is driven off of the supplied value which
+     *     can then be used to set the receiver's selection.
+     * @returns {TP.core.Hash} A Hash that is populated with data from the
+     *     supplied value that can be used for manipulating the receiver's
+     *     selection.
+     */
+
+    var dict,
+        keys,
+        len,
+        i;
+
+    //  avoid MxN iterations by creating a hash of aValues
+    if (TP.isArray(aValue)) {
+        dict = TP.hc().addAllKeys(aValue, '');
+    } else if (TP.isKindOf(aValue, TP.core.Hash)) {
+        dict = TP.hc().addAllKeys(aValue.getValues());
+    } else if (TP.isMemberOf(aValue, Object)) {
+        dict = TP.hc();
+        keys = TP.keys(aValue);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(aValue[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue.item(i)), i);
+        }
+    } else {
+        dict = TP.hc(aValue, '');
+    }
+
+    return dict;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('getValueElements',
+function() {
+
+    /**
+     * @method getValueElements
+     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     *     'value object' with the receiver. That is, a change to the 'value' of
+     *     the receiver will also change the value of one of these other
+     *     TP.core.UIElementNodes.
+     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
+     */
+
+    return this.$getVisualToggle();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
+function(aValue, elementProperty) {
+
+    /**
+     * @method removeSelection
+     * @summary Removes a selection from the grouping of elements that the
+     *     receiver is a part of (as matched by their 'name' attribute) matching
+     *     the criteria if found. Note that this method does not clear existing
+     *     selections when processing the value(s) provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used with each grouped element to determine which of
+     *      them will be deselected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to remove from the selection. Note that this can be an
+     *      Array.
+     * @param {String} elementProperty The property of the elements to use to
+     *      determine which elements should be deselected.
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @returns {Boolean} Whether or not a selection was removed.
+     */
+
+    var separator,
+        value,
+        valueTPElems,
+
+        aspect,
+        dict,
+        dirty,
+
+        len,
+        i,
+        item,
+        val;
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator).collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(elementProperty, 'value');
+
+    dirty = false;
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        switch (aspect) {
+            case 'label':
+
+                val = item.getLabelText();
+                break;
+
+            case 'id':
+                val = item.getLocalID();
+                break;
+
+            case 'index':
+                val = i;
+                break;
+
+            case 'value':
+            default:
+                val = item.$getPrimitiveValue();
+                break;
+        }
+
+        //  NOTE that we don't clear ones that don't match, we just add the
+        //  new items to the selection
+        if (dict.containsKey(val)) {
+            if (item.$getVisualToggle()) {
+                dirty = true;
+            }
+
+            item.$setVisualToggle(false);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('select',
+function(aValue) {
+
+    /**
+     * @method select
+     * @summary Selects the option with the value provided if found. Note that
+     *     this method is roughly identical to setDisplayValue with the
+     *     exception that this method does not clear existing selections when
+     *     processing the value(s) provided. When no specific values are
+     *     provided this method will selectAll.
+     * @param {Object} aValue The value to select. Note that this can be an
+     *     array.
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    return this.addSelection(aValue, 'value');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('selectAll',
+function() {
+
+    /**
+     * @method selectAll
+     * @summary Selects all elements with the same 'name' attribute as the
+     *     receiver. Note that for groupings of controls that don't allow
+     *     multiple selections (such as radiobuttons), this will raise an
+     *     'InvalidOperation' exception.
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    var valueTPElems,
+        dirty,
+        len,
+        i,
+
+        item;
+
+    if (!this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target does not allow multiple selection');
+    }
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    dirty = false;
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        if (!item.$getVisualToggle()) {
+            dirty = true;
+        }
+
+        item.$setVisualToggle(true);
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.core.SelectableItemUIElementNode
+//  ========================================================================
+
+TP.core.UIElementNode.defineSubtype('SelectableItemUIElementNode');
+
+//  can't construct concrete instances of this
+TP.core.SelectableItemUIElementNode.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('getLabelText',
+function() {
+
+    /**
+     * @method getLabelText
+     * @summary Returns the text of the label of the receiver.
+     * @returns {String} The receiver's label text.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
+function() {
+
+    /**
+     * @method $getPrimitiveValue
+     * @summary Returns the low-level primitive value stored by the receiver in
+     *     internal storage.
+     * @returns {String} The primitive value of the receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getVisualToggle',
+function() {
+
+    /**
+     * @method $getVisualToggle
+     * @summary Returns the low-level primitive 'toggle value' used by the
+     *     receiver to display a 'selected' state.
+     * @returns {String} The primitive value of the receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$setVisualToggle',
+function(aToggleValue) {
+
+    /**
+     * @method $setVisualToggle
+     * @summary Sets the low-level primitive 'toggle value' used by the receiver
+     *     to display a 'selected' state.
+     * @param {Boolean} aToggleValue Whether or not to display the receiver's
+     *     'checked' state.
+     * @returns {TP.core.SelectableItemUIElementNode} The receiver.
+     */
+
+    return TP.override();
+});
+
+//  ========================================================================
+//  TP.core.CheckableUIElementNode
+//  ========================================================================
+
+TP.core.SelectingUIElementNode.defineSubtype('CheckableUIElementNode');
+
+//  Add in selectable item traits - instances of this type manage themselves as
+//  selectable items.
+TP.core.CheckableUIElementNode.addTraits(TP.core.SelectableItemUIElementNode);
+
+//  can't construct concrete instances of this
+TP.core.CheckableUIElementNode.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('defineBindingsUsing',
+function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
+
+    /**
+     * @method defineBindingsUsing
+     * @summary Defines a binding between the data source as described in the
+     *     supplied attribute value and the receiver.
+     * @param {String} attrName The attribute name to install the binding under
+     *     in the receiver.
+     * @param {String} attrValue The attribute value to analyse to produce the
+     *     proper binding expression.
+     * @param {Array} scopeVals The list of scope values to use to qualify the
+     *     binding expression.
+     * @param {String} direction The binding 'direction' (i.e. which way to
+     *     establish the binding connection from the data source to the
+     *     receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
+     * @param {Boolean} [refreshImmediately=false] Whether or not to refresh the
+     *     receiver immediately after the bind is established.
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    var valueTPElems;
+
+    if (attrName === 'checked') {
+
+        //  Get all of elements that are part of our 'group', including ourself.
+        valueTPElems = this.getValueElements();
+
+        valueTPElems.perform(
+            function(aTPElem) {
+                TP.core.ElementNode.Inst.defineBindingsUsing.call(
+                    aTPElem,
+                    'value',
+                    attrValue,
+                    scopeVals,
+                    direction,
+                    refreshImmediately);
+            });
+    } else {
+        this.callNextMethod();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('destroyBindingsUsing',
+function(attrName, attrValue, scopeVals, direction) {
+
+    /**
+     * @method destroyBindingsUsing
+     * @summary Destroys any binding between the data source as described in the
+     *     supplied attribute value and the receiver.
+     * @param {String} attrName The attribute name to use to remove the binding
+     *     from in the receiver.
+     * @param {String} attrValue The attribute value to analyse to produce the
+     *     proper binding expression.
+     * @param {Array} scopeVals The list of scope values to use to qualify the
+     *     binding expression.
+     * @param {String} direction The binding 'direction' (i.e. which way the
+     *     original binding connection was established from the data source to
+     *     the receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    var valueTPElems;
+
+    if (attrName === 'checked') {
+
+        //  Get all of elements that are part of our 'group', including ourself.
+        valueTPElems = this.getValueElements();
+
+        valueTPElems.perform(
+            function(aTPElem) {
+                TP.core.ElementNode.Inst.destroyBindingsUsing.call(
+                    aTPElem,
+                    'value',
+                    attrValue,
+                    scopeVals,
+                    direction);
+            });
+    } else {
+        this.callNextMethod();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('getDisplayValue',
+function() {
+
+    /**
+     * @method getDisplayValue
+     * @summary Returns the selected value of the select list. This corresponds
+     *     to the value of the currently selected item or items.
+     * @returns {String|Array} A String containing the selected value or an
+     *     Array of zero or more selected values if the receiver is set up to
+     *     allow multiple selections.
+     */
+
+    var valueTPElems,
+        selectionArray,
+        len,
+        i,
+        item,
+
+        val;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    selectionArray = TP.ac();
+
+    //  Loop over all of the elements and if the element at the index is
+    //  selected, add it to the Array of selected elements.
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        if (item.$getVisualToggle()) {
+            //  NB: We check the value attribute *of the native node* here
+            //  because we want to see if the author specified a 'value='
+            //  attribute - some platforms will return Strings like 'on' if the
+            //  author has not. We don't want to consider those.
+            if (TP.isEmpty(val = item.getAttribute('value'))) {
+                val = true;
+            }
+            selectionArray.push(val);
+        } else {
+            //  If it's not checked, *and doesn't have a 'value=' attribute on
+            //  the native node*, then we go ahead and add a "false" at that
+            //  spot in the Array (to keep things consistent with the logic
+            //  above).
+            if (TP.isEmpty(val = item.getAttribute('value'))) {
+                selectionArray.push(false);
+            }
+        }
+    }
+
+    if (!this.allowsMultiples()) {
+        return selectionArray.first();
+    }
+
+    return selectionArray;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('getValue',
+function() {
+
+    /**
+     * @method getValue
+     * @summary Returns the value of the receiver. For a UI element this method
+     *     will ensure any storage formatters are invoked.
+     * @returns {String} The value in string form.
+     */
+
+    var value,
+
+        type,
+        formats,
+
+        tpElems,
+        i;
+
+    value = this.getDisplayValue();
+
+    //  Given that this type can represent multiple items, it will return an
+    //  Array. We should check to make sure the Array isn't empty before doing
+    //  any more work.
+    if (TP.notEmpty(value)) {
+
+        //  If the receiver has a 'ui:type' attribute, then try first to convert
+        //  the content to that type before trying to format it.
+        if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
+            if (!TP.isType(type = TP.sys.getTypeByName(type))) {
+                return this.raise('TP.sig.InvalidType');
+            } else {
+                value = type.fromString(value);
+            }
+        }
+
+        //  If the receiver has a 'ui:storage' attribute, then format the return
+        //  value according to the formats found there.
+
+        //  NB: We find the first element in the receiver's 'element Array' that
+        //  has a 'ui:storage' attribute and use that value as the formats we
+        //  should use.
+        tpElems = this.getValueElements();
+
+        for (i = 0; i < tpElems.getSize(); i++) {
+            if (TP.notEmpty(formats =
+                            tpElems.at(i).getAttribute('ui:storage'))) {
+                value = this.$formatValue(value, formats);
+                break;
+            }
+        }
+    }
+
+    return value;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('isScalarValued',
+function() {
+
+    /**
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @returns {Boolean} For input types, this returns true.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('on',
+function() {
+
+    /**
+     * @method on
+     * @summary Sets the receiver's checked state to 'true'.
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    this.$setVisualToggle(true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('off',
+function() {
+
+    /**
+     * @method off
+     * @summary Sets the receiver's checked state to 'false'.
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    this.$setVisualToggle(true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('produceValue',
+function(aContentObject, aRequest) {
+
+    /**
+     * @method produceValue
+     * @summary Produces the value that will be used by the setValue() method
+     *     to set the content of the receiver.
+     * @description This method is overridden here because (X)HTML checkboxes
+     *     and radio buttons are part of a 'group', as determined by their
+     *     'name' attribute. If one member of the group has a 'ui:display'
+     *     attribute, then setting the value on any of members of the group
+     *     should format the value according to that 'ui:display', even if it
+     *     wasn't present on the receiving element. Note that this will format
+     *     values using the first 'ui:display' setting found in the group and
+     *     then exit.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     */
+
+    var value,
+
+        tpElems,
+        i,
+
+        formats;
+
+    value = this.callNextMethod();
+
+    //  If the receiver has a 'ui:display' attribute, that means that the
+    //  super method would have formatted the value, so we just return it.
+    if (TP.notEmpty(this.getAttribute('ui:display'))) {
+        return value;
+    }
+
+    tpElems = this.getValueElements();
+
+    for (i = 0; i < tpElems.getSize(); i++) {
+        if (TP.notEmpty(formats = tpElems.at(i).getAttribute('ui:display'))) {
+            value = this.$formatValue(value, formats);
+            break;
+        }
+    }
+
+    return value;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('setDisplayValue',
+function(aValue) {
+
+    /**
+     * @method setDisplayValue
+     * @summary Sets the receivers' value to the value provided (if it matches
+     *     the value of an item in the group). Note that any selected items not
+     *     provided in aValue are cleared, which is different than the behavior
+     *     of selectValue() which simply adds the new selected items to the
+     *     existing selection.
+     * @param {Object} aValue The value to set (select) in the receiver. For a
+     *     select list this might be an array.
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    var valueTPElems,
+        separator,
+        value,
+
+        dict,
+        len,
+        i,
+
+        dirty,
+
+        item;
+
+    //  empty value means clear any selection(s)
+    if (TP.isEmpty(aValue)) {
+        return this.deselectAll();
+    }
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator).collapse();
+    } else {
+        value = aValue;
+    }
+
+    //  watch for multiple selection issues
+    if (TP.isArray(value) && !this.allowsMultiples()) {
+        value = value.at(0);
+    }
+
+    //  Generate a selection hash. This should populate the hash with keys that
+    //  match 1...n values in the supplied value.
+    dict = this.$generateSelectionHashFrom(value);
+
+    dirty = false;
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        if (dict.containsKey(item.$getPrimitiveValue())) {
+            if (!item.$getVisualToggle()) {
+                dirty = true;
+            }
+            item.$setVisualToggle(true);
+        } else {
+            if (item.$getVisualToggle()) {
+                dirty = true;
+            }
+            item.$setVisualToggle(false);
+        }
+    }
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For a UI element this
+     *     method will ensure any display formatters are invoked. NOTE that this
+     *     method does not update the receiver's bound value if it's a bound
+     *     control. In fact, this method is used in response to a change in the
+     *     bound value to update the display value, so this method should avoid
+     *     changes to the bound value to avoid recursions.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. If false
+     *     changes are not signaled. Defaults to this.shouldSignalChange().
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    var oldValue,
+        newValue,
+
+        flag;
+
+    oldValue = this.getValue();
+
+    newValue = this.produceValue(aValue);
+
+    //  If the values are equal, there's nothing to do here - bail out.
+    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
+
+    this.setDisplayValue(newValue);
+
+    //  signal as needed
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

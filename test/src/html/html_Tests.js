@@ -34,6 +34,8 @@ function() {
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
+            windowContext = this.getDriver().get('windowContext');
+
             this.getDriver().setLocation(loadURI);
         });
 
@@ -1945,6 +1947,13 @@ function() {
 
         //  ---
 
+        //  allowsMultiples
+
+        //  by default, select elements don't allow multiples
+        test.assert.isFalse(tpElem.allowsMultiples());
+
+        //  ---
+
         //  addSelection
 
         //  (property defaults to 'value')
@@ -2042,10 +2051,13 @@ function() {
             if (natElem.selectedOptions) {
                 selectedOptions = natElem.selectedOptions;
             } else {
-                selectedOptions = aTPElem.getElementArray().collect(
-                                        function(anElem) {
-                                            if (anElem.selected) {
-                                                return anElem;
+                selectedOptions = aTPElem.getValueElements().collect(
+                                        function(valueTPElem) {
+                                            var valueElem;
+
+                                            valueElem = TP.unwrap(valueTPElem);
+                                            if (valueElem.selected) {
+                                                return valueElem;
                                             }
                                         });
 
@@ -2060,6 +2072,14 @@ function() {
 
             return indices;
         };
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  when configured with 'multiple="multiple"', select elements allow
+        //  multiples
+        test.assert.isTrue(tpElem.allowsMultiples());
 
         //  ---
 
@@ -2163,6 +2183,13 @@ function() {
 
         //  ---
 
+        //  allowsMultiples
+
+        //  radio button elements don't allow multiples
+        test.assert.isFalse(tpElem.allowsMultiples());
+
+        //  ---
+
         //  addSelection
 
         //  (property defaults to 'value')
@@ -2250,16 +2277,26 @@ function() {
         getSelectedIndices = function(aTPElem) {
             var checkboxIndices;
 
-            checkboxIndices = aTPElem.getElementArray().collect(
-                                    function(anElem, anIndex) {
-                                        if (anElem.checked) {
-                                            return anIndex;
-                                        }
-                                    });
+            checkboxIndices = aTPElem.getValueElements().collect(
+                                        function(valueTPElem, anIndex) {
+                                            var valueElem;
+
+                                            valueElem = TP.unwrap(valueTPElem);
+                                            if (valueElem.checked) {
+                                                return anIndex;
+                                            }
+                                        });
 
             //  Removes nulls and undefineds
             return checkboxIndices.compact();
         };
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  checkbox elements allow multiples
+        test.assert.isTrue(tpElem.allowsMultiples());
 
         //  ---
 
@@ -2349,7 +2386,6 @@ function() {
         tpElem.removeSelection(0, 'index');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
     });
-
 });
 
 //  ------------------------------------------------------------------------
@@ -2357,11 +2393,38 @@ function() {
 TP.html.XMLNS.Type.describe('html: data binding of standard elements',
 function() {
 
-    var windowContext;
+    var loadURI,
+        unloadURI,
 
-    this.before(function() {
-        windowContext = this.getDriver().get('windowContext');
-    });
+        windowContext;
+
+    loadURI = TP.uc('~lib_test/src/html/HTMLContent.xhtml');
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = this.getDriver().get('windowContext');
+
+            this.getDriver().setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
 
     this.it('data binding to scalar values', function(test, options) {
 

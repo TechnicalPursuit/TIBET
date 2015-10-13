@@ -28,17 +28,14 @@ function() {
      * @method defineTypes
      * @summary Define the types in TIBET that have their XML Schema markup
      *     under the receiver.
-     * @exception TP.sig.InvalidNode
-     * @returns {'TP.xs.schema'} The receiver.
+     * @returns {TP.xs.schema} The receiver.
      */
 
     var node,
 
         schemaElems;
 
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    node = this.getNativeNode();
 
     //  Process simple types
 

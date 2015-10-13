@@ -88,16 +88,9 @@ function(type) {
      *     as an image.
      * @param {String} type The MIME type indicating which data type to return.
      * @returns {String} The image data.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.toDataURL(type);
+    return this.getNativeNode().toDataURL(type);
 });
 
 //  ------------------------------------------------------------------------
@@ -109,16 +102,9 @@ function() {
      * @method get2DContext
      * @summary Returns the receiver's '2D graphics context'.
      * @returns {Object} The receiver's 2D graphics context.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.getContext('2d');
+    return this.getNativeNode().getContext('2d');
 });
 
 //  ------------------------------------------------------------------------
@@ -132,16 +118,9 @@ function(contextId) {
      *     context id.
      * @param {String} contextId The ID of the context to fetch.
      * @returns {Object} The receiver's matching graphics context.
-     * @exception TP.sig.InvalidNode
      */
 
-    var node;
-
-    if (TP.notValid(node = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    return node.getContext(contextId);
+    return this.getNativeNode().getContext(contextId);
 });
 
 //  ------------------------------------------------------------------------

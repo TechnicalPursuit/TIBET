@@ -1981,6 +1981,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getGroupElements',
+function() {
+
+    /**
+     * @method getGroupElements
+     * @summary Returns an Array containing other TP.core.UIElementNodes that
+     *     are members of the same group as the receiver.
+     * @returns {TP.core.UIElementNode[]} The array of other
+     *     TP.core.UIElementNodes belonging to the same group as the receiver.
+     */
+
+    var groupID,
+
+        tpGroupElem;
+
+    if (TP.notEmpty(groupID = this.getGroupName())) {
+
+        tpGroupElem = TP.byId(this.getDocument(), groupID, true);
+
+        if (TP.isValid(tpGroupElem) && !TP.isArray(tpGroupElem)) {
+            return tpGroupElem.getMembers();
+        }
+    }
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getNextGroupName',
 function(startGroupName, alwaysWrap, wantsNested) {
 

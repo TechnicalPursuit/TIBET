@@ -354,7 +354,8 @@ function() {
     /**
      * @method getSignalNames
      * @summary Returns the list of signal names from this type through
-     *     TP.sig.Signal or the first signaling root.
+     *     TP.sig.Signal or the first type which responds true to
+     *     isSignalingRoot.
      * @returns {String}
      */
 

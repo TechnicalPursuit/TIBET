@@ -2140,146 +2140,156 @@ function(aRequest) {
 
     //  Convert terms into regular expressions if possible. Otherwise use the
     //  original term and we'll try indexOf during checking.
-    terms = terms.map(function(term) {
-        var regex;
+    terms = terms.map(
+                function(term) {
+                    var regex;
 
-        //  Use a global regex so we can capture counts which form a kind of aid
-        //  for determining which matches are the most relevant.
-        regex = RegExp.construct(term.unquoted(),
-            'g' + (ignorecase ? 'i' : ''));
-        if (TP.notValid(regex)) {
-            return term;
-        }
-        return regex;
-    });
+                    //  Use a global regex so we can capture counts which form a
+                    //  kind of aid for determining which matches are the most
+                    //  relevant.
+                    regex = RegExp.construct(
+                                    term.unquoted(),
+                                    'g' + (ignorecase ? 'i' : ''));
+
+                    if (TP.notValid(regex)) {
+                        return term;
+                    }
+                    return regex;
+                });
 
     byName = TP.ac();
     byComments = TP.ac();
 
     methods = TP.sys.getMetadata('methods');
-    methods.perform(function(item) {
-        var name,
-            method,
-            nameMatch,
-            func,
-            text,
-            file,
-            count;
+    methods.perform(
+            function(item) {
+                var name,
+                    method,
+                    nameMatch,
+                    func,
+                    text,
+                    file,
+                    count;
 
-        name = item.at(0);
-        method = name.split('_').last();
+                name = item.at(0);
+                method = name.split('_').last();
 
-        func = item.at(1);
+                func = item.at(1);
 
-        //  Note how we go after load path here, since source paths will never
-        //  be minified and that's what we check below.
-        file = TP.objectGetLoadPath(func);
-        text = comments ? func.getCommentText() : '';
+                //  Note how we go after load path here, since source paths will
+                //  never be minified and that's what we check below.
+                file = TP.objectGetLoadPath(func);
+                text = comments ? func.getCommentText() : '';
 
-        if (TP.isEmpty(text)) {
-            if (TP.notEmpty(file) && file.match(/\.min\./)) {
-                minified = true;
-            }
-        }
-
-        count = 0;
-
-        terms.forEach(function(term) {
-            var parts,
-                match;
-
-            if (TP.isString(term)) {
-                //  Split the comment using the string. The number of parts
-                //  represents one more than the number of times that string was
-                //  in the text.
-                parts = text.split(term);
-                count += parts.length - 1;
-
-                if (method.indexOf(term) !== -1) {
-                    nameMatch = true;
-                    count += 1;
+                if (TP.isEmpty(text)) {
+                    if (TP.notEmpty(file) && file.match(/\.min\./)) {
+                        minified = true;
+                    }
                 }
 
-            } else {
-                //  Our regular expressions are global so they'll provide a
-                //  match count for the total string.
-                match = term.match(text);
-                if (TP.isValid(match)) {
-                    count += match.length;
-                }
+                count = 0;
 
-                match = term.match(method);
-                if (TP.isValid(match)) {
-                    nameMatch = true;
-                    count += match.length;
-                }
-            }
-        });
+                terms.forEach(
+                        function(term) {
+                            var parts,
+                                match;
 
-        if (nameMatch) {
-            byName.push(TP.ac(name, count, true));
-        } else if (count >= limit) {
-            byComments.push(TP.ac(name, count, false));
-        }
-    });
+                            if (TP.isString(term)) {
+                                //  Split the comment using the string. The
+                                //  number of parts represents one more than the
+                                //  number of times that string was in the text.
+                                parts = text.split(term);
+                                count += parts.getSize() - 1;
+
+                                if (method.indexOf(term) !== -1) {
+                                    nameMatch = true;
+                                    count += 1;
+                                }
+
+                            } else {
+                                //  Our regular expressions are global so
+                                //  they'll provide a match count for the total
+                                //  string.
+                                match = term.match(text);
+                                if (TP.isValid(match)) {
+                                    count += match.getSize();
+                                }
+
+                                match = term.match(method);
+                                if (TP.isValid(match)) {
+                                    nameMatch = true;
+                                    count += match.getSize();
+                                }
+                            }
+                        });
+
+                if (nameMatch) {
+                    byName.push(TP.ac(name, count, true));
+                } else if (count >= limit) {
+                    byComments.push(TP.ac(name, count, false));
+                }
+            });
 
     //  The name matches come first but we still want to sort them by any
     //  additional count information they may have.
-    byName = byName.sort(function(a, b) {
-        if (a[1] < b[1]) {
-            return 1;
-        } else if (a[1] > b[1]) {
-            return -1;
-        } else {
-            //  counts match, order by character sequencing
-            if ([a, b].sort()[1] === b) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    });
+    byName = byName.sort(
+                function(a, b) {
+                    if (a[1] < b[1]) {
+                        return 1;
+                    } else if (a[1] > b[1]) {
+                        return -1;
+                    } else {
+                        //  counts match, order by character sequencing
+                        if ([a, b].sort()[1] === b) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
 
     //  Sort comment-based matches by count. We'll append this list to the name
     //  matches for the output sequence.
-    byComments = byComments.sort(function(a, b) {
-        if (a[1] < b[1]) {
-            return 1;
-        } else if (a[1] > b[1]) {
-            return -1;
-        } else {
-            //  counts match, order by character sequencing
-            if ([a, b].sort()[1] === b) {
-                return -1;
-            } else {
-                return 0;
-            }
-        }
-    });
+    byComments = byComments.sort(
+                    function(a, b) {
+                        if (a[1] < b[1]) {
+                            return 1;
+                        } else if (a[1] > b[1]) {
+                            return -1;
+                        } else {
+                            //  counts match, order by character sequencing
+                            if ([a, b].sort()[1] === b) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
 
     //  Throw some separator content into the output between chunks...
-    byName.unshift(['', 0]);
-    byName.unshift(['- by name', 0]);
+    byName.unshift(TP.ac('', 0));
+    byName.unshift(TP.ac('- by name', 0));
 
     if (comments) {
-        byName.push(['', 0]);
-        byName.push(['- by comment', 0]);
-        byName.push(['', 0]);
+        byName.push(TP.ac('', 0));
+        byName.push(TP.ac('- by comment', 0));
+        byName.push(TP.ac('', 0));
         results = byName.concat(byComments);
     } else {
         results = byName;
     }
 
-    results = results.map(function(result) {
-        var str;
+    results = results.map(
+                function(result) {
+                    var str;
 
-        str = result[0];
-        if (comments && result[1] >= limit) {
-            str += ' (' + result[1] + ')';
-        }
+                    str = result.at(0);
+                    if (comments && result.at(1) >= limit) {
+                        str += ' (' + result.at(1) + ')';
+                    }
 
-        return str;
-    });
+                    return str;
+                });
 
     //  If we found any minified source along the way point that out.
     if (minified) {
@@ -2289,9 +2299,10 @@ function(aRequest) {
 
     //  PhantomJS/CLI support requires output line-by-line.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
-        results.forEach(function(result) {
-            aRequest.stdout(result);
-        });
+        results.forEach(
+                function(result) {
+                    aRequest.stdout(result);
+                });
         return aRequest.complete();
     }
 
