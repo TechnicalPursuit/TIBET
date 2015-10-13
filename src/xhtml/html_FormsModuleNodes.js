@@ -1602,8 +1602,9 @@ function() {
 TP.html.inputClickable.defineSubtype('inputCheckable');
 TP.html.inputCheckable.addTraits(TP.core.CheckableUIElementNode);
 
-TP.html.inputCheckable.Inst.resolveTrait(
-                            'isScalarValued', TP.core.CheckableUIElementNode);
+TP.html.inputCheckable.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue', 'isScalarValued'),
+        TP.core.CheckableUIElementNode);
 
 //  can't construct concrete instances of this
 TP.html.inputCheckable.isAbstract(true);
