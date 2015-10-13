@@ -9353,7 +9353,7 @@ function(pattern) {
 
                         return '(' + val.slice(1, val.lastIndexOf('/')) + ')';
                     } else {
-                        return '(.*?)';
+                        return '([^/]*?)';
                     }
                 }
 
