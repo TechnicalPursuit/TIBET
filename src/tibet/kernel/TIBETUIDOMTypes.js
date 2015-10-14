@@ -1998,7 +1998,7 @@ function() {
 
     if (TP.notEmpty(groupID = this.getGroupName())) {
 
-        tpGroupElem = TP.byId(this.getDocument(), groupID, true);
+        tpGroupElem = TP.byId(groupID, this.getDocument(), true);
 
         if (TP.isValid(tpGroupElem) && !TP.isArray(tpGroupElem)) {
             return tpGroupElem.getMembers();
