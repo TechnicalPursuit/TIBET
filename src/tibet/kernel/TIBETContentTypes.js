@@ -6448,7 +6448,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     /* eslint-disable no-extra-parens */
     if (this.get('shouldCollapse')) {
-        newVal = TP.collapse(newVal);
+
+        //  By default, if newVal is an Array and is empty, collapsing it will
+        //  set newVal to null, but we don't want that there. So we only do this
+        //  if it's not empty
+        if (TP.notEmpty(newVal)) {
+            newVal = TP.collapse(newVal);
+        }
     }
     /* eslint-enable no-extra-parens */
 

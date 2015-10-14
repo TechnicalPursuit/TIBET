@@ -268,7 +268,7 @@ function() {
                 test.refute.didSignal(checkitem, 'TP.sig.UIDidDeactivate');
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -444,7 +444,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!
