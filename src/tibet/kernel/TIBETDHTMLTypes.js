@@ -4880,12 +4880,23 @@ function() {
      * @returns {TP.core.UIElementNode[]} The Array of shared value items.
      */
 
-    var valueTPElems;
+    var valueTPElems,
+        ourCanonicalName;
 
     valueTPElems = this.getGroupElements();
 
     if (TP.isEmpty(valueTPElems)) {
         valueTPElems.push(this);
+    } else {
+        //  We want to filter out all of the elements that *aren't* of the same
+        //  kind as the receiver
+        ourCanonicalName = this.getCanonicalName();
+
+        valueTPElems =
+            valueTPElems.select(
+                    function(aTPElem) {
+                        return aTPElem.getCanonicalName() === ourCanonicalName;
+                    });
     }
 
     return valueTPElems;
