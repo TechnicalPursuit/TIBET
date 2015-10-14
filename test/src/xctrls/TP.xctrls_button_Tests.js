@@ -268,7 +268,7 @@ function() {
                 test.refute.didSignal(button, 'TP.sig.UIDidDeactivate');
             });
     });
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
 //  Run those babies!

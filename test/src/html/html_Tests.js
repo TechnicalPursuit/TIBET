@@ -1911,8 +1911,7 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
     });
-
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
