@@ -222,7 +222,7 @@ function() {
     this.it('can define simple tokens', function(test, options) {
         router.defineToken('fluffy', /\d{3}/);
         this.assert.isEqualTo(TP.sys.cfg('route.tokens.fluffy'),
-            /\d{3}/);
+            /\d{3}/.toString());
     });
 });
 
