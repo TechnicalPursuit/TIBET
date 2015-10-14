@@ -784,20 +784,21 @@ function() {
 
         windowContext;
 
-    this.before(function() {
-        var testDataLoc,
-            loadURI;
+    this.before(
+        function() {
+            var testDataLoc,
+                loadURI;
 
-        TP.$$setupCommonObjectValues();
-        testData = TP.$$commonObjectValues;
+            TP.$$setupCommonObjectValues();
+            testData = TP.$$commonObjectValues;
 
-        testDataLoc = '~lib_test/src/html/HTMLContent.xhtml';
-        loadURI = TP.uc(testDataLoc);
+            testDataLoc = '~lib_test/src/html/HTMLContent.xhtml';
+            loadURI = TP.uc(testDataLoc);
 
-        windowContext = this.getDriver().get('windowContext');
+            windowContext = this.getDriver().get('windowContext');
 
-        this.getDriver().setLocation(loadURI);
-    });
+            this.getDriver().setLocation(loadURI);
+        });
 
     //  ---
 

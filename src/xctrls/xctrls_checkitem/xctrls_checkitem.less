@@ -2,141 +2,155 @@
 	CSS styles for the 'xctrls:checkitem' control.
 */
 
-@import url('../xctrls_common.css');
+@import (reference) url('../xctrls_common.css');
+@import (reference) url('../xctrls_mixins.less');
 
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace svg url(http://www.w3.org/2000/svg);
 @namespace pclass url(urn:tibet:pseudoclass);
 
-xctrls|checkitem
-{
-	display: inline;
+/* The checkitem */
 
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
+xctrls|checkitem {
+
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+
+    /* Order check image before label */
+    flex-direction: row-reverse;
+
+    .user-select(none);
+
+    /* The checkitem's value (the checkmark) */
+
+    & > *[tibet|pelem="value"] {
+
+        svg|svg {
+
+            display: block;
+
+            width: 1em;
+            height: 1em;
+
+            svg|rect {
+
+                fill: none;
+                stroke: black;
+                stroke-width: 2px;
+            }
+
+            svg|polygon {
+
+                display: none;
+            }
+        }
+    }
+
+    /* Hovering over the checkitem */
+
+    &:hover {
+
+        > *[tibet|pelem="value"] {
+
+            svg|svg {
+
+                svg|polygon {
+
+                    display: block;
+                }
+            }
+        }
+    }
+
+    /* Focusing on the checkitem */
+
+    /* doesn't work in any browser:
+    &:focus
+    */
+    &[pclass|focus] {
+    }
+
+    /* Clicking down on the checkitem */
+
+    /* doesn't work in IE9:
+    &:active::value
+    */
+    &[pclass|active] {
+
+        > *[tibet|pelem="value"] {
+
+            svg|svg {
+
+                svg|polygon {
+
+                    display: block;
+                }
+            }
+        }
+
+        &[pclass|checked] > *[tibet|pelem="value"] {
+        }
+    }
+
+    /* The checkitem is disabled */
+
+    /* doesn't work in any browser:
+    &:disabled
+    */
+    &[pclass|disabled] {
+
+        > *[tibet|pelem="value"] {
+        }
+
+        &[pclass|active] > *[tibet|pelem="value"] {
+        }
+
+        &[pclass|active][pclass|checked] > *[tibet|pelem="value"] {
+        }
+    }
+
+    /* The checkitem is checked */
+
+    /* doesn't work in any browser:
+    &:checked
+    */
+    &[pclass|checked] {
+
+        > *[tibet|pelem="value"] {
+
+            svg|polygon {
+
+                display: block;
+            }
+        }
+    }
+
+    /* The checkitem label */
+
+    & > xctrls|label {
+    }
+
+    /* Clicking down on the checkitem, label must highlight */
+
+    /* doesn't work in IE9:
+    &:active > xctrls|label
+    */
+    &[pclass|active] {
+
+        > xctrls|label {
+        }
+
+        &[pclass|checked] > xctrls|label {
+        }
+    }
+
+    /* The checkitem is disabled, so is the label */
+
+    /* doesn't work in any browser:
+    &:disabled > xctrls|label
+    */
+    &[pclass|disabled] > xctrls|label {
+    }
 }
-
-xctrls|checkitem > *[tibet|pelem="value"]
-{
-	display: inline-block;
-
-	position: relative;
-	top: 3px;
-
-	width: 20px;
-	height: 20px;
-
-	background: url(xctrls_checkitem.gif) no-repeat;
-
-	cursor: pointer;
-}
-
-/* Hovering over the checkitem */
-
-xctrls|checkitem:hover
-{
-}
-
-/* Focusing on the checkitem */
-
-/* doesn't work in any browser:
-xctrls|checkitem:focus
-*/
-xctrls|checkitem[pclass|focus]
-{
-}
-
-/* Clicking down on the checkitem */
-
-/* doesn't work in IE9:
-xctrls|checkitem:active::value
-*/
-xctrls|checkitem[pclass|active] > *[tibet|pelem="value"]
-{
-	background-position: 0 -25px;
-}
-
-xctrls|checkitem[pclass|active][pclass|checked] > *[tibet|pelem="value"]
-{
-	background-position: 0 -75px;
-}
-
-/* The checkitem is disabled */
-
-/* doesn't work in any browser:
-xctrls|checkitem:disabled
-*/
-xctrls|checkitem[pclass|disabled] > *[tibet|pelem="value"]
-{
-	opacity: 0.5;
-
-	cursor: default;
-}
-
-xctrls|checkitem[pclass|disabled][pclass|active] > *[tibet|pelem="value"]
-{
-	background-position: 0 0;
-}
-
-xctrls|checkitem[pclass|disabled][pclass|active][pclass|checked] > *[tibet|pelem="value"]
-{
-	background-position: 0 -50px;
-}
-
-/* The checkitem is checked */
-
-/* doesn't work in any browser:
-xctrls|checkitem:checked
-*/
-xctrls|checkitem[pclass|checked] > *[tibet|pelem="value"]
-{
-	background-position: 0 -50px;
-}
-
-xctrls|checkitem > xctrls|label
-{
-}
-
-/* Clicking down on the checkitem, label must highlight */
-
-/* doesn't work in IE9:
-xctrls|checkitem:active > xctrls|label
-*/
-xctrls|checkitem[pclass|active]:not([pclass|disabled]) > xctrls|label
-{
-	color: red;
-}
-
-xctrls|checkitem[pclass|active][pclass|checked]:not([pclass|disabled]) > xctrls|label
-{
-	color: green;
-}
-
-/* The checkitem is disabled, so is the label */
-
-/* doesn't work in any browser:
-xctrls|checkitem:disabled > xctrls|label
-*/
-xctrls|checkitem[pclass|disabled] > xctrls|label
-{
-	opacity: 0.5;
-
-	cursor: default;
-}
-
-/* Any hint that goes along with the checkitem  */
-
-xctrls|checkitem > xctrls|hint
-{
-	display: inline-block;
-
-	padding: 1px 1px 0px 0px;
-
-	font-size: 10px;
-	white-space: normal;
-
-	vertical-align: text-top;
-	clear: both;
-}
-

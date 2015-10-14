@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+		xmlns:pclass="urn:tibet:pseudoclass">
+
+<head>
+	<title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+</head>
+
+<body data-theme="tpi">
+	<table>
+		<thead class="states">
+			<tr>
+				<th colspan="2">States</th>
+			</tr>
+		</thead>
+		<tbody class="states">
+			<tr>
+				<td>normal</td>
+				<td>
+					<xctrls:button>
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:button>
+				</td>
+			</tr>
+			<tr>
+				<td>:active</td>
+				<td>
+					<xctrls:button pclass:active="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:button>
+				</td>
+			</tr>
+			<tr>
+				<td>:focus</td>
+				<td>
+					<xctrls:button pclass:focus="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:button>
+				</td>
+			</tr>
+			<tr>
+				<td>:disabled</td>
+				<td>
+					<xctrls:button pclass:disabled="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	Button #1:
+	<br/>
+	A standard XControls button showing kind of a label.
+	<xctrls:button id="button1">
+		<xctrls:label>Button #1</xctrls:label>
+	</xctrls:button>
+
+	<br/>
+	<br/>
+
+	<div class="controlBox">
+		<button onclick="TP.byId('button1').signal('UIDisabled');">Disable button #1</button>
+		<button onclick="TP.byId('button1').signal('UIEnabled');">Enable button #1</button>
+
+		<br/>
+
+		<button onclick="TP.byId('button1').signal('UIFocus');">Focus button #1</button>
+	</div>
+
+</body>
+</html>

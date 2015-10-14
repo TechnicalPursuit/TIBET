@@ -3656,6 +3656,9 @@ function(varargs) {
         traitProps,
 
         propName,
+        checkProp1,
+        checkProp2,
+
         entry,
         desc;
 
@@ -3746,10 +3749,33 @@ function(varargs) {
 
             propName = traitProps[j];
 
-            //  If the slots have the exact same value, then they're pointing at
-            //  exactly the same object - just exit here.
-            if (mainTypeTarget[propName] === traitTypeTarget[propName]) {
+            //  If the mainTypeTarget has this property, then we need to check
+            //  whether the traitTypeTarget has it too *and that the values
+            //  exactly match* (i.e. they are the same object/value). In that
+            //  case, we just proceed on.
+            checkProp1 = mainTypeTarget[propName];
+            checkProp2 = traitTypeTarget[propName];
+
+            if (checkProp1 === checkProp2) {
                 continue;
+            }
+
+            //  If they both really exist, then we need to drill in and see if
+            //  they have '$resolutionMethod' slots that would match the
+            //  other's slot (or '$resolutionMethod' slot). This is critical to
+            //  avoid problems with traits cascading down the inheritance
+            //  hierarchy.
+            if (checkProp1 && checkProp2) {
+                checkProp1 = checkProp1.$resolutionMethod ?
+                                checkProp1.$resolutionMethod :
+                                checkProp1;
+                checkProp2 = checkProp2.$resolutionMethod ?
+                                checkProp2.$resolutionMethod :
+                                checkProp2;
+
+                if (checkProp1 === checkProp2) {
+                    continue;
+                }
             }
 
             //  If there's already an ECMA5 'getter' at that slot and it has a
@@ -3811,10 +3837,33 @@ function(varargs) {
 
             propName = traitProps[j];
 
-            //  If the slots have the exact same value, then they're pointing at
-            //  exactly the same object - just exit here.
-            if (mainTypeTarget[propName] === traitTypeTarget[propName]) {
+            //  If the mainTypeTarget has this property, then we need to check
+            //  whether the traitTypeTarget has it too *and that the values
+            //  exactly match* (i.e. they are the same object/value). In that
+            //  case, we just proceed on.
+            checkProp1 = mainTypeTarget[propName];
+            checkProp2 = traitTypeTarget[propName];
+
+            if (checkProp1 === checkProp2) {
                 continue;
+            }
+
+            //  If they both really exist, then we need to drill in and see if
+            //  they have '$resolutionMethod' slots that would match the
+            //  other's slot (or '$resolutionMethod' slot). This is critical to
+            //  avoid problems with traits cascading down the inheritance
+            //  hierarchy.
+            if (checkProp1 && checkProp2) {
+                checkProp1 = checkProp1.$resolutionMethod ?
+                                checkProp1.$resolutionMethod :
+                                checkProp1;
+                checkProp2 = checkProp2.$resolutionMethod ?
+                                checkProp2.$resolutionMethod :
+                                checkProp2;
+
+                if (checkProp1 === checkProp2) {
+                    continue;
+                }
             }
 
             //  If there's already an ECMA5 'getter' at that slot and it has a
@@ -4713,11 +4762,11 @@ function(entry, installName, targetObject, track) {
         targetObject.defineMethod(installName, dispatchFunc, null, null, true);
 
         //  Note here how we manually wire the owner of the Function we just put
-        //  on the targetObject to be the resolutionType. This is due to the
-        //  fact that we want 'callNextMethod()' to traverse the 'correct tree',
-        //  as it were, and it looks at the Function's TP.OWNER for this
+        //  on the targetObject to be the owner of the targetObject. This is due
+        //  to the fact that we want 'callNextMethod()' to traverse the 'correct
+        //  tree', as it were, and it looks at the Function's TP.OWNER for this
         //  information (as it should).
-        dispatchFunc[TP.OWNER] = resolutionType;
+        dispatchFunc[TP.OWNER] = targetObject[TP.OWNER];
 
         //  We also add to the TP.DISPLAY name to indicate that this is a trait
         //  wired in from another type.
@@ -4786,7 +4835,11 @@ function(propertyName, resolution, resolutionOption) {
         entry,
 
         desc,
-        prevValue;
+        prevValue,
+
+        /* eslint-disable no-unused-vars */
+        val;
+        /* eslint-enable no-unused-vars */
 
     //  Because we're executing this in the context of the 'instance prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
@@ -4876,6 +4929,7 @@ function(propertyName, resolution, resolutionOption) {
                         this,
                         propertyName,
                         TP.INST_TRACK);
+
     } else if (TP.isType(resolution) && TP.isString(resolutionOption)) {
 
         if (resolutionOption !== TP.BEFORE && resolutionOption !== TP.AFTER) {
@@ -4922,6 +4976,13 @@ function(propertyName, resolution, resolutionOption) {
         //  Case #1: The resolution is a valid value - install it as the value
         entry.atPut('definedValue', resolution);
     }
+
+    //  Go ahead and access this value, causing the resolver to execute. This is
+    //  done because we want subtypes to be able to reliably hook into a value
+    //  that has been manually resolved (i.e. forced)
+    //  Note that we do this assignment to avoid having JS engines possibly
+    //  optimize an unassigned slot access away and not executing the resolver.
+    val = this[propertyName];
 
     return this;
 });
@@ -5028,7 +5089,11 @@ function(propertyName, resolution, resolutionOption) {
         entry,
 
         desc,
-        prevValue;
+        prevValue,
+
+        /* eslint-disable no-unused-vars */
+        val;
+        /* eslint-enable no-unused-vars */
 
     //  Because we're executing this in the context of the 'type prototype',
     //  'this' will be bound to that object. If it's not (i.e. the user is
@@ -5118,6 +5183,7 @@ function(propertyName, resolution, resolutionOption) {
                         this,
                         propertyName,
                         TP.TYPE_TRACK);
+
     } else if (TP.isType(resolution) && TP.isString(resolutionOption)) {
 
         if (resolutionOption !== TP.BEFORE && resolutionOption !== TP.AFTER) {
@@ -5164,6 +5230,13 @@ function(propertyName, resolution, resolutionOption) {
         //  Case #1: The resolution is a valid value - install it as the value
         entry.atPut('definedValue', resolution);
     }
+
+    //  Go ahead and access this value, causing the resolver to execute. This is
+    //  done because we want subtypes to be able to reliably hook into a value
+    //  that has been manually resolved (i.e. forced)
+    //  Note that we do this assignment to avoid having JS engines possibly
+    //  optimize an unassigned slot access away and not executing the resolver.
+    val = this[propertyName];
 
     return this;
 });

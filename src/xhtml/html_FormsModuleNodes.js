@@ -509,6 +509,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.option.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return this.getAttribute('value');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.option.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
@@ -531,7 +547,8 @@ function() {
      * @method $getVisualToggle
      * @summary Returns the low-level primitive 'toggle value' used by the
      *     receiver to display a 'selected' state.
-     * @returns {String} The primitive value of the receiver.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
      */
 
     return this.getNativeNode().selected;
@@ -591,9 +608,9 @@ function(aToggleValue) {
     /**
      * @method $setVisualToggle
      * @summary Sets the low-level primitive 'toggle value' used by the receiver
-     *     to display a 'checked' state.
+     *     to display a 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
-     *     'checked' state.
+     *     'selected' state.
      * @returns {TP.html.select} The receiver.
      */
 
@@ -1585,8 +1602,9 @@ function() {
 TP.html.inputClickable.defineSubtype('inputCheckable');
 TP.html.inputCheckable.addTraits(TP.core.CheckableUIElementNode);
 
-TP.html.inputCheckable.Inst.resolveTrait(
-                            'isScalarValued', TP.core.CheckableUIElementNode);
+TP.html.inputCheckable.Inst.resolveTraits(
+        TP.ac('getDisplayValue', 'setDisplayValue', 'isScalarValued'),
+        TP.core.CheckableUIElementNode);
 
 //  can't construct concrete instances of this
 TP.html.inputCheckable.isAbstract(true);
@@ -1665,6 +1683,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return this.getAttribute('value');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
@@ -1712,7 +1746,8 @@ function() {
      * @method $getVisualToggle
      * @summary Returns the low-level primitive 'toggle value' used by the
      *     receiver to display a 'checked' state.
-     * @returns {String} The primitive value of the receiver.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
      */
 
     return this.getNativeNode().checked;

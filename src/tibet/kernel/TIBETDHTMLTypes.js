@@ -4875,11 +4875,31 @@ function() {
      * @summary Returns an Array TP.core.UIElementNodes that share a common
      *     'value object' with the receiver. That is, a change to the 'value' of
      *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes.
+     *     TP.core.UIElementNodes. By default, this method will return other
+     *     elements that are part of the same 'tibet:group'.
      * @returns {TP.core.UIElementNode[]} The Array of shared value items.
      */
 
-    return TP.override();
+    var valueTPElems,
+        ourCanonicalName;
+
+    valueTPElems = this.getGroupElements();
+
+    if (TP.isEmpty(valueTPElems)) {
+        valueTPElems.push(this);
+    } else {
+        //  We want to filter out all of the elements that *aren't* of the same
+        //  kind as the receiver
+        ourCanonicalName = this.getCanonicalName();
+
+        valueTPElems =
+            valueTPElems.select(
+                    function(aTPElem) {
+                        return aTPElem.getCanonicalName() === ourCanonicalName;
+                    });
+    }
+
+    return valueTPElems;
 });
 
 //  ------------------------------------------------------------------------
@@ -5110,6 +5130,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
 function() {
 
@@ -5132,7 +5168,8 @@ function() {
      * @method $getVisualToggle
      * @summary Returns the low-level primitive 'toggle value' used by the
      *     receiver to display a 'selected' state.
-     * @returns {String} The primitive value of the receiver.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
      */
 
     return TP.override();
@@ -5297,20 +5334,19 @@ function() {
         item = valueTPElems.at(i);
 
         if (item.$getVisualToggle()) {
-            //  NB: We check the value attribute *of the native node* here
-            //  because we want to see if the author specified a 'value='
-            //  attribute - some platforms will return Strings like 'on' if the
-            //  author has not. We don't want to consider those.
-            if (TP.isEmpty(val = item.getAttribute('value'))) {
+            //  NB: We check the original markup value here because we want to
+            //  see if the author specified a value in the originally authored
+            //  markup.
+            if (TP.isEmpty(val = item.$getMarkupValue())) {
                 val = true;
             }
             selectionArray.push(val);
         } else {
-            //  If it's not checked, *and doesn't have a 'value=' attribute on
-            //  the native node*, then we go ahead and add a "false" at that
-            //  spot in the Array (to keep things consistent with the logic
-            //  above).
-            if (TP.isEmpty(val = item.getAttribute('value'))) {
+            //  If it's not checked, *and doesn't have a markup value in the
+            //  originally authored markup* then we go ahead and add a "false"
+            //  at that spot in the Array (to keep things consistent with the
+            //  logic above).
+            if (TP.isEmpty(val = item.$getMarkupValue())) {
                 selectionArray.push(false);
             }
         }
@@ -5517,10 +5553,24 @@ function(aValue) {
     separator = TP.ifEmpty(this.getAttribute('bind:separator'),
                             TP.sys.cfg('bind.value_separator'));
 
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
+    value = aValue;
+
+    //  If the value is an Array and has a size of 1, just use that item.
+    //  Otherwise, turn the Array into String representations of the objects it
+    //  contains.
+    if (TP.isArray(value)) {
+        if (value.getSize() === 1) {
+            value = value.first();
+        } else {
+            value = value.collect(
+                            function(aVal) {
+                                return TP.str(aVal);
+                            });
+        }
+    }
+
+    if (TP.isString(value)) {
+        value = value.split(separator).collapse();
     }
 
     //  watch for multiple selection issues
@@ -5587,6 +5637,12 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
+    //  If we didn't get an Array back and this control allows for multiples,
+    //  then wrap the newValue in an Array for consistency in value checking.
+    if (!TP.isArray(newValue) && this.allowsMultiples()) {
+        newValue = TP.ac(newValue);
+    }
+
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
         return this;
@@ -5605,6 +5661,35 @@ function(aValue, shouldSignal) {
         this.changed('value', TP.UPDATE,
                         TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('toggleValue',
+function() {
+
+    /**
+     * @method toggleValue
+     * @summary Toggles the value to the inverse of its current value.
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    var newVal;
+
+    //  This is simply a matter of setting the value to our markup value or to
+    //  null, depending on whether we're already checked or not and therefore
+    //  whether we want to be.
+    if (this.$getVisualToggle()) {
+        //  Already checked? We're going to switch off. Set our newVal to null.
+        newVal = null;
+    } else {
+        //  Otherwise set our value to our markup value.
+        newVal = this.$getMarkupValue();
+    }
+
+    this.set('value', newVal);
 
     return this;
 });

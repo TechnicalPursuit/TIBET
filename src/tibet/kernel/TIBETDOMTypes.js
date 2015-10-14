@@ -946,6 +946,8 @@ function(aRequest) {
     //  Populate the substitution information with various variables, etc.
     info = this.populateSubstitutionInfo(aRequest);
 
+    info.atPut('shouldEcho', false);
+
     //  Grab the best representation text. This may contain ACP templating
     //  expressions.
     str = tpNode.getTextContent();
