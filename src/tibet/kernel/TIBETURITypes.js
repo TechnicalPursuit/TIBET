@@ -9337,7 +9337,7 @@ function(pattern) {
     mappedParts = parts.map(
             function(item, index) {
                 var re,
-                    val;
+                    reParts;
 
                 //  Check for a token pattern of this name.
                 if (item.charAt(0) === ':') {
@@ -9345,10 +9345,9 @@ function(pattern) {
                     names.atPut(index, item.slice(1));
                     re = TP.sys.cfg('route.tokens.' + item.slice(1));
 
-                    if (TP.isValid(re)) {
-                        val = TP.str(re);
-
-                        return '(' + val.slice(1, val.lastIndexOf('/')) + ')';
+                    if (TP.notEmpty(re)) {
+                        reParts = TP.stringRegExpComponents(re);
+                        return '(' + reParts.first() + ')';
                     } else {
                         return '([^/]*?)';
                     }
@@ -9477,7 +9476,7 @@ function(token, pattern) {
         this.raise('InvalidPattern', pattern);
     }
 
-    TP.sys.setcfg('route.tokens.' + token, pattern);
+    TP.sys.setcfg('route.tokens.' + token, TP.str(pattern));
 
     return this;
 });
