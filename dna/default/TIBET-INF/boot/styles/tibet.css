@@ -136,6 +136,14 @@ tibet|* {
 }
 
 /*
+  TP.tibet.group elements are visible and inline by default
+*/
+
+tibet|group {
+    display: inline;
+}
+
+/*
   TP.core.ActionElementNode and TP.core.ActionElementNode elements are
   transformed into XHTML, so we can't use '.' class notation here
 */
