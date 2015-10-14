@@ -183,7 +183,7 @@
 </config>
 
 <config id="xctrls">
-    <script src="~lib_test/src/xctrls/TP.xctrls_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_button_Tests.js" />
 </config>
 
 <config id="xslt">
