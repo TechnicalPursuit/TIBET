@@ -5655,5 +5655,34 @@ function(aValue, shouldSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.CheckableUIElementNode.Inst.defineMethod('toggleValue',
+function() {
+
+    /**
+     * @method toggleValue
+     * @summary Toggles the value to the inverse of its current value.
+     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     */
+
+    var newVal;
+
+    //  This is simply a matter of setting the value to our markup value or to
+    //  null, depending on whether we're already checked or not and therefore
+    //  whether we want to be.
+    if (this.$getVisualToggle()) {
+        //  Already checked? We're going to switch off. Set our newVal to null.
+        newVal = null;
+    } else {
+        //  Otherwise set our value to our markup value.
+        newVal = this.$getMarkupValue();
+    }
+
+    this.set('value', newVal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
