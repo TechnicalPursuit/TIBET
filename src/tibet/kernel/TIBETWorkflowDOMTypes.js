@@ -1115,7 +1115,8 @@ function(aNode, aProcessor, aRequest) {
     //  same node throughout the transformation process, so that's not the node
     //  that can itself be transformed. In any case, we want our 'root'
     //  parameter to be set to that root element's firstChild if it's present.
-    if (TP.elementGetLocalName(aNode) === 'processingroot') {
+    if (TP.isElement(aNode) &&
+        TP.elementGetLocalName(aNode) === 'processingroot') {
         processingRequest.atPut('root', aNode.firstChild);
     } else {
         processingRequest.atPut('root', aNode);
