@@ -31,51 +31,6 @@ TP.xctrls.checkitem.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.checkitem.Inst.defineHandler('UIDidDeactivate',
-function(aSignal) {
-
-    /**
-     * @method handleUIDidDeactivate
-     * @summary This method is invoked as the checkitem is clicked
-     * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
-     *     trip.
-     */
-
-    this.toggleValue();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.checkitem.Inst.defineMethod('setAttrDisabled',
-function(beDisabled) {
-
-    /**
-     * @method setAttrDisabled
-     * @summary The setter for the receiver's disabled state.
-     * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
-     *     state.
-     * @returns {Boolean} Whether the receiver's state is disabled.
-     */
-
-    var valuePElem;
-
-    valuePElem = this.get('valuePElem');
-
-    if (TP.isTrue(beDisabled)) {
-        valuePElem.$setAttribute('disabled', true, false);
-        valuePElem.$setAttribute('pclass:disabled', 'true', false);
-    } else {
-        valuePElem.removeAttribute('disabled');
-        valuePElem.removeAttribute('pclass:disabled');
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.checkitem.Inst.defineMethod('getLabelText',
 function() {
 
@@ -169,6 +124,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.checkitem.Inst.defineMethod('setAttrDisabled',
+function(beDisabled) {
+
+    /**
+     * @method setAttrDisabled
+     * @summary The setter for the receiver's disabled state.
+     * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
+     *     state.
+     * @returns {Boolean} Whether the receiver's state is disabled.
+     */
+
+    var valuePElem;
+
+    valuePElem = this.get('valuePElem');
+
+    if (TP.isTrue(beDisabled)) {
+        valuePElem.$setAttribute('disabled', true, false);
+        valuePElem.$setAttribute('pclass:disabled', 'true', false);
+    } else {
+        valuePElem.removeAttribute('disabled');
+        valuePElem.removeAttribute('pclass:disabled');
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.checkitem.Inst.defineMethod('$setVisualToggle',
 function(aToggleValue) {
 
@@ -184,6 +167,23 @@ function(aToggleValue) {
     this.$isInState('pclass:checked', aToggleValue);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.checkitem.Inst.defineHandler('UIDidDeactivate',
+function(aSignal) {
+
+    /**
+     * @method handleUIDidDeactivate
+     * @summary This method is invoked as the checkitem is clicked
+     * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    this.toggleValue();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
