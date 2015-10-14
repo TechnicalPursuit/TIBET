@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 
-<xctrls:checkitem xmlns="http://www.w3.org/1999/xhtml"
-    ev:event="TP.sig.DOMClick"
-    ev:observer="{{$SOURCE.(@id)}}"
-    class="item {{$SOURCE.(@class)}}"
-    hidefocus="true">
+<xctrls:checkitem class="item" tabindex="0">
     {{$SOURCE.(./xctrls:label)}}
-    <html:span id="{{$SOURCE.(@id)}}_value" tibet:pelem="value"/>
-    {{$SOURCE.(./xctrls:hint)}}
+    <span xmlns="http://www.w3.org/1999/xhtml" id="{{$SOURCE.(@id)}}_value" tibet:pelem="value">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g>
+                <rect width="23" height="23"/>
+                <polygon points="9,16.2 4.8,12 3.4,13.4 9,19 21,7 19.6,5.6 "/>
+            </g>
+        </svg>
+    </span>
     {{$SOURCE.(./xctrls:value)}}
 </xctrls:checkitem>
 

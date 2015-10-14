@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+		xmlns:pclass="urn:tibet:pseudoclass">
+
+<head>
+	<title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+</head>
+
+<body data-theme="tpi">
+	<table>
+		<thead class="states">
+			<tr>
+				<th colspan="2">States</th>
+			</tr>
+		</thead>
+		<tbody class="states">
+			<tr>
+				<td>normal</td>
+				<td>
+					<xctrls:checkitem>
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:active</td>
+				<td>
+					<xctrls:checkitem pclass:active="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:focus</td>
+				<td>
+					<xctrls:checkitem pclass:focus="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:disabled</td>
+				<td>
+					<xctrls:checkitem pclass:disabled="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	checkitem #1:
+	<br/>
+	A standard XControls checkitem showing kind of a label.
+	<xctrls:checkitem id="checkitem1">
+		<xctrls:label>checkitem #1</xctrls:label>
+		<xctrls:value>foo</xctrls:value>
+	</xctrls:checkitem>
+
+	<br/>
+	<br/>
+
+    A set of checkboxes to set value setting and data binding.
+    <tibet:group id="testGroup">
+        <xctrls:checkitem id="dataCheckitem1">
+            <xctrls:label>data checkitem #1</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:checkitem>
+        <xctrls:checkitem id="dataCheckitem2">
+            <xctrls:label>data checkitem #2</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:checkitem>
+        <xctrls:checkitem id="dataCheckitem3">
+            <xctrls:label>data checkitem #3</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:checkitem>
+    </tibet:group>
+
+	<br/>
+	<br/>
+
+	<div class="controlBox">
+		<button onclick="TP.byId('checkitem1').signal('UIDisabled');">Disable checkitem #1</button>
+		<button onclick="TP.byId('checkitem1').signal('UIEnabled');">Enable checkitem #1</button>
+
+		<br/>
+
+		<button onclick="TP.byId('checkitem1').signal('UIFocus');">Focus checkitem #1</button>
+	</div>
+
+</body>
+</html>

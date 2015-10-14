@@ -174,8 +174,9 @@
     <property name="path.TP.xctrls.button.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_button_tpi.less"/>
 
     <script src="xctrls/xctrls_checkitem/xctrls_checkitem.js"/>
-    <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/xctrls_checkitem.css"/>
+    <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/xctrls_checkitem.less"/>
     <property name="path.TP.xctrls.checkitem.template" value="~TP.xctrls.checkitem/xctrls_checkitem.xhtml"/>
+    <property name="path.TP.xctrls.checkitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_checkitem_tpi.less"/>
 
     <script src="xctrls/xctrls_radioitem/xctrls_radioitem.js"/>
     <property name="path.TP.xctrls.radioitem.style" value="~TP.xctrls.radioitem/xctrls_radioitem.css"/>
