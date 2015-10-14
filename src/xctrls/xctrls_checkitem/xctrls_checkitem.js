@@ -152,6 +152,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.checkitem.Inst.defineMethod('isSingleValued',
+function() {
+
+    /**
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @returns {Boolean} True when single valued.
+     */
+
+    //  Checkitem (arrays) are not single valued.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.checkitem.Inst.defineMethod('$setVisualToggle',
 function(aToggleValue) {
 
