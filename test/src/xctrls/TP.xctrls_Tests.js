@@ -54,9 +54,9 @@ function() {
 
         var button;
 
-        //  Change the content via 'user' interaction
-
         button = TP.byId('button1', windowContext);
+
+        //  Change the focus via 'direct' method
 
         test.getDriver().startSequence().
             sendEvent(TP.hc('type', 'focus'), button).
@@ -269,3 +269,15 @@ function() {
             });
     });
 });
+
+//  ========================================================================
+//  Run those babies!
+//  ------------------------------------------------------------------------
+
+/*
+TP.xctrls.button.Inst.runTestSuites();
+*/
+
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================
