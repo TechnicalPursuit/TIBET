@@ -9254,12 +9254,6 @@ TP.core.URIRouter.Type.defineAttribute('processors');
  */
 TP.core.URIRouter.Type.defineAttribute('root', 'Home');
 
-/**
- * A list of token patterns used for parsing token values found in routes.
- * @type {TP.core.Hash}
- */
-TP.core.URIRouter.Type.defineAttribute('tokens');
-
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -9272,7 +9266,6 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    this.$set('tokens', TP.hc());
     this.$set('processors', TP.ac());
 
     //  Always need a route to match "anything" as our backstop. If no routes
@@ -9281,6 +9274,12 @@ function() {
 
     //  Define the root pattern route for "empty paths".
     this.definePath(/^\/$/, this.get('root'));
+
+    //  TODO:   process config-based token definitions
+
+    //  TODO:   process config-based path-to-routename definitions
+
+    //  TODO:   process config-based route-to-controller/target/content
 
     return;
 });
@@ -9306,7 +9305,6 @@ function(pattern) {
         regex,
         parts,
         mappedParts,
-        tokens,
         names;
 
     if (TP.isRegExp(pattern)) {
@@ -9317,7 +9315,6 @@ function(pattern) {
         this.raise('InvalidParameter', pattern);
     }
 
-    tokens = this.get('tokens');
     names = TP.hc();
 
     if (pattern.charAt(0) === '/') {
@@ -9340,20 +9337,19 @@ function(pattern) {
     mappedParts = parts.map(
             function(item, index) {
                 var re,
-                    val;
+                    reParts;
 
                 //  Check for a token pattern of this name.
                 if (item.charAt(0) === ':') {
 
                     names.atPut(index, item.slice(1));
-                    re = tokens.at(item.slice(1));
+                    re = TP.sys.cfg('route.tokens.' + item.slice(1));
 
-                    if (TP.isValid(re)) {
-                        val = TP.str(re);
-
-                        return '(' + val.slice(1, val.lastIndexOf('/')) + ')';
+                    if (TP.notEmpty(re)) {
+                        reParts = TP.stringRegExpComponents(re);
+                        return '(' + reParts.first() + ')';
                     } else {
-                        return '(.*?)';
+                        return '([^/]*?)';
                     }
                 }
 
@@ -9480,7 +9476,7 @@ function(token, pattern) {
         this.raise('InvalidPattern', pattern);
     }
 
-    this.get('tokens').atPut(token, pattern);
+    TP.sys.setcfg('route.tokens.' + token, TP.str(pattern));
 
     return this;
 });
@@ -9493,9 +9489,10 @@ function(aURI) {
     /**
      * @method getRoute
      * @summary Returns the currently active route, if any. Note that when the
-     *     application is currently on the home page the route is 'home' even
-     *     though that value will not be visible in the URI fragment path. On
-     *     any other URI if the fragment path is empty the route is empty.
+     *     application is currently on the home page the route is set by the
+     *     root property even though that value will not be visible in the URI
+     *     fragment path. On any other URI if the fragment path is empty the
+     *     route is empty.
      * @param {TP.core.URI|String} [aURI] The URI to test. Defaults to the
      *     value of TP.uriNormalize(top.location.toString()).
      * @return {String} The route name or empty string.
@@ -9514,12 +9511,17 @@ function(aURI) {
 
     path = TP.uriFragmentPath(url);
 
+    //  Ignore fragments that don't start with a /, they're anchors not routes.
+    if (path && path.charAt(0) !== '/') {
+        return;
+    }
+
     if (path === '/' || TP.isEmpty(path)) {
 
-        //  Compare against home page to see if this is 'home'.
+        //  Compare against home page to see if this is a match.
         home = TP.uriExpandPath(TP.sys.getHomeURL());
         if (TP.uriHead(TP.uriExpandHome(url)) === TP.uriHead(home)) {
-            route = 'Home';
+            route = this.get('root') || 'Home';
         }
 
     } else {
@@ -9663,11 +9665,12 @@ function(path) {
         }
     });
 
-    //  Now the fun part...sorting to get the best matches.
+    //  TODO:   make the sort here configurable. Maybe by weight but maybe by
+    //          simple definition order, etc.
     matches.sort(TP.core.URIRouter.BEST_ROUTE_SORT);
 
     best = matches.first();
-    if (TP.notValid(best)) {
+    if (TP.isEmpty(best)) {
         return;
     }
 
@@ -9690,7 +9693,7 @@ function(path) {
 //  ------------------------------------------------------------------------
 
 TP.core.URIRouter.Type.defineMethod('route',
-function(aURI, aDirection) {
+function(aURIOrPushState, aDirection) {
 
     /**
      * @method route
@@ -9698,7 +9701,9 @@ function(aURI, aDirection) {
      *     appropriate response to any changes found. This method is invoked in
      *     response to popstate events and whenever TIBET is asked to push or
      *     replace state on the native history object.
-     * @param {String} aURI The full URI which should be processed for routing.
+     * @param {String|Object} aURIOrPushState The full URI which should be
+     *     processed for routing or a push state object containing that uri.
+     *     Keys of interest in the push state are 'url' and 'pushed'.
      * @param {String} [aDirection] An optional direction hint provided by some
      *     invocation pathways. It is always used when available.
      * @fires {RouteChange} If the URI has changed the fragment path (route).
@@ -9708,16 +9713,18 @@ function(aURI, aDirection) {
         direction,
         last,
         lastParts,
+        state,
         url,
         urlParts,
         canvas,
         fragPath,
         result,
-        name,
+        signame,
         payload,
         type,
         signal,
         home,
+        routeKey,
         config,
         configInfo,
         content,
@@ -9731,7 +9738,7 @@ function(aURI, aDirection) {
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
-        TP.debug('route(\'' + TP.str(aURI) + '\');');
+        TP.debug('route(\'' + TP.str(aURIOrPushState) + '\');');
     }
 
     history = TP.sys.getHistory();
@@ -9766,9 +9773,17 @@ function(aURI, aDirection) {
     history.set('direction', null);
     history.set('lastURI', null);
 
+    if (TP.isString(aURIOrPushState)) {
+        url = aURIOrPushState;
+        state = {};
+    } else {
+        state = aURIOrPushState;
+        url = state.url;
+    }
+
     //  For our expansion testing and history tracking we want a fully-expanded
     //  and normalized version of the URL here.
-    url = TP.str(aURI);
+    url = TP.str(url);
     url = TP.uriExpandPath(url);
     url = decodeURIComponent(url);
 
@@ -9874,13 +9889,12 @@ function(aURI, aDirection) {
                         } else if (TP.isFalse(value)) {
                             TP.sys.setcfg(triple.first(), true);
                         } else {
-                            //  No real way to do this. We don't track "defaults".
+                            //  No way to do this. We don't track "defaults".
                             void 0;
                         }
                         break;
                     default:
-                        //  TODO: raise? invalid operation.
-                        break;
+                        return this.raise('InvalidOperation', operation);
                 }
             });
         }
@@ -9911,152 +9925,168 @@ function(aURI, aDirection) {
     if (TP.isValid(lastParts) &&
         urlParts.at('basePath') !== lastParts.at('basePath')) {
 
-        if (canvas.getLocation() !== url) {
+        //  Update the canvas if not currently displaying the proposed page.
+        if (canvas.getLocation() !== TP.uriHead(url)) {
             canvas.setLocation(TP.uriHead(url));
 
-            //  Goodbye TIBET...
-            return;
-        }
-
-        //  We changed pages. The question is, did we change back to the home
-        //  page? If so we want to fall through and let it signal HomeRoute.
-        if (TP.uriExpandPath(url) !== home &&
-                TP.uriExpandPath(url) !==
-                TP.uriExpandHome(TP.sys.getLaunchURL())) {
-
-            //  TODO:   some other signal? a "synthetic route"?
-            return;
+            //  If we reset the base and we're in fragment_only mode then we
+            //  need to adjust the fragment to keep up with what was pushed
+            //  rather than what is in the actual URL.
+            if (TP.notFalse(TP.sys.cfg('route.fragment_only'))) {
+                fragPath = urlParts.at('basePath');
+                if (fragPath === TP.uriBasePath(home)) {
+                    fragPath = '/';
+                } else {
+                    if (TP.notEmpty(TP.uriExtension(fragPath))) {
+                        fragPath = fragPath.replace('.' +
+                            TP.uriExtension(fragPath), '');
+                    }
+                }
+            }
         }
     }
+
+    fragPath = TP.ifInvalid(fragPath, urlParts.at('fragmentPath'));
 
     //  ---
     //  If fragment path changed it's a route
     //  ---
 
-    fragPath = urlParts.at('fragmentPath');
-
     //  Run the route through our route matching process to see if there's a
     //  matcher for it.
     result = this.processRoute(fragPath);
     if (TP.notEmpty(result)) {
-        fragPath = result.at(0);
+        route = result.at(0);
     } else {
         //  No processed result. Remove the leading '/' for checks we need to
         //  run below for type names, urls, etc.
-        fragPath = fragPath.slice(1);
+        route = fragPath.slice(1);
     }
 
     if (TP.sys.cfg('log.routes')) {
-        TP.debug('checking \'' + fragPath + '\' route configuration...');
+        TP.debug('checking \'' + route + '\' route configuration...');
     }
 
     //  See if the value is a route configuration key.
-    config = TP.sys.cfg('route.info.' + fragPath.toLowerCase());
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
 
     if (TP.notEmpty(config)) {
 
         if (TP.sys.cfg('log.routes')) {
-            TP.debug('route \'' + route + '\' mapped to: ' + config);
+            TP.debug('route \'' + route + '\' mapped to: ' + TP.str(config));
         }
 
-        //  The config entry will be a JS-formatted String. Parse it into a
-        //  TP.core.Hash.
-        configInfo = TP.json2js(TP.reformatJSToJSON(config));
-        if (TP.isEmpty(configInfo)) {
-            this.raise('InvalidObject',
-                        'Unable to build config data from entry: ' + config);
-            return;
-        }
-
-        //  The content can be a tag type name, a URI or a String
-        content = configInfo.at('content');
-        if (TP.isEmpty(content)) {
-            this.raise('InvalidObject',
-                        'Unable to resolve a content entry from: ' + config);
-            return;
-        }
-
-        routeTarget = configInfo.at('target');
-        if (TP.notEmpty(routeTarget)) {
-
-            //  NB: We want autocollapsed, but wrapped content here.
-            targetTPElem = TP.byPath(routeTarget, canvas, true);
-            if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
-                this.raise('InvalidElement',
-                            'Unable to find route target: ' + routeTarget);
+        if (TP.isString(config)) {
+            configInfo = TP.json2js(TP.reformatJSToJSON(config));
+            if (TP.isEmpty(configInfo)) {
+                this.raise('InvalidObject',
+                    'Unable to build config data from entry: ' + config);
                 return;
             }
+        } else {
+            configInfo = config;
         }
 
-        //  See if the content is a type name.
-        type = TP.sys.getTypeByName(content);
-        if (TP.canInvoke(type, 'generateMarkupContent')) {
+        //  ---
+        //  Route-to-Content mapping
+        //  ---
 
-            if (TP.notValid(targetTPElem)) {
-                targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
+        //  The content can be a tag type name, a URI or a String and if found
+        //  we will use that content to update either a specific target or
+        //  the UICANVAS region.
+        content = TP.ifInvalid(configInfo.at(routeKey + '.content'),
+            configInfo.at('content'));
+
+        if (TP.notEmpty(content)) {
+
+            routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
+                configInfo.at('target'));
+            if (TP.notEmpty(routeTarget)) {
+
+                //  NB: We want autocollapsed, but wrapped content here.
+                targetTPElem = TP.byPath(routeTarget, canvas, true);
+                if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
+                    this.raise('InvalidElement',
+                                'Unable to find route target: ' + routeTarget);
+                    return;
+                }
             }
 
-            //  Inject the content.
-            targetTPElem.setContent(type.generateMarkupContent(),
-                                    TP.hc('sourceType', type));
-
-        } else {
-
-            //  Otherwise, see if the value looks like a URL for set location.
-            url = TP.uc(content);
-            if (TP.isURI(url)) {
-
-                url = TP.uriExpandHome(url);
-                if (TP.sys.cfg('log.routes')) {
-                    TP.debug('setting location to: ' + TP.str(url));
-                }
-
-                //  If we weren't able to obtain a target, then just set the
-                //  location of the canvas to the head of the URL.
-                if (TP.notValid(targetTPElem)) {
-                    canvas.setLocation(TP.uriHead(url));
-                } else {
-                    //  Otherwise, set the content of the target to the content
-                    //  of the URL
-                    targetTPElem.setContent(url);
-                }
-            } else {
-
-                //  Otherwise, the content was a String. If we couldn't get a
-                //  target, then use the document's body as the target and set
-                //  the content.
+            //  See if the content is a type name.
+            type = TP.sys.getTypeByName(content);
+            if (TP.canInvoke(type, 'generateMarkupContent')) {
 
                 if (TP.notValid(targetTPElem)) {
                     targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
                 }
 
-                targetTPElem.setContent(content);
-            }
-        }
+                //  Inject the content.
+                targetTPElem.setContent(type.generateMarkupContent(),
+                                        TP.hc('sourceType', type));
+            } else {
 
-        //  We won't proceed any further here - we were a configured route.
-        return;
-    } else {
-        route = fragPath;
+                //  Otherwise, see if the value looks like a URL for location.
+                url = TP.uc(content);
+                if (TP.isURI(url)) {
+
+                    url = TP.uriExpandHome(url);
+                    if (TP.sys.cfg('log.routes')) {
+                        TP.debug('setting location to: ' + TP.str(url));
+                    }
+
+                    //  If we weren't able to obtain a target, then just set the
+                    //  location of the canvas to the head of the URL.
+                    if (TP.notValid(targetTPElem)) {
+                        canvas.setLocation(TP.uriHead(url));
+                    } else {
+                        //  Otherwise, set the content of the target to the
+                        //  content of the URL
+                        targetTPElem.setContent(url);
+                    }
+                } else {
+
+                    //  Otherwise, the content was a String. If we couldn't get
+                    //  a target, then use the document's body as the target and
+                    //  set the content.
+                    if (TP.notValid(targetTPElem)) {
+                        targetTPElem =
+                            TP.sys.getUICanvas().getDocument().getBody();
+                    }
+
+                    targetTPElem.setContent(content);
+                }
+            }
+
+            //  We won't proceed any further here - we were a configured route.
+            return;
+        }
     }
 
     if (TP.isEmpty(route)) {
         return;
     }
 
-    name = TP.str(route);
+    //  ---
+    //  Route Signaling
+    //  ---
+
     payload = TP.isValid(result) ? result.at(1) : TP.hc();
 
-    //  All route signals should be suffixed with 'Route'. Add that suffix here
-    //  as needed.
-    if (!/Route$/.test(name)) {
-        name = name.asCamelCase().asTitleCase() + 'Route';
+    //  Support remapping route name to a different signal, but ensure that
+    //  signal follows our standard rules for signal names specific to routes.
+    signame = TP.ifInvalid(TP.sys.cfg(routeKey + '.signal'), route);
+    signame = TP.expandSignalName(signame);
+    if (!/Route$/.test(signame)) {
+        signame = signame + 'Route';
     }
 
-    //  Try to find a custom route change subtype for the named route.
-    type = TP.sys.getTypeByName('TP.sig.' + name);
+    //  Determine the signal type, falling back as needed since expandSignalName
+    //  will return TP.sig. as a default prefix.
+    type = TP.sys.getTypeByName(signame);
     if (TP.notValid(type)) {
-        type = TP.sys.getTypeByName('APP.sig.' + name);
+        signame = signame.replace(/^TP\./, 'APP.');
+        type = TP.sys.getTypeByName(signame);
     }
 
     //  Build the signal instance we'll fire and set its name as needed.
@@ -10064,7 +10094,7 @@ function(aURI, aDirection) {
         signal = type.construct(payload);
     } else {
         signal = TP.sig.RouteChange.construct(payload);
-        signal.setSignalName(name);
+        signal.setSignalName(signame);
     }
 
     //  For origin we use ANY since all routes are from 'top' anyway. This
@@ -10100,16 +10130,33 @@ function(aRoute) {
      */
 
     var route,
+        home,
         loc,
         path,
         parts;
 
+    //  Normalize route name ensuring it's got the leading '/' which
+    //  differentiates it from an anchor when on the URL.
     route = TP.str(aRoute);
+    if (route.charAt(0) !== '/') {
+        route = '/' + route;
+    }
 
+    //  Capture the page we're currently viewing in the canvas.
     loc = TP.core.History.getLocation();
-    path = TP.uriFragmentPath(loc);
+
+    //  If we're routing home but not showing the home page we need to update.
+    if (route === '/' || TP.isEmpty(route)) {
+        //  Compare against home page to see if this is a match.
+        home = TP.uriExpandPath(TP.sys.getHomeURL());
+        if (TP.uriHead(TP.uriExpandHome(loc)) !== TP.uriHead(home)) {
+            TP.sys.getHistory().pushLocation(home);
+            return;
+        }
+    }
 
     //  If we're about to set the same route don't bother.
+    path = TP.uriFragmentPath(loc);
     if (route === path) {
         if (TP.sys.cfg('log.routes')) {
             TP.trace('setRoute ignoring duplicate route setting of: ' + route);

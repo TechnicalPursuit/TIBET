@@ -1439,7 +1439,8 @@ function(pattern, flags) {
      * @returns {RegExp} A new instance.
      */
 
-    var restr,
+    var parts,
+        restr,
         attrs,
         tail,
         newinst,
@@ -1449,16 +1450,17 @@ function(pattern, flags) {
         return pattern;
     }
 
-    restr = TP.ifInvalid(pattern, '');
-    attrs = TP.ifInvalid(flags, '');
-
-    if (restr.charAt(0) === '/') {
-        tail = restr.slice(restr.lastIndexOf('/') + 1);
-        if (TP.notEmpty(tail)) {
-            attrs += tail;
-        }
-        restr = restr.slice(1, restr.lastIndexOf('/'));
+    parts = TP.stringRegExpComponents(pattern);
+    if (TP.isEmpty(parts)) {
+        msg = TP.join('Error creating regex: ', pattern);
+        TP.ifError() ? TP.error(msg) : 0;
+        return;
     }
+
+    restr = TP.ifInvalid(parts.first(), '');
+    attrs = TP.ifInvalid(flags, '');
+    tail = parts.last();
+    attrs += tail;
 
     //  Don't duplicate flags or we get no regex back :(.
     attrs = attrs.split('').unique().join('');

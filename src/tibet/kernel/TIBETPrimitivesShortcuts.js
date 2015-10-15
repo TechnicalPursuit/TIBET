@@ -2656,6 +2656,10 @@ function(aURIOrRoute, linkContext) {
      */
 
     var context,
+        loc,
+        head,
+        tail,
+        path,
         router;
 
     if (TP.notValid(aURIOrRoute)) {
@@ -2665,18 +2669,29 @@ function(aURIOrRoute, linkContext) {
 
     //  If we get a "route" rather than a full URI update the hash and let the
     //  system respond to that to route correctly.
-    if (/^#/.test(aURIOrRoute)) {
+    if (aURIOrRoute === '/' || /^#/.test(aURIOrRoute)) {
 
         //  A route has to be '#/' or '#?', so only trigger the router if we see
         //  that pattern.
-        if (/^#(\/|\?)/.test(aURIOrRoute)) {
+        if (aURIOrRoute === '/' || /^#(\/|\?)/.test(aURIOrRoute)) {
             router = TP.sys.getRouter();
             if (TP.isValid(router)) {
                 router.setRoute(TP.str(aURIOrRoute).slice(1));
             }
             return false;
         } else {
-            //  This is a link anchor target - act accordingly
+            //  This is a link anchor target - build up the proper adjusted
+            //  path and set it.
+            loc = top.location.toString();
+            head = TP.uriHead(loc);
+            tail = TP.uriFragmentParameters(loc);
+            if (TP.notEmpty(tail)) {
+                tail = '?' + tail;
+            } else {
+                tail = '';
+            }
+            path = head + aURIOrRoute + tail;
+            TP.sys.getHistory().pushLocation(path);
             return true;
         }
     }

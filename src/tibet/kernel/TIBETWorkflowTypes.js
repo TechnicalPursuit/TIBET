@@ -5937,6 +5937,7 @@ function() {
 
     var controllers,
         route,
+        routeKey,
         config,
         configInfo,
         controller,
@@ -5955,23 +5956,27 @@ function() {
     }
 
     //  See if the value is a route configuration key.
-    config = TP.sys.cfg('route.info.' + route.toLowerCase());
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
 
     if (TP.isEmpty(config)) {
         return controllers;
     }
 
-    //  The config entry will be a JS-formatted String. Parse it into a
-    //  TP.core.Hash.
-    configInfo = TP.json2js(TP.reformatJSToJSON(config));
-    if (TP.isEmpty(configInfo)) {
-        this.raise('InvalidObject',
-                    'Unable to build config data from entry: ' + config);
-        return controllers;
+    if (TP.isString(config)) {
+        configInfo = TP.json2js(TP.reformatJSToJSON(config));
+        if (TP.isEmpty(configInfo)) {
+            this.raise('InvalidObject',
+                        'Unable to build config data from entry: ' + config);
+            return controllers;
+        }
+    } else {
+        configInfo = config;
     }
 
     //  Try to obtain a controller type name
-    controllerName = configInfo.at('controller');
+    controllerName = TP.ifInvalid(configInfo.at(routeKey + '.controller'),
+        configInfo.at('controller'));
     defaulted = false;
 
     //  If there was no controller type name entry, default one by concatenating
@@ -5989,7 +5994,6 @@ function() {
     controller = TP.sys.getTypeByName(controllerName);
 
     if (TP.notValid(controller)) {
-
         //  Note here how we only warn if the controller name was specified and
         //  not generated here.
         TP.ifWarn() && !defaulted ?
@@ -6731,6 +6735,9 @@ function(anEvent) {
      */
 
     var router,
+        state,
+        pushed,
+        url,
         loc;
 
     //  We use a flag to turn off handling on Chrome in particular since it has
@@ -6739,7 +6746,14 @@ function(anEvent) {
         return;
     }
 
-    loc = TP.uriNormalize(anEvent.target.location.toString());
+    state = anEvent.state;
+    if (TP.isValid(state)) {
+        //  The url is what we really set as content, the 'pushed' value is what
+        //  the URL bar was set to (which will often vary for base path usage).
+        loc = state.url;
+    }
+    loc = TP.ifInvalid(loc,
+        TP.uriNormalize(anEvent.target.location.toString()));
 
     //  Just because we got this event doesn't mean location actually changed.
     //  At least one browser will trigger these even if you set the window
@@ -6758,7 +6772,7 @@ function(anEvent) {
     if (/#(\/|\?)/.test(loc)) {
         router = TP.sys.getRouter();
         if (TP.isValid(router)) {
-            router.route(loc);
+            router.route(state);
         }
         anEvent.preventDefault();
     } else {
@@ -6844,7 +6858,7 @@ function(aURL, fromDoc) {
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('pushState',
-function(stateObj, title, aURL, fromDoc) {
+function(stateObj, aTitle, aURL, fromDoc) {
 
     /**
      * @method pushState
@@ -6861,9 +6875,14 @@ function(stateObj, title, aURL, fromDoc) {
         current,
         entry,
         index,
+        title,
         router,
         result,
-        history;
+        history,
+        loc,
+        parts,
+        basePath,
+        pushable;
 
     if (!TP.isURI(aURL)) {
         TP.raise(this, 'TP.sig.InvalidURI');
@@ -6872,6 +6891,7 @@ function(stateObj, title, aURL, fromDoc) {
 
     url = TP.str(aURL);
     current = this.getLocation();
+    title = aTitle || '';
 
     //  Dampen changes that aren't really changes.
     if (current === url) {
@@ -6893,8 +6913,10 @@ function(stateObj, title, aURL, fromDoc) {
 
     state = stateObj || {};
     state.index = index + 1;
+    state.title = title;
+    state.url = url;
 
-    entry = TP.ac(state, title || '', url);
+    entry = TP.ac(state, title, url);
     history.push(entry);
 
     this.set('index', index + 1);
@@ -6909,16 +6931,69 @@ function(stateObj, title, aURL, fromDoc) {
                     ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
-        result = this.getNativeWindow().history.pushState(
-                    state, title || '', url);
+        loc = top.location.toString();
 
+        //  Compute the right path to push. We don't push changes to the base
+        //  URL unless configured explicitly for that feature. In all other
+        //  cases we update the fragment path to reflect the base path change.
+        if (TP.notFalse(TP.sys.cfg('route.fragment_only')) &&
+                TP.uriHead(loc) !== TP.uriHead(url)) {
+
+            parts = TP.hc();
+
+            //  preserve the current root elements to avoid changing base.
+            parts.atPut('root', TP.uriRoot(loc));
+            parts.atPut('basePath', TP.uriBasePath(loc));
+            parts.atPut('baseParams', TP.uriBaseParameters(loc));
+
+            //  build up the new fragment using the proposed base path and
+            //  parameter combination. This will cause the "page path" to
+            //  be reflected in the fragment path as if it were a route.
+            basePath = TP.uriBasePath(url);
+            if (basePath === parts.at('basePath')) {
+                parts.atPut('fragmentPath', TP.uriFragmentPath(url));
+            } else {
+                parts.atPut('fragmentPath', basePath);
+            }
+            parts.atPut('fragmentParams', TP.uriFragmentParameters(url));
+
+            //  adjust any extension since we don't want to expose those in
+            //  route paths.
+            if (TP.notEmpty(TP.uriExtension(basePath))) {
+                parts.atPut('fragmentPath', basePath.replace('.' +
+                    TP.uriExtension(basePath), ''));
+            }
+
+            pushable = TP.uriCompose(parts);
+        } else {
+            //  Allow the entire URL as proposed to be pushed to native history.
+            pushable = url;
+        }
+
+        //  Track the ultimately pushed URL separately from the original so we
+        //  can tell when we're looking at an adjusted path.
+        state.pushed = pushable;
+
+        if (TP.sys.cfg('log.history')) {
+            TP.debug('pushState pushing: ' + pushable);
+        }
+
+        //  Update the native window history and URL bar value. This will show
+        //  the "routable" value but not the actual canvas URI in some cases.
+        result = this.getNativeWindow().history.pushState(
+            state, title, pushable);
+
+        //  If we're here due to a direct change via a document being loaded
+        //  don't allow further processing.
         if (TP.isTrue(fromDoc)) {
             return;
         }
 
-        router = TP.sys.getRouter();
-        if (TP.canInvoke(router, 'route')) {
-            router.route(url, 'forward');
+        if (/#(\/|\?)/.test(pushable)) {
+            router = TP.sys.getRouter();
+            if (TP.canInvoke(router, 'route')) {
+                router.route(url, 'forward');
+            }
         }
     } finally {
         this.set('popstate', true);
@@ -6950,7 +7025,7 @@ function(aURL) {
 //  ------------------------------------------------------------------------
 
 TP.core.History.Type.defineMethod('replaceState',
-function(stateObj, title, aURL) {
+function(stateObj, aTitle, aURL) {
 
     /**
      * @method replaceLocation
@@ -6962,6 +7037,7 @@ function(stateObj, title, aURL) {
 
     var url,
         state,
+        title,
         index,
         current,
         result,
@@ -6971,6 +7047,7 @@ function(stateObj, title, aURL) {
 
     url = TP.str(aURL);
     url = decodeURIComponent(url);
+    title = aTitle || '';
 
     //  Capture this before the replace so we have something to compare.
     current = this.getLocation();
@@ -6988,8 +7065,10 @@ function(stateObj, title, aURL) {
 
     state = stateObj || {};
     state.index = index;
+    state.title = title;
+    state.url = url;
 
-    entry = TP.ac(state, title || '', url);
+    entry = TP.ac(state, title, url);
     history.atPut(index, entry);
 
     //  work around bug(s) on chrome et. al. which fire popstate on pushState
@@ -7002,8 +7081,7 @@ function(stateObj, title, aURL) {
                 ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
-        result = this.getNativeWindow().history.replaceState(
-                                            state, title || '', url);
+        result = this.getNativeWindow().history.replaceState(state, title, url);
 
         router = TP.sys.getRouter();
         if (TP.canInvoke(router, 'route')) {
@@ -7042,7 +7120,13 @@ function(anIndex) {
     entry = this.get('history').at(index);
     local = entry.at(2);
 
-    method = local === native ? 'debug' : 'error';
+    if (TP.notFalse(TP.sys.cfg('route.fragment_only'))) {
+        //  when using fragment-only updates we'll often fail to match if
+        //  alternative pages have been loading in the UICANVAS.
+        method = 'debug';
+    } else {
+        method = local === native ? 'debug' : 'error';
+    }
 
     if (TP.isValid(entry)) {
         TP[method]('history.at(' + index + ') -> ' + local + '.');

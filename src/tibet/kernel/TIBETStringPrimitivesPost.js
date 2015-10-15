@@ -614,6 +614,45 @@ function(aString, left, right, flags) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('stringRegExpComponents',
+function(pattern) {
+
+    /**
+     * @method stringRegExpComponents
+     * @summary Pulls apart a regular expression source string and returns the
+     *     components which would normally be passed to 'new RegExp' to create
+     *     the related expression.
+     * @param {String} pattern The regular expression source string.
+     * @return {Array} An array containing two strings, the pattern and flags.
+     */
+
+    var restr,
+        attrs,
+        tail;
+
+    if (!TP.isString(pattern)) {
+        return this.raise('InvalidParameter', pattern);
+    }
+
+    restr = pattern;
+    attrs = '';
+
+    if (restr.charAt(0) === '/') {
+        tail = restr.slice(restr.lastIndexOf('/') + 1);
+        if (TP.notEmpty(tail)) {
+            attrs += tail;
+        }
+        restr = restr.slice(1, restr.lastIndexOf('/'));
+    }
+
+    //  Don't duplicate flags or we get no regex back :(.
+    attrs = attrs.split('').unique().join('');
+
+    return TP.ac(restr, attrs);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('stringTokenizeUsingDelimiters',
 function(aStr, startDelim, endDelim, exprArray, tokenPrefix, tokenSuffix) {
 

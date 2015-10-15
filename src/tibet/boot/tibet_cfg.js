@@ -1466,7 +1466,7 @@
     TP.sys.setcfg('route.onstart', true);
 
     //  should the base url be updated during route/pushState changes?
-    TP.sys.setcfg('route.baseurl', false);
+    TP.sys.setcfg('route.fragment_only', true);
 
     //  ---
     //  uri/url
