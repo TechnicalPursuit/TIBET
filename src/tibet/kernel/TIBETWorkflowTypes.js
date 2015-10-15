@@ -6772,7 +6772,7 @@ function(anEvent) {
     if (/#(\/|\?)/.test(loc)) {
         router = TP.sys.getRouter();
         if (TP.isValid(router)) {
-            router.route(state);
+            router.route(TP.ifInvalid(state, loc));
         }
         anEvent.preventDefault();
     } else {
