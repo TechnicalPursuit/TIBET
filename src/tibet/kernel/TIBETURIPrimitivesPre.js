@@ -305,11 +305,6 @@ function(parts) {
             url += '/';
         }
 
-        //  If the fragment doesn't have a leading '/', put one on.
-        if (fragPath.charAt(0) !== '/') {
-            fragPath = '/' + fragPath;
-        }
-
         //  Make sure that the fragment also has a leading '#', thereby
         url += '#' + fragPath;
     }
@@ -631,9 +626,9 @@ function(aURI) {
     /**
      * @method uriFragmentPath
      * @summary Returns the path portion of the URL fragment if any. Note that
-     *     the fragment path value is always returned as a "path" in that it
-     *     always includes a leading '/', even if that was not present on the
-     *     original URL. For example, '#foo' will produce '/foo' for a path.
+     *     anchor values in the URI will not produce a path with a leading '/'
+     *     to avoid confusing anchors with routes. An empty fragment however
+     *     will produce a value of '/' implying a "home route".
      * @param {String|TP.core.URI} aURI The URI to process.
      * @returns {String} The fragment path value.
      */
@@ -656,14 +651,17 @@ function(aURI) {
         fragment = fragment.slice(0, fragment.indexOf('?'));
     }
 
-    //  Remove any trailing /
+    //  Always return home route signifier for any empty/explicit value.
+    if (TP.isEmpty(fragment) || fragment === '/') {
+        return '/';
+    }
+
+    //  Remove any trailing / from paths longer that a single segment.
     if (fragment.last() === '/') {
         fragment = fragment.slice(0, -1);
     }
 
-    return fragment.charAt(0) === '/' ?
-                            fragment :
-                            '/' + fragment;
+    return fragment;
 });
 
 //  ------------------------------------------------------------------------

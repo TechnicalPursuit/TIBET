@@ -4314,6 +4314,10 @@ function(aSignal) {
         return;
     }
 
+    //  Verify this signal type should be propagated
+    //  TODO:   check a method or something to see if controllers should be
+    //  told. Common exclusions are workflow signals (wrapupJob stuff etc.)
+
     app = TP.sys.getApplication();
     controllers = app.get('controllers');
 
