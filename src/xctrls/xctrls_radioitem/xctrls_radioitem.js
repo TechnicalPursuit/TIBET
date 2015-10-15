@@ -17,7 +17,7 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:radioitem');
 
-TP.xctrls.radioitem.addTraits(TP.core.CheckableUIElementNode);
+TP.xctrls.radioitem.addTraits(TP.core.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

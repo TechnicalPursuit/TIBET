@@ -17,7 +17,7 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:checkitem');
 
-TP.xctrls.checkitem.addTraits(TP.core.CheckableUIElementNode);
+TP.xctrls.checkitem.addTraits(TP.core.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

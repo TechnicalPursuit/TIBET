@@ -33,7 +33,7 @@
                     TP.html.inputHidden
 *                   TP.html.inputVisible
 *                       TP.html.inputClickable
-*                           TP.html.inputCheckable (TP.core.CheckableUIElementNode)
+*                           TP.html.inputCheckable (TP.core.TogglingUIElementNode)
                                 TP.html.inputCheckbox
                                 TP.html.inputRadio
                             TP.html.button
@@ -1600,11 +1600,11 @@ function() {
 
 //  check boxes / radio buttons
 TP.html.inputClickable.defineSubtype('inputCheckable');
-TP.html.inputCheckable.addTraits(TP.core.CheckableUIElementNode);
+TP.html.inputCheckable.addTraits(TP.core.TogglingUIElementNode);
 
 TP.html.inputCheckable.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue', 'isScalarValued'),
-        TP.core.CheckableUIElementNode);
+        TP.core.TogglingUIElementNode);
 
 //  can't construct concrete instances of this
 TP.html.inputCheckable.isAbstract(true);
@@ -1633,7 +1633,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
      *     receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
      * @param {Boolean} [refreshImmediately=false] Whether or not to refresh the
      *     receiver immediately after the bind is established.
-     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     * @returns {TP.html.inputCheckable} The receiver.
      */
 
     var valueTPElems;
@@ -1678,7 +1678,7 @@ function(attrName, attrValue, scopeVals, direction) {
      * @param {String} direction The binding 'direction' (i.e. which way the
      *     original binding connection was established from the data source to
      *     the receiver). Possible values here are: TP.IN, TP.OUT, TP.IO.
-     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     * @returns {TP.html.inputCheckable} The receiver.
      */
 
     var valueTPElems;

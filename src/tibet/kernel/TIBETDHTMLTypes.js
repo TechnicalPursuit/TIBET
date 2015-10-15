@@ -5193,23 +5193,23 @@ function(aToggleValue) {
 });
 
 //  ========================================================================
-//  TP.core.CheckableUIElementNode
+//  TP.core.TogglingUIElementNode
 //  ========================================================================
 
-TP.core.SelectingUIElementNode.defineSubtype('CheckableUIElementNode');
+TP.core.SelectingUIElementNode.defineSubtype('TogglingUIElementNode');
 
 //  Add in selectable item traits - instances of this type manage themselves as
 //  selectable items.
-TP.core.CheckableUIElementNode.addTraits(TP.core.SelectableItemUIElementNode);
+TP.core.TogglingUIElementNode.addTraits(TP.core.SelectableItemUIElementNode);
 
 //  can't construct concrete instances of this
-TP.core.CheckableUIElementNode.isAbstract(true);
+TP.core.TogglingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('getDisplayValue',
+TP.core.TogglingUIElementNode.Inst.defineMethod('getDisplayValue',
 function() {
 
     /**
@@ -5270,7 +5270,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('getValue',
+TP.core.TogglingUIElementNode.Inst.defineMethod('getValue',
 function() {
 
     /**
@@ -5327,7 +5327,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('isScalarValued',
+TP.core.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
 function() {
 
     /**
@@ -5343,7 +5343,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('produceValue',
+TP.core.TogglingUIElementNode.Inst.defineMethod('produceValue',
 function(aContentObject, aRequest) {
 
     /**
@@ -5391,7 +5391,7 @@ function(aContentObject, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('setDisplayValue',
+TP.core.TogglingUIElementNode.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
     /**
@@ -5403,7 +5403,7 @@ function(aValue) {
      *     existing selection.
      * @param {Object} aValue The value to set (select) in the receiver. For a
      *     select list this might be an array.
-     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
     var valueTPElems,
@@ -5488,7 +5488,7 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('setValue',
+TP.core.TogglingUIElementNode.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -5502,7 +5502,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
     var oldValue,
@@ -5544,13 +5544,13 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('toggleValue',
+TP.core.TogglingUIElementNode.Inst.defineMethod('toggleValue',
 function() {
 
     /**
      * @method toggleValue
      * @summary Toggles the value to the inverse of its current value.
-     * @returns {TP.core.CheckableUIElementNode} The receiver.
+     * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
     var newVal;
