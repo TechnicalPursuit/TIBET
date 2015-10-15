@@ -15,64 +15,109 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:radioitem');
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:radioitem');
 
-TP.xctrls.radioitem.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.radioitem.addTraits(TP.core.CheckableUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 TP.xctrls.radioitem.Inst.defineAttribute(
-        'valuePElem',
-        {value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))});
+    'valuePElem',
+    {value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Inst.defineHandler('DOMClick',
-function(aSignal) {
+TP.xctrls.radioitem.Inst.defineMethod('allowsMultiples',
+function() {
 
     /**
-     * @method handleDOMClick
-     * @summary This method is invoked as the radioitem is clicked.
-     * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
-     *     trip.
+     * @method allowsMultiples
+     * @summary Returns false since radio items, by their very nature, don't
+     *     allow multiple selection.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
      */
 
-    if (this.get('disabled') === true) {
-        return;
-    }
-
-    this.toggleValue();
-
-    return;
+    return false;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Inst.defineMethod('getDisplayValue',
+TP.xctrls.radioitem.Inst.defineMethod('getLabelText',
 function() {
 
     /**
-     * @method getDisplayValue
-     * @summary Gets the display, or visual, value of the receiver's node. This
-     *     is the value the HTML, or other UI tag, is actually displaying to the
-     *     user at the moment.
-     * @returns {Object} The visual value of the receiver's UI node.
+     * @method getLabelText
+     * @summary Returns the text of the label of the receiver.
+     * @returns {String} The receiver's label text.
+     */
+
+    var labelValue;
+
+    //  Go after child text of 'xctrls:label'
+    labelValue = this.get('string(./xctrls:label)');
+
+    return labelValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
      */
 
     var textValue;
 
-    if (this.hasAttribute('pclass:checked')) {
-        //  Grab the value from the 'xctrls:value' element under ourself
-        textValue = this.get('string(./xctrls:value)');
+    //  Go after child text of 'xctrls:value'
+    textValue = this.get('string(./xctrls:value)');
 
-        return textValue;
-    }
+    return textValue;
+});
 
-    return null;
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Inst.defineMethod('$getPrimitiveValue',
+function() {
+
+    /**
+     * @method $getPrimitiveValue
+     * @summary Returns the low-level primitive value stored by the receiver in
+     *     internal storage.
+     * @returns {String} The primitive value of the receiver.
+     */
+
+    var textValue;
+
+    //  Go after child text of 'xctrls:value'
+    textValue = this.get('string(./xctrls:value)');
+
+    return textValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Inst.defineMethod('$getVisualToggle',
+function() {
+
+    /**
+     * @method $getVisualToggle
+     * @summary Returns the low-level primitive 'toggle value' used by the
+     *     receiver to display a 'checked' state.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
+     */
+
+    return this.$isInState('pclass:checked');
 });
 
 //  ------------------------------------------------------------------------
@@ -93,8 +138,8 @@ function(beDisabled) {
     valuePElem = this.get('valuePElem');
 
     if (TP.isTrue(beDisabled)) {
-        valuePElem.setAttribute('disabled', true);
-        valuePElem.setAttribute('pclass:disabled', 'true');
+        valuePElem.setAttribute('disabled', true, false);
+        valuePElem.setAttribute('pclass:disabled', 'true', false);
     } else {
         valuePElem.removeAttribute('disabled');
         valuePElem.removeAttribute('pclass:disabled');
@@ -105,72 +150,38 @@ function(beDisabled) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Inst.defineMethod('setDisplayValue',
-function(aValue) {
+TP.xctrls.radioitem.Inst.defineMethod('$setVisualToggle',
+function(aToggleValue) {
 
     /**
-     * @method setDisplayValue
-     * @summary Sets the display, or visual, value of the receiver's node. The
-     *     value provided to this method is typically already formatted using
-     *     the receiver's display formatters (if any). You don't normally call
-     *     this method directly, instead call setValue() and it will ensure
-     *     proper display formatting.
-     * @param {Object} aValue The value to set.
+     * @method $setVisualToggle
+     * @summary Sets the low-level primitive 'toggle value' used by the receiver
+     *     to display a 'checked' state.
+     * @param {Boolean} aToggleValue Whether or not to display the receiver's
+     *     'checked' state.
      * @returns {TP.xctrls.radioitem} The receiver.
      */
 
-    var textValue;
-
-    //  Grab the value from the 'xctrls:value' element under ourself
-    textValue = this.get('string(./xctrls:value)');
-
-    if (TP.equal(textValue, aValue)) {
-        this.setAttribute('pclass:checked', 'true');
-    } else {
-        this.removeAttribute('pclass:checked');
-    }
+    this.$isInState('pclass:checked', aToggleValue);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Inst.defineMethod('toggleValue',
-function() {
+TP.xctrls.radioitem.Inst.defineHandler('UIDidDeactivate',
+function(aSignal) {
 
     /**
-     * @method toggleValue
-     * @summary Toggles the value to the inverse of its current value.
-     * @returns {TP.xctrls.radioitem} The receiver.
+     * @method handleUIDidDeactivate
+     * @summary This method is invoked as the radioitem is clicked.
+     * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
+     *     trip.
      */
 
-    var oldVal,
-        newVal;
+    this.toggleValue();
 
-    oldVal = this.getDisplayValue();
-
-    //  This is simply a matter of setting the value to what's in our
-    //  'xctrls:value' element, depending on whether we're already checked
-    //  or not.
-    if (this.hasAttribute('pclass:checked')) {
-        //  Already checked? Set our value to null.
-        newVal = null;
-    } else {
-        //  Otherwise set our value to the value of what's in our
-        //  'xctrls:value' element.
-
-        //  Grab the value from the 'xctrls:value' element under ourself
-        newVal = this.get('string(./xctrls:value)');
-    }
-
-    this.set('value', newVal);
-
-    if (this.shouldSignalChange()) {
-        this.changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, newVal));
-    }
-
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------

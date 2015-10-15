@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+		xmlns:pclass="urn:tibet:pseudoclass">
+
+<head>
+	<title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+</head>
+
+<body data-theme="tpi">
+	<table>
+		<thead class="states">
+			<tr>
+				<th colspan="2">States</th>
+			</tr>
+		</thead>
+		<tbody class="states">
+			<tr>
+				<td>normal</td>
+				<td>
+					<xctrls:radioitem>
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:radioitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:active</td>
+				<td>
+					<xctrls:radioitem pclass:active="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:radioitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:focus</td>
+				<td>
+					<xctrls:radioitem pclass:focus="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:radioitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:disabled</td>
+				<td>
+					<xctrls:radioitem pclass:disabled="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:radioitem>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	radioitem #1:
+	<br/>
+	A standard XControls radioitem showing kind of a label.
+	<xctrls:radioitem id="radioitem1">
+		<xctrls:label>radioitem #1</xctrls:label>
+		<xctrls:value>foo</xctrls:value>
+	</xctrls:radioitem>
+
+	<br/>
+	<br/>
+
+    A set of radio buttons to set value setting and data binding.
+    <tibet:group id="testGroup">
+        <xctrls:radioitem id="dataradioitem1">
+            <xctrls:label>data radioitem #1</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem2">
+            <xctrls:label>data radioitem #2</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem3">
+            <xctrls:label>data radioitem #3</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:radioitem>
+    </tibet:group>
+
+	<br/>
+	<br/>
+
+	<div class="controlBox">
+		<button onclick="TP.byId('radioitem1').signal('UIDisabled');">Disable radioitem #1</button>
+		<button onclick="TP.byId('radioitem1').signal('UIEnabled');">Enable radioitem #1</button>
+
+		<br/>
+
+		<button onclick="TP.byId('radioitem1').signal('UIFocus');">Focus radioitem #1</button>
+	</div>
+
+</body>
+</html>
