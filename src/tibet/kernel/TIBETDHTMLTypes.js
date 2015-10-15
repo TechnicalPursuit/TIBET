@@ -5343,38 +5343,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CheckableUIElementNode.Inst.defineMethod('on',
-function() {
-
-    /**
-     * @method on
-     * @summary Sets the receiver's checked state to 'true'.
-     * @returns {TP.core.CheckableUIElementNode} The receiver.
-     */
-
-    this.$setVisualToggle(true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CheckableUIElementNode.Inst.defineMethod('off',
-function() {
-
-    /**
-     * @method off
-     * @summary Sets the receiver's checked state to 'false'.
-     * @returns {TP.core.CheckableUIElementNode} The receiver.
-     */
-
-    this.$setVisualToggle(true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.CheckableUIElementNode.Inst.defineMethod('produceValue',
 function(aContentObject, aRequest) {
 
