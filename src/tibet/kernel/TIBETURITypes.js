@@ -9935,7 +9935,7 @@ function(aURIOrPushState, aDirection) {
             if (TP.notFalse(TP.sys.cfg('route.fragment_only'))) {
                 fragPath = urlParts.at('basePath');
                 if (fragPath === TP.uriBasePath(home)) {
-                    fragPath = '/';
+                    fragPath = urlParts.at('fragmentPath');
                 } else {
                     if (TP.notEmpty(TP.uriExtension(fragPath))) {
                         fragPath = fragPath.replace('.' +
