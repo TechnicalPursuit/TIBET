@@ -67,6 +67,17 @@
             }
 
             &[pclass|checked] > *[tibet|pelem="value"] {
+
+                svg|g[state="off"] {
+
+                    stroke: @xctrls_radioitem-check-color-focus;
+                }
+
+                svg|g[state="on"] {
+
+                    stroke: @xctrls_radioitem-check-color-focus;
+                    fill: @xctrls_radioitem-check-color-focus;
+                }
             }
         }
 
@@ -92,6 +103,17 @@
             }
 
             &[pclass|checked] > *[tibet|pelem="value"] {
+
+                svg|g[state="off"] {
+
+                    stroke: @xctrls_radioitem-check-color-active;
+                }
+
+                svg|g[state="on"] {
+
+                    stroke: @xctrls_radioitem-check-color-active;
+                    fill: @xctrls_radioitem-check-color-active;
+                }
             }
         }
 

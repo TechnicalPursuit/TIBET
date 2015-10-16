@@ -67,6 +67,17 @@
             }
 
             &[pclass|checked] > *[tibet|pelem="value"] {
+
+                svg|rect {
+
+                    stroke: @xctrls_checkitem-check-color-focus;
+                }
+
+                svg|polygon {
+
+                    stroke: @xctrls_checkitem-check-color-focus;
+                    fill: @xctrls_checkitem-check-color-focus;
+                }
             }
         }
 
@@ -92,6 +103,17 @@
             }
 
             &[pclass|checked] > *[tibet|pelem="value"] {
+
+                svg|rect {
+
+                    stroke: @xctrls_checkitem-check-color-active;
+                }
+
+                svg|polygon {
+
+                    stroke: @xctrls_checkitem-check-color-active;
+                    fill: @xctrls_checkitem-check-color-active;
+                }
             }
         }
 
