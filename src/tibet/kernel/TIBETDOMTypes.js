@@ -932,7 +932,7 @@ function(aRequest) {
         str,
 
         result,
-        elem;
+        frag;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('node'))) {
@@ -964,10 +964,14 @@ function(aRequest) {
         if (!TP.regex.HAS_ACP.test(result) &&
             TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
 
-            elem = TP.elem(result);
+            //  Note that we convert into a DocumentFragment here since the
+            //  transformed String may contain multiple peer nodes.
+            frag = TP.frag(result);
 
-            if (TP.isElement(elem)) {
-                TP.nodeReplaceChild(node.parentNode, elem, node, false);
+            //  This will check for either Elements or DocumentFragments (and
+            //  Documents, too, which is invalid here but highly unlikely).
+            if (TP.isCollectionNode(frag)) {
+                TP.nodeReplaceChild(node.parentNode, frag, node, false);
             }
         } else {
             //  Otherwise, it was just a straight templated value (or it
