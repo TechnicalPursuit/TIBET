@@ -419,6 +419,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
                 generators.defineUndefined(varName) +
                 ' var arg = (' + generators.escapedIdentifier(varName) + ');' +
                 ' arg = TP.isCallable(arg) ? arg(params) : arg;' +
+                ' if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' +
                 ' var result = ' +
                 formattedValue(varName, formatName, isRepeating) + '; ' +
                 ignoreNull +
