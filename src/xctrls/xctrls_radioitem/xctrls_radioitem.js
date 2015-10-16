@@ -175,8 +175,8 @@ function(aSignal) {
     /**
      * @method handleUIDidDeactivate
      * @summary This method is invoked as the radioitem is clicked.
-     * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
-     *     trip.
+     * @param {TP.sig.UIDidDeactivate} aSignal The signal that caused this
+     *     handler to trip.
      */
 
     this.toggleValue();
