@@ -655,6 +655,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         } else {
             nodeContent = theContent;
         }
+
+        //  Make sure to clone this content since we're going to be manipulating
+        //  it below and don't want to modify the original.
+        nodeContent = TP.nodeCloneNode(nodeContent, true);
     } else if (TP.isString(theContent)) {
         //  Try to create a real Node from the supplied content (passing
         //  'true' to TP.nodeAsString() so that it will report parsing
