@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 
-<xctrls:textitem xmlns="http://www.w3.org/1999/xhtml"
-    ev:event="TP.sig.DOMClick"
-    ev:observer="{{$SOURCE.(@id)}}"
-    class="item {{$SOURCE.(@class)}}"
-    hidefocus="true">
-    {{$SOURCE.(./xctrls:label[1])}}
-    {{$SOURCE.(./xctrls:hint[1])}}
-    {{$SOURCE.(./xctrls:value[1])}}
+<xctrls:textitem class="item" hidefocus="true">
+    {{$SOURCE.(.//*)}}
 </xctrls:textitem>
 

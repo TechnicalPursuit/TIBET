@@ -1,0 +1,35 @@
+
+/*
+	CSS styles common across 'xctrls:textitem' controls for any theme.
+*/
+
+@import (reference) url('../xctrls_textitem/xctrls_textitem.less');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+
+*[data-theme] {
+
+    /* All themed 'xctrls:textitem' controls */
+
+    xctrls|textitem {
+
+        cursor: pointer;
+    }
+
+    /* All themed 'xctrls:textitem' controls ::value pseudo-element */
+
+    xctrls|textitem > *[tibet|pelem="value"] {
+    }
+
+    /* All themed, non-disabled 'xctrls:textitem' controls */
+
+    xctrls|textitem:not([pclass|disabled]) {
+    }
+
+    /* All themed, non-disabled 'xctrls:textitem' control labels */
+
+    xctrls|textitem:not([pclass|disabled]) xctrls|label {
+    }
+}

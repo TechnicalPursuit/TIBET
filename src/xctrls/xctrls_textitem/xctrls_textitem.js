@@ -15,126 +15,139 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:textitem');
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:textitem');
 
-TP.xctrls.textitem.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.textitem.addTraits(TP.core.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.textitem.Inst.defineHandler('DOMClick',
+TP.xctrls.textitem.Inst.defineMethod('getLabelText',
+function() {
+
+    /**
+     * @method getLabelText
+     * @summary Returns the text of the label of the receiver.
+     * @returns {String} The receiver's label text.
+     */
+
+    var labelValue;
+
+    //  Go after child text of 'xctrls:label'
+    labelValue = this.get('string(./xctrls:label)');
+
+    return labelValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    var textValue;
+
+    //  Go after child text of 'xctrls:value'
+    textValue = this.get('string(./xctrls:value)');
+
+    return textValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Inst.defineMethod('$getPrimitiveValue',
+function() {
+
+    /**
+     * @method $getPrimitiveValue
+     * @summary Returns the low-level primitive value stored by the receiver in
+     *     internal storage.
+     * @returns {String} The primitive value of the receiver.
+     */
+
+    var textValue;
+
+    //  Go after child text of 'xctrls:value'
+    textValue = this.get('string(./xctrls:value)');
+
+    return textValue;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Inst.defineMethod('$getVisualToggle',
+function() {
+
+    /**
+     * @method $getVisualToggle
+     * @summary Returns the low-level primitive 'toggle value' used by the
+     *     receiver to display a 'selected' state.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
+     */
+
+    return this.$isInState('pclass:selected');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Inst.defineMethod('isSingleValued',
+function() {
+
+    /**
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @returns {Boolean} True when single valued.
+     */
+
+    //  textitem (arrays) are not single valued.
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Inst.defineMethod('$setVisualToggle',
+function(aToggleValue) {
+
+    /**
+     * @method $setVisualToggle
+     * @summary Sets the low-level primitive 'toggle value' used by the receiver
+     *     to display a 'selected' state.
+     * @param {Boolean} aToggleValue Whether or not to display the receiver's
+     *     'selected' state.
+     * @returns {TP.xctrls.textitem} The receiver.
+     */
+
+    this.$isInState('pclass:selected', aToggleValue);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Inst.defineHandler('UIDidDeactivate',
 function(aSignal) {
 
     /**
-     * @method handleDOMClick
-     * @summary This method is invoked as the textitem is clicked.
-     * @param {TP.sig.DOMClick} aSignal The signal that caused this handler to
-     *     trip.
+     * @method handleUIDidDeactivate
+     * @summary This method is invoked as the textitem is clicked
+     * @param {TP.sig.UIDidDeactivate} aSignal The signal that caused this
+     *     handler to trip.
      */
-
-    if (this.get('disabled') === true) {
-        return;
-    }
 
     this.toggleValue();
 
     return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.textitem.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Gets the display, or visual, value of the receiver's node. This
-     *     is the value the HTML, or other UI tag, is actually displaying to the
-     *     user at the moment.
-     * @returns {Object} The visual value of the receiver's UI node.
-     */
-
-    var textValue;
-
-    if (this.hasAttribute('pclass:selected')) {
-        //  Grab the value from the 'xctrls:value' element under ourself
-        textValue = this.get('string(./xctrls:value)');
-
-        return textValue;
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.textitem.Inst.defineMethod('setDisplayValue',
-function(aValue) {
-
-    /**
-     * @method setDisplayValue
-     * @summary Sets the display, or visual, value of the receiver's node. The
-     *     value provided to this method is typically already formatted using
-     *     the receiver's display formatters (if any). You don't normally call
-     *     this method directly, instead call setValue() and it will ensure
-     *     proper display formatting.
-     * @param {Object} aValue The value to set.
-     * @returns {TP.xctrls.textitem} The receiver.
-     */
-
-    var textValue;
-
-    //  Grab the value from the 'xctrls:value' element under ourself
-    textValue = this.get('string(./xctrls:value)');
-
-    if (TP.equal(textValue, aValue)) {
-        this.setAttribute('pclass:selected', 'true');
-    } else {
-        this.removeAttribute('pclass:selected');
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.textitem.Inst.defineMethod('toggleValue',
-function() {
-
-    /**
-     * @method toggleValue
-     * @summary Toggles the value to the inverse of its current value.
-     * @returns {TP.xctrls.textitem} The receiver.
-     */
-
-    var oldVal,
-        newVal;
-
-    oldVal = this.getDisplayValue();
-
-    //  This is simply a matter of setting the value to what's in our
-    //  'xctrls:value' element, depending on whether we're already selected
-    //  or not.
-    if (this.hasAttribute('pclass:selected')) {
-        //  Already selected? Set our value to null.
-        newVal = null;
-    } else {
-        //  Otherwise set our value to the value of what's in our
-        //  'xctrls:value' element.
-
-        //  Grab the value from the 'xctrls:value' element under ourself
-        newVal = this.get('string(./xctrls:value)');
-    }
-
-    this.set('value', newVal);
-
-    if (this.shouldSignalChange()) {
-        this.changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, newVal));
-    }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------

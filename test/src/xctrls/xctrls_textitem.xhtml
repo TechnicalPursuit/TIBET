@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+		xmlns:pclass="urn:tibet:pseudoclass">
+
+<head>
+	<title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+</head>
+
+<body data-theme="tpi">
+	<table>
+		<thead class="states">
+			<tr>
+				<th>Name</th>
+				<th>Unselected</th>
+				<th>Selected</th>
+			</tr>
+		</thead>
+		<tbody class="states">
+			<tr>
+				<td>normal</td>
+				<td>
+					<xctrls:textitem>
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+				<td>
+					<xctrls:textitem pclass:selected="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:active</td>
+				<td>
+					<xctrls:textitem pclass:active="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+				<td>
+					<xctrls:textitem pclass:active="true" pclass:selected="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:focus</td>
+				<td>
+					<xctrls:textitem pclass:focus="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+				<td>
+					<xctrls:textitem pclass:focus="true" pclass:selected="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+			</tr>
+			<tr>
+				<td>:disabled</td>
+				<td>
+					<xctrls:textitem pclass:disabled="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+				<td>
+					<xctrls:textitem pclass:disabled="true" pclass:selected="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:textitem>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+	textitem #1:
+	<br/>
+	A standard XControls textitem showing kind of a label.
+	<xctrls:textitem id="textitem1">
+		<xctrls:label>textitem #1</xctrls:label>
+		<xctrls:value>foo</xctrls:value>
+	</xctrls:textitem>
+
+	<br/>
+	<br/>
+
+    A set of checkboxes to set value setting and data binding.
+    <tibet:group id="testGroup">
+        <xctrls:textitem id="datatextitem1">
+            <xctrls:label>data textitem #1</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem2">
+            <xctrls:label>data textitem #2</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem3">
+            <xctrls:label>data textitem #3</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:textitem>
+    </tibet:group>
+
+	<br/>
+	<br/>
+
+	<div class="controlBox">
+		<button onclick="TP.byId('textitem1').signal('UIDisabled');">Disable textitem #1</button>
+		<button onclick="TP.byId('textitem1').signal('UIEnabled');">Enable textitem #1</button>
+
+		<br/>
+
+		<button onclick="TP.byId('textitem1').signal('UIFocus');">Focus textitem #1</button>
+	</div>
+
+</body>
+</html>

@@ -184,8 +184,9 @@
     <property name="path.TP.xctrls.radioitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_radioitem_tpi.less"/>
 
     <script src="xctrls/xctrls_textitem/xctrls_textitem.js"/>
-    <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/xctrls_textitem.css"/>
+    <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/xctrls_textitem.less"/>
     <property name="path.TP.xctrls.textitem.template" value="~TP.xctrls.textitem/xctrls_textitem.xhtml"/>
+    <property name="path.TP.xctrls.textitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_textitem_tpi.less"/>
 
     <script src="xctrls/xctrls_chart/xctrls_chart.js"/>
     <property name="path.TP.xctrls.chart.style" value="~TP.xctrls.chart/xctrls_chart.css"/>
