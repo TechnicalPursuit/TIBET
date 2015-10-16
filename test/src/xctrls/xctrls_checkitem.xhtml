@@ -21,7 +21,9 @@
 	<table>
 		<thead class="states">
 			<tr>
-				<th colspan="2">States</th>
+				<th>Name</th>
+				<th>Unchecked</th>
+				<th>Checked</th>
 			</tr>
 		</thead>
 		<tbody class="states">
@@ -29,6 +31,11 @@
 				<td>normal</td>
 				<td>
 					<xctrls:checkitem>
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
+				<td>
+					<xctrls:checkitem pclass:checked="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:checkitem>
 				</td>
@@ -40,6 +47,11 @@
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:checkitem>
 				</td>
+				<td>
+					<xctrls:checkitem pclass:active="true" pclass:checked="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
 			</tr>
 			<tr>
 				<td>:focus</td>
@@ -48,11 +60,21 @@
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:checkitem>
 				</td>
+				<td>
+					<xctrls:checkitem pclass:focus="true" pclass:checked="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
 			</tr>
 			<tr>
 				<td>:disabled</td>
 				<td>
 					<xctrls:checkitem pclass:disabled="true">
+						<xctrls:label>Hi there</xctrls:label>
+					</xctrls:checkitem>
+				</td>
+				<td>
+					<xctrls:checkitem pclass:disabled="true" pclass:checked="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:checkitem>
 				</td>
