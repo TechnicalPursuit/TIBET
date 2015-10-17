@@ -646,15 +646,20 @@ function() {
         /* eslint-enable no-fallthrough */
         case TP.HTTP_PUT:
 
-            //  NB: We assume 'async' of false here.
-            resp = val.getResource(TP.hc('async', false));
-            bodyContent = resp.get('result');
+            if (TP.isURI(val = bodyURIs.first())) {
 
-            //  If we had a body, set the resource of the URI to it. We might
-            //  not - we might have a simple payload in the query.
-            if (TP.isURI(val = bodyURIs.first()) && TP.isValid(bodyContent)) {
-                bodyContent = bodyContent.get('value');
-                uri.setResource(bodyContent);
+                //  NB: We assume 'async' of false here.
+                resp = val.getResource(TP.hc('async', false));
+                bodyContent = resp.get('result');
+
+                //  If we had a body, set the resource of the URI to it. We
+                //  might not - we might have a simple payload in the query.
+                if (TP.isValid(bodyContent)) {
+                    bodyContent = bodyContent.get('value');
+                    uri.setResource(bodyContent);
+                } else {
+                    uri.setResource('');
+                }
             } else {
                 uri.setResource('');
             }
