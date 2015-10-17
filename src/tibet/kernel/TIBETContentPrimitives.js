@@ -458,12 +458,19 @@ function(anObject, aFilterName) {
         obj = {value: obj};
     }
 
-    str = TP.extern.jxon.jsToString(obj);
+    //  NB: Here we provide a <root> element and an empty namespace, because
+    //  otherwise we end up with a 'xmlns="null"' namespace.
+    str = TP.extern.jxon.jsToString(obj, '', 'root');
     if (TP.isXMLDocument(doc = TP.doc(str, null, true))) {
         node = doc.documentElement;
     }
 
-    if (TP.notValid(node)) {
+    //  Go down under the <root>
+    if (TP.isNode(node)) {
+        node = node.firstChild;
+    }
+
+    if (!TP.isNode(node)) {
         TP.raise(this, 'TP.sig.InvalidXML',
             'Unable to convert object ' + TP.id(anObject) + 'to XML.');
     }
