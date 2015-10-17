@@ -5439,10 +5439,22 @@ function(aValue) {
         if (value.getSize() === 1) {
             value = value.first();
         } else {
+
+            //  Iterate over each item, getting it's String value and possibly
+            //  making a new nested Array by splitting on any separator if it
+            //  exists.
             value = value.collect(
                             function(aVal) {
-                                return TP.str(aVal);
+                                var val;
+
+                                val = TP.str(aVal);
+                                val = val.split(separator).collapse();
+
+                                return val;
                             });
+
+            //  Make sure to flatten the resultant Array.
+            value = value.flatten();
         }
     }
 
@@ -5514,10 +5526,37 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
-    //  If we didn't get an Array back and this control allows for multiples,
-    //  then wrap the newValue in an Array for consistency in value checking.
-    if (!TP.isArray(newValue) && this.allowsMultiples()) {
-        newValue = TP.ac(newValue);
+    if (this.allowsMultiples()) {
+
+        //  If we didn't get an Array back and this control allows for
+        //  multiples, then wrap the newValue in an Array for consistency in
+        //  value checking.
+        if (!TP.isArray(oldValue)) {
+            oldValue = TP.ac(oldValue);
+        }
+
+        //  If newValue is not value, then we're 'subtracting' it from the old
+        //  value.
+        if (TP.notValid(newValue)) {
+
+            //  Copy the old Array and remove our value.
+            newValue = TP.copy(oldValue);
+            newValue.remove(this.$getPrimitiveValue());
+        } else {
+            newValue = oldValue.concat(newValue);
+        }
+    } else {
+
+        //  Make sure that both old and new values are non-Arrays so that we can
+        //  compare them properly. Note that we don't use 'collapse()'
+        //  functionality here because we don't necessarily want 'null's if
+        //  these are empty (TODO: Really? Why can't we collapse?).
+        if (TP.isArray(oldValue)) {
+            oldValue = oldValue.first();
+        }
+        if (TP.isArray(newValue)) {
+            newValue = newValue.first();
+        }
     }
 
     //  If the values are equal, there's nothing to do here - bail out.

@@ -15,22 +15,27 @@
 TP.tibet.service.Inst.describe('TP.tibet.service',
 function() {
 
-    var unloadURI,
+    var driver,
+
+        unloadURI,
 
         windowContext,
 
-        loadURI;
+        loadURI,
+
+        server;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     this.before(
         function() {
 
-            windowContext = this.getDriver().get('windowContext');
+            driver = this.getDriver();
+            windowContext = driver.get('windowContext');
 
             //  ---
 
-            this.getDriver().showTestGUI();
+            driver.showTestGUI();
 
             //  ---
 
@@ -45,7 +50,7 @@ function() {
 
             //  ---
 
-            this.getDriver().showTestLog();
+            driver.showTestLog();
 
             //  ---
 
@@ -56,15 +61,12 @@ function() {
     this.afterEach(
         function() {
 
+            //  Restore the server to the built-in functionality.
+            server.restore();
+
             //  Unload the current page by setting it to the
             //  blank
-            this.getDriver().setLocation(unloadURI);
-
-            //  Unregister the URI to avoid a memory leak
-            loadURI.unregister();
-
-            //  Reset the metrics we're tracking.
-            TP.signal.reset();
+            driver.setLocation(unloadURI);
         });
 
     //  ---
@@ -75,13 +77,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service1.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locStr,
                     resultElem,
-                    server,
 
                     serviceTPElem,
 
@@ -156,9 +157,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -178,13 +176,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service2.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locRe,
                     resultElem,
-                    server,
 
                     searchTPElem,
                     serviceTPElem,
@@ -255,7 +252,7 @@ function() {
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                test.getDriver().startSequence().
+                driver.startSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -268,9 +265,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -290,13 +284,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service3.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locStr,
                     resultElem,
-                    server,
 
                     serviceTPElem,
 
@@ -371,9 +364,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -393,13 +383,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service4.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locStr,
                     resultElem,
-                    server,
 
                     serviceTPElem,
 
@@ -474,9 +463,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -496,13 +482,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service5.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locRe,
                     resultElem,
-                    server,
 
                     searchTPElem,
                     serviceTPElem,
@@ -573,7 +558,7 @@ function() {
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                test.getDriver().startSequence().
+                driver.startSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -586,9 +571,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -608,13 +590,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service6.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locRe,
                     resultElem,
-                    server,
 
                     searchTPElem,
                     serviceTPElem,
@@ -689,7 +670,7 @@ function() {
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                test.getDriver().startSequence().
+                driver.startSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -702,9 +683,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -724,14 +702,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service7.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locStr,
                     testBody,
-
-                    server,
 
                     bodyContentTPElem,
                     serviceTPElem,
@@ -800,7 +776,7 @@ function() {
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                test.getDriver().startSequence().
+                driver.startSequence().
                     sendKeys(testBody, bodyContentTPElem).
                     sendEvent(TP.hc('type', 'change'), bodyContentTPElem).
                     perform();
@@ -813,9 +789,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -835,13 +808,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service8.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locRe,
                     resultElem,
-                    server,
 
                     searchTPElem,
                     serviceTPElem,
@@ -912,7 +884,7 @@ function() {
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                test.getDriver().startSequence().
+                driver.startSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -925,9 +897,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -947,13 +916,12 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service9.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locRe,
                     resultElem,
-                    server,
 
                     searchTPElem,
                     serviceTPElem,
@@ -1024,7 +992,7 @@ function() {
 
                 handler.observe(serviceTPElem, 'TP.sig.DOMReady');
 
-                test.getDriver().startSequence().
+                driver.startSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -1037,9 +1005,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -1059,7 +1024,7 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service10.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
@@ -1067,8 +1032,6 @@ function() {
 
                     bodyURI,
                     testBody,
-
-                    server,
 
                     serviceTPElem,
 
@@ -1148,9 +1111,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -1170,13 +1130,11 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service11.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locStr,
-
-                    server,
 
                     serviceTPElem,
 
@@ -1252,9 +1210,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.
@@ -1274,13 +1229,11 @@ function() {
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service12.xhtml');
 
-        test.getDriver().setLocation(loadURI);
+        driver.setLocation(loadURI);
 
         test.then(
             function(result) {
                 var locStr,
-
-                    server,
 
                     serviceTPElem,
 
@@ -1356,9 +1309,6 @@ function() {
                                                 'TP.sig.UIDataSent');
 
                         server.respond();
-
-                        //  Restore the server to the built-in functionality.
-                        server.restore();
                     });
 
                 //  Return the Promise.

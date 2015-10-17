@@ -163,6 +163,56 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.tibet.service.Type.defineMethod('tagDetachData',
+function(aRequest) {
+
+    /**
+     * @method tagDetachData
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+
+        resultHref,
+        resultURI,
+
+        resource;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    if (TP.notEmpty(resultHref = TP.elementGetAttribute(elem, 'result'))) {
+        if (!TP.isURI(resultURI = TP.uc(resultHref))) {
+            //  Raise an exception
+            return this.raise('TP.sig.InvalidURI');
+        }
+    }
+
+    //  If the new resource result is a content object of some sort (highly
+    //  likely) then it should respond to 'setData' so set its data to null
+    //  (which will cause it to ignore its data for *Change signals).
+
+    //  NB: We assume 'async' of false here.
+    resource = resultURI.getResource().get('result');
+    if (TP.canInvoke(resource, 'setData')) {
+        resource.setData(null);
+    }
+
+    resultURI.unregister();
+
+    //  We're done with this data - signal 'TP.sig.UIDataDestruct'.
+    TP.wrap(elem).signal('TP.sig.UIDataDestruct');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  TEMPORARY METHODS
 //  ------------------------------------------------------------------------
 
@@ -646,15 +696,20 @@ function() {
         /* eslint-enable no-fallthrough */
         case TP.HTTP_PUT:
 
-            //  NB: We assume 'async' of false here.
-            resp = val.getResource(TP.hc('async', false));
-            bodyContent = resp.get('result');
+            if (TP.isURI(val = bodyURIs.first())) {
 
-            //  If we had a body, set the resource of the URI to it. We might
-            //  not - we might have a simple payload in the query.
-            if (TP.isURI(val = bodyURIs.first()) && TP.isValid(bodyContent)) {
-                bodyContent = bodyContent.get('value');
-                uri.setResource(bodyContent);
+                //  NB: We assume 'async' of false here.
+                resp = val.getResource(TP.hc('async', false));
+                bodyContent = resp.get('result');
+
+                //  If we had a body, set the resource of the URI to it. We
+                //  might not - we might have a simple payload in the query.
+                if (TP.isValid(bodyContent)) {
+                    bodyContent = bodyContent.get('value');
+                    uri.setResource(bodyContent);
+                } else {
+                    uri.setResource('');
+                }
             } else {
                 uri.setResource('');
             }

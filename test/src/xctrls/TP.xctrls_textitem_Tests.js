@@ -312,6 +312,18 @@ function() {
 
     //  ---
 
+    this.beforeEach(
+        function() {
+
+            var tpElem;
+
+            //  Make sure that each test starts with a freshly reset item
+            tpElem = TP.byId('datatextitem1', windowContext);
+            tpElem.deselectAll();
+        });
+
+    //  ---
+
     this.it('setting value to scalar values', function(test, options) {
 
         var tpElem,
@@ -334,10 +346,16 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('bar'));
 
+        //  reset
+        tpElem.deselectAll();
+
         //  String (multiple)
         tpElem.set('value', 'foo;baz');
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo', 'baz'));
+
+        //  reset
+        tpElem.deselectAll();
 
         //  Number
         tpElem.set('value', testData.at('Number'));
@@ -374,10 +392,16 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
 
+        //  reset
+        tpElem.deselectAll();
+
         //  Object
         tpElem.set('value', {foo: 'baz'});
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
+
+        //  reset
+        tpElem.deselectAll();
 
         //  TP.core.Hash
         tpElem.set('value', TP.hc('foo', 'bar'));
@@ -404,30 +428,48 @@ function() {
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('bar'));
 
+        //  reset
+        tpElem.deselectAll();
+
         //  AttributeNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('bar'));
+
+        //  reset
+        tpElem.deselectAll();
 
         //  TextNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo'));
 
+        //  reset
+        tpElem.deselectAll();
+
         //  CDATASectionNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  reset
+        tpElem.deselectAll();
 
         //  PINode
         tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('bar'));
 
+        //  reset
+        tpElem.deselectAll();
+
         //  CommentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('foo'));
+
+        //  reset
+        tpElem.deselectAll();
 
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));

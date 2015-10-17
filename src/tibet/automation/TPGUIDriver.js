@@ -1572,54 +1572,55 @@ function(target, type, args, callback, currentElement) {
             break;
 
         case 'mousedown':
-
-            evtArgs = populateSynArgs(args, finalTarget);
-
-            syn.trigger(
-                'mousedown',
-                TP.extern.syn.key.options(evtArgs, 'mousedown'),
-                finalTarget);
-
-            callback();
-
-            break;
-
         case 'mouseup':
 
+            /* eslint-disable wrap-iife */
+            (function() {
+                var evtHandler;
+
+                evtHandler = function(anEvt) {
+                    finalTarget.removeEventListener(type, evtHandler, false);
+                    evtHandler.callback();
+                };
+
+                evtHandler.callback = callback;
+                finalTarget.addEventListener(type, evtHandler, false);
+            })();
+            /* eslint-enable wrap-iife */
+
             evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
-                'mouseup',
-                TP.extern.syn.key.options(evtArgs, 'mouseup'),
+                type,
+                //  TODO: Verify this:
+                {},
                 finalTarget);
-
-            callback();
 
             break;
 
         case 'keydown':
-
-            evtArgs = populateSynArgs(args, finalTarget);
-
-            syn.trigger(
-                'keydown',
-                TP.extern.syn.key.options(evtArgs, 'keydown'),
-                finalTarget);
-
-            callback();
-
-            break;
-
         case 'keyup':
 
+            /* eslint-disable wrap-iife */
+            (function() {
+                var evtHandler;
+
+                evtHandler = function(anEvt) {
+                    finalTarget.removeEventListener(type, evtHandler, false);
+                    evtHandler.callback();
+                };
+
+                evtHandler.callback = callback;
+                finalTarget.addEventListener(type, evtHandler, false);
+            })();
+            /* eslint-enable wrap-iife */
+
             evtArgs = populateSynArgs(args, finalTarget);
 
             syn.trigger(
-                'keyup',
-                TP.extern.syn.key.options(evtArgs, 'keyup'),
+                type,
+                TP.extern.syn.key.options(evtArgs, type),
                 finalTarget);
-
-            callback();
 
             break;
 
@@ -1628,9 +1629,25 @@ function(target, type, args, callback, currentElement) {
             doc = TP.nodeGetDocument(finalTarget);
             newEvent = TP.documentCreateEvent(doc, args);
 
-            finalTarget.dispatchEvent(newEvent);
+            /* eslint-disable wrap-iife */
+            (function() {
+                var evtHandler;
 
-            callback();
+                evtHandler = function(anEvt) {
+                    finalTarget.removeEventListener(args.at('type'),
+                                                    evtHandler,
+                                                    false);
+                    evtHandler.callback();
+                };
+
+                evtHandler.callback = callback;
+                finalTarget.addEventListener(args.at('type'),
+                                                evtHandler,
+                                                false);
+            })();
+            /* eslint-enable wrap-iife */
+
+            finalTarget.dispatchEvent(newEvent);
 
             break;
 
