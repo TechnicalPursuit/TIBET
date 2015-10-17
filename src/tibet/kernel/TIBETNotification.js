@@ -287,6 +287,9 @@ TP.sig.Signal.Type.defineAttribute('bubbling', false);
 //  is this signal type cancelable? typically signals can be stopped
 TP.sig.Signal.Type.defineAttribute('cancelable', true);
 
+//  is the receiver a controller root, meaning controller traversal stops?
+TP.sig.Signal.Type.defineAttribute('controllerRoot', null);
+
 //  TIBET's default is to work up the tree so specialization works
 TP.sig.Signal.Type.defineAttribute('defaultPolicy', TP.DEFAULT_FIRING);
 
@@ -354,8 +357,7 @@ function() {
     /**
      * @method getSignalNames
      * @summary Returns the list of signal names from this type through
-     *     TP.sig.Signal or the first type which responds true to
-     *     isSignalingRoot.
+     *     TP.sig.Signal.
      * @returns {String}
      */
 
@@ -373,9 +375,6 @@ function() {
 
     while (type) {
         names.push(type.getSignalName());
-        //  TODO:   sherpa console Shift-Return fails if you do this "right" and
-        //  stop at signaling root instead of TP.sig.Signal.
-        //if (type.isSignalingRoot()) {
         if (type === TP.sig.Signal) {
             break;
         }
@@ -437,6 +436,33 @@ function() {
 
     return this.$get('cancelable');
 });
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Type.defineMethod('isControllerRoot',
+function(aFlag) {
+
+    /**
+     * @method isControllerRoot
+     * @summary Combined setter/getter for whether signals of this type will
+     *     stop before traversing the TIBET controller chain. Typical signals
+     *     will notify through the entire chain, however some specific types
+     *     do not, such as WorkflowSignal types like Request and Response.
+     * @param {Boolean} aFlag
+     * @returns {Boolean}
+     */
+
+    if (TP.isDefined(aFlag)) {
+        this.$set('controllerRoot', aFlag);
+    }
+
+    return TP.isTrue(this.$get('controllerRoot'));
+});
+
+//  ------------------------------------------------------------------------
+
+//  Most signals do not stop propogation when reaching the controller chain.
+TP.sig.Signal.isControllerRoot(false);
 
 //  ------------------------------------------------------------------------
 
@@ -1623,8 +1649,7 @@ function() {
     /**
      * @method getTypeSignalNames
      * @summary Returns the list of signal names acquired from the receiver's
-     *     type and its supertypes up through TP.sig.Signal or the first type
-     *     which responds true to isSignalingRoot. This differs from
+     *     type and its supertypes up through TP.sig.Signal. This differs from
      *     getSignalNames in that type names will never include spoofed signal
      *     names in the result list.
      * @returns {Array} An Array of signal type names.
@@ -1748,6 +1773,36 @@ function() {
     }
 
     return this.getType().isCancelable();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('isControllerRoot',
+function(aFlag) {
+
+    /**
+     * @method isControllerRoot
+     * @summary Combined setter/getter for whether signals of this type form a
+     *     local signaling root. When true certain forms of signaling will stop
+     *     traversing supertypes and stop with the receiver.
+     * @param {Boolean} aFlag
+     * @returns {Boolean} Whether or not the receiver can be considered a
+     *     'signaling root'.
+     */
+
+    var sigType;
+
+    sigType = TP.sig.SignalMap.$getSignalType(this, this.getType());
+
+    if (!TP.isType(sigType)) {
+        sigType = TP.sys.getTypeByName(sigType);
+    }
+
+    if (!TP.isType(sigType)) {
+        sigType = this.getType();
+    }
+
+    return sigType.isControllerRoot(aFlag);
 });
 
 //  ------------------------------------------------------------------------
@@ -4314,12 +4369,16 @@ function(aSignal) {
         return;
     }
 
-    //  Verify this signal type should be propagated
-    //  TODO:   check a method or something to see if controllers should be
-    //  told. Common exclusions are workflow signals (wrapupJob stuff etc.)
+    //  Verify this signal type should be propagated through controller chain.
+    //  Most are but some like processing/workflow signals are intended for a
+    //  local audience and are likely to be converted to promises over time so
+    //  we don't want to create dependencies on them being propogated.
+    if (aSignal.isControllerRoot()) {
+        return;
+    }
 
     app = TP.sys.getApplication();
-    controllers = app.get('controllers');
+    controllers = app.getControllers(aSignal);
 
     len = controllers.getSize();
     for (i = 0; i < len; i++) {

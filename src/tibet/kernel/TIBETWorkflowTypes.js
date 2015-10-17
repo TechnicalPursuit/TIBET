@@ -1017,6 +1017,9 @@ TP.sig.WorkflowSignal.Inst.resolveTraits(
 TP.sig.WorkflowSignal.Type.defineAttribute('defaultPolicy',
                                             TP.INHERITANCE_FIRING);
 
+//  Turn off notification of WorkflowSignal and subtypes through controllers.
+TP.sig.WorkflowSignal.Type.isControllerRoot(true);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -5927,7 +5930,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Application.Inst.defineMethod('getControllers',
-function() {
+function(aSignal) {
 
     /**
      * @method getControllers
@@ -5997,7 +6000,8 @@ function() {
         //  Note here how we only warn if the controller name was specified and
         //  not generated here.
         TP.ifWarn() && !defaulted ?
-            TP.warn('InvalidRouteController', controllerName) : 0;
+            TP.warn('InvalidRouteController', controllerName, ' for ',
+                TP.name(aSignal)) : 0;
 
         return controllers;
     }

@@ -584,6 +584,8 @@ TP.core.ResizeMonitor.Type.defineAttribute(
 
 TP.sig.Signal.defineSubtype('ProcessingComplete');
 
+TP.sig.ProcessingComplete.Type.isControllerRoot(true);
+
 TP.sig.ProcessingComplete.defineSubtype('CompileComplete');
 TP.sig.ProcessingComplete.defineSubtype('AttachComplete');
 TP.sig.ProcessingComplete.defineSubtype('DetachComplete');
