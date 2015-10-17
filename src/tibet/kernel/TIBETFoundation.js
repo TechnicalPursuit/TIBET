@@ -2603,7 +2603,7 @@ function(aDescriptor, aHandler) {
      *          signal (TIBET type or String signal name)
      *          origin (object or String id)
      *          state (String state name)
-     *          capturing (Boolean for whether the handler is capturing).
+     *          phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING (default)).
      * @param {Function} aHandler The function body for the event handler.
      * @return {Object} The receiver.
      */

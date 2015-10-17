@@ -5541,61 +5541,6 @@ function(aNode, includeNode, aPrefix, joinChar) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeGetControlElement',
-function(aNode) {
-
-    /**
-     * @method nodeGetControlElement
-     * @summary Finds the control element for aNode and returns it. This is
-     *     typically invoked by element children of the control during various
-     *     operations which requires them to find the overall control (widget)
-     *     element.
-     * @param {Node} aNode The DOM node to operate on.
-     * @returns {Element} A valid element or null.
-     */
-
-    if (TP.isElement(aNode) &&
-        (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
-            TP.elementHasAttribute(aNode, 'tibet:ctrl', true))) {
-        return aNode;
-    }
-
-    return TP.nodeGetFirstAncestorByAttribute(
-                            aNode, 'tibet:tag tibet:ctrl');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('nodeGetControlId',
-function(aNode, assignIfAbsent) {
-
-    /**
-     * @method nodeGetControlId
-     * @summary Finds the control element for aNode and returns it's ID. This
-     *     is typically invoked by pseudo-element children of the control when
-     *     building their local ID.
-     * @param {Node} aNode The DOM node to operate on.
-     * @param {Boolean} assignIfAbsent True to force the element to get a new ID
-     *     if missing.
-     * @returns {String} A valid element ID or null.
-     */
-
-    var elem,
-        id;
-
-    elem = TP.nodeGetControlElement(aNode);
-    if (TP.isElement(elem)) {
-        id = TP.elementGetAttribute(elem, 'id');
-        if (TP.isEmpty(id) && TP.isTrue(assignIfAbsent)) {
-            id = TP.lid(elem, true);
-        }
-    }
-
-    return id;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('nodeGetDocumentPosition',
 function(aNode, joinChar) {
 
@@ -5664,7 +5609,7 @@ function(aNode, joinChar) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetResponderChain',
-function(aNode) {
+function(aNode, aSignal) {
 
     /**
      * @method nodeGetResponderChain
@@ -5672,6 +5617,7 @@ function(aNode) {
      *     containment hierarchy for aNode. This method essentially iterates via
      *     nodeGetResponderElement until no more responder elements are found.
      * @param {Node} aNode The DOM node to operate on.
+     * @param {TP.core.Signal} aSignal The signal instance being dispatched.
      * @returns {Array} The list of responder elements found. The order of the
      *     list is from first (closest to the element) to last (furthest from
      *     element), essentially the order for event bubbling phase processing.
@@ -5682,10 +5628,13 @@ function(aNode) {
 
     arr = TP.ac();
 
-    node = TP.nodeGetResponderElement(aNode);
+    node = TP.nodeGetResponderElement(aNode, aSignal);
     while (TP.isValid(node)) {
         arr.push(node);
-        node = TP.nodeGetResponderElement(node.parentNode);
+        if (TP.notValid(node.parentNode)) {
+            break;
+        }
+        node = TP.nodeGetResponderElement(node.parentNode, aSignal);
     }
 
     return arr;
@@ -5694,40 +5643,69 @@ function(aNode) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetResponderElement',
-function(aNode) {
+function(aNode, aSignal) {
 
     /**
      * @method nodeGetResponderElement
      * @summary Finds the 'responder' element for aNode and returns it. A
      *     responder element is an element with either tibet:ctrl or tibet:tag
-     *     attribute data indicating it is a component of some kind. If the node
-     *     provided has one or more of these attributes it is returned directly.
+     *     or one whose type responds affirmatively to isResponderFor.
      *     NOTE that this method will also traverse up through iframe containers
      *     to locate a potential component element.
      * @param {Node} aNode The DOM node to operate on.
+     * @param {TP.core.Signal} aSignal The signal instance being dispatched.
      * @returns {Element} A valid element or null.
      */
 
     var node,
         win,
+        type,
         frame;
 
-    if (TP.isElement(aNode) &&
-        (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
-            TP.elementHasAttribute(aNode, 'tibet:ctrl', true))) {
+    if (TP.notValid(aNode)) {
+        return this.raise('InvalidNode');
+    }
+
+    if (!TP.isElement(aNode)) {
+
+        node = aNode.parentNode;
+        if (TP.isValid(node)) {
+            return TP.nodeGetResponderElement(node);
+        }
+
+        //  Check for a containing iframe element often used as a "screen".
+        win = TP.nodeGetWindow(aNode);
+        if (TP.isIFrameWindow(win)) {
+            frame = win.frameElement;
+            if (TP.isElement(frame)) {
+                return TP.nodeGetResponderElement(frame);
+            }
+        }
+
+        return;
+    }
+
+    //  Attribute checks are the fastest option.
+    if (TP.elementHasAttribute(aNode, 'tibet:tag', true) ||
+            TP.elementHasAttribute(aNode, 'tibet:ctrl', true)) {
         return aNode;
     }
 
-    node = TP.nodeGetFirstAncestorByAttribute(aNode, 'tibet:tag tibet:ctrl');
-    if (TP.isValid(node)) {
-        return node;
+    //  Native types may be responders but not have a tibet:tag or tibet:ctrl
+    //  attribute so we need to query them by type.
+    type = TP.nodeGetConcreteType(aNode);
+    if (TP.canInvoke(type, 'isResponderFor')) {
+        if (type.isResponderFor(aNode, aSignal)) {
+            return aNode;
+        }
+    }
+
+    if (TP.isValid(aNode.parentNode)) {
+        return TP.nodeGetResponderElement(aNode.parentNode, aSignal);
     }
 
     //  Check for a containing iframe element often used as a "screen".
-    //  We only return the iframe if it fits our criteria for tag/ctrl,
-    //  otherwise we continue searching upward from the iframe.
     win = TP.nodeGetWindow(aNode);
-
     if (TP.isIFrameWindow(win)) {
         frame = win.frameElement;
         if (TP.isElement(frame)) {

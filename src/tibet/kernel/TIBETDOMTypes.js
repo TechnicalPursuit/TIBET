@@ -797,6 +797,60 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Node.Type.defineMethod('isResponderFor',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderFor
+     * @summary Returns true if the type in question should be considered a
+     * responder for the specific node/signal pair provided.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    var signames,
+        fname,
+        len,
+        i;
+
+    if (TP.isValid(aSignal)) {
+        signames = aSignal.getSignalNames();
+    } else {
+        signames = ['Signal'];
+    }
+
+    //  Convert all the signal names to simple form.
+    signames = signames.map(function(name) {
+        return TP.contractSignalName(TP.expandSignalName(name));
+    });
+
+    len = signames.length;
+    for (i = 0; i < len; i++) {
+        fname = 'isResponderFor' + signames.at(i);
+        if (TP.canInvoke(this, fname)) {
+            return this[fname](aNode, aSignal);
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Type.defineMethod('isResponderForSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForSignal
+     * @summary Returns true if the type in question should be considered a
+     * responder for the specific node/signal pair provided.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
@@ -1662,41 +1716,6 @@ function() {
      */
 
     return TP.core.Node.getContentMIMEType(this);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('getControlElement',
-function() {
-
-    /**
-     * @method getControlElement
-     * @summary Finds the control element for the receiver and returns it. This
-     *     is typically invoked by pseudo-element children of the control during
-     *     various processing which requires them to find the overall control
-     *     (widget) element.
-     * @returns {TP.core.ElementNode} A valid TP.core.ElementNode or null.
-     */
-
-    return TP.wrap(TP.nodeGetControlElement(this.getNativeNode()));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('getControlID',
-function(assignIfAbsent) {
-
-    /**
-     * @method getControlId
-     * @summary Finds the control element for the receiver and returns it's ID.
-     *     This is typically invoked by pseudo-element children of the control
-     *     when building their local ID.
-     * @param {Boolean} assignIfAbsent True to force the element to get a new ID
-     *     if missing.
-     * @returns {String} A valid element ID or null.
-     */
-
-    return TP.nodeGetControlID(this.getNativeNode(), assignIfAbsent);
 });
 
 //  ------------------------------------------------------------------------
@@ -3861,6 +3880,26 @@ function(aFlag) {
     }
 
     return natNode[TP.SHOULD_SIGNAL_CHANGE] === true;
+});
+
+//  ------------------------------------------------------------------------
+//  Primitives
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetConcreteType',
+function(aNode) {
+
+    /**
+     * @method nodeGetConcreteType
+     * @summary Returns the specific TP.core.Node subtype associated with the
+     *     node provided.
+     * @param {Node} aNode The native node to test.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.lang.RootObject.<TP.core.Node>} A TP.core.Node subtype type
+     *     object.
+     */
+
+    return TP.core.Node.getConcreteType(aNode);
 });
 
 //  ========================================================================

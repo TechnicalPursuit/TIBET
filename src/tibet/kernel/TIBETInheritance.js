@@ -1653,7 +1653,7 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
 
     var orgid,
         signalNames,
-        capturing,
+        phase,
         states,
         expression,
         index,
@@ -1710,9 +1710,18 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
     //  Phase
     //  ---
 
-    capturing = aSignal.getPhase() === TP.CAPTURING_PHASE;
-    if (capturing) {
-        expression += 'Capture';
+    phase = aSignal.getPhase();
+    switch (phase) {
+        case TP.CAPTURING:
+            expression += TP.CAPTURING;
+            break;
+        case TP.AT_TARGET:
+            expression += TP.AT_TARGET;
+            break;
+        case TP.BUBBLING:
+            break;
+        default:
+            break;
     }
 
     //  ---

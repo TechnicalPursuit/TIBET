@@ -27,6 +27,16 @@ TP.html.a.Type.set('uriAttrs', TP.ac('href'));
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.html.a.Type.defineMethod('isResponderForUIFocus',
+function() {
+
+    //  TODO:   replace this with a lot better implementation. this is a testing
+    //  stub to prove the signaling system is doing the right thing.
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.a.Type.defineMethod('tagUnmarshal',
 function(aRequest) {
 

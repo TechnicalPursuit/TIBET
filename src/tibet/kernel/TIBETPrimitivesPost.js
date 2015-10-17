@@ -5197,7 +5197,7 @@ function(aDescriptor) {
      *          signal (tibet type or string signal name)
      *          origin (object or string id)
      *          state (string state name)
-     *          capturing (boolean for whether the handler is capturing).
+     *          phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING (default)).
      * @return {String} The handler name defined by the descriptor.
      */
 
@@ -5252,9 +5252,22 @@ function(aDescriptor) {
         handler = 'handle' + signame.asJSIdentifier();
     }
 
-    //  Add optional Capture phrase
-    if (descriptor && TP.isTrue(descriptor.capturing)) {
-        handler += 'Capture';
+    //  Add optional phase-specific phrase
+    if (descriptor && TP.isValid(descriptor.phase)) {
+        switch (descriptor.phase) {
+            case TP.CAPTURING:
+                handler += TP.CAPTURING;
+                break;
+            case TP.AT_TARGET:
+                handler += TP.AT_TARGET;
+                break;
+            case TP.BUBBLING:
+                break;
+            default:
+                TP.ifWarn() ?
+                    TP.warn('InvalidSignalPhase', descriptor.phase) : 0;
+                break;
+        }
     }
 
     //  Add optional From clause for origin filtering.

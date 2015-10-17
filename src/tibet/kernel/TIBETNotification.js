@@ -278,8 +278,7 @@ TP.lang.Object.defineSubtype('sig.Signal');
 
 //  signal phases for DOM 2 simulation
 TP.sig.Signal.Type.defineAttribute(
-        'phases',
-        TP.ac(TP.AT_TARGET, TP.CAPTURING_PHASE, TP.BUBBLING_PHASE));
+        'phases', TP.ac(TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING));
 
 //  does this signal type bubble? typically only DOM signals do
 TP.sig.Signal.Type.defineAttribute('bubbling', false);
@@ -5020,7 +5019,7 @@ function(originSet, aSignal, aPayload, aType) {
     }
 
     //  set the phase to capturing to get started
-    sig.setPhase(TP.CAPTURING_PHASE);
+    sig.setPhase(TP.CAPTURING);
 
     //  without a target we've got trouble in DOM firing since the target
     //  defines when we stop capturing and start bubbling...
@@ -5294,7 +5293,7 @@ function(originSet, aSignal, aPayload, aType) {
                 break;
             }
 
-            sig.setPhase(TP.BUBBLING_PHASE);
+            sig.setPhase(TP.BUBBLING);
         }
     }
 
@@ -5374,7 +5373,7 @@ function(originSet, aSignal, aPayload, aType) {
     //  ---
 
     //  set the phase to capturing to get started
-    sig.setPhase(TP.CAPTURING_PHASE);
+    sig.setPhase(TP.CAPTURING);
 
     TP.sig.SignalMap.notifyControllers(sig);
 
@@ -5387,23 +5386,17 @@ function(originSet, aSignal, aPayload, aType) {
     //  Capturing phase...responders
     //  ---
 
-    //  If the signal has a target and that's an element then we can do a
+    //  If the signal has a target and that's a target node then we can do a
     //  responder-chain computation.
-    if (TP.isElement(target)) {
+    if (TP.isNode(target)) {
 
-        responders = TP.nodeGetResponderChain(target);
+        responders = TP.nodeGetResponderChain(target, sig);
 
         if (TP.notEmpty(responders)) {
 
-            //  If the target is the first object in the list remove it. We don't
-            //  want to process it during capturing...it's really the 'at target'.
-            if (responders.at(0) === target) {
-                responders = responders.slice(1);
-            }
-
             //  Initial array comes in target-to-parent order which is inverted
-            //  from what we want for capturing phase so once we've removed the
-            //  target (if present) we can reverse to get the right ordering.
+            //  from what we want for capturing phase so we reverse for this
+            //  step.
             responders.reverse();
 
             len = responders.getSize();
@@ -5448,7 +5441,7 @@ function(originSet, aSignal, aPayload, aType) {
     //  ---
 
     //  we're bubbling... we're bubbling...
-    sig.setPhase(TP.BUBBLING_PHASE);
+    sig.setPhase(TP.BUBBLING);
 
     if (TP.notEmpty(responders)) {
 
@@ -5501,6 +5494,8 @@ function(target, signal) {
      */
 
     var id,
+        last,
+        type,
         responder;
 
     //  tibet:ctrl
@@ -5514,7 +5509,10 @@ function(target, signal) {
         } else {
 
             if (TP.isType(responder)) {
+                last = responder;
                 responder = responder.construct();
+            } else {
+                last = responder.getType();
             }
 
             if (TP.canInvoke(responder, 'handle')) {
@@ -5548,17 +5546,48 @@ function(target, signal) {
             //  tibet:tag is typically a type name reference but we want to wrap
             //  the element in an instance and get it to respond.
             if (TP.isType(responder)) {
+                type = responder;
                 responder = responder.construct(target);
+            } else {
+                type = responder.getType();
             }
 
-            if (TP.canInvoke(responder, 'handle')) {
-                signal.setOrigin(TP.gid(target));
-                responder.handle(signal);
-            } else {
-                this.raise('InvalidResponder',
-                        TP.sc('Responder: ', id,
-                                ' cannot handle: ', signal.getSignalName()));
+            //  Don't dispatch twice to an instance of the same type.
+            if (type !== last) {
+                last = type;
+
+                if (TP.canInvoke(responder, 'handle')) {
+                    signal.setOrigin(TP.gid(target));
+                    responder.handle(signal);
+                } else {
+                    this.raise('InvalidResponder',
+                            TP.sc('Responder: ', id,
+                                    ' cannot handle: ', signal.getSignalName()));
+                }
+
+                //  Don't proceed to tibet:tag without checking for propagation.
+                //  Note that we only check for 'stop immediately' here because
+                //  we're at the same 'DOM element' level for the next check of
+                //  'tibet:tag'.
+                if (signal.shouldStopImmediately()) {
+                    return;
+                }
             }
+        }
+    }
+
+    //  isResponderFor
+
+    type = TP.nodeGetConcreteType(target);
+    if (type !== last) {
+        responder = TP.wrap(target);
+        if (TP.canInvoke(responder, 'handle')) {
+            signal.setOrigin(TP.gid(target));
+            responder.handle(signal);
+        } else {
+            this.raise('InvalidResponder',
+                    TP.sc('Responder: ', id,
+                            ' cannot handle: ', signal.getSignalName()));
         }
     }
 
