@@ -83,7 +83,11 @@ function(aRequest) {
         successHandler,
         failureHandler;
 
-    params = TP.ifInvalid(aRequest, TP.hc());
+    if (TP.isString(aRequest)) {
+        params = TP.hc('cmdSrc', aRequest);
+    } else {
+        params = TP.ifInvalid(aRequest, TP.hc());
+    }
 
     cmdSrc = params.at('cmdSrc');
     if (TP.isEmpty(cmdSrc)) {
@@ -2808,6 +2812,8 @@ function(aRequest, allForms) {
                 } else {
                     //  Handle Strings
 
+                    //  We have three forms of "quoting" using either single,
+                    //  double, or backtick for different semantic meanings.
                     if (val.charAt(0) === '"') {
                         val = val.unquoted();
                     } else if (val.charAt(0) === '\'') {
@@ -2815,8 +2821,6 @@ function(aRequest, allForms) {
                     } else if (val.charAt(0) === '`') {
                         //  We leave 'val' alone here and let it get expanded.
                         void 0;
-                    } else {
-                        val = val.unquoted();
                     }
 
                     //  If we don't have an 'expanded value', then call upon the

@@ -41,7 +41,7 @@ function() {
 
     this.it('simple expansion', function(test, options) {
 
-        inputVal = ':testCmd -first --second --third=\'foo\'';
+        inputVal = ':testCmd -first --second --third=\'foo\' -fourth="bar"';
         correctResult =
             TP.hc(
                 'tsh:first',
@@ -53,18 +53,25 @@ function() {
                         'Resolved value', true),
                 'tsh:second',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '\'second\'',
-                        'Expanded value tname', 'String',
-                        'Expanded value', '\'second\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'second'),
+                        'Original value', 'true',
+                        'Expanded value tname', 'Boolean',
+                        'Expanded value', true,
+                        'Resolved value tname', 'Boolean',
+                        'Resolved value', true),
                 'tsh:third',
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'foo\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '\'foo\'',
                         'Resolved value tname', 'String',
-                        'Resolved value', 'foo')
+                        'Resolved value', 'foo'),
+                'tsh:fourth',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '"bar"',
+                        'Expanded value tname', 'String',
+                        'Expanded value', 'bar',
+                        'Resolved value tname', 'Null',
+                        'Resolved value', TP.NULL)
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);

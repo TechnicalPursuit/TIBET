@@ -763,9 +763,15 @@ function(source, shell, sibling, request) {
                                 } else {
                                     command.push(' tsh:', next.value, '="');
                                     if (token.value === '--') {
-                                        //  double-dash flags are set to the
-                                        //  (quoted value) of the name
-                                        command.push('\'', next.value, '\'');
+                                        //  historically we used -- as shorthand
+                                        //  for "existence attributes in xml"
+                                        //  meaning --checked became
+                                        //  checked="checked". We no longer do
+                                        //  that since it was obscure and
+                                        //  inconsistent with how the CLI does
+                                        //  argument processing.
+                                        //command.push('\'', next.value, '\'');
+                                        command.push('true');
                                     } else if (token.value === '-') {
                                         //  single-dash flags are set to true
                                         command.push('true');
