@@ -139,6 +139,46 @@ TP.html.iframe.addTraits(TP.core.UICanvas);
 TP.html.iframe.Type.set('uriAttrs', TP.ac('src', 'longdesc'));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.iframe.Type.defineMethod('isResponderForUIFocusChangeSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusChangeSignal
+     * @summary Returns true if the node does not have a 'disabled' attribute to
+     *     match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.iframe.Type.defineMethod('isResponderForUIFocusComputationSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusComputationSignal
+     * @summary Returns true if the node does not have a 'disabled' attribute to
+     *     match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

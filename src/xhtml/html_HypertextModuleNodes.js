@@ -27,12 +27,42 @@ TP.html.a.Type.set('uriAttrs', TP.ac('href'));
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.html.a.Type.defineMethod('isResponderForUIFocus',
-function() {
+TP.html.a.Type.defineMethod('isResponderForUIFocusChangeSignal',
+function(aNode, aSignal) {
 
-    //  TODO:   replace this with a lot better implementation. this is a testing
-    //  stub to prove the signaling system is doing the right thing.
-    return true;
+    /**
+     * @method isResponderForUIFocusChangeSignal
+     * @summary Returns true if the node has an 'href' attribute (but not if it
+     *     has a 'disabled' attribute) to match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return TP.elementHasAttribute(aNode, 'href', true) &&
+            !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.a.Type.defineMethod('isResponderForUIFocusComputationSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusComputationSignal
+     * @summary Returns true if the node has an 'href' attribute (but not if it
+     *     has a 'disabled' attribute) to match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return TP.elementHasAttribute(aNode, 'href', true) &&
+            !TP.elementHasAttribute(aNode, 'disabled', true);
 });
 
 //  ------------------------------------------------------------------------

@@ -299,6 +299,46 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusChangeSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusChangeSignal
+     * @summary Returns true if the node has a 'tabindex' attribute (but not if
+     *     it has a 'disabled' attribute) to match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return TP.elementHasAttribute(aNode, 'tabindex', true) &&
+            !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusComputationSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusComputationSignal
+     * @summary Returns true if the node has a 'tabindex' attribute (but not if
+     *     it has a 'disabled' attribute) to match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return TP.elementHasAttribute(aNode, 'tabindex', true) &&
+            !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('onblur',
 function(aTargetElem, anEvent) {
 

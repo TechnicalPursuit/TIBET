@@ -55,6 +55,48 @@ TP.html.Aligned.isAbstract(true);
 TP.html.Attrs.defineSubtype('Focused');
 TP.html.Focused.isAbstract(true);
 
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.Focused.Type.defineMethod('isResponderForUIFocusChangeSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusChangeSignal
+     * @summary Returns true if the node does not have a 'disabled' attribute to
+     *     match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.Focused.Type.defineMethod('isResponderForUIFocusComputationSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusComputationSignal
+     * @summary Returns true if the node does not have a 'disabled' attribute to
+     *     match (X)HTML semantics.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.Attrs.defineSubtype('Citation');
 TP.html.Citation.isAbstract(true);
 
