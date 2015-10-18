@@ -60,16 +60,20 @@ function(aRequest) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  Register a handler function that will signal a TP.sig.DOMReady when the
-    //  stylesheet has finished loading.
+    //  Register a handler function that will dispatch a TP.sig.DOMReady when
+    //  the stylesheet has finished loading.
     handlerFunc =
         function() {
 
             //  Remove this handler to avoid memory leaks.
             elem.removeEventListener('load', handlerFunc, false);
 
-            this.signal('TP.sig.DOMReady');
-        }.bind(this);
+            //  Dispatch 'TP.sig.DOMReady' for consistency with other elements
+            //  that dispatch this when their 'dynamic content' is resolved.
+            //  Note that we use 'dispatch()' here because this is a DOM signal
+            //  and we want all of the characteristics of a DOM signal.
+            TP.wrap(elem).dispatch('TP.sig.DOMReady');
+        };
 
     elem.addEventListener('load', handlerFunc, false);
 

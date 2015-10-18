@@ -201,8 +201,11 @@ function() {
      * @fires TP.sig.DOMReady
      */
 
-    //  Signal that we're ready
-    this.signal('TP.sig.DOMReady');
+    //  Dispatch 'TP.sig.DOMReady' for consistency with other elements that
+    //  dispatch this when their 'dynamic content' is resolved. Note that we use
+    //  'dispatch()' here because this is a DOM signal and we want all of the
+    //  characteristics of a DOM signal.
+    this.dispatch('TP.sig.DOMReady');
 
     return this;
 });

@@ -595,9 +595,12 @@ function() {
                 resultURI.setResource(result);
                 thisArg.signal('TP.sig.UIDataConstruct');
 
-                //  Signal 'TP.sig.DOMReady' for consistency with other elements
-                //  that signal this when their 'dynamic content' is resolved.
-                thisArg.signal('TP.sig.DOMReady');
+                //  Dispatch 'TP.sig.DOMReady' for consistency with other
+                //  elements that dispatch this when their 'dynamic content' is
+                //  resolved. Note that we use 'dispatch()' here because this is
+                //  a DOM signal and we want all of the characteristics of a DOM
+                //  signal.
+                thisArg.dispatch('TP.sig.DOMReady');
             }
         });
 
