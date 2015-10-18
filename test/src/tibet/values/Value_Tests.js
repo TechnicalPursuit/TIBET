@@ -222,7 +222,9 @@ function() {
     testKeys = testData.getKeys();
 
     winGID = TP.gid(testData.at('Window'));
-    docLoc = encodeURI(TP.documentGetLocation(testData.at('HTMLDocument')));
+    docLoc = encodeURI(TP.documentGetLocation(
+                            testData.at('HTMLDocument'), false, true));
+    docLoc = TP.uriInTIBETFormat(docLoc);
 
     /* eslint-disable no-multi-spaces */
     correctValues = TP.hc(
@@ -245,8 +247,8 @@ function() {
         'IFrameWindow',                         winGID + '.UIROOT',
 
         //'Node',                                 'Node',
-        'HTMLDocument',                         'tibet://' + winGID + '/' + docLoc,
-        'HTMLElement',                          'tibet://' + winGID + '/' + docLoc.slice(0, docLoc.indexOf('#?')) + '#body',
+        'HTMLDocument',                         'tibet://' + winGID + '/' + docLoc + '#document',
+        'HTMLElement',                          'tibet://' + winGID + '/' + docLoc + '#body',
 
         'XMLDocument',                          TP.id(testData.at('XMLDocument')),
         'XMLElement',                           TP.id(testData.at('XMLElement')),
@@ -276,8 +278,8 @@ function() {
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
         'TP.core.Window',                       TP.sys.cfg('tibet.uibuffer'),
-        'TP.core.HTMLDocumentNode',             'tibet://' + winGID + '/' + docLoc,
-        'TP.core.HTMLElementNode',              'tibet://' + winGID + '/' + docLoc.slice(0, docLoc.indexOf('#?')) + '#body',
+        'TP.core.HTMLDocumentNode',             'tibet://' + winGID + '/' + docLoc + '#document',
+        'TP.core.HTMLElementNode',              'tibet://' + winGID + '/' + docLoc + '#body',
 
         'TP.core.XMLDocumentNode',              TP.id(testData.at('XMLDocument')),
         'TP.core.XMLElementNode',               TP.id(testData.at('XMLElement')),

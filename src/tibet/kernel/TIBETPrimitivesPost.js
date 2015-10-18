@@ -1603,8 +1603,10 @@ function(anObject, assignIfAbsent) {
 
                 //  It doesn't start with our current prefix
                 if (!id.startsWith(prefix)) {
-                    //  If it starts with another prefix, slice that off
-                    if (TP.regex.TIBET_URL.test(id)) {
+                    //  If it starts with another 'tibet:' prefix (but *not* a
+                    //  virtual path - we allow those), slice that off
+                    if (TP.regex.TIBET_URL.test(id) &&
+                        !TP.regex.VIRTUAL_URI_PREFIX.test(id)) {
                         id = id.slice(id.indexOf('/', 8) + 1);
                     }
 
@@ -1639,7 +1641,7 @@ function(anObject, assignIfAbsent) {
                 loc = id;
             }
         } else {
-            loc = TP.documentGetLocation(obj) || '';
+            loc = TP.documentGetLocation(obj, false, true) || '';
 
             if (TP.isEmpty(loc)) {
                 if (TP.isElement(root)) {
@@ -1652,6 +1654,8 @@ function(anObject, assignIfAbsent) {
                     //  empty location, empty document
                     loc = '';
                 }
+            } else {
+                loc = TP.uriInTIBETFormat(loc);
             }
 
             if (TP.regex.URI_FRAGMENT.test(loc)) {
