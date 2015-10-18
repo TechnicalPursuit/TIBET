@@ -5658,7 +5658,16 @@ function(newContent, aRequest, shouldSignal) {
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
             function(aNode) {
+                var docURI;
+
+                docURI = request.at('uri');
+                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
+                    //  NB: We pass true to force the document URI to update.
+                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
+                }
+
                 reqLoadFunc(aNode);
+
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
                 }
@@ -5666,7 +5675,16 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(aNode) {
+                var docURI;
+
+                docURI = request.at('uri');
+                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
+                    //  NB: We pass true to force the document URI to update.
+                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
+                }
+
                 thisref.contentReplaceCallback(aNode);
+
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
                 }
@@ -5845,7 +5863,17 @@ function(newContent, aRequest, shouldSignal) {
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
             function(aNode) {
+
+                var docURI;
+
+                docURI = request.at('uri');
+                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
+                    //  NB: We pass true to force the document URI to update.
+                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
+                }
+
                 reqLoadFunc(aNode);
+
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
                 }
@@ -5853,7 +5881,16 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(aNode) {
+                var docURI;
+
+                docURI = request.at('uri');
+                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
+                    //  NB: We pass true to force the document URI to update.
+                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
+                }
+
                 thisref.contentReplaceCallback(aNode);
+
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
                 }
