@@ -580,7 +580,7 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentGetLocation',
-function(aDocument, trimFile) {
+function(aDocument, trimFileAndFragment, trimFragment) {
 
     /**
      * @method documentGetLocation
@@ -591,8 +591,12 @@ function(aDocument, trimFile) {
      *     returns the empty String (''). NOTE also that the response to this
      *     call is not encoded (escaped with %20 for space etc).
      * @param {Document} aDocument The document to use.
-     * @param {Boolean} trimFile True will cause any file reference to be
-     *     trimmed, returning only a directory. Default is false.
+     * @param {Boolean} trimFileAndFragment True will cause any file and/or
+     *     fragment reference to be trimmed, returning only a directory. Default
+     *     is false.
+     * @param {Boolean} trimFragment True will cause any fragment (but not file)
+     *     reference to be trimmed, returning only a directory. Default is
+     *     false.
      * @exception TP.sig.InvalidDocument
      * @returns {String} The document's location.
      */
@@ -600,12 +604,14 @@ function(aDocument, trimFile) {
     var doc,
         win,
         ndx,
-        trim,
+        trimBoth,
+        trimFrag,
         loc,
         htmlBase;
 
-    //  by default we return the full path to the file
-    trim = TP.ifInvalid(trimFile, false);
+    //  by default we return the full path and fragment to the file
+    trimBoth = TP.ifInvalid(trimFileAndFragment, false);
+    trimFrag = TP.ifInvalid(trimFragment, false);
 
     //  make sure we're really dealing with a document
     if (!TP.isDocument(doc = aDocument)) {
@@ -625,14 +631,14 @@ function(aDocument, trimFile) {
     if (TP.notEmpty(loc = doc.documentElement[TP.SRC_LOCATION])) {
         //  we need to expand these since they're often virtual paths
         loc = TP.uriExpandPath(loc);
-    } else if (TP.notTrue(trim) &&
+    } else if (TP.notTrue(trimBoth) &&
                 TP.notEmpty(loc = TP.elementGetAttribute(
                                         doc.documentElement,
                                         'xml:base',
                                         true))) {
         //  we need to expand these since they're often virtual paths
         loc = TP.uriExpandPath(loc);
-    } else if (TP.notTrue(trim) &&
+    } else if (TP.notTrue(trimBoth) &&
                 TP.notEmpty(htmlBase = doc.getElementsByTagName('base')[0])) {
         //  this won't be a virtual path
         loc = TP.elementGetAttribute(htmlBase, 'href');
@@ -652,7 +658,7 @@ function(aDocument, trimFile) {
         return '';
     }
 
-    if (trim) {
+    if (trimBoth) {
         ndx = loc.lastIndexOf('/');
         if (ndx !== TP.NOT_FOUND) {
             loc = loc.slice(0, loc.lastIndexOf('/'));
@@ -663,10 +669,19 @@ function(aDocument, trimFile) {
     //  those aren't part of the true location
     loc = loc.strip(/^tibet:\/\/\//).strip(/#document$/);
 
+    //  If we're trimming off just the fragment, do that here.
+    if (trimFrag) {
+        loc = TP.uriHead(loc);
+    }
+
     //  keep format consistent so regardless of the value's format (encoded
     //  or not) we return it in decoded form minus any floating anchor it
-    //  may have acquired
-    return decodeURI(loc).chop('#');
+    //  may have acquired. Note that this will *only* chop off a single
+    //  remaining '#' character. If there are any other characters (i.e. a
+    //  fragment), the original will remain untouched.
+    loc = decodeURI(loc).chop('#');
+
+    return loc;
 });
 
 //  ------------------------------------------------------------------------
