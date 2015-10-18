@@ -927,6 +927,28 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('uriInTIBETFormat',
+function(aPath) {
+
+    /**
+     * @method uriInTIBETFormat
+     * @summary Returns the path with typical TIBET prefixes for app_cfg,
+     *     lib_cfg, app_root, and lib_root replaced with their TIBET aliases.
+     *     This is typically used to shorten log output.
+     * @param {String} aPath The URI path to process.
+     * @returns {String} The supplied path with typical TIBET prefixes.
+     */
+
+    if (!TP.isString(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidURI');
+    }
+
+    //  Just map over the TP.boot version
+    return TP.boot.$uriInTIBETFormat(aPath);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('uriInWebFormat',
 function(aPath, aRoot) {
 
