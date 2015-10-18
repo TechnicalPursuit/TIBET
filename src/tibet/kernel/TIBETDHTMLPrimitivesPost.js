@@ -939,8 +939,8 @@ function(aDocument, aURIStr, force) {
      * @param {Document} aDocument The document to use.
      * @param {String} aURIStr The URL string to use as the document's location.
      * @param {Boolean} force If true, this method will ignore any existing
-     *     value for TP.SRC_LOCATION property (or 'xml:base' attribute) and
-     *     stamp in the supplied URI value for TP.SRC_LOCATION.
+     *     value for TP.SRC_LOCATION property and stamp in the supplied URI
+     *     value for TP.SRC_LOCATION.
      * @exception TP.sig.InvalidDocument
      * @returns {String} The document's location.
      */
@@ -967,11 +967,8 @@ function(aDocument, aURIStr, force) {
         return;
     }
 
-    //  If its already got either a TP.SRC_LOCATION or 'xml:base', bail out
-    //  here.
-    if ((TP.isValid(node[TP.SRC_LOCATION]) ||
-            TP.elementHasAttribute(node, 'xml:base', true)) &&
-            TP.notTrue(force)) {
+    //  If its already got either a TP.SRC_LOCATION, bail out here.
+    if (TP.isValid(node[TP.SRC_LOCATION]) && TP.notTrue(force)) {
         return;
     }
 
