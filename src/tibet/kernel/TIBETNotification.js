@@ -4354,7 +4354,7 @@ function(aSignal) {
      *     current application instance. This method is the link between the
      *     standard observe/ignore signal notification process and the
      *     larger-scale application responder-chain notification sequence.
-     * @param {Signal} aSignal The signal passed to handlers.
+     * @param {TP.sig.Signal} aSignal The signal passed to handlers.
      */
 
     var app,

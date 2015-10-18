@@ -55,8 +55,7 @@ function() {
         router = TP.sys.getRouter();
     });
 
-    this.it('can define path processors for simple regexes',
-            function(test, options) {
+    this.it('can define path processors for simple regexes', function(test, options) {
         var called,
             entry;
 
@@ -71,8 +70,7 @@ function() {
         this.assert.isEqualTo(called, 1);
     });
 
-    this.it('can define path processors for simple strings',
-            function(test, options) {
+    this.it('can define path processors for simple strings', function(test, options) {
         var called,
             entry;
 
@@ -197,8 +195,7 @@ function() {
         this.assert.isEqualTo(result.at(0), 'FooBar');
     });
 
-    this.it('properly sorts routes for parameter naming',
-            function(test, options) {
+    this.it('properly sorts routes for parameter naming', function(test, options) {
         var result;
 
         router.definePath('/foo/:fluffy/bar');
@@ -222,7 +219,7 @@ function() {
     this.it('can define simple tokens', function(test, options) {
         router.defineToken('fluffy', /\d{3}/);
         this.assert.isEqualTo(TP.sys.cfg('route.tokens.fluffy'),
-            /\d{3}/.toString());
+                                /\d{3}/.toString());
     });
 });
 

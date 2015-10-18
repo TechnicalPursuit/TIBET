@@ -32,8 +32,9 @@ function(aRequest) {
      *     command makes use of the current TP.core.User instance to provide
      *     profile information, if any. This ties the TP.shell() command into
      *     TIBET's user-interface permission machinery.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest The request containing
-     *     proper shell parameters. Those include:
+     * @param {String|TP.sig.Request|TP.core.Hash} aRequest The String of TSH
+     *     content to execute or a request containing proper shell parameters.
+     *     Those include:
      *
      *          {String|Node} cmdSrc The shell input content, either the sugared
      *          source text or a desugared XML node, ready to execute.

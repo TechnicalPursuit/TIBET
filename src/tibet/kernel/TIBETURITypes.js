@@ -9938,8 +9938,9 @@ function(aURIOrPushState, aDirection) {
                     fragPath = urlParts.at('fragmentPath');
                 } else {
                     if (TP.notEmpty(TP.uriExtension(fragPath))) {
-                        fragPath = fragPath.replace('.' +
-                            TP.uriExtension(fragPath), '');
+                        fragPath = fragPath.replace(
+                                    '.' + TP.uriExtension(fragPath),
+                                    '');
                     }
                 }
             }
@@ -10001,7 +10002,7 @@ function(aURIOrPushState, aDirection) {
         if (TP.notEmpty(content)) {
 
             routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
-                configInfo.at('target'));
+                                        configInfo.at('target'));
             if (TP.notEmpty(routeTarget)) {
 
                 //  NB: We want autocollapsed, but wrapped content here.

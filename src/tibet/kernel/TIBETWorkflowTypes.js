@@ -2498,7 +2498,7 @@ function(aRequest, childJoin) {
 
     list = TP.isTrue(childJoin) ? this.getChildJoins(TP.OR) :
                                 this.getJoins(TP.OR);
-    len = list.length;
+    len = list.getSize();
     for (i = 0; i < len; i++) {
         item = list.at(i);
         if (childJoin) {
@@ -2516,7 +2516,7 @@ function(aRequest, childJoin) {
 
     list = TP.isTrue(childJoin) ? this.getChildJoins(TP.AND) :
                                 this.getJoins(TP.AND);
-    len = list.length;
+    len = list.getSize();
     for (i = 0; i < len; i++) {
         item = list.at(i);
         if (childJoin) {
@@ -5935,6 +5935,7 @@ function(aSignal) {
     /**
      * @method getControllers
      * @summary Returns a list of controllers that are currently active.
+     * @param {TP.sig.Signal} aSignal The signal currently being dispatched.
      * @returns {Array} The list of controllers.
      */
 
@@ -5979,7 +5980,7 @@ function(aSignal) {
 
     //  Try to obtain a controller type name
     controllerName = TP.ifInvalid(configInfo.at(routeKey + '.controller'),
-        configInfo.at('controller'));
+                                    configInfo.at('controller'));
     defaulted = false;
 
     //  If there was no controller type name entry, default one by concatenating
@@ -6001,7 +6002,7 @@ function(aSignal) {
         //  not generated here.
         TP.ifWarn() && !defaulted ?
             TP.warn('InvalidRouteController', controllerName, ' for ',
-                TP.name(aSignal)) : 0;
+                    TP.name(aSignal)) : 0;
 
         return controllers;
     }
@@ -6334,9 +6335,10 @@ function() {
      */
 
     //  Install a popstate handler to catch changes due to history API.
-    window.addEventListener('popstate', function(evt) {
-        this.onpopstate(evt);
-    }.bind(this), false);
+    window.addEventListener('popstate',
+                            function(evt) {
+                                this.onpopstate(evt);
+                            }.bind(this), false);
 
     //  Create a history list the size of the current native list.
     this.$set('history', TP.ac());
@@ -6375,7 +6377,7 @@ function(aDocument) {
      * @summary Captures history information from the document provided. This is
      *     typically called in response to document changes in the UICANVAS to
      *     ensure the top-level history reflects the content page.
-     * @param {DocumentNode} aDocument The native document to capture from.
+     * @param {Document} aDocument The native document to capture from.
      * @returns {Array[Object, String, String]} The history entry with state
      *     object, title, and url.
      */
@@ -6569,11 +6571,12 @@ function(aLocation) {
     loc = TP.str(aLocation) || this.getNativeLocation();
     list = TP.ac();
 
-    this.get('history').forEach(function(entry, index) {
-        if (entry.at(2) === loc) {
-            list.push(index);
-        }
-    });
+    this.get('history').forEach(
+                        function(entry, index) {
+                            if (entry.at(2) === loc) {
+                                list.push(index);
+                            }
+                        });
 
     return list;
 });
@@ -6740,8 +6743,6 @@ function(anEvent) {
 
     var router,
         state,
-        pushed,
-        url,
         loc;
 
     //  We use a flag to turn off handling on Chrome in particular since it has
@@ -6799,7 +6800,8 @@ function(aURL, fromDoc) {
      *     that URI values which refer to the project home page are translated
      *     so the actual home page location is not pushed, but instead the
      *     project's launch URL is pushed in keeping with the idea of "/".
-     * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @param {TP.core.URI|String} aURL The location to push onto the history
+     *     stack.
      * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
      *     coming from a loaded document handler.
      */
@@ -6868,7 +6870,9 @@ function(stateObj, aTitle, aURL, fromDoc) {
      * @method pushState
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
-     * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @param
+     * @param
+     * @param
      * @param {Boolean} [fromDoc=false] An optional flag signifying the push is
      *     coming from a loaded document handler.
      * @returns {TP.core.History} The receiver.
@@ -6941,7 +6945,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
         //  URL unless configured explicitly for that feature. In all other
         //  cases we update the fragment path to reflect the base path change.
         if (TP.notFalse(TP.sys.cfg('route.fragment_only')) &&
-                TP.uriHead(loc) !== TP.uriHead(url)) {
+                        TP.uriHead(loc) !== TP.uriHead(url)) {
 
             parts = TP.hc();
 
@@ -6964,8 +6968,9 @@ function(stateObj, aTitle, aURL, fromDoc) {
             //  adjust any extension since we don't want to expose those in
             //  route paths.
             if (TP.notEmpty(TP.uriExtension(basePath))) {
-                parts.atPut('fragmentPath', basePath.replace('.' +
-                    TP.uriExtension(basePath), ''));
+                parts.atPut(
+                        'fragmentPath',
+                        basePath.replace('.' + TP.uriExtension(basePath), ''));
             }
 
             pushable = TP.uriCompose(parts);
@@ -6985,7 +6990,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
         //  Update the native window history and URL bar value. This will show
         //  the "routable" value but not the actual canvas URI in some cases.
         result = this.getNativeWindow().history.pushState(
-            state, title, pushable);
+                                                state, title, pushable);
 
         //  If we're here due to a direct change via a document being loaded
         //  don't allow further processing.
@@ -7019,7 +7024,7 @@ function(aURL) {
      * @method replaceLocation
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
-     * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @param
      * @returns {TP.core.History} The receiver.
      */
 
@@ -7032,10 +7037,12 @@ TP.core.History.Type.defineMethod('replaceState',
 function(stateObj, aTitle, aURL) {
 
     /**
-     * @method replaceLocation
+     * @method replaceState
      * @summary Replaces the current location of the browser and sets it to an
      *     encoded version of the supplied history value.
-     * @param {TP.core.URI|String} histValue The TP.core.URI or String to use.
+     * @param
+     * @param
+     * @param
      * @returns {TP.core.History} The receiver.
      */
 
@@ -7081,8 +7088,8 @@ function(stateObj, aTitle, aURL) {
 
         if (TP.sys.cfg('log.history')) {
             TP.debug('replaceState(' +
-                JSON.stringify(state) +
-                ', \'' + entry.at(1) + '\', \'' + url + '\')');
+                        JSON.stringify(state) +
+                        ', \'' + entry.at(1) + '\', \'' + url + '\')');
         }
 
         result = this.getNativeWindow().history.replaceState(state, title, url);
@@ -7147,6 +7154,7 @@ function(anIndex) {
     /**
      * @method setIndex
      * @summary Updates the receiver's internal history index to a new offset.
+     * @param
      * @raises {TP.sig.InvalidParameter} If index in not a number.
      * @raises {TP.sig.InvalidIndex} If index would be out of range.
      */
@@ -7171,7 +7179,7 @@ function(anEvent) {
      * @method updateIndex
      * @summary Updates the current history index by comparing data for the
      *     current location with known history entries. The event
-     * @param {PopState} anEvent The history PopState event triggering this
+     * @param {PopStateEvent} anEvent The history PopState event triggering this
      *     update request. The index value of this event, if available, will
      *     identify the new index traversed to.
      * @returns {Number} The new index.
@@ -7272,7 +7280,7 @@ function(anEvent) {
         } else {
             //  If all indexes are > than ours it's got to be a forward jump. If
             //  they're all < ours it has to be a backward jump.
-            min = indexes.length + 1;
+            min = indexes.getSize() + 1;
             max = -1;
 
             indexes.forEach(
@@ -7294,10 +7302,10 @@ function(anEvent) {
 
                 //  Have to locate the index closest to us that's prior to the
                 //  current index.
-                len = indexes.length;
+                len = indexes.getSize();
                 for (i = 0; i < len; i++) {
-                    if (indexes[i] < index && indexes[i + 1] > index) {
-                        stateIndex = indexes[i];
+                    if (indexes.at(i) < index && indexes.at(i + 1) > index) {
+                        stateIndex = indexes.at(i);
                     }
                 }
 

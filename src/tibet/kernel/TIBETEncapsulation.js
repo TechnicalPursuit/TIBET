@@ -1423,8 +1423,11 @@ function(pattern, flags) {
      * @summary Constructs and returns a new instance of the receiver.
      * @param {String} pattern The regular expression pattern.
      * @param {String} flags A concatenated set of flags to control the RegExp
-     *     object. These are: 'g' match globally 'i' ignore case 'm' match over
-     *     multiple lines.
+     *     object. These are:
+     *     'g' match globally
+     *     'i' ignore case
+     *     'm' match over multiple lines.
+     *     'y' whether the regular expression search starts from its lastIndex
      * @returns {RegExp} A new instance.
      */
 
@@ -1443,7 +1446,8 @@ function(pattern, flags) {
     if (TP.isEmpty(parts)) {
         msg = TP.join('Error creating regex: ', pattern);
         TP.ifError() ? TP.error(msg) : 0;
-        return;
+
+        return null;
     }
 
     restr = TP.ifInvalid(parts.first(), '');
