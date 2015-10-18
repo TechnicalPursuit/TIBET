@@ -7654,7 +7654,7 @@ function(name, body, async) {
             var peerMethod;
 
             //  Now, define that method on *this* object to call over into the
-            //  worker thread to invoke what we just eval()'ed over there.
+            //  worker thread to invoke what we just eval'ed over there.
             peerMethod = function() {
                 var args,
                     workerThread,

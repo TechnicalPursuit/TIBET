@@ -4334,8 +4334,7 @@ function() {
     /**
      * @method asSource
      * @summary Returns the receiver as a JavaScript source code string. This
-     *     method is intended to provide a primitive form of serialization ala
-     *     the eval(obj = firstObj.asSource()) operation.
+     *     method is intended to provide a primitive form of serialization.
      * @returns {Object} An appropriate form for recreating the receiver.
      */
 
@@ -4909,8 +4908,7 @@ function() {
     /**
      * @method asSource
      * @summary Returns the receiver as a JavaScript source code string. This
-     *     method is intended to provide a primitive form of serialization ala
-     *     the eval(obj = firstObj.asSource()) operation.
+     *     method is intended to provide a primitive form of serialization.
      * @returns {Object} An appropriate form for recreating the receiver.
      */
 
@@ -6174,8 +6172,7 @@ function() {
     /**
      * @method asSource
      * @summary Returns the receiver as a JavaScript source code string. This
-     *     method is intended to provide a primitive form of serialization ala
-     *     the eval(obj = firstObj.asSource()) operation.
+     *     method is intended to provide a primitive form of serialization.
      * @returns {Object} An appropriate form for recreating the receiver.
      */
 

@@ -253,7 +253,7 @@ function() {
 
     this.it('({})', function(test, options) {
 
-        //  NB: The parens are required - a limitation of JS 'eval()'
+        //  NB: The parens are required - a limitation of JS 'eval'
         inputVal = '({})';
         correctResult = 'Object';
 

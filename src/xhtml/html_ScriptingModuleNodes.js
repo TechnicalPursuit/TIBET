@@ -139,7 +139,7 @@ function(aSrc) {
         }
 
         //  Do the job of importing the source. Note that this uses the actual
-        //  supplied source code in the src argument for eval()ing purposes. The
+        //  supplied source code in the src argument for eval'ing purposes. The
         //  location is provided for source code tracking purposes.
         TP.boot.$sourceImport(src, null, srcURL.getLocation(), null, true);
     }

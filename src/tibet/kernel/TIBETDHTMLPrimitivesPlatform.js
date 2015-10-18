@@ -2503,7 +2503,7 @@ TP.hc(
         }
 
         // TODO: 'window.$$newinst' used to be arguments.callee. verify this
-        // still works :) In fact, with eval() changing to be globally scoped
+        // still works :) In fact, with eval changing to be globally scoped
         // this entire thing may not work anyway.
         /* eslint-disable no-eval */
         eval(
@@ -2569,7 +2569,7 @@ TP.hc(
         }
 
         //  Set a slot on the target window that contains our arguments,
-        //  such that the eval() in the target window can pick it up.
+        //  such that the eval in the target window can pick it up.
         aWindow.creationArgs = arguments;
 
         //  Switching on the arguments length, create a new object, using

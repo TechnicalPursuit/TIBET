@@ -39,7 +39,7 @@ function(test, shellInput, valueTestFunction) {
     this.get('promiseProvider').thenPromise(
         function(resolver, rejector) {
 
-            //  Flip the flag on to ignore eval() errors in the TSH. We'll test
+            //  Flip the flag on to ignore eval errors in the TSH. We'll test
             //  for undefined values here.
             TP.sys.setcfg('tsh.ignore_eval_errors', true);
 
@@ -84,14 +84,14 @@ function(test, shellInput, valueTestFunction) {
                     }
 
                     //  Make sure to put the flag back that caused the TSH to
-                    //  ignore eval() errors.
+                    //  ignore eval errors.
                     TP.sys.setcfg('tsh.ignore_eval_errors', false);
                 },
                 'failure', function(aSignal, stdioResults) {
                     var errMsg;
 
                     //  Make sure to put the flag back that caused the TSH to
-                    //  ignore eval() errors.
+                    //  ignore eval errors.
                     TP.sys.setcfg('tsh.ignore_eval_errors', false);
 
                     //  The shell couldn't complete the request - call the

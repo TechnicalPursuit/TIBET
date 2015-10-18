@@ -1217,13 +1217,6 @@ function() {
                 arguments[6]);
             break;
         default:
-            //  shouldn't get here, Date() takes up to 7 arguments...
-            //  TODO: really? this could be a security hole if the argument list
-            //  provided turned into a viable attack.
-            /* eslint-disable no-eval */
-            eval('$$newinst = new Date(' +
-                TP.sys.$buildArgString(0, arguments.length) + ');');
-            /* eslint-enable no-eval */
             break;
     }
 
@@ -1309,10 +1302,6 @@ function() {
                     arguments[6], arguments[7], arguments[8]);
                 break;
             default:
-                //  might get here, but the function has to take 8 arguments
-                //  plus a function body to cause this to run
-                //eval('$$newinst = new Function(' +
-                 //       TP.sys.$buildArgString(0, arguments.length) + ');');
                 break;
         }
     } catch (e) {

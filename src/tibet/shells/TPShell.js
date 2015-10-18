@@ -147,7 +147,7 @@ function(aRequest) {
                             //  Because we turn off interactive environment, we
                             //  have to turn this flag on to allow the
                             //  environment to properly process command
-                            //  substitutions (which can use 'eval()')
+                            //  substitutions (which can use eval)
                             'cmdAllowSubs', true,
 
                             //  We definitely want expansion, desugaring, etc.
@@ -2177,8 +2177,7 @@ function(anObjectSpec, aRequest) {
     //  been set against)
     execInstance = this.getExecutionInstance();
 
-    //  The $CONTEXT object (the global context shell code is being 'eval()ed'
-    //  in)
+    //  The $CONTEXT object (the global context shell code is being eval'ed in)
     execContext = this.getExecutionContext();
 
     //  Convert any shell variable that starts with '${' and ends with '}' to
@@ -2229,7 +2228,7 @@ function(anObjectSpec, aRequest) {
             $$inst = execInstance.at(spec);
         } else {
 
-            //  eval() has problems with Object and Function literals, but
+            //  eval has problems with Object and Function literals, but
             //  wrapping them in parentheses helps...
 
             //  Object literals

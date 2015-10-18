@@ -714,7 +714,7 @@
     //  shell
     //  ---
 
-    //  should the TSH not report eval() errors? Normally we do, but in rare
+    //  should the TSH not report eval errors? Normally we do, but in rare
     //  cases like the TSH tests, we choose not to report them and just have the
     //  machinery return 'undefined' instead (which is then tested for).
     TP.sys.setcfg('tsh.ignore_eval_errors', false);

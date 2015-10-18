@@ -1034,7 +1034,7 @@ function(REQUEST$$) {
         //  allows 'slots' that have been defined previously in the shell to
         //  be found on the $SCOPE object.
 
-        //  eval() has problems with Object and Function literals, but
+        //  eval has problems with Object and Function literals, but
         //  wrapping them in parentheses helps...
 
         //  Object literals
@@ -1453,7 +1453,7 @@ function(REQUEST$$, CMDTYPE$$) {
         //  allows 'slots' that have been defined previously in the shell to
         //  be found on the $SCOPE object.
 
-        //  eval() has problems with Object and Function literals, but
+        //  eval has problems with Object and Function literals, but
         //  wrapping them in parentheses helps...
 
         //  Object literals
@@ -1937,7 +1937,7 @@ function(aString, aShell, aRequest) {
             //  'slots' that have been defined previously in the shell to be
             //  found on the $SCOPE object.
 
-            //  eval() has problems with Object and Function literals, but
+            //  eval has problems with Object and Function literals, but
             //  wrapping them in parentheses helps...
 
             //  Object literals
