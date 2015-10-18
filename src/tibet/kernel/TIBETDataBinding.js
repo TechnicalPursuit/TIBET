@@ -3020,8 +3020,8 @@ function(aSignalOrHash) {
         //  Obtain the binding scope values by walking the DOM tree.
         scopeVals = this.getBindingScopeValues();
 
-        //  Iterate over each binding entry, join paths to give us a full URI, and
-        //  then send a 'change' from that URI
+        //  Iterate over each binding entry, join paths to give us a full URI,
+        //  and then send a 'change' from that URI
 
         //  First, process the 'in' bindings
         if (TP.notEmpty(infoEntries = bindingInfos.at('in'))) {
@@ -3039,8 +3039,9 @@ function(aSignalOrHash) {
                     uriPath = TP.uriJoinFragments.apply(TP, allVals);
                     uri = TP.uc(uriPath);
 
-                    //  NB: An explicit test for TP.core.URI here - we want to make
-                    //  sure we have that type of object, not just a String.
+                    //  NB: An explicit test for TP.core.URI here - we want to
+                    //  make sure we have that type of object, not just a
+                    //  String.
                     if (TP.isKindOf(uri, TP.core.URI)) {
                         uri.$changed();
                     }
@@ -3063,8 +3064,9 @@ function(aSignalOrHash) {
                     uriPath = TP.uriJoinFragments.apply(TP, allVals);
                     uri = TP.uc(uriPath);
 
-                    //  NB: An explicit test for TP.core.URI here - we want to make
-                    //  sure we have that type of object, not just a String.
+                    //  NB: An explicit test for TP.core.URI here - we want to
+                    //  make sure we have that type of object, not just a
+                    //  String.
                     if (TP.isKindOf(uri, TP.core.URI)) {
                         uri.$changed();
                     }
