@@ -3175,8 +3175,8 @@ function(anEntry) {
         layout,
         content;
 
-    // Try to find a matching console API method to our level name. If we find
-    // it we'll use that to output the message content.
+    //  Try to find a matching console API method to our level name. If we find
+    //  it we'll use that to output the message content.
     name = anEntry.getLevel().get('name').toLowerCase();
     if (TP.canInvoke(top.console, name)) {
         writer = name;
@@ -3195,17 +3195,18 @@ function(anEntry) {
         }
     }
 
-    // If the entry contains multiple parts and we have access to a
-    // group/groupEnd api via the console we'll group our output to help show
-    // that it's all the result of a single logging call...
-    // TODO:
-
+    //  If the entry contains multiple parts and we have access to a
+    //  group/groupEnd api via the console we'll group our output to help show
+    //  that it's all the result of a single logging call...
+    //  TODO:
 
     // Format the little critter...
     layout = this.getLayout();
     content = layout.layout(anEntry).at('content');
 
-    if (TP.TSH_NO_VALUE.match(content)) {
+    //  If the content matches the TSH_NO_VALUE, exit here - we don't log that
+    //  value.
+    if (TP.regex.TSH_NO_VALUE_MATCHER.test(content)) {
         return this;
     }
 
@@ -3215,9 +3216,10 @@ function(anEntry) {
         top.console.log(content);
     }
 
-    // Verify one last thing...we didn't just blow the stack did we? For some
-    // reason, possibly a catch block in the wrong place we've yet to find, this
-    // is the only way we can ensure certain code can trap recusion errors.
+    //  Verify one last thing...we didn't just blow the stack did we? For some
+    //  reason, possibly a catch block in the wrong place we've yet to find,
+    //  this is the only way we can ensure certain code can trap recusion
+    //  errors.
     if (/maximum call stack/i.test(content)) {
         $STATUS = TP.FAILED;
     }
@@ -3392,7 +3394,9 @@ function(anEntry) {
     layout = this.getLayout();
     content = layout.layout(anEntry).at('content');
 
-    if (TP.TSH_NO_VALUE.match(content)) {
+    //  If the content matches the TSH_NO_VALUE, exit here - we don't log that
+    //  value.
+    if (TP.regex.TSH_NO_VALUE_MATCHER.test(content)) {
         return this;
     }
 
@@ -3544,7 +3548,9 @@ function(anEntry) {
     // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
 
-        if (TP.TSH_NO_VALUE.match(content)) {
+        //  If the content matches the TSH_NO_VALUE, exit here - we don't log
+        //  that value.
+        if (TP.regex.TSH_NO_VALUE_MATCHER.test(content)) {
             return this;
         }
 

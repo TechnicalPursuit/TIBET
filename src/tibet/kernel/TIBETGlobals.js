@@ -2780,6 +2780,8 @@ TP.TSH_OPERATOR_CHARS = '`#~!@%^&*=\\;:,./?';
 
 TP.TSH_NO_VALUE = '__TSH__NO_VALUE__TSH__';
 
+TP.regex.TSH_NO_VALUE_MATCHER = /__TSH__NO_VALUE__TSH__/;
+
 TP.regex.TSH_TEMPLATE = /\$\{/;
 TP.regex.TSH_SUBSHELL = /\.\(\((.*)?\.\)\)/;
 TP.regex.TSH_SUBGROUP = /\.\{\{(.*)?\.\}\}/;
