@@ -212,16 +212,16 @@ function(aRequest) {
 
                             switch (item.meta) {
                                 case 'notify':
-                                    top.console.info(TP.str(item.data));
+                                    TP.info(TP.str(item.data));
                                     break;
                                 case 'stdin':
-                                    top.console.log(TP.str(item.data));
+                                    TP.info(TP.str(item.data));
                                     break;
                                 case 'stdout':
-                                    top.console.log(TP.str(item.data));
+                                    TP.info(TP.str(item.data));
                                     break;
                                 case 'stderr':
-                                    top.console.error(TP.str(item.data));
+                                    TP.error(TP.str(item.data));
                                     break;
                                 default:
                                     break;
