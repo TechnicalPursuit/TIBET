@@ -402,7 +402,43 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             return '(function() {' + code + '})()';
         },
 
-        valueFrom: function(varName, formatName, isRepeating, defaultValue) {
+        valueFromVar: function(varName, defaultValue) {
+
+            var valueGet,
+                defaultStr,
+                str;
+
+            if (TP.notEmpty(scopedParams) &&
+                (scopedParams.last().contains(varName) ||
+                 scopedParams.last().contains(TP.ALL))) {
+                valueGet = '';
+            } else {
+                valueGet = generators.getFromArgs(varName);
+            }
+
+            if (TP.notEmpty(defaultValue)) {
+                defaultStr =
+                    'if (TP.isEmpty(arg)) {arg = ' + defaultValue + '};';
+            } else {
+                defaultStr = '';
+            }
+
+            str = 'function() {\n' +
+                valueGet +
+                generators.defineUndefined(varName) +
+                'var arg = (' + generators.escapedIdentifier(varName) + ');' +
+                'arg = TP.isCallable(arg) ? arg(params) : arg;' +
+                defaultStr +
+                'if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' +
+                'var result = ' + varName + ';' +
+                ignoreNull +
+                '}()';
+
+            return str;
+        },
+
+        valueFromVarAndFormat:
+        function(varName, formatName, isRepeating, defaultValue) {
 
             var valueGet,
                 defaultStr,
@@ -464,6 +500,8 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
                 parts,
 
+                defaultValue,
+
                 inlineTemplate,
                 inlineName,
 
@@ -472,6 +510,8 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
                 isRepeating;
 
             isRepeating = false;
+
+            defaultValue = null;
 
             //  If there is a format, then we need to grab it.
             if (TP.regex.ACP_FORMAT.test(wholeArg)) {
@@ -522,11 +562,12 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  Return a Function which returns a Function which extracts the
             //  value from the data source.
             return generators.returnWrap(
-                    generators.valueFrom(aspectName, formatName, isRepeating));
+                    generators.valueFromVarAndFormat(
+                            aspectName, formatName, isRepeating, defaultValue));
         },
 
         html: function(arg) {
-            return generators.returnWrap(generators.valueFrom(arg));
+            return generators.returnWrap(generators.valueFromVar(arg));
         },
 
         for: function(data, blocks) {
