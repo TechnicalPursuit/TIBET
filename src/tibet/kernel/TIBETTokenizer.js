@@ -356,6 +356,8 @@ function(src, ops, tsh, exp, alias, args) {
 
     var digit,
         hexDigit,
+        formatSubSigils,
+
         identHead,
         identBody,
         keywords,
@@ -388,11 +390,15 @@ function(src, ops, tsh, exp, alias, args) {
         uriParenCount,
 
         startsTemplate,
+        startsFormatSub,
+
         templateBracketCount;
 
     //  common regular expressions used for character testing
     digit = /[0-9]/;
     hexDigit = /[0-9a-fA-F]/;
+
+    formatSubSigils = /[#%@]/;
 
     //  NB: we allow '@' as a leading character for an identifer, so that users
     //  can use 'dereferencing sugar', but the system will strip this before it
@@ -524,13 +530,15 @@ function(src, ops, tsh, exp, alias, args) {
 
             /* eslint-disable no-extra-parens */
             startsTemplate = (str === '{' && src.charAt(i) === '{');
+            startsFormatSub = (formatSubSigils.test(str) &&
+                                src.charAt(i) === '{');
             /* eslint-enable no-extra-parens */
 
             if (tsh && startsTemplate) {
 
                 err = false;
 
-                //  'str' now contains both parens
+                //  'str' now contains both brackets
                 str += c;
                 i += 1;
 
@@ -563,6 +571,49 @@ function(src, ops, tsh, exp, alias, args) {
                         if (!err) {
                             //  scheme-specific part of the URI
                             result.push(new_token('template', str));
+                        }
+
+                        break;
+                    }
+                }
+            } else if (tsh && startsFormatSub) {
+
+                err = false;
+
+                //  'str' now contains both sigil character and paren
+                str += src.charAt(i);
+                i += 1;
+
+                templateBracketCount = 1;
+
+                for (;;) {
+                    c = src.charAt(i);
+
+                    if (c === '{' && src.charAt(i - 1) !== '\\') {
+                        templateBracketCount++;
+                    }
+                    if (c === '}' && src.charAt(i - 1) !== '\\') {
+                        templateBracketCount--;
+                    }
+
+                    str += c;
+                    i += 1;
+
+                    if (c === '' && templateBracketCount !== 0) {
+                        err = true;
+                        TP.boot.$stderr('Unbalanced brackets in format' +
+                                        ' substitution: ' +
+                            TP.boot.$dump(new_token('formatsub', str),
+                                ', '));
+
+                        break;
+                    }
+
+                    if (templateBracketCount === 0) {
+
+                        if (!err) {
+                            //  scheme-specific part of the URI
+                            result.push(new_token('formatsub', str));
                         }
 
                         break;
