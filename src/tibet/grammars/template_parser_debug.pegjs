@@ -25,19 +25,19 @@ VALUE_START = "{{" ![:/] {console.log('VALUE_START')}
 VALUE_END   = "}}"       {console.log('VALUE_END')}
 
 VALUE_INNER
-  = body:OBJECT       { console.log('VALUE INNER 1: ' + peg$reportedPos + ' body: ' + body); return body}
-  / body:SUBSTITUTION { console.log('VALUE INNER 2: ' + peg$reportedPos + ' body: ' + body); return body}
-  / body:EMPTY_OBJECT { console.log('VALUE INNER 3: ' + peg$reportedPos + ' body: ' + body); return body}
-  / !VALUE_END body:. { console.log('VALUE INNER 4: ' + peg$reportedPos + ' body: ' + body); return body}
-  / body:"\\{"        { console.log('VALUE INNER 5: ' + peg$reportedPos + ' body: ' + body); return body}
+  = body:OBJECT       { console.log('VALUE INNER 1: ' + peg$savedPos + ' body: ' + body); return body}
+  / body:FORMAT_SUBSTITUTION { console.log('VALUE INNER 2: ' + peg$savedPos + ' body: ' + body); return body}
+  / body:EMPTY_OBJECT { console.log('VALUE INNER 3: ' + peg$savedPos + ' body: ' + body); return body}
+  / !VALUE_END body:. { console.log('VALUE INNER 4: ' + peg$savedPos + ' body: ' + body); return body}
+  / body:"\\{"        { console.log('VALUE INNER 5: ' + peg$savedPos + ' body: ' + body); return body}
 
-/* ====== Substitutions ====== */
+/* ====== Format Substitutions ('@', '#', '%' substitutions) ====== */
 
-SUBSTITUTION
-  = sigil:[#@%] "{" body:SUBSTITUTION_INNER+ "}" {console.log('SUBSTITUTION: ' + peg$reportedPos + 'sigil: ' + sigil + ' body: ' + body); return sigil + '{' + body.join('') + '}'}
+FORMAT_SUBSTITUTION
+  = sigil:[#%@] "{" body:FORMAT_SUBSTITUTION_INNER+ "}" {console.log('FORMAT_SUBSTITUTION: ' + peg$savedPos + 'sigil: ' + sigil + ' body: ' + body); return sigil + '{' + body.join('') + '}'}
 
-SUBSTITUTION_INNER
-  = !"{" !"}" body:. {console.log('SUBSTITUTION INNER: ' + peg$reportedPos + ' body: ' + body); return body}
+FORMAT_SUBSTITUTION_INNER
+  = !"{" !"}" body:. {console.log('FORMAT_SUBSTITUTION INNER: ' + peg$savedPos + ' body: ' + body); return body}
 
 /* ====== Commands ====== */
 
@@ -48,9 +48,9 @@ COMMAND
                       { return ["command", body.join("")]}
 
 COMMAND_INNER
-  = body:OBJECT       { console.log('COMMAND INNER 1: ' + peg$reportedPos + ' body: ' + body); return body}
-  / body:EMPTY_OBJECT { console.log('COMMAND INNER 2: ' + peg$reportedPos + ' body: ' + body); return body}
-  / !BLOCK_END body:. { console.log('COMMAND INNER 3: ' + peg$reportedPos + ' body: ' + body); return body}
+  = body:OBJECT       { console.log('COMMAND INNER 1: ' + peg$savedPos + ' body: ' + body); return body}
+  / body:EMPTY_OBJECT { console.log('COMMAND INNER 2: ' + peg$savedPos + ' body: ' + body); return body}
+  / !BLOCK_END body:. { console.log('COMMAND INNER 3: ' + peg$savedPos + ' body: ' + body); return body}
 
 COMMANDS
 =   "html"
@@ -86,20 +86,20 @@ precede that part of the match with a '&' so that if it matches it will not
 consume the match.
 */
 
-BLOCK_START_OPEN_BLOCK = "{{:" &[a-zA-Z0-9]+  {console.log('BLOCK_START_OPEN_BLOCK: ' + peg$reportedPos)}
-BLOCK_START_CLOSE_BLOCK = "{{/:" &[a-zA-Z0-9]+ {console.log('BLOCK_START_CLOSE_BLOCK: ' + peg$reportedPos)}
+BLOCK_START_OPEN_BLOCK = "{{:" &[a-zA-Z0-9]+  {console.log('BLOCK_START_OPEN_BLOCK: ' + peg$savedPos)}
+BLOCK_START_CLOSE_BLOCK = "{{/:" &[a-zA-Z0-9]+ {console.log('BLOCK_START_CLOSE_BLOCK: ' + peg$savedPos)}
 
 BLOCK_START = (BLOCK_START_OPEN_BLOCK / BLOCK_START_CLOSE_BLOCK)
 BLOCK_END   = "}}"
-    {console.log('BLOCK_END: ' + peg$reportedPos)}
+    {console.log('BLOCK_END: ' + peg$savedPos)}
 
 BLOCK_OPEN
   = BLOCK_START_OPEN_BLOCK _ command:BLOCK_COMMANDS _ args:(BLOCK_ARGS+)? _ body:COMMAND_INNER+ _ BLOCK_END
-    { console.log('BLOCK_OPEN: ' + peg$reportedPos + ' body: ' + body); return {command:command, body:body, args:args}}
+    { console.log('BLOCK_OPEN: ' + peg$savedPos + ' body: ' + body); return {command:command, body:body, args:args}}
 
 BLOCK_CLOSE
   = BLOCK_START_CLOSE_BLOCK _ tail:BLOCK_COMMANDS _ BLOCK_END
-    { console.log('BLOCK CLOSE: ' + peg$reportedPos + ' tail: ' + tail); return tail }
+    { console.log('BLOCK CLOSE: ' + peg$savedPos + ' tail: ' + tail); return tail }
 
 BLOCK_INNER
   = body:BLOCK             { return body}

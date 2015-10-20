@@ -18,19 +18,19 @@ VALUE_END   = "}}"
 
 VALUE_INNER
   = body:OBJECT       {return body}
-  / body:SUBSTITUTION {return body}
+  / body:FORMAT_SUBSTITUTION {return body}
   / body:EMPTY_OBJECT {return body}
   / !VALUE_END body:. {return body}
   / body:"\\{"        {return body}
 
   /* ====== Substitutions ====== */
 
-SUBSTITUTION
-  = sigil:[#@%] "{" body:SUBSTITUTION_INNER+ "}" {return sigil + '{' + body.join('') + '}'}
+FORMAT_SUBSTITUTION
+  = sigil:[#%@] "{" body:FORMAT_SUBSTITUTION_INNER+ "}" {return sigil + '{' + body.join('') + '}'}
 
-SUBSTITUTION_INNER
+FORMAT_SUBSTITUTION_INNER
   = !"{" !"}" body:. {return body}
-  
+
 /* ====== Commands ====== */
 
 COMMAND
