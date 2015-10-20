@@ -2494,7 +2494,7 @@ TP.regex.WINDOWS_PATH = /^(")*\w:\\(.*)/;
 //  ---
 
 //  Character substitutions in Strings
-TP.regex.SUBSTITUTION_STRING = /[#%@]\{|`.+`/;
+TP.regex.FORMAT_SUBSTITUTION = /[#%@]\{/;
 
 //  Templating delimiters
 TP.regex.STARTS_ACP = /^\{\{/;

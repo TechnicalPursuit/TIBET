@@ -572,9 +572,9 @@ function(aRequest) {
         }
 
         //  first special sugar is when the string represents a templating
-        //  string or a substitution string
+        //  string or a format substitution
         if (TP.regex.HAS_ACP.test(str) ||
-            TP.regex.SUBSTITUTION_STRING.test(str)) {
+            TP.regex.FORMAT_SUBSTITUTION.test(str)) {
 
             //  has templating syntax, we'll go with treating it like a
             //  template rather than a filter then...

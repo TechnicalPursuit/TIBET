@@ -113,7 +113,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
     //  etc. - which can happen when using them standalone) then make sure to
     //  escape the name before trying to use it as a URI name to register the
     //  template under.
-    if (TP.regex.SUBSTITUTION_STRING.test(regName = templateName)) {
+    if (TP.regex.FORMAT_SUBSTITUTION.test(regName = templateName)) {
         regName = window.escape(regName);
     }
 
@@ -759,7 +759,7 @@ function(aDataSource, transformParams) {
                                 str) : 0;
             return;
         }
-    } else if (TP.regex.SUBSTITUTION_STRING.test(str)) {
+    } else if (TP.regex.FORMAT_SUBSTITUTION.test(str)) {
         //  context, specializer, prefix, suffix, fallback, arglist
         return this.callBestMethod(arguments, aDataSource,
                                     'transform', null,

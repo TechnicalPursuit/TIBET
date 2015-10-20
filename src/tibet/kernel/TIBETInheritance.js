@@ -1519,7 +1519,7 @@ function(anObject, transformParams) {
         return str.substitute(anObject,
                                 TP.ifInvalid(transformParams,
                                                 TP.type(anObject)));
-    } else if (TP.regex.SUBSTITUTION_STRING.test(str)) {
+    } else if (TP.regex.FORMAT_SUBSTITUTION.test(str)) {
         return str.substitute(anObject);
     }
 
