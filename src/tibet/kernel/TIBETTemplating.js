@@ -402,9 +402,12 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             return '(function() {' + code + '})()';
         },
 
-        valueFrom: function(varName, formatName, isRepeating) {
+        valueFrom: function(varName, formatName, isRepeating, defaultValue) {
 
-            var valueGet;
+            var valueGet,
+                defaultStr,
+
+                str;
 
             if (TP.notEmpty(scopedParams) &&
                 (scopedParams.last().contains(varName) ||
@@ -414,16 +417,27 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
                 valueGet = generators.getFromArgs(varName);
             }
 
-            return 'function() {' +
+            if (TP.notEmpty(defaultValue)) {
+                defaultStr =
+                    'if (TP.isEmpty(arg)) {arg = ' + defaultValue + '};';
+            } else {
+                defaultStr = '';
+            }
+
+            //  NB: We don't put newlines in this content
+            str = 'function() {' +
                 valueGet +
                 generators.defineUndefined(varName) +
                 ' var arg = (' + generators.escapedIdentifier(varName) + ');' +
                 ' arg = TP.isCallable(arg) ? arg(params) : arg;' +
+                defaultStr +
                 ' if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' +
                 ' var result = ' +
                 formattedValue(varName, formatName, isRepeating) + '; ' +
                 ignoreNull +
                 '}()';
+
+            return str;
         }
     };
 
