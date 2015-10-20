@@ -552,7 +552,7 @@ function(src, ops, tsh, exp, alias, args) {
                     if (c === '' && templateBracketCount !== 0) {
                         err = true;
                         TP.boot.$stderr('Unbalanced brackets in template: ' +
-                            TP.boot.$dump(new_token('substitution', str),
+                            TP.boot.$dump(new_token('template', str),
                                 ', '));
 
                         break;
@@ -562,7 +562,7 @@ function(src, ops, tsh, exp, alias, args) {
 
                         if (!err) {
                             //  scheme-specific part of the URI
-                            result.push(new_token('substitution', str));
+                            result.push(new_token('template', str));
                         }
 
                         break;

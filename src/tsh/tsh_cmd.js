@@ -470,6 +470,7 @@ function(aString, aShell, aRequest, asTokens) {
     /* eslint-enable no-extra-parens */
         switch (token.name) {
             case 'substitution':
+            case 'template':
 
                 value = this.expandContent(token.value, $SHELL, $REQUEST);
                 result.push(value);

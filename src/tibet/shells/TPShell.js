@@ -2755,6 +2755,7 @@ function(aRequest, allForms) {
                                     expandedVal = part.value.unquoted();
                                 }
                             } else if (part.name === 'substitution' ||
+                                        part.name === 'template' ||
                                         part.name === 'identifier') {
                                 val = part.value.unquoted();
                                 if (val.startsWith('${') && val.endsWith('}')) {
