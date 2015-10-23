@@ -54,7 +54,7 @@ function(aURI) {
 
     return TP.tpnode(
             TP.elementFromString(
-                    TP.join('<html:img xmlns:html="', TP.w3.Xmlns.XHTML,
+                    TP.join('<img xmlns="', TP.w3.Xmlns.XHTML,
                             '" src="',
                             aURI.getLocation(),
                             '"/>')));
