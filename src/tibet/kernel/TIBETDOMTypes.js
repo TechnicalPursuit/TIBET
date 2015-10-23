@@ -14360,7 +14360,7 @@ function() {
      * @summary Returns the TP.core.ElementNode that represents the 'body'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
-     * @returns {html:body} The 'body' element of the receiver.
+     * @returns {TP.html.body} The 'body' element of the receiver.
      */
 
     var doc;
@@ -14411,7 +14411,7 @@ function() {
      * @summary Returns the TP.core.ElementNode that represents the 'head'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
-     * @returns {html:head} The 'head' element of the receiver.
+     * @returns {TP.html.head} The 'head' element of the receiver.
      */
 
     var doc;
@@ -14681,7 +14681,7 @@ function() {
      * @summary Returns the TP.core.ElementNode that represents the 'body'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
-     * @returns {html:body} The 'body' element of the receiver.
+     * @returns {TP.html.body} The 'body' element of the receiver.
      */
 
     var doc;
@@ -14703,7 +14703,7 @@ function() {
      * @summary Returns the TP.core.ElementNode that represents the 'head'
      *     element in this document.
      * @exception TP.sig.InvalidDocument
-     * @returns {html:head} The 'head' element of the receiver.
+     * @returns {TP.html.head} The 'head' element of the receiver.
      */
 
     var doc;

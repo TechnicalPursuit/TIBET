@@ -242,7 +242,7 @@ majority of binding should happen in markup, not JS.
 
 For example, we might bind an input text field using the following:
 
-    <html:input type="text" tsh:io="resource_spec"/>
+    <input type="text" tsh:io="resource_spec"/>
 
 All that's necessary is for our Change handler to trigger a "refresh" which
 includesreading from the input data source and updating as needed.

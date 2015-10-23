@@ -387,7 +387,7 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
-     * @returns {html:script} The HTML Script node holding the script.
+     * @returns {TP.html.script} The HTML Script node holding the script.
      */
 
     var url;

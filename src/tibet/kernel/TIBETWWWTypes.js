@@ -2543,7 +2543,7 @@ function() {
 //  ========================================================================
 
 /**
- * @type {html:}
+ * @type {TP.html.XMLNS}
  * @summary Represents the XHTML namespace (http://www.w3.org/1999/xhtml) in
  *     the tag processing system.
  */
@@ -2557,7 +2557,7 @@ TP.core.XMLNamespace.defineSubtype('html.XMLNS');
 //  ========================================================================
 
 /**
- * @type {xi:}
+ * @type {TP.xi.XMLNS}
  * @summary The XInclude namespace (http://www.w3.org/2001/XInclude).
  */
 
@@ -2570,7 +2570,7 @@ TP.core.XMLNamespace.defineSubtype('xi.XMLNS');
 //  ========================================================================
 
 /**
- * @type {xsl:}
+ * @type {TP.xsl.XMLNS}
  * @summary The XSLT namespace (http://www.w3.org/1999/XSL/Transform).
  */
 

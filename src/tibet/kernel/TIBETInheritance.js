@@ -55,10 +55,10 @@ function(ensureUniqueness) {
      * @summary Returns a version of the string suitable for use as a valid JS
      *     identifier.
      * @description This method is used by the defineSubtype call to allow
-     *     strings of the form "html:form" to actually act as types within the
+     *     strings of the form 'html:form' to actually act as types within the
      *     system. The return value is a mangled form of the original and the
      *     two are mapped into the metadata so that a call to the string
-     *     "html:form".asType() will return the type with the properly mangled
+     *     'html:form'.asType() will return the type with the properly mangled
      *     name. This allows both namespace types and operations for formatting
      *     template strings etc. to work with strings that are nice "picture
      *     clauses" but lousy JS identifiers.
