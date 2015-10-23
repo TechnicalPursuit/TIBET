@@ -1365,6 +1365,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 params,
 
                 repeatResourceResult,
+                last,
 
                 retVal;
 
@@ -1378,6 +1379,8 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                 repeatResourceResult =
                     transformFunc.$$repeatInputURI.getResource().get('result');
 
+                last = repeatResourceResult.getSize() - 1;
+
                 //  Iterating context
                 params = TP.hc(
                     '$REQUEST', null,
@@ -1386,6 +1389,11 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     '$_', wrappedVal,
                     '$INPUT', repeatResourceResult,
                     '$INDEX', index,
+                    '$FIRST', index === 0,
+                    '$MIDDLE', index > 0 && index < last,
+                    '$LAST', index !== last,
+                    '$EVEN', index % 2 === 0,
+                    '$ODD', index % 2 !== 0,
                     '$#', index);
             } else {
                 //  Non-iterating context
@@ -2876,6 +2884,7 @@ function(aResource) {
                 repeatResourceResult.at(i),
                 vals,
                 i,
+                resourceLength,
                 repeatResourceResult);
     }
 
@@ -2885,7 +2894,7 @@ function(aResource) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('$updateRepeatingTextNodes',
-function(aNode, aResource, pathValues, anIndex, repeatResourceResult) {
+function(aNode, aResource, pathValues, anIndex, numTotalValues, repeatResourceResult) {
 
     /**
      * @method $updateRepeatingTextNodes
@@ -2896,6 +2905,7 @@ function(aNode, aResource, pathValues, anIndex, repeatResourceResult) {
         isXMLResource,
 
         index,
+        last,
 
         params,
 
@@ -2919,7 +2929,9 @@ function(aNode, aResource, pathValues, anIndex, repeatResourceResult) {
     allTextNodes = TP.nodeGetDescendantsByType(aNode, Node.TEXT_NODE);
 
     isXMLResource = TP.isXMLNode(TP.unwrap(aResource));
+
     index = isXMLResource ? anIndex + 1 : anIndex;
+    last = numTotalValues - 1;
 
     //  Iterating context
     params = TP.hc(
@@ -2929,6 +2941,11 @@ function(aNode, aResource, pathValues, anIndex, repeatResourceResult) {
         '$_', aResource,
         '$INPUT', repeatResourceResult,
         '$INDEX', index,
+        '$FIRST', index === 0,
+        '$MIDDLE', index > 0 && index < last,
+        '$LAST', index !== last,
+        '$EVEN', index % 2 === 0,
+        '$ODD', index % 2 !== 0,
         '$#', index);
 
     for (j = 0; j < allTextNodes.length; j++) {

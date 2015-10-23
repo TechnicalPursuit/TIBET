@@ -1124,6 +1124,13 @@ function(aDataSource, transformParams) {
         //  In an iterating context, '$_' is an alias for $ITEM
         params.atPut('$_', source.at(i));
 
+        //  Some convenience variables
+        params.atPut('$FIRST', i === start);
+        params.atPut('$MIDDLE', i > start && i < len - 1);
+        params.atPut('$LAST', i === len - 1);
+        params.atPut('$EVEN', i % 2 === 0);
+        params.atPut('$ODD', i % 2 !== 0);
+
         try {
             val = this(source.at(i), params);
         } catch (e) {
