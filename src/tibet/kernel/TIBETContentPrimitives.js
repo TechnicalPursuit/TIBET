@@ -104,6 +104,7 @@ function(aString) {
 
         useGlobalContext,
 
+        len,
         i;
 
     //  Tokenize the input string, supplying our own set of 'operators'.
@@ -124,7 +125,8 @@ function(aString) {
     //  up properties on the global object to set the context.
     useGlobalContext = true;
 
-    for (i = 0; i < tokens.getSize(); i++) {
+    len = tokens.getSize();
+    for (i = 0; i < len; i++) {
 
         token = tokens.at(i);
         val = token.value;
