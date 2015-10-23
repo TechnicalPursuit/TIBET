@@ -200,7 +200,7 @@ function(anObject, formatArgs) {
     }
 
     //  An TP.html.List's default is to *not* wrap each item of an Array in
-    //  its own tags (maybe each one goes in an 'html:li').
+    //  its own tags (maybe each one goes in an 'li').
     if (TP.isArray(anObject)) {
         return false;
     }
