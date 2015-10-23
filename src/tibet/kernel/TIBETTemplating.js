@@ -513,6 +513,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
                 currentOp,
 
                 wroteStart,
+                escapedTemplate,
 
                 result,
 
@@ -538,6 +539,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             expr = '';
             currentOp = null;
             wroteStart = false;
+            escapedTemplate = '';
 
             result = '(function() {' + newlineChar +
                         'var result;' + newlineChar;
@@ -558,22 +560,37 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
                             expr = TP.trim(expr);
 
-                            formatFaultText = TP.sc('<NOT_FOUND: ', expr, ' >');
+                            //  Escaped template - slice out the escaping '\'
+                            //  characters from either end (making sure to
+                            //  append '}}' to reconstruct the template) and
+                            //  exit here.
+                            if (expr.at(0) === '\\') {
+                                escapedTemplate = expr.slice(1, -3) + '}}';
 
-                            switch (currentOp) {
-                                case '.%':
-                                    result += generators.formatStatement(
+                                expr = '';
+                                currentOp = null;
+
+                                break;
+                            } else {
+                                formatFaultText =
+                                    TP.sc('<NOT_FOUND: ', expr, ' >');
+
+                                switch (currentOp) {
+                                    case '.%':
+                                        result += generators.formatStatement(
                                                 formatFaultText, expr, false);
-                                    break;
-                                case '.%*':
-                                    result += generators.formatStatement(
+                                        break;
+                                    case '.%*':
+                                        result += generators.formatStatement(
                                                 formatFaultText, expr, true);
-                                    break;
-                                case '.||':
-                                    result += generators.defaultStatement(expr);
-                                    break;
-                                default:
-                                    break;
+                                        break;
+                                    case '.||':
+                                        result += generators.defaultStatement(
+                                                expr);
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
 
                             expr = '';
@@ -647,7 +664,6 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
                     continue;
                 }
-
             }
 
             expr = TP.trim(expr);
@@ -658,25 +674,40 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
                 formatFaultText = TP.sc('<NOT_FOUND: ', expr, ' >');
 
                 if (TP.notEmpty(expr)) {
-                    switch (currentOp) {
-                        case '.%':
-                            result += generators.formatStatement(
+
+                    //  Escaped template - slice out the escaping '\' characters
+                    //  from either end (making sure to append '}}' to
+                    //  reconstruct the template).
+                    if (expr.at(0) === '\\') {
+                        escapedTemplate = expr.slice(1, -3) + '}}';
+                    } else {
+                        switch (currentOp) {
+                            case '.%':
+                                result += generators.formatStatement(
                                                 formatFaultText, expr, false);
-                            break;
-                        case '.%*':
-                            result += generators.formatStatement(
+                                break;
+                            case '.%*':
+                                result += generators.formatStatement(
                                                 formatFaultText, expr, true);
-                            break;
-                        case '.||':
-                            result += generators.defaultStatement(expr);
-                            break;
-                        default:
-                            break;
+                                break;
+                            case '.||':
+                                result += generators.defaultStatement(expr);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
 
-            result += ignoreNull + newlineChar;
+            //  If there's an escaped template, we ignore all other computed
+            //  results and just output a statement to return it quoted.
+            if (TP.notEmpty(escapedTemplate)) {
+                result = '(function() {' + newlineChar +
+                            'return ' + escapedTemplate.quoted('\'');
+            } else {
+                result += ignoreNull + newlineChar;
+            }
 
             result += '})()';
 
