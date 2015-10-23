@@ -386,6 +386,8 @@ function(src, ops, tsh, exp, alias, args) {
         block,
         err,
 
+        testval,
+
         startsURI,
         uriParenCount,
 
@@ -525,7 +527,14 @@ function(src, ops, tsh, exp, alias, args) {
                 /* eslint-enable no-extra-parens */
 
             //  identifiers start with $, _, or a-zA-Z, then allow 0-9
-            str = c;
+
+            //  first check to make sure we aren't holding a leading '(' - if
+            //  so, don't blow away str.
+            if (str === '(') {
+                str += c;
+            } else {
+                str = c;
+            }
             i += 1;
 
             /* eslint-disable no-extra-parens */
@@ -630,11 +639,13 @@ function(src, ops, tsh, exp, alias, args) {
                 //  '#', '~', '/', './' or '../' starts a URI
 
                 /* eslint-disable no-extra-parens */
+                testval = str + c;
+
                 startsURI =
-                    (str === '#' && !digit.test(c)) ||
-                    (str === '~') ||
-                    (str === '.' && c === '/') ||
-                    (str === '.' && c === '.' && src.charAt(i + 1) === '/');
+                    /#[^\d]/.test(testval) ||   //  '#' followed by non-digit
+                    /\(?~/.test(testval) ||     //  maybe '(' followed by '~'
+                    /\(?\.\//.test(testval) ||  //  maybe '(' followed by './'
+                    /\(?\.\.\//.test(testval);  //  maybe '(' followed by '../'
 
                 if (identBody.test(c) === true ||
                     (tsh && startsURI)) {
@@ -1253,6 +1264,15 @@ function(src, ops, tsh, exp, alias, args) {
             //  XML tag closing operator
             result.push(new_token('operator', '</'));
             i += 2;
+            c = src.charAt(i);
+        } else if (tsh && c === '(') {
+            //  we need to process a leading '('. since URIs are the only
+            //  construct currently processed by this call that can have parens,
+            //  we kick the URI's paren count, anticipating that we'll be
+            //  processing a URI.
+            str = c;
+            uriParenCount++;
+            i += 1;
             c = src.charAt(i);
         } else {
             //  try to construct the longest possible operator or string from
