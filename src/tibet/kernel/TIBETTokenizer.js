@@ -538,7 +538,9 @@ function(src, ops, tsh, exp, alias, args) {
             i += 1;
 
             /* eslint-disable no-extra-parens */
-            startsTemplate = (str === '{' && src.charAt(i) === '{');
+            startsTemplate = (src.charAt(i - 2) !== '\\' &&
+                                str === '{' &&
+                                src.charAt(i) === '{');
             startsFormatSub = (formatSubSigils.test(str) &&
                                 src.charAt(i) === '{');
             /* eslint-enable no-extra-parens */
