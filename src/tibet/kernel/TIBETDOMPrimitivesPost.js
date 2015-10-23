@@ -79,7 +79,9 @@ function(aNamespace, aTagname) {
         theTagName,
         parts,
 
-        newDocStr;
+        newDocStr,
+
+        retVal;
 
     theNamespace = aNamespace;
     theTagName = TP.ifInvalid(aTagname, '');
@@ -102,22 +104,26 @@ function(aNamespace, aTagname) {
                                 '"></', theTagName, '>');
         }
 
-        return TP.documentFromString(newDocStr);
+        retVal = TP.documentFromString(newDocStr);
     } else if (TP.isEmpty(theNamespace) && TP.notEmpty(theTagName)) {
         newDocStr = TP.join('<', theTagName, ' xmlns="">',
                             '</', theTagName, '>');
 
-        return TP.documentFromString(newDocStr);
+        retVal = TP.documentFromString(newDocStr);
     } else if (TP.notEmpty(theTagName)) {
         //  Otherwise, we were just handed a root tag name, so go ahead
         //  and use that.
         newDocStr = TP.join('<', theTagName, '></', theTagName, '>');
 
-        return TP.documentFromString(newDocStr);
+        retVal = TP.documentFromString(newDocStr);
+    } else {
+        //  They were both empty, so just use the 'createDocument' call.
+        retVal = document.implementation.createDocument('', '', null);
     }
 
-    //  They were both empty, so just use the 'createDocument' call.
-    return document.implementation.createDocument('', '', null);
+    retVal[TP.IS_XHTML] = true;
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
