@@ -649,6 +649,14 @@ function(src, ops, tsh, exp, alias, args) {
 
                 if (identBody.test(c) === true ||
                     (tsh && startsURI)) {
+
+                    if (testval.charAt(0) === '(') {
+                        uriParenCount++;
+                        if (result.at(result.getSize() -1).value === '(') {
+                            result.pop();
+                        }
+                    }
+
                     str += c;
                     i += 1;
                     for (;;) {
@@ -1264,15 +1272,6 @@ function(src, ops, tsh, exp, alias, args) {
             //  XML tag closing operator
             result.push(new_token('operator', '</'));
             i += 2;
-            c = src.charAt(i);
-        } else if (tsh && c === '(') {
-            //  we need to process a leading '('. since URIs are the only
-            //  construct currently processed by this call that can have parens,
-            //  we kick the URI's paren count, anticipating that we'll be
-            //  processing a URI.
-            str = c;
-            uriParenCount++;
-            i += 1;
             c = src.charAt(i);
         } else {
             //  try to construct the longest possible operator or string from
