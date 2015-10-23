@@ -553,17 +553,17 @@ function() {
             dateVal;
 
         //  ---
-        //  Generate an 'html:ul' from an Array - iterate so that we generate an
-        //  embedded 'html:li' for each Array item.
+        //  Generate an 'ul' from an Array - iterate so that we generate an
+        //  embedded 'li' for each Array item.
         //  ---
 
         testRep = TP.ac(1, 2, 'that\'s cool').as('html:ul', TP.hc('repeat', true));
 
-        correctRep = '<html:ul>' +
-                        '<html:li>1</html:li>' +
-                        '<html:li>2</html:li>' +
-                        '<html:li>that\'s cool</html:li>' +
-                        '</html:ul>';
+        correctRep = '<ul>' +
+                        '<li>1</li>' +
+                        '<li>2</li>' +
+                        '<li>that\'s cool</li>' +
+                        '</ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -571,9 +571,9 @@ function() {
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
 
         //  ---
-        //  Generate an 'html:ul' from an Array - iterate so that we generate an
-        //  embedded 'html:li' for each Array item. Also, supply attribute
-        //  information that goes with each 'html:li'
+        //  Generate an 'ul' from an Array - iterate so that we generate an
+        //  embedded 'li' for each Array item. Also, supply attribute
+        //  information that goes with each 'li'
         //  ---
 
 
@@ -581,11 +581,11 @@ function() {
                      TP.hc('repeat', true,
                             'infos', TP.ac(TP.hc('$attrInfo', 'baz="goo"'))));
 
-        correctRep = '<html:ul>' +
-                        '<html:li baz="goo">1</html:li>' +
-                        '<html:li baz="goo">2</html:li>' +
-                        '<html:li baz="goo">that\'s cool</html:li>' +
-                        '</html:ul>';
+        correctRep = '<ul>' +
+                        '<li baz="goo">1</li>' +
+                        '<li baz="goo">2</li>' +
+                        '<li baz="goo">that\'s cool</li>' +
+                        '</ul>';
 
         test.assert.isEqualTo(
             testRep,
@@ -593,11 +593,11 @@ function() {
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent.'));
 
         //  ---
-        //  Generate an 'html:form' from a TP.core.Hash. Note how this generate
+        //  Generate an 'form' from a TP.core.Hash. Note how this generate
         //  an 'html type="text"' for each item (due to the 'repeat' being set
         //  to true). Also, it generates a 'label' for each item and wires it
         //  back to the field it's meant for. Lastly, it generates an
-        //  'html:select' for the embedded Array.
+        //  'select' for the embedded Array.
         //  ---
 
         dateVal = TP.dc();
@@ -607,7 +607,7 @@ function() {
                         'html:form', TP.hc('repeat', true));
 
         correctRep =
-                '<html:form>' +
+                '<form>' +
                     '<label for="field_0">Emp Number:</label>' +
                     '<input id="field_0" type="text" value="1"/>' +
                     '<label for="field_1">First Name:</label>' +
@@ -617,10 +617,10 @@ function() {
                     '<label for="field_3">Hire Date:</label>' +
                     '<input id="field_3" type="text" value="' + dateVal.toISOString() + '"/>' +
                     '<label for="field_4">Emp Level:</label>' +
-                    '<html:select>' +
-                        '<html:option>1, 2, 3</html:option>' +
-                   '</html:select>' +
-               '</html:form>';
+                    '<select>' +
+                        '<option>1, 2, 3</option>' +
+                   '</select>' +
+               '</form>';
 
 
         test.assert.isEqualTo(

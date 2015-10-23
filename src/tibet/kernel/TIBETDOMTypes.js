@@ -10374,7 +10374,7 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
         template,
         str;
 
-    tagName = this.getCanonicalName();
+    tagName = this.getLocalName();
 
     //  If we're not auto-wrapping, then just do an 'as' with the object.
     if (TP.isFalse(shouldAutoWrap)) {
