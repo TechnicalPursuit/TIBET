@@ -203,6 +203,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
     var srcVars,
 
+        newlineChar,
         inlineCount,
 
         ignoreNull,
@@ -226,9 +227,11 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
     inlineCount = 0;
 
-    ignoreNull = 'return TP.isNull(result) ? \'\' : result;';
+    newlineChar = '__NEW_LINE__';
 
-    formattedValue = function(argName, argFormat, isRepeating) {
+    ignoreNull = 'return TP.isNull(result) ? \'\' : TP.str(result);';
+
+    formattedValue = function(faultText, argFormat, isRepeating) {
         //  Returns an expression that will return the value formatted according
         //  to the supplied format, and whether it's a repeating format.
 
@@ -241,12 +244,12 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
                 //  It's a repeating format
                 if (echoFormat) {
-                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
-                                            '\'{{' + argName + '}}\'),' +
+                    retVal = '(TP.format(TP.ifInvalid(result, ' +
+                                            '\'{{' + faultText + '}}\'),' +
                                     ' "' + argFormat + '", ' +
                                     'params.atPut(\'repeat\', true)))';
                 } else {
-                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                    retVal = '(TP.format(TP.ifInvalid(result, ' +
                                             '\'\'),' +
                                     ' "' + argFormat + '", ' +
                                     'params.atPut(\'repeat\', true)))';
@@ -255,11 +258,11 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
                 //  It's a non-repeating format
                 if (echoFormat) {
-                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
-                                            '\'{{' + argName + '}}\'),' +
+                    retVal = '(TP.format(TP.ifInvalid(result, ' +
+                                            '\'{{' + faultText + '}}\'),' +
                                     ' "' + argFormat + '", params))';
                 } else {
-                    retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                    retVal = '(TP.format(TP.ifInvalid(result, ' +
                                             '\'\'),' +
                                     ' "' + argFormat + '", params))';
                 }
@@ -268,11 +271,11 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
             //  No format - just the value 'formatted' as a String
             if (echoFormat) {
-                retVal = '(TP.format(TP.ifInvalid(arg, ' +
-                                            '\'{{' + argName + '}}\'),' +
+                retVal = '(TP.format(TP.ifInvalid(result, ' +
+                                            '\'{{' + faultText + '}}\'),' +
                                     ' "' + 'String' + '"))';
             } else {
-                retVal = '(TP.format(TP.ifInvalid(arg, ' +
+                retVal = '(TP.format(TP.ifInvalid(result, ' +
                                             '\'\'),' +
                                     ' "' + 'String' + '"))';
             }
@@ -385,7 +388,8 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  'handle' on each one, and concats it all together into a single
             //  expression
 
-            return input.map(generators.handle).join(joinChar || ' + ');
+            return input.map(generators.handle).join(
+                                joinChar || ' +' + newlineChar);
         },
 
         returnWrap: function(code) {
@@ -402,7 +406,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             return '(function() {' + code + '})()';
         },
 
-        valueFromVar: function(varName, defaultValue) {
+        valueFromVar: function(varName) {
 
             var valueGet,
                 defaultStr,
@@ -416,62 +420,66 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
                 valueGet = generators.getFromArgs(varName);
             }
 
-            if (TP.notEmpty(defaultValue)) {
-                defaultStr =
-                    'if (TP.isEmpty(arg)) {arg = ' + defaultValue + '};';
-            } else {
-                defaultStr = '';
-            }
-
-            str = 'function() {\n' +
-                valueGet +
-                generators.defineUndefined(varName) +
-                'var arg = (' + generators.escapedIdentifier(varName) + ');' +
-                'arg = TP.isCallable(arg) ? arg(params) : arg;' +
+            str = '(function() {\n' +
+                valueGet + newlineChar +
+                generators.defineUndefined(varName) + newlineChar +
+                'var arg = (' + generators.escapedIdentifier(varName) + ');' + newlineChar +
+                'arg = TP.isCallable(arg) ? arg(params) : arg;' + newlineChar +
                 defaultStr +
-                'if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' +
-                'var result = ' + varName + ';' +
+                'if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' + newlineChar +
+                'var result = ' + varName + ';' + newlineChar +
                 ignoreNull +
-                '}()';
+                '})()';
 
             return str;
         },
 
-        valueFromVarAndFormat:
-        function(varName, formatName, isRepeating, defaultValue) {
+        valueStatement: function(expr) {
 
             var valueGet,
-                defaultStr,
-
                 str;
 
             if (TP.notEmpty(scopedParams) &&
-                (scopedParams.last().contains(varName) ||
+                (scopedParams.last().contains(expr) ||
                  scopedParams.last().contains(TP.ALL))) {
                 valueGet = '';
             } else {
-                valueGet = generators.getFromArgs(varName);
+                valueGet = generators.getFromArgs(expr);
             }
 
-            if (TP.notEmpty(defaultValue)) {
-                defaultStr =
-                    'if (TP.isEmpty(arg)) {arg = ' + defaultValue + '};';
-            } else {
-                defaultStr = '';
-            }
+            str =
+                valueGet + newlineChar +
+                generators.defineUndefined(expr) + newlineChar +
+                'result = (' + generators.escapedIdentifier(expr) + ');' +
+                    newlineChar +
+                'result = TP.isCallable(result) ? result(params) : result;' +
+                    newlineChar +
+                'if (TP.isArray(result)) ' +
+                    '{result.$set(\'delimiter\', \'\')};' +
+                    newlineChar;
 
-            //  NB: We don't put newlines in this content
-            str = 'function() {' +
-                valueGet +
-                generators.defineUndefined(varName) +
-                ' var arg = (' + generators.escapedIdentifier(varName) + ');' +
-                ' arg = TP.isCallable(arg) ? arg(params) : arg;' +
-                defaultStr +
-                ' if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' +
-                ' var result = ' +
-                formattedValue(varName, formatName, isRepeating) + '; ' +
-                ignoreNull +
-                '}()';
+            return str;
+        },
+        formatStatement: function(faultText, format, isRepeating) {
+
+            var str;
+
+            str = 'result = ' + formattedValue(faultText, format, isRepeating) +
+                    ';' +
+                    newlineChar;
+
+            return str;
+        },
+        defaultStatement: function(expr) {
+
+            var str;
+
+            str =
+                'if (TP.isEmpty(result)) {' +
+                    'result = ' + expr + '; ' +
+                    'if (TP.isArray(result)) {' +
+                        'result.$set(\'delimiter\', \'\')};' +
+                '}' + newlineChar;
 
             return str;
         }
@@ -489,81 +497,190 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  For comments, just return a Function returning a string with
             //  escaped text.
 
-            return generators.returnWrap('\'' + generators.escape(text) + '\';');
+            return generators.returnWrap(
+                    '\'' + generators.escape(text) + '\';');
         },
 
-        value: function(wholeArg) {
+        value: function(arg) {
 
-            //  A substitution value
+            var src,
+                tokens,
 
-            var aspectName,
+                len,
+                i,
 
-                parts,
+                expr,
+                currentOp,
 
-                defaultValue,
+                wroteStart,
+
+                result,
+
+                token,
+                val,
 
                 inlineTemplate,
                 inlineName,
 
-                formatName,
+                formatFaultText;
 
-                isRepeating;
+            src = arg;
 
-            isRepeating = false;
+            TP.regex.ACP_OPERATORS.lastIndex = 0;
+            src = src.replace(TP.regex.ACP_OPERATORS, ' $1 ');
 
-            defaultValue = null;
+            tokens = TP.$tokenize(
+                        src,
+                        //  All of the JS operators *and* the TSH operators
+                        TP.tsh.script.$tshAndJSOperators,
+                        true, true, false, true);
 
-            //  If there is a format, then we need to grab it.
-            if (TP.regex.ACP_FORMAT.test(wholeArg)) {
+            expr = '';
+            currentOp = null;
+            wroteStart = false;
 
-                parts = TP.regex.ACP_FORMAT.exec(wholeArg);
+            result = '(function() {' + newlineChar +
+                        'var result;' + newlineChar;
 
-                //  Don't need the 'whole match'
-                parts.shift();
+            len = tokens.getSize();
+            for (i = 0; i < len; i++) {
 
-                //  The aspect name is the first piece
-                aspectName = parts.at(0).trim();
+                token = tokens.at(i);
+                val = token.value;
 
-                if (TP.isEmpty(aspectName)) {
-                    //  Default the aspect to 'value'
-                    aspectName = 'value';
-                    parts.atPut(0, 'value');
+                switch (token.name) {
+
+                    case 'operator':
+
+                        TP.regex.ACP_OPERATORS.lastIndex = 0;
+                        if (TP.isValid(currentOp) &&
+                            TP.regex.ACP_OPERATORS.test(val)) {
+
+                            expr = TP.trim(expr);
+
+                            formatFaultText = TP.sc('<NOT_FOUND: ', expr, ' >');
+
+                            switch (currentOp) {
+                                case '.%':
+                                    result += generators.formatStatement(
+                                                formatFaultText, expr, false);
+                                    break;
+                                case '.%*':
+                                    result += generators.formatStatement(
+                                                formatFaultText, expr, true);
+                                    break;
+                                case '.||':
+                                    result += generators.defaultStatement(expr);
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            expr = '';
+                            currentOp = null;
+                        }
+
+                        switch (val) {
+                            case '.%':
+                            case '.%*':
+                            case '.||':
+                                currentOp = val;
+                                break;
+                            default:
+                                //  leave everything else alone
+                                expr += val;
+                                break;
+                        }
+
+                        break;
+
+                    case 'template':
+
+                        inlineTemplate = val;
+
+                        //  compute a unique name for the 'inline' template
+                        inlineName = templateName + '_inline_' + inlineCount++;
+
+                        //  compile and register it (ignoring any previously
+                        //  cached value)
+                        inlineTemplate.compile(inlineName, true);
+
+                        expr = inlineName;
+
+                        if (TP.isValid(currentOp)) {
+
+                            formatFaultText = TP.sc('<NOT_FOUND: ', expr, ' >');
+
+                            switch (currentOp) {
+                                case '.%':
+                                    result += generators.formatStatement(
+                                                formatFaultText, expr, false);
+                                    break;
+                                case '.%*':
+                                    result += generators.formatStatement(
+                                                formatFaultText, expr, true);
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            expr = '';
+                            currentOp = null;
+                        }
+
+                        break;
+
+                    default:
+                        //  leave everything else alone
+                        expr += val;
+
+                        break;
                 }
 
-                //  The format name is the second piece
-                formatName = parts.at(1);
-                if (formatName.charAt(0) === '*') {
+                if (TP.isValid(currentOp) && !wroteStart) {
+                    expr = TP.trim(expr);
 
-                    //  Strip off the '*' and any trailing space and capture the
-                    //  format name.
-                    formatName = /\*\s*(.+)/.exec(formatName).at(1);
+                    result += generators.valueStatement(expr);
 
-                    isRepeating = true;
-                } else if (TP.regex.HAS_ACP.test(
-                                        inlineTemplate = parts.at(1))) {
+                    wroteStart = true;
+                    expr = '';
 
-                    //  compute a unique name for the 'inline' template
-                    inlineName = templateName + '_inline_' + inlineCount++;
-
-                    //  compile and register it (ignoring any previously
-                    //  cached value)
-                    inlineTemplate.compile(inlineName, true);
-
-                    parts.atPut(1, inlineName);
-                    formatName = inlineName;
+                    continue;
                 }
-            } else {
-                //  No format - the aspect name is the whole argument that was
-                //  supplied
-                aspectName = wholeArg;
-                formatName = null;
+
             }
 
-            //  Return a Function which returns a Function which extracts the
-            //  value from the data source.
-            return generators.returnWrap(
-                    generators.valueFromVarAndFormat(
-                            aspectName, formatName, isRepeating, defaultValue));
+            expr = TP.trim(expr);
+            if (!wroteStart) {
+                result += generators.valueStatement(expr);
+            } else if (TP.isValid(currentOp)) {
+
+                formatFaultText = TP.sc('<NOT_FOUND: ', expr, ' >');
+
+                if (TP.notEmpty(expr)) {
+                    switch (currentOp) {
+                        case '.%':
+                            result += generators.formatStatement(
+                                                formatFaultText, expr, false);
+                            break;
+                        case '.%*':
+                            result += generators.formatStatement(
+                                                formatFaultText, expr, true);
+                            break;
+                        case '.||':
+                            result += generators.defaultStatement(expr);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            result += ignoreNull + newlineChar;
+
+            result += '})()';
+
+            return result;
         },
 
         html: function(arg) {
@@ -704,6 +821,8 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
     //  Loop over all of the tokens and generate expressions. Then take any
     //  newlines and returns and converted them to escaped newlines.
     funcBody = generators.loop(tokenList).replace(/\n|\r/ig, '\\n');
+
+    funcBody = funcBody.replace(/__NEW_LINE__/g, '\n');
 
     //  Couldn't generate a String? - exit here.
     if (TP.isEmpty(funcBody)) {

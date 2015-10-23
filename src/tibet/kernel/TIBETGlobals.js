@@ -2510,6 +2510,9 @@ TP.regex.ACP_FORMAT = /([^\\]*?)\s*\.%\s*(.+)/;
 //  Multiple formats in a 'ui:format' attribute can be separated by these.
 TP.regex.ACP_FORMAT_SEPARATOR = /\s*\.\|\s*/;
 
+//  All of the ACP operators legal in a template - '.%', '.%*', '.||'
+TP.regex.ACP_OPERATORS = /(\.(%\*|%|\|\|))/g;   //  needs reset
+
 //  '$' followed by a word character (including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$(\w|\*|#)+/;
 
