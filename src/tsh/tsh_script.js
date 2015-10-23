@@ -77,6 +77,7 @@ function() {
             '.<<',                      //  'here document'
 
             '.;',                       //  pipe segment terminator
+            '.%', '.%*',                //  format
 
             '.((', '.))',               //  nested tsh:script with own
                                         //  request
