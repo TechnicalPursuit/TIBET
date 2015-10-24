@@ -811,7 +811,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
             newScript;
 
-        if (evt) {
+        if (TP.isEvent(evt)) {
             evt.target.removeEventListener('load', loadFunc, false);
         }
 
