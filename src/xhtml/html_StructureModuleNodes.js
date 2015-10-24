@@ -50,6 +50,43 @@ TP.html.Attrs.defineSubtype('body');
 
 TP.html.body.Type.set('uriAttrs', TP.ac('background'));
 
+//  ------------------------------------------------------------------------
+
+TP.html.body.Type.defineMethod('isResponderForUIFocusChangeSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusChangeSignal
+     * @summary Returns true because the body is always focusable.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.body.Type.defineMethod('isResponderForUIFocusComputationSignal',
+function(aNode, aSignal) {
+
+    /**
+     * @method isResponderForUIFocusComputationSignal
+     * @summary Returns true because the body can always participate in focus
+     *     computations.
+     * @param {Node} aNode The node to check which may have further data as to
+     *     whether this type should be considered to be a responder.
+     * @param {TP.sig.Signal} aSignal The signal that responders are being
+     *     computed for.
+     * @returns {Boolean} True when the receiver should respond to aSignal.
+     */
+
+    return true;
+});
+
 //  ========================================================================
 //  TP.html.figcaption (HTML 5)
 //  ========================================================================
