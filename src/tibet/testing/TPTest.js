@@ -2062,6 +2062,10 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         msg += '.';
     }
 
+    if (this.isTodo()) {
+        msg += ' # TODO ';
+    }
+
     TP.sys.logTest(msg);
 
     info = TP.hc(aFaultInfo);
@@ -2122,12 +2126,12 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     this.set('msend', Date.now());
 
+    msg = 'not ok - ' + this.getCaseName() +
+        (aFaultString ? ': ' + aFaultString : '') + '.';
+
     if (this.isTodo()) {
         msg += ' # TODO ';
     }
-
-    msg = 'not ok - ' + this.getCaseName() +
-        (aFaultString ? ': ' + aFaultString : '') + '.';
 
     TP.sys.logTest(msg);
 
@@ -2507,6 +2511,8 @@ function() {
      * it didn't fail and didn't error out).
      */
 
+    var msg;
+
     if (this.isCompleting() || this.didComplete()) {
         return;
     }
@@ -2516,7 +2522,13 @@ function() {
 
     this.set('msend', Date.now());
 
-    TP.sys.logTest('ok - ' + this.getCaseName() + '.');
+    msg = 'ok - ' + this.getCaseName() + '.';
+
+    if (this.isTodo()) {
+        msg += ' # TODO ';
+    }
+
+    TP.sys.logTest(msg);
 
     return this;
 });
