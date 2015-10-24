@@ -818,7 +818,8 @@
             // bad, but might be todo item...
             if (/# TODO/.test(msg)) {
                 // warning but basically ignored
-                str = PhantomTSH.color('not ok', 'yellow') + msg.slice(6);
+                str = PhantomTSH.color('not ok', 'red') +
+                    PhantomTSH.color(msg.slice(6), 'yellow');
             } else {
                 // true error
                 str = PhantomTSH.color('not ok', 'red') + msg.slice(6);
@@ -828,6 +829,9 @@
             // passed or skipped
             if (/# SKIP/.test(msg)) {
                 str = PhantomTSH.color(msg, 'cyan');
+            } else if (/# TODO/.test(msg)) {
+                str = PhantomTSH.color('ok', 'green') +
+                    PhantomTSH.color(msg.slice(2), 'yellow');
             } else {
                 str = PhantomTSH.color('ok', 'green') + msg.slice(2);
             }
