@@ -390,15 +390,22 @@ TP.boot.installPatches = function(aWindow) {
 
     //  For IE...
     if (TP.boot.$$isIE()) {
-        aWindow.Object.defineProperty(aWindow.Document,
-                                        '$$name',
-                                        {get: function() {
-                                            if (this.xmlVersion) {
-                                                return 'XMLDocument';
-                                            } else {
-                                                return 'HTMLDocument';
-                                            }
-                                        }});
+
+        //  If this slot doesn't already exist, install a getter
+        if (!aWindow.document.$$name) {
+            aWindow.Object.defineProperty(
+                aWindow.document,
+                '$$name',
+                {
+                    get: function() {
+                        if (this.xmlVersion) {
+                            return 'XMLDocument';
+                        } else {
+                            return 'HTMLDocument';
+                        }
+                    }
+                });
+        }
 
         aWindow.atob = function(aString) {
             /**
