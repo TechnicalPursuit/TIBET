@@ -326,6 +326,8 @@ TP.hc(
                 str + '>$&</root>');
         }
 
+        parser = new DOMParser();
+
         try {
             xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
         } catch (e) {
