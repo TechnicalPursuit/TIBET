@@ -7080,13 +7080,13 @@ function(aNode, anXPath, resultType, logErrors) {
         theXPath,
 
         doc,
-        newEvaluator,
 
         result,
 
         nodePath,
 
         resultArr,
+        firstItem,
         node,
 
         msg;
@@ -7125,49 +7125,68 @@ function(aNode, anXPath, resultType, logErrors) {
         doc = TP.nodeGetDocument(aNode);
 
         //  IE11 currently does not have built-in XPath support, so we wire in
-        //  the XPathJS processor here. Note that we don't use the standard way
-        //  to do that according to the author, since a variety of assumptions
-        //  were made (like the top-level document is going to be the only
-        //  execution context).
+        //  both the Wicked Good XPath processor *and* the jquery-xpath engine
+        //  here. We use both because Wicked Good XPath is very fast, but has
+        //  bugs (esp. around namespaces - namespaced attributes, to be
+        //  specific).
+
+        //  Note that wgxpath has already been installed by the boot system onto
+        //  the code frame (if a built-in XPath processor wasn't available,
+        //  according to how wgxpath works). This gives us globals, such as
+        //  'XPathResult', that are required for processing.
+        //  Now, in this context, 'doc' very well might not be the top-level
+        //  window/document (very doubtful, in fact), so we need to install an
+        //  'evaluate' on 'doc' that will leverage both processors.
+
         if (TP.notValid(doc.evaluate)) {
 
-            //  If the IE XPath functions and constants haven't been set up yet,
-            //  do so here.
-            if (TP.notValid(TP.$$xpathForIE_Evaluate)) {
+            //  Install Wicked Good XPath (wgxpath) on the document. Note that
+            //  it expects a Window(!) that will have a 'document' slot, but
+            //  thankfully its good enough to hand it a POJO with a 'document'
+            //  slot.
+            TP.extern.wgxpath.install({document: doc});
 
-                if (TP.notValid(self.XPathException)) {
-                    self.XPathException = TP.extern.XPathJS.XPathException;
-                    self.XPathExpression = TP.extern.XPathJS.XPathExpression;
-                    self.XPathNSResolver = TP.extern.XPathJS.XPathNSResolver;
-                    self.XPathResult = TP.extern.XPathJS.XPathResult;
-                    self.XPathNamespace = TP.extern.XPathJS.XPathNamespace;
-                }
+            //  Grab the 'evaluate' function that wgxpath installed and alias it
+            //  to '$evaluate'.
+            doc.$evaluate = doc.evaluate;
 
-                newEvaluator = new TP.extern.XPathJS.XPathEvaluator();
-                TP.$$xpathForIE_CreateExpression =
-                        function() {
-                            return newEvaluator.createExpression.apply(
-                                            newEvaluator, arguments);
-                        };
-                TP.$$xpathForIE_CreateNSResolver =
-                        function() {
-                            return newEvaluator.createNSResolver.apply(
-                                            newEvaluator, arguments);
-                        };
-                TP.$$xpathForIE_Evaluate =
-                        function() {
-                            return newEvaluator.evaluate.apply(
-                                            newEvaluator, arguments);
-                        };
-            }
+            //  Overwrite the 'evaluate' function with a custom version that
+            //  will call upon the jquery-xpath engine when necessary (see
+            //  below).
+            doc.evaluate =
+                function(expression, contextNode, resolver, type, theResult) {
 
-            //  Wire the XPath functions onto the document so they can be
-            //  called.
-            doc.createExpression = TP.$$xpathForIE_CreateExpression;
-            doc.createNSResolver = TP.$$xpathForIE_CreateNSResolver;
-            doc.evaluate = TP.$$xpathForIE_Evaluate;
+                    var emulatedResult;
 
-            doc.installedEval = true;
+                    //  Most of this function is to work around wgxpath bugs.
+
+                    //  If the expression has a 'namespace-uri' call in it
+                    //  somewhere, then we can't trust wgxpath to return the
+                    //  proper results. Invoke the jQuery XPath processor.
+                    if (/namespace-uri/.test(expression)) {
+                        emulatedResult = TP.extern.jxpath(
+                                    contextNode, expression, resolver);
+                    } else {
+
+                        //  Execute the wgxpath engine
+                        emulatedResult = this.$evaluate(
+                            expression, contextNode, resolver, type, theResult);
+
+                        //  If the result was supposed to be a node 'snapshot'
+                        //  (according to XPathResult rules), but has a
+                        //  'snapshotLength' of 0 (i.e. it is empty), then we
+                        //  try again with the jQuery XPath processor - again to
+                        //  work around wgxpath bugs.
+                        if (TP.owns(emulatedResult, 'snapshotLength') &&
+                            emulatedResult.snapshotLength === 0) {
+
+                            emulatedResult = TP.extern.jxpath(
+                                        contextNode, expression, resolver);
+                        }
+                    }
+
+                    return emulatedResult;
+                };
         }
 
         //  Run the XPath, using the XPathResult.ANY_TYPE so that we either
@@ -7179,14 +7198,53 @@ function(aNode, anXPath, resultType, logErrors) {
                         XPathResult.ANY_TYPE,
                         null);
 
-        //  If we installed the evaluate() statement with the 'XPath for IE'
-        //  shim above, then we need to remove it so that we don't leak massive
-        //  amounts of DOM memory.
-        if (doc.installedEval === true) {
-            doc.createExpression = null;
-            doc.createNSResolver = null;
-            doc.evaluate = null;
-            doc.installedEval = null;
+        //  If the result has a 'jquery' slot on it, then it's a jQuery result
+        //  object that will have its results packaged according to jQuery
+        //  rules, because these results were returned from the jQuery XPath
+        //  processor.
+        if (TP.isValid(result.jquery)) {
+
+            //  Extract the jQuery results into a regular Array
+            resultArr = TP.extern.jQuery.makeArray(result);
+
+            //  Grab the first item from the Array. If it's a Number, String or
+            //  Boolean, then the XPath didn't result in a Node or Nodes, but in
+            //  a primitive value, so return it.
+            firstItem = resultArr.first();
+            if (TP.isNumber(firstItem) ||
+                TP.isString(firstItem) ||
+                TP.isBoolean(firstItem)) {
+
+                return firstItem;
+            }
+
+            //  If the caller wanted a nodeset, just return the Array.
+            if (resultType === TP.NODESET) {
+                return resultArr;
+            } else if (resultType === TP.FIRST_NODE) {
+                //  If the caller just wanted the first node, grab the first
+                //  node from the Array and return it.
+                if (TP.isNode(node = firstItem)) {
+                    return node;
+                }
+            } else {
+                //  If an explicit result type wasn't specified, then
+                //  we use the 'only node rule' - which is that if the
+                //  result set only contains one node, we return that.
+                //  Otherwise, we return the Array.
+                if (resultArr.getSize() === 1) {
+                    return firstItem;
+                }
+
+                return resultArr;
+            }
+
+            //  return value default depends on request type
+            if (resultType === TP.NODESET) {
+                return TP.ac();
+            } else {
+                return null;
+            }
         }
 
         //  If we got a value result, switch on the result type to get the
@@ -7235,15 +7293,21 @@ function(aNode, anXPath, resultType, logErrors) {
 
                 default:
 
+                    //  If the caller wanted a nodeset, make sure to return an
+                    //  Array, even if its empty.
                     if (resultType === TP.NODESET) {
                         resultArr = TP.ac();
 
+                        //  Repackage from the XPathResult into an Array.
                         while (TP.isNode(node = result.iterateNext())) {
                             resultArr.push(node);
                         }
 
                         return resultArr;
                     } else if (resultType === TP.FIRST_NODE) {
+
+                        //  If the caller just wanted the first node, grab the
+                        //  first node from the XPathResult and return it.
                         if (TP.isNode(node = result.iterateNext())) {
                             return node;
                         }
