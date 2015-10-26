@@ -145,6 +145,7 @@ targets.build_deps = function(make) {
         targets.rollup_sinon).then(
         targets.rollup_sprintf).then(
         targets.rollup_syn).then(
+        targets.rollup_jqueryxpath).then(
         targets.rollup_xpath).then(
         function() {
             targets.build_deps.resolve();
@@ -405,6 +406,21 @@ targets.rollup_syn = function(make) {
     sh.exec('cp -f ./dist/syn.min.js ../../deps/syn-tpi.min.js');
 
     targets.rollup_syn.resolve();
+};
+
+/**
+ */
+targets.rollup_jqueryxpath = function(make) {
+    var npmdir;
+
+    sh.exec('npm update jquery-xpath');
+
+    npmdir = path.join(__dirname, 'node_modules');
+    sh.cd(path.join(npmdir, 'jquery-xpath'));
+    sh.exec('cp -f ./jquery.xpath.js ../../deps/jquery.xpath-tpi.js');
+    sh.exec('cp -f ./jquery.xpath.min.js ../../deps/jquery.xpath-tpi.min.js');
+
+    targets.rollup_jqueryxpath.resolve();
 };
 
 /**

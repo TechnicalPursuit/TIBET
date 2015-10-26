@@ -64,6 +64,7 @@
     "handlebars": "*",
     "jjv": "TechnicalPursuit/jjv",
     "jquery": "TechnicalPursuit/jquery",
+    "jquery-xpath": "TechnicalPursuit/jquery-xpath",
     "js-beautify": "*",
     "jsDAV": "*",
     "jsdiff": "TechnicalPursuit/jsdiff",

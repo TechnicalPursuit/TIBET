@@ -141,6 +141,16 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/jquery.xpath-tpi.min.js"
+        unless="boot.unminified linting" no-minify="true"/>
+    <script src="~lib_deps/jquery.xpath-tpi.js"
+        if="boot.unminified" unless="linting"/>
+    <script>
+        <![CDATA[
+        TP.extern.jxpath = jQuery.xpath;
+        ]]>
+    </script>
+
     <script src="TIBETHTTPPrimitivesPre.js"/>
     <script src="TIBETHTTPPrimitivesBase.js"/>
     <script src="TIBETHTTPPrimitivesPlatform.js"/>
