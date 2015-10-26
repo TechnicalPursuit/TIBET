@@ -807,7 +807,7 @@ TP.core.TagProcessor.Type.defineConstant(
         'descendant-or-self::*' +
         ' | ' +
         '//@*[' +
-        'namespace-uri()' +
+        'namespace-uri() != ""' +
         ' and ' +
         'namespace-uri() != "' + TP.w3.Xmlns.XML + '"' +
         ' and ' +
