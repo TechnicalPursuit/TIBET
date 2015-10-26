@@ -7464,7 +7464,6 @@ TP.trace = function(varargs) {
      *     of the final message to be logged.
      */
 
-
     return TP.$$log(arguments, TP.TRACE, this);
 };
 
@@ -7480,7 +7479,6 @@ TP.debug = function(varargs) {
      *     of the final message to be logged.
      */
 
-
     return TP.$$log(arguments, TP.DEBUG, this);
 };
 
@@ -7495,7 +7493,6 @@ TP.info = function(varargs) {
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
-
 
     return TP.$$log(arguments, TP.INFO, this);
 };
@@ -7528,7 +7525,6 @@ TP.error = function(varargs) {
      *     of the final message to be logged.
      */
 
-
     return TP.$$log(arguments, TP.ERROR, this);
 };
 
@@ -7543,7 +7539,6 @@ TP.severe = function(varargs) {
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
-
 
     return TP.$$log(arguments, TP.SEVERE, this);
 };
@@ -7560,7 +7555,6 @@ TP.fatal = function(varargs) {
      *     of the final message to be logged.
      */
 
-
     return TP.$$log(arguments, TP.FATAL, this);
 };
 
@@ -7575,7 +7569,6 @@ TP.system = function(varargs) {
      *     checked as a possible log name, all other values are considered parts
      *     of the final message to be logged.
      */
-
 
     return TP.$$log(arguments, TP.SYSTEM, this);
 };
