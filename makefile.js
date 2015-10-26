@@ -145,7 +145,6 @@ targets.build_deps = function(make) {
         targets.rollup_sinon).then(
         targets.rollup_sprintf).then(
         targets.rollup_syn).then(
-        targets.rollup_xpathjs).then(
         targets.rollup_xpath).then(
         function() {
             targets.build_deps.resolve();
@@ -406,21 +405,6 @@ targets.rollup_syn = function(make) {
     sh.exec('cp -f ./dist/syn.min.js ../../deps/syn-tpi.min.js');
 
     targets.rollup_syn.resolve();
-};
-
-/**
- */
-targets.rollup_xpathjs = function(make) {
-    var npmdir;
-
-    sh.exec('npm update xpathjs');
-
-    npmdir = path.join(__dirname, 'node_modules');
-    sh.cd(path.join(npmdir, 'xpathjs'));
-    sh.exec('cp -f ./build/xpathjs.js ../../deps/xpathjs-tpi.js');
-    sh.exec('cp -f ./build/xpathjs.min.js ../../deps/xpathjs-tpi.min.js');
-
-    targets.rollup_xpathjs.resolve();
 };
 
 /**

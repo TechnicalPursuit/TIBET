@@ -132,16 +132,6 @@
     <script src="~lib_deps/jquery-xmlns-tpi.js" unless="linting"/>
     <script src="TIBETCSSQueryPost.js"/>
 
-    <script src="~lib_deps/xpathjs-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
-    <script src="~lib_deps/xpathjs-tpi.js"
-        if="boot.unminified" unless="linting"/>
-    <script>
-        <![CDATA[
-        TP.extern.XPathJS = window.XPathJS;
-        ]]>
-    </script>
-
     <script src="TIBETHTTPPrimitivesPre.js"/>
     <script src="TIBETHTTPPrimitivesBase.js"/>
     <script src="TIBETHTTPPrimitivesPlatform.js"/>
