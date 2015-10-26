@@ -9257,84 +9257,72 @@ function(aWindow) {
         return;
     }
 
-    //  Set a handler on the 'top' window so that it always focuses down onto
-    //  whatever TIBET's canvas window is. Note: Do not shortcut this by using
-    //  'canvasWindow'. The actual ui canvas window may change as the
-    //  application is executed.
-    if (TP.sys.isUA('GECKO')) {
-        aWindow.addEventListener('focus',
-                function(anEvent) {
+    //  We don't install this on any other window than the UIROOT. If the Sherpa
+    //  is running, it will help with refocusing any controls that are in the
+    //  Sherpa itself. If the Sherpa isn't running (and we're probably in
+    //  production mode) then the UICANVAS === UIROOT at that point, so it will
+    //  be assisting the app.
+    if (aWindow !== TP.win('UIROOT')) {
+        return;
+    }
 
-                    var canvasWindow,
-                        focusedElem;
+    aWindow.addEventListener('focus',
+            function(anEvent) {
 
-                    //  For some reason, on Gecko trying to focus the canvas
-                    //  window causes problems with focusing items not in the
-                    //  canvas window. Focusing the document's body (if there is
-                    //  one) seems to get around the problem.
-                    if (anEvent.target === aWindow) {
-                        canvasWindow = TP.sys.getUICanvas(true);
+                var canvasWindow,
+                    focusedElem,
 
-                        focusedElem = TP.documentGetFocusedElement(
-                                                canvasWindow.document);
+                    bodyElem;
 
-                        if (TP.isElement(focusedElem)) {
-                            //  Sometimes, it's a custom XML element that
-                            //  doesn't know how to focus.
-                            if (TP.canInvoke(focusedElem, 'focus')) {
-                                focusedElem.focus();
-                            } else {
-                                //  Otherwise, try a TIBET wrapper around the
-                                //  element.
-                                focusedElem = TP.wrap(focusedElem);
-                                if (TP.canInvoke(focusedElem, 'focus')) {
-                                    focusedElem.focus();
-                                } else {
-                                    TP.documentGetBody(
-                                                canvasWindow.document).focus();
-                                }
-                            }
-                        } else {
-                            TP.documentGetBody(canvasWindow.document).focus();
-                        }
+                //  For some reason, on Gecko trying to focus the canvas window
+                //  causes problems with focusing items not in the canvas
+                //  window. Focusing the document's body (if there is one) seems
+                //  to get around the problem.
+                if (anEvent.target === aWindow) {
+                    canvasWindow = TP.sys.getUICanvas(true);
+
+                    focusedElem = TP.documentGetFocusedElement(
+                                            canvasWindow.document);
+                    bodyElem = TP.documentGetBody(
+                                            canvasWindow.document);
+
+                    //  If the focused element is already the body, then just
+                    //  exit here. Further messing with the focus will cause IE,
+                    //  in particular, to seize up as it cycles the focus
+                    //  between the body and the window.
+                    if (focusedElem === bodyElem) {
+                        return;
                     }
-                },
-                false);
-    } else if (TP.sys.isUA('WEBKIT') || TP.sys.isUA('IE')) {
-        aWindow.addEventListener('focus',
-                function(anEvent) {
 
-                    var canvasWindow,
-                        focusedElem;
-
-                    if (anEvent.target === aWindow) {
-                        canvasWindow = TP.sys.getUICanvas(true);
-
-                        focusedElem = TP.documentGetFocusedElement(
-                                                canvasWindow.document);
-
-                        if (TP.isElement(focusedElem)) {
-                            //  Sometimes, it's a custom XML element that
-                            //  doesn't know how to focus.
+                    if (TP.isElement(focusedElem)) {
+                        //  Sometimes, it's a custom XML element that doesn't
+                        //  know how to focus.
+                        if (TP.canInvoke(focusedElem, 'focus')) {
+                            focusedElem.focus();
+                        } else {
+                            //  Otherwise, try a TIBET wrapper around the
+                            //  element.
+                            focusedElem = TP.wrap(focusedElem);
                             if (TP.canInvoke(focusedElem, 'focus')) {
                                 focusedElem.focus();
                             } else {
-                                //  Otherwise, try a TIBET wrapper around the
-                                //  element.
-                                focusedElem = TP.wrap(focusedElem);
-                                if (TP.canInvoke(focusedElem, 'focus')) {
-                                    focusedElem.focus();
+                                if (TP.sys.isUA('GECKO')) {
+                                    bodyElem.focus();
                                 } else {
                                     canvasWindow.focus();
                                 }
                             }
+                        }
+                    } else {
+                        if (TP.sys.isUA('GECKO')) {
+                            bodyElem.focus();
                         } else {
                             canvasWindow.focus();
                         }
                     }
-                },
-                false);
-    }
+                }
+            },
+            false);
 
     return;
 });
