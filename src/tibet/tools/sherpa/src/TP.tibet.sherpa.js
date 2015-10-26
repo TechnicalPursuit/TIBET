@@ -60,12 +60,13 @@ function(aRequest) {
             TP.sys.registerObject(newSherpa);
         });
 
-    //  NOTE that on older versions of Safari this could trigger crashes due to
-    //  bugs in the MutationObserver implementation. It seems to work fine now.
+    //  NOTE: We fork here to allow the Mutation Observer machinery to settle
+    //  down, especially on IE11. Otherwise, strange things start happening
+    //  around parentNodes, etc.
     /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         TP.wrap(elemWin).setContent(sherpaURI, request);
-    }).afterUnwind();
+    }).fork(250);
     /* eslint-enable no-wrap-func,no-extra-parens */
 
     return this.callNextMethod();
