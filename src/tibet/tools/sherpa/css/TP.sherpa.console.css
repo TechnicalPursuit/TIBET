@@ -53,7 +53,7 @@ sherpa|console > xctrls|codeeditor {
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
 
-    height: auto;
+    height: 100%;
 }
 
 sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
