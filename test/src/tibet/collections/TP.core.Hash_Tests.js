@@ -22,12 +22,11 @@ function() {
             h2,
             deltas;
 
-            h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
-            h2 = TP.hc('a', 1, 'b', 2, 'c', 3);
+        h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
+        h2 = TP.hc('a', 1, 'b', 2, 'c', 3);
 
-            deltas = h1.deltas(h2);
-            this.assert.isEqualTo(deltas.length, 0);
-
+        deltas = h1.deltas(h2);
+        this.assert.isEqualTo(deltas.length, 0);
     });
 
     this.it('additions produce insert deltas', function(test, options) {
@@ -35,14 +34,14 @@ function() {
             h2,
             deltas;
 
-            h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
-            h2 = TP.hc('a', 1, 'b', 2, 'c', 3, 'd', 4);
+        h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
+        h2 = TP.hc('a', 1, 'b', 2, 'c', 3, 'd', 4);
 
-            deltas = h1.deltas(h2);
-            this.assert.isEqualTo(deltas.length, 1);
-            this.assert.isEqualTo(deltas.first().first(), 'd');
-            this.assert.isEqualTo(deltas.first().at(1), 4);
-            this.assert.isEqualTo(deltas.first().last(), TP.INSERT);
+        deltas = h1.deltas(h2);
+        this.assert.isEqualTo(deltas.length, 1);
+        this.assert.isEqualTo(deltas.first().first(), 'd');
+        this.assert.isEqualTo(deltas.first().at(1), 4);
+        this.assert.isEqualTo(deltas.first().last(), TP.INSERT);
     });
 
     this.it('removals produce delete deltas', function(test, options) {
@@ -50,14 +49,14 @@ function() {
             h2,
             deltas;
 
-            h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
-            h2 = TP.hc('a', 1, 'b', 2);
+        h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
+        h2 = TP.hc('a', 1, 'b', 2);
 
-            deltas = h1.deltas(h2);
-            this.assert.isEqualTo(deltas.length, 1);
-            this.assert.isEqualTo(deltas.first().first(), 'c');
-            this.assert.isEqualTo(deltas.first().at(1), 3);
-            this.assert.isEqualTo(deltas.first().last(), TP.DELETE);
+        deltas = h1.deltas(h2);
+        this.assert.isEqualTo(deltas.length, 1);
+        this.assert.isEqualTo(deltas.first().first(), 'c');
+        this.assert.isEqualTo(deltas.first().at(1), 3);
+        this.assert.isEqualTo(deltas.first().last(), TP.DELETE);
     });
 
     this.it('changes produce update deltas', function(test, options) {
@@ -65,14 +64,14 @@ function() {
             h2,
             deltas;
 
-            h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
-            h2 = TP.hc('a', 1, 'b', 2, 'c', 0);
+        h1 = TP.hc('a', 1, 'b', 2, 'c', 3);
+        h2 = TP.hc('a', 1, 'b', 2, 'c', 0);
 
-            deltas = h1.deltas(h2);
-            this.assert.isEqualTo(deltas.length, 1);
-            this.assert.isEqualTo(deltas.first().first(), 'c');
-            this.assert.isEqualTo(deltas.first().at(1), 0);
-            this.assert.isEqualTo(deltas.first().last(), TP.UPDATE);
+        deltas = h1.deltas(h2);
+        this.assert.isEqualTo(deltas.length, 1);
+        this.assert.isEqualTo(deltas.first().first(), 'c');
+        this.assert.isEqualTo(deltas.first().at(1), 0);
+        this.assert.isEqualTo(deltas.first().last(), TP.UPDATE);
     });
 });
 
