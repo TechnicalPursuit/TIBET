@@ -1403,7 +1403,7 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    query = './/processing-instruction(\'tibet-stylesheet\')';
+    query = './/processing-instruction()[name()="tibet-stylesheet"]';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
 
