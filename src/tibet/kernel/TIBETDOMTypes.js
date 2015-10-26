@@ -15909,7 +15909,8 @@ function(aRequest) {
 
 TP.core.ActionElementNode.defineSubtype('PipeSegmentElementNode');
 
-//  Can't construct concrete instances of this type.
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.PipeSegmentElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------

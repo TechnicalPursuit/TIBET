@@ -21,6 +21,10 @@
 //  intended to be mixed in to TP.sig.Signal subtypes
 TP.lang.Object.defineSubtype('sig.UserIOSignal');
 
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.sig.UserIOSignal.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------

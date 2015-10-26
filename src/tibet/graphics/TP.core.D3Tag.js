@@ -16,7 +16,8 @@
 
 TP.core.UIElementNode.defineSubtype('D3Tag');
 
-//  This is a mixin-only type.
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.D3Tag.isAbstract(true);
 
 //  ------------------------------------------------------------------------

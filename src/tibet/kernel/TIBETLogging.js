@@ -425,7 +425,8 @@ function() {
  */
 TP.lang.Object.defineSubtype('log.Filtered');
 
-// TP.log.Filtered is designed as a trait to be used/mixed in.
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.log.Filtered.isAbstract(true);
 
 //  ----------------------------------------------------------------------------
@@ -548,7 +549,8 @@ function() {
  */
 TP.lang.Object.defineSubtype('log.Leveled');
 
-// TP.log.Leveled is designed as a trait to be used/mixed in.
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.log.Leveled.isAbstract(true);
 
 //  ----------------------------------------------------------------------------

@@ -112,6 +112,9 @@ function(aURI, content) {
 
 TP.lang.Object.defineSubtype('core.Selection');
 
+//  can't construct concrete instances of this
+TP.core.Selection.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -230,7 +233,8 @@ function(oldIndexes) {
 
 TP.lang.Object.defineSubtype('core.Content');
 
-//  TP.core.Content objects can hold a selection
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.Content.addTraits(TP.core.Selection);
 
 //  ------------------------------------------------------------------------

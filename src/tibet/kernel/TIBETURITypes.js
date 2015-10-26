@@ -10804,6 +10804,10 @@ function(targetURI, aRequest) {
 
 TP.core.URIHandler.defineSubtype('RemoteURLWatchHandler');
 
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.core.RemoteURLWatchHandler.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------

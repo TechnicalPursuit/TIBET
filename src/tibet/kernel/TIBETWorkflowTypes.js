@@ -23,7 +23,8 @@
 
 TP.lang.Object.defineSubtype('TP.core.Triggered');
 
-//  This type is used primarily as a trait.
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.Triggered.isAbstract(true);
 
 //  the combination of origins/signals defining the triggers we observe.

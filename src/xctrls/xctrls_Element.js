@@ -16,6 +16,10 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls.Element');
 
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.xctrls.Element.isAbstract(true);
+
 TP.xctrls.Element.addTraits(TP.core.NonNativeUIElementNode);
 
 TP.xctrls.Element.Inst.resolveTraits(

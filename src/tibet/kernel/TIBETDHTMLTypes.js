@@ -4620,7 +4620,8 @@ function(aSignal) {
 
 TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
 
-//  can't construct concrete instances of this
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.SelectingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
@@ -5109,7 +5110,8 @@ function() {
 
 TP.core.UIElementNode.defineSubtype('SelectableItemUIElementNode');
 
-//  can't construct concrete instances of this
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.SelectableItemUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
@@ -5202,7 +5204,8 @@ TP.core.SelectingUIElementNode.defineSubtype('TogglingUIElementNode');
 //  selectable items.
 TP.core.TogglingUIElementNode.addTraits(TP.core.SelectableItemUIElementNode);
 
-//  can't construct concrete instances of this
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.TogglingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------

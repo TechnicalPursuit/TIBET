@@ -5768,6 +5768,10 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 TP.core.ElementNode.defineSubtype('core.NonNativeUIElementNode');
 
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.core.NonNativeUIElementNode.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 
 TP.core.NonNativeUIElementNode.Type.defineMethod('tagAttachStyle',

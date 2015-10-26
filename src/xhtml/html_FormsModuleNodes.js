@@ -647,6 +647,11 @@ TP.html.output.Type.set('booleanAttrs', TP.ac('willValidate'));
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.defineSubtype('html.textUtilities');
+
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.html.textUtilities.isAbstract(true);
+
 TP.html.textUtilities.addTraits(TP.html.Element);
 
 TP.html.textUtilities.Type.resolveTrait('booleanAttrs', TP.html.Element);
@@ -654,9 +659,6 @@ TP.html.textUtilities.Type.resolveTrait('booleanAttrs', TP.html.Element);
 TP.html.textUtilities.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
-
-//  can't construct concrete instances of this
-TP.html.textUtilities.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
