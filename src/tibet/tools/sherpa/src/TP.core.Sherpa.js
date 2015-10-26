@@ -101,7 +101,7 @@ function(aName) {
                     /* eslint-disable no-wrap-func,no-extra-parens */
                     (function() {
                         TP.byId('SherpaConsole', TP.win('UIROOT')).refresh();
-                    }).fork(500);
+                    }).fork(750);
                     /* eslint-enable no-wrap-func,no-extra-parens */
 
                 }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
