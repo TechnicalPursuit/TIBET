@@ -132,6 +132,15 @@
     <script src="~lib_deps/jquery-xmlns-tpi.js" unless="linting"/>
     <script src="TIBETCSSQueryPost.js"/>
 
+    <script src="~lib_deps/wgxpath.install.js"
+        unless="linting" no-minify="true"/>
+    <script>
+        <![CDATA[
+        TP.extern.wgxpath = window.wgxpath;
+        TP.extern.wgxpath.install();
+        ]]>
+    </script>
+
     <script src="TIBETHTTPPrimitivesPre.js"/>
     <script src="TIBETHTTPPrimitivesBase.js"/>
     <script src="TIBETHTTPPrimitivesPlatform.js"/>
