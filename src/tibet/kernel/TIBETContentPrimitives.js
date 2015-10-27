@@ -159,9 +159,19 @@ function(aString) {
 
             case 'operator':
                 if (val === '.' && TP.isValid(tokens.at(i - 1))) {
-                    if (TP.notValid(context)) {
+
+                    //  If there isn't a valid context, and useGlobalContext is
+                    //  still true, then try to use the previous token's value
+                    //  as the context. If we've already flipped
+                    //  useGlobalContext to false, then we're not at the 'first
+                    //  segment' of a '.' separated value and, therefore, should
+                    //  just use the value.
+                    if (TP.notValid(context) && useGlobalContext) {
                         context = tokens.at(i - 1).value;
+                    } else {
+                        str += val;
                     }
+
                     break;
                 } else if (val === '{') {
                     str += '{"';
@@ -170,17 +180,23 @@ function(aString) {
                     str += '":"';
                     context = null;
                 } else if (val === ',') {
+                    if (TP.isValid(context)) {
+                        val = context;
+                        str += val;
+                    }
                     str += '","';
                     context = null;
+
+                    //  We're at the end of a value - need to reset for the next
+                    //  value.
+                    useGlobalContext = true;
                 } else if (val === '}') {
                     if (TP.isValid(context)) {
                         val = context;
-                        context = null;
-
-                        str += val + '"}';
-                    } else {
-                        str += '"}';
+                        str += val;
                     }
+                    str += '"}';
+                    context = null;
                 } else {
                     str += val;
                 }
