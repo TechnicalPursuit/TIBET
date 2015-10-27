@@ -1039,6 +1039,10 @@ TP.SKIPPED = 8;                         //  not in BPML spec, reserved here
 TP.TIMED_OUT = 9;                       //  not in BPML spec, reserved here
 TP.IGNORED = 10;                        //  not in BPML spec, reserved here
 
+TP.INITIATE = 11;                       //  outer multi-step job "start"
+TP.RESOLVED = 12;                       //  outer multi-step job "success"
+TP.REJECTED = 13;                       //  outer multi-step job "failure"
+
 //  join conditions. NOTE these should be kept as string values to avoid
 //  changes to the shell pipe connection logic.
 TP.AND = 'and';

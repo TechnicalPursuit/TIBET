@@ -6271,8 +6271,8 @@ function(aSignal) {
 
     /**
      * @method handleAppWillStart
-     * @summary A handler that is called when the system has set up everything
-     *     required to run a TIBET application.
+     * @summary A handler that is called when the system has loaded everything
+     *     and is ready to activate your TIBET application.
      * @param {TP.sig.AppWillStart} aSignal The startup signal.
      * @returns {TP.core.Application} The receiver.
      */

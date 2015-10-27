@@ -75,7 +75,11 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     info = TP.hc(aFaultInfo);
     hash.atPut('info', info);
 
-    if (TP.isError(aFaultCode)) {
+    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
+        hash.atPut('code', TP.ifInvalid(aFaultCode, TP.ERRORED));
+        hash.atPut('text', aFaultString.getMessage());
+        info.atPut('error', aFaultString.getError());
+    } else if (TP.isError(aFaultCode)) {
         hash.atPut('code', TP.ERRORED);
         if (TP.isEmpty(aFaultString)) {
             hash.atPut('text', aFaultCode.message);
@@ -661,8 +665,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     code = hash.at('code');
     text = hash.at('text');
-
-    info = TP.hc(aFaultInfo);
+    info = hash.at('info');
 
     if (!TP.isError(error = info.at('error'))) {
         try {

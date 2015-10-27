@@ -495,18 +495,18 @@ function(anEntry) {
      *     NOTE that unlike log4j TIBET filtering simply checks that no filter
      *     blocks the entry. There is no "neutral" or "pass and ignore others"
      *     option in our implementation of filters.
-     * @returns {?TP.log.Entry} The entry, if it isn't filtered.
+     * @returns {Boolean} Returns true if the entry should be logged/appended.
      */
 
     var filters,
         results;
 
     if (TP.notValid(anEntry)) {
-        return;
+        return false;
     }
 
     if (!this.isEnabled(anEntry.getLevel())) {
-        return;
+        return false;
     }
 
     filters = this.getFilters();
@@ -516,11 +516,11 @@ function(anEntry) {
         });
 
         if (results.contains(false)) {
-            return;
+            return false;
         }
     }
 
-    return anEntry;
+    return true;
 });
 
 //  ----------------------------------------------------------------------------
@@ -1124,11 +1124,9 @@ function(anEntry) {
      * @returns {TP.log.Logger} The receiver.
      */
 
-    var entry,
-        appenders;
+    var appenders;
 
-    entry = this.filter(anEntry);
-    if (TP.notValid(entry)) {
+    if (TP.notTrue(this.filter(anEntry))) {
         return;
     }
 
@@ -1136,7 +1134,7 @@ function(anEntry) {
     if (TP.notEmpty(appenders)) {
         appenders.forEach(
                     function(appender) {
-                        appender.log(entry);
+                        appender.log(anEntry);
                     });
     }
 
@@ -1442,12 +1440,11 @@ function(anEntry) {
 
     var entry;
 
-    entry = this.filter(anEntry);
-    if (TP.notValid(entry)) {
+    if (TP.notTrue(this.filter(anEntry))) {
         return;
     }
 
-    this.append(entry);
+    this.append(anEntry);
 
     return this;
 });
@@ -3435,37 +3432,61 @@ function(anObject, aLogLevel) {
      * @summary Adds an entry to the test log. Note that there is no level
      *     filtering in test logging, the level parameter only filters parallel
      *     entries which might be made to the activity log.
-     * @summary This call is used by test harness routines to log their
-     *     activity. The object argument can provide data in one or more keys
-     *     including:
-     *
-     *     'name'               the test name
-     *     'number'             the test number *in the reporting run*
-     *     'test-status'        the test status. Should be one of:
-     *                              TP.ACTIVE
-     *                              TP.SKIP
-     *                              TP.TODO
-     *     'result-status'      the result status. Should be one of:
-     *                              TP.SUCCEEDED
-     *                              TP.FAILED
-     *                              TP.CANCELLED
-     *                              TP.SKIPPED
-     *                              TP.TIMED_OUT
-     *     'message'            the test message
-     *     'failure-severity'   the severity level of the failure. Usually set
-     *                          to 'fail'.
-     *     'failure-data'       A hash with two keys containing the data:
-     *                              TP.PRODUCED
-     *                              TP.EXPECTED
-     * @param {Object} anObject The test data to log.
+     * @param {Object} anObject The test data to log. This can range from a
+     *     simple object to a hash, TP.test.Suite, or TP.test.Case. Common
+     *     keys should follow TP.core.JobControl standards such as statusCode,
+     *     statusText, etc. Note that not all appenders designed for the test
+     *     log will use all keys.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
      * @returns {Boolean} True if the logging operation succeeded.
      */
 
+    if (TP.isString(anObject)) {
+        TP.sys.$$log(TP.ac(TP.TEST_LOG,
+            TP.hc('statusCode', TP.ACTIVE, 'statusText', anObject)), aLogLevel);
+        return true;
+    }
+
     TP.sys.$$log(TP.ac(TP.TEST_LOG, anObject), aLogLevel);
 
     return true;
+});
+
+//  ----------------------------------------------------------------------------
+//  TestLog Layout
+//  ----------------------------------------------------------------------------
+
+/**
+ * A simple layout specific to processing test log input data.
+ */
+TP.log.Layout.defineSubtype('TestLogLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Definition
+//  ----------------------------------------------------------------------------
+
+TP.log.TestLogLayout.Inst.defineMethod('layout',
+function(anEntry) {
+
+    /**
+     * @method layout
+     * @summary Extracts the first object logged in the log entry to produce a
+     *     hash containing that object as the 'content' to be logged.
+     * @param {TP.log.Entry} anEntry The entry to format.
+     * @returns {TP.core.Hash} A hash of output containing at least one key,
+     *     'content'.
+     */
+
+    var arglist;
+
+    //  TODO:   we currently rely on historical TAP output being generated by
+    //  the logging system rather than generating it ourselves. Probably need to
+    //  adjust that so we do the TAP formatting in the layout. That would mean
+    //  processing the entry argument list more here.
+    arglist = anEntry.getArglist();
+
+    return TP.hc('content', arglist.first());
 });
 
 //  ----------------------------------------------------------------------------
@@ -3483,7 +3504,7 @@ TP.log.Appender.defineSubtype('TestLogAppender');
  * The default layout type for this appender.
  * @type {TP.log.Layout}
  */
-TP.log.TestLogAppender.Type.$set('defaultLayoutType', 'TP.log.ArglistLayout');
+TP.log.TestLogAppender.Type.$set('defaultLayoutType', 'TP.log.TestLogLayout');
 
 //  ----------------------------------------------------------------------------
 //  Instance Definition
@@ -3494,11 +3515,8 @@ function(anEntry) {
 
     /**
      * @method append
-     * @summary Formats the entry data using the receiver's layout and writes
-     *     it to the console. One specific difference between this and the
-     *     ConsoleAppender is the focus on using console.log and console.error
-     *     exclusively rather than trace or info, even if those match entry
-     *     level data.
+     * @summary Processes a test log entry and logs it to either the system
+     *     console or to the appropriate TIBET stdio function.
      * @param {TP.log.Entry} anEntry The log entry to format and append.
      * @returns {TP.log.Appender} The receiver.
      */
@@ -3509,6 +3527,7 @@ function(anEntry) {
         layout,
         results,
         content,
+        message,
         asIs,
 
         stdio;
@@ -3539,12 +3558,13 @@ function(anEntry) {
     // that it's all the result of a single logging call...
     // TODO:
 
-
     // Format the little critter...
     layout = this.getLayout();
 
     results = layout.layout(anEntry);
     content = results.at('content');
+
+    message = content.at('statusText');
     asIs = results.at('cmdAsIs');
 
     // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
@@ -3552,17 +3572,17 @@ function(anEntry) {
 
         //  If the content matches the TSH_NO_VALUE, exit here - we don't log
         //  that value.
-        if (TP.regex.TSH_NO_VALUE_MATCHER.test(content)) {
+        if (TP.regex.TSH_NO_VALUE_MATCHER.test(message)) {
             return this;
         }
 
         try {
-            top.console[writer](content);
+            top.console[writer](message);
         } catch (e) {
-            top.console.log(content);
+            top.console.log(message);
         }
     } else {
-        TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
+        TP[stdio](message, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
     }
 
     return this;

@@ -8324,7 +8324,7 @@ function(anObj) {
     }
 
     //  If the document doesn't have a Window, then its not HTML
-    if (TP.notValid(anObj.defaultView)) {
+    if (TP.notValid(TP.nodeGetWindow(anObj))) {
         return false;
     }
 
@@ -8763,7 +8763,7 @@ function(anObj) {
     //  If the document doesn't have a Window, then we check to see if the
     //  document element is 'html' - in which case, we can still think of it
     //  as XHTML.
-    if (TP.notValid(anObj.defaultView)) {
+    if (TP.notValid(TP.nodeGetWindow(anObj))) {
         return anObj.documentElement.tagName === 'html';
     }
 

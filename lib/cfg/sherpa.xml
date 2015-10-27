@@ -25,6 +25,7 @@
     <script src="./src/TP.sherpa.pp.js"/>
 
     <script src="./src/TP.log.SherpaLayout.js"/>
+    <script src="./src/TP.log.SherpaTestLogLayout.js"/>
     <script src="./src/TP.log.SherpaAppender.js"/>
 
     <script src="./src/UIElementNodeAdditions.js"/>

@@ -3943,7 +3943,8 @@ function(anElement) {
      * @returns {HTMLElement} The busy element itself.
      */
 
-    var busyElement;
+    var busyElement,
+        win;
 
     //  We only do this if there is actually a busy element for the supplied
     //  element.
@@ -3952,10 +3953,13 @@ function(anElement) {
 
         //  Make sure and detach the resizing event handlers since they'll
         //  be reattached when the busy element is shown.
-        anElement.ownerDocument.defaultView.removeEventListener(
-            'resize',
-            busyElement.busyResizeFunction,
-            false);
+        win = TP.nodeGetWindow(anElement.ownerDocument);
+        if (TP.isValid(win)) {
+            win.removeEventListener(
+                'resize',
+                busyElement.busyResizeFunction,
+                false);
+        }
 
         busyElement.busyResizeFunction = null;
     }
@@ -5076,7 +5080,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
 
     var busyElement,
         busyMessageElement,
-
+        win,
         busyElemStyleObj,
 
         busyTop,
@@ -5141,10 +5145,13 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
         busyElemStyleObj.height = busyHeight + 'px';
     };
 
-    anElement.ownerDocument.defaultView.addEventListener(
-        'resize',
-        busyElement.busyResizeFunction,
-        false);
+    win = TP.nodeGetWindow(anElement.ownerDocument);
+    if (TP.isValid(win)) {
+        win.addEventListener(
+            'resize',
+            busyElement.busyResizeFunction,
+            false);
+    }
 
     //  Finally, go ahead and show the busy element :-).
     busyElemStyleObj.display = 'block';

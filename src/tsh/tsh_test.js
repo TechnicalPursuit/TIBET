@@ -41,6 +41,7 @@ function(aRequest) {
         ignore_only,
         ignore_skip,
         options,
+        karma,
         suiteName,
         cases,
         obj;
@@ -90,16 +91,25 @@ function(aRequest) {
                     'suite', suiteName,
                     'cases', cases);
 
+    karma = TP.ifInvalid(TP.extern.karma, {
+        info: TP.NOOP,
+        results: TP.NOOP,
+        complete: TP.NOOP
+    });
+
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
         if (shell.getArgument(aRequest, 'tsh:all', false)) {
 
+
             runner.runTargetSuites(null, options).then(
                 function(result) {
                     aRequest.complete();
+                    karma.complete();
                 },
                 function(error) {
                     aRequest.fail(error);
+                    karma.complete();
                 }
             );
 
@@ -118,9 +128,11 @@ function(aRequest) {
             function(result) {
                 //  TODO: should we pass non-null results?
                 aRequest.complete();
+                karma.complete();
             },
             function(error) {
                 aRequest.fail(error);
+                karma.complete();
             }
         );
 
@@ -152,9 +164,11 @@ function(aRequest) {
                         }).then(function(result) {
                             // TODO: should we pass non-null results?
                             aRequest.complete();
+                            karma.complete();
                         },
                         function(error) {
                             aRequest.fail(error);
+                            karma.complete();
                         }
                 );
                 return;
@@ -167,9 +181,11 @@ function(aRequest) {
             function(result) {
                 //  TODO: should we pass non-null results?
                 aRequest.complete();
+                karma.complete();
             },
             function(error) {
                 aRequest.fail(error);
+                karma.complete();
             }
         );
     }
