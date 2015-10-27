@@ -105,15 +105,15 @@ function(aRequest) {
 
         //  If 'TP.sig.AttachComplete', then 'just do it'
         if (sigName === 'TP.sig.AttachComplete') {
-            tpElem.trigger();
+            tpElem.activate();
         } else {
             //  Otherwise, observe the signal and install a local method that
-            //  will trigger us when the signal is handled.
+            //  will activate us when the signal is handled.
             tpElem.observe(tpElem, sigName);
             tpElem.defineMethod(
                     TP.escapeTypeName(sigName),
                     function(aSignal) {
-                        this.trigger();
+                        this.activate();
                     });
         }
     }
@@ -266,147 +266,13 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tibet.service.Inst.defineMethod('getResultType',
-function(mimeType) {
-
-    /**
-     * @method getResultType
-     * @summary Returns a result type that will either be a TIBET type from the
-     *     name specified by the 'resultType' attribute on the receiver or, if
-     *     that's not defined, the MIME type supplied to this method.
-     * @param {String} mimeType The MIME type of the data. This will be used to
-     *     guess the data type if the receiver doesn't have a 'resultType'
-     *     defined on it.
-     * @returns {TP.meta.lang.RootObject|String} The type object (or String as
-     *     a fallback) to create for the supplied result data.
-     */
-
-    var resultType,
-        tibetType;
-
-    //  See if the user has define a 'resultType' attribute on us. If so, try to
-    //  see if TIBET really has a Type matching that.
-    if (TP.notEmpty(resultType = this.getAttribute('resultType'))) {
-        tibetType = TP.sys.getTypeByName(resultType);
-    }
-
-    //  We still don't have a type for the result. If a MIME type was supplied,
-    //  switch off of that.
-    if (!TP.isType(tibetType)) {
-
-        //  Depending on the MIME type, return a TIBET (or JS) type object that
-        //  the result can be constructed with.
-
-        switch (mimeType) {
-
-            case TP.JSON_ENCODED:
-
-                tibetType = TP.core.JSONContent;
-
-                break;
-
-            case TP.XML_ENCODED:
-
-                tibetType = TP.core.XMLContent;
-
-                break;
-
-            default:
-                tibetType = String;
-        }
-    }
-
-    return tibetType;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineHandler('ValueChange',
-function(aSignal) {
-
-    /**
-     * @method handleValueChange
-     * @summary Handles notification of a change.
-     * @description This is triggered if we're watching the remote resource
-     *     referenced by our 'href'.
-     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
-     */
-
-    this.trigger();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineMethod('setAttrAutorefresh',
-function(refreshValue) {
-
-    /**
-     * @method setAttrAutorefresh
-     * @summary Sets the 'autorefresh' value for the receiver.
-     * @param {String} refreshValue
-     */
-
-    var href,
-        uri,
-        val;
-
-    //  Make sure that a main href is available and a URI can be created from
-    //  it.
-    if (TP.notEmpty(href = this.getAttribute('href'))) {
-        if (!TP.isURI(uri = TP.uc(href))) {
-            //  Raise an exception
-            return this.raise('TP.sig.InvalidURI');
-        }
-    } else {
-        //  Raise an exception
-        return this;
-    }
-
-    val = TP.bc(refreshValue);
-    uri.set('autoRefresh', val);
-
-    if (val) {
-        this.observe(uri, 'TP.sig.ValueChange');
-    } else {
-        this.ignore(uri, 'TP.sig.ValueChange');
-    }
-
-    this.$setAttribute('autorefresh', val);
-
-    //  setting an attribute returns void according to the spec
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineMethod('setAttrHref',
-function(anHref) {
-
-    /**
-     * @method setAttrHref
-     * @summary Sets the 'href' value for the receiver. This will normally be
-     *     triggered by the data binding machinery if the attribute is data
-     *     bound.
-     * @param {String} anHref The value to set the 'href' to.
-     */
-
-    this.$setAttribute('href', anHref);
-
-    //  setting an attribute returns void according to the spec
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineMethod('trigger',
+TP.tibet.service.Inst.defineMethod('activate',
 function() {
 
     /**
-     * @method trigger
+     * @method activate
      * @summary This method causes the receiver to perform it's 'action'. In
-     * this case, sending data to a remote URI endpoint.
+     *     this case, retrieving or sending data to a remote URI endpoint.
      * @returns {TP.tibet.service} The receiver.
      */
 
@@ -737,6 +603,160 @@ function() {
     this.signal('TP.sig.UIDataSent');
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineMethod('getResultType',
+function(mimeType) {
+
+    /**
+     * @method getResultType
+     * @summary Returns a result type that will either be a TIBET type from the
+     *     name specified by the 'resultType' attribute on the receiver or, if
+     *     that's not defined, the MIME type supplied to this method.
+     * @param {String} mimeType The MIME type of the data. This will be used to
+     *     guess the data type if the receiver doesn't have a 'resultType'
+     *     defined on it.
+     * @returns {TP.meta.lang.RootObject|String} The type object (or String as
+     *     a fallback) to create for the supplied result data.
+     */
+
+    var resultType,
+        tibetType;
+
+    //  See if the user has define a 'resultType' attribute on us. If so, try to
+    //  see if TIBET really has a Type matching that.
+    if (TP.notEmpty(resultType = this.getAttribute('resultType'))) {
+        tibetType = TP.sys.getTypeByName(resultType);
+    }
+
+    //  We still don't have a type for the result. If a MIME type was supplied,
+    //  switch off of that.
+    if (!TP.isType(tibetType)) {
+
+        //  Depending on the MIME type, return a TIBET (or JS) type object that
+        //  the result can be constructed with.
+
+        switch (mimeType) {
+
+            case TP.JSON_ENCODED:
+
+                tibetType = TP.core.JSONContent;
+
+                break;
+
+            case TP.XML_ENCODED:
+
+                tibetType = TP.core.XMLContent;
+
+                break;
+
+            default:
+                tibetType = String;
+        }
+    }
+
+    return tibetType;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles notification of a change.
+     * @description This is triggered if we're watching the remote resource
+     *     referenced by our 'href'.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     */
+
+    this.activate();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineMethod('setAttrAutorefresh',
+function(refreshValue) {
+
+    /**
+     * @method setAttrAutorefresh
+     * @summary Sets the 'autorefresh' value for the receiver.
+     * @param {String} refreshValue
+     */
+
+    var href,
+        uri,
+        val;
+
+    //  Make sure that a main href is available and a URI can be created from
+    //  it.
+    if (TP.notEmpty(href = this.getAttribute('href'))) {
+        if (!TP.isURI(uri = TP.uc(href))) {
+            //  Raise an exception
+            return this.raise('TP.sig.InvalidURI');
+        }
+    } else {
+        //  Raise an exception
+        return this;
+    }
+
+    val = TP.bc(refreshValue);
+    uri.set('autoRefresh', val);
+
+    if (val) {
+        this.observe(uri, 'TP.sig.ValueChange');
+    } else {
+        this.ignore(uri, 'TP.sig.ValueChange');
+    }
+
+    this.$setAttribute('autorefresh', val);
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineMethod('setAttrHref',
+function(anHref) {
+
+    /**
+     * @method setAttrHref
+     * @summary Sets the 'href' value for the receiver. This will normally be
+     *     triggered by the data binding machinery if the attribute is data
+     *     bound.
+     * @param {String} anHref The value to set the 'href' to.
+     */
+
+    this.$setAttribute('href', anHref);
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Action Event Handlers
+//  ------------------------------------------------------------------------
+
+TP.tibet.service.Inst.defineHandler('UIActivate',
+function(aSignal) {
+
+    /**
+     * @method handleUIActivate
+     * @summary Activates the receiver. For this type, that means interacting
+     *     with the data store configured by its remote URL.
+     * @param {TP.sig.UIActivate} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    this.activate();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

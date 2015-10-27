@@ -151,7 +151,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -259,7 +259,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -358,7 +358,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -457,7 +457,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -565,7 +565,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -677,7 +677,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -783,7 +783,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -891,7 +891,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -999,7 +999,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -1105,7 +1105,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -1204,7 +1204,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
@@ -1303,7 +1303,7 @@ function() {
 
                 test.then(
                     function() {
-                        serviceTPElem.trigger();
+                        serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
                                                 'TP.sig.UIDataSent');
