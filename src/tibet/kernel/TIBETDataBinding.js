@@ -1099,13 +1099,13 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 //  TP.core.DocumentNode
 //  ------------------------------------------------------------------------
 
-TP.core.DocumentNode.Inst.defineHandler('DOMRefresh',
+TP.core.DocumentNode.Inst.defineHandler('UIRefresh',
 function(aSignal) {
 
     /**
-     * @method handleDOMRefresh
+     * @method handleUIRefresh
      * @summary Refreshes the receiver's bound data.
-     * @param {TP.sig.DOMRefresh} aSignal The signal instance which triggered
+     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
      *     this handler.
      */
 
@@ -1125,7 +1125,7 @@ function(aSignalOrHash) {
      *     in the document. For an HTML document this will refresh content under
      *     the body, while in an XML document all elements including the
      *     documentElement are refreshed.
-     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.UIRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash. If this is a signal, this
      *     method will try first to use 'getValue()' to get the value from the
      *     binding. If there is no value there, or this is a hash, this method
@@ -1592,13 +1592,13 @@ function(attrName, attrValue, scopeVals, direction, unregisterURIs) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineHandler('DOMRebuild',
+TP.core.ElementNode.Inst.defineHandler('UIRebuild',
 function(aSignal) {
 
     /**
-     * @method handleDOMRebuild
+     * @method handleUIRebuild
      * @summary Rebuilds the receiver's binding expressions.
-     * @param {TP.sig.DOMRebuild} aSignal The signal instance which triggered
+     * @param {TP.sig.UIRebuild} aSignal The signal instance which triggered
      *     this handler.
      */
 
@@ -1609,13 +1609,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineHandler('DOMRefresh',
+TP.core.ElementNode.Inst.defineHandler('UIRefresh',
 function(aSignal) {
 
     /**
-     * @method handleDOMRefresh
+     * @method handleUIRefresh
      * @summary Refreshes the receiver's bound data.
-     * @param {TP.sig.DOMRefresh} aSignal The signal instance which triggered
+     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
      *     this handler.
      */
 
@@ -1957,7 +1957,7 @@ function(aSignalOrHash) {
     /**
      * @method rebuild
      * @summary Rebuilds any bindings for the receiver.
-     * @param {TP.sig.DOMRebuild|TP.core.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.UIRebuild|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or hash supplied by the caller. This
      *     object should include the following keys:
      *          'deep'              ->  a value of true causes all descendant
@@ -2298,7 +2298,7 @@ function(aSignalOrHash) {
      * @method rebuildRepeat
      * @summary Rebuilds any bindings for the receiver's descendant content
      *     that is bound.
-     * @param {TP.sig.DOMRebuild|TP.core.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.UIRebuild|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or hash supplied by the caller. This
      *     object should include the following keys:
      *          'deep'          ->      a value of true causes all descendant
@@ -3016,7 +3016,7 @@ function(aSignalOrHash) {
      *     found by evaluating its binding aspect against its source. This
      *     method is used to update the former from the latter, typically in
      *     response to a Change notification from the underlying bound content.
-     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.UIRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash.
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.

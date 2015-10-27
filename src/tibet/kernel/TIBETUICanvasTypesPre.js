@@ -2288,7 +2288,7 @@ function(aSignalOrHash) {
      * @method refresh
      * @summary Updates the receiver's content by refreshing all bound elements
      *     in the window's document.
-     * @param {TP.sig.DOMRefresh|TP.core.Hash} aSignalOrHash An optional signal
+     * @param {TP.sig.UIRefresh|TP.core.Hash} aSignalOrHash An optional signal
      *     which triggered this action or a hash.
      *     This signal or hash should include a key of 'deep' and a value
      *     of true to cause a deep refresh that updates all nodes.

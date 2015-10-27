@@ -741,14 +741,14 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIAlert');
 TP.sig.ResponderInteractionSignal.defineSubtype('UIHelp');     //  XForms
 TP.sig.ResponderInteractionSignal.defineSubtype('UIHint');     //  XForms
 
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMRebuild'); //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMRefresh'); //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIRebuild');  //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIRefresh');  //  XForms
 
 /*
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMRevalidate');   //  XForms
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMRecalculate');  //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIRevalidate');   //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIRecalculate');  //  XForms
 
-TP.sig.ResponderInteractionSignal.defineSubtype('DOMReset');   //  XForms
+TP.sig.ResponderInteractionSignal.defineSubtype('UIReset');   //  XForms
 */
 
 //  ------------------------------------------------------------------------
