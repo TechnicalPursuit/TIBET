@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<xctrls:button tabindex="0">
+<xctrls:button tabindex="{{$SOURCE.(@tabindex) .|| 0}}">
     {{$SOURCE.(./xctrls:label)}}
 </xctrls:button>
 

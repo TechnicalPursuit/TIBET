@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<xctrls:textitem class="item" hidefocus="true">
+<xctrls:textitem class="item" tabindex="{{$SOURCE.(@tabindex) .|| 0}}">
     {{$SOURCE.(.//*)}}
 </xctrls:textitem>
 
