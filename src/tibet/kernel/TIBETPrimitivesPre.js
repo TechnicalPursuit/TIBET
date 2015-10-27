@@ -3426,9 +3426,9 @@ NativeTypeStub.prototype.getTestSuites =
 function(options) {
 
     /**
-     * Returns the dictionary containing test suites for the receiver.
+     * Returns the list of test suites for the receiver matching options.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
+     * @returns {Array} A list of test suite instances matching the options.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -3702,9 +3702,9 @@ NativeInstStub.prototype.getTestSuites =
 function(options) {
 
     /**
-     * Returns the dictionary containing test suites for the receiver.
+     * Returns the list of test suites for the receiver matching options.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
+     * @returns {Array} A list of test suite instances matching the options.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -4923,9 +4923,9 @@ TP.defineMethod('getTestSuites',
 function(options) {
 
     /**
-     * Returns the dictionary containing test suites for the receiver.
+     * Returns the list of test suites for the receiver matching options.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
+     * @returns {Array} A list of test suite instances matching the options.
      */
 
     return TP.test.Suite.getTargetSuites(this, options);

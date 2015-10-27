@@ -2387,7 +2387,7 @@ function(aRequest) {
     filter = this.getArgument(aRequest, 'tsh:filter', false);
     if (TP.notEmpty(filter)) {
         filter = filter.unquoted();
-        if (/^\/.*\/$/.test(filter)) {
+        if (/^\/.+\/([ig]*)$/.test(filter)) {
             pattern = RegExp.construct(filter);
         }
     }
@@ -3304,6 +3304,7 @@ function(aRequest) {
         //  If we have a filter try to apply it now.
         if (TP.notEmpty(filter)) {
 
+            filter = filter.unquoted();
             regex = RegExp.construct(filter);
 
             results = results.filter(function(result) {
