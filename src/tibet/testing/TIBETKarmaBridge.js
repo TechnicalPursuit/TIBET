@@ -173,7 +173,7 @@ TP.log.KarmaAppender.Type.defineMethod('initialize', function() {
      *     contingent on being loaded within a Karma-enabled environment.
      */
 
-    if (true || TP.sys.hasFeature('karma')) {
+    if (TP.sys.hasFeature('karma')) {
 
         //  ---
         //  Configure appender on the test log specific to Karma reporting.
