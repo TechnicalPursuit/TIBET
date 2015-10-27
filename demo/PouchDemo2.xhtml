@@ -19,21 +19,21 @@
 	<h2>PouchDB Football Results</h2><br/>
 	<br/>
 
-    <!--Status: <span id="status" bind:in="content:
-         tibet://uicanvas#tibet((#loadProvider).status)"/> -->
+    <!--Status: <span id="status" bind:in="{content:
+         tibet://uicanvas#tibet((#loadProvider).status)}"/> -->
 
     <button onclick="TP.byId('loadProvider').activate()">Refresh it!</button>
     <button onclick="TP.byId('saveProvider').activate()">Save it!</button>
 
     Auto-refresh: <input type="checkbox" onclick="TP.byId('loadProvider').toggle('autorefresh')"/>
 
-    Test (first unescapedUrl): <input type="text" bind:io="value: urn:tibet:sameFootballData#tibet(responseData.results[0].unescapedUrl)" onchange="TP.byId('testChangeSaveProvider').activate()"/>
+    Test (first unescapedUrl): <input type="text" bind:io="{value: urn:tibet:sameFootballData#tibet(responseData.results[0].unescapedUrl)}" onchange="TP.byId('testChangeSaveProvider').activate()"/>
 
 	<br/>
     <br/>
 
     <span bind:scope="urn:tibet:footballData#tibet()">
-        Estimated Result Count: <span bind:in="value: responseData.cursor.estimatedResultCount"/>
+        Estimated Result Count: <span bind:in="{value: responseData.cursor.estimatedResultCount}"/>
         <table>
             <thead>
                 <tr>

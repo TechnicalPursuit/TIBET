@@ -23,12 +23,12 @@
     <button onclick="TP.byId('saveProvider').activate()">Save it!</button>
 	<br/>
 
-    Auto-refresh: <input type="checkbox" bind:io="checked: tibet://uicanvas#loadProvider@autorefresh"/>
+    Auto-refresh: <input type="checkbox" bind:io="{checked: tibet://uicanvas#loadProvider@autorefresh}"/>
 	<br/>
 
-    Fetch status code: <span bind:in="value: tibet://uicanvas#loadProvider@statuscode"/>
+    Fetch status code: <span bind:in="{value: tibet://uicanvas#loadProvider@statuscode}"/>
 	<br/>
-    Fetch status text: <span bind:in="value: tibet://uicanvas#loadProvider@statustext"/>
+    Fetch status text: <span bind:in="{value: tibet://uicanvas#loadProvider@statustext}"/>
 
 	<br/>
     <br/>
@@ -42,7 +42,7 @@
 
         <!-- This binds the 'value' of the <span/> into a path into the JSON
              data -->
-        Estimated Result Count: <span bind:in="value: responseData.cursor.estimatedResultCount"/>
+        Estimated Result Count: <span bind:in="{value: responseData.cursor.estimatedResultCount}"/>
 
         <table>
             <thead>

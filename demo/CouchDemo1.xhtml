@@ -22,12 +22,12 @@
     <button onclick="TP.byId('dbProvider').activate()">Refresh it!</button>
 	<br/>
 
-    Auto-refresh: <input type="checkbox" bind:io="checked: tibet://uicanvas#dbProvider@autorefresh"/>
+    Auto-refresh: <input type="checkbox" bind:io="{checked: tibet://uicanvas#dbProvider@autorefresh}"/>
 	<br/>
 
-    Fetch status code: <span bind:in="value: tibet://uicanvas#dbProvider@statuscode"/>
+    Fetch status code: <span bind:in="{value: tibet://uicanvas#dbProvider@statuscode}"/>
 	<br/>
-    Fetch status text: <span bind:in="value: tibet://uicanvas#dbProvider@statustext"/>
+    Fetch status text: <span bind:in="{value: tibet://uicanvas#dbProvider@statustext}"/>
 
 	<br/>
     <br/>
