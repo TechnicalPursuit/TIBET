@@ -965,7 +965,7 @@ function() {
         if (TP.isValid(item) && (item !== Infinity)) {
             //  NOTE that this isn't necessarily true, but we don't try
             //  too hard to get it right for native types
-            TP.sys.addMetadata(Object, item, TP.SUBTYPE);
+            TP.sys.addMetadata(null, item, TP.SUBTYPE);
         }
     }
     */

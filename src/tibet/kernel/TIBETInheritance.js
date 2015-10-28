@@ -343,7 +343,7 @@ function(name) {
     this[TP.SUBTYPES].push(realType);
 
     //  update global metadata records
-    TP.sys.addMetadata(this, realType, TP.SUBTYPE);
+    TP.sys.addMetadata(null, realType, TP.SUBTYPE);
 
     //  clear/update any deep subtype caches up the supertype chain
     if (TP.sys.$$shouldCacheDeepSubtypes()) {
@@ -9622,7 +9622,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.addMetadata(Object, TP.lang.RootObject, TP.SUBTYPE);
+TP.sys.addMetadata(null, TP.lang.RootObject, TP.SUBTYPE);
 
 //  ------------------------------------------------------------------------
 //  TP.lang.RootObject - REFLECTION (INTERNAL)
