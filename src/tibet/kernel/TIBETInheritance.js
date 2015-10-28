@@ -1646,8 +1646,8 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
      *     name).
      * @param {Boolean} [dontTraverse=false] True will turn off any form of
      *     signal hierarchy traversal.
-     * @param {String} [skipName] A string used to mask off certain handler names
-     *     such as high-level default handlers.
+     * @param {String} [skipName] A string used to mask off certain handler
+     *     names such as high-level default handlers.
      * @return {Array.<String>} An array of viable signal handler names.
      */
 
@@ -1741,7 +1741,8 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
     if (TP.isEmpty(orgid)) {
         expression += 'From(' + TP.ANY + ')';
     } else {
-        expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' + TP.ANY + ')';
+        expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' +
+                        TP.ANY + ')';
     }
 
     //  ---
