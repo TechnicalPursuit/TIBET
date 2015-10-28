@@ -247,6 +247,8 @@ function(anEvent, currentTarget) {
      * @returns Window The native window associated with the event.
      */
 
+    var win;
+
     if (TP.isValid(anEvent.$$view)) {
         return anEvent.$$view;
     }
@@ -255,20 +257,19 @@ function(anEvent, currentTarget) {
         return anEvent.view;
     }
 
-    if (TP.isValid(currentTarget) && TP.isValid(currentTarget.defaultView)) {
-        return currentTarget.defaultView;
+    if (TP.isValid(currentTarget)) {
+        win = TP.nodeGetWindow(currentTarget);
     }
 
-
-    if (TP.isValid(anEvent.currentTarget) &&
-        TP.isValid(anEvent.currentTarget.defaultView)) {
-        return anEvent.currentTarget.defaultView;
+    if (TP.notValid(win) && TP.isValid(anEvent.currentTarget)) {
+        win = TP.nodeGetWindow(anEvent.currentTarget);
     }
 
-    if (TP.isValid(anEvent.srcElement) &&
-        TP.isValid(anEvent.srcElement.defaultView)) {
-        return anEvent.srcElement.defaultView;
+    if (TP.notValid(win) && TP.isValid(anEvent.srcElement)) {
+        win = TP.nodeGetWindow(anEvent.srcElement);
     }
+
+    return win;
 });
 
 //  ------------------------------------------------------------------------

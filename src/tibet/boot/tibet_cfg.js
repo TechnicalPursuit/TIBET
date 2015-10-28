@@ -44,71 +44,6 @@
      */
 
     //  ---
-    //  debug properties
-    //  ---
-
-    //  turn this on to see if we're managing code via our local cache.
-    TP.sys.setcfg('debug.cache', false);
-
-    //  should the css processor trigger debugging output. FUTURE.
-    TP.sys.setcfg('debug.css', false);
-
-    //  turn this on to see debugging output containing all http status codes
-    //  and header information for certain calls. this is usually sufficient
-    //  to help you track down http redirection issues etc.
-    TP.sys.setcfg('debug.http', false);
-
-    //  turn this on if you're having real trouble and need to see the entire
-    //  node list during boot processing, otherwise this is excessive output.
-    TP.sys.setcfg('debug.node', false);
-
-    //  turn this on if you're having trouble with locating the boot file or
-    //  other files. this will output path search information that can be very
-    //  helpful in tracking down a bad configuration file path definition
-    TP.sys.setcfg('debug.path', true);
-
-
-    //  ---
-    //  project data
-    //  ---
-
-    //  the project's "identifier string", typically placed in the notifier when
-    //  using a TAP-based project upon startup.
-    TP.sys.setcfg('project.ident', null);
-
-    //  what's this application called? this affects the default value of the
-    //  home page that loads. NOTE that this is updated with the boot package
-    //  file's project name, and can then be refined by the environment files
-    TP.sys.setcfg('project.name', null);
-
-    //  the project's version string. this can be any value, but altering it in
-    //  the root package file will trigger cache refresh logic
-    TP.sys.setcfg('project.version', null);
-
-    //  the project's default root page. The default value is UIROOT.xhtml.
-    TP.sys.setcfg('project.root_page', null);
-
-    //  the project's default home page. The default value is home.xhtml.
-    TP.sys.setcfg('project.home_page', null);
-
-    //  the application type used for this project. default is to build the name
-    //  from APP.{{appname}}.Application and fall back to TP.core.Application.
-    TP.sys.setcfg('project.app_type', null);
-
-    //  the user name for the project. The default value is 'demo'. Note that
-    //  there *MUST* be a corresponding vCard in the system that matches this
-    //  user name in order for TIBET to work properly. Note that this must be
-    //  kept in sync with 'project.user_role' and it's setting in the vCard.
-    TP.sys.setcfg('project.user_name', 'demo');
-
-    //  the role name for the user of the project. The default value is
-    //  'Public', which is the role of the default user 'demo' above (as defined
-    //  in the corresponding vCard for 'demo'). Note that this must be kept in
-    //  sync with 'project.user_name' and it's setting in the vCard.
-    TP.sys.setcfg('project.user_role', 'Public');
-
-
-    //  ---
     //  phase control
     //  ---
 
@@ -163,6 +98,10 @@
     //  don't care and want to continue unless it's a truly fatal error.
     TP.sys.setcfg('boot.fatalistic', false);
 
+    //  the logging level for the boot log. best to use strings to define.
+    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+    TP.sys.setcfg('boot.level', 'INFO');
+
     //  should the boot pause once all code has loaded to allow for setting
     //  breakpoints in the debugger or other pre-uiroot processing?
     TP.sys.setcfg('boot.pause', false);
@@ -210,28 +149,6 @@
 
 
     //  ---
-    //  logging
-    //  ---
-
-    //  controls process reporting during the launch. setting this to true
-    //  here (and/or in the package xml file) will cause a few more lines of
-    //  output covering the initial parameter-setting phase of the boot process.
-    //  If you're not trying to debug that you should be able to just set
-    //  tibet.debug in your application build file and leave this set to false.
-    TP.sys.setcfg('tibet.debug', true);
-
-    //  lots 'o output? as with the debug flag configured here, unless you're
-    //  trying to get verbose output from the property-setting phase you can
-    //  leave this false here and just set tibet.verbose in your application
-    //  build file.
-    TP.sys.setcfg('tibet.verbose', true);
-
-    //  the logging level for the boot log. best to use strings to define.
-    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
-    TP.sys.setcfg('boot.level', 'INFO');
-
-
-    //  ---
     //  code roots
     //  ---
 
@@ -261,6 +178,12 @@
     //  how deep under lib_root is the tibet_loader file?
     TP.sys.setcfg('boot.loadoffset', '../../..');
 
+    // Ensure we use the tibet_dir approach to computing root paths.
+    TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
+
+    //  What path prefix do we expect during initial startup under Karma. If
+    //  this isn't set some computations of lib/app paths may fail.
+    TP.sys.setcfg('boot.karma_root', 'base');
 
     //  ---
     //  package/config setup
@@ -294,28 +217,14 @@
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.unpackaged', false);
 
-
     //  ---
-    //  tibet ui roots
+    //  obsolete ???
     //  ---
 
-    //  default conf uses UIBOOT and UIROOT installed in the context where this
-    //  script is found. The UIBOOT iframe is typically set to console.html
-    //  while the UIROOT value can vary between a number of values depending on
-    //  whether the Sherpa is running (framing) and whether they want a
-    //  multi-screen configuration (screens).
-
-    //  the ID to search for and/or generate for the UI root display IFRAME.
-    TP.sys.setcfg('tibet.uiroot', 'UIROOT');
-
-    //  the ID initially assigned to be the UICANVAS virtual location.
-    TP.sys.setcfg('tibet.uicanvas', 'UIROOT');
-
-    //  the ID to search for and/or generate for multi-screen IFRAME display.
-    TP.sys.setcfg('tibet.uiscreens', 'UISCREENS');
-
-    //  the prefix to use for generated screens in a multi-screen display.
-    TP.sys.setcfg('tibet.uiscreenprefix', 'SCREEN_');
+    // TODO: remove this and related code. Should just go with HTTP from file
+    // system in the latest browsers, or rely on simple Connect server.
+    //  should we load files on mozilla using xpcom? default starts out false.
+    TP.sys.setcfg('boot.moz_xpcom', false);
 
 
     //  ---
@@ -429,6 +338,71 @@
     }
 
     //  ---
+    //  debug properties
+    //  ---
+
+    //  turn this on to see if we're managing code via our local cache.
+    TP.sys.setcfg('debug.cache', false);
+
+    //  should the css processor trigger debugging output. FUTURE.
+    TP.sys.setcfg('debug.css', false);
+
+    //  turn this on to see debugging output containing all http status codes
+    //  and header information for certain calls. this is usually sufficient
+    //  to help you track down http redirection issues etc.
+    TP.sys.setcfg('debug.http', false);
+
+    //  turn this on if you're having real trouble and need to see the entire
+    //  node list during boot processing, otherwise this is excessive output.
+    TP.sys.setcfg('debug.node', false);
+
+    //  turn this on if you're having trouble with locating the boot file or
+    //  other files. this will output path search information that can be very
+    //  helpful in tracking down a bad configuration file path definition
+    TP.sys.setcfg('debug.path', true);
+
+
+    //  ---
+    //  project data
+    //  ---
+
+    //  the project's "identifier string", typically placed in the notifier when
+    //  using a TAP-based project upon startup.
+    TP.sys.setcfg('project.ident', null);
+
+    //  what's this application called? this affects the default value of the
+    //  home page that loads. NOTE that this is updated with the boot package
+    //  file's project name, and can then be refined by the environment files
+    TP.sys.setcfg('project.name', null);
+
+    //  the project's version string. this can be any value, but altering it in
+    //  the root package file will trigger cache refresh logic
+    TP.sys.setcfg('project.version', null);
+
+    //  the project's default root page. The default value is UIROOT.xhtml.
+    TP.sys.setcfg('project.root_page', null);
+
+    //  the project's default home page. The default value is home.xhtml.
+    TP.sys.setcfg('project.home_page', null);
+
+    //  the application type used for this project. default is to build the name
+    //  from APP.{{appname}}.Application and fall back to TP.core.Application.
+    TP.sys.setcfg('project.app_type', null);
+
+    //  the user name for the project. The default value is 'demo'. Note that
+    //  there *MUST* be a corresponding vCard in the system that matches this
+    //  user name in order for TIBET to work properly. Note that this must be
+    //  kept in sync with 'project.user_role' and it's setting in the vCard.
+    TP.sys.setcfg('project.user_name', 'demo');
+
+    //  the role name for the user of the project. The default value is
+    //  'Public', which is the role of the default user 'demo' above (as defined
+    //  in the corresponding vCard for 'demo'). Note that this must be kept in
+    //  sync with 'project.user_name' and it's setting in the vCard.
+    TP.sys.setcfg('project.user_role', 'Public');
+
+
+    //  ---
     //  ui page initialization files
     //  ---
 
@@ -436,7 +410,13 @@
     TP.sys.setcfg('path.blank_page', '~lib_xhtml/blank.xhtml');
 
     //  the file used to initialize a dynamically generated XML-based IFRAME.
-    TP.sys.setcfg('path.iframe_page', '~lib_xhtml/tp_launch_stub.xhtml');
+    TP.sys.setcfg('path.iframe_page', '~app_boot/xhtml/blank.xhtml');
+
+    //  the file used to initialize a dynamically generated XML-based IFRAME.
+    TP.sys.setcfg('path.uiboot_page', '~app_boot/xhtml/UIBOOT.xhtml');
+
+    //  the file used to initialize a dynamically generated XML-based IFRAME.
+    TP.sys.setcfg('path.uiroot_page', '~app_boot/xhtml/UIROOT.xhtml');
 
 
     //  ---
@@ -455,6 +435,47 @@
     } else {
         TP.sys.setcfg('tibet.uibuffer', null);
     }
+
+    //  ---
+    //  logging
+    //  ---
+
+    //  controls process reporting during the launch. setting this to true
+    //  here (and/or in the package xml file) will cause a few more lines of
+    //  output covering the initial parameter-setting phase of the boot process.
+    //  If you're not trying to debug that you should be able to just set
+    //  tibet.debug in your application build file and leave this set to false.
+    TP.sys.setcfg('tibet.debug', true);
+
+    //  lots 'o output? as with the debug flag configured here, unless you're
+    //  trying to get verbose output from the property-setting phase you can
+    //  leave this false here and just set tibet.verbose in your application
+    //  build file.
+    TP.sys.setcfg('tibet.verbose', true);
+
+
+    //  ---
+    //  tibet ui roots
+    //  ---
+
+    //  default conf uses UIBOOT and UIROOT installed in the context where this
+    //  script is found. The UIBOOT iframe is typically set to console.html
+    //  while the UIROOT value can vary between a number of values depending on
+    //  whether the Sherpa is running (framing) and whether they want a
+    //  multi-screen configuration (screens).
+
+    //  the ID to search for and/or generate for the UI root display IFRAME.
+    TP.sys.setcfg('tibet.uiroot', 'UIROOT');
+
+    //  the ID initially assigned to be the UICANVAS virtual location.
+    TP.sys.setcfg('tibet.uicanvas', 'UIROOT');
+
+    //  the ID to search for and/or generate for multi-screen IFRAME display.
+    TP.sys.setcfg('tibet.uiscreens', 'UISCREENS');
+
+    //  the prefix to use for generated screens in a multi-screen display.
+    TP.sys.setcfg('tibet.uiscreenprefix', 'SCREEN_');
+
 
 
     //  ---
@@ -542,16 +563,6 @@
     //  'http://127.0.0.1:1234/tibet/latest.js');
     TP.sys.setcfg('path.lib_version_file',
         'http://www.technicalpursuit.com/tibet/latest.js');
-
-
-    //  ---
-    //  obsolete ???
-    //  ---
-
-    // TODO: remove this and related code. Should just go with HTTP from file
-    // system in the latest browsers, or rely on simple Connect server.
-    //  should we load files on mozilla using xpcom? default starts out false.
-    TP.sys.setcfg('boot.moz_xpcom', false);
 
 
     //  ---
@@ -1356,9 +1367,6 @@
     //  load any plugins, that's entirely up to the UI of the application.
     TP.sys.setcfg('tibet.plugins', false);
 
-    // Ensure we use the tibet_dir approach to computing root paths.
-    TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
-
     //  should TIBET render the 'source' representation of a Function/Method
     //  with a space between the word 'function' and the leading '(' (i.e.
     //  'function ('. The default is false (i.e. 'function(').
@@ -1437,6 +1445,28 @@
 
     TP.sys.setcfg('path.login_page', '~boot_xhtml/login.xhtml');
 
+    //  ---
+    //  karma integration
+    //  ---
+
+    //  Boot parameters are nested under the karma key but pulled out and
+    //  assigned to boot.* by the karma-tibet adapter.js file processing.
+    TP.sys.setcfg('karma.boot.profile', 'standard#contributor');
+    TP.sys.setcfg('karma.boot.unminified', false);
+    TP.sys.setcfg('karma.boot.unpackaged', false);
+
+    //  The test script to run including the :test prefix.
+    TP.sys.setcfg('karma.script', ':test');
+
+    TP.sys.setcfg('karma.port', 9876);
+    TP.sys.setcfg('karma.proxy', 9877);
+
+    TP.sys.setcfg('karma.timeout', 15000);
+
+    TP.sys.setcfg('karma.loader', 'tibet_loader.min.js');
+
+    //  What slot on the launch window should we check for Karma?
+    TP.sys.setcfg('karma.slot', '__karma__');
 
     //  ---
     //  tuning

@@ -13,6 +13,7 @@
     <config ref="harness"/>
     <config ref="assertions"/>
     <config ref="sinon"/>
+    <config ref="karma"/>
 </config>
 
 <config id="harness">
@@ -32,6 +33,10 @@
         ]]>
     </script>
     <script src="testing/TIBETSinonPost.js"/>
+</config>
+
+<config id="karma">
+    <script src="testing/TIBETKarmaBridge.js" />
 </config>
 
 <config id="tests">

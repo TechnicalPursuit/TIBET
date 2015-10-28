@@ -165,7 +165,9 @@ function() {
     //  Manually 'display: none' the boot iframe. It's already
     //  'visibility:hidden', but we need to get it out of the way.
     uiBootIFrameElem = TP.byId('UIBOOT', top, false);
-    TP.elementHide(uiBootIFrameElem);
+    if (TP.isValid(uiBootIFrameElem)) {
+        TP.elementHide(uiBootIFrameElem);
+    }
 
     win = TP.win('UIROOT');
 
@@ -311,7 +313,8 @@ TP.core.Sherpa.Inst.defineMethod('setupConsole',
 function() {
 
     var sherpaSouthDrawer,
-        consoleTPElem;
+        consoleTPElem,
+        testAppender;
 
         //worldTPElem,
         //consoleOutTPElem;
@@ -342,7 +345,10 @@ function() {
 
     //  Effectively replace the test logger's appenders with just ours.
     TP.getLogger(TP.TEST_LOG).clearAppenders();
-    TP.getLogger(TP.TEST_LOG).addAppender(TP.log.SherpaAppender.construct());
+
+    testAppender = TP.log.SherpaAppender.construct();
+    testAppender.setLayout(TP.log.SherpaTestLogLayout.construct());
+    TP.getLogger(TP.TEST_LOG).addAppender(testAppender);
 
     return this;
 });

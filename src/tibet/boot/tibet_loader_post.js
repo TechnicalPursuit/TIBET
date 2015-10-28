@@ -1239,9 +1239,13 @@ TP.boot.initializeCanvas = function(aWindow) {
 TP.boot.initializeCanvasDocument = function(aDocument) {
 
     var doc,
+        win,
+        name,
         $$msg;
 
     doc = aDocument;
+    win = TP.boot.$documentGetWindow(doc);
+    name = TP.boot.$isValid(win) ? win.name : '';
 
     //  Skip doing this twice.
     if (doc && doc.body && TP.boot.$isElement(doc.body)) {
@@ -1252,7 +1256,7 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
             if (TP.sys.cfg('log.hook') &&
                     TP.sys.cfg('boot.context') !== 'phantomjs') {
                 $$msg = 'TIBET hook skipping re-instrumentation of ' +
-                        doc.defaultView.name + '.document';
+                    name + ' document';
                 TP.boot.$stdout($$msg, TP.TRACE);
             }
             return;

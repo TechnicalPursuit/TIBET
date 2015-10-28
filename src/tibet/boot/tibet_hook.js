@@ -4,7 +4,7 @@
  * @overview When you use TIBET you're using a shared library model with code
  *     stored in a separate code frame while your user interface is typically
  *     drawn in an independent UI frame. To connect the UI frame to the shared
- *     library code TIBET leverages this "hook file" in any top-level page.
+ *     library code TIBET leverages this "hook file" in any window-level page.
  *
  *     You should place a reference to this file in the head of any full page
  *     that you will load into your UI frame directly. NOTE that this file isn't
@@ -21,65 +21,75 @@
           Document:false
 */
 
+/* eslint indent:0 */
+
 //  ----------------------------------------------------------------------------
 
-/* eslint indent:0 */
+//  Using a wrapper lets us use 'return' statements to exit early as needed.
 (function(root) {
 
     var $$location,
         $$fragment,
         $$root,
         $$msg,
+        $$find,
         tibet;
 
 //  ----------------------------------------------------------------------------
 
 //  Patch ID from iframes onto the window name slot.
-if (window.frameElement) {
-    window.name = window.frameElement.id;
+if (root.frameElement) {
+    root.name = root.frameElement.id;
 }
 
 //  Capture either the iframe location or current location.
-if (window.document && window.document.getElementsByTagName) {
-    $$root = window.document.getElementsByTagName('html')[0];
+if (root.document && root.document.getElementsByTagName) {
+    $$root = root.document.getElementsByTagName('html')[0];
     if ($$root) {
         $$location = $$root.getAttribute('tibet:globalDocID');
     }
 }
-$$location = $$location || window.location.toString();
+$$location = $$location || root.location.toString();
 
 //  ----------------------------------------------------------------------------
 
-/*
- * Pre-launch checks.
- */
-
-if (window.$$hooked === true) {
-
-    //  If we're being pushed into an already hooked frame just stop.
+if (root.$$hooked === true) {
+    //  If we're being pushed into an already hooked frame just stop. NOTE that
+    //  this property is also set by the late stages of the tibet_loader code
+    //  which includes a copy of this hook file at the tail end.
     return;
+}
 
-} else {
+//  ----------------------------------------------------------------------------
+//  Find TIBET
+//  ----------------------------------------------------------------------------
 
-    //  Need to try to find TIBET references.
-    if (top.$$TIBET) {
+//  Obvious check is 'top' where we expect 99% of TIBET applications to load.
+if (!top.$$TIBET) {
 
-        //  TIBET was found in top where we expect it. Map over TP.
-        Object.defineProperty(window, 'TP', {value: top.TP, writable: false});
+    $$find = function(aWindowOrFrame) {
+        var win;
 
-        if (TP.sys.cfg('log.hook') &&
-                TP.sys.cfg('boot.context') !== 'phantomjs') {
-
-            $$msg = 'TIBET hook in \'' + window.name +
-                '\' found TIBET in \'top\'.';
-            TP.boot.$stdout($$msg, TP.TRACE);
+        win = aWindowOrFrame || root;
+        if (win.$$TIBET) {
+            return win;
+        } else if (win === top) {
+            //  Can't go any higher.
+            return;
         }
 
-        tibet = top.$$TIBET;
-        window.onerror = tibet.onerror;
-    } else {
+        //  See if we're a frame, and if so recurse upward through window.
+        if (win.frameElement &&
+            win.frameElement.ownerDocument) {
+            return $$find(win.frameElement.ownerDocument.defaultView);
+        }
+    };
+
+    tibet = $$find(root);
+    if (!tibet) {
+
         //  No TIBET and no config. Log to system console.
-        top.console.log('TIBET hook in \'' + window.name +
+        top.console.log('TIBET hook in \'' + root.name +
             '\' unable to find TIBET.');
 
         //  "redirect" to the root location. This may cause TIBET to boot if the
@@ -100,62 +110,31 @@ if (window.$$hooked === true) {
         top.location = $$location;
         return;
     }
+
+} else {
+    tibet = top.$$TIBET;
 }
+
+Object.defineProperty(root, 'TP', {value: tibet.TP, writable: false});
+
+if (TP.sys.cfg('log.hook') &&
+        TP.sys.cfg('boot.context') !== 'phantomjs') {
+
+    $$msg = 'TIBET hook in \'' + root.name +
+        '\' found TIBET in \'top\'.';
+    TP.boot.$stdout($$msg, TP.TRACE);
+}
+
+root.onerror = tibet.onerror;
 
 //  Output each window/frame and its location data as we process it.
 if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
-    $$msg = 'TIBET hook @ ' + window.name + ' -> ' + $$location;
+    $$msg = 'TIBET hook @ ' + root.name + ' -> ' + $$location;
     TP.boot.$stdout($$msg, TP.INFO);
 }
 
 //  ------------------------------------------------------------------------
-//  location= trap
-//  ------------------------------------------------------------------------
-
-//  TODO:   is this necessary any longer? Does the logic above handle it?
-
-/*
-When a user clicks a link or a developer chooses to use window.location
-rather than a TIBET setContent call the hook file will attempt to intercept
-that operation and redirect it so that the content can be processed and
-managed along with all other TIBET content.
-
-NOTE that if you look closely you'll see that effectively the entire
-remainder of the hook file is contained in the else clause of the following
-if statement as a result.
-
-NOTE ALSO: This only works for HTML documents, not XHTML documents.
-*/
-
-//  ------------------------------------------------------------------------
-
-/*
-if (window.onerror.failedlaunch !== true &&
-    window !== top &&
-    top.TP != null &&
-    top.TP.sys != null &&
-    top.TP.sys.hasLoaded() === true &&
-    top.TP.isHTMLDocument(document) === true &&
-    top.TP.core.Window.$$isDocumentWriting !== true &&
-    window.frameElement != null &&
-    window.frameElement.hasAttributeNS(
-        'http://www.technicalpursuit.com/1999/tibet',
-        'tibet:settinglocation') !== true) {
-    //  if we're here because of a document.write then TIBET is
-    //  processing the content already, otherwise we want to effectively
-    //  snag the current location and ask TIBET to process that URI and
-    //  return it to the current window as properly managed content
-    top.TP.windowResetLocation(window);
-
-    if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
-        top.console.log('TIBET hook bailing out via location= trap');
-    }
-    return;
-}
-*/
-
-//  ------------------------------------------------------------------------
-//  Bundled or Unbundled Support
+//  Shims
 //  ------------------------------------------------------------------------
 
 //  For Safari only...
@@ -173,7 +152,7 @@ if (!self.Window) {
 //  THIS HAS TO BE THE LAST THING IN THIS FILE -- DO NOT ADD CODE BELOW IT
 //  ========================================================================
 
-if (window.onerror.failedlaunch === true) {
+if (root.onerror.failedlaunch === true) {
 
     //  We're done. the script already blew up with a file launch issue.
     return;
@@ -184,7 +163,6 @@ if (window.onerror.failedlaunch === true) {
 
 //  TODO:   put a timer here rather than in the initialize canvas routine? Or
 //  delay the initial invocation based on component count of the boot?
-
 
 if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
     TP.sys.hasLoaded() === false && TP.sys.cfg('boot.two_phase') === true) {
@@ -215,14 +193,14 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
     //  to get it to pick up with phase two.
 
     //  we're in a page that says we can move on to phase two processing
-    if (window.$$phase_two === true) {
+    if (root.$$phase_two === true) {
         if (TP.sys.cfg('boot.phase_two') === true) {
             //  if the load process is already working through phase two
             //  then we don't need to do anything more to ensure booting
             //  and we can be pretty sure that no matter where things
             //  are in the boot process we can start the initialization
             //  loop
-            TP.boot.initializeCanvas(window);
+            TP.boot.initializeCanvas(root);
         } else {
             //  to deal with the fact that the 'tibet' target may be in
             //  any stage of loading we'll create a function that either
@@ -247,7 +225,7 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
         //  means we might sit here forever waiting for the user to get
         //  authenticated or otherwise trigger a phase-two page. might
         //  as well initialize.
-        TP.boot.initializeCanvas(window);
+        TP.boot.initializeCanvas(root);
     }
 } else {    //  single phase or post-boot
     //  when booting in single-phase mode every page can potentially be
@@ -257,7 +235,7 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
     //  since we know that all code will load in a single phase without
     //  any kind of user-dependent pause we can start up the
     //  initializeCanvas loop here
-    TP.boot.initializeCanvas(window);
+    TP.boot.initializeCanvas(root);
 }
 
 //  ------------------------------------------------------------------------

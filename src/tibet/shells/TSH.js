@@ -1525,7 +1525,7 @@ function(aRequest) {
                         result = type[funcName](aRequest);
                     } catch (e) {
                         message = 'Error running ' + TP.name(type) + '.' +
-                            funcName;
+                            funcName + ': ' + e.message;
 
                         TP.error(message + '\n' +
                             TP.getStackInfo(e).join('\n'));
@@ -1701,8 +1701,11 @@ function(aRequest) {
                     result = type[funcName](aRequest);
                 } catch (e) {
                     message = 'Error running ' + TP.name(type) + '.' +
-                        funcName;
-                    TP.error(message + ': ' + e.message);
+                        funcName + ': ' + e.message;
+
+                    TP.error(message + '\n' +
+                        TP.getStackInfo(e).join('\n'));
+
                     return aRequest.fail(TP.ec(e, message));
                 }
 
@@ -2384,7 +2387,7 @@ function(aRequest) {
     filter = this.getArgument(aRequest, 'tsh:filter', false);
     if (TP.notEmpty(filter)) {
         filter = filter.unquoted();
-        if (/^\/.*\/$/.test(filter)) {
+        if (/^\/.+\/([ig]*)$/.test(filter)) {
             pattern = RegExp.construct(filter);
         }
     }
@@ -3301,6 +3304,7 @@ function(aRequest) {
         //  If we have a filter try to apply it now.
         if (TP.notEmpty(filter)) {
 
+            filter = filter.unquoted();
             regex = RegExp.construct(filter);
 
             results = results.filter(function(result) {
@@ -3339,7 +3343,9 @@ function(aRequest) {
     var bootframe;
 
     bootframe = TP.byId('UIBOOT', top);
-    bootframe.getContentDocument().getBody().addClass('full_console');
+    if (TP.isValid(bootframe)) {
+        bootframe.getContentDocument().getBody().addClass('full_console');
+    }
 
     return aRequest.complete();
 });

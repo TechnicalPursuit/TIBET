@@ -231,6 +231,14 @@ TP.sys.addFeatureTest('opera',
                             return TP.sys.isUA('opera');
                         });
 
+TP.sys.addFeatureTest('karma',
+                        function() {
+                            return TP.isValid(
+                                TP.sys.getLaunchWindow()[
+                                    TP.sys.cfg('karma.slot', '__karma__')
+                                ]);
+                        });
+
 //  ----------------------------------------------------------------------------
 //  Package Checking
 //  ----------------------------------------------------------------------------
@@ -1506,6 +1514,103 @@ TP.sys.isHTTPBased = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.sys.getLaunchDocument = function(aWindow) {
+
+    /**
+     * @method getLaunchDocument
+     * @summary Returns the actual launch document. Normally this would just be
+     *     the current 'document' but in the case of Karma for example it may be
+     *     a document nested under a link import.
+     * @param {Window} [aWindow=TP.sys.getLaunchWindow()] The window to scan.
+     * @return {Document} The document containing the TIBET launch script.
+     */
+
+    var win,
+        arr,
+        node,
+        doc;
+
+    if (TP.sys.$launchDoc) {
+        return TP.sys.$launchDoc;
+    }
+
+    win = aWindow || TP.sys.getLaunchWindow();
+    if (win[TP.sys.cfg('karma.slot', '__karma__')]) {
+
+        //  good chance we're not actually in window.document but in some nested
+        //  iframe/link import context. in that case we won't find the script
+        //  node containing the loader in the expected location.
+        node = TP.sys.getLaunchNode(win.document);
+        if (node) {
+            TP.sys.$launchDoc = win.document;
+            return TP.sys.$launchDoc;
+        }
+
+        //  Didn't find it. Karma often uses a link with rel='import' so look
+        //  for that instead.
+        arr = win.document.getElementsByTagName('link');
+        arr = Array.prototype.slice.call(arr, 0);
+        arr = arr.filter(function(item) {
+            return item.getAttribute('rel') === 'import';
+        });
+
+        //  There's a list of imports so we need to look into those for
+        //  documents that may contain our load script.
+        arr.some(function(item) {
+            var script;
+            if (item.import && item.import.nodeType === Node.DOCUMENT_NODE) {
+                script = TP.sys.getLaunchNode(item.import);
+                if (script) {
+                    TP.sys.$launchDoc = item.import;
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        if (TP.sys.$launchDoc) {
+            return TP.sys.$launchDoc;
+        }
+    }
+
+    TP.sys.$launchDoc = document;
+
+    return TP.sys.$launchDoc;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.getLaunchNode = function(aDocument) {
+
+    /**
+     * @method getLaunchNode
+     * @summary Tries to locate the script node in the document which loaded
+     *     the TIBET codebase.
+     * @param {Document} [aDocument=TP.sys.getLaunchDocument()] The document to
+     *     scan.
+     * @return {Element} The element containing the TIBET launch script.
+     */
+
+    var arr,
+        doc;
+
+    doc = aDocument || TP.sys.getLaunchDocument();
+
+    //  Scan document for script nodes and filter for tibet_loader references.
+    arr = doc.getElementsByTagName('script');
+    arr = Array.prototype.slice.call(arr, 0);
+    arr = arr.filter(function(item) {
+        var src;
+
+        src = item.getAttribute('src');
+        return src && src.indexOf('tibet_loader') !== -1;
+    });
+
+    return arr[0];
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.sys.getLaunchRoot = function() {
 
     /**
@@ -1559,6 +1664,19 @@ TP.sys.getLaunchURL = function() {
      */
 
     return TP.sys.$launchURL;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.getLaunchWindow = function() {
+
+    /**
+     * @method getLaunchWindow
+     * @summary Returns the actual launch window, the native window reference
+     *     containing the overall application.
+     */
+
+    return window.$$TIBET;
 };
 
 //  ----------------------------------------------------------------------------
@@ -4052,21 +4170,6 @@ Minimal functions to support boot system requirements for new documents.
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentCreate = function(versionNumber) {
-
-    /**
-     * @method $documentCreate
-     * @summary Creates a DOM document element for use.
-     * @param {Number} versionNumber A specific version number which must be
-     *     returned as a minimum version.
-     * @returns {XMLDocument} A new XML document.
-     */
-
-    return document.implementation.createDocument('', '', null);
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 
     /**
@@ -4153,6 +4256,66 @@ TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$documentAddStyleElement = function(aDocument, styleText) {
+
+    /**
+     * @method $documentAddStyleElement
+     * @summary Adds a 'style' element to the target document with the
+     *     optionally provided styleText as the rule text.
+     * @param {Document} [aDocument=TP.sys.getLaunchDocument()] The document
+     *     to which the new style element should be added.
+     * @param {String} [styleText] The optional rule text to use in the newly
+     *     created style element.
+     * @returns {HTMLElement} The new style element that was added.
+     */
+
+    var doc,
+        head,
+        elem,
+        text;
+
+    doc = aDocument || TP.sys.getLaunchDocument();
+    head = doc.getElementsByTagName('head')[0];
+
+    if (TP.boot.$notValid(head)) {
+        return;
+    }
+
+    //  Create the new 'style' element.
+    elem = doc.createElement('style');
+    elem.setAttribute('type', 'text/css');
+
+    elem = head.appendChild(elem);
+
+    if (TP.boot.$isString(styleText)) {
+        text = elem.firstChild;
+        if (TP.boot.$notValid(text)) {
+            elem.appendChild(doc.createTextNode(styleText));
+        } else {
+            elem.nodeValue = styleText;
+        }
+    }
+
+    return elem;
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$documentCreate = function(versionNumber) {
+
+    /**
+     * @method $documentCreate
+     * @summary Creates a DOM document element for use.
+     * @param {Number} versionNumber A specific version number which must be
+     *     returned as a minimum version.
+     * @returns {XMLDocument} A new XML document.
+     */
+
+    return document.implementation.createDocument('', '', null);
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$documentGetElementById = function(xmldoc, id) {
 
     /**
@@ -4165,6 +4328,31 @@ TP.boot.$documentGetElementById = function(xmldoc, id) {
      */
 
     return xmldoc.querySelector('*[id="' + id + '"]');
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$documentGetWindow = function(aDocument) {
+
+    /**
+     * @method $documentGetWindow
+     * @summary Returns the document's window if possible. This routine will try
+     *     both standard defaultView and HTML Import approaches.
+     * @param {Document} aDocument The document to query for window.
+     * @returns {Window} The window object or undefined.
+     */
+
+    var win;
+
+    try {
+        win = aDocument.defaultView ||
+            aDocument.currentScript.ownerDocument.defaultView;
+    } catch (e) {
+        //  Ignore if we can't traverse the path above.
+        void 0;
+    }
+
+    return win;
 };
 
 //  ----------------------------------------------------------------------------
@@ -4507,6 +4695,8 @@ TP.sys.getWindowById = function(anID, aWindow) {
         id,
         arr,
         current,
+        frame,
+        win,
         next,
         name;
 
@@ -4518,14 +4708,38 @@ TP.sys.getWindowById = function(anID, aWindow) {
         return;
     }
 
+    //  Default is we work from the launch window downward, which means we may
+    //  not find things rooted at top if we didn't boot into top.
+    context = aWindow || TP.sys.getLaunchWindow();
+
+    //  Three most common names in typical TIBET code (top, UIBOOT, UIROOT):
+    switch (anID.toLowerCase()) {
+        case 'top':
+            return top;
+        case 'uiroot':
+            frame = TP.boot.getUIRoot();
+            if (frame) {
+                return frame.contentDocument.defaultView;
+            }
+            return;
+        case 'uiboot':
+            frame = TP.boot.getUIBoot();
+            if (frame) {
+                return frame.contentDocument.defaultView;
+            }
+            return;
+        default:
+            break;
+    }
+
     //  shortcut for UIROOT and UIROOT.SCREEN_0 which are common lookups based
     //  on the canvas in either standard or sherpa-enabled operation.
-    if (TP.boot.$isWindow(top[anID])) {
-        return top[anID];
-    } else if (TP.boot.$isElement(top[anID])) {
-        return top[anID].contentWindow;
+    if (TP.boot.$isWindow(context[anID])) {
+        return context[anID];
+    } else if (TP.boot.$isElement(context[anID])) {
+        return context[anID].contentWindow;
     } else if (/UIROOT.SCREEN_0/.test(anID)) {
-        return top.UIROOT && top.UIROOT.SCREEN_0;
+        return context.UIROOT && context.UIROOT.SCREEN_0;
     }
 
     //  if we got a TIBET URI then we've got to split out the canvas ID.
@@ -4557,9 +4771,11 @@ TP.sys.getWindowById = function(anID, aWindow) {
             id = TP.sys.getUICanvasName();
         } else {
             //  Not booted yet. No real way to know but we can guess UIBOOT.
-            if (TP.boot.$isWindow(top.UIBOOT)) {
-                return top.UIBOOT;
+            win = TP.boot.getUIBoot();
+            if (TP.boot.$isWindow(win)) {
+                return win;
             }
+            return;
         }
     }
 
@@ -4571,12 +4787,9 @@ TP.sys.getWindowById = function(anID, aWindow) {
         return;
     }
 
-    //  Default to working from the top window down.
-    context = aWindow || top;
-
     //  And the other obvious things...
-    if (top.name === id) {
-        return top;
+    if (context.name === id) {
+        return context;
     } else if (context.name === id) {
         return context;
     }
@@ -6642,7 +6855,7 @@ TP.boot.$getUIElement = function(varargs) {
         doc,
         elem;
 
-    doc = document;
+    doc = TP.sys.getLaunchDocument();
 
     //  Don't assume we don't have access path components in the list of
     //  arguments. Split them so we build a full-descent path.
@@ -7147,16 +7360,18 @@ TP.boot.showUIBoot = function() {
     id = TP.sys.cfg('boot.uiboot');
     elem = TP.boot.$getUIElement(id);
 
-    if (TP.boot.$isValid(elem)) {
-        if (TP.boot.$isValid(elem.frameElement)) {
-            elem = elem.frameElement;
-        }
-        //  Be sure to activate the log. That's the essential UI for having
-        //  shown the boot UI.
-        TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
-
-        elem.style.display = 'block';
+    if (!TP.boot.$isValid(elem) || TP.boot.$notValid(elem.contentDocument)) {
+        return;
     }
+
+    if (TP.boot.$isValid(elem.frameElement)) {
+        elem = elem.frameElement;
+    }
+    //  Be sure to activate the log. That's the essential UI for having
+    //  shown the boot UI.
+    TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
+
+    elem.style.display = 'block';
 
     elem.focus();
 };
@@ -7953,7 +8168,16 @@ TP.boot.$getAppHead = function() {
     path = parts.join('/');
 
     TP.boot.$$apphead = path;
-    return path;
+
+    //  A bit of a hack but no clear way around this. Karma will run its own web
+    //  server and include a segment like '/base' for some reason. We have to
+    //  adjust for that if we appear to be loading in a Karma environment.
+    if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
+        TP.boot.$$apphead = TP.boot.$uriJoinPaths(path,
+            TP.sys.cfg('boot.karma_root'));
+    }
+
+    return TP.boot.$$apphead;
 };
 
 //  ----------------------------------------------------------------------------
@@ -8037,6 +8261,14 @@ TP.boot.$getLibRoot = function() {
     }
     libroot = parts.join('/');
 
+    //  A bit of a hack but no clear way around this. Karma will run its own web
+    //  server and include a segment like '/base' for some reason. We have to
+    //  adjust for that if we appear to be loading in a Karma environment.
+    if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
+        libroot = TP.boot.$uriJoinPaths(libroot,
+            TP.sys.cfg('boot.karma_root'));
+    }
+
     comp = TP.sys.cfg('boot.libcomp');
 
     switch (comp) {
@@ -8092,15 +8324,9 @@ TP.boot.$getLibRoot = function() {
         default:
             /* eslint-enable no-fallthrough */
 
-            //  Find script tags and turn into an array instead of collection.
-            scripts = Array.prototype.slice.call(
-                document.getElementsByTagName('script'), 0);
-            len = scripts.length;
-            for (i = 0; i < len; i++) {
-                if (/tibet_loader/.test(scripts[i].src)) {
-                    path = scripts[i].src;
-                    break;
-                }
+            node = TP.sys.getLaunchNode(TP.sys.getLaunchDocument());
+            if (TP.boot.$isValid(node)) {
+                path = node.getAttribute('src');
             }
 
             //  Combine current path with the src path in case of relative path
@@ -8668,7 +8894,7 @@ TP.boot.$configureUI = function() {
         elem;
 
     elem = TP.boot.getUIBoot();
-    if (!TP.boot.$isVisible(elem)) {
+    if (!TP.boot.$isVisible(elem) || TP.boot.$notValid(elem.contentDocument)) {
         return;
     }
 
@@ -8800,7 +9026,8 @@ TP.boot.$ifUnlessPassed = function(aNode) {
                 if (TP.boot.$$USER_AGENT_REGEX.test(key)) {
                     condition = TP.sys.isUA.apply(this, key.split('.'));
                 } else {
-                    condition = TP.sys.cfg(key, TP.sys.env(key));
+                    condition = TP.sys.cfg(key, TP.sys.env(key)) ||
+                        TP.sys.hasFeature(key);
                 }
 
                 if (condition === value) {
@@ -8829,7 +9056,8 @@ TP.boot.$ifUnlessPassed = function(aNode) {
                 if (TP.boot.$$USER_AGENT_REGEX.test(key)) {
                     condition = TP.sys.isUA.apply(this, key.split('.'));
                 } else {
-                    condition = TP.sys.cfg(key, TP.sys.env(key));
+                    condition = TP.sys.cfg(key, TP.sys.env(key)) ||
+                        TP.sys.hasFeature(key);
                 }
 
                 if (TP.boot.$notValid(condition) || condition !== value) {
@@ -9223,6 +9451,7 @@ TP.boot.$$importComplete = function() {
                     win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
 
                     if (win) {
+
                         if (win.$$phase_two === true ||
                             window.$$phase_two === true) {
                             //  if the page didn't find TIBET the function
@@ -10727,9 +10956,10 @@ TP.boot.launch = function(options) {
         return;
     }
 
-    //  configure the UI root. Once this is confirmed (which may require async
-    //  processing) the rest of the boot sequence will continue.
-    TP.boot.$uiRootConfig();
+    //  configure the UI boot frame. This involves potentially creating/loading
+    //  the frame so it may be async. On completion this routine will trigger
+    //  the uiRootConfig routine to create the root UI frame in a similar way.
+    TP.boot.$uiBootConfig();
 };
 
 //  ----------------------------------------------------------------------------
@@ -10771,10 +11001,7 @@ TP.boot.main = function() {
         return;
     }
 
-    //  Only activate if we're the top window. Can only boot there.
-    if (window === top) {
-        TP.boot.$activate();
-    }
+    TP.boot.$activate();
 };
 
 //  ----------------------------------------------------------------------------
@@ -10851,6 +11078,117 @@ TP.boot.$stageAction = function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$uiBootConfig = function() {
+
+    /**
+     * @method $uiBootConfig
+     * @summary Confirms a UIBOOT can be found, and configures one it necessary.
+     *     Configuration requires asynchronous loading so this routine is the
+     *     first half of a pair of routines, the other being $uiBootReady. The
+     *     latter routine will trigger uiRootConfig to build the root iframe.
+     */
+
+    var uiBootID,
+        uiFrame,
+        lastBodyChildren,
+        lastBodyChild,
+        path,
+        iFrameWrapper,
+        launchDoc;
+
+    //  Look for the designated (or default) UI boot frame.
+    uiBootID = TP.sys.cfg('tibet.uiboot') || 'UIBOOT';
+    uiFrame = TP.boot.$getUIElement(uiBootID);
+
+    //  If the frame is found this is simple and synchronous. Just invoke the
+    //  second stage routine directly.
+    if (TP.boot.$isValid(uiFrame)) {
+        TP.boot.$uiBootReady();
+        return;
+    }
+
+    TP.boot.$stdout('Unable to locate ' + uiBootID + ', generating it.',
+        TP.DEBUG);
+
+    launchDoc = TP.sys.getLaunchDocument();
+
+    //  Inject a style node that will force primary content framing to 100%.
+    TP.boot.$documentAddStyleElement(launchDoc,
+        'html,body,iframe {\n' +
+        '   position: absolute;\n' +
+        '   top: 0;\n' +
+        '   left: 0;\n' +
+        '   width: 100%;\n' +
+        '   height: 100%;\n' +
+        '   margin: 0;\n' +
+        '   padding: 0;\n' +
+        '   border: 0;\n' +
+        '   overflow: hidden;\n' +
+        '}\n');
+
+    //  TODO: Verify we need this instead of just body.appendChild. We used
+    //  to have to work around a bug in IE.
+    lastBodyChildren = launchDoc.body.children;
+    lastBodyChild = lastBodyChildren[lastBodyChildren.length - 1];
+
+    //  ---
+    //  Create an XHTML version of the iframe
+    //  ---
+
+    //  Create a wrapper span and then set the 'innerHTML' of it
+    //  to an iframe. This causes the underlying iframe
+    //  document, etc. to be created.
+
+    //  We create a 'span' wrapper for the boot iframe, mostly
+    //  because it's necessary when creating the XHTML version
+    //  of the iframe.
+    iFrameWrapper = launchDoc.createElement('span');
+    lastBodyChild.parentNode.insertBefore(iFrameWrapper,
+                                            lastBodyChild);
+
+    //  Set the innerHTML of the span wrapper. This will create
+    //  the iframe. Then set the 'src' attribute to a 'data:'
+    //  URL containing an encoded XHTML document.
+    iFrameWrapper.innerHTML = '<iframe id="' + uiBootID + '">';
+    uiFrame = TP.boot.$nodeReplaceChild(iFrameWrapper.parentNode,
+        iFrameWrapper.firstChild, iFrameWrapper);
+
+    path = TP.boot.$uriExpandPath(TP.sys.cfg('path.uiboot_page'));
+    uiFrame.setAttribute('src', path);
+
+    uiFrame.onload = function() {
+        var doc;
+
+        //  grab the 'object' element by ID - that'll be the
+        //  boot 'iframe'.
+        uiFrame = launchDoc.getElementById(uiBootID);
+        doc = uiFrame.contentDocument;
+
+        //  For some reason, these properties don't get wired on
+        //  any browser.
+        uiFrame.contentWindow = TP.boot.$documentGetWindow(doc);
+        window.frames[uiBootID] = TP.boot.$documentGetWindow(doc);
+
+        TP.boot.$uiBootReady();
+    };
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$uiBootReady = function() {
+
+    /**
+     * @method $uiBootReady
+     * @summary Called to complete the process of launching a new TIBET
+     *     application once the UI boot frame is configured/loaded.
+     */
+
+    TP.boot.$uiRootConfig();
+};
+
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$uiRootConfig = function() {
 
     /**
@@ -10862,12 +11200,11 @@ TP.boot.$uiRootConfig = function() {
 
     var uiRootID,
         uiFrame,
-        lastBodyChildren,
-        lastBodyChild,
-        isXHTML,
+        uiBootID,
+        uiBootFrame,
         path,
         iFrameWrapper,
-        elemDoc;
+        launchDoc;
 
     //  Look for the designated (or default) UI root frame.
     uiRootID = TP.sys.cfg('tibet.uiroot') || 'UIROOT';
@@ -10883,69 +11220,53 @@ TP.boot.$uiRootConfig = function() {
     TP.boot.$stdout('Unable to locate ' + uiRootID + ', generating it.',
         TP.DEBUG);
 
-    //  TODO: Verify we need this instead of just body.appendChild. We used
-    //  to have to work around a bug in IE.
-    lastBodyChildren = document.body.children;
-    lastBodyChild = lastBodyChildren[lastBodyChildren.length - 1];
+    launchDoc = TP.sys.getLaunchDocument();
 
-    isXHTML = /\.xhtml/.test(TP.sys.$pathname);
-    if (isXHTML) {
-        //  Create an XHTML version of the iframe
+    uiBootID = TP.sys.cfg('tibet.uiboot') || 'UIBOOT';
+    uiBootFrame = TP.boot.$getUIElement(uiBootID);
 
-        //  Create a wrapper span and then set the 'innerHTML' of it
-        //  to an iframe. This causes the underlying iframe
-        //  document, etc. to be created.
+    //  ---
+    //  Create an XHTML version of the iframe
+    //  ---
 
-        //  We create a 'span' wrapper for the root iframe, mostly
-        //  because it's necessary when creating the XHTML version
-        //  of the iframe.
-        iFrameWrapper = document.createElement('span');
-        lastBodyChild.parentNode.insertBefore(iFrameWrapper,
-                                                lastBodyChild);
+    //  Create a wrapper span and then set the 'innerHTML' of it
+    //  to an iframe. This causes the underlying iframe
+    //  document, etc. to be created.
 
-        //  Set the innerHTML of the span wrapper. This will create
-        //  the iframe. Then set the 'src' attribute to a 'data:'
-        //  URL containing an encoded XHTML document.
-        iFrameWrapper.innerHTML = '<iframe id="' + uiRootID + '">';
-        path = TP.boot.$uriExpandPath(TP.sys.cfg('path.iframe_page'));
-        iFrameWrapper.firstChild.setAttribute('src', path);
+    //  We create a 'span' wrapper for the root iframe, mostly
+    //  because it's necessary when creating the XHTML version
+    //  of the iframe, and insert before the boot UI to support
+    //  how our visibility operations work re: toggling CSS.
+    iFrameWrapper = launchDoc.createElement('span');
+    uiBootFrame.parentNode.insertBefore(iFrameWrapper,
+                                            uiBootFrame);
 
-        iFrameWrapper.firstChild.onload = function() {
+    //  Set the innerHTML of the span wrapper. This will create
+    //  the iframe. Then set the 'src' attribute to a 'data:'
+    //  URL containing an encoded XHTML document.
+    iFrameWrapper.innerHTML = '<iframe id="' + uiRootID + '">';
+    uiFrame = TP.boot.$nodeReplaceChild(iFrameWrapper.parentNode,
+        iFrameWrapper.firstChild, iFrameWrapper);
 
-            var doc;
+    //  NOTE we don't set a UI page here, just a blank placeholder.
+    path = TP.boot.$uriExpandPath(TP.sys.cfg('path.iframe_page'));
+    uiFrame.setAttribute('src', path);
 
-            //  grab the 'object' element by ID - that'll be the
-            //  root 'iframe'.
-            uiFrame = document.getElementById(uiRootID);
-            doc = uiFrame.contentDocument;
+    uiFrame.onload = function() {
+        var doc;
 
-            //  For some reason, these properties don't get wired on
-            //  any browser.
-            uiFrame.contentWindow = doc.defaultView;
-            window.frames[uiRootID] = doc.defaultView;
+        //  grab the 'object' element by ID - that'll be the
+        //  root 'iframe'.
+        uiFrame = launchDoc.getElementById(uiRootID);
+        doc = uiFrame.contentDocument;
 
-            TP.boot.$uiRootReady();
-        };
-
-    } else {
-        //  Create an HTML version of the iframe
-
-        //  dynamically generate the internal IFRAME element
-        uiFrame = document.createElement('iframe');
-        uiFrame.setAttribute('id', uiRootID);
-
-        //  Make IE happy - no bezeled borders!
-        uiFrame.setAttribute('frameborder', '0');
-
-        lastBodyChild.parentNode.insertBefore(uiFrame, lastBodyChild);
-
-        elemDoc = uiFrame.contentDocument;
-        elemDoc.open('text/html', 'replace');
-        elemDoc.write('<html><head></head><body></body></html>');
-        elemDoc.close();
+        //  For some reason, these properties don't get wired on
+        //  any browser.
+        uiFrame.contentWindow = TP.boot.$documentGetWindow(doc);
+        window.frames[uiRootID] = TP.boot.$documentGetWindow(doc);
 
         TP.boot.$uiRootReady();
-    }
+    };
 };
 
 //  ----------------------------------------------------------------------------

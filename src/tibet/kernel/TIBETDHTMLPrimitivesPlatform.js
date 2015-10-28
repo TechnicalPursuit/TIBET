@@ -151,11 +151,11 @@ TP.hc(
 
             //  For some reason, these properties don't get wired
 
-            newIFrameElement.contentWindow = iframeDoc.defaultView;
+            newIFrameElement.contentWindow = TP.nodeGetWindow(iframeDoc);
 
             if (TP.isString(iframeID)) {
                 TP.nodeGetWindow(aDocument).frames[iframeID] =
-                                            iframeDoc.defaultView;
+                    TP.nodeGetWindow(iframeDoc);
             }
         }
 
@@ -268,11 +268,11 @@ TP.hc(
 
             //  For some reason, these properties don't get wired
 
-            newIFrameElement.contentWindow = iframeDoc.defaultView;
+            newIFrameElement.contentWindow = TP.nodeGetWindow(iframeDoc);
 
             if (TP.isString(iframeID)) {
                 TP.nodeGetWindow(aDocument).frames[iframeID] =
-                                            iframeDoc.defaultView;
+                    TP.nodeGetWindow(iframeDoc);
             }
         }
 
@@ -2740,6 +2740,11 @@ TP.hc(
             //  this function, which causes the browser to not show the
             //  dialog box.
 
+            //  If running in a Karma testing environment don't prompt, exit.
+            if (aWindow.__karma__) {
+                return;
+            }
+
             //  If there is no body, there is nothing to protect, so we can
             //  just exit here.
             if (TP.notValid(TP.documentGetBody(aWindow.document))) {
@@ -2798,6 +2803,11 @@ TP.hc(
             //  this flag is defined and is true, we just return null from
             //  this function, which causes the browser to not show the
             //  dialog box.
+
+            //  If running in a Karma testing environment don't prompt, exit.
+            if (aWindow.__karma__) {
+                return;
+            }
 
             //  If there is no body, there is nothing to protect, so we can
             //  just exit here.
@@ -2858,6 +2868,11 @@ TP.hc(
             //  this flag is defined and is true, we just return null from
             //  this function, which causes the browser to not show the
             //  dialog box.
+
+            //  If running in a Karma testing environment don't prompt, exit.
+            if (aWindow.__karma__) {
+                return;
+            }
 
             //  If there is no body, there is nothing to protect, so we can
             //  just exit here.

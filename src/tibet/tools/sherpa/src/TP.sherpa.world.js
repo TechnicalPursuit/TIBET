@@ -102,7 +102,7 @@ function() {
 
     /*
      * TODO: BILL
-    this.getNativeDocument().defaultView.onresize =
+    TP.nodeGetWindow(this.getNativeDocument()).onresize =
         function() {
             this.setView(this.get('viewRect'));
         };

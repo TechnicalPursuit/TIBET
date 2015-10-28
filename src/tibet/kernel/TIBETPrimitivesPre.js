@@ -3426,9 +3426,9 @@ NativeTypeStub.prototype.getTestSuites =
 function(options) {
 
     /**
-     * Returns the dictionary containing test suites for the receiver.
+     * Returns the list of test suites for the receiver matching options.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
+     * @returns {Array} A list of test suite instances matching the options.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -3702,9 +3702,9 @@ NativeInstStub.prototype.getTestSuites =
 function(options) {
 
     /**
-     * Returns the dictionary containing test suites for the receiver.
+     * Returns the list of test suites for the receiver matching options.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
+     * @returns {Array} A list of test suite instances matching the options.
      */
 
     return TP.test.Suite.getTargetSuites(this.$$target, options);
@@ -4923,9 +4923,9 @@ TP.defineMethod('getTestSuites',
 function(options) {
 
     /**
-     * Returns the dictionary containing test suites for the receiver.
+     * Returns the list of test suites for the receiver matching options.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
+     * @returns {Array} A list of test suite instances matching the options.
      */
 
     return TP.test.Suite.getTargetSuites(this, options);
@@ -8324,7 +8324,7 @@ function(anObj) {
     }
 
     //  If the document doesn't have a Window, then its not HTML
-    if (TP.notValid(anObj.defaultView)) {
+    if (TP.notValid(TP.nodeGetWindow(anObj))) {
         return false;
     }
 
@@ -8763,7 +8763,7 @@ function(anObj) {
     //  If the document doesn't have a Window, then we check to see if the
     //  document element is 'html' - in which case, we can still think of it
     //  as XHTML.
-    if (TP.notValid(anObj.defaultView)) {
+    if (TP.notValid(TP.nodeGetWindow(anObj))) {
         return anObj.documentElement.tagName === 'html';
     }
 

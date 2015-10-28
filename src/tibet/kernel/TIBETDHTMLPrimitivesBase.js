@@ -269,11 +269,16 @@ function(aDocument) {
      * @returns {Number} The document's viewable height in pixels.
      */
 
+    var win;
+
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    return aDocument.defaultView.innerHeight;
+    win = TP.nodeGetWindow(aDocument);
+    if (TP.isValid(win)) {
+        return win.innerHeight;
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -1870,7 +1875,8 @@ function(aNode) {
      * @returns {Window}
      */
 
-    var doc;
+    var doc,
+        win;
 
     //  Note that we don't check for an HTML document here, even though that
     //  might seem logical. A lot of times an XML document will be passed in
@@ -1881,14 +1887,21 @@ function(aNode) {
     }
 
     if (aNode.nodeType === Node.DOCUMENT_NODE) {
-        return aNode.defaultView;
+        doc = aNode;
+        win = doc.defaultView;
+    } else if (TP.isDocument(doc = aNode.ownerDocument)) {
+        win = doc.defaultView;
     }
 
-    if (TP.isDocument(doc = aNode.ownerDocument)) {
-        return doc.defaultView;
+    if (!win) {
+        try {
+            win = aNode.currentScript.ownerDocument.defaultView;
+        } catch (e) {
+            void 0;
+        }
     }
 
-    return;
+    return win;
 });
 
 //  ------------------------------------------------------------------------

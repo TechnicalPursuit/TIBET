@@ -177,7 +177,7 @@ TP.test.Root.Inst.defineMethod('isTodo',
 function() {
 
     /**
-     * Returns true if the receiver is configured as a 'todo' test item.
+     * Returns true if the receiver is configured as a 'todo' test.
      * @returns {Boolean} True if the receiver is marked as a todo item.
      */
 
@@ -190,9 +190,10 @@ TP.test.Root.Inst.defineMethod('only',
 function() {
 
     /**
-     * Marks the receiver as exclusive, meaning it should be the only item
-     * run in a list of multiple items. When multiple items are marked as being
+     * Marks the receiver as exclusive, meaning it should be the only item run
+     * in a list of multiple items. When multiple items are marked as being
      * exclusive only the first of them will be run.
+     * @returns {TP.test.Root} The receiver.
      */
 
     this.$set('exclusive', true);
@@ -209,6 +210,7 @@ function(options) {
      * Resets the receiver, putting instance variables back to their original
      * values so it can be run again.
      * @param {TP.core.Hash} options A dictionary of test options.
+     * @returns {TP.test.Root} The receiver.
      */
 
     this.$set('result', null);
@@ -232,6 +234,7 @@ function(shouldSkip) {
      * Marks the receiver as skipped, meaning it will be listed but not run.
      * @param {Boolean} shouldSkip Whether or not to skip this test or suite.
      *     Defaults to true.
+     * @returns {TP.test.Root} The receiver.
      */
 
     var skip;
@@ -252,6 +255,7 @@ function(ms) {
      * Defines a millisecond limit on how long the receiver can run before being
      * timed out (which cause the Case or Suite to fail).
      * @param {Number} ms The millisecond timeout value.
+     * @returns {TP.test.Root} The receiver.
      */
 
     this.$set('mslimit', ms);
@@ -267,6 +271,7 @@ function() {
     /**
      * Marks the receiver as todo, meaning it will be run but its result will
      * always be considered as a non-failure for overall reporting purposes.
+     * @returns {TP.test.Root} The receiver.
      */
 
     this.$set('ignored', true);
@@ -291,7 +296,7 @@ TP.test.Root.defineSubtype('Suite');
  * subtypes, it's local to the TP.test.Suite type.
  * @type {TP.core.Hash}
  */
-TP.test.Suite.defineAttribute('suites', TP.hc());
+TP.test.Suite.defineAttribute('suites', TP.ac());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -301,17 +306,16 @@ TP.test.Suite.Type.defineMethod('addSuite',
 function(target, suiteName, suiteFunc) {
 
     /**
-     * Adds a new test suite function to the overall dictionary.
+     * Adds a new test suite to the list of known test suites.
      * @param {Object} target The object that owns the test suite.
      * @param {String} suiteName The name of the suite. Should be unique for the
      *     particular target.
      * @param {Function} suiteFunc The function representing the test suite.
-     * @returns {TP.core.Hash} The updated collection of test suites.
+     * @returns {TP.test.Suite} The newly created test suite instance.
      */
 
     var id,
         suites,
-        dict,
         suite;
 
     if (TP.notValid(target)) {
@@ -324,21 +328,10 @@ function(target, suiteName, suiteFunc) {
         this.raise('InvalidID');
     }
 
-    suites = TP.test.Suite.getTargetSuites();
-    dict = suites.at(id);
+    suite = TP.test.Suite.construct(target, suiteName, suiteFunc);
 
-    if (TP.notValid(dict)) {
-        dict = TP.hc();
-        suites.atPut(id, dict);
-    }
-
-    suite = dict.at(suiteName);
-    if (TP.notValid(suite)) {
-        suite = TP.test.Suite.construct(target, suiteName, suiteFunc);
-        dict.atPut(suiteName, suite);
-    } else {
-        suite.addSuite(suiteFunc);
-    }
+    suites = TP.test.Suite.$get('suites');
+    suites.push(suite);
 
     return suite;
 });
@@ -349,24 +342,36 @@ TP.test.Suite.Type.defineMethod('getTargetSuites',
 function(target, options) {
 
     /**
-     * Returns a dictionary of test suites. If no target is provided the entire
-     * collection of tests is returned. If a target is provided then a hash
-     * whose top-level has a single key for the target's id is returned. This is
-     * effectively a "slice" of the system suite hash.
+     * Returns a list of target-specific test suites. The combination of target
+     * and options settings determines which subsets of test suites will be
+     * returned. Common filters are suite and cases which filter for either a
+     * group of tests or specifically named tests.
      * @param {Object} target The object whose test suites should be returned.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A collection of test suites.
+     * @param {String} [options.suite] If empty all suites are returned.
+     * @param {String} [options.cases] If empty all cases are returned.
+     * @param {String} [options.inherit=false] Target plus supertypes.
+     * @returns {Array} A list of appropriate test suites for the options.
      */
 
-    var suites,
+    var params,
+        suites,
         id,
-        params,
-        name,
-        realSuites;
+        targets,
+        inherit,
+        obj,
+        filter,
+        pattern;
 
+    //  Ensure we have a consistent Hash for parameter lookups later on.
+    params = TP.hc(options);
+
+    //  Get the array of all suites. We'll be filtering this based on options.
     suites = TP.test.Suite.$get('suites');
 
-    params = TP.hc(options);
+    //  ---
+    //  target filter
+    //  ---
 
     //  If we have a specific target restrict our hash down to just that
     //  target's suites as a first step.
@@ -377,87 +382,84 @@ function(target, options) {
             this.raise('InvalidID');
         }
 
-        name = TP.notEmpty(params.at('suite')) ? params.at('suite') : 'all';
+        targets = [id];
 
-        if (TP.isValid(suites.at(id))) {
-            if (name === 'all') {
-                //  set suites to a hash keyed by the target and all suites for
-                //  that target. we might filter this further below (maybe by
-                //  suite name).
-                suites = suites.at(id).getValues();
-            } else {
-                suites = suites.at(id).getValues().filter(
-                            function(item) {
-                                return item.get('suiteName') === name;
-                            });
+        inherit = params.at('inherit');
+        if (TP.isTrue(inherit)) {
+            obj = TP.bySystemId(target);
+            if (TP.canInvoke(obj, 'getSupertypeNames')) {
+                targets.concat(obj.getSupertypeNames());
             }
-
-            suites = TP.hc(id, TP.hc(name, suites));
-        } else {
-            suites = TP.hc(id, TP.hc());
         }
 
+        //  Get the list of suites owned by the targeted object.
+        suites = suites.filter(function(item) {
+            return targets.contains(TP.id(item.suiteOwner));
+        });
+    }
+
+    //  No options, or empty options (after conversion to hash) means full list.
+    if (TP.notValid(options) || TP.isEmpty(params)) {
         return suites;
     }
 
-    //  No options means no filtering criteria...
-    if (TP.notValid(options)) {
-        return suites;
-    }
+    //  ---
+    //  suite filter
+    //  ---
 
-    //  TODO: if options includes things like inherited etc. we need to collect
-    //  more suites rather than assuming a single slice.
+    filter = params.at('suite');
+    if (TP.notEmpty(filter)) {
 
-    //  If the suite name is supplied, then we get that suite for all targets in
-    //  the system.
-    name = params.at('suite');
-    if (TP.notEmpty(name)) {
-
-        suites = suites.getValues().filter(
-                    function(item) {
-                        return item.getKeys().contains(name);
-                    }).collect(
-                        function(item) {
-                            return item.at(name);
-                        });
-
-        if (TP.isValid(suites)) {
-            suites = TP.hc(id || name, TP.hc(name, suites));
-        } else {
-            return;
+        filter = filter.unquoted();
+        if (/^\/.+\/([ig]*)$/.test(filter)) {
+            pattern = RegExp.construct(filter);
         }
-    } else {
 
-        //  Otherwise, there's no target and no suite name which means we should
-        //  return all known suites in the system.
+        suites = suites.filter(function(suite) {
+            var name;
 
-        //  We need to return a hash keyed by the target and suites found for
-        //  that target.
-        realSuites = TP.hc();
+            name = suite.getSuiteName();
 
-        suites.perform(
-            function(kvPair) {
-                realSuites.atPut(TP.id(kvPair.first()), kvPair.last());
-            });
-
-        suites = realSuites;
+            if (pattern) {
+                return pattern.match(name);
+            } else {
+                return name === filter;
+            }
+        });
     }
 
-    name = params.at('cases');
-    if (TP.notEmpty(name)) {
-        //  Painful, but necessary to filter down to the suites that have cases
-        //  that match our criteria. The data structures really aren't
-        //  well-designed for this use case.
-        realSuites = TP.hc();
-        suites.getValues().forEach(
-            function(item) {
-                item.perform(function(kvPair) {
-                    if (TP.notEmpty(kvPair.last().getCaseList(params))) {
-                        realSuites.atPut(TP.id(item), item);
-                    }
-                });
+    //  ---
+    //  case filter
+    //  ---
+
+    //  clear pattern so we don't reuse from above.
+    pattern = null;
+
+    filter = params.at('cases');
+    if (TP.notEmpty(filter)) {
+
+        filter = filter.unquoted();
+        if (/^\/.+\/([ig]*)$/.test(filter)) {
+            pattern = RegExp.construct(filter);
+        }
+
+        suites = suites.filter(function(suite) {
+            var cases;
+
+            cases = suite.getCaseList();
+            cases = cases.filter(function(casey) {
+                var name;
+
+                name = casey.getCaseName();
+                if (pattern) {
+                    return pattern.match(name);
+                } else {
+                    return name.contains(filter);
+                }
             });
-        suites = realSuites;
+
+            return TP.notEmpty(cases);
+        });
     }
 
     return suites;
@@ -473,14 +475,16 @@ function(target, options) {
      * object is provided.
      * @param {Object} target The object whose test suites should be run.
      * @param {TP.core.Hash} options A dictionary of test options.
+     * @param {String} [options.suite] If empty all suites are returned.
+     * @param {String} [options.cases] If empty all cases are returned.
+     * @param {Boolean} [options.ignore_only=true]
+     * @param {Boolean} [options.ignore_skip=true]
      * @returns {Promise} A Promise to be used as necessary.
      */
 
     var suites,
         cases,
         params,
-        keys,
-        suitelist,
         throwExceptions,
         throwHandlers,
         shouldLogSetting,
@@ -489,73 +493,33 @@ function(target, options) {
         summarize,
         total;
 
-    //  Note we pass options here to deal with potential for wanting inherited
-    //  tests etc.
-    suites = this.getTargetSuites(target, options);
-
-    params = TP.hc(options);
-
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
-    if (TP.notValid(suites)) {
+    //  Get filtered list of test suites that apply to our test criteria.
+    suites = this.getTargetSuites(target, options);
+
+    if (TP.isEmpty(suites)) {
         TP.sys.logTest('0..0');
         TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 error, 0 skip, 0 todo.');
         return TP.extern.Promise.resolve();
     }
 
-    keys = suites.getKeys();
+    //  Prep the inbound options for use by the reporting functions below.
+    params = TP.hc(options);
 
-    //  Collect all suite instances in an array we can leverage as our top-level
-    //  iteration list.
-    suitelist = TP.ac();
-    keys.perform(
-            function(targetID) {
-                var targetSuites,
-                    targetKeys;
-
-                targetSuites = suites.at(targetID);
-                targetKeys = targetSuites.getKeys();
-
-                targetKeys.perform(
-                    function(suiteName) {
-                        var targetedSuites;
-
-                        targetedSuites = targetSuites.at(suiteName);
-
-                        if (!TP.isArray(targetedSuites)) {
-                            targetedSuites = TP.ac(targetedSuites);
-                        }
-
-                        targetedSuites.perform(
-                            function(suite) {
-
-                                if (suite.isExclusive() &&
-                                    !params.at('ignore_only')) {
-                                    exclusives = true;
-                                }
-
-                                if (TP.notEmpty(params.at('suite'))) {
-                                    if (params.at('suite') === suiteName) {
-                                        suitelist.push(suite);
-                                    }
-                                } else {
-                                    suitelist.push(suite);
-                                }
-                            });
-                    });
-            });
+    exclusives = TP.isTrue(params.at('ignore_only'));
 
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
     if (exclusives === true) {
         TP.sys.logTest('# filtering for exclusive suite(s).', TP.WARN);
-        suitelist = suitelist.filter(
+        suites = suites.filter(
                         function(suite) {
                             return suite.isExclusive();
                         });
 
-        if (suitelist.length > 1) {
-            TP.sys.logTest('# ' + suitelist.length +
+        if (suites.length > 1) {
+            TP.sys.logTest('# ' + suites.length +
                 ' exclusive suite(s) found for ' +
                 TP.name(target) + '.', TP.WARN);
         }
@@ -577,7 +541,7 @@ function(target, options) {
         errored = 0;
         skipped = 0;
 
-        suitelist.perform(
+        suites.perform(
                 function(suite) {
                     var caselist,
                         stats;
@@ -611,7 +575,8 @@ function(target, options) {
         total += passed + failed + errored + ignored + skipped;
 
         TP.sys.logTest('#');
-        TP.sys.logTest(prefix +
+        TP.sys.logTest(
+            prefix +
             total + ' total, ' +
             passed + ' pass, ' +
             failed + ' fail, ' +
@@ -622,11 +587,11 @@ function(target, options) {
         TP.sys.setcfg('test.running', false);
     };
 
-    TP.sys.logTest('# ' + suitelist.length + ' suite(s) found for ' +
+    TP.sys.logTest('# ' + suites.length + ' suite(s) found for ' +
                 TP.name(target) + '.', TP.DEBUG);
 
     cases = 0;
-    suitelist.perform(
+    suites.perform(
             function(suite) {
                 var caselist;
 
@@ -663,7 +628,7 @@ function(target, options) {
     //  prime the list with a resolved promise to ensure 'current' receives all
     //  the suites during iteration while 'chain' is the last promise in the
     //  chain of promises being constructed.
-    promise = suitelist.reduce(
+    promise = suites.reduce(
             function(chain, current, index, array) {
                 return chain.then(
                     function(obj) {
@@ -2063,7 +2028,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     }
 
     if (this.isTodo()) {
-        msg += ' # TODO ';
+        msg += ' # TODO';
     }
 
     TP.sys.logTest(msg);
@@ -2130,7 +2095,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         (aFaultString ? ': ' + aFaultString : '') + '.';
 
     if (this.isTodo()) {
-        msg += ' # TODO ';
+        msg += ' # TODO';
     }
 
     TP.sys.logTest(msg);
@@ -2187,11 +2152,10 @@ function() {
 TP.test.Case.Inst.defineMethod('getCircularKeys', function() {
 
     /**
-     * @method getCircularKeys
-     * @summary Returns a known list of keys for the receiver that will cause a
-     *     circular reference to eventually occur. Used by asString/asSource
-     *     to allow certain types to avoid circular reference issues when
-     *     producing simple string representations.
+     * Returns a known list of keys for the receiver that will cause a circular
+     * reference to eventually occur. Used by asString/asSource to allow certain
+     * types to avoid circular reference issues when producing simple string
+     * representations.
      * @return {Array} For test cases the 'suite' key can be circular.
      */
 
@@ -2230,7 +2194,7 @@ function() {
      * @returns {Number} The status code.
      */
 
-    return this.$get('status');
+    return this.$get('statusCode');
 });
 
 //  ------------------------------------------------------------------------
@@ -2525,7 +2489,7 @@ function() {
     msg = 'ok - ' + this.getCaseName() + '.';
 
     if (this.isTodo()) {
-        msg += ' # TODO ';
+        msg += ' # TODO';
     }
 
     TP.sys.logTest(msg);
@@ -3196,13 +3160,9 @@ function(options) {
     suitenames = TP.ac();
 
     suites = this.getTestSuites(options);
-    suites.getKeys().perform(
-            function(key) {
-                var suitehash;
-
-                suitehash = suites.at(key);
-                suitenames.addAll(suitehash.getKeys());
-            });
+    suitenames = suites.map(function(suite) {
+        return suite.getSuiteName();
+    });
 
     return names.difference(suitenames);
 });
@@ -3229,9 +3189,9 @@ TP.defineMetaInstMethod('getTestSuites',
 function(options) {
 
     /**
-     * Returns the dictionary containing test suites for the receiver.
+     * Returns an array containing test suites for the receiver.
      * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {TP.core.Hash} A hash keyed by the receiver's ID.
+     * @returns {Array} An array of all suites matching the filter criteria.
      */
 
     return TP.test.Suite.getTargetSuites(this, options);
@@ -3264,11 +3224,10 @@ TP.lang.RootObject.Type.defineMethod('$installMethodChain',
 function(stepNames, endName) {
 
     /**
-     * @method $installMethodChain
-     * @summary Sets up a 'traversal chain', such that an instance of the
-     *     receiver will respond to '.foo.bar()' as if '.bar()' was invoked. The
-     *     'chain' of names used to invoke '.bar()' will be available under the
-     *     private '$$methodChainNames' instance attribute.
+     * Sets up a 'traversal chain', such that an instance of the receiver will
+     * respond to '.foo.bar()' as if '.bar()' was invoked. The 'chain' of names
+     * used to invoke '.bar()' will be available under the private
+     * '$$methodChainNames' instance attribute.
      * @param {Array} stepNames The names of the individual 'steps' that can be
      *     used in a traversal chain to get to the method named by 'endName'.
      * @param {String} endName The name of the method that will invoked at the
@@ -3391,8 +3350,7 @@ TP.lang.RootObject.Type.defineMethod('setupMethodChains',
 function(methodInfoDict) {
 
     /**
-     * @method setupMethodChains
-     * @summary Sets up method chains per the supplied dictionary.
+     * Sets up method chains per the supplied dictionary.
      * @description The supplied dictionary should supply the 'end name' as a
      *     key with an Array of the 'valid steps' that can be taken to get to
      *     that 'end'.

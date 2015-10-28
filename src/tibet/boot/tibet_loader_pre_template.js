@@ -25,14 +25,14 @@
 /* eslint indent:0 */
 (function(root) {
 
-if (window.location.pathname === '/index.html') {
-    window.location.replace(
-        window.location.toString().replace('/index.html', '/'));
+if (root.location.pathname === '/index.html') {
+    root.location.replace(
+        root.location.toString().replace('/index.html', '/'));
 }
 
 //  GLOBAL - Defines where TIBET booted and where the codeframe is. We set this
 //  early so the cfg/post/hook file knows it's bundled with tibet_loader_pre.js.
-window.$$TIBET = window;
+root.$$TIBET = root;
 
 //  ----------------------------------------------------------------------------
 
@@ -40,21 +40,23 @@ window.$$TIBET = window;
  * Pre-start checks.
  */
 
-if (window === top) {
+if (root === top) {
 
     //  Even if we exit this function we need to help the rest of tibet_loader's
-    //  modules find the TP reference.
-    TP = root.TP = window.TP;
+    //  modules find the TP reference. The hook file portion may still run.
+    TP = root.TP;
 
     //  If the TP or APP globals aren't available and we're loading into TOP
     //  that's a problem since our target globals aren't available.
-    if (window.TP) {
-        top.console.error('TIBET global TP already mapped. Exiting.');
+    if (root.TP) {
+        top.console.error(
+            'TIBET global TP already mapped. Duplicate load script?');
         return;
     }
 
-    if (window.APP) {
-        top.console.error('TIBET global APP already mapped. Exiting.');
+    if (root.APP) {
+        top.console.error(
+            'TIBET global APP already mapped. Duplicate load script?');
         return;
     }
 
@@ -74,7 +76,7 @@ if (window === top) {
         if (top.TP.sys && top.TP.sys.getRouter) {
 
             //  Keep the boot UI from showing...
-            window.document.body.innerHTML = '';
+            root.document.body.innerHTML = '';
 
             //  Set a flag the remaining portions of tibet_loader and the
             //  containing file (such as index.html) which might try to invoke
@@ -83,24 +85,29 @@ if (window === top) {
 
             //  Clear the TIBET global. We don't want any new content confused
             //  about where it's loading.
-            delete window.$$TIBET;
+            delete root.$$TIBET;
 
             //  Ask the router to do something useful with the location.
-            top.TP.sys.getRouter().route(window.location.toString());
+            top.TP.sys.getRouter().route(root.location.toString());
 
             return;
 
         } else {
             //  We found TP but not TP.sys or the router? Probably not TIBET.
-            top.console.error('TIBET global TP already mapped. Exiting.');
+            top.console.error(
+                'TIBET global TP already mapped. Duplicate load script?');
             return;
         }
 
     } else {
+        //  Karma will get worked up if we try to reset the location. NOTE
+        //  we can't use TP.sys.cfg yet so have to hard-code the karma slot.
+        if (!root['__karma__']) {
 
-        //  If we're not being loaded in TOP and TOP isn't running TIBET then we
-        //  reset so we try to load into the top frame.
-        top.location = window.location;
+            //  If we're not being loaded in TOP and TOP isn't running TIBET
+            //  then we reset so we try to load into the top frame.
+            top.location = root.location;
+        }
     }
 }
 
@@ -116,7 +123,7 @@ if (Object.defineProperty) {
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(window,
+    Object.defineProperty(root,
                             'TP',
                             {value: {}, writable: true, configurable: true});
 
@@ -140,21 +147,20 @@ if (Object.defineProperty) {
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(window,
+    Object.defineProperty(root,
                             'APP',
                             {value: {}, writable: true, configurable: true});
 
-    //  No... just no. Get a copy of Mavis Beacon and practice :).
-    //  By default, writable and configurable are false.
+    //  No... just no. Note writable and configurable default to false.
     Object.defineProperty(TP, '$', {value: null});
     Object.defineProperty(TP, '_', {value: null});
 
 } else {
-    TP = window.TP || {};
+    TP = root.TP || {};
     TP.boot = TP.boot || {};
     TP.extern = TP.extern || {};
     TP.sys = TP.sys || {};
-    APP = window.APP || {};
+    APP = root.APP || {};
 }
 
 //  ----------------------------------------------------------------------------
@@ -216,6 +222,14 @@ if (!TP.sys.$nativeglobals) {
 //  early-stage boot configs can leverage the TP.sys.defineGlobal call
 if (TP.sys.$globals == null) {
     TP.sys.$globals = [];
+}
+
+//  ---
+//  Simply polyfills/shims
+//  ---
+
+if (!Number.MAX_SAFE_INTEGER) {
+    Number.MAX_SAFE_INTEGER = 9007199254740991;
 }
 
 //  ---
@@ -1427,8 +1441,8 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
 
         if (shouldSignal !== false &&
             TP.sys.hasStarted() &&
-            typeof window.$signal === 'function') {
-            window.$signal(TP.sys, aKey + 'Change', aKey);
+            typeof root.$signal === 'function') {
+            root.$signal(TP.sys, aKey + 'Change', aKey);
         }
 
         return newval;
