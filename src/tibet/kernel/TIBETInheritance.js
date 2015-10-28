@@ -1561,7 +1561,7 @@ function(aString, transformParams) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getBestHandler',
-function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skip) {
+function(aSignal, flags) {
 
     /**
      * @method getBestHandler
@@ -1574,18 +1574,23 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skip) {
      *     'skip ahead' to consider signals further down in the chain (the
      *     INHERITANCE_FIRING policy in the notification system does this).
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @param {String} [startSignal] The signal name to start considering
-     *     handlers if the supplied signal has more than one signal name. This
-     *     parameter is optional and, if not supplied, all of the signal names
-     *     as computed from the supplied signal will be used.
-     * @param {Boolean} [dontTraverseSpoofs=false] True will mean that
-     *     traversing up the supertype chain will be disabled for 'spoofed'
-     *     signals (i.e. signals where the signal name doesn't match the type
-     *     name).
-     * @param {Boolean} [dontTraverse=false] True will turn off any form of
-     *     signal hierarchy traversal.
-     * @param {String} [skip] A string used to mask off certain handler names
-     *     such as high-level default handlers.
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {String} [startSignal] The signal name to start considering
+     *                  handlers if the supplied signal has more than one signal
+     *                  name. This parameter is optional and, if not supplied,
+     *                  all of the signal names as computed from the supplied
+     *                  signal will be used.
+     *          {Boolean} [dontTraverseSpoofs=false] True will mean that
+     *                  traversing up the supertype chain will be disabled for
+     *                  'spoofed' signals (i.e. signals where the signal name
+     *                  doesn't match the type name).
+     *          {Boolean} [dontTraverseHierarchy=false] True will turn off any
+     *                  form of signal hierarchy traversal.
+     *          {String} [skipName] A string used to mask off certain handler
+     *                  names such as high-level default handlers.
+     *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
+     *              default is whatever phase the supplied signal is in.
      * @returns {Function} The specific function or method that would be (or
      *     was) invoked.
      */
@@ -1596,16 +1601,18 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skip) {
         name;
 
     handlerNames = this.getBestHandlerNames(
-        aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skip);
+                        aSignal,
+                        TP.ifInvalid(flags, {}));
 
-    len = handlerNames.length;
+    len = handlerNames.getSize();
     switch (len) {
         case 0:
             //  TODO:   add cfg flag check here
             TP.ifTrace() ? TP.trace('Handlers: none') : 0;
             return;
         case 1:
-            //  A lot of signals end up resolving to 'handleSignalFromANYWhenANY'
+            //  A lot of signals end up resolving to
+            //  'handleSignalFromANYWhenANY'
             name = handlerNames[0];
             //  TODO:   add cfg flag check here
             TP.ifTrace() ? TP.trace('Handlers: ' + name) : 0;
@@ -1629,25 +1636,30 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skip) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getBestHandlerNames',
-function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
+function(aSignal, flags) {
 
     /**
      * @method getBestHandlerNames
      * @summary Scans handler metadata and returns a sorted array of handler
      *     names which are viable for the signal and conditions provided.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @param {String} [startSignal] The signal name to start considering
-     *     handlers if the supplied signal has more than one signal name. This
-     *     parameter is optional and, if not supplied, all of the signal names
-     *     as computed from the supplied signal will be used.
-     * @param {Boolean} [dontTraverseSpoofs=false] True will mean that
-     *     traversing up the supertype chain will be disabled for 'spoofed'
-     *     signals (i.e. signals where the signal name doesn't match the type
-     *     name).
-     * @param {Boolean} [dontTraverse=false] True will turn off any form of
-     *     signal hierarchy traversal.
-     * @param {String} [skipName] A string used to mask off certain handler
-     *     names such as high-level default handlers.
+     * @param {Object} flags The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {String} [startSignal] The signal name to start considering
+     *                  handlers if the supplied signal has more than one signal
+     *                  name. This parameter is optional and, if not supplied,
+     *                  all of the signal names as computed from the supplied
+     *                  signal will be used.
+     *          {Boolean} [dontTraverseSpoofs=false] True will mean that
+     *                  traversing up the supertype chain will be disabled for
+     *                  'spoofed' signals (i.e. signals where the signal name
+     *                  doesn't match the type name).
+     *          {Boolean} [dontTraverseHierarchy=false] True will turn off any
+     *                  form of signal hierarchy traversal.
+     *          {String} [skipName] A string used to mask off certain handler
+     *                  names such as high-level default handlers.
+     *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
+     *              default is whatever phase the supplied signal is in.
      * @return {Array.<String>} An array of viable signal handler names.
      */
 
@@ -1676,9 +1688,9 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
 
     //  If we're not traversing or the signal is spoofing its name and we're
     //  not traversing for spoofed instances it's a single signal check.
-    if (TP.isTrue(dontTraverse) ||
-            TP.isTrue(dontTraverseSpoofs) && aSignal.isSpoofed()) {
-        signalNames = [aSignal.getSignalName()];
+    if (TP.isTrue(flags.dontTraverseHierarchy) ||
+        TP.isTrue(flags.dontTraverseSpoofs) && aSignal.isSpoofed()) {
+        signalNames = TP.ac(aSignal.getSignalName());
     } else {
         signalNames = aSignal.getTypeSignalNames();
         if (aSignal.isSpoofed()) {
@@ -1688,8 +1700,8 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
 
         //  We're going to be checking a list of one or more signals. The list
         //  has to take into account the startSignal and any skipName.
-        if (TP.notEmpty(startSignal) &&
-                (index = signalNames.indexOf(startSignal)) !== TP.NOT_FOUND) {
+        if (TP.notEmpty(flags.startSignal) &&
+            (index = signalNames.indexOf(flags.startSignal)) !== TP.NOT_FOUND) {
             signalNames = signalNames.slice(index);
         }
     }
@@ -1709,7 +1721,7 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
     //  Phase
     //  ---
 
-    phase = aSignal.getPhase();
+    phase = TP.ifInvalid(flags.phase, aSignal.getPhase());
     switch (phase) {
         case TP.CAPTURING:
             expression += TP.CAPTURING;
@@ -1775,67 +1787,72 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
         return;
     }
 
-//  TODO: make this "official". but BEWARE!!! you can't log these to the DOM or
-//  things go to hell in a hurry.
-/*
-if (!expression.match(/DOMMouse/)) {
-top.console.log('getBestHandlerNames: ' + expression);
-}
-*/
+    //  TODO: make this "official". but BEWARE!!! you can't log these to the DOM
+    //  or things go to hell in a hurry.
+    /*
+    if (!expression.match(/DOMMouse/)) {
+    top.console.log('getBestHandlerNames: ' + expression);
+    }
+    */
 
     //  This is where the magic happens ;)
     obj = this;
-    names = TP.sys.$$meta_handlers.getKeys().filter(function(key) {
-        return regex.test(key) && TP.canInvoke(obj, key);
-    });
+    names = TP.sys.$$meta_handlers.getKeys().filter(
+                function(key) {
+                    return regex.test(key) && TP.canInvoke(obj, key);
+                });
 
     //  ---
     //  Sort
     //  ---
 
-    names.sort(function(a, b) {
-        var aMatch,
-            bMatch,
-            aIndex,
-            bIndex;
+    names.sort(
+        function(a, b) {
+            var aMatch,
+                bMatch,
+                aIndex,
+                bIndex;
 
-        aMatch = TP.regex.SPLIT_HANDLER_NAME.match(a);
-        bMatch = TP.regex.SPLIT_HANDLER_NAME.match(b);
+            aMatch = TP.regex.SPLIT_HANDLER_NAME.match(a);
+            bMatch = TP.regex.SPLIT_HANDLER_NAME.match(b);
 
-        aIndex = signalNames.indexOf(aMatch[1]);
-        bIndex = signalNames.indexOf(bMatch[1]);
+            aIndex = signalNames.indexOf(aMatch[1]);
+            bIndex = signalNames.indexOf(bMatch[1]);
 
-        if (aIndex === -1 || bIndex === -1) {
-            //  TODO:   log a nice warning/error here. shouldn't happen.
-            void 0;
-        }
+            if (aIndex === -1 || bIndex === -1) {
+                //  TODO:   log a nice warning/error here. shouldn't happen.
+                void 0;
+            }
 
-        //  Signal types need to be ordered via inheritance/spoof order and the
-        //  signal name is always the first sort index.
-        if (aIndex < bIndex) {
-            return -1;
-        }
+            //  Signal types need to be ordered via inheritance/spoof order and
+            //  the signal name is always the first sort index.
+            if (aIndex < bIndex) {
+                return -1;
+            }
 
-        if (aIndex === bIndex) {
+            if (aIndex === bIndex) {
 
-            //  Secondary option is origins. Concrete before TP.ANY :)
-            if (aMatch[4] === bMatch[4]) {
-                //  Ternary index is state. Should be concrete before TP.ANY.
-                if (aMatch[6] === bMatch[6]) {
-                    return 0;
-                } else if (aMatch[6] === TP.ANY) {
+                //  Secondary option is origins. Concrete before TP.ANY :)
+                if (aMatch[4] === bMatch[4]) {
+
+                    //  Ternary index is state. Should be concrete before
+                    //  TP.ANY.
+                    if (aMatch[6] === bMatch[6]) {
+                        return 0;
+                    } else if (aMatch[6] === TP.ANY) {
+                        return 1;
+                    }
+
+                    return -1;
+                } else if (aMatch[4] === TP.ANY) {
                     return 1;
                 }
                 return -1;
-            } else if (aMatch[4] === TP.ANY) {
-                return 1;
             }
-            return -1;
-        }
 
-        //  aIndex > bIndex
-        return 1;
-    });
+            //  aIndex > bIndex
+            return 1;
+        });
 
     return names;
 })
@@ -1872,7 +1889,12 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse) {
     var handlerFunc;
 
     handlerFunc = this.getBestHandler(
-        aSignal, startSignal, dontTraverseSpoofs, dontTraverse);
+        aSignal,
+        {
+            startSignal: startSignal,
+            dontTraverseHierarchy: dontTraverse,
+            dontTraverseSpoofs: dontTraverseSpoofs
+        });
 
     if (TP.isCallable(handlerFunc)) {
         return handlerFunc.call(this, aSignal);

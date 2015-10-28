@@ -1027,14 +1027,25 @@ function(details) {
         if (TP.isKindOf(trigger, 'TP.sig.Signal')) {
 
             //  Try to handle locally within this state machine.
-            handler = this.getBestHandler(trigger, null, null, null, 'Signal');
+            handler = this.getBestHandler(
+                trigger,
+                {
+                    startSignal: null,
+                    skipName: 'Signal'
+                });
+
             if (TP.isFunction(handler)) {
                 handler.call(this, trigger);
             } else {
                 //  Try bubbling to parent if not handled.
                 if (TP.isValid(parent = this.get('parent'))) {
                     handler = parent.getBestHandler(
-                        trigger, null, null, null, 'Signal');
+                        trigger,
+                        {
+                            startSignal: null,
+                            skipName: 'Signal'
+                        });
+
                     if (TP.isFunction(handler)) {
                         handler.call(parent, trigger);
                     }
@@ -1051,7 +1062,13 @@ function(details) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getBestHandler(signal, null, null, null, 'Signal');
+        handler = this.getBestHandler(
+            signal,
+            {
+                startSignal: null,
+                skipName: 'Signal'
+            });
+
         if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
@@ -1059,7 +1076,13 @@ function(details) {
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getBestHandler(signal, null, null, null, 'Signal');
+                handler = parent.getBestHandler(
+                    signal,
+                    {
+                        startSignal: null,
+                        skipName: 'Signal'
+                    });
+
                 if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }
@@ -1083,7 +1106,13 @@ function(details) {
         //  Try to handle it locally. The state machine itself gets first chance
         //  at any input/internal transition signals. NOTE that we have to watch
         //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getBestHandler(signal, null, null, null, 'Signal');
+        handler = this.getBestHandler(
+            signal,
+            {
+                startSignal: null,
+                skipName: 'Signal'
+            });
+
         if (TP.isFunction(handler)) {
             handler.call(this, signal);
         } else {
@@ -1091,7 +1120,13 @@ function(details) {
             //  the input to our outer composite state. This is the fundamental
             //  feature of a truly nested state machine.
             if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getBestHandler(signal, null, null, null, 'Signal');
+                handler = parent.getBestHandler(
+                    signal,
+                    {
+                        startSignal: null,
+                        skipName: 'Signal'
+                    });
+
                 if (TP.isFunction(handler)) {
                     handler.call(parent, signal);
                 }

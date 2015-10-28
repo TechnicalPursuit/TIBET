@@ -615,7 +615,13 @@ function(aSignal) {
 
     //  look up a handler, forcing lookup to find only handlers that
     //  properly match custom signal name overrides
-    handler = this.getBestHandler(request, null, true);
+    handler = this.getBestHandler(
+        request,
+        {
+            startSignal: null,
+            dontTraverseSpoofs: true
+        });
+
     if (TP.isCallable(handler)) {
         try {
             this.acceptRequest(request);
@@ -1799,7 +1805,13 @@ function(aSignal) {
 
     //  look up a handler, forcing lookup to find only handlers that
     //  properly match custom signal name overrides
-    handler = this.getBestHandler(aSignal, null, true);
+    handler = this.getBestHandler(
+        aSignal,
+        {
+            startSignal: null,
+            dontTraverseSpoofs: true
+        });
+
     if (TP.isCallable(handler)) {
         try {
             return handler.apply(this, arguments);

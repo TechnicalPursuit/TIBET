@@ -5979,7 +5979,14 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  Look for handlers, but only explicit ones. This routing is called by
     //  policies which handle all looping of inheritance chains etc for us.
-    handler = resource.getBestHandler(sig, null, true, true);
+    handler = resource.getBestHandler(
+        sig,
+        {
+            startSignal: null,
+            dontTraverseHierarchy: true,
+            dontTraverseSpoofs: true
+        });
+
     if (TP.isCallable(handler)) {
         try {
             handler.call(resource, sig);
