@@ -5325,7 +5325,6 @@ function(originSet, aSignal, aPayload, aType) {
 TP.sig.SignalMap.defineMethod('RESPONDER_FIRING',
 function(originSet, aSignal, aPayload, aType) {
 
-
     /**
      * @method RESPONDER_FIRING
      * @summary Fires signals across a series of responders. Responder chain

@@ -477,7 +477,6 @@
     TP.sys.setcfg('tibet.uiscreenprefix', 'SCREEN_');
 
 
-
     //  ---
     //  misc flags
     //  ---

@@ -415,17 +415,18 @@ function(target, options) {
             pattern = RegExp.construct(filter);
         }
 
-        suites = suites.filter(function(suite) {
-            var name;
+        suites = suites.filter(
+                    function(suite) {
+                        var name;
 
-            name = suite.getSuiteName();
+                        name = suite.getSuiteName();
 
-            if (pattern) {
-                return pattern.match(name);
-            } else {
-                return name === filter;
-            }
-        });
+                        if (pattern) {
+                            return pattern.match(name);
+                        } else {
+                            return name === filter;
+                        }
+                    });
     }
 
     //  ---
@@ -443,23 +444,25 @@ function(target, options) {
             pattern = RegExp.construct(filter);
         }
 
-        suites = suites.filter(function(suite) {
-            var cases;
+        suites = suites.filter(
+                    function(suite) {
+                        var cases;
 
-            cases = suite.getCaseList();
-            cases = cases.filter(function(casey) {
-                var name;
+                        cases = suite.getCaseList();
+                        cases = cases.filter(
+                                    function(casey) {
+                                        var name;
 
-                name = casey.getCaseName();
-                if (pattern) {
-                    return pattern.match(name);
-                } else {
-                    return name.contains(filter);
-                }
-            });
+                                        name = casey.getCaseName();
+                                        if (pattern) {
+                                            return pattern.match(name);
+                                        } else {
+                                            return name.contains(filter);
+                                        }
+                                    });
 
-            return TP.notEmpty(cases);
-        });
+                        return TP.notEmpty(cases);
+                    });
     }
 
     return suites;
@@ -3160,9 +3163,10 @@ function(options) {
     suitenames = TP.ac();
 
     suites = this.getTestSuites(options);
-    suitenames = suites.map(function(suite) {
-        return suite.getSuiteName();
-    });
+    suitenames = suites.map(
+                    function(suite) {
+                        return suite.getSuiteName();
+                    });
 
     return names.difference(suitenames);
 });

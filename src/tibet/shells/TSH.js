@@ -1703,8 +1703,7 @@ function(aRequest) {
                     message = 'Error running ' + TP.name(type) + '.' +
                         funcName + ': ' + e.message;
 
-                    TP.error(message + '\n' +
-                        TP.getStackInfo(e).join('\n'));
+                    TP.error(message + '\n' + TP.getStackInfo(e).join('\n'));
 
                     return aRequest.fail(TP.ec(e, message));
                 }

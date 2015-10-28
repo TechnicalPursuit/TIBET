@@ -1438,8 +1438,6 @@ function(anEntry) {
      * @returns {TP.log.Appender} The receiver.
      */
 
-    var entry;
-
     if (TP.notTrue(this.filter(anEntry))) {
         return;
     }

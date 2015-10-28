@@ -1254,9 +1254,10 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
                 'tibet:canvasinitialized')) {
 
             if (TP.sys.cfg('log.hook') &&
-                    TP.sys.cfg('boot.context') !== 'phantomjs') {
+                TP.sys.cfg('boot.context') !== 'phantomjs') {
+
                 $$msg = 'TIBET hook skipping re-instrumentation of ' +
-                    name + ' document';
+                        name + ' document';
                 TP.boot.$stdout($$msg, TP.TRACE);
             }
             return;

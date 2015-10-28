@@ -1522,13 +1522,12 @@ TP.sys.getLaunchDocument = function(aWindow) {
      *     the current 'document' but in the case of Karma for example it may be
      *     a document nested under a link import.
      * @param {Window} [aWindow=TP.sys.getLaunchWindow()] The window to scan.
-     * @return {Document} The document containing the TIBET launch script.
+     * @returns {Document} The document containing the TIBET launch script.
      */
 
     var win,
         arr,
-        node,
-        doc;
+        node;
 
     if (TP.sys.$launchDoc) {
         return TP.sys.$launchDoc;
@@ -1550,23 +1549,28 @@ TP.sys.getLaunchDocument = function(aWindow) {
         //  for that instead.
         arr = win.document.getElementsByTagName('link');
         arr = Array.prototype.slice.call(arr, 0);
-        arr = arr.filter(function(item) {
-            return item.getAttribute('rel') === 'import';
-        });
+        arr = arr.filter(
+                function(item) {
+                    return item.getAttribute('rel') === 'import';
+                });
 
         //  There's a list of imports so we need to look into those for
         //  documents that may contain our load script.
-        arr.some(function(item) {
-            var script;
-            if (item.import && item.import.nodeType === Node.DOCUMENT_NODE) {
-                script = TP.sys.getLaunchNode(item.import);
-                if (script) {
-                    TP.sys.$launchDoc = item.import;
-                    return true;
+        arr.some(
+            function(item) {
+                var script;
+
+                if (item.import &&
+                    item.import.nodeType === Node.DOCUMENT_NODE) {
+
+                    script = TP.sys.getLaunchNode(item.import);
+                    if (script) {
+                        TP.sys.$launchDoc = item.import;
+                        return true;
+                    }
                 }
-            }
-            return false;
-        });
+                return false;
+            });
 
         if (TP.sys.$launchDoc) {
             return TP.sys.$launchDoc;
@@ -1588,7 +1592,7 @@ TP.sys.getLaunchNode = function(aDocument) {
      *     the TIBET codebase.
      * @param {Document} [aDocument=TP.sys.getLaunchDocument()] The document to
      *     scan.
-     * @return {Element} The element containing the TIBET launch script.
+     * @returns {Element} The element containing the TIBET launch script.
      */
 
     var arr,
@@ -1599,12 +1603,13 @@ TP.sys.getLaunchNode = function(aDocument) {
     //  Scan document for script nodes and filter for tibet_loader references.
     arr = doc.getElementsByTagName('script');
     arr = Array.prototype.slice.call(arr, 0);
-    arr = arr.filter(function(item) {
-        var src;
+    arr = arr.filter(
+            function(item) {
+                var src;
 
-        src = item.getAttribute('src');
-        return src && src.indexOf('tibet_loader') !== -1;
-    });
+                src = item.getAttribute('src');
+                return src && src.indexOf('tibet_loader') !== -1;
+            });
 
     return arr[0];
 };
@@ -2017,7 +2022,7 @@ TP.boot.$parseURIParameters = function(uriParams) {
      * @summary Processes a URL parameter string and returns it in dictionary
      *     form meaning key/value pairs in an object.
      * @param {String} uriParams The URI parameter string to process.
-     * @return {Object} The parameters in primitive object key/value form.
+     * @returns {Object} The parameters in primitive object key/value form.
      */
 
     var params,
@@ -4346,7 +4351,7 @@ TP.boot.$documentGetWindow = function(aDocument) {
 
     try {
         win = aDocument.defaultView ||
-            aDocument.currentScript.ownerDocument.defaultView;
+                aDocument.currentScript.ownerDocument.defaultView;
     } catch (e) {
         //  Ignore if we can't traverse the path above.
         void 0;
@@ -8235,9 +8240,7 @@ TP.boot.$getLibRoot = function() {
         ndx,
         path,
         parts,
-        scripts,
-        i,
-        len;
+        node;
 
     //  first check for a cached value. this is what's used during booting
     if (TP.boot.$$libroot != null) {
@@ -8265,8 +8268,8 @@ TP.boot.$getLibRoot = function() {
     //  server and include a segment like '/base' for some reason. We have to
     //  adjust for that if we appear to be loading in a Karma environment.
     if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
-        libroot = TP.boot.$uriJoinPaths(libroot,
-            TP.sys.cfg('boot.karma_root'));
+
+        libroot = TP.boot.$uriJoinPaths(libroot, TP.sys.cfg('boot.karma_root'));
     }
 
     comp = TP.sys.cfg('boot.libcomp');
@@ -9027,7 +9030,7 @@ TP.boot.$ifUnlessPassed = function(aNode) {
                     condition = TP.sys.isUA.apply(this, key.split('.'));
                 } else {
                     condition = TP.sys.cfg(key, TP.sys.env(key)) ||
-                        TP.sys.hasFeature(key);
+                                TP.sys.hasFeature(key);
                 }
 
                 if (condition === value) {
@@ -9057,7 +9060,7 @@ TP.boot.$ifUnlessPassed = function(aNode) {
                     condition = TP.sys.isUA.apply(this, key.split('.'));
                 } else {
                     condition = TP.sys.cfg(key, TP.sys.env(key)) ||
-                        TP.sys.hasFeature(key);
+                                TP.sys.hasFeature(key);
                 }
 
                 if (TP.boot.$notValid(condition) || condition !== value) {
@@ -11113,18 +11116,19 @@ TP.boot.$uiBootConfig = function() {
     launchDoc = TP.sys.getLaunchDocument();
 
     //  Inject a style node that will force primary content framing to 100%.
-    TP.boot.$documentAddStyleElement(launchDoc,
-        'html,body,iframe {\n' +
-        '   position: absolute;\n' +
-        '   top: 0;\n' +
-        '   left: 0;\n' +
-        '   width: 100%;\n' +
-        '   height: 100%;\n' +
-        '   margin: 0;\n' +
-        '   padding: 0;\n' +
-        '   border: 0;\n' +
-        '   overflow: hidden;\n' +
-        '}\n');
+    TP.boot.$documentAddStyleElement(
+            launchDoc,
+            'html,body,iframe {\n' +
+            '   position: absolute;\n' +
+            '   top: 0;\n' +
+            '   left: 0;\n' +
+            '   width: 100%;\n' +
+            '   height: 100%;\n' +
+            '   margin: 0;\n' +
+            '   padding: 0;\n' +
+            '   border: 0;\n' +
+            '   overflow: hidden;\n' +
+            '}\n');
 
     //  TODO: Verify we need this instead of just body.appendChild. We used
     //  to have to work around a bug in IE.
@@ -11150,8 +11154,10 @@ TP.boot.$uiBootConfig = function() {
     //  the iframe. Then set the 'src' attribute to a 'data:'
     //  URL containing an encoded XHTML document.
     iFrameWrapper.innerHTML = '<iframe id="' + uiBootID + '">';
-    uiFrame = TP.boot.$nodeReplaceChild(iFrameWrapper.parentNode,
-        iFrameWrapper.firstChild, iFrameWrapper);
+    uiFrame = TP.boot.$nodeReplaceChild(
+                        iFrameWrapper.parentNode,
+                        iFrameWrapper.firstChild,
+                        iFrameWrapper);
 
     path = TP.boot.$uriExpandPath(TP.sys.cfg('path.uiboot_page'));
     uiFrame.setAttribute('src', path);
@@ -11245,8 +11251,10 @@ TP.boot.$uiRootConfig = function() {
     //  the iframe. Then set the 'src' attribute to a 'data:'
     //  URL containing an encoded XHTML document.
     iFrameWrapper.innerHTML = '<iframe id="' + uiRootID + '">';
-    uiFrame = TP.boot.$nodeReplaceChild(iFrameWrapper.parentNode,
-        iFrameWrapper.firstChild, iFrameWrapper);
+    uiFrame = TP.boot.$nodeReplaceChild(
+                        iFrameWrapper.parentNode,
+                        iFrameWrapper.firstChild,
+                        iFrameWrapper);
 
     //  NOTE we don't set a UI page here, just a blank placeholder.
     path = TP.boot.$uriExpandPath(TP.sys.cfg('path.iframe_page'));
