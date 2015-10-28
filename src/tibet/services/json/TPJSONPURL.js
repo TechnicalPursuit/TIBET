@@ -47,7 +47,7 @@ TP.core.URL.defineSubtype('JSONPURL');
 //  This RegExp splits up the URL into the following components:
 //  jsonp://[domain]/[path]/[entity]?[query]
 TP.core.JSONPURL.Type.defineConstant('JSONP_REGEX',
-        TP.rc('jsonp://([^/]*)/?([^?]+)\\??(\\S*)'));
+        TP.rc('jsonp://([^/]*)/?([^?]+)\\??(.*)'));
 
 TP.core.JSONPURL.Type.defineConstant('SCHEME', 'jsonp');
 
