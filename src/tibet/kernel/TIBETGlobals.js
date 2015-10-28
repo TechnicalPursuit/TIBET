@@ -713,6 +713,7 @@ TP.SUBTYPES = '$$subtypes';
 TP.SUBTYPES_DEEP = '$$subtypes_deep';
 
 //  js object
+TP.NAMESPACE = 'Namespace';
 TP.SUBTYPE = 'Subtype';
 TP.METHOD = 'Method';
 TP.PRIMITIVE = 'Primitive';
@@ -731,15 +732,6 @@ TP.ANCESTOR_OR_SELF = 'ansorself';
 //  NB: Avoid conflict with 'TP.ATTRIBUTE' above.
 TP.ATTR = 'attr';
 
-TP.CHILD = 'chld';
-TP.DESCENDANT = 'desc';
-TP.DESCENDANT_OR_SELF = 'descorself';
-TP.FOLLOWING = 'foll';
-TP.FOLLOWING_SIBLING = 'follsib';
-TP.NAMESPACE = 'ns';
-TP.PARENT = 'par';
-TP.PRECEDING = 'prec';
-TP.PRECEDING_SIBLING = 'precsib';
 TP.SELF = 'self';
 
 //  property scopes
