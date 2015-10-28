@@ -93,7 +93,10 @@ function(aString) {
      * @returns {String} A properly quoted JSON string.
      */
 
-    var tokens,
+    var lastNonSpaceValue,
+        nextNonSpaceValue,
+
+        tokens,
 
         str,
 
@@ -126,6 +129,29 @@ function(aString) {
     useGlobalContext = true;
 
     len = tokens.getSize();
+
+    //  A function to find the last non-space token starting at an index
+    lastNonSpaceValue = function(startIndex) {
+        var j;
+
+        for (j = startIndex - 1; j >= 0; j--) {
+            if (tokens.at(j).name !== 'space') {
+                return tokens.at(j).value;
+            }
+        }
+    };
+
+    //  A function to find the next non-space token starting at an index
+    nextNonSpaceValue = function(startIndex) {
+        var j;
+
+        for (j = startIndex + 1; j < len; j++) {
+            if (tokens.at(j).name !== 'space') {
+                return tokens.at(j).value;
+            }
+        }
+    };
+
     for (i = 0; i < len; i++) {
 
         token = tokens.at(i);
@@ -177,14 +203,33 @@ function(aString) {
                     str += '{"';
                     context = null;
                 } else if (val === ':') {
-                    str += '":"';
+                    if (lastNonSpaceValue(i) !== '}') {
+                        str += '"';
+                    }
+
+                    str += ':';
+
+                    if (nextNonSpaceValue(i) !== '{') {
+                        str += '"';
+                    }
+
                     context = null;
                 } else if (val === ',') {
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
                     }
-                    str += '","';
+
+                    if (lastNonSpaceValue(i) !== '}') {
+                        str += '"';
+                    }
+
+                    str += ',';
+
+                    if (nextNonSpaceValue(i) !== '{') {
+                        str += '"';
+                    }
+
                     context = null;
 
                     //  We're at the end of a value - need to reset for the next
@@ -195,7 +240,13 @@ function(aString) {
                         val = context;
                         str += val;
                     }
-                    str += '"}';
+
+                    if (lastNonSpaceValue(i) !== '}') {
+                        str += '"';
+                    }
+
+                    str += '}';
+
                     context = null;
                 } else {
                     str += val;
