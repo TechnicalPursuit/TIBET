@@ -5227,10 +5227,11 @@ function(aDescriptor) {
      *     name used for the descriptor so the parameter is optional.
      * @param {Object} [aDescriptor] The 'descriptor' parameter is a property
      *     descriptor. Properties can be any combination of the following:
-     *          signal (tibet type or string signal name)
-     *          origin (object or string id)
-     *          state (string state name)
-     *          phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING (default)).
+     *          {String|Type} signal The type or signal name.
+     *          {String|Object} origin The origin.
+     *          {String} state The state name.
+     *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
+     *              default is TP.BUBBLING.
      * @return {String} The handler name defined by the descriptor.
      */
 
