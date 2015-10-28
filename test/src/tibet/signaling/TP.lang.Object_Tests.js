@@ -75,6 +75,179 @@ function(propName) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.Object.Inst.describe('Signaling - expand/contract String signal names',
+function() {
+
+    this.it('expand/contract TP signal names', function(test, options) {
+
+        var testname;
+
+        //  Already at full name - leave it.
+        testname = TP.expandSignalName('TP.sig.Fluffy');
+        test.assert.isEqualTo(testname, 'TP.sig.Fluffy');
+
+        //  Only have partial name - expand it by prefixing with 'TP.sig.'
+        testname = TP.expandSignalName('Fluffy');
+        test.assert.isEqualTo(testname, 'TP.sig.Fluffy');
+
+        //  Have full name - contract it by slicing off 'TP.sig.'
+        testname = TP.contractSignalName('TP.sig.Fluffy');
+        test.assert.isEqualTo(testname, 'Fluffy');
+
+        //  Only have partial name - leave it.
+        testname = TP.contractSignalName('Fluffy');
+        test.assert.isEqualTo(testname, 'Fluffy');
+    });
+
+    //  ---
+
+    this.it('expand/contract APP signal names', function(test, options) {
+
+        var testname;
+
+        //  Already at full name - leave it.
+        testname = TP.expandSignalName('APP.Fluffy');
+        test.assert.isEqualTo(testname, 'APP.Fluffy');
+
+        //  Only have partial name - expand it by prefixing with 'TP.sig.' - we
+        //  can't know any different
+        testname = TP.expandSignalName('Fluffy');
+        test.assert.isEqualTo(testname, 'TP.sig.Fluffy');
+
+        //  Have full name - leave it.
+        testname = TP.contractSignalName('APP.Fluffy');
+        test.assert.isEqualTo(testname, 'APP.Fluffy');
+
+        //  Only have partial name - leave it.
+        testname = TP.contractSignalName('Fluffy');
+        test.assert.isEqualTo(testname, 'Fluffy');
+    });
+
+    //  ---
+
+    this.it('expand/contract other signal names', function(test, options) {
+
+        var testname;
+
+        //  Already at full name - leave it.
+        testname = TP.expandSignalName('FooCorp.Fluffy');
+        test.assert.isEqualTo(testname, 'TP.FooCorp.Fluffy');
+
+        //  Only have partial name - expand it by prefixing with 'TP.sig.' - we
+        //  can't know any different
+        testname = TP.expandSignalName('Fluffy');
+        test.assert.isEqualTo(testname, 'TP.sig.Fluffy');
+
+        //  Have full name - leave it.
+        testname = TP.contractSignalName('FooCorp.Fluffy');
+        test.assert.isEqualTo(testname, 'FooCorp.Fluffy');
+
+        //  Only have partial name - leave it.
+        testname = TP.contractSignalName('Fluffy');
+        test.assert.isEqualTo(testname, 'Fluffy');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Inst.describe('Signaling - expand/contract Type signal names',
+function() {
+
+    this.it('expand/contract TP signal names', function(test, options) {
+
+        var sigType,
+            sigInst,
+
+            signame,
+            testname;
+
+        sigType = TP.sig.Signal.defineSubtype('TPTestSignal');
+        sigInst = sigType.construct();
+
+        //  The signal name will be the 'fully qualified' name
+        signame = sigInst.getSignalName();
+
+        //  Already at full name - leave it.
+        testname = TP.expandSignalName(signame);
+        test.assert.isEqualTo(testname, 'TP.sig.TPTestSignal');
+
+        //  Have full name - contract it by slicing off 'TP.sig.'
+        testname = TP.contractSignalName(signame);
+        test.assert.isEqualTo(testname, 'TPTestSignal');
+
+        //  Only have partial name - expand it by searching in namespaces. Since
+        //  it was defined as a type, it will be found in the 'TP.sig.'
+        //  namespace.
+        testname = TP.expandSignalName('TPTestSignal');
+        test.assert.isEqualTo(testname, 'TP.sig.TPTestSignal');
+    });
+
+    //  ---
+
+    this.it('expand/contract APP signal names', function(test, options) {
+
+        var sigType,
+            sigInst,
+
+            signame,
+            testname;
+
+        sigType = TP.sig.Signal.defineSubtype('APP.sig.APPTestSignal');
+        sigInst = sigType.construct();
+
+        //  The signal name will be the 'fully qualified' name
+        signame = sigInst.getSignalName();
+
+        //  Already at full name - leave it.
+        testname = TP.expandSignalName(signame);
+        test.assert.isEqualTo(testname, 'APP.sig.APPTestSignal');
+
+        //  Have full name - leave it.
+        testname = TP.contractSignalName(signame);
+        test.assert.isEqualTo(testname, 'APP.sig.APPTestSignal');
+
+        //  Only have partial name - expand it by searching in namespaces. Since
+        //  it was defined as a type, it will be found in the 'APP.sig.'
+        //  namespace.
+        testname = TP.expandSignalName('APPTestSignal');
+        test.assert.isEqualTo(testname, 'APP.sig.APPTestSignal');
+    });
+
+    //  ---
+
+    this.it('expand/contract other signal names', function(test, options) {
+
+        var sigType,
+            sigInst,
+
+            signame,
+            testname;
+
+        sigType = TP.sig.Signal.defineSubtype(
+                                'APP.FooCorp.FluffyTestSignal');
+        sigInst = sigType.construct();
+
+        //  The signal name will be the 'fully qualified' name
+        signame = sigInst.getSignalName();
+
+        //  Already at full name - leave it.
+        testname = TP.expandSignalName(signame);
+        test.assert.isEqualTo(testname, 'APP.FooCorp.FluffyTestSignal');
+
+        //  Have full name - leave it.
+        testname = TP.contractSignalName(signame);
+        test.assert.isEqualTo(testname, 'APP.FooCorp.FluffyTestSignal');
+
+        //  Only have partial name - expand it by searching in namespaces. Since
+        //  it was defined as a type, it will be found in the 'APP.FooCorp.'
+        //  namespace.
+        testname = TP.expandSignalName('FluffyTestSignal');
+        test.assert.isEqualTo(testname, 'APP.FooCorp.FluffyTestSignal');
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Object.Inst.describe('Signaling - getBestHandler - Level 1',
 function() {
 

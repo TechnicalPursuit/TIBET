@@ -1694,14 +1694,13 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse, skipName) {
         }
     }
 
-    signalNames = signalNames.map(function(name) {
-        //  NOTE that if we don't use '' prefix we get back String objects and
-        //  indexOf won't work later on.
-        return '' + name.replace(/^TP\.sig\./, '').asJSIdentifier();
-    });
+    signalNames = signalNames.map(
+                    function(name) {
+                        return TP.contractSignalName(name);
+                    });
 
-    if (TP.notEmpty(skipName)) {
-        signalNames.removeValue(skipName.replace(/^TP\.sig\./, ''));
+    if (TP.notEmpty(flags.skipName)) {
+        signalNames.removeValue(TP.contractSignalName(flags.skipName));
     }
 
     expression += '(' + signalNames.join('|') + ')';

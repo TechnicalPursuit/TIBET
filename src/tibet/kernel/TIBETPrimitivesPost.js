@@ -5107,7 +5107,11 @@ function(signame) {
 
     var parts,
         i,
-        newparts;
+        newparts,
+
+        type,
+
+        namespaceNames;
 
     if (TP.isEmpty(signame)) {
         return '';
@@ -5120,7 +5124,7 @@ function(signame) {
         newparts = TP.ac();
         parts = signame.split('__');
 
-        for (i = 0; i < parts.length; i++) {
+        for (i = 0; i < parts.getSize(); i++) {
             //  Note the recursive call here.
             newparts.push(TP.expandSignalName(parts.at(i)));
         }
@@ -5130,10 +5134,33 @@ function(signame) {
 
     if (/^(TP|APP)\.(.+)/.test(signame)) {
         return signame;
-    } else if (/\.(.+)/.test(signame)) {
+    }
+
+    //  See if the system has a type corresponding directly to signame.
+    if (TP.isType(type = TP.sys.getTypeByName(signame))) {
+        if (TP.canInvoke(type, 'getSignalName')) {
+            return type.getSignalName();
+        }
+    }
+
+    //  Iterate over all of the namespaces in the system and try to see if any
+    //  of the namespaces have a type corresponding to signame.
+    namespaceNames = TP.sys.getNamespaceNames();
+    for (i = 0; i < namespaceNames.getSize(); i++) {
+        if (TP.isType(type = TP.sys.getTypeByName(
+                        namespaceNames.at(i) + '.' + signame))) {
+            if (TP.canInvoke(type, 'getSignalName')) {
+                return type.getSignalName();
+            }
+        }
+    }
+
+    //  We have at least one namespace - just prefix it with 'TP.' and exit
+    if (/^(.+)\.(.+)/.test(signame)) {
         return 'TP.' + signame;
     }
 
+    //  Couldn't find anything - just put 'TP.sig.' on the front of it.
     return 'TP.sig.' + signame;
 });
 
@@ -5166,7 +5193,7 @@ function(signame) {
         newparts = TP.ac();
         parts = signame.split('__');
 
-        for (i = 0; i < parts.length; i++) {
+        for (i = 0; i < parts.getSize(); i++) {
             //  Note the recursive call here.
             newparts.push(TP.contractSignalName(parts.at(i)));
         }
@@ -5174,7 +5201,9 @@ function(signame) {
         return newparts.join('__');
     }
 
-    if (/\.(.+)/.test(signame)) {
+    //  Note how we only do this if signame starts with 'TP.' - otherwise, we
+    //  leave the signal name.
+    if (/^TP\.(.+)/.test(signame)) {
         return signame.slice(signame.lastIndexOf('.') + 1);
     }
 
@@ -5244,9 +5273,9 @@ function(aDescriptor) {
     }
 
     //  Simplify for internal signals. 'APP.sig.' prefixing (or signal types
-    //  from another namespace) has to remain in place and should be specified
-    //  explicitly.
-    signame = signame.replace(/^TP\.sig\./, '');
+    //  from another namespace) has to remain in place and this method ensures
+    //  that.
+    signame = TP.contractSignalName(signame);
 
     //  Regardless of how it got here, don't let signame carry anything that
     //  isn't a valid JS identifier character as part of the handler name.
