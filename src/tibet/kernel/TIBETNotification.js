@@ -4962,8 +4962,8 @@ function(originSet, aSignal, aPayload, aType) {
         originArray,
         len,
         sigdata,
-        dataidx,
-        sigParams;
+        sigParams,
+        sigPayload;
 
     //  in the DOM model we can only fire if we have a signal and origin
     if (TP.notValid(aSignal) || TP.notValid(originSet)) {
@@ -5183,43 +5183,58 @@ function(originSet, aSignal, aPayload, aType) {
                 //  isn't found.
                 sigdata = TP.elementGetAttribute(
                                         origin, 'on:' + onstarEvtName, true);
+                sigdata = TP.trim(sigdata);
 
-                //  If there is a '({' as part of the signal data, then there is
-                //  a name and a payload.
-                if ((dataidx = sigdata.indexOf('({')) !== TP.NOT_FOUND) {
-
-                    //  The signal name is the portion leading up to the '({'
-                    signame = sigdata.slice(0, dataidx);
-
-                    //  The signal data is the remaining portion. Here we slice
-                    //  off the leading '(' and trailing ')', leaving '{...}'
-                    sigdata = sigdata.slice(dataidx + 1, -1);
+                //  If the signal data starts with a '{', then its not just a
+                //  signal name. There's a 'signal descriptor'.
+                if (sigdata.startsWith('{')) {
 
                     //  What's left is a JS-formatted String. Parse that into a
                     //  TP.core.Hash.
                     sigParams = TP.json2js(TP.reformatJSToJSON(sigdata));
+
+                    //  If an 'origin' slot was supplied, then we look that up
+                    //  by ID (using the original origin's document).
+                    if (TP.notEmpty(orgid = sigParams.at('origin'))) {
+
+                        //  Note how we pass false to avoid getting a wrapped
+                        //  origin, which we don't want here.
+                        origin = TP.byId(
+                                    orgid, TP.nodeGetDocument(origin), false);
+                    }
+
+                    //  If a signal was supplied, use it as the signal name
+                    //  instead of the name of the original DOM signal that was
+                    //  fired.
+                    signame = TP.ifInvalid(sigParams.at('signal'), signame);
+
+                    //  Grab whatever payload was specified.
+                    sigPayload = sigParams.at('payload');
                 } else {
 
-                    //  No signal payload - the signal name is all of the signal
+                    //  No signal data - the signal name is all of the signal
                     //  data.
                     signame = sigdata;
-                    sigParams = TP.hc();
                 }
 
-                sigParams.atPut('event', sig.getPayload());
+                if (TP.notValid(sigPayload)) {
+                    sigPayload = TP.hc();
+                }
+
+                sigPayload.atPut('event', sig.getPayload());
 
                 //  Note that it's important to put the current origin on the
                 //  signal here in case that the new signal is a
                 //  RESPONDER_FIRING signal (very likely) as it will look there
                 //  for the first responder when computing the responder chain.
-                sigParams.atPut('target', origin);
+                sigPayload.atPut('target', origin);
 
                 //  Queue the new signal and continue - thereby skipping
                 //  processing for the bubbling phase of this signal (for this
                 //  origin) in deference to signaling the new signal. Note here
                 //  how we supply 'TP.sig.ResponderSignal' as the default type
                 //  to use if the mapped signal type isn't a real type.
-                TP.queue(origin, signame, sigParams,
+                TP.queue(origin, signame, sigPayload,
                             null, TP.sig.ResponderSignal);
 
                 continue;
@@ -5238,16 +5253,16 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
-                                        false, false,
-                                        null, true);
+                                            false, false,
+                                            null, true);
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
         if (signame !== TP.ANY) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
-                                            false, false,
-                                            null, true);
+                                                false, false,
+                                                null, true);
         }
 
         //  ---
@@ -5262,16 +5277,16 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
-                                        false, false,
-                                        null, true);
+                                            false, false,
+                                            null, true);
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
         if (signame !== TP.ANY) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
-                                            false, false,
-                                            null, true);
+                                                false, false,
+                                                null, true);
         }
 
         //  ---
