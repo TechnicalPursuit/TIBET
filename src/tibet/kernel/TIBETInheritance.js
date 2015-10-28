@@ -10733,7 +10733,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('defineNamespace',
-function(namespaceName, forceDefinition) {
+function(namespaceName, forceDefinition, populateMetadata) {
 
     /**
      * @method defineNamespace
@@ -10750,6 +10750,8 @@ function(namespaceName, forceDefinition) {
      *     names that will define the name of a namespace.
      * @param {Boolean} [forceDefinition=false] Whether or not to force the
      *     definition of the namespace whether it is already defined or not.
+     * @param {Boolean} [populateMetadata=true] Whether or not to register the
+     *     new namespace with the metadata.
      * @returns {TP.lang.Namespace} The newly defined namespace.
      */
 
@@ -10771,8 +10773,12 @@ function(namespaceName, forceDefinition) {
         //  forceDefinition flag is true.
         if (!currentObj || TP.isTrue(forceDefinition)) {
             currentObj = TP.lang.Namespace.construct(root);
-            //  NB: The caller is responsible for installing this rooted
-            //  namespace.
+
+            if (TP.notFalse(populateMetadata)) {
+                //  NB: The caller is responsible for installing this rooted
+                //  namespace, but we register with the metadata here.
+                TP.sys.addMetadata(null, currentObj, TP.NAMESPACE);
+            }
         }
     } else {
 
@@ -10792,6 +10798,11 @@ function(namespaceName, forceDefinition) {
             }
 
             currentObj = currentObj[names[i]];
+
+            if (TP.notFalse(populateMetadata)) {
+                //  We register with the metadata here.
+                TP.sys.addMetadata(null, currentObj, TP.NAMESPACE);
+            }
         }
     }
 
@@ -10812,7 +10823,9 @@ function(namespaceName, forceDefinition) {
     //  have circular dependencies here, it is important to keep this code in
     //  the exact order it was written.
 
-    var len,
+    var newNamespaces,
+
+        len,
         i,
 
         oldNamespace,
@@ -10828,6 +10841,8 @@ function(namespaceName, forceDefinition) {
 
         len2,
         j;
+
+    newNamespaces = TP.ac();
 
     len = TP.$$bootstrap_namespaces.getSize();
 
@@ -10848,7 +10863,14 @@ function(namespaceName, forceDefinition) {
         //  Define a new real namespace object to supplant the old namespace.
         //  Note that after this call, our only handle to the old namespace is
         //  our local variable holding it here.
-        newNamespace = TP.defineNamespace(oldNamespace[TP.NAME], true);
+        //  Also note how we pass false in as the last parameter - that's so
+        //  that this call will not try to register the namespace object with
+        //  the metadata system at this point in the conversion process. This
+        //  will not work in this loop while we turn TIBET's world topsy-turvy
+        //  rewriting namespace slots, etc. We track the newly added namespaces
+        //  and add them individually to the metadata after this loop is
+        //  finished.
+        newNamespace = TP.defineNamespace(oldNamespace[TP.NAME], true, false);
 
         //  For certain namespaces, TP, TP.sys, TP.boot and APP, we configure
         //  them a bit differently. We define a 'getTypeNames()' that returns an
@@ -10908,6 +10930,17 @@ function(namespaceName, forceDefinition) {
                 newNamespace[oldKeys[j]] = oldNamespace[oldKeys[j]];
             }
         }
+
+        //  Track the new namespace here for registration with the metadata
+        //  below.
+        newNamespaces.push(newNamespace);
+    }
+
+    //  Now that we're done with rewriting all of our built-ins, we register
+    //  them with the metadata.
+    len = newNamespaces.getSize();
+    for (i = 0; i < len; i++) {
+        TP.sys.addMetadata(null, newNamespaces.at(i), TP.NAMESPACE);
     }
 
     //  Clear the Array that was holding our list of old namespaces.

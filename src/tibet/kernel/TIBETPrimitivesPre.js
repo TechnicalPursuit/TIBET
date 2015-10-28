@@ -1710,12 +1710,14 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
     TP.sys.$$meta_handlers = TP.hc();
     TP.sys.$$meta_methods = TP.hc();
     TP.sys.$$meta_owners = TP.hc();
+    TP.sys.$$meta_namespaces = TP.hc();
     TP.sys.$$meta_pathinfo = TP.hc();
 
     TP.sys.$$metadata = TP.hc('types', TP.sys.$$meta_types,
                                 'attributes', TP.sys.$$meta_attributes,
                                 'handlers', TP.sys.$$meta_handlers,
                                 'methods', TP.sys.$$meta_methods,
+                                'namespaces', TP.sys.$$meta_namespaces,
                                 'owners', TP.sys.$$meta_owners,
                                 'pathinfo', TP.sys.$$meta_pathinfo);
 }());
@@ -1768,16 +1770,17 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
      *     of the type hierarchy, which types implement various methods, what
      *     source file loaded an object, etc.
      * @param {TP.FunctionProto|TP.lang.RootObject} targetType The type object
-     *     which owns this metadata.
+     *     which owns this metadata. Note that this parameter is ignored for
+     *     items of type TP.SUBTYPE and TP.NAMESPACE.
      * @param {Object} anItem The actual object providing the source information
      *     for the metadata. In the case of a TP.METHOD, this will be the
      *     Function object that is the method body. In the case of a
      *     TP.ATTRIBUTE, this will be the attribute descriptor. In the case of a
      *     TP.SUBTYPE, this will be the type object itself.
      * @param {String} itemClass The nature of the item being added. Valid
-     *     values include TP.SUBTYPE, TP.METHOD, TP.ATTRIBUTE. Note that you can
-     *     add instance metadata for some of these by combining them with
-     *     TP.INST_*TRACK as the itemTrack parameter.
+     *     values include TP.SUBTYPE, TP.METHOD, TP.ATTRIBUTE, TP.NAMESPACE.
+     *     Note that you can add instance metadata for some of these by
+     *     combining them with TP.INST_*TRACK as the itemTrack parameter.
      * @param {String} itemTrack An optional track which provides data regarding
      *     properties (methods and attributes). Valid values include:
      *          TP.GLOBAL_TRACK
@@ -1884,6 +1887,15 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             //  don't overlay information we've already collected
 //            if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
                 TP.sys.$$meta_types.atPut(iname, anItem);
+ //           }
+
+            break;
+
+        case TP.NAMESPACE:
+
+            //  don't overlay information we've already collected
+//            if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
+                TP.sys.$$meta_namespaces.atPut(iname, anItem);
  //           }
 
             break;
