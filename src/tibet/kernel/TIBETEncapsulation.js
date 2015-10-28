@@ -989,6 +989,8 @@ function(kind) {
             return TP.sys.$$meta_attributes;
         case 'methods':
             return TP.sys.$$meta_methods;
+        case 'namespaces':
+            return TP.sys.$$meta_namespaces;
         case 'owners':
             return TP.sys.$$meta_owners;
         case 'pathinfo':
@@ -996,6 +998,20 @@ function(kind) {
         default:
             return TP.sys.$$metadata;
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getNamespaceNames',
+function() {
+
+    /**
+     * @method getNamespaceNames
+     * @summary Returns a list of all of the namespaces available in the system.
+     * @returns {Array} An array of the namespace names.
+     */
+
+    return TP.keys(TP.sys.getMetadata('namespaces'));
 });
 
 //  ------------------------------------------------------------------------
