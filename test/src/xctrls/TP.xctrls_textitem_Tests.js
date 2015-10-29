@@ -370,7 +370,7 @@ function() {
 
     //  ---
 
-    this.it('setting value to complex values', function(test, options) {
+    this.it('setting value to complex object values', function(test, options) {
 
         var tpElem,
             value;
