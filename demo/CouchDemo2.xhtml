@@ -19,8 +19,8 @@
 	<h2>Couch Football Results</h2><br/>
 	<br/>
 
-    <button onclick="TP.byId('loadProvider').activate()">Refresh it!</button>
-    <button onclick="TP.byId('saveProvider').activate()">Save it!</button>
+    <button on:click="{signal: UIActivate, origin:'loadProvider'}">Refresh it!</button>
+    <button on:click="{signal: UIActivate, origin:'saveProvider'}">Save it!</button>
 	<br/>
 
     Auto-refresh: <input type="checkbox" bind:io="{checked: tibet://uicanvas#loadProvider@autorefresh}"/>

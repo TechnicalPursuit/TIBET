@@ -22,7 +22,7 @@
     <!--Status: <span id="status" bind:in="{content:
          tibet://uicanvas#tibet((#dbProvider).status)}"/> -->
 
-    <button onclick="TP.byId('dbProvider').activate()">Refresh it!</button>
+    <button on:click="{signal: UIActivate, origin:'dbProvider'}">Refresh it!</button>
 
     <div>Databases:</div>
     <table>
