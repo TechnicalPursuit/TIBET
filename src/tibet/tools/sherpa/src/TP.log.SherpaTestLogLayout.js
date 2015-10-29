@@ -30,12 +30,26 @@ function(anEntry) {
      * @returns {Object} The formatted output. Can be String, Node, etc.
      */
 
-    var arglist;
+    var arglist,
+        entryArg,
+        message;
 
     //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
 
-    return TP.hc('content', arglist.at(0).at('statusText'), 'cmdAsIs', false);
+    entryArg = arglist.at(0);
+
+    //  entryArg should be either a hash containing job status-like data, or an
+    //  Error object if reporting on a failed/errored test condition.
+    if (TP.canInvoke(entryArg, 'at')) {
+        message = entryArg.at('statusText');
+    } else if (TP.isError(entryArg)) {
+        message = entryArg.message;
+    } else {
+        message = TP.str(entryArg);
+    }
+
+    return TP.hc('content', message, 'cmdAsIs', false);
 });
 
 //  ----------------------------------------------------------------------------
