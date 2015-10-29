@@ -5916,8 +5916,8 @@ function(aResourceID, aRequest) {
 
     this.callNextMethod();
 
-    //  Initialize controller list with application as the root controller.
-    this.$set('controllers', TP.ac(this));
+    //  Initialize an empty controller list.
+    this.$set('controllers', TP.ac());
 
     return this;
 });
@@ -5962,6 +5962,11 @@ function(aSignal) {
         defaulted;
 
     controllers = this.$get('controllers');
+
+    //  Ensure we copy current list and include the application itself as the
+    //  final controller in the list.
+    controllers = controllers.slice(0);
+    controllers.push(this);
 
     if (!TP.sys.hasStarted()) {
         return controllers;
@@ -6101,12 +6106,7 @@ function() {
 
     controllers = this.$get('controllers');
 
-    //  You can't remove the Application instance from the chain.
-    if (controllers.getSize() > 1) {
-        return controllers.shift();
-    }
-
-    return;
+    return controllers.shift();
 });
 
 //  ------------------------------------------------------------------------
@@ -6122,12 +6122,16 @@ function(aController) {
      * @returns {TP.core.Application} The receiver.
      */
 
+    var controllers;
+
     if (TP.notValid(aController)) {
         return this.raise('InvalidController');
     }
 
-    //  TODO: should we unique these?
-    this.$get('controllers').unshift(aController);
+    controllers = this.$get('controllers');
+    if (!controllers.contains(aController)) {
+        controllers.unshift(aController);
+    }
 
     return this;
 });
