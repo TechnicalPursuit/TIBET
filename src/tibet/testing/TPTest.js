@@ -26,6 +26,391 @@ AssertionFailed = function(message) { this.message = message; };
 AssertionFailed.prototype = new Error();
 AssertionFailed.prototype.name = 'AssertionFailed';
 
+//  ------------------------------------------------------------------------
+
+TP.test.defineMethod('getCases',
+function(options) {
+
+    /**
+     * Returns a list of target-specific test suites. The combination of target
+     * and options settings determines which subsets of test suites will be
+     * returned. Common filters are suite and cases which filter for either a
+     * group of tests or specifically named tests.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @param {Object} [options.target] The test suite owner to filter for.
+     * @param {String} [options.suite] If empty all suites are returned.
+     * @param {String} [options.cases] If empty all cases are returned.
+     * @param {String} [options.inherit=false] Target plus supertypes.
+     * @returns {Array} A list of appropriate test cases for the options.
+     */
+
+    var suites,
+        cases;
+
+    suites = TP.test.getSuites(options);
+    cases = suites.collect(function(suite) {
+        return suite.getCaseList(options);
+    });
+
+    return cases.flatten();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.defineMethod('getSuites',
+function(options) {
+
+    /**
+     * Returns a list of target-specific test suites. The combination of target
+     * and options settings determines which subsets of test suites will be
+     * returned. Common filters are suite and cases which filter for either a
+     * group of tests or specifically named tests.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @param {Object} [options.target] The test suite owner to filter for.
+     * @param {String} [options.suite] If empty all suites are returned.
+     * @param {String} [options.cases] If empty all cases are returned.
+     * @param {String} [options.inherit=false] Target plus supertypes.
+     * @returns {Array} A list of appropriate test suites for the options.
+     */
+
+    var params,
+        suites,
+        id,
+        target,
+        targets,
+        inherit,
+        obj,
+        filter,
+        pattern;
+
+    //  Ensure we have a consistent Hash for parameter lookups later on.
+    params = TP.hc(options);
+
+    //  Get the array of all suites. We'll be filtering this based on options.
+    suites = TP.test.Suite.$get('suites');
+
+    //  ---
+    //  target filter
+    //  ---
+
+    //  If we have a specific target restrict our hash down to just that
+    //  target's suites as a first step.
+    target = params.at('target');
+    if (TP.isValid(target)) {
+
+        id = TP.id(target);
+        if (TP.isEmpty(id)) {
+            this.raise('InvalidID');
+        }
+
+        targets = [id];
+
+        inherit = params.at('inherit');
+        if (TP.isTrue(inherit)) {
+            obj = TP.bySystemId(target);
+            if (TP.canInvoke(obj, 'getSupertypeNames')) {
+                targets.concat(obj.getSupertypeNames());
+            }
+        }
+
+        //  Get the list of suites owned by the targeted object.
+        suites = suites.filter(function(item) {
+            return targets.contains(TP.id(item.suiteOwner));
+        });
+    }
+
+    //  No options, or empty options (after conversion to hash) means full list.
+    if (TP.notValid(options) || TP.isEmpty(params)) {
+        return suites;
+    }
+
+    //  ---
+    //  suite filter
+    //  ---
+
+    filter = params.at('suite');
+    if (TP.notEmpty(filter)) {
+
+        filter = filter.unquoted();
+        if (/^\/.+\/([ig]*)$/.test(filter)) {
+            pattern = RegExp.construct(filter);
+        }
+
+        suites = suites.filter(
+                    function(suite) {
+                        var name;
+
+                        name = suite.getSuiteName();
+
+                        if (pattern) {
+                            return pattern.match(name);
+                        } else {
+                            return name === filter;
+                        }
+                    });
+    }
+
+    //  ---
+    //  case filter
+    //  ---
+
+    //  clear pattern so we don't reuse from above.
+    pattern = null;
+
+    filter = params.at('cases');
+    if (TP.notEmpty(filter)) {
+
+        filter = filter.unquoted();
+        if (/^\/.+\/([ig]*)$/.test(filter)) {
+            pattern = RegExp.construct(filter);
+        }
+
+        suites = suites.filter(
+                    function(suite) {
+                        var cases;
+
+                        cases = suite.getCaseList(params);
+                        cases = cases.filter(
+                                    function(casey) {
+                                        var name;
+
+                                        name = casey.getCaseName();
+                                        if (pattern) {
+                                            return pattern.match(name);
+                                        } else {
+                                            return name === filter;
+                                        }
+                                    });
+
+                        return TP.notEmpty(cases);
+                    });
+    }
+
+    return suites;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.defineMethod('runSuites',
+function(options) {
+
+    /**
+     * Runs the test suites for a target, or all targets if no specific target
+     * object is provided.
+     * @param {Object} target The object whose test suites should be run.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @param {String} [options.suite] If empty all suites are returned.
+     * @param {String} [options.cases] If empty all cases are returned.
+     * @param {Boolean} [options.ignore_only=true]
+     * @param {Boolean} [options.ignore_skip=true]
+     * @returns {Promise} A Promise to be used as necessary.
+     */
+
+    var target,
+        suites,
+        count,
+        params,
+        throwExceptions,
+        throwHandlers,
+        shouldLogSetting,
+        promise,
+        exclusives,
+        summarize,
+        total,
+        msg;
+
+    TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
+
+    //  Get filtered list of test suites that apply to our test criteria.
+    suites = TP.test.getSuites(options);
+
+    if (TP.isEmpty(suites)) {
+        TP.sys.logTest('0..0');
+        TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 error, 0 skip, 0 todo.');
+        return TP.extern.Promise.resolve();
+    }
+
+    //  Prep the inbound options for use by the reporting functions below.
+    params = TP.hc(options);
+
+    target = params.at('target');
+
+    exclusives = TP.isTrue(params.at('ignore_only'));
+
+    //  Filter for exclusivity. We might get more than one if authoring was off
+    //  so check for that as well.
+    if (exclusives === true) {
+        TP.sys.logTest('# filtering for exclusive suite(s).', TP.WARN);
+        suites = suites.filter(
+                        function(suite) {
+                            return suite.isExclusive();
+                        });
+
+        if (suites.length > 1) {
+            msg = '# ' + suites.length +
+                ' exclusive suite(s) found';
+            if (TP.isValid(target)) {
+                ' for ' + TP.name(target) + '.';
+            } else {
+                msg += '.';
+            }
+            TP.sys.logTest(msg, TP.WARN);
+        }
+    }
+
+    //  Define a common summarize function we can invoke from either side of the
+    //  promise callback handlers.
+    summarize = function(obj) {
+        var passed,
+            failed,
+            ignored,
+            errored,
+            skipped,
+            prefix,
+            cases;
+
+        passed = 0;
+        failed = 0;
+        ignored = 0;
+        errored = 0;
+        skipped = 0;
+        cases = 0;
+
+        suites.perform(
+                function(suite) {
+                    var caselist,
+                        stats;
+
+                    caselist = suite.getCaseList(params);
+                    stats = suite.get('statistics');
+
+                    cases += caselist.getSize();
+
+                    if (TP.notValid(stats)) {
+                        //  Could be skipped, or there may have been 'only'
+                        //  cases which weren't ignored. Either way the caselist
+                        //  was skipped.
+                        skipped += caselist.getSize();
+                    } else {
+                        passed += stats.at('passed');
+                        failed += stats.at('failed');
+                        errored += stats.at('errored');
+                        ignored += stats.at('ignored');
+                        skipped += stats.at('skipped');
+                    }
+                }, 0);
+
+        if (failed !== 0 || errored !== 0) {
+            prefix = '# FAIL: ';
+        } else {
+            prefix = '# PASS: ';
+        }
+
+        total = 0;
+        total += passed + failed + errored + ignored + skipped;
+
+        TP.sys.logTest('#');
+        TP.sys.logTest(
+            prefix +
+            total + ' total, ' +
+            passed + ' pass, ' +
+            failed + ' fail, ' +
+            errored + ' error, ' +
+            skipped + ' skip, ' +
+            ignored + ' todo.');
+
+        TP.sys.setcfg('test.running', false);
+    };
+
+    msg = '# ' + suites.length +
+        ' suite(s) found';
+    if (TP.isValid(target)) {
+        ' for ' + TP.name(target) + '.';
+    } else {
+        msg += '.';
+    }
+    TP.sys.logTest(msg, TP.DEBUG);
+
+    count = 0;
+    suites.perform(
+            function(suite) {
+                var caselist;
+
+                caselist = suite.getCaseList(params);
+                count += caselist.getSize();
+            });
+
+    TP.sys.logTest((count > 0 ? '1' : '0') + '..' + count);
+
+    //  Capture the current setting of 'shouldThrowExceptions', 'shouldLogStack'
+    //  and 'shouldThrowHandlers' and set them to true. This is so that:
+
+    //      shouldThrowExceptions: any raise()ing of TIBET exceptions in any
+    //      test case will cause TIBET to throw an Error and then the test case
+    //      will be considered to be in 'error'.
+
+    //      shouldLogStack: when Errors are thrown, should the stack be logged?
+    //
+    //      shouldThrowHandlers: when event handlers throw an Error, should the
+    //      Error be thrown 'up' to callers higher in the stack.
+
+    throwExceptions = TP.sys.shouldThrowExceptions();
+    TP.sys.shouldThrowExceptions(true);
+
+    shouldLogSetting = TP.sys.shouldLogStack();
+    TP.sys.shouldLogStack(true);
+
+    throwHandlers = TP.sys.shouldThrowHandlers();
+    TP.sys.shouldThrowHandlers(true);
+
+    /* eslint-disable handle-callback-err */
+
+    //  Use reduce to convert our suite array into a chain of promises. We
+    //  prime the list with a resolved promise to ensure 'current' receives all
+    //  the suites during iteration while 'chain' is the last promise in the
+    //  chain of promises being constructed.
+    promise = suites.reduce(
+            function(chain, current, index, array) {
+                return chain.then(
+                    function(obj) {
+                        //return current.run(TP.hc(options));
+                        return current.run(params);
+                    },
+                    function(err) {
+                        //  Suite.run should trap all errors and resolve() so
+                        //  the chain remains unbroken...unless we're doing an
+                        //  early exit etc.
+                        //  TODO: early exit?
+                        void 0;
+                    });
+            }, TP.extern.Promise.resolve());
+
+    TP.sys.setcfg('test.running', true);
+
+    return promise.then(
+            function(obj) {
+
+                //  Restore settings of system error condition flags.
+                TP.sys.shouldThrowExceptions(throwExceptions);
+                TP.sys.shouldLogStack(shouldLogSetting);
+                TP.sys.shouldThrowHandlers(throwHandlers);
+
+                //  Summarize output
+                summarize();
+            },
+            function(err) {
+
+                //  Restore settings of system error condition flags.
+                TP.sys.shouldThrowExceptions(throwExceptions);
+                TP.sys.shouldLogStack(shouldLogSetting);
+                TP.sys.shouldThrowHandlers(throwHandlers);
+
+                //  Summarize output
+                summarize();
+            });
+    /* eslint-enable handle-callback-err */
+});
+
 //  ========================================================================
 //  TP.test.Root
 //  ------------------------------------------------------------------------
@@ -334,343 +719,6 @@ function(target, suiteName, suiteFunc) {
     suites.push(suite);
 
     return suite;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Suite.Type.defineMethod('getTargetSuites',
-function(target, options) {
-
-    /**
-     * Returns a list of target-specific test suites. The combination of target
-     * and options settings determines which subsets of test suites will be
-     * returned. Common filters are suite and cases which filter for either a
-     * group of tests or specifically named tests.
-     * @param {Object} target The object whose test suites should be returned.
-     * @param {TP.core.Hash} options A dictionary of test options.
-     * @param {String} [options.suite] If empty all suites are returned.
-     * @param {String} [options.cases] If empty all cases are returned.
-     * @param {String} [options.inherit=false] Target plus supertypes.
-     * @returns {Array} A list of appropriate test suites for the options.
-     */
-
-    var params,
-        suites,
-        id,
-        targets,
-        inherit,
-        obj,
-        filter,
-        pattern;
-
-    //  Ensure we have a consistent Hash for parameter lookups later on.
-    params = TP.hc(options);
-
-    //  Get the array of all suites. We'll be filtering this based on options.
-    suites = TP.test.Suite.$get('suites');
-
-    //  ---
-    //  target filter
-    //  ---
-
-    //  If we have a specific target restrict our hash down to just that
-    //  target's suites as a first step.
-    if (TP.isValid(target)) {
-
-        id = TP.id(target);
-        if (TP.isEmpty(id)) {
-            this.raise('InvalidID');
-        }
-
-        targets = [id];
-
-        inherit = params.at('inherit');
-        if (TP.isTrue(inherit)) {
-            obj = TP.bySystemId(target);
-            if (TP.canInvoke(obj, 'getSupertypeNames')) {
-                targets.concat(obj.getSupertypeNames());
-            }
-        }
-
-        //  Get the list of suites owned by the targeted object.
-        suites = suites.filter(function(item) {
-            return targets.contains(TP.id(item.suiteOwner));
-        });
-    }
-
-    //  No options, or empty options (after conversion to hash) means full list.
-    if (TP.notValid(options) || TP.isEmpty(params)) {
-        return suites;
-    }
-
-    //  ---
-    //  suite filter
-    //  ---
-
-    filter = params.at('suite');
-    if (TP.notEmpty(filter)) {
-
-        filter = filter.unquoted();
-        if (/^\/.+\/([ig]*)$/.test(filter)) {
-            pattern = RegExp.construct(filter);
-        }
-
-        suites = suites.filter(
-                    function(suite) {
-                        var name;
-
-                        name = suite.getSuiteName();
-
-                        if (pattern) {
-                            return pattern.match(name);
-                        } else {
-                            return name === filter;
-                        }
-                    });
-    }
-
-    //  ---
-    //  case filter
-    //  ---
-
-    //  clear pattern so we don't reuse from above.
-    pattern = null;
-
-    filter = params.at('cases');
-    if (TP.notEmpty(filter)) {
-
-        filter = filter.unquoted();
-        if (/^\/.+\/([ig]*)$/.test(filter)) {
-            pattern = RegExp.construct(filter);
-        }
-
-        suites = suites.filter(
-                    function(suite) {
-                        var cases;
-
-                        cases = suite.getCaseList();
-                        cases = cases.filter(
-                                    function(casey) {
-                                        var name;
-
-                                        name = casey.getCaseName();
-                                        if (pattern) {
-                                            return pattern.match(name);
-                                        } else {
-                                            return name.contains(filter);
-                                        }
-                                    });
-
-                        return TP.notEmpty(cases);
-                    });
-    }
-
-    return suites;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Suite.Type.defineMethod('runTargetSuites',
-function(target, options) {
-
-    /**
-     * Runs the test suites for a target, or all targets if no specific target
-     * object is provided.
-     * @param {Object} target The object whose test suites should be run.
-     * @param {TP.core.Hash} options A dictionary of test options.
-     * @param {String} [options.suite] If empty all suites are returned.
-     * @param {String} [options.cases] If empty all cases are returned.
-     * @param {Boolean} [options.ignore_only=true]
-     * @param {Boolean} [options.ignore_skip=true]
-     * @returns {Promise} A Promise to be used as necessary.
-     */
-
-    var suites,
-        cases,
-        params,
-        throwExceptions,
-        throwHandlers,
-        shouldLogSetting,
-        promise,
-        exclusives,
-        summarize,
-        total;
-
-    TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
-
-    //  Get filtered list of test suites that apply to our test criteria.
-    suites = this.getTargetSuites(target, options);
-
-    if (TP.isEmpty(suites)) {
-        TP.sys.logTest('0..0');
-        TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 error, 0 skip, 0 todo.');
-        return TP.extern.Promise.resolve();
-    }
-
-    //  Prep the inbound options for use by the reporting functions below.
-    params = TP.hc(options);
-
-    exclusives = TP.isTrue(params.at('ignore_only'));
-
-    //  Filter for exclusivity. We might get more than one if authoring was off
-    //  so check for that as well.
-    if (exclusives === true) {
-        TP.sys.logTest('# filtering for exclusive suite(s).', TP.WARN);
-        suites = suites.filter(
-                        function(suite) {
-                            return suite.isExclusive();
-                        });
-
-        if (suites.length > 1) {
-            TP.sys.logTest('# ' + suites.length +
-                ' exclusive suite(s) found for ' +
-                TP.name(target) + '.', TP.WARN);
-        }
-    }
-
-    //  Define a common summarize function we can invoke from either side of the
-    //  promise callback handlers.
-    summarize = function(obj) {
-        var passed,
-            failed,
-            ignored,
-            errored,
-            skipped,
-            prefix;
-
-        passed = 0;
-        failed = 0;
-        ignored = 0;
-        errored = 0;
-        skipped = 0;
-
-        suites.perform(
-                function(suite) {
-                    var caselist,
-                        stats;
-
-                    caselist = suite.getCaseList(params);
-                    stats = suite.get('statistics');
-
-                    cases += caselist.getSize();
-
-                    if (TP.notValid(stats)) {
-                        //  Could be skipped, or there may have been 'only'
-                        //  cases which weren't ignored. Either way the caselist
-                        //  was skipped.
-                        skipped += caselist.getSize();
-                    } else {
-                        passed += stats.at('passed');
-                        failed += stats.at('failed');
-                        errored += stats.at('errored');
-                        ignored += stats.at('ignored');
-                        skipped += stats.at('skipped');
-                    }
-                }, 0);
-
-        if (failed !== 0 || errored !== 0) {
-            prefix = '# FAIL: ';
-        } else {
-            prefix = '# PASS: ';
-        }
-
-        total = 0;
-        total += passed + failed + errored + ignored + skipped;
-
-        TP.sys.logTest('#');
-        TP.sys.logTest(
-            prefix +
-            total + ' total, ' +
-            passed + ' pass, ' +
-            failed + ' fail, ' +
-            errored + ' error, ' +
-            skipped + ' skip, ' +
-            ignored + ' todo.');
-
-        TP.sys.setcfg('test.running', false);
-    };
-
-    TP.sys.logTest('# ' + suites.length + ' suite(s) found for ' +
-                TP.name(target) + '.', TP.DEBUG);
-
-    cases = 0;
-    suites.perform(
-            function(suite) {
-                var caselist;
-
-                caselist = suite.getCaseList(params);
-                cases += caselist.getSize();
-            });
-
-    TP.sys.logTest((cases > 0 ? '1' : '0') + '..' + cases);
-
-    //  Capture the current setting of 'shouldThrowExceptions', 'shouldLogStack'
-    //  and 'shouldThrowHandlers' and set them to true. This is so that:
-
-    //      shouldThrowExceptions: any raise()ing of TIBET exceptions in any
-    //      test case will cause TIBET to throw an Error and then the test case
-    //      will be considered to be in 'error'.
-
-    //      shouldLogStack: when Errors are thrown, should the stack be logged?
-    //
-    //      shouldThrowHandlers: when event handlers throw an Error, should the
-    //      Error be thrown 'up' to callers higher in the stack.
-
-    throwExceptions = TP.sys.shouldThrowExceptions();
-    TP.sys.shouldThrowExceptions(true);
-
-    shouldLogSetting = TP.sys.shouldLogStack();
-    TP.sys.shouldLogStack(true);
-
-    throwHandlers = TP.sys.shouldThrowHandlers();
-    TP.sys.shouldThrowHandlers(true);
-
-    /* eslint-disable handle-callback-err */
-
-    //  Use reduce to convert our suite array into a chain of promises. We
-    //  prime the list with a resolved promise to ensure 'current' receives all
-    //  the suites during iteration while 'chain' is the last promise in the
-    //  chain of promises being constructed.
-    promise = suites.reduce(
-            function(chain, current, index, array) {
-                return chain.then(
-                    function(obj) {
-                        //return current.run(TP.hc(options));
-                        return current.run(params);
-                    },
-                    function(err) {
-                        //  Suite.run should trap all errors and resolve() so
-                        //  the chain remains unbroken...unless we're doing an
-                        //  early exit etc.
-                        //  TODO: early exit?
-                        void 0;
-                    });
-            }, TP.extern.Promise.resolve());
-
-    TP.sys.setcfg('test.running', true);
-
-    return promise.then(
-            function(obj) {
-
-                //  Restore settings of system error condition flags.
-                TP.sys.shouldThrowExceptions(throwExceptions);
-                TP.sys.shouldLogStack(shouldLogSetting);
-                TP.sys.shouldThrowHandlers(throwHandlers);
-
-                //  Summarize output
-                summarize();
-            },
-            function(err) {
-
-                //  Restore settings of system error condition flags.
-                TP.sys.shouldThrowExceptions(throwExceptions);
-                TP.sys.shouldLogStack(shouldLogSetting);
-                TP.sys.shouldThrowHandlers(throwHandlers);
-
-                //  Summarize output
-                summarize();
-            });
-    /* eslint-enable handle-callback-err */
 });
 
 //  ------------------------------------------------------------------------
@@ -1026,10 +1074,13 @@ function(options) {
      */
 
     var cases,
+        params,
         suites,
-        suite,
-        name;
+        filter,
+        pattern,
+        suite;
 
+    params = TP.hc(options);
     cases = this.$get('caseList');
 
     if (TP.notValid(cases)) {
@@ -1057,14 +1108,33 @@ function(options) {
             });
     }
 
-    if (TP.notValid(options) || TP.isEmpty(options.at('cases'))) {
+    if (TP.notValid(options) || TP.isEmpty(params.at('cases'))) {
         return cases;
     }
 
-    name = options.at('cases');
-    return cases.filter(function(item) {
-        return item.getCaseName().indexOf(name) !== TP.NOT_FOUND;
-    });
+    filter = params.at('cases');
+    if (TP.notEmpty(filter)) {
+
+        filter = filter.unquoted();
+        if (/^\/.+\/([ig]*)$/.test(filter)) {
+            pattern = RegExp.construct(filter);
+        }
+
+        cases = cases.filter(
+                    function(casey) {
+                        var name;
+
+                        name = casey.getCaseName();
+
+                        if (pattern) {
+                            return pattern.match(name);
+                        } else {
+                            return name === filter;
+                        }
+                    });
+    }
+
+    return cases;
 });
 
 //  ------------------------------------------------------------------------
@@ -3198,7 +3268,12 @@ function(options) {
      * @returns {Array} An array of all suites matching the filter criteria.
      */
 
-    return TP.test.Suite.getTargetSuites(this, options);
+    var params;
+
+    params = TP.hc(options);
+    params.atPut('target', this);
+
+    return TP.test.getSuites(params);
 });
 
 //  ------------------------------------------------------------------------
@@ -3213,7 +3288,12 @@ function(options) {
      * @returns {Promise} A Promise to be used as necessary.
      */
 
-    return TP.test.Suite.runTargetSuites(this, options);
+    var params;
+
+    params = TP.hc(options);
+    params.atPut('target', this);
+
+    return TP.test.runSuites(params);
 });
 
 //  ------------------------------------------------------------------------

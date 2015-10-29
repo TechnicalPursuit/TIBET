@@ -294,34 +294,6 @@ function() {
     });
 });
 
-
-//  ========================================================================
-//  Run those babies!
-//  ------------------------------------------------------------------------
-
-//TP.test.Suite.runTargetSuites(<targetObj>);
-/*
-TP.test.Suite.runTargetSuites(Array);
-
-//  NB: For now, we need to provide the '.prototype' rather than the '.Inst'
-//  object for native type, instance-side tests.
-TP.test.Suite.runTargetSuites(Array.prototype);
-
-TP.test.Suite.runTargetSuites(TP.core.Resource);
-TP.test.Suite.runTargetSuites(TP.core.Resource.Inst);
-
-TP.test.Suite.runTargetSuites(TP.sig.Signal.Type);
-TP.test.Suite.runTargetSuites(TP.sig.Signal.Inst);
-
-TP.test.Suite.runTargetSuites(TP.lang.Object.Type);
-TP.test.Suite.runTargetSuites(TP.lang.Object.Inst);
-TP.test.Suite.runTargetSuites(TP.lang.Object);
-
-TP.test.Suite.runTargetSuites(String);
-
-TP.test.Suite.runTargetSuites(TP.core.Resource);
-*/
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

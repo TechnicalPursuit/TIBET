@@ -46,9 +46,9 @@ function(aRequest) {
         cases,
         obj;
 
-    runner = TP.sys.getTypeByName('TP.test.Suite');
+    runner = TP.bySystemId('TP.test');
     if (TP.notValid(runner)) {
-        aRequest.fail('Unable to find TP.test.Suite.');
+        aRequest.fail('Unable to find TP.test.');
         return;
     }
 
@@ -102,8 +102,7 @@ function(aRequest) {
 
         if (shell.getArgument(aRequest, 'tsh:all', false)) {
 
-
-            runner.runTargetSuites(null, options).then(
+            runner.runSuites(options).then(
                 function(result) {
                     aRequest.complete();
                     karma.complete();
@@ -116,7 +115,7 @@ function(aRequest) {
 
         } else {
 
-            aRequest.stdout('Usage - :test <target> [-local_only] [-ignore_only] [-ignore_skip]');
+            aRequest.stdout('Usage - :test <target> [-suite <filter>] [-cases <filter>] [-local_only] [-ignore_only] [-ignore_skip]');
             aRequest.complete();
             return;
         }
@@ -125,7 +124,7 @@ function(aRequest) {
 
         aRequest.stdout(TP.TSH_NO_VALUE);
 
-        runner.runTargetSuites(null, options).then(
+        runner.runSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?
                 aRequest.complete();

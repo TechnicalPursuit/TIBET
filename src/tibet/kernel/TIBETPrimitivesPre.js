@@ -3443,7 +3443,12 @@ function(options) {
      * @returns {Array} A list of test suite instances matching the options.
      */
 
-    return TP.test.Suite.getTargetSuites(this.$$target, options);
+    var params;
+
+    params = TP.hc(options);
+    options.atPut('target', this.$$target);
+
+    return TP.test.getSuites(params);
 };
 
 //  ---
@@ -3458,7 +3463,12 @@ function(options) {
      * @returns {Promise} A Promise to be used as necessary.
      */
 
-    return TP.test.Suite.runTargetSuites(this.$$target, options);
+    var params;
+
+    params = TP.hc(options);
+    options.atPut('target', this.$$target);
+
+    return TP.test.runSuites(params);
 };
 
 //  ---
@@ -3719,7 +3729,12 @@ function(options) {
      * @returns {Array} A list of test suite instances matching the options.
      */
 
-    return TP.test.Suite.getTargetSuites(this.$$target, options);
+    var params;
+
+    params = TP.hc(options);
+    options.atPut('target', this.$$target);
+
+    return TP.test.getSuites(params);
 };
 
 //  ---
@@ -3734,7 +3749,12 @@ function(options) {
      * @returns {Promise} A Promise to be used as necessary.
      */
 
-    return TP.test.Suite.runTargetSuites(this.$$target, options);
+    var params;
+
+    params = TP.hc(options);
+    options.atPut('target', this.$$target);
+
+    return TP.test.runSuites(params);
 };
 
 //  ---
@@ -4940,7 +4960,12 @@ function(options) {
      * @returns {Array} A list of test suite instances matching the options.
      */
 
-    return TP.test.Suite.getTargetSuites(this, options);
+    var params;
+
+    params = TP.hc(options);
+    params.atPut('target', this);
+
+    return TP.test.getSuites(params);
 });
 
 //  ------------------------------------------------------------------------
@@ -4955,7 +4980,12 @@ function(options) {
      * @returns {Promise} A Promise to be used as necessary.
      */
 
-    return TP.test.Suite.runTargetSuites(this, options);
+    var params;
+
+    params = TP.hc(options);
+    params.atPut('target', this);
+
+    return TP.test.runSuites(params);
 });
 
 //  ------------------------------------------------------------------------

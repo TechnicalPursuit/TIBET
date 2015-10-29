@@ -76,18 +76,15 @@ Cmd.prototype.HELP =
 'run as the first argument to the command. If you need to specify\n' +
 'both a target and suite use --target and --suite respectively.\n\n' +
 
+'You can limit testing to a particular case or set of cases by using\n' +
+'the --cases parameter. Both --suite and --cases accept either a string\n' +
+'or a regular expression in JavaScript syntax such as --cases="/foo/i".\n\n' +
+
 'Output is to the terminal in colorized TAP format by default.\n' +
 'Future versions will support additional test output formatters.\n\n' +
 
 'You can use the built-in debugging facilities of PhantomJS by\n' +
-'specifying --remote-debug-port and a port number.\n\n' +
-
-'Changing the boot profile is not normally required however you\n' +
-'can easily test components simply by naming them via the --script\n' +
-'parameter. For example, you can run all String tests via:\n\n' +
-
-'tibet test [--script] \':test String\'\n';
-
+'specifying --remote-debug-port and a port number.\n';
 
 /**
  * Command argument parsing options.
