@@ -1589,8 +1589,9 @@ function(aSignal, flags) {
      *                  form of signal hierarchy traversal.
      *          {String} [skipName] A string used to mask off certain handler
      *                  names such as high-level default handlers.
-     *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
-     *              default is whatever phase the supplied signal is in.
+     *          {String} [phase] (TP.ANY, TP.CAPTURING, TP.AT_TARGET,
+     *                  TP.BUBBLING). The default is whatever phase the supplied
+     *                  signal is in.
      * @returns {Function} The specific function or method that would be (or
      *     was) invoked.
      */
@@ -1658,8 +1659,9 @@ function(aSignal, flags) {
      *                  form of signal hierarchy traversal.
      *          {String} [skipName] A string used to mask off certain handler
      *                  names such as high-level default handlers.
-     *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
-     *              default is whatever phase the supplied signal is in.
+     *          {String} [phase] (TP.ANY, TP.CAPTURING, TP.AT_TARGET,
+     *                  TP.BUBBLING). The default is whatever phase the supplied
+     *                  signal is in.
      * @return {Array.<String>} An array of viable signal handler names.
      */
 
@@ -1723,6 +1725,15 @@ function(aSignal, flags) {
 
     phase = TP.ifInvalid(flags.phase, aSignal.getPhase());
     switch (phase) {
+        case TP.ANY:
+            //  The expression here should match TP.CAPTURING OR TP.AT_TARGET OR
+            //  *no* characters (for bubbling, we don't put in *any* text).
+            expression += '(' +
+                            TP.CAPTURING +
+                            '|' +
+                            TP.AT_TARGET +
+                            '|(\\b\\B)*?)'; //  Matches no characters
+            break;
         case TP.CAPTURING:
             expression += TP.CAPTURING;
             break;
