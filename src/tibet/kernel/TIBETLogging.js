@@ -3562,7 +3562,16 @@ function(anEntry) {
     results = layout.layout(anEntry);
     content = results.at('content');
 
-    message = content.at('statusText');
+    //  Content should be either a hash containing job status-like data, or an
+    //  Error object if reporting on a failed/errored test condition.
+    if (TP.canInvoke(content, 'at')) {
+        message = content.at('statusText');
+    } else if (TP.isError(content)) {
+        message = content.message;
+    } else {
+        message = TP.str(content);
+    }
+
     asIs = results.at('cmdAsIs');
 
     // If we don't use the console (but rely on stdio) PhantomJS won't be happy.
