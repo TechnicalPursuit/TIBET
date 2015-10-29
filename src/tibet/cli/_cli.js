@@ -508,6 +508,31 @@ CLI.getcfg = function(property) {
 };
 CLI.cfg = CLI.getcfg;
 
+
+/**
+ * Searches from the current directory location upward in an attempt to find
+ * the node_modules directory which should identify an initialized project.
+ * @return {String} The path to the node_modules directory if found.
+ */
+CLI.getNpmPath = function() {
+    var base,
+        current;
+
+    base = process.cwd();
+    current = path.join(base, 'node_modules');
+
+    while (current && current !== 'node_modules') {
+        if (sh.test('-e', current)) {
+            return current;
+        }
+        base = base.slice(0, base.lastIndexOf('/'));
+        current = path.join(base, 'node_modules');
+    }
+
+    return CLI.notInitialized();
+};
+
+
 /**
  * Searches a set of paths including ~app_cmd and ~lib_cmd for an implementation
  * file for the named command.
@@ -532,7 +557,7 @@ CLI.getCommandPath = function(command) {
 
     // If we're in a project but not initialized make sure they do that first.
     if (this.inProject()) {
-        if (!sh.test('-e', 'node_modules')) {
+        if (!CLI.getNpmPath()) {
             return CLI.notInitialized();
         }
     }
@@ -1023,7 +1048,7 @@ CLI.runFallback = function(command) {
 
     // If there's no node_modules in place (and hence no tibet, grunt, or gulp
     // that are local) suggest they run `tibet init` first.
-    if (!sh.test('-e', 'node_modules')) {
+    if (!CLI.getNpmPath()) {
         this.notInitialized();
         return;
     }
