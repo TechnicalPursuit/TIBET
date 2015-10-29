@@ -813,9 +813,13 @@ function(aNode, aSignal) {
      */
 
     var signames,
+
         fname,
         len,
-        i;
+        i,
+
+        desc,
+        tpNode;
 
     if (TP.isValid(aSignal)) {
         signames = aSignal.getSignalNames();
@@ -823,12 +827,18 @@ function(aNode, aSignal) {
         signames = TP.ac('Signal');
     }
 
-    //  Convert all the signal names to simple form.
+    //  Convert all the signal names to simple form (making sure they're
+    //  canonical).
     signames = signames.map(
                 function(name) {
+                    //  Expand first to make sure signal name is prefixed, if
+                    //  necessary, but then contract that. This gives canonical
+                    //  results.
                     return TP.contractSignalName(TP.expandSignalName(name));
                 });
 
+    //  Iterate over all of the signal names and check to see if they respond to
+    //  a type method of 'isResponderFor' + the signal name.
     len = signames.getSize();
     for (i = 0; i < len; i++) {
         fname = 'isResponderFor' + signames.at(i);
@@ -837,26 +847,25 @@ function(aNode, aSignal) {
         }
     }
 
-    return false;
-});
+    //  If we couldn't find an 'isResponderFor' method, see if the target node
+    //  has an instance handler method. If it does, then consider ourself to be
+    //  a responder for that signal.
 
-//  ------------------------------------------------------------------------
+    if (TP.isValid(aSignal)) {
+        desc = {
+            signal: aSignal,
+            dontTraverseSpoofs: true,   //  We're not interested in spoofs
+            phase: TP.ANY               //  We want handler methods of any phase
+                                        //  since all we're doing is returning a
+                                        //  Boolean.
+        };
 
-TP.core.Node.Type.defineMethod('isResponderForSignal',
-function(aNode, aSignal) {
+        tpNode = TP.wrap(aNode);
 
-    /**
-     * @method isResponderForSignal
-     * @summary Returns true if the type in question should be considered a
-     *     responder for the specific node/signal pair provided. Note that this
-     *     is the 'top level' method for the signal hierarchy, hence its suffix
-     *     (i.e. 'Signal').
-     * @param {Node} aNode The node to check which may have further data as to
-     *     whether this type should be considered to be a responder.
-     * @param {TP.sig.Signal} aSignal The signal that responders are being
-     *     computed for.
-     * @returns {Boolean} True when the receiver should respond to aSignal.
-     */
+        if (TP.isCallable(tpNode.getBestHandler(aSignal, desc))) {
+            return true;
+        }
+    }
 
     return false;
 });
