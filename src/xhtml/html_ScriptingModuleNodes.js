@@ -79,7 +79,7 @@ function() {
     }
 
     //  Query for them.
-    scripts = TP.byCSSPath(query, top.document, false, false);
+    scripts = TP.byCSSPath(query, TP.sys.getLaunchDocument(), false, false);
 
     req = TP.request();
 

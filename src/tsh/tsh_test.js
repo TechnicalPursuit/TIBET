@@ -41,9 +41,12 @@ function(aRequest) {
         ignore_only,
         ignore_skip,
         options,
+        params,
         karma,
+        total,
         suiteName,
         cases,
+        msg,
         obj;
 
     runner = TP.bySystemId('TP.test');
@@ -63,7 +66,10 @@ function(aRequest) {
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
     ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
 
-    target = shell.getArgument(aRequest, 'ARG0');
+    target = shell.getArgument(
+                        aRequest,
+                        'tsh:target',
+                        shell.getArgument(aRequest, 'ARG0'));
 
     if (TP.notEmpty(target)) {
         target = target.unquoted();
@@ -100,7 +106,13 @@ function(aRequest) {
 
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
-        if (shell.getArgument(aRequest, 'tsh:all', false)) {
+        //  If the CLI drove this, or the Sherpa/TDC, there should be an
+        //  explicit -all. The karma-tibet bridge doesn't do that however.
+        if (shell.getArgument(aRequest, 'tsh:all', false) ||
+                TP.sys.hasFeature('karma')) {
+
+            total = runner.getCases(options).getSize();
+            karma.info({total: total});
 
             runner.runSuites(options).then(
                 function(result) {
@@ -114,15 +126,19 @@ function(aRequest) {
             );
 
         } else {
-
-            aRequest.stdout('Usage - :test <target> [-suite <filter>] [-cases <filter>] [-local_only] [-ignore_only] [-ignore_skip]');
+            msg = 'Usage - :test <target> [-suite <filter>] [-cases <filter>] [-local_only] [-ignore_only] [-ignore_skip]';
+            aRequest.stdout(msg);
             aRequest.complete();
+            karma.error(msg);
             return;
         }
 
     } else if (TP.isEmpty(target) && TP.notEmpty(suiteName)) {
 
         aRequest.stdout(TP.TSH_NO_VALUE);
+
+        total = runner.getCases(options).getSize();
+        karma.info({total: total});
 
         runner.runSuites(options).then(
             function(result) {
@@ -155,6 +171,15 @@ function(aRequest) {
         if (TP.isType(obj)) {
             if (!shell.getArgument(aRequest, 'tsh:local_only', false)) {
 
+                params = options.asObject();
+                params.target = obj.Type;
+                total = runner.getCases(params).getSize();
+                params.target = obj.Inst;
+                total += runner.getCases(params).getSize();
+                params.target = obj;
+                total += runner.getCases(params).getSize();
+                karma.info({total: total});
+
                 //  Type first, then Inst, then Local
                 obj.Type.runTestSuites(options).then(
                         function() {
@@ -176,6 +201,11 @@ function(aRequest) {
         }
 
         aRequest.stdout(TP.TSH_NO_VALUE);
+
+        params = options.asObject();
+        params.target = obj;
+        total = runner.getCases(params).getSize();
+        karma.info({total: total});
 
         obj.runTestSuites(options).then(
             function(result) {

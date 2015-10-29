@@ -82,7 +82,8 @@ function(anID, regOnly, nodeContext) {
         index,
         type,
         reg,
-        obj;
+        obj,
+        context;
 
     //  make sure it's something we can manipulate
     if (TP.isEmpty(anID)) {
@@ -96,6 +97,8 @@ function(anID, regOnly, nodeContext) {
     //  if we're not told differently don't stop with registered objects
     reg = TP.notValid(regOnly) ? false : regOnly;
 
+    context = TP.sys.getLaunchWindow();
+
     if (TP.regex.VALID_TYPENAME.test(id)) {
         //  check for type names as our second priority. note the flag here
         //  is controlled by whether we're checking registrations only.
@@ -106,7 +109,7 @@ function(anID, regOnly, nodeContext) {
             return inst;
         } else {
             parts = id.split('.');
-            obj = top[parts[0]];
+            obj = context[parts[0]];
             parts.shift();
             while (TP.isValid(obj) && parts.length) {
                 key = parts.shift();
@@ -357,7 +360,7 @@ function(anID, regOnly, nodeContext) {
     //  bothered with the simplest thing that could possibly work...
     if (TP.regex.HAS_PERIOD.test(id)) {
         parts = id.split('.');
-        obj = top[parts[0]];
+        obj = context[parts[0]];
         parts.shift();
         while (TP.isValid(obj) && parts.length) {
             obj = TP.wrap(obj);
