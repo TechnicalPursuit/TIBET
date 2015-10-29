@@ -855,7 +855,7 @@ function(aNode, aSignal) {
         desc = {
             signal: aSignal,
             dontTraverseSpoofs: true,   //  We're not interested in spoofs
-            phase: TP.ANY               //  We want handler methods of any phase
+            phase: '*'                  //  We want handler methods of any phase
                                         //  since all we're doing is returning a
                                         //  Boolean.
         };
