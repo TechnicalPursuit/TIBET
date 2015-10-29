@@ -1237,7 +1237,7 @@ function() {
     //  ---
 
     this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
-    });
+    }).todo();
 
     //  ---
 
