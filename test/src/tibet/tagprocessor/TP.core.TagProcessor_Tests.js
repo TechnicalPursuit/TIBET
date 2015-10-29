@@ -268,7 +268,6 @@ function() {
                 afterStr = TP.str(result);
 
                 test.assert.isEqualTo(beforeStr, afterStr);
-                test.pass();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -291,7 +290,6 @@ function() {
                 processor.processTree(result);
 
                 test.assert.hasAttribute(result, 'allNodesMark');
-                test.pass();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -315,8 +313,6 @@ function() {
 
                 test.assert.hasAttribute(result, 'allNodesMark');
                 test.assert.hasAttribute(result, 'allNodesMark2');
-
-                test.pass();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -339,8 +335,6 @@ function() {
                 processor.processTree(result);
 
                 test.assert.isXMLNode(result.firstElementChild);
-
-                test.pass();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -366,8 +360,6 @@ function() {
 
                 test.assert.isXMLNode(result.firstElementChild);
                 test.assert.hasAttribute(result.firstElementChild, 'allNodesMark2');
-
-                test.pass();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
