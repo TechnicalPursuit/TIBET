@@ -16,9 +16,11 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls.Element');
 
-//  This type is intended to be used as a trait type only, so we don't allow
-//  instance creation
-TP.xctrls.Element.isAbstract(true);
+//  This type is used as a general type for 'xctrls' elements that might not
+//  have a concrete type since they are really just placeholders (like
+//  xctrls:value). Since xctrls doesn't have a fixed schema like some of the
+//  other markup language we support (XHTML, SVG, XMPP), this is ok. Therefore,
+//  we don't mark it as abstract.
 
 TP.xctrls.Element.addTraits(TP.core.NonNativeUIElementNode);
 
