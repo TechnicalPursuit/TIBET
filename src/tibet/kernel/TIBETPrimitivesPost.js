@@ -4787,7 +4787,7 @@ function(anObject) {
     }
 
     //  The wrapped value of a Type is the Type (native or TIBET-made)
-    if (TP.isType(anObject)) {
+    if (TP.isType(anObject) || TP.isNamespace(anObject)) {
         return anObject;
     }
 
@@ -5488,7 +5488,10 @@ function(eventObj) {
                     TP.gid(TP.nodeGetWindow(target)),
                     '.document,');
     } else {
-        arr.push('TP.documentCreateEvent(top.document, ');
+        //  NOTE the use of 'window.document' here to try to capture the current
+        //  window context rather than 'top.document' in case we didn't load
+        //  into the top window.
+        arr.push('TP.documentCreateEvent(window.document, ');
     }
 
     keys = TP.keys(eventObj);
