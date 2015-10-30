@@ -1522,6 +1522,7 @@ function(options) {
                     function(obj) {
                         var beforeEachMaybe,
                             lastPromise,
+                            promise,
 
                             finalAfterEachHandler;
 
@@ -1538,7 +1539,7 @@ function(options) {
                             //  'beforeEach', then chain it onto the last
                             //  promise.
                             if (TP.canInvoke(beforeEachMaybe, 'then')) {
-                                lastPromise.then(
+                                promise = lastPromise.then(
                                         function() {
                                             return beforeEachMaybe;
                                         }).then(
@@ -1547,7 +1548,7 @@ function(options) {
                                         });
                             } else {
                                 //  No returned Promise, just a last promise.
-                                lastPromise.then(
+                                promise = lastPromise.then(
                                         function() {
                                             return current.run(TP.hc(options));
                                         });
@@ -1555,13 +1556,13 @@ function(options) {
                         } else {
                             //  Returned Promise, no last promise
                             if (TP.canInvoke(beforeEachMaybe, 'then')) {
-                                beforeEachMaybe.then(
+                                promise = beforeEachMaybe.then(
                                         function() {
                                             return current.run(TP.hc(options));
                                         });
                             } else {
                                 //  Neither
-                                current.run(TP.hc(options));
+                                promise = current.run(TP.hc(options));
                             }
                         }
 
@@ -1604,15 +1605,25 @@ function(options) {
                                 }
                             };
 
-                        //  Get the last internal Promise and chain the
+                        //  If a last internal Promise is available, chain the
                         //  'afterEachHandler' onto it. This should allow any
                         //  Promises that were generated as part of running the
                         //  Case (i.e. by using 'this.then()' inside of a Case)
                         //  to be the last case and then the afterEach comes
                         //  after all of those.
-                        return current.$get('$internalPromise').then(
+                        //  If it's not available, then just use the promise
+                        //  that was returned by running the test case above.
+                        if (TP.isValid(lastPromise = current.$get(
+                                                        '$internalPromise'))) {
+                            return lastPromise.then(
                                             finalAfterEachHandler,
                                             finalAfterEachHandler);
+                        } else {
+                            return promise.then(
+                                            finalAfterEachHandler,
+                                            finalAfterEachHandler);
+                        }
+
                     },
                     function(err) {
                         //  TODO: the suite run() operation errored out, now
