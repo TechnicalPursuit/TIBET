@@ -10,7 +10,7 @@
 	<xsl:param name="sourceElem"/>
 
     <xsl:template match="/">
-        <result>
+        <result xmlns="">
 		    <xsl:copy-of select="$sourceElem"/>
         </result>
 	</xsl:template>

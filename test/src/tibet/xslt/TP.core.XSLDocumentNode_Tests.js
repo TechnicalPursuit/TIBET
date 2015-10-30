@@ -170,7 +170,7 @@ function() {
 
                 //  NB: These should match <xsl:param> elements in the XSLT
                 xslParams = TP.hc('sourceElem',
-                                    TP.elem('<dataroot>' +
+                                    TP.elem('<dataroot xmlns="">' +
                                             data.asXMLString() +
                                             '</dataroot>'));
 
