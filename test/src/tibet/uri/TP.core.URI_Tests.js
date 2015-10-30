@@ -1838,7 +1838,7 @@ function() {
         url = TP.uc('~app_tsh/xml_test.tsh');
         url.setResource('foo');
 
-        obj = url.getResource();
+        obj = url.getResource().get('result');
 
         test.assert.isEqualTo(
                 obj,
