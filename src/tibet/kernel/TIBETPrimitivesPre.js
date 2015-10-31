@@ -5938,7 +5938,8 @@ function(varargs) {
      *     version that ensures the incoming string gets a chance at being
      *     localized. All arguments used in constructing Strings using TP.sc()
      *     are subject to localization based on the current source and target
-     *     locale information. See TP.core.Locale for more information.
+     *     locale information. See TP.core.Locale for more information. The
+     *     simple version uses TP.msg.at() to look up any mapped values.
      * @param {Object} varargs A variable list of 0 to N values to build
      *     the String from.
      * @returns {String} A new instance.

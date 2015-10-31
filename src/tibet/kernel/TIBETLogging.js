@@ -1605,7 +1605,8 @@ function(aLogger, aLevel, arglist) {
      */
 
     var arg0,
-        marker;
+        marker,
+        str;
 
     this.callNextMethod();
 
@@ -1627,6 +1628,24 @@ function(aLogger, aLevel, arglist) {
             }
         } else if (TP.isKindOf(arg0, TP.log.Marker)) {
             this.set('marker', arglist.shift());
+        }
+
+        //  With marker check in place see if we have a sprintf string. If so we
+        //  replace the current argument list with the result of invocation.
+        arg0 = arglist.at(0);
+        if (arglist.length > 1 && TP.isString(arg0) &&
+                TP.regex.HAS_PERCENT.match(arg0)) {
+            try {
+                str = TP.sprintf.apply(null, arglist);
+                arglist.empty();
+                arglist.push(str);
+            } catch (e) {
+                //  Ignore cases where the string wasn't valid. The result
+                //  should be that the string will show up unprocessed if it was
+                //  an attempt to use sprintf with bad formatting, but what the
+                //  user expected if the string just said "foo is at 23%".
+                void 0;
+            }
         }
     }
 
