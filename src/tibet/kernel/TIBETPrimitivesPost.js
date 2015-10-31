@@ -5328,6 +5328,103 @@ function(aDescriptor) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('decomposeHandlerName',
+function(aHandlerName) {
+
+    /**
+     * @method decomposeHandlerName
+     * @summary Deomposes a standard handler name into a descriptor that can be
+     *     used to generate the handler name.
+     * @param {String} aHandlerName The handler name to decompose.
+     * @return {Object} A property 'descriptor'.
+     *     Properties can be any combination of the following:
+     *          {String} signal The type or signal name.
+     *          {String} origin The origin.
+     *          {String} state The state name.
+     *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
+     *              default is TP.BUBBLING.
+     */
+
+    var expression,
+        regex,
+
+        result,
+        parts;
+
+    expression = 'handle';
+
+    //  ---
+    //  Signal
+    //  ---
+
+    expression += '(\\w+?)';
+
+    //  ---
+    //  Phase
+    //  ---
+
+    expression += '(' +
+                    TP.CAPTURING +
+                    '|' +
+                    TP.AT_TARGET +
+                    '|(?:\\b\\B)*?)'; //  Matches no characters - non-capturing
+
+    //  ---
+    //  Origin
+    //  ---
+
+    expression += 'From(.+?)';
+
+    //  ---
+    //  State
+    //  ---
+
+    expression += 'When(.+)';
+
+
+    //  Construct a RegExp and make sure that it is indeed one.
+    regex = RegExp.construct(expression);
+    if (!TP.isRegExp(regex)) {
+        //  TODO:   expression problems...
+        return;
+    }
+
+    result = {};
+
+    parts = regex.exec(aHandlerName);
+
+    //  Nothing matched - return empty descriptor
+    if (TP.isEmpty(parts)) {
+        return result;
+    }
+
+    //  The 0th place contains the 'whole match' - ignore it.
+
+    //  'signal' is at the 1st place.
+    if (TP.notEmpty(parts.at(1))) {
+        result.signal = parts.at(1);
+    }
+
+    //  'phase' is at the 2nd place.
+    if (TP.notEmpty(parts.at(2))) {
+        result.phase = parts.at(2);
+    }
+
+    //  'origin' is at the 3rd place.
+    if (TP.notEmpty(parts.at(3))) {
+        result.origin = parts.at(3);
+    }
+
+    //  'state' is at the 4th place.
+    if (TP.notEmpty(parts.at(4))) {
+        result.state = parts.at(4);
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('eventAsHTMLString',
 function(eventObj) {
 
