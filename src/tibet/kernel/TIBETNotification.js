@@ -4451,6 +4451,7 @@ aSigEntry, checkTarget) {
         orgid,
         signame,
         item,
+        phase,
         handler,
         originalOrigin,
         hFunc,
@@ -4639,6 +4640,27 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                 continue;
             }
 
+            //  If we're being asked to check the target, then we're being
+            //  invoked from a policy that expects DOM semantics. We set the
+            //  phase explicitly in this case, since the AT_TARGET phase is
+            //  meaningless *when computing handler names*. I.e. the DOM has the
+            //  notion of AT_TARGET, but not when computing handlers. Handlers
+            //  are either capturing or bubbling.
+            if (checkTarget) {
+                //  It's easy to determine this based on the 'captureState'
+                //  flag.
+                if (captureState) {
+                    phase = TP.CAPTURING;
+                } else {
+                    phase = TP.BUBBLING;
+                }
+            } else {
+                //  Otherwise, set the phase to null and let the 'handle' call
+                //  determine which handler to use based on the phase of the
+                //  signal itself.
+                phase = null;
+            }
+
             if (TP.sys.shouldThrowHandlers()) {
                 //  check for multiple notification bypass, or even a
                 //  signal-configured ignore hook prior to firing
@@ -4658,9 +4680,21 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                     //  traversing the signal hierarchy, as that doesn't make
                     //  sense.
                     if (signame === TP.ANY) {
-                        handler.handle(aSignal, TP.ANY, true, true);
+                        handler.handle(
+                            aSignal,
+                            {
+                                startSignal: TP.ANY,
+                                dontTraverseHierarchy: true,
+                                dontTraverseSpoofs: true,
+                                phase: phase
+                            });
                     } else {
-                        handler.handle(aSignal, signame, false);
+                        handler.handle(
+                            aSignal,
+                            {
+                                startSignal: signame,
+                                phase: phase
+                            });
                     }
                 }
             } else {
@@ -4683,9 +4717,21 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         //  spoofs and traversing the signal hierarchy, as that
                         //  doesn't make sense.
                         if (signame === TP.ANY) {
-                            handler.handle(aSignal, TP.ANY, true, true);
+                            handler.handle(
+                                aSignal,
+                                {
+                                    startSignal: TP.ANY,
+                                    dontTraverseHierarchy: true,
+                                    dontTraverseSpoofs: true,
+                                    phase: phase
+                                });
                         } else {
-                            handler.handle(aSignal, signame, false);
+                            handler.handle(
+                                aSignal,
+                                {
+                                    startSignal: signame,
+                                    phase: phase
+                                });
                         }
                     }
 

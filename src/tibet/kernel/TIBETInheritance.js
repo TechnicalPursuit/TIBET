@@ -1871,7 +1871,7 @@ function(aSignal, flags) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('handle',
-function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse) {
+function(aSignal, flags) {
 
     /**
      * @method handle
@@ -1884,14 +1884,24 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse) {
      *     to serve as a generic signal catcher or handleChange() as a generic
      *     Change handler for example.
      * @param {TP.core.Signal} aSignal The specific signal to handle.
-     * @param {String} [startSignal] The signal name to start considering
-     *     handlers if the supplied signal has more than one signal name. This
-     *     parameter is optional and, if not supplied, all of the signal names
-     *     as computed from the supplied signal will be used.
-     * @param {Boolean} [dontTraverseSpoofs=false] True will mean that
-     *     traversing up the supertype chain will be disabled for 'spoofed'
-     *     signals (i.e. signals where the signal name doesn't match the type
-     *     name).
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {String} [startSignal] The signal name to start considering
+     *                  handlers if the supplied signal has more than one signal
+     *                  name. This parameter is optional and, if not supplied,
+     *                  all of the signal names as computed from the supplied
+     *                  signal will be used.
+     *          {Boolean} [dontTraverseSpoofs=false] True will mean that
+     *                  traversing up the supertype chain will be disabled for
+     *                  'spoofed' signals (i.e. signals where the signal name
+     *                  doesn't match the type name).
+     *          {Boolean} [dontTraverseHierarchy=false] True will turn off any
+     *                  form of signal hierarchy traversal.
+     *          {String} [skipName] A string used to mask off certain handler
+     *                  names such as high-level default handlers.
+     *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
+     *                  TP.BUBBLING). The default is whatever phase the supplied
+     *                  signal is in.
      * @param {Boolean} [dontTraverse=false] True will turn off any form of
      *     signal hierarchy traversal.
      * @returns {Object} The handler function's results.
@@ -1899,13 +1909,7 @@ function(aSignal, startSignal, dontTraverseSpoofs, dontTraverse) {
 
     var handlerFunc;
 
-    handlerFunc = this.getBestHandler(
-        aSignal,
-        {
-            startSignal: startSignal,
-            dontTraverseHierarchy: dontTraverse,
-            dontTraverseSpoofs: dontTraverseSpoofs
-        });
+    handlerFunc = this.getBestHandler(aSignal, flags);
 
     if (TP.isCallable(handlerFunc)) {
         return handlerFunc.call(this, aSignal);
