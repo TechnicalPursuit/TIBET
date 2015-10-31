@@ -1584,7 +1584,7 @@ function() {
     } else if (TP.isElement(payload)) {
         //  element payloads we can leverage an ID from
         id = TP.gid(payload);
-    } else if (TP.canInvoke(payload, 'at')) {
+    } else if (TP.isKindOf(payload, TP.core.Hash)) {
         //  if we got a hash we can ask it
         id = payload.at('elementGlobalID');
     }
@@ -1628,7 +1628,7 @@ function() {
     } else if (TP.isElement(payload)) {
         //  element payloads we can leverage an ID from
         id = TP.lid(payload);
-    } else if (TP.canInvoke(payload, 'at')) {
+    } else if (TP.isKindOf(payload, TP.core.Hash)) {
         //  if we got a hash we can ask it
         id = payload.at('elementLocalID');
     }
