@@ -12137,7 +12137,7 @@ function(aSignal) {
             }
         }
     } else {
-        return this.callNextMethod();
+        return this.callNextHandler();
     }
 
     return;
