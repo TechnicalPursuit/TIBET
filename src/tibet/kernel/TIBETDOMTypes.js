@@ -12101,8 +12101,8 @@ function(aSignal) {
     //  changed.
     origin = aSignal.getSignalOrigin();
 
-    //  If it was a URI, then process it as a 'remote resource change'.
-    if (TP.isKindOf(origin, TP.core.URI)) {
+    //  If it was a URL, then process it as a 'remote resource change'.
+    if (TP.isKindOf(origin, TP.core.URL)) {
 
         //  Grab the fully expanded location of the URI that changed.
         originLocation = origin.getLocation();
