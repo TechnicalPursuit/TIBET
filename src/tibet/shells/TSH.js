@@ -2136,7 +2136,7 @@ function(aRequest) {
         results;
 
     terms = this.getArgument(aRequest, 'ARGV');
-    limit = Math.max(1, this.getArgument(aRequest, 'tsh:limit', 3));
+    limit = Math.max(1, this.getArgument(aRequest, 'tsh:limit', 2));
     comments = this.getArgument(aRequest, 'tsh:comments', false);
     ignorecase = this.getArgument(aRequest, 'tsh:ignorecase', true);
 
