@@ -1721,7 +1721,7 @@ function(aSignal) {
         //  give the node a chance to respond to arrival
         if (TP.canInvoke(node, 'handleArrival')) {
             aSignal.set('console', this);
-            node[TP.computeHandlerName('Arrival')](aSignal);
+            node[TP.composeHandlerName('Arrival')](aSignal);
         }
     } catch (e) {
         TP.sig.UserOutputRequest.construct(

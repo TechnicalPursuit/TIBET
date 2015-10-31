@@ -2913,7 +2913,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 continue;
             }
 
-            handlerName = TP.computeHandlerName({signal: signame + suffix});
+            handlerName = TP.composeHandlerName({signal: signame + suffix});
 
             response.setSignalName(signame + suffix);
 

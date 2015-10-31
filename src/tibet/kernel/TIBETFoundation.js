@@ -2620,7 +2620,7 @@ function(aDescriptor, aHandler) {
     }
 
     //  NOTE this will throw if things aren't proper in the descriptor.
-    name = TP.computeHandlerName(aDescriptor);
+    name = TP.composeHandlerName(aDescriptor);
 
     //  Simple method definition once we have a normalized handler name. Note
     //  however that we need to pass a special flag to keep defineMethod from

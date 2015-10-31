@@ -284,7 +284,7 @@ function(aRequest) {
 
 
     //  Go ahead and tell the shell to handle the shell request.
-    shell[TP.computeHandlerName('ShellRequest')](request);
+    shell[TP.composeHandlerName('ShellRequest')](request);
 
     return request;
 });

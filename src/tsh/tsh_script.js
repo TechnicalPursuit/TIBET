@@ -2362,10 +2362,10 @@ function(aRequest) {
         roots.perform(
             function(request) {
 
-                service[TP.computeHandlerName('TSHRunRequest')](request);
+                service[TP.composeHandlerName('TSHRunRequest')](request);
             });
     } else {
-        service[TP.computeHandlerName('TSHRunRequest')](cmds.first());
+        service[TP.composeHandlerName('TSHRunRequest')](cmds.first());
     }
 
     //  return a break to keep from having shell loop descend into children

@@ -5217,14 +5217,14 @@ TP.$$computedHandlers.$lookups = 0;
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('computeHandlerName',
+TP.definePrimitive('composeHandlerName',
 function(aDescriptor) {
 
     /**
-     * @method computeHandlerName
-     * @summary Computes and returns the standard handler name defined by the
-     *     signal handler descriptor provided. This method defaults the signal
-     *     name used for the descriptor so the parameter is optional.
+     * @method composeHandlerName
+     * @summary Composes a standard handler name defined by the signal handler
+     *     descriptor provided. This method defaults the signal name used for
+     *     the descriptor so the parameter is optional.
      * @param {Object} [aDescriptor] The 'descriptor' parameter is a property
      *     descriptor. Properties can be any combination of the following:
      *          {String|Type} signal The type or signal name.

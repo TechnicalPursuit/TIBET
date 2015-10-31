@@ -709,9 +709,9 @@ function(aSignal) {
     //  At this level, this type only handles subtypes of TP.sig.DOMDragMove and
     //  TP.sig.DOMDragHover
     if (TP.isKindOf(aSignal, TP.sig.DOMDragMove)) {
-        return this[TP.computeHandlerName('DOMDragMove')](aSignal);
+        return this[TP.composeHandlerName('DOMDragMove')](aSignal);
     } else if (TP.isKindOf(aSignal, TP.sig.DOMDragHover)) {
-        return this[TP.computeHandlerName('DOMDragHover')](aSignal);
+        return this[TP.composeHandlerName('DOMDragHover')](aSignal);
     }
 
     return this;
@@ -4604,7 +4604,7 @@ function(aSignal) {
     //  At this level, this type only handles subtypes of TP.sig.DOMKeySignal
     if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
 
-        handlerName = TP.computeHandlerName(aSignal.getKeyName());
+        handlerName = TP.composeHandlerName(aSignal.getKeyName());
 
         if (TP.canInvoke(this, handlerName)) {
             this[handlerName](aSignal);

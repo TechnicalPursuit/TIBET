@@ -63,7 +63,7 @@ function() {
 
             return;
         } else if (this.contains(aSignal.getTarget())) {
-            this[TP.computeHandlerName('HaloClick')](aSignal);
+            this[TP.composeHandlerName('HaloClick')](aSignal);
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
 

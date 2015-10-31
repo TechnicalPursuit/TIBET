@@ -379,7 +379,7 @@ function(aResourceID, aRequest) {
     this.notify(TP.sys.cfg('project.ident'));
 
     //  Process whatever initial request(s) might be sitting in the queue
-    this[TP.computeHandlerName('NextRequest')]();
+    this[TP.composeHandlerName('NextRequest')]();
 
     //  Note that we do *not* focus the input cell here because there is further
     //  setup to do and we don't want the browser to think that the cell has
@@ -1044,27 +1044,27 @@ function(anEvent) {
 
     switch (keyname) {
         case 'DOM_Tab_Up':
-            this[TP.computeHandlerName('Tab')](anEvent);
+            this[TP.composeHandlerName('Tab')](anEvent);
             break;
 
         case 'DOM_Shift_Enter_Up':
-            this[TP.computeHandlerName('RawInput')](anEvent);
+            this[TP.composeHandlerName('RawInput')](anEvent);
             break;
 
         case 'DOM_Shift_Down_Up':
-            this[TP.computeHandlerName('HistoryNext')](anEvent);
+            this[TP.composeHandlerName('HistoryNext')](anEvent);
             break;
 
         case 'DOM_Shift_Up_Up':
-            this[TP.computeHandlerName('HistoryPrev')](anEvent);
+            this[TP.composeHandlerName('HistoryPrev')](anEvent);
             break;
 
         case 'DOM_Shift_Backspace_Up':
-            this[TP.computeHandlerName('ClearInput')](anEvent);
+            this[TP.composeHandlerName('ClearInput')](anEvent);
             break;
 
         case 'DOM_Shift_Esc_Up':
-            this[TP.computeHandlerName('Cancel')](anEvent);
+            this[TP.composeHandlerName('Cancel')](anEvent);
             break;
 
         default:
@@ -1169,7 +1169,7 @@ function(aSignal) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
 
-        this[TP.computeHandlerName('CommandEvent')](evt);
+        this[TP.composeHandlerName('CommandEvent')](evt);
     } else if (this.shouldConcealInput()) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
@@ -1371,7 +1371,7 @@ function(aRequest) {
     //this.showInputCell();
 
     //  process whatever might be sitting in the input request queue
-    this[TP.computeHandlerName('NextRequest')]();
+    this[TP.composeHandlerName('NextRequest')]();
 
     return;
 });
@@ -1495,7 +1495,7 @@ function(aSignal) {
         }
     }
 
-    this[TP.computeHandlerName('NextRequest')]();
+    this[TP.composeHandlerName('NextRequest')]();
 
     return;
 });
@@ -1535,7 +1535,7 @@ function(aSignal) {
      */
 
     this.updateStatus(aSignal.getRequest());
-    this[TP.computeHandlerName('NextRequest')](aSignal);
+    this[TP.composeHandlerName('NextRequest')](aSignal);
 
     return;
 });
@@ -1620,7 +1620,7 @@ function(aSignal) {
      *     triggered this call.
      */
 
-    return this[TP.computeHandlerName('UserInputRequest')](aSignal);
+    return this[TP.composeHandlerName('UserInputRequest')](aSignal);
 });
 
 //  ------------------------------------------------------------------------

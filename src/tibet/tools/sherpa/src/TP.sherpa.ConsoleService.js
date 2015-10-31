@@ -164,7 +164,7 @@ function(aResourceID, aRequest) {
     this.notify(TP.sys.cfg('project.ident'));
 
     //  Process whatever initial request(s) might be sitting in the queue
-    this[TP.computeHandlerName('NextRequest')]();
+    this[TP.composeHandlerName('NextRequest')]();
 
     //  Not sure why we need this... probably some coordination in how observes
     //  get set up.
@@ -428,14 +428,14 @@ function(anEvent) {
 
     switch (keyname) {
         case 'DOM_Shift_Enter_Up':
-            this[TP.computeHandlerName('RawInput')](anEvent);
+            this[TP.composeHandlerName('RawInput')](anEvent);
             break;
 
         case 'DOM_Shift_Down_Up':
             if (consoleGUI.showingEvalMark()) {
                 consoleGUI.shiftEvalMark(TP.DOWN, TP.ANCHOR);
             } else {
-                this[TP.computeHandlerName('HistoryNext')](anEvent);
+                this[TP.composeHandlerName('HistoryNext')](anEvent);
             }
             break;
 
@@ -443,7 +443,7 @@ function(anEvent) {
             if (consoleGUI.showingEvalMark()) {
                 consoleGUI.shiftEvalMark(TP.UP, TP.ANCHOR);
             } else {
-                this[TP.computeHandlerName('HistoryPrev')](anEvent);
+                this[TP.composeHandlerName('HistoryPrev')](anEvent);
             }
             break;
 
@@ -484,7 +484,7 @@ function(anEvent) {
             break;
 
         case 'DOM_Ctrl_U_Up':
-            this[TP.computeHandlerName('ClearInput')](anEvent);
+            this[TP.composeHandlerName('ClearInput')](anEvent);
             break;
 
         case 'DOM_Ctrl_K_Up':
@@ -492,7 +492,7 @@ function(anEvent) {
             break;
 
         case 'DOM_Shift_Esc_Up':
-            this[TP.computeHandlerName('Cancel')](anEvent);
+            this[TP.composeHandlerName('Cancel')](anEvent);
             break;
 
         default:
@@ -739,7 +739,7 @@ function(aRequest) {
     consoleGUI.setPrompt(this.get('model').getPrompt());
 
     //  process whatever might be sitting in the input request queue
-    this[TP.computeHandlerName('NextRequest')]();
+    this[TP.composeHandlerName('NextRequest')]();
 
     return;
 });
@@ -874,7 +874,7 @@ function(aSignal) {
         }
     }
 
-    this[TP.computeHandlerName('NextRequest')]();
+    this[TP.composeHandlerName('NextRequest')]();
 
     return;
 });
@@ -915,7 +915,7 @@ function(aSignal) {
      */
 
     this.get('$consoleGUI').updateStatus(aSignal.getRequest());
-    this[TP.computeHandlerName('NextRequest')](aSignal);
+    this[TP.composeHandlerName('NextRequest')](aSignal);
 
     return;
 });
@@ -1001,7 +1001,7 @@ function(aSignal) {
      *     triggered this call.
      */
 
-    return this[TP.computeHandlerName('UserInputRequest')](aSignal);
+    return this[TP.composeHandlerName('UserInputRequest')](aSignal);
 });
 
 //  ------------------------------------------------------------------------
@@ -2075,7 +2075,7 @@ function(aSignal) {
 
         if (aSignal.getSignalName() ===
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
-            this[TP.computeHandlerName('DOMShiftUp__DOMShiftUp')](aSignal);
+            this[TP.composeHandlerName('DOMShiftUp__DOMShiftUp')](aSignal);
         } else {
 
             evt = aSignal.getEvent();
@@ -2088,7 +2088,7 @@ function(aSignal) {
             //  Update the 'keyboardInfo' part of the status.
             consoleGUI.updateStatus(aSignal, 'keyboardInfo');
 
-            handlerName = TP.computeHandlerName(aSignal.getKeyName());
+            handlerName = TP.composeHandlerName(aSignal.getKeyName());
 
             if (TP.canInvoke(this, handlerName)) {
                 TP.eventPreventDefault(evt);
@@ -2106,7 +2106,7 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Enter_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.computeHandlerName('RawInput')](aSignal);
+    this.get('$consoleService')[TP.composeHandlerName('RawInput')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------
@@ -2130,21 +2130,21 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.computeHandlerName('HistoryNext')](aSignal);
+    this.get('$consoleService')[TP.composeHandlerName('HistoryNext')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.computeHandlerName('HistoryPrev')](aSignal);
+    this.get('$consoleService')[TP.composeHandlerName('HistoryPrev')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_U_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.computeHandlerName('ClearInput')](
+    this.get('$consoleService')[TP.composeHandlerName('ClearInput')](
             aSignal.getEvent());
 });
 
@@ -2159,7 +2159,7 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Esc_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.computeHandlerName('Cancel')](
+    this.get('$consoleService')[TP.composeHandlerName('Cancel')](
             aSignal.getEvent());
 });
 

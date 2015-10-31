@@ -165,7 +165,7 @@ function(aRequest) {
 
     //  deal with running out of requests to process
     if (TP.notValid(req = this.getNextRequest(aRequest))) {
-        return this[TP.computeHandlerName('NoMoreRequests')](aRequest);
+        return this[TP.composeHandlerName('NoMoreRequests')](aRequest);
     }
 
     handler = this.getBestHandler(req);

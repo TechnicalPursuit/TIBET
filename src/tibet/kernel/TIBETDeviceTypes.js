@@ -1337,7 +1337,7 @@ function(normalizedEvent) {
 
     this.$$updateModifierStates(normalizedEvent);
 
-    this[TP.computeHandlerName('KeyDown')](normalizedEvent);
+    this[TP.composeHandlerName('KeyDown')](normalizedEvent);
 
     return;
 });
@@ -1368,7 +1368,7 @@ function(normalizedEvent) {
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
-    this[TP.computeHandlerName('KeyPress')](normalizedEvent);
+    this[TP.composeHandlerName('KeyPress')](normalizedEvent);
 
     return;
 });
@@ -1401,7 +1401,7 @@ function(normalizedEvent) {
 
     this.$$updateModifierStates(normalizedEvent);
 
-    this[TP.computeHandlerName('KeyUp')](normalizedEvent);
+    this[TP.composeHandlerName('KeyUp')](normalizedEvent);
 
     return;
 });

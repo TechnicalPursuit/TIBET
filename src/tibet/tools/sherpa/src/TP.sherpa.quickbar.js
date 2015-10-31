@@ -533,7 +533,7 @@ function(aSignal) {
         TP.eventPreventDefault(evt);
         TP.eventStopPropagation(evt);
 
-        this[TP.computeHandlerName('SpecialKeyEvent')](evt);
+        this[TP.composeHandlerName('SpecialKeyEvent')](evt);
     } else if (TP.isTrue(this.get('searchMode'))) {
         this.drawSearchResults(editor.getValue());
     }
@@ -592,11 +592,11 @@ function(anEvent) {
 
     switch (keyname) {
         case 'DOM_Shift_Down_Up':
-            this[TP.computeHandlerName('HistoryNext')](anEvent);
+            this[TP.composeHandlerName('HistoryNext')](anEvent);
             break;
 
         case 'DOM_Shift_Up_Up':
-            this[TP.computeHandlerName('HistoryPrev')](anEvent);
+            this[TP.composeHandlerName('HistoryPrev')](anEvent);
             break;
 
         case 'DOM_Shift_Backspace_Up':

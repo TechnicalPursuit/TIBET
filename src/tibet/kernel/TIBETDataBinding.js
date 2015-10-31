@@ -658,7 +658,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     }
 
     //  Make sure that target object has a local method to handle the change
-    methodName = TP.computeHandlerName(signalName);
+    methodName = TP.composeHandlerName(signalName);
 
     if (TP.notValid(handler = finalTarget.getMethod(methodName))) {
 
@@ -980,7 +980,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
     }
 
     //  Make sure that target object has a local method to handle the change
-    methodName = TP.computeHandlerName(signalName);
+    methodName = TP.composeHandlerName(signalName);
 
     if (TP.isValid(handler = target.getMethod(methodName)) &&
         TP.isValid(handler.$observationsMap)) {

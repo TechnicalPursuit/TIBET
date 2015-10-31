@@ -168,7 +168,7 @@ function(aRequest) {
         });
 
     //  run that baby!
-    shell[TP.computeHandlerName('ShellRequest')](req);
+    shell[TP.composeHandlerName('ShellRequest')](req);
 
     return;
 });

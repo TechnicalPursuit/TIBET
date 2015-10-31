@@ -239,7 +239,7 @@ function(aString, aShell, aRequest, asTokens) {
                             info);
                     });
 
-                aShell[TP.computeHandlerName('ShellRequest')](req);
+                aShell[TP.composeHandlerName('ShellRequest')](req);
 
                 return;
             } else {
@@ -383,7 +383,7 @@ function(aString, aShell, aRequest, asTokens) {
                             return aRequest.stdout(output, request);
                         });
 
-                    aShell[TP.computeHandlerName('ShellRequest')](req);
+                    aShell[TP.composeHandlerName('ShellRequest')](req);
 
                     return;
                 } else {

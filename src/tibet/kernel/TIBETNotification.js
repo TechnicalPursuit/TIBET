@@ -7586,7 +7586,7 @@ function(aDocument) {
                             method,
                             record;
 
-                        method = TP.computeHandlerName('MutationEvent');
+                        method = TP.composeHandlerName('MutationEvent');
                         len = mutationRecords.length;
                         for (i = 0; i < len; i++) {
                             record = mutationRecords[i];

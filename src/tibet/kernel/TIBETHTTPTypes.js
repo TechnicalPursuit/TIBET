@@ -227,7 +227,7 @@ function(aSignal) {
         //  function as needed.
         this.set('faultText', httpObj.statusText);
 
-        handlerName = TP.computeHandlerName(code);
+        handlerName = TP.composeHandlerName(code);
         if (TP.canInvoke(request, handlerName)) {
             defer = true;
             request[handlerName](aSignal);
@@ -293,7 +293,7 @@ function(aSignal) {
         //  question, which lets us defer to handle304 etc.
         code = httpObj.status;
 
-        handlerName = TP.computeHandlerName(code);
+        handlerName = TP.composeHandlerName(code);
         if (TP.canInvoke(request, handlerName)) {
             defer = true;
             request[handlerName](aSignal);

@@ -254,7 +254,7 @@ function(aRequest) {
 
                 //  Call 'up' to our instance handler to parse out the
                 //  'authToken' for use further down.
-                this[TP.computeHandlerName('RequestSucceeded')](authResponse);
+                this[TP.composeHandlerName('RequestSucceeded')](authResponse);
 
                 //  Now that we've manually called the handler method, we
                 //  can stopPropation() on the response so that it doesn't
