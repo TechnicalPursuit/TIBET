@@ -652,7 +652,7 @@ TP.genID = TP.sys.constructOID;
  */
 
 //  regex for function data extraction. TIBET uses function names in
-//  support of callNextMethod as well as for logging support. Too bad this
+//  support of callNextMethod() as well as for logging support. Too bad this
 //  isn't a built-in feature of the language. Owner too.
 
 //  strip name from the function -- if it exists
@@ -2077,9 +2077,10 @@ function(target, name, value, track, desc, display, owner, $handler) {
 
             //  The author hasn't directly specified whether to use the callee
             //  patch or not, but it's not as simple as just using the RegExp
-            //  above. We only want the patch to be installed if the
-            //  callNextMethod() statement is at the 'top-level' of the method
-            //  itself - not in any nested 'function() {...}' statements.
+            //  above. We only want the patch to be installed if a statement
+            //  that requires callee access (such as callNextMethod() or
+            //  callNextHandler()) is at the 'top-level' of the method itself -
+            //  not in any nested 'function() {...}' statements.
 
             installCalleePatch = false;
 

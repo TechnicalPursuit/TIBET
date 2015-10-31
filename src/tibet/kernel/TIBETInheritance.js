@@ -1557,7 +1557,114 @@ function(aString, transformParams) {
 });
 
 //  ------------------------------------------------------------------------
-//  TP.ObjectProto - SIGNAL HANDLING
+//  TP Meta Inst methods - SIGNAL HANDLING
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('callNextHandler',
+function() {
+
+    /**
+     * @method callNextHandler
+     * @summary Invokes the next handler in the *signal* type hierarchy, if the
+     *     receiver can respond to that.
+     * @description This method is used when the receiver needs to 'call up' to
+     *     the next most specific handler. For instance, if the 'Bar' signal is
+     *     a subtype of the 'Foo' signal, and we're currently executing the
+     *     'Bar' handler method, invoking callNextHandler() will invoke the
+     *     'Foo' handler on the receiver, if it has such a handler.
+     * @returns {Object} The handler function's results.
+     */
+
+    var theFunction,
+        theArgs,
+
+        theSignal,
+
+        functionName,
+        handlerDescriptor,
+
+        signalName,
+        signalType,
+
+        lookupStartSignal,
+
+        phase,
+        nextfunc;
+
+    //  The function we're after will be the current callee. Use the magic
+    //  property.
+    theFunction = TP.$$currentCallee$$;
+
+    //  We could use this[functionName] but that won't provide a way to avoid
+    //  recursions.
+    if (TP.notValid(theFunction)) {
+        return this.raise('TP.sig.InvalidContext');
+    }
+
+    //  If explicit arguments were passed in, use those. Otherwise, use the
+    //  magic property that contains the arguments that were in force from the
+    //  callee when this method was invoked.
+    if (arguments.length > 0) {
+        theArgs = arguments;
+    } else {
+        theArgs = TP.$$currentArgs$$;
+    }
+
+    //  The signal being handled (or another instance of some kind of
+    //  TP.sig.Signal) should be the first argument. If it isn't, we have
+    //  serious problems.
+    theSignal = theArgs.first();
+    if (!TP.isKindOf(theSignal, TP.sig.Signal)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    functionName = theFunction.getName();
+
+    //  Decompose the handler function name into a descriptor and make sure that
+    //  the descriptor has 'signal' property
+    handlerDescriptor = TP.decomposeHandlerName(functionName);
+    if (TP.notValid(handlerDescriptor) ||
+        TP.isEmpty(handlerDescriptor.signal)) {
+        return this.raise('TP.sig.InvalidHandler');
+    }
+
+    //  Make sure to expand it to get the full signal name for type lookup
+    signalName = TP.expandSignalName(handlerDescriptor.signal);
+
+    //  Maks sure we can get a real type object
+    signalType = TP.sys.getTypeByName(signalName);
+    if (!TP.isType(signalType)) {
+        return this.raise('TP.sig.InvalidType');
+    }
+
+    //  Grab the 'next most specific' signal type.
+    lookupStartSignal = signalType.getSupertypeSignalNames().first();
+
+    //  If the signal is a kind of TP.sig.DOMSignal, then we're being invoked
+    //  using a signal that expects DOM semantics. If the phase is AT_TARGET, we
+    //  set it explicitly, since the AT_TARGET phase is meaningless *when
+    //  computing handler names*. I.e. the DOM has the notion of AT_TARGET, but
+    //  not when computing handlers. Handlers are either capturing or bubbling.
+    phase = theSignal.getPhase();
+    if (TP.isKindOf(theSignal, TP.sig.DOMSignal) && phase === TP.AT_TARGET) {
+        phase = TP.BUBBLING;
+    }
+
+    //  Get the best handler using the computed starting signal name and the
+    //  phase.
+    nextfunc = this.getBestHandler(
+        theSignal,
+        {
+            startSignal: lookupStartSignal,
+            phase: phase
+        });
+
+    //  If its callable, invoke it with the arguments computed from above.
+    if (TP.isCallable(nextfunc)) {
+        return nextfunc.apply(this, theArgs);
+    }
+});
+
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getBestHandler',

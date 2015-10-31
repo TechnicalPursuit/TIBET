@@ -723,7 +723,7 @@ TP.INSTANCE = 'Instance';
 TP.PROTOTYPE = 'Prototype';
 
 //  A list of methods that needs 'callee' access.
-TP.NEEDS_CALLEE = /\.(callNextMethod)(\(|\.apply|\.call)/;
+TP.NEEDS_CALLEE = /\.(callNextMethod|callNextHandler)(\(|\.apply|\.call)/;
 
 //  DOM relationships
 TP.ANCESTOR = 'ans';
