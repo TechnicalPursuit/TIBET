@@ -1747,7 +1747,7 @@ function(aSignal, flags) {
     }
 
     //  ---
-    //  From
+    //  Origin
     //  ---
 
     //  Process the origin.
@@ -1768,7 +1768,7 @@ function(aSignal, flags) {
     }
 
     //  ---
-    //  When
+    //  State
     //  ---
 
     //  Get the state list from either the receiver or the application (with
@@ -3164,13 +3164,15 @@ function(aSignal) {
     }
 
     if (!TP.canInvoke(this, 'construct')) {
-        return this.raise('TP.sig.InvalidHandler', 'Unable to construct handler instance.');
+        return this.raise('TP.sig.InvalidHandler',
+                            'Unable to construct handler instance.');
     }
 
     //  if we're a type then we try to construct an instance and get it to
     //  handle things
     if (TP.notValid(inst = this.construct())) {
-        return this.raise('TP.sig.InvalidHandler', 'Unable to construct handler instance.');
+        return this.raise('TP.sig.InvalidHandler',
+                            'Unable to construct handler instance.');
     }
 
     return inst.handle(aSignal);

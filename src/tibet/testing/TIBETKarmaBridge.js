@@ -231,7 +231,7 @@ function(anEntry) {
         return;
     }
 
-    // Format the little critter...
+    //  Format the little critter...
     layout = this.getLayout();
     results = layout.layout(anEntry);
 
