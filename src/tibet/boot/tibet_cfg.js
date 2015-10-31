@@ -1100,20 +1100,10 @@
     //  resources
     //  ---
 
-    //  the file holding the TIBET activity log when $writeActivityToDisk=true.
-    //  Normally this won't be used except during certain debugging cycles.
-    TP.sys.setcfg('path.activity_file', '~app_log/activity.xml');
-
     //  where is the keyring file? this file is used (by default) as the source
     //  for application keyrings used by TP.core.Role and TP.core.Unit types to
     //  associate permission "keys" with TP.core.User instances.
     TP.sys.setcfg('path.keyring_file', '~lib_dat/keyrings.xml');
-
-    //  where is the default location for the listener (observe) map? this
-    //  path should be an absolute path using either a / or ~ prefix to
-    //  reference libroot or approot respectively. this can be set in the
-    //  boot script/tibet.xml files using the 'listeners' parameter.
-    TP.sys.setcfg('path.listener_file', '~lib_dat/listeners.xml');
 
     //  where is the default location for the localization string file? this
     //  path should be an absolute path using either a / or ~ prefix to
