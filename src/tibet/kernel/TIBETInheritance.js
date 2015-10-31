@@ -1793,7 +1793,7 @@ function(aSignal, flags) {
     //  ---
 
     regex = RegExp.construct(expression);
-    if (TP.notValid(regex)) {
+    if (!TP.isRegExp(regex)) {
         //  TODO:   expression problems...
         return;
     }
@@ -8798,18 +8798,23 @@ function() {
         return;
     }
 
+    //  The function we're after will be the current callee. Use the magic
+    //  property.
     theFunction = TP.$$currentCallee$$;
-
-    if (arguments.length > 0) {
-        theArgs = arguments;
-    } else {
-        theArgs = TP.$$currentArgs$$;
-    }
 
     //  We could use this[functionName] but that won't provide a way to avoid
     //  recursions.
     if (TP.notValid(theFunction)) {
         return this.raise('TP.sig.InvalidContext');
+    }
+
+    //  If explicit arguments were passed in, use those. Otherwise, use the
+    //  magic property that contains the arguments that were in force from the
+    //  callee when this method was invoked.
+    if (arguments.length > 0) {
+        theArgs = arguments;
+    } else {
+        theArgs = TP.$$currentArgs$$;
     }
 
     //  If a '$$nextfunc' property has been placed on the Function, that means

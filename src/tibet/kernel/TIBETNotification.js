@@ -403,6 +403,29 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Signal.Type.defineMethod('getSupertypeSignalNames',
+function() {
+
+    /**
+     * @method getSupertypeSignalNames
+     * @summary Returns the 'supertypes signal names' - that is, each supertype
+     *     name encoded as a signal name.
+     * @returns {Array} An Array of supertype signal names.
+     */
+
+    var type;
+
+    type = this.getSupertype();
+
+    if (TP.canInvoke(type, 'getSignalNames')) {
+        return type.getSignalNames();
+    }
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Signal.Type.defineMethod('isBubbling',
 function() {
 
