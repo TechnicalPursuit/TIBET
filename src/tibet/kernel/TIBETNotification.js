@@ -4961,6 +4961,7 @@ function(originSet, aSignal, aPayload, aType) {
         origin,
         originArray,
         len,
+        originGlobalID,
         sigdata,
         sigParams,
         sigPayload;
@@ -5018,9 +5019,6 @@ function(originSet, aSignal, aPayload, aType) {
         signame = TP.ANY;
     }
 
-    //  set the phase to capturing to get started
-    sig.setPhase(TP.CAPTURING);
-
     //  without a target we've got trouble in DOM firing since the target
     //  defines when we stop capturing and start bubbling...
     target = sig.getTargetGlobalID();
@@ -5028,6 +5026,15 @@ function(originSet, aSignal, aPayload, aType) {
     //  as we loop downward we'll keep track of orgids that have event
     //  listeners registered. this keeps us from doing the lookups twice
     originArray = TP.ac();
+
+
+    //  ---
+    //  Process CAPTURING
+    //  ---
+
+
+    //  set the phase to capturing to get started
+    sig.setPhase(TP.CAPTURING);
 
     //  loop down through the list until we reach the target, performing the
     //  lookups and notifying any capturing handlers as we descend
@@ -5047,9 +5054,7 @@ function(originSet, aSignal, aPayload, aType) {
             }
         }
 
-        //  ---
         //  global id
-        //  ---
 
         //  work with ID's for map entries (GC issues)
         orgid = TP.gid(origin);
@@ -5093,9 +5098,11 @@ function(originSet, aSignal, aPayload, aType) {
             }
         }
 
-        //  ---
+        //  Capture the global origin id before resetting it to the local id.
+        //  We'll use it later for comparison.
+        originGlobalID = orgid;
+
         //  local id
-        //  ---
 
         //  work with ID's for map entries (GC issues)
         orgid = TP.lid(origin);
@@ -5139,9 +5146,7 @@ function(originSet, aSignal, aPayload, aType) {
             }
         }
 
-        //  ---
         //  propagation
-        //  ---
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
@@ -5152,11 +5157,17 @@ function(originSet, aSignal, aPayload, aType) {
         //  are we on the way down or up? if we've reached the target we'll
         //  want to stop once we do a final notification of any capturing
         //  handlers at the target level
-        if (orgid === target) {
+        if (originGlobalID === target) {
             sig.setPhase(TP.AT_TARGET);
             break;
         }
     }
+
+
+    //  ---
+    //  Process AT_TARGET / BUBBLING
+    //  ---
+
 
     //  flip the origin array around so we work "bottom up" to bubble
     originArray.reverse();
@@ -5210,6 +5221,7 @@ function(originSet, aSignal, aPayload, aType) {
 
                     //  Grab whatever payload was specified.
                     sigPayload = sigParams.at('payload');
+
                 } else {
 
                     //  No signal data - the signal name is all of the signal
@@ -5241,9 +5253,7 @@ function(originSet, aSignal, aPayload, aType) {
             }
         }
 
-        //  ---
         //  global id
-        //  ---
 
         //  always work with ID's for map entries (GC issues)
         orgid = TP.gid(origin);
@@ -5265,9 +5275,7 @@ function(originSet, aSignal, aPayload, aType) {
                                                 null, true);
         }
 
-        //  ---
         //  local id
-        //  ---
 
         //  always work with ID's for map entries (GC issues)
         orgid = TP.lid(origin);
@@ -5289,9 +5297,7 @@ function(originSet, aSignal, aPayload, aType) {
                                                 null, true);
         }
 
-        //  ---
         //  propagation
-        //  ---
 
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
@@ -5299,8 +5305,13 @@ function(originSet, aSignal, aPayload, aType) {
             return sig;
         }
 
-        //  once we've run through the target for bubbling handlers we'll
-        //  set this to bubbling for the rest of the iterations
+        //  once we've run through the *target* (i.e. AT_TARGET) for bubbling
+        //  handlers we'll set this to TP.BUBBLING for the rest of the
+        //  iterations. Note that since the regular DOM has no notion of
+        //  separate AT_TARGET and BUBBLING handlers for the target itself,
+        //  we've really just run a bubbling handler, but with the phase set to
+        //  AT_TARGET. Now that that's done, we can move on to the true bubbling
+        //  phase, starting with the next origin in the list.
         if (sig.getPhase() === TP.AT_TARGET) {
             //  if the signal bubbles then we continue, otherwise we'll stop
             //  here
