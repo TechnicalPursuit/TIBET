@@ -15,7 +15,8 @@
 TP.ev.XMLNS.Type.describe('ev: attributes registration',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -41,14 +42,20 @@ function() {
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
 
     this.it('simple registration', function(test, options) {
 
-        var loadURI,
-            driver;
+        var driver;
 
         loadURI = TP.uc('~lib_test/src/ev/XMLEvents1.xhtml');
 
@@ -91,48 +98,6 @@ function() {
                     function(error) {
                         test.fail(error, TP.sc('Event sequence error'));
                     });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooButton.TP.sig.DOMClick');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barButton.TP.sig.DOMClick');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooButton.TP.sig.DOMClick');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barButton.TP.sig.DOMClick');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -144,8 +109,7 @@ function() {
 
     this.it('document and element loaded', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -188,48 +152,6 @@ function() {
                             TP.byId('testDiv', windowContext, false),
                             'TP.sig.DOMContentLoaded');
                     });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOMContentLoaded');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#testDiv.TP.sig.DOMContentLoaded');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOMContentLoaded');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#testDiv.TP.sig.DOMContentLoaded');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -240,8 +162,7 @@ function() {
 
     this.it('keypresses of various kinds', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -294,58 +215,6 @@ function() {
                         test.assert.didSignal(TP.sys.uidoc(),
                                                 'TP.sig.DOM_F2_Up');
                     });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_A_Up');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_U0062_Up');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_F2_Up');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_A_Up');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_U0062_Up');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_F2_Up');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -356,8 +225,7 @@ function() {
 
     this.it('multi origins and multi signals', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -406,70 +274,6 @@ function() {
                             TP.byId('fooDiv', windowContext, false),
                             'TP.sig.DOMDblClick');
                     });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooDiv.TP.sig.DOMClick');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooDiv.TP.sig.DOMDblClick');
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barDiv.TP.sig.DOMClick');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#bazDiv.TP.sig.DOMClick');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooDiv.TP.sig.DOMClick');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooDiv.TP.sig.DOMDblClick');
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barDiv.TP.sig.DOMClick');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#bazDiv.TP.sig.DOMClick');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -480,8 +284,7 @@ function() {
 
     this.it('ANY origins and ANY signals', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -523,44 +326,6 @@ function() {
                             TP.byId('bazDiv', windowContext, false),
                             'TP.sig.DOMDblClick');
                     });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooDiv.ANY');
-                        test.assert.contains(
-                            interestMapKeys,
-                            'ANY.TP.sig.DOMClick');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooDiv.ANY');
-                        test.refute.contains(
-                            interestMapKeys,
-                            'ANY.TP.sig.DOMClick');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -572,8 +337,7 @@ function() {
 
     this.it('stop default action, stop propagation, capturing', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -628,101 +392,6 @@ function() {
                         sendKeys('A',
                                 TP.byId('bazField', windowContext, false)).
                         perform();
-
-                test.then(
-                    function() {
-                        var firedFirstDateVal,
-                            firedSecondDateVal;
-
-                        test.assert.hasAttribute(
-                            TP.byId('testResults', windowContext, false),
-                            'bazfield_keypress_1st');
-                        test.assert.hasAttribute(
-                            TP.byId('testResults', windowContext, false),
-                            'bazfield_keypress_2nd');
-
-                        firedFirstDateVal = TP.dc(
-                            TP.elementGetAttribute(
-                                TP.byId('testResults', windowContext, false),
-                                'bazfield_keypress_1st',
-                                true));
-
-                        firedSecondDateVal = TP.dc(
-                            TP.elementGetAttribute(
-                                TP.byId('testResults', windowContext, false),
-                                'bazfield_keypress_2nd',
-                                true));
-
-                        test.assert.isTrue(
-                            firedSecondDateVal.getTime() >=
-                            firedFirstDateVal.getTime());
-
-                        test.assert.didSignal(
-                                TP.byId('bazField', windowContext, false),
-                                'TP.sig.DOMKeyPress');
-                    });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooField.TP.sig.DOMKeyPress');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barField.TP.sig.DOMKeyPress');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barFieldWrapper.TP.sig.DOMKeyPress');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#bazField.TP.sig.DOMKeyPress');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#fooField.TP.sig.DOMKeyPress');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barField.TP.sig.DOMKeyPress');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#barFieldWrapper.TP.sig.DOMKeyPress');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#bazField.TP.sig.DOMKeyPress');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -733,8 +402,7 @@ function() {
 
     this.it('keypresses executing shell scripts', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -818,58 +486,6 @@ function() {
                         test.assert.didSignal(TP.sys.uidoc(),
                                                 'TP.sig.DOM_Z_Up');
                     });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_X_Up');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_Y_Up');
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_Z_Up');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_X_Up');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_Y_Up');
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOM_Z_Up');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -880,8 +496,7 @@ function() {
 
     this.it('keypress sequences', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -944,38 +559,6 @@ function() {
                             TP.sys.uidoc(),
                             'TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
                     });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                            loadURI.getLocation() +
-                            '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                            loadURI.getLocation() +
-                            '#document.TP.sig.DOM_U0062_Up__TP.sig.DOM_S_Up');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -986,8 +569,7 @@ function() {
 
     this.it('markup-level change notification', function(test, options) {
 
-        var loadURI,
-            driver,
+        var driver,
 
             windowContext;
 
@@ -1039,90 +621,11 @@ function() {
                 driver.startSequence().
                         click(TP.byId('setSSNButton')).
                         perform();
-
-                test.then(
-                    function() {
-
-                        var testVal;
-
-                        testVal = TP.uc('urn:tibet:empObject').getResource().
-                                    get('result').get(TP.apc('person.SSN'));
-
-                        test.assert.isEqualTo(testVal, '111-22-3333');
-
-                        test.assert.isEqualTo(
-                            TP.byId('ssnField', windowContext).get('value'),
-                            '111-22-3333');
-
-                        test.assert.didSignal(
-                            TP.byId('setSSNButton', windowContext, false),
-                           'TP.sig.DOMClick');
-                        test.assert.didSignal(
-                            TP.byId('msgField', windowContext, false),
-                            'TP.sig.DOMContentLoaded');
-                        test.assert.didSignal(
-                            TP.uc('urn:tibet:empObject#tibet(person.SSN)'),
-                            'TP.sig.ValueChange');
-                        test.assert.didSignal(
-                            TP.uc('urn:tibet:empObject'),
-                            'TP.sig.ValueChange');
-                    });
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.assert.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOMContentLoaded');
-                        test.assert.contains(
-                            interestMapKeys,
-                            'urn:tibet:empObject.TP.sig.Change');
-                        test.assert.contains(
-                            interestMapKeys,
-                            'urn:tibet:empObject#tibet(person.salary).TP.sig.ValueChange');
-                        test.assert.contains(
-                            interestMapKeys,
-                            'urn:tibet:empObject#tibet(person.SSN).TP.sig.ValueChange');
-                    });
-
-                //  Unload the current page by setting it to the blank
-                driver.setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-
-                test.then(
-                    function() {
-                        var interestMapKeys;
-
-                        interestMapKeys = TP.keys(TP.sig.SignalMap.INTERESTS);
-
-                        test.refute.contains(
-                            interestMapKeys,
-                            TP.sys.getUICanvasPath() +
-                                loadURI.getLocation() +
-                                '#document.TP.sig.DOMContentLoaded');
-                        test.refute.contains(
-                            interestMapKeys,
-                            'urn:tibet:empObject.TP.sig.Change');
-                        test.refute.contains(
-                            interestMapKeys,
-                            'urn:tibet:empObject#tibet(person.salary).TP.sig.ValueChange');
-                        test.refute.contains(
-                            interestMapKeys,
-                            'urn:tibet:empObject#tibet(person.SSN).TP.sig.ValueChange');
-                    });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
