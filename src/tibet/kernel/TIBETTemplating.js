@@ -423,10 +423,12 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             str = '(function() {\n' +
                 valueGet + newlineChar +
                 generators.defineUndefined(varName) + newlineChar +
-                'var arg = (' + generators.escapedIdentifier(varName) + ');' + newlineChar +
+                'var arg = (' + generators.escapedIdentifier(varName) + ');' +
+                    newlineChar +
                 'arg = TP.isCallable(arg) ? arg(params) : arg;' + newlineChar +
                 defaultStr +
-                'if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' + newlineChar +
+                'if (TP.isArray(arg)) {arg.$set(\'delimiter\', \'\')};' +
+                    newlineChar +
                 'var result = ' + varName + ';' + newlineChar +
                 ignoreNull +
                 '})()';
