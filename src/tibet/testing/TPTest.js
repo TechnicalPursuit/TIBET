@@ -926,6 +926,10 @@ function(result, options) {
         drivers,
         thisArg;
 
+    //  Restore the original TP.raise() call, uninstalling its spy. See the
+    //  'executeBefore' method as to why we install a spy on TP.raise().
+    TP.raise.restore();
+
     this.set('msend', Date.now());
 
     //  Run any after() which was registered.
@@ -963,6 +967,13 @@ function(currentcase, result, options) {
 
     var func;
 
+    //  Check to see if raise has been invoked. See the 'executeBefore' method
+    //  as to why we install a spy on TP.raise().
+    if (TP.raise.called) {
+        currentcase.set('statusCode', TP.ACTIVE);
+        currentcase.fail();
+    }
+
     //  Run any afterEach which was registered.
     func = this.get('afterEvery');
     if (TP.isCallable(func)) {
@@ -986,6 +997,13 @@ function(result, options) {
 
         drivers,
         thisArg;
+
+    //  Install a spy on TP.raise() so that any calls to it get tracked during
+    //  testing. This is so that if any raise calls occur during the execution
+    //  of a test, the test will fail. Many times, the try...catch machinery of
+    //  TIBET will not propagate the error all of the way to the top, nor should
+    //  they.
+    TP.raise = TP.raise.asSpy();
 
     this.set('msstart', Date.now());
 
@@ -1023,6 +1041,10 @@ TP.test.Suite.Inst.defineMethod('executeBeforeEach',
 function(currentcase, result, options) {
 
     var func;
+
+    //  Reset the raise invocation counter. See the 'executeBefore' method as to
+    //  why we install a spy on TP.raise().
+    TP.raise.reset();
 
     //  Run any beforeEach which was registered.
     func = this.get('beforeEvery');
