@@ -4747,6 +4747,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrActive(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -4816,6 +4820,10 @@ function(aSignal) {
     this.setAttrSelected(false);
 
     this.signalAfterUnwind('TP.sig.UIDidBlur');
+
+    //  Make sure that we stop propagation here so that we don't get any more
+    //  responders further up in the chain processing this.
+    aSignal.shouldStop(true);
 
     return;
 });
@@ -4892,6 +4900,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrActive(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5133,6 +5145,10 @@ function(aSignal) {
     this.setAttrFocused(true);
 
     this.signalAfterUnwind('TP.sig.UIDidFocus');
+
+    //  Make sure that we stop propagation here so that we don't get any more
+    //  responders further up in the chain processing this.
+    aSignal.shouldStop(true);
 
     return;
 });
