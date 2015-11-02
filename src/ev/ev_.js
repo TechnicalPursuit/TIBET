@@ -230,7 +230,7 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
         //  that prefix the element won't be found properly later
         if (/^#/.test(handler)) {
             //  The handler had a '#' prefix, so we slice that off and use
-            //  the result as an 'id' to getElementByID().
+            //  the result as an 'id' to getElementById().
 
             handler = handler.slice(1);
             if (TP.isElement(elem = TP.nodeGetElementById(doc, handler))) {
