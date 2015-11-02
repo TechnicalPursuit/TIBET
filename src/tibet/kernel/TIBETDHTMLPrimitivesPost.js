@@ -2464,7 +2464,7 @@ function(anElement, boxType, wantsTransformed) {
         ourTransformation = TP.elementGetComputedTransformMatrix(anElement);
 
         //  Accumulate the two together to form a 'final transformation'
-        finalTransformation = TP.multiplyMatrix(windowTransformation,
+        finalTransformation = TP.matrixMultiply(windowTransformation,
                                                 ourTransformation);
 
         //  Transform the box values using the final transformation matrix
@@ -8809,7 +8809,7 @@ function(aWindow, wants2DMatrix) {
 
         if (TP.isArray(elemMatrix = TP.elementGetComputedTransformMatrix(
                                         frameElement))) {
-            matrix = TP.multiplyMatrix(matrix, elemMatrix);
+            matrix = TP.matrixMultiply(matrix, elemMatrix);
         }
 
         win = TP.nodeGetWindow(frameElement);

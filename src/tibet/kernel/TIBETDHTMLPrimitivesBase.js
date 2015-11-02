@@ -1411,7 +1411,7 @@ function(anElement, wants2DMatrix) {
 
         computedMatrix = TP.matrixFromCSSString(computedMatrixString);
 
-        matrix = TP.multiplyMatrix(matrix, computedMatrix);
+        matrix = TP.matrixMultiply(matrix, computedMatrix);
 
         currentElement = currentElement.parentNode;
     }
@@ -1422,14 +1422,14 @@ function(anElement, wants2DMatrix) {
     if (TP.str(matrix) === TP.str(identity)) {
         matrix = identity;
     } else {
-        matrix = TP.translateMatrix(
+        matrix = TP.matrixTranslate(
                     matrix, -win.pageXOffset, -win.pageYOffset, 0);
 
         transformedRect =
                     TP.$elementTransformBoundingClientRect(anElement, matrix);
 
         rect = anElement.getBoundingClientRect(anElement);
-        matrix = TP.translateMatrix(
+        matrix = TP.matrixTranslate(
                                 matrix,
                                 rect.left - transformedRect.left,
                                 rect.top - transformedRect.top,
@@ -1725,7 +1725,7 @@ function(anElement, transformationMatrix) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    points = TP.multiplyMatrix(
+    points = TP.matrixMultiply(
         TP.matrixAs3DMatrix(transformationMatrix),
         [
             [0, anElement.offsetWidth, 0, anElement.offsetWidth],

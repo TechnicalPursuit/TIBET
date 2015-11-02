@@ -2180,7 +2180,7 @@ TP.hc(
 
         win = TP.nodeGetWindow(anElement);
 
-        a = TP.translateMatrix(
+        a = TP.matrixTranslate(
                         TP.elementGetComputedTransformMatrix(anElement),
                         win.pageXOffset, win.pageYOffset, 0);
 

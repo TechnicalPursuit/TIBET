@@ -390,11 +390,11 @@ function(cssStr, wants2DMatrix) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('multiplyMatrix',
+TP.definePrimitive('matrixMultiply',
 function(a, b) {
 
     /**
-     * @method multiplyMatrix
+     * @method matrixMultiply
      * @summary Multiplies the supplied matrices.
      * @description This code derived from: https://gist.github.com/1145197
      *     Note that this method assumes it is operating on a 4X4 matrix suitable
@@ -432,11 +432,11 @@ function(a, b) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('translateMatrix',
+TP.definePrimitive('matrixTranslate',
 function(m/*, tx, ty, tz*/) {
 
     /**
-     * @method translateMatrix
+     * @method matrixTranslate
      * @summary Translates the supplied matrix.
      * @description This code derived from: https://gist.github.com/1145197
      *     Note that this method assumes it is operating on a 4X4 matrix
