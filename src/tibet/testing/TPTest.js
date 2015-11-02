@@ -2356,18 +2356,24 @@ function(suite, caseName, caseFunc) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getFiredSignalInfos',
-function(verbose, wantsRequests) {
+function(flags) {
 
     /**
      * Returns an Array of hashes of information about the argument sets of the
      *     signals fired using the TP.signal spy since it was last reset.
-     * @param {Boolean} [verbose=false] Whether or not to include extra signal
-     *     information, such as signal payload, policy and type. The default is
-     *     false, which means that only the signal origin and signal name are
-     *     included.
-     * @param {Boolean} wantsRequests Whether or not to include all of the sets
-     *     of signal arguments, including TP.sig.Requests, fired since the spy
-     *     was last reset when retrieving the information. The default is false.
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {Boolean} [verbose=false] Whether or not to include extra signal
+     *                  information, such as signal payload, policy and type.
+     *                  The default is false, which means that only the signal
+     *                  origin and signal name are included.
+     *          {Boolean} [wantsRequests=false] Whether or not to include all of
+     *                  the sets of signal arguments, including TP.sig.Requests,
+     *                  fired since the spy was last reset when retrieving the
+     *                  information. The default is false.
+     *          {Boolean} [localID=false] Whether or not to use the local ID
+     *                  rather than the global ID for the signal origin. The
+     *                  default is false (use the global ID).
      * @returns {Array} A list of hashes of information about the argument sets
      *     of the signals fired using the TP.signal spy.
      */
@@ -2376,10 +2382,9 @@ function(verbose, wantsRequests) {
 
     info = TP.ac();
 
-    this.getFiredSignals(wantsRequests).perform(
+    this.getFiredSignals(flags).perform(
             function(entry, index) {
-                info.push(this.getFiredSignalInfoAt(
-                                    index, verbose, wantsRequests));
+                info.push(this.getFiredSignalInfoAt(index, flags));
             }.bind(this));
 
     return info;
@@ -2388,19 +2393,25 @@ function(verbose, wantsRequests) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getFiredSignalInfosString',
-function(verbose, wantsRequests) {
+function(flags) {
 
     /**
      * Returns a String representation of the Array of hashes of information
      *     about the argument sets of the signals fired using the TP.signal spy
      *     since it was last reset.
-     * @param {Boolean} [verbose=false] Whether or not to include extra signal
-     *     information, such as signal payload, policy and type. The default is
-     *     false, which means that only the signal origin and signal name are
-     *     included.
-     * @param {Boolean} wantsRequests Whether or not to include all of the sets
-     *     of signal arguments, including TP.sig.Requests, fired since the spy
-     *     was last reset when retrieving the information. The default is false.
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {Boolean} [verbose=false] Whether or not to include extra signal
+     *                  information, such as signal payload, policy and type.
+     *                  The default is false, which means that only the signal
+     *                  origin and signal name are included.
+     *          {Boolean} [wantsRequests=false] Whether or not to include all of
+     *                  the sets of signal arguments, including TP.sig.Requests,
+     *                  fired since the spy was last reset when retrieving the
+     *                  information. The default is false.
+     *          {Boolean} [localID=false] Whether or not to use the local ID
+     *                  rather than the global ID for the signal origin. The
+     *                  default is false (use the global ID).
      * @returns {String} A String representation of the list of hashes of
      *     information about the argument sets of the signals fired using the
      *     TP.signal spy.
@@ -2408,7 +2419,7 @@ function(verbose, wantsRequests) {
 
     var str;
 
-    str = this.getFiredSignalInfos(verbose, wantsRequests).asDisplayString(
+    str = this.getFiredSignalInfos(flags).asDisplayString(
                 TP.hc('itemSeparator', '\n',
                         'kvSeparator', '  :  ',
                         'valueTransform',
@@ -2426,21 +2437,31 @@ function(verbose, wantsRequests) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getFiredSignals',
-function(wantsRequests) {
+function(flags) {
 
     /**
      * Returns an Array of the set of arguments of the signals fired using the
      *     TP.signal spy since it was last reset.
-     * @param {Boolean} wantsRequests Whether or not to return all of the sets
-     *     of signal arguments, including TP.sig.Requests, fired since the spy
-     *     was last reset. The default is false.
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {Boolean} [verbose=false] Whether or not to include extra signal
+     *                  information, such as signal payload, policy and type.
+     *                  The default is false, which means that only the signal
+     *                  origin and signal name are included.
+     *          {Boolean} [wantsRequests=false] Whether or not to include all of
+     *                  the sets of signal arguments, including TP.sig.Requests,
+     *                  fired since the spy was last reset when retrieving the
+     *                  information. The default is false.
+     *          {Boolean} [localID=false] Whether or not to use the local ID
+     *                  rather than the global ID for the signal origin. The
+     *                  default is false (use the global ID).
      * @returns {Array} A list of sets of signal arguments fired using the
      *     TP.signal spy.
      */
 
     //  If the caller wants TP.sig.Requests as well (false by default), then we
     //  hand back all of the invocations of 'TP.signal'.
-    if (wantsRequests) {
+    if (TP.isValid(flags) && flags.wantsRequests) {
         return TP.signal.args;
     }
 
@@ -2454,7 +2475,7 @@ function(wantsRequests) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getFiredSignalInfoAt',
-function(signalIndex, verbose, wantsRequests) {
+function(signalIndex, flags) {
 
     /**
      * Returns a hash of information about the argument set of the signal at
@@ -2463,18 +2484,26 @@ function(signalIndex, verbose, wantsRequests) {
      * @param {Number} signalIndex The index of the desired signal info in the
      *     list of all of the signals that have been gathered since the last
      *     reset.
-     * @param {Boolean} [verbose=false] Whether or not to include extra signal
-     *     information, such as signal payload, policy and type. The default is
-     *     false, which means that only the signal origin and signal name are
-     *     included.
-     * @param {Boolean} wantsRequests Whether or not to include all of the sets
-     *     of signal arguments, including TP.sig.Requests, fired since the spy
-     *     was last reset when retrieving the information. The default is false.
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {Boolean} [verbose=false] Whether or not to include extra signal
+     *                  information, such as signal payload, policy and type.
+     *                  The default is false, which means that only the signal
+     *                  origin and signal name are included.
+     *          {Boolean} [wantsRequests=false] Whether or not to include all of
+     *                  the sets of signal arguments, including TP.sig.Requests,
+     *                  fired since the spy was last reset when retrieving the
+     *                  information. The default is false.
+     *          {Boolean} [localID=false] Whether or not to use the local ID
+     *                  rather than the global ID for the signal origin. The
+     *                  default is false (use the global ID).
      * @returns {TP.core.Hash} A hash of information about the argument set of
      *     the signal at the given index.
      */
 
-    var signalArgs,
+    var reportFlags,
+
+        signalArgs,
         info,
 
         sigOrigin,
@@ -2482,7 +2511,9 @@ function(signalIndex, verbose, wantsRequests) {
 
         typeName;
 
-    signalArgs = this.getFiredSignals(wantsRequests).at(signalIndex);
+    reportFlags = TP.ifInvalid(flags, {});
+
+    signalArgs = this.getFiredSignals(reportFlags).at(signalIndex);
     if (!TP.isArray(signalArgs)) {
         return null;
     }
@@ -2491,17 +2522,39 @@ function(signalIndex, verbose, wantsRequests) {
 
     if (TP.isArray(sigOrigin = signalArgs.at(0))) {
         sigOrigin = sigOrigin.collect(
-                                function(item) {
+                        function(item) {
+                            if (TP.isString(item)) {
+                                if (reportFlags.localID) {
+                                    return item.slice(item.indexOf('#') + 1);
+                                } else {
+                                    return item;
+                                }
+                            } else {
+                                if (reportFlags.localID) {
+                                    return TP.lid(item);
+                                } else {
                                     return TP.id(item);
-                                });
+                                }
+                            }
+                        });
     } else {
-        sigOrigin = TP.id(sigOrigin);
+        if (TP.isString(sigOrigin)) {
+            if (reportFlags.localID) {
+                sigOrigin = sigOrigin.slice(sigOrigin.indexOf('#') + 1);
+            }
+        } else {
+            if (reportFlags.localID) {
+                sigOrigin = TP.lid(sigOrigin);
+            } else {
+                sigOrigin = TP.id(sigOrigin);
+            }
+        }
     }
 
     info.atPut('origin', sigOrigin);
     info.atPut('signame', TP.str(signalArgs.at(1)));
 
-    if (TP.isTrue(verbose)) {
+    if (TP.isTrue(reportFlags.verbose)) {
         info.atPut('payload', signalArgs.at(2));
         info.atPut('policy', TP.str(signalArgs.at(3)));
 
@@ -2522,18 +2575,28 @@ function(signalIndex, verbose, wantsRequests) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getFiredSignalNames',
-function(wantsRequests) {
+function(flags) {
 
     /**
      * Returns an Array of the names of the signals fired using the TP.signal
      *     spy since it was last reset.
-     * @param {Boolean} wantsRequests Whether or not to include all of the sets
-     *     of signal arguments, including TP.sig.Requests, fired since the spy
-     *     was last reset when retrieving the names. The default is false.
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {Boolean} [verbose=false] Whether or not to include extra signal
+     *                  information, such as signal payload, policy and type.
+     *                  The default is false, which means that only the signal
+     *                  origin and signal name are included.
+     *          {Boolean} [wantsRequests=false] Whether or not to include all of
+     *                  the sets of signal arguments, including TP.sig.Requests,
+     *                  fired since the spy was last reset when retrieving the
+     *                  information. The default is false.
+     *          {Boolean} [localID=false] Whether or not to use the local ID
+     *                  rather than the global ID for the signal origin. The
+     *                  default is false (use the global ID).
      * @returns {Array} A list of the signal names fired using the TP.signal spy.
      */
 
-    return this.getFiredSignals(wantsRequests).collect(
+    return this.getFiredSignals(flags).collect(
                 function(entry) {
                     return entry.at(1);
                 });
@@ -2542,20 +2605,29 @@ function(wantsRequests) {
 //  ------------------------------------------------------------------------
 
 TP.test.Case.Inst.defineMethod('getFiredSignalStacks',
-function(wantsRequests) {
+function(flags) {
 
     /**
      * Returns an Array of the stack traces of the signals fired using the
      *     TP.signal spy since it was last reset.
-     * @param {Boolean} wantsRequests Whether or not to include all of the sets
-     *     of signal arguments, including TP.sig.Requests, fired since the spy
-     *     was last reset when retrieving the stack traces. The default is
-     *     false.
+     * @param {Object} [flags] The 'flags' parameter is a method parameter set.
+     *     Properties can be any combination of the following:
+     *          {Boolean} [verbose=false] Whether or not to include extra signal
+     *                  information, such as signal payload, policy and type.
+     *                  The default is false, which means that only the signal
+     *                  origin and signal name are included.
+     *          {Boolean} [wantsRequests=false] Whether or not to include all of
+     *                  the sets of signal arguments, including TP.sig.Requests,
+     *                  fired since the spy was last reset when retrieving the
+     *                  information. The default is false.
+     *          {Boolean} [localID=false] Whether or not to use the local ID
+     *                  rather than the global ID for the signal origin. The
+     *                  default is false (use the global ID).
      * @returns {Array} A list of the signal stack traces fired using the
      *     TP.signal spy.
      */
 
-    return this.getFiredSignals(wantsRequests).collect(
+    return this.getFiredSignals(flags).collect(
                 function(entry) {
                     return entry.stack;
                 });
