@@ -4243,13 +4243,6 @@ function() {
     //  'onblur' method as the starting point.
     if (TP.canInvoke(node, 'blur')) {
         node.blur();
-
-        //  Unfortunately, for Webkit-based browsers, this will *not* invoke the
-        //  entire chain of events of blurring. Therefore, we do the best we can
-        //  and invoke our own 'TP.sig.UIBlur' signal ourself.
-        if (TP.sys.isUA('WEBKIT')) {
-            this.signal('TP.sig.UIBlur');
-        }
     } else {
         //  This is an element that cannot respond to blur calls (a non
         //  HTMLELement). So just signal manually here.
@@ -4295,13 +4288,6 @@ function(moveAction) {
     //  'onfocus' method as the starting point.
     if (TP.canInvoke(node, 'focus')) {
         node.focus();
-
-        //  Unfortunately, for Webkit-based browsers, this will *not* invoke the
-        //  entire chain of events of focusing. Therefore, we do the best we can
-        //  and invoke our own 'TP.sig.UIFocus' signal ourself.
-        if (TP.sys.isUA('WEBKIT')) {
-            this.signal('TP.sig.UIFocus');
-        }
     } else {
         //  This is an element that cannot respond to focus calls (a non
         //  HTMLELement). So just signal manually here.
