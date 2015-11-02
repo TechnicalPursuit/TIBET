@@ -1728,6 +1728,23 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('eventGetDOMSignalName',
+function(anEvent) {
+
+    /**
+     * @method eventGetDOMSignalName
+     * @summary Returns the properly adjusted DOM signal name for the DOM. This
+     *     should be correct provided that the event was acquired from a
+     *     TP.sig.DOMKeySignal rather than prior to TP.core.Keyboard handling.
+     * @param {Event} anEvent The event object to extract the signal name from.
+     * @returns {String} The full signal name such as DOM_Shift_Enter_Up.
+     */
+
+    return TP.core.Keyboard.getDOMSignalName(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('keyname',
 function(anEvent) {
 
@@ -1741,23 +1758,6 @@ function(anEvent) {
      */
 
     return TP.core.Keyboard.getEventVirtualKey(anEvent);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('domkeysigname',
-function(anEvent) {
-
-    /**
-     * @method domkeysigname
-     * @summary Returns the properly adjusted DOM signal name for the DOM. This
-     *     should be correct provided that the event was acquired from a
-     *     TP.sig.DOMKeySignal rather than prior to TP.core.Keyboard handling.
-     * @param {Event} anEvent The event object to extract the signal name from.
-     * @returns {String} The full signal name such as DOM_Shift_Enter_Up.
-     */
-
-    return TP.core.Keyboard.getDOMSignalName(anEvent);
 });
 
 //  ------------------------------------------------------------------------

@@ -362,7 +362,7 @@ function(anEvent) {
 
     var keyname;
 
-    keyname = TP.domkeysigname(anEvent);
+    keyname = TP.eventGetDOMSignalName(anEvent);
 
     switch (keyname) {
         case 'DOM_Shift_Enter_Down':
@@ -423,7 +423,7 @@ function(anEvent) {
     var keyname,
         consoleGUI;
 
-    keyname = TP.domkeysigname(anEvent);
+    keyname = TP.eventGetDOMSignalName(anEvent);
     consoleGUI = this.get('$consoleGUI');
 
     switch (keyname) {

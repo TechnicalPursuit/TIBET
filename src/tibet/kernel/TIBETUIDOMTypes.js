@@ -456,7 +456,7 @@ function(aTargetElem, anEvent) {
     //  event
     if (evtTargetTPElem.canHandleKey(anEvent)) {
         //  Grab the TIBET 'key name' from the event.
-        keyname = TP.domkeysigname(anEvent);
+        keyname = TP.eventGetDOMSignalName(anEvent);
 
         if (keyname === 'DOM_Enter_Down') {
             //  Try to activate the event target element
@@ -555,7 +555,7 @@ function(aTargetElem, anEvent) {
     //  event
     if (evtTargetTPElem.canHandleKey(anEvent)) {
         //  Grab the TIBET 'key name' from the event.
-        keyname = TP.domkeysigname(anEvent);
+        keyname = TP.eventGetDOMSignalName(anEvent);
 
         if (keyname === 'DOM_Enter_Up') {
             //  Try to deactivate the event target element
@@ -1114,7 +1114,7 @@ function(anEvent) {
         bindingsType,
         bindingsMap;
 
-    keyname = TP.domkeysigname(anEvent);
+    keyname = TP.eventGetDOMSignalName(anEvent);
 
     switch (keyname) {
 

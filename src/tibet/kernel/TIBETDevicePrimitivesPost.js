@@ -17,11 +17,11 @@ once all browser-specific device features have been included.
 //  EVENT NAME UTILITIES
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('eventNameNativeValue',
+TP.definePrimitive('$getEventNameForSignalName',
 function(eventName) {
 
     /**
-     * @method eventNameNativeValue
+     * @method $getEventNameForSignalName
      * @summary Returns the name of the native event that maps to the TIBET
      *     event name provided.
      * @param {String} eventName An event name such as F12_Up or
@@ -1925,7 +1925,7 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
         /* eslint-disable no-loop-func */
         for (i2 = 0; i2 < len2; i2++) {
             eventName = eventNameArray.at(i2);
-            nativeEventName = TP.eventNameNativeValue(eventName);
+            nativeEventName = TP.$getEventNameForSignalName(eventName);
 
             //  Build a wrapper handle that will do some nice W3C
             //  translations for us.
@@ -2123,7 +2123,7 @@ function(aWindow, aNode, eventNameArray, aHandler) {
         len2 = eventNameArray.getSize();
         for (i2 = 0; i2 < len2; i2++) {
             eventName = eventNameArray.at(i2);
-            nativeEventName = TP.eventNameNativeValue(eventName);
+            nativeEventName = TP.$getEventNameForSignalName(eventName);
 
             if (TP.isValid(theHandler.$$wrapper)) {
                 theHandler = theHandler.$$wrapper;

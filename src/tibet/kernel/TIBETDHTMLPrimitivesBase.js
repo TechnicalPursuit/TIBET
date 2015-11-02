@@ -1967,7 +1967,7 @@ function(aWindow, eventNameArray, aHandler) {
     len = eventNameArray.getSize();
     for (i = 0; i < len; i++) {
         eventName = eventNameArray.at(i);
-        nativeEventName = TP.eventNameNativeValue(eventName);
+        nativeEventName = TP.$getEventNameForSignalName(eventName);
 
         aWindow.document.addEventListener(nativeEventName,
                                             handler,
@@ -2093,7 +2093,7 @@ function(aWindow, eventNameArray, aHandler) {
     len = eventNameArray.getSize();
     for (i = 0; i < len; i++) {
         eventName = eventNameArray.at(i);
-        nativeEventName = TP.eventNameNativeValue(eventName);
+        nativeEventName = TP.$getEventNameForSignalName(eventName);
 
         aWindow.document.removeEventListener(nativeEventName,
                                                     handler,

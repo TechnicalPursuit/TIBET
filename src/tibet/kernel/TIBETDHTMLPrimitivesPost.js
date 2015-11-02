@@ -859,11 +859,11 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentRewriteSpecialHacks',
+TP.definePrimitive('documentRewriteHacks',
 function(theContent) {
 
     /**
-     * @method documentRewriteSpecialHacks
+     * @method documentRewriteHacks
      * @summary Rewrites any 'style' content in the head (either 'link'
      *     elements or content within a 'style' element) that was placed there
      *     to work around Mozilla bugs.
@@ -1287,7 +1287,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         str = str.replace(/&apos;/g, '&#39;');
     }
 
-    str = TP.documentRewriteSpecialHacks(str);
+    str = TP.documentRewriteHacks(str);
 
     //  Grab the native window for instrumentation
     win = TP.nodeGetWindow(aDocument);

@@ -997,7 +997,7 @@ function(anEvent) {
 
     var keyname;
 
-    keyname = TP.domkeysigname(anEvent);
+    keyname = TP.eventGetDOMSignalName(anEvent);
 
     switch (keyname) {
         case 'DOM_Tab_Down':
@@ -1040,7 +1040,7 @@ function(anEvent) {
 
     var keyname;
 
-    keyname = TP.domkeysigname(anEvent);
+    keyname = TP.eventGetDOMSignalName(anEvent);
 
     switch (keyname) {
         case 'DOM_Tab_Up':
@@ -1175,7 +1175,7 @@ function(aSignal) {
         TP.eventStopPropagation(evt);
 
         input = TP.ifInvalid(this.$get('concealedInput'), '');
-        keyname = TP.domkeysigname(evt);
+        keyname = TP.eventGetDOMSignalName(evt);
 
         if (keyname === 'DOM_Backspace_Up') {
             if (input.getSize() > 0) {
@@ -1189,7 +1189,7 @@ function(aSignal) {
         this.setInputContent('*'.times(
                 this.$get('concealedInput').getSize()));
     } else {
-        keyname = TP.domkeysigname(evt);
+        keyname = TP.eventGetDOMSignalName(evt);
 
         if (keyname === 'DOM_Enter_Up' || keyname === 'DOM_Backspace_Up') {
             this.adjustInputCellSize();

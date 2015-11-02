@@ -555,7 +555,7 @@ function(anEvent) {
 
     var keyname;
 
-    keyname = TP.domkeysigname(anEvent);
+    keyname = TP.eventGetDOMSignalName(anEvent);
 
     switch (keyname) {
         case 'DOM_Shift_Down_Up':
@@ -588,7 +588,7 @@ function(anEvent) {
 
     var keyname;
 
-    keyname = TP.domkeysigname(anEvent);
+    keyname = TP.eventGetDOMSignalName(anEvent);
 
     switch (keyname) {
         case 'DOM_Shift_Down_Up':
