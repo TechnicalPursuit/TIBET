@@ -104,7 +104,7 @@ function(anHref) {
         //  document. Note that this will automatically take care of assigning a
         //  cache-busting URL to the href, etc.
         doc = this.getNativeDocument();
-        TP.documentStyleHrefReload(doc, anHref);
+        TP.documentReloadCSSLinkElementHref(doc, anHref);
 
         //  Work around Chrome (and possibly others) stupidity.
         TP.windowForceRepaint(TP.nodeGetWindow(doc));

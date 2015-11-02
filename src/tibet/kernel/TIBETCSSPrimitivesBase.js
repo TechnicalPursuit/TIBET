@@ -737,11 +737,11 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentStyleHrefReload',
+TP.definePrimitive('documentReloadCSSLinkElementHref',
 function(aDocument, anHref) {
 
     /**
-     * @method documentStyleHrefReload
+     * @method documentReloadCSSLinkElementHref
      * @summary Reloads any style 'link' element pointing to the supplied
      *     href, if it can be found in the supplied Document.
      * @param {Document} aDocument The document to look for 'link' elements
