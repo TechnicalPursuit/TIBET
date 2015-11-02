@@ -2255,6 +2255,9 @@ function() {
     var unloadURI,
         loadURI,
 
+        shouldDumpFocusStack,
+        dumpFocusStack,
+
         focusStackPreTest;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
@@ -2294,6 +2297,28 @@ function() {
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
         });
+
+    //  Toggle this flag for debugging output.
+    shouldDumpFocusStack = false;
+
+    dumpFocusStack = function(identifier, test, focusedElem) {
+        if (shouldDumpFocusStack) {
+            //  NB: Use the low-level console call to avoid Sherpa focusing
+            //  back-and-forth problems.
+            /* eslint-disable no-console */
+            console.log(
+                '--- ' + identifier + '---' + '\n\n' +
+                'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
+                'focus stack:\n' + $focus_stack.collect(
+                                        function(elem) {
+                                            return TP.id(elem);
+                                        }).join('\n') + '\n\n' +
+                'signals fired to achieve state:\n' +
+                            test.getFiredSignalInfosString({localID: true}) +
+                            '\n\n');
+            /* eslint-enable no-console */
+        }
+    };
 
     //  ---
 
@@ -2344,6 +2369,8 @@ function() {
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
 
+                dumpFocusStack('Step #0', test, focusedElem);
+
                 if (TP.sys.isUA('IE')) {
                     //  IE, unfortunately, doesn't *really* focus the 'body'
                     //  element when the window is focused, even though it
@@ -2375,17 +2402,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
 
-                        /*
-                        console.log(
-                            '--- Step #1 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #1', test, focusedElem);
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #1');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem1));
 
@@ -2398,11 +2422,11 @@ function() {
                         //  TP.sig.UIDidPushFocus   -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidPushFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem1
-                        test.assert.didSignal(elem1, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDidFocus       -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem1
+                        test.assert.didSignal(elem1, 'TP.sig.DOMFocus');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2420,17 +2444,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
 
-                        /*
-                        console.log(
-                            '--- Step #2 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #2', test, focusedElem);
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #2');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem2));
 
@@ -2443,6 +2464,9 @@ function() {
                         //  TP.sig.UIDidPopFocus    -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidPopFocus');
 
+                        //  TP.sig.UIDidBlur        -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
+
                         //  TP.sig.DOMBlur          -   window/elem1
                         test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
 
@@ -2452,14 +2476,11 @@ function() {
                         //  TP.sig.UIDidPushFocus   -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIDidBlur        -   elem1
-                        test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
-
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2477,19 +2498,16 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
 
-                        /*
-                        console.log(
-                            '--- Step #3 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #3', test, focusedElem);
 
                         //  At this point, the focus stack should have two items
                         //  on it, because we entered a new focusing context -
                         //  the previous element (elem2) and the currently
                         //  focused element (elem3)
-                        test.assert.isSizeOf($focus_stack, 2);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                2,
+                                'Focus stack not correct size in Step #3');
                         test.assert.isIdenticalTo($focus_stack.first(),
                                                     TP.wrap(elem2));
                         test.assert.isIdenticalTo($focus_stack.last(),
@@ -2503,6 +2521,9 @@ function() {
                         //  TP.sig.UIBlur           -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIBlur');
 
+                        //  TP.sig.UIDidBlur        -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
+
                         //  TP.sig.DOMBlur          -   window/elem2
                         test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
 
@@ -2512,14 +2533,11 @@ function() {
                         //  TP.sig.UIDidPushFocus   -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidPushFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIDidBlur        -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
-
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2543,17 +2561,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
 
-                        /*
-                        console.log(
-                            '--- Step #4 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #4', test, focusedElem);
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #4');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem2));
 
@@ -2566,26 +2581,14 @@ function() {
                         //  TP.sig.UIDidPopFocus    -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidPopFocus');
 
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.UIFocus          -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIBlur           -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIBlur');
-
-                        //  TP.sig.DOMBlur          -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIFocus');
 
                         //  TP.sig.UIDidPushFocus   -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.UIDidFocus       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
                         //  TP.sig.DOMFocus         -   window/elem2
                         test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
@@ -2593,11 +2596,8 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.UIDidBlur        -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
-
-                        //  TP.sig.UIDidFocus       -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
+                        //  TP.sig.DOMBlur          -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2618,17 +2618,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem4);
 
-                        /*
-                        console.log(
-                            '--- Step #5 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #5', test, focusedElem);
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #5');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem4));
 
@@ -2648,19 +2645,16 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
 
-                        /*
-                        console.log(
-                            '--- Step #6 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #6', test, focusedElem);
 
                         //  At this point, the focus stack should have two items
                         //  on it, because we entered a new focusing context -
                         //  the previous element (elem2) and the currently
                         //  focused element (elem4)
-                        test.assert.isSizeOf($focus_stack, 2);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                2,
+                                'Focus stack not correct size in Step #6');
                         test.assert.isIdenticalTo($focus_stack.first(),
                                                     TP.wrap(elem4));
                         test.assert.isIdenticalTo($focus_stack.last(),
@@ -2674,6 +2668,9 @@ function() {
                         //  TP.sig.UIBlur           -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIBlur');
 
+                        //  TP.sig.UIDidBlur        -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
+
                         //  TP.sig.DOMBlur          -   window/elem4
                         test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
 
@@ -2683,14 +2680,11 @@ function() {
                         //  TP.sig.UIDidPushFocus   -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidPushFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIDidBlur        -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
-
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2715,17 +2709,14 @@ function() {
 
                         test.assert.isIdenticalTo(focusedElem, elem4);
 
-                        /*
-                        console.log(
-                            '--- Step #7 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #7', test, focusedElem);
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #7');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem4));
 
@@ -2738,26 +2729,14 @@ function() {
                         //  TP.sig.UIDidPopFocus    -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidPopFocus');
 
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.UIFocus          -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIBlur           -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIBlur');
-
-                        //  TP.sig.DOMBlur          -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem4
-                        test.assert.didSignal(elem2, 'TP.sig.UIFocus');
+                        test.assert.didSignal(elem4, 'TP.sig.UIFocus');
 
                         //  TP.sig.UIDidPushFocus   -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.UIDidFocus       -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidFocus');
 
                         //  TP.sig.DOMFocus         -   window/elem4
                         test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
@@ -2765,11 +2744,8 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.UIDidBlur        -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
-
-                        //  TP.sig.UIDidFocus       -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIDidFocus');
+                        //  TP.sig.DOMBlur          -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2790,17 +2766,14 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem1);
 
-                        /*
-                        console.log(
-                            '--- Step #8 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #8', test, focusedElem);
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #8');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem1));
 
@@ -2823,28 +2796,31 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
 
+                        dumpFocusStack('Step #9', test, focusedElem);
+
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #9');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem2));
 
-                        /*
-                        console.log(
-                            '--- Step #9 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
-
                         //  TP.sig.UIActivate       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIActivate');
+
+                        //  TP.sig.UIDidActivate    -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidActivate');
 
                         //  TP.sig.UIBlur           -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIBlur');
 
                         //  TP.sig.UIDidPopFocus    -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidPopFocus');
+
+                        //  TP.sig.UIDidBlur        -   elem1
+                        test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
 
                         //  TP.sig.DOMBlur          -   window/elem1
                         test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
@@ -2855,22 +2831,16 @@ function() {
                         //  TP.sig.UIDidPushFocus   -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIDidActivate    -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIDidActivate');
-
-                        //  TP.sig.UIDidBlur        -   elem1
-                        test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
-
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.UIDeactivate       -   elem2
+                        //  TP.sig.DOMFocus         -   window/elem2
+                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
+
+                        //  TP.sig.UIDeactivate     -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDeactivate');
 
-                        //  TP.sig.UIDidDeactivate    -   elem2
+                        //  TP.sig.UIDidDeactivate  -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidDeactivate');
 
                         //  Reset the spy on TP.signal in preparation for the
@@ -2892,19 +2862,16 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem3);
 
-                        /*
-                        console.log(
-                            '--- Step #10 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #10', test, focusedElem);
 
                         //  At this point, the focus stack should have two items
                         //  on it, because we entered a new focusing context -
                         //  the previous element (elem2) and the currently
                         //  focused element (elem4)
-                        test.assert.isSizeOf($focus_stack, 2);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                2,
+                                'Focus stack not correct size in Step #10');
                         test.assert.isIdenticalTo($focus_stack.first(),
                                                     TP.wrap(elem2));
                         test.assert.isIdenticalTo($focus_stack.last(),
@@ -2912,11 +2879,17 @@ function() {
 
                         //  No 'Pop' event since we entered a new context.
 
-                        //  TP.sig.UIActivate      -   elem3
+                        //  TP.sig.UIActivate       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIActivate');
+
+                        //  TP.sig.UIDidActivate    -   elem3
+                        test.assert.didSignal(elem3, 'TP.sig.UIDidActivate');
 
                         //  TP.sig.UIBlur           -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIBlur');
+
+                        //  TP.sig.UIDidBlur        -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
 
                         //  TP.sig.DOMBlur          -   window/elem2
                         test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
@@ -2930,17 +2903,11 @@ function() {
                         //  TP.sig.UIDidPushFocus   -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidPushFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIDidActivate    -   elem3
-                        test.assert.didSignal(elem3, 'TP.sig.UIDidActivate');
-
-                        //  TP.sig.UIDidBlur        -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
-
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
+
+                        //  TP.sig.DOMFocus         -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
                         //  TP.sig.UIDeactivate     -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDeactivate');
@@ -2971,22 +2938,22 @@ function() {
                         focusedElem = driver.getFocusedElement();
                         test.assert.isIdenticalTo(focusedElem, elem2);
 
-                        /*
-                        console.log(
-                            '--- Step #11 ---' + '\n\n' +
-                            'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                            'focus stack:\n' + $focus_stack.collect(function(elem) {return TP.id(elem); }).join('\n') + '\n\n' +
-                            'signal info:\n' + test.getFiredSignalInfosString() + '\n\n');
-                        */
+                        dumpFocusStack('Step #11', test, focusedElem);
 
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
-                        test.assert.isSizeOf($focus_stack, 1);
+                        test.assert.isSizeOf(
+                                $focus_stack,
+                                1,
+                                'Focus stack not correct size in Step #11');
                         test.assert.isIdenticalTo($focus_stack.last(),
                                                     TP.wrap(elem2));
 
                         //  TP.sig.UIActivate       -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIActivate');
+
+                        //  TP.sig.UIDidActivate    -   elem4
+                        test.assert.didSignal(elem4, 'TP.sig.UIDidActivate');
 
                         //  TP.sig.UIBlur           -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIBlur');
@@ -2994,35 +2961,14 @@ function() {
                         //  TP.sig.UIDidPopFocus    -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidPopFocus');
 
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.DOMChange        -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMChange');
-
-                        //  TP.sig.UIFocus          -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
-
-                        //  TP.sig.UIDidActivate    -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIDidActivate');
-
-                        //  TP.sig.UIBlur           -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIBlur');
-
-                        //  TP.sig.DOMBlur          -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.DOMChange        -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMChange');
-
                         //  TP.sig.UIFocus          -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIFocus');
 
                         //  TP.sig.UIDidPushFocus   -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidPushFocus');
+
+                        //  TP.sig.UIDidFocus       -   elem2
+                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
                         //  TP.sig.DOMFocus         -   window/elem2
                         test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
@@ -3030,11 +2976,14 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.UIDidBlur        -   elem4
-                        test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
+                        //  TP.sig.DOMBlur          -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
 
-                        //  TP.sig.UIDidFocus       -   elem2
-                        test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
+                        //  TP.sig.DOMChange        -   window/elem3
+                        test.assert.didSignal(elem3, 'TP.sig.DOMChange');
+
+                        //  TP.sig.DOMChange        -   window/elem4
+                        test.assert.didSignal(elem4, 'TP.sig.DOMChange');
 
                         //  TP.sig.UIDeactivate     -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDeactivate');
