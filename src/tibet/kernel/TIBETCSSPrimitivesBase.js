@@ -354,7 +354,7 @@ function(targetDoc, styleText, beforeNode) {
 
     if (TP.isString(styleText)) {
         //  Set the content of the style element to the new style text.
-        TP.styleElementSetContent(newStyleElement, styleText);
+        TP.cssStyleElementSetContent(newStyleElement, styleText);
     }
 
     return newStyleElement;
@@ -541,7 +541,7 @@ function(anElement, targetDoc) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    cssText = TP.styleElementGetContent(anElement);
+    cssText = TP.cssStyleElementGetContent(anElement);
 
     newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
 
@@ -1471,11 +1471,11 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('styleElementGetContent',
+TP.definePrimitive('cssStyleElementGetContent',
 function(anElement) {
 
     /**
-     * @method styleElementGetContent
+     * @method cssStyleElementGetContent
      * @summary Returns the all of the CSS text under anElement, which should
      *     be a 'style' element. NB: The caller *must* supply a 'style' element
      *     here, or an 'TP.sig.InvalidElement' exception will be thrown.
@@ -1499,11 +1499,11 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('styleElementSetContent',
+TP.definePrimitive('cssStyleElementSetContent',
 function(anElement, styleText) {
 
     /**
-     * @method styleElementSetContent
+     * @method cssStyleElementSetContent
      * @summary Sets the all of the CSS text under anElement, which should be a
      *     'style' element. NB: The caller *must* supply a 'style' element here,
      *     or an 'TP.sig.InvalidElement' exception will be thrown.

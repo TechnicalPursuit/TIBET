@@ -363,7 +363,7 @@ function(lessLoc, lessText) {
                 } else {
 
                     //  Otherwise, just set the content of the existing one.
-                    TP.styleElementSetContent(existingStyleElem, cssText);
+                    TP.cssStyleElementSetContent(existingStyleElem, cssText);
                 }
 
                 //  Work around Chrome (and possibly others) stupidity
@@ -564,7 +564,7 @@ function() {
                 TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
             } else {
                 //  Otherwise, just set the content of the existing one.
-                TP.styleElementSetContent(existingStyleElem, resourceStr);
+                TP.cssStyleElementSetContent(existingStyleElem, resourceStr);
             }
     }
 
