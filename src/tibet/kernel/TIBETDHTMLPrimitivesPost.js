@@ -67,7 +67,7 @@ function() {
 
         //  Create a 'div' that we will use for measuring the fonts.
         measuringDiv = document.createElement('div');
-        TP.elementSetStyle(
+        TP.elementSetStyleString(
             measuringDiv,
             'position: absolute; top: 0px; left: -100px; ' +
             'width: 30px; height: 1000em; ' +
@@ -132,7 +132,7 @@ function() {
         //  Create a 'div' that will scroll. This is where we will take our
         //  measurements.
         scrollingDiv = document.createElement('div');
-        TP.elementSetStyle(
+        TP.elementSetStyleString(
                 scrollingDiv,
                 'position: absolute; top: -300px; left: 0px; ' +
                 'width: 100px; height: 100px; overflow: scroll;');
@@ -140,7 +140,7 @@ function() {
         //  Create a child that we will append to it that will cause it to
         //  scroll.
         testingDiv = document.createElement('div');
-        TP.elementSetStyle(
+        TP.elementSetStyleString(
                 testingDiv,
                 'width: 400px; height: 400px;');
 
@@ -735,7 +735,7 @@ function(aDocument, aFontSize) {
 
         //  Create a 'div' that will be used to do the measuring.
         measuringDiv = aDocument.createElement('div');
-        TP.elementSetStyle(
+        TP.elementSetStyleString(
                 measuringDiv,
                 'position: absolute; top 0px; left: -100px; ' +
                 'width: 30px; height: 1000em; border: 0px; margin: 0px; ' +
@@ -5199,19 +5199,19 @@ function(anElement, aMessage) {
 
     //  Note how the z-index here is set to the TP.POPUP_TIER in the TIBET
     //  kernel.
-    TP.elementSetStyle(
+    TP.elementSetStyleString(
             busyElement,
             TP.join('position: absolute;',
                     ' display: none;',
                     ' z-index: ', TP.POPUP_TIER, ';'));
 
     controlImageElement = busyElement.getElementsByTagName('div')[0];
-    TP.elementSetStyle(
+    TP.elementSetStyleString(
         controlImageElement,
             TP.join('position: relative;'));
 
     busyMessageElement = busyElement.getElementsByTagName('span')[0];
-    TP.elementSetStyle(
+    TP.elementSetStyleString(
         busyMessageElement,
             TP.join(
             'position: absolute;',

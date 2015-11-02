@@ -1085,7 +1085,7 @@ function(elemOrId, aProperty, nodeContext) {
 
     /**
      * @method getStyle
-     * @summary A convenience wrapper for TP.elementGetStyle. The element
+     * @summary A convenience wrapper for TP.elementGetStyleString. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1097,7 +1097,7 @@ function(elemOrId, aProperty, nodeContext) {
      * @returns {String} A CSS style string.
      */
 
-    return TP.tpcall('elementGetStyle', elemOrId, nodeContext, aProperty);
+    return TP.tpcall('elementGetStyleString', elemOrId, nodeContext, aProperty);
 });
 
 //  ------------------------------------------------------------------------
@@ -1107,7 +1107,7 @@ function(elemOrId, aProperty, nodeContext) {
 
     /**
      * @method hasStyle
-     * @summary A convenience wrapper for TP.elementHasStyle. The element
+     * @summary A convenience wrapper for TP.elementHasStyleString. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1120,7 +1120,7 @@ function(elemOrId, aProperty, nodeContext) {
      *     name, or inline style.
      */
 
-    return TP.tpcall('elementHasStyle', elemOrId, nodeContext, aProperty);
+    return TP.tpcall('elementHasStyleString', elemOrId, nodeContext, aProperty);
 });
 
 //  ------------------------------------------------------------------------
@@ -1215,7 +1215,7 @@ function(elemOrId, aProperty, aValue, nodeContext) {
 
     /**
      * @method setStyle
-     * @summary A convenience wrapper for TP.elementSetStyle. The element
+     * @summary A convenience wrapper for TP.elementSetStyleString. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1227,7 +1227,7 @@ function(elemOrId, aProperty, aValue, nodeContext) {
      * @returns {Element} The element.
      */
 
-    return TP.tpcall('elementSetStyle',
+    return TP.tpcall('elementSetStyleString',
                         elemOrId, nodeContext, aProperty, aValue);
 });
 

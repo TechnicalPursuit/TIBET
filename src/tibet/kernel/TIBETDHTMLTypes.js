@@ -1366,7 +1366,7 @@ function(aSignal) {
     insetBottom = this.get('insetBottom');
     insetLeft = this.get('insetLeft');
 
-    TP.elementSetStyle(overlayElem,
+    TP.elementSetStyleString(overlayElem,
                         TP.join('position: ', 'absolute;',
                                 ' top: ', insetTop + 'px;',
                                 ' right: ', insetRight + 'px;',
@@ -2279,7 +2279,7 @@ function(aSignal) {
     insetBottom = this.get('insetBottom');
     insetLeft = this.get('insetLeft');
 
-    TP.elementSetStyle(overlayElem,
+    TP.elementSetStyleString(overlayElem,
                         TP.join('position: ', 'absolute;',
                                 ' top: ', insetTop + 'px;',
                                 ' right: ', insetRight + 'px;',
@@ -3767,7 +3767,7 @@ function() {
 
     dragClone = TP.nodeCloneNode(repElem);
 
-    TP.elementSetStyle(
+    TP.elementSetStyleString(
                 dragClone,
                 TP.elementGetComputedStyle(
                     repElem,

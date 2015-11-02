@@ -86,7 +86,7 @@ function() {
      *     element.
      */
 
-    return TP.elementGetStyle(this.getNativeNode());
+    return TP.elementGetStyleString(this.getNativeNode());
 });
 
 //  ------------------------------------------------------------------------
@@ -166,7 +166,7 @@ function(aStyle) {
     if (TP.isString(aStyle)) {
         //  We have the whole 'style' String and we want to set it all at
         //  once.
-        TP.elementSetStyle(this.getNativeNode(), aStyle);
+        TP.elementSetStyleString(this.getNativeNode(), aStyle);
     }
 
     styleObj = this.getNativeNode().style;

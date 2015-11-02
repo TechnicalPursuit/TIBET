@@ -1226,7 +1226,7 @@ function(anElement, aProperty, aValue) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    style = TP.elementGetStyle(anElement);
+    style = TP.elementGetStyleString(anElement);
     dict = TP.styleStringAsHash(style);
 
     name = aProperty.asDOMName();
@@ -1239,7 +1239,7 @@ function(anElement, aProperty, aValue) {
     }
 
     style = TP.styleStringFromHash(dict);
-    TP.elementSetStyle(anElement, style);
+    TP.elementSetStyleString(anElement, style);
 
     return anElement;
 });
@@ -1345,11 +1345,11 @@ function(anElement, aProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetStyle',
+TP.definePrimitive('elementGetStyleString',
 function(anElement, aProperty) {
 
     /**
-     * @method elementGetStyle
+     * @method elementGetStyleString
      * @summary Returns the element's CSS style (its 'inline style') as a
      *     String, or the value of a specific property if one is provided. When
      *     acquiring the entire style string you can get a TP.core.Hash of those
@@ -1472,11 +1472,11 @@ function(anElement, aProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementHasStyle',
+TP.definePrimitive('elementHasStyleString',
 function(anElement, aProperty) {
 
     /**
-     * @method elementHasStyle
+     * @method elementHasStyleString
      * @summary Returns true if the element has 'inline style'. If a property
      *     is provided the return value is based on whether that property is
      *     inline for the element.
@@ -1490,7 +1490,7 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    return TP.notEmpty(TP.elementGetStyle(anElement, aProperty));
+    return TP.notEmpty(TP.elementGetStyleString(anElement, aProperty));
 });
 
 //  ------------------------------------------------------------------------
@@ -1581,7 +1581,7 @@ function(anElement) {
     //  Go ahead and set this, even if the style is the empty String.
     TP.elementSetAttribute(anElement,
                             'tibet:style',
-                            TP.elementGetStyle(anElement),
+                            TP.elementGetStyleString(anElement),
                             true);
 
     return anElement;
@@ -1690,7 +1690,7 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    css = TP.elementGetStyle(anElement);
+    css = TP.elementGetStyleString(anElement);
     if (TP.isEmpty(css)) {
         return anElement;
     }
@@ -1702,7 +1702,7 @@ function(anElement, aProperty) {
         str = css.strip(re);
     }
 
-    return TP.elementSetStyle(anElement, str);
+    return TP.elementSetStyleString(anElement, str);
 });
 
 //  ------------------------------------------------------------------------
@@ -1746,7 +1746,7 @@ function(anElement, aProperty) {
         styleHash.removeKey(aProperty.asDOMName());
     }
 
-    TP.elementSetStyle(anElement, styleHash);
+    TP.elementSetStyleString(anElement, styleHash);
 
     return;
 });
@@ -1775,7 +1775,7 @@ function(anElement, aProperty, oldValue, newValue) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    css = TP.elementGetStyle(anElement);
+    css = TP.elementGetStyleString(anElement);
     if (TP.isEmpty(css)) {
         return anElement;
     }
@@ -1787,7 +1787,7 @@ function(anElement, aProperty, oldValue, newValue) {
         str = css.strip(re);
     }
 
-    return TP.elementSetStyle(anElement, str);
+    return TP.elementSetStyleString(anElement, str);
 });
 
 //  ------------------------------------------------------------------------
@@ -1804,7 +1804,7 @@ function(anElement) {
      */
 
     if (TP.elementHasAttribute(anElement, 'tibet:style', true)) {
-        TP.elementSetStyle(
+        TP.elementSetStyleString(
                 anElement,
                 TP.elementGetAttribute(anElement, 'tibet:style', true));
     }
@@ -1814,11 +1814,11 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementSetStyle',
+TP.definePrimitive('elementSetStyleString',
 function(anElement, theStyle) {
 
     /**
-     * @method elementSetStyle
+     * @method elementSetStyleString
      * @summary Sets the element's CSS style (its 'inline style') to the
      *     supplied CSS-formatted style String.
      * @param {HTMLElement} anElement The element to set the inline CSS style
@@ -1890,7 +1890,7 @@ function(anElement, aProperty, aPropertyValue) {
         styleHash.atPut(aProperty.asDOMName(), aPropertyValue);
     }
 
-    TP.elementSetStyle(anElement, styleHash);
+    TP.elementSetStyleString(anElement, styleHash);
 
     return;
 });
