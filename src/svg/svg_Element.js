@@ -59,12 +59,12 @@ function(aRequest) {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.svg.Element.Type.defineMethod('tagUnmarshal',
+TP.svg.Element.Type.defineMethod('tagResolve',
 function(aRequest) {
 
     /**
-     * @method tagUnmarshal
-     * @summary Unmarshals the receiver's content. This includes resolving XML
+     * @method tagResolve
+     * @summary Resolves the receiver's content. This includes resolving XML
      *     Base URIs and virtual URIs that may occur on the receiver's
      *     attributes.
      * @param {TP.sig.Request} aRequest A request containing processing

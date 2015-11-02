@@ -261,7 +261,7 @@ TP.core.TSH.Type.defineConstant(
                                 //  etc.
             'Store',            //  save the content in a cache/repository
             'Load',             //  load the content from a cache/repository
-            'Unmarshal',        //  resolve xml:base TP.core.URI references,
+            'Resolve',          //  resolve xml:base TP.core.URI references,
                                 //  decode etc.
 
             'Localize',         //  adjust for browser, lang, etc.
@@ -294,7 +294,7 @@ TP.core.TSH.Type.defineConstant(
 
 TP.core.TSH.Type.defineConstant(
     'REVIVE_PHASES',
-    TP.ac('Unmarshal',          //  move non-DTD content out of html:head
+    TP.ac('Resolve',            //  move non-DTD content out of html:head
                                 //  etc.
             'Localize',         //  adjust for browser, lang, etc.
             'Optimize',         //  do performance-related indexing etc.

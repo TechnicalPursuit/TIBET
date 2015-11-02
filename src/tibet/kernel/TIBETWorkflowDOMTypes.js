@@ -789,7 +789,7 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.TidyPhase',            //  move non-DTD content out of html:head
                                     //  etc.
 
-    'TP.core.UnmarshalPhase',       //  resolve xml:base TP.core.URI references,
+    'TP.core.ResolvePhase',         //  resolve xml:base TP.core.URI references,
                                     //  decode etc.
 
     'TP.core.LocalizePhase'         //  adjust for browser, lang, etc.
@@ -1601,20 +1601,20 @@ function(aNode) {
 });
 
 //  ========================================================================
-//  TP.core.UnmarshalPhase
+//  TP.core.ResolvePhase
 //  ========================================================================
 
 /**
- * @type {TP.core.UnmarshalPhase}
+ * @type {TP.core.ResolvePhase}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TagProcessorPhase.defineSubtype('core.UnmarshalPhase');
+TP.core.TagProcessorPhase.defineSubtype('core.ResolvePhase');
 
 //  ------------------------------------------------------------------------
 
-TP.core.UnmarshalPhase.Inst.defineMethod('getTargetMethod',
+TP.core.ResolvePhase.Inst.defineMethod('getTargetMethod',
 function() {
 
     /**
@@ -1626,12 +1626,12 @@ function() {
      *     the target content.
      */
 
-    return 'tagUnmarshal';
+    return 'tagResolve';
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UnmarshalPhase.Inst.defineMethod('queryForNodes',
+TP.core.ResolvePhase.Inst.defineMethod('queryForNodes',
 function(aNode) {
 
     /**
