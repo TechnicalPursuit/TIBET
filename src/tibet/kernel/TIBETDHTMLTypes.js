@@ -3769,7 +3769,7 @@ function() {
 
     TP.elementSetStyleString(
                 dragClone,
-                TP.elementGetComputedStyle(
+                TP.elementGetComputedStyleString(
                     repElem,
                     TP.core.UIElementNode.DRAG_CSS_PROPERTY_NAMES));
 

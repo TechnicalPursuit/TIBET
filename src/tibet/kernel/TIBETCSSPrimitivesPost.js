@@ -1198,11 +1198,11 @@ here they are.
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementAddStyle',
+TP.definePrimitive('elementAddStyleValue',
 function(anElement, aProperty, aValue) {
 
     /**
-     * @method elementAddStyle
+     * @method elementAddStyleValue
      * @summary Adds a style value to the property provided. Note that many of
      *     the properties in CSS don't actually allow the value to have
      *     space-separated content so this is only viable for a small subset of
@@ -1246,11 +1246,11 @@ function(anElement, aProperty, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetComputedStyle',
+TP.definePrimitive('elementGetComputedStyleString',
 function(anElement, aProperty) {
 
     /**
-     * @method elementGetComputedStyle
+     * @method elementGetComputedStyleString
      * @summary Returns the element's computed style as a String, or the value
      *     of a specific property if one is provided. When acquiring the entire
      *     style string you can get a TP.core.Hash of those values using
@@ -1669,11 +1669,11 @@ function(anElement, aProperty, aPropertyValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementRemoveStyle',
+TP.definePrimitive('elementRemoveStyleValue',
 function(anElement, aProperty) {
 
     /**
-     * @method elementRemoveStyle
+     * @method elementRemoveStyleValue
      * @summary Removes a property from the element's inline style, or all
      *     inline style if no property is provided.
      * @param {HTMLElement} anElement The element to test.
@@ -1753,11 +1753,11 @@ function(anElement, aProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementReplaceStyle',
+TP.definePrimitive('elementReplaceStyleValue',
 function(anElement, aProperty, oldValue, newValue) {
 
     /**
-     * @method elementReplaceStyle
+     * @method elementReplaceStyleValue
      * @summary Replaces a property value in the receiver's inline style.
      * @param {HTMLElement} anElement The element to test.
      * @param {String} aProperty The property name to replace.

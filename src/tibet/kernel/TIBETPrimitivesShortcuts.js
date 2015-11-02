@@ -1062,7 +1062,7 @@ function(elemOrId, aProperty, aValue, nodeContext) {
 
     /**
      * @method addStyle
-     * @summary A convenience wrapper for TP.elementAddStyle. The element
+     * @summary A convenience wrapper for TP.elementAddStyleValue. The element
      *     definition is resolved via TP.byId(). The resulting element(s) are
      *     then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
@@ -1074,7 +1074,7 @@ function(elemOrId, aProperty, aValue, nodeContext) {
      * @returns {Element} The element.
      */
 
-    return TP.tpcall('elementAddStyle',
+    return TP.tpcall('elementAddStyleValue',
                         elemOrId, nodeContext, aProperty, aValue);
 });
 
@@ -1150,9 +1150,9 @@ function(elemOrId, aProperty, nodeContext) {
 
     /**
      * @method removeStyle
-     * @summary A convenience wrapper for TP.elementRemoveStyle. The element
-     *     definition is resolved via TP.byId(). The resulting element(s) are
-     *     then used as roots for the operation.
+     * @summary A convenience wrapper for TP.elementRemoveStyleValue. The
+     *     element definition is resolved via TP.byId(). The resulting
+     *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} aProperty The style property to remove.
@@ -1161,7 +1161,8 @@ function(elemOrId, aProperty, nodeContext) {
      * @returns {Element} The element.
      */
 
-    return TP.tpcall('elementRemoveStyle', elemOrId, nodeContext, aProperty);
+    return TP.tpcall('elementRemoveStyleValue',
+                        elemOrId, nodeContext, aProperty);
 });
 
 //  ------------------------------------------------------------------------
@@ -1171,9 +1172,9 @@ function(elemOrId, aProperty, oldStyle, newStyle, nodeContext) {
 
     /**
      * @method replaceStyle
-     * @summary A convenience wrapper for TP.elementReplaceStyle. The element
-     *     definition is resolved via TP.byId(). The resulting element(s) are
-     *     then used as roots for the operation.
+     * @summary A convenience wrapper for TP.elementReplaceStyleValue. The
+     *     element definition is resolved via TP.byId(). The resulting
+     *     element(s) are then used as roots for the operation.
      * @param {String|Element} elemOrId An element specification, or element,
      *     suitable for TP.byId().
      * @param {String} aProperty The style property to update.
@@ -1184,7 +1185,7 @@ function(elemOrId, aProperty, oldStyle, newStyle, nodeContext) {
      * @returns {Element} The element.
      */
 
-    return TP.tpcall('elementReplaceStyle',
+    return TP.tpcall('elementReplaceStyleValue',
                         elemOrId, nodeContext, aProperty, oldStyle, newStyle);
 });
 
