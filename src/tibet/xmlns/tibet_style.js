@@ -343,7 +343,7 @@ function(lessLoc, lessText) {
                         insertionPoint = null;
                     }
 
-                    generatedStyleElem = TP.documentAddStyleElement(
+                    generatedStyleElem = TP.documentAddCSSStyleElement(
                                                     natDoc,
                                                     cssText,
                                                     insertionPoint);
@@ -457,7 +457,7 @@ function(anHref) {
                             '[for="' + ourID + '"]', doc, true, false))) {
 
                     //  Just some CSS - link it in.
-                    newStyleElem = TP.documentAddLinkElement(
+                    newStyleElem = TP.documentAddCSSLinkElement(
                                             doc,
                                             hrefLocation,
                                             this.getNativeNode().nextSibling);
@@ -551,7 +551,7 @@ function() {
                         '[for="' + ourID + '"]', doc, true, false))) {
 
                 //  Just some CSS
-                newStyleElem = TP.documentAddStyleElement(
+                newStyleElem = TP.documentAddCSSStyleElement(
                                     doc,
                                     resourceStr,
                                     this.getNativeNode().nextSibling);

@@ -141,7 +141,7 @@ function(aDocument) {
 
         //  It's regular CSS - use the stylesheet URI's location and add an
         //  XHTML link element.
-        styleElem = TP.documentAddLinkElement(
+        styleElem = TP.documentAddCSSLinkElement(
                         aDocument,
                         styleURI.getLocation(),
                         insertionPoint);

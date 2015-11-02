@@ -244,9 +244,9 @@ function(targetDoc, cssHref, inlineRuleText) {
         resp = TP.uc(cssHref).getResourceText(TP.hc('async', false));
         cssText = resp.get('result');
 
-        newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
+        newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
     } else {
-        newNativeElem = TP.documentAddLinkElement(targetDoc, cssHref);
+        newNativeElem = TP.documentAddCSSLinkElement(targetDoc, cssHref);
     }
 
     return newNativeElem;
@@ -254,11 +254,11 @@ function(targetDoc, cssHref, inlineRuleText) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentAddLinkElement',
+TP.definePrimitive('documentAddCSSLinkElement',
 function(targetDoc, linkHref, beforeNode) {
 
     /**
-     * @method documentAddLinkElement
+     * @method documentAddCSSLinkElement
      * @summary Adds a 'link' element to the target document with the provided
      *     href as the link's href.
      * @param {Document} targetDoc The document to which the new link element
@@ -307,11 +307,11 @@ function(targetDoc, linkHref, beforeNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentAddStyleElement',
+TP.definePrimitive('documentAddCSSStyleElement',
 function(targetDoc, styleText, beforeNode) {
 
     /**
-     * @method documentAddStyleElement
+     * @method documentAddCSSStyleElement
      * @summary Adds a 'style' element to the target document with the
      *     optionally provided styleText as the rule text.
      * @param {Document} targetDoc The document to which the new style element
@@ -495,9 +495,9 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
         resp = TP.uc(linkHref).getResourceText(TP.hc('async', false));
         cssText = resp.get('result');
 
-        newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
+        newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
     } else {
-        newNativeElem = TP.documentAddLinkElement(
+        newNativeElem = TP.documentAddCSSLinkElement(
                                 targetDoc,
                                 TP.uriJoinPaths(sourceDirectory, linkHref));
     }
@@ -543,7 +543,7 @@ function(anElement, targetDoc) {
 
     cssText = TP.cssStyleElementGetContent(anElement);
 
-    newNativeElem = TP.documentAddStyleElement(targetDoc, cssText);
+    newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
 
     return newNativeElem;
 });
@@ -802,7 +802,7 @@ function(aDocument, anHref) {
 
         len = currentTopLevelLinkElems.getSize();
         for (i = 0; i < len; i++) {
-            TP.styleElementFlattenImports(currentTopLevelLinkElems.at(i));
+            TP.cssLinkElementFlattenImports(currentTopLevelLinkElems.at(i));
         }
 
         //  Re-run the query. This time, there will be a fully realized value
@@ -1242,7 +1242,7 @@ function(anElement) {
                         TP.nodeGetElementById(TP.nodeGetDocument(anElement),
                                                 'pseudo_inline_rules'))) {
         if (!TP.isElement(styleElem =
-                TP.documentAddStyleElement(TP.nodeGetDocument(anElement)))) {
+                TP.documentAddCSSStyleElement(TP.nodeGetDocument(anElement)))) {
             //  TODO: Raise an exception and return
             void 0;
         }
@@ -1370,11 +1370,11 @@ function(anElement, pixelValue, aPropertyName) {
 //  STYLE PRIMITIVES
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('styleElementFlattenImports',
+TP.definePrimitive('cssLinkElementFlattenImports',
 function(anElement) {
 
     /**
-     * @method styleElementFlattenImports
+     * @method cssLinkElementFlattenImports
      * @summary 'Flatten's any @import statements in the supplied 'link'
      *     element's out into 'link' elements in the supplied element's
      *     document. Note that this method will *not* overwrite any existing
@@ -1455,7 +1455,7 @@ function(anElement) {
         len = hrefsToAdd.getSize();
         for (i = 0; i < len; i++) {
 
-            newLinkElem = TP.documentAddLinkElement(doc, hrefsToAdd.at(i));
+            newLinkElem = TP.documentAddCSSLinkElement(doc, hrefsToAdd.at(i));
             TP.elementSetAttribute(newLinkElem, 'tibet:flattened',
                                     'true', true);
         }

@@ -4261,10 +4261,10 @@ TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentAddStyleElement = function(aDocument, styleText) {
+TP.boot.$documentAddCSSStyleElement = function(aDocument, styleText) {
 
     /**
-     * @method $documentAddStyleElement
+     * @method $documentAddCSSStyleElement
      * @summary Adds a 'style' element to the target document with the
      *     optionally provided styleText as the rule text.
      * @param {Document} [aDocument=TP.sys.getLaunchDocument()] The document
@@ -11116,7 +11116,7 @@ TP.boot.$uiBootConfig = function() {
     launchDoc = TP.sys.getLaunchDocument();
 
     //  Inject a style node that will force primary content framing to 100%.
-    TP.boot.$documentAddStyleElement(
+    TP.boot.$documentAddCSSStyleElement(
             launchDoc,
             'html,body,iframe {\n' +
             '   position: absolute;\n' +
