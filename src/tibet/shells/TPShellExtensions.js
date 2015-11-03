@@ -1366,7 +1366,8 @@ function(aRequest) {
         obj,
         result,
 
-        maybeURI;
+        maybeURI,
+        request;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
         return aRequest.fail('No content');
@@ -1385,10 +1386,26 @@ function(aRequest) {
         maybeURI = result;
     }
 
-    //  If we were able to get a URI, then use it in a TP.go2() call to get
+    //  If we were able to get a URI, then use it in a setLocation call to get
     //  proper push/history state management.
     if (TP.isURI(maybeURI)) {
-        TP.go2(maybeURI, obj.getNativeWindow());
+
+        //  Build a request we can pass to the setLocation routine to handle any
+        //  callbacks, error conditions, etc.
+        request = TP.request();
+
+        //  Attach TP.ONLOAD and TP.ONFAIL handlers to the request. These will
+        //  be called back when the receiving window is done loading.
+        request.atPut(TP.ONLOAD, function(aDocument) {
+            aRequest.complete();
+        });
+
+        request.atPut(TP.ONFAIL, function(req) {
+            aRequest.fail();
+        });
+
+        //  Set the location of the window
+        obj.setLocation(maybeURI, request);
 
         //  Return separately for consistency with this API vs. TP.go2() API
         //  which returns false.
