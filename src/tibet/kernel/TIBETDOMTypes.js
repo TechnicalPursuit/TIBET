@@ -4011,9 +4011,10 @@ function(aURI, force) {
 
     /**
      * @method addTIBETSrc
-     * @summary Adds a TP.SRC_LOCATION value to the documentElement of the
-     *     receiver. This method is normally invoked when the Node is "owned" by
-     *     a URI to ensure proper ID generation can occur.
+     * @summary Adds a TP.SRC_LOCATION value to the ownerDocument of the
+     *     receiver (or the receiver itself, if its the Document). This method
+     *     is normally invoked when the Node is "owned" by a URI to ensure
+     *     proper ID generation can occur.
      * @param {TP.core.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
      * @param {Boolean} force True to force setting the value even if the node
@@ -5630,7 +5631,9 @@ function(newContent, aRequest, shouldSignal) {
         thisref,
         reqLoadFunc,
         loadFunc,
-        result;
+        result,
+
+        docURI;
 
     node = this.getNativeNode();
 
@@ -5664,16 +5667,18 @@ function(newContent, aRequest, shouldSignal) {
     func = this.getContentPrimitive(TP.REPLACE);
     thisref = this;
 
+    if (TP.isEmpty(docURI = request.at('uri')) &&
+        TP.isKindOf(newContent, TP.core.Node)) {
+        docURI = newContent.get('uri');
+    }
+    if (TP.isDocument(node) && TP.notEmpty(docURI)) {
+        //  NB: We pass true to force the document URI to update.
+        TP.documentSetLocation(node, docURI.getLocation(), true);
+    }
+
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
             function(aNode) {
-                var docURI;
-
-                docURI = request.at('uri');
-                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
-                    //  NB: We pass true to force the document URI to update.
-                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
-                }
 
                 reqLoadFunc(aNode);
 
@@ -5684,15 +5689,6 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(aNode) {
-                var docURI;
-
-                docURI = request.at('uri');
-                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
-                    //  NB: We pass true to force the document URI to update.
-                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
-                }
-
-                thisref.contentReplaceCallback(aNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5835,7 +5831,9 @@ function(newContent, aRequest, shouldSignal) {
         thisref,
         reqLoadFunc,
         loadFunc,
-        result;
+        result,
+
+        docURI;
 
     node = this.getNativeNode();
 
@@ -5869,17 +5867,18 @@ function(newContent, aRequest, shouldSignal) {
     func = this.getContentPrimitive(TP.UPDATE);
     thisref = this;
 
+    if (TP.isEmpty(docURI = request.at('uri')) &&
+        TP.isKindOf(newContent, TP.core.Node)) {
+        docURI = newContent.get('uri');
+    }
+    if (TP.isDocument(node) && TP.notEmpty(docURI)) {
+        //  NB: We pass true to force the document URI to update.
+        TP.documentSetLocation(node, docURI.getLocation(), true);
+    }
+
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
             function(aNode) {
-
-                var docURI;
-
-                docURI = request.at('uri');
-                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
-                    //  NB: We pass true to force the document URI to update.
-                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
-                }
 
                 reqLoadFunc(aNode);
 
@@ -5890,13 +5889,6 @@ function(newContent, aRequest, shouldSignal) {
     } else {
         loadFunc =
             function(aNode) {
-                var docURI;
-
-                docURI = request.at('uri');
-                if (TP.isDocument(aNode) && TP.notEmpty(docURI)) {
-                    //  NB: We pass true to force the document URI to update.
-                    TP.documentSetLocation(aNode, docURI.getLocation(), true);
-                }
 
                 thisref.contentReplaceCallback(aNode);
 
@@ -9418,9 +9410,10 @@ function(aURI, force) {
 
     /**
      * @method addTIBETSrc
-     * @summary Adds a TP.SRC_LOCATION value to the documentElement of the
-     *     receiver. This method is normally invoked when the Node is "owned" by
-     *     a URI to ensure proper ID generation can occur.
+     * @summary Adds a TP.SRC_LOCATION value to the ownerDocument of the
+     *     receiver (or the receiver itself, if its the Document). This method
+     *     is normally invoked when the Node is "owned" by a URI to ensure
+     *     proper ID generation can occur.
      * @description At this level, this method is a no-op.
      * @param {TP.core.URI|String} aURI An optional URI value. If not provided
      *     then the receiver's uri is used.
@@ -10853,9 +10846,9 @@ function(resource, mimeType, setupFunc) {
     }
 
     //  If we were able to load a real document from the source URI stamp that
-    //  path on the resulting element so we have it for reference.
+    //  path on it so we have it for reference.
     if (TP.notEmpty(src)) {
-        elem[TP.SRC_LOCATION] = src;
+        doc[TP.SRC_LOCATION] = src;
     }
 
     //  If we were supplied with a setup Function, then execute it here.
@@ -10973,7 +10966,7 @@ function(anElement) {
     //  The source attribute can be provided or computed from configuration
     //  data. When it's not provided we need to know whether to look for an
     //  XSLT or XHTML file when the markup type is XML of some form.
-    src = elem[TP.SRC_LOCATION];
+    src = elem.ownerDocument[TP.SRC_LOCATION];
     if (TP.isEmpty(src)) {
         //  If a MIME type was explicitly defined by the targeted element, then
         //  get its resource URI and use that as the source.
@@ -11009,7 +11002,7 @@ function(anElement) {
     }
 
     if (TP.notEmpty(src)) {
-        elem[TP.SRC_LOCATION] = src;
+        elem.ownerDocument[TP.SRC_LOCATION] = src;
     }
 
     if (TP.notEmpty(mime)) {
@@ -13400,7 +13393,6 @@ function(aRequest) {
     var node,
 
         doc,
-        docElem,
 
         sheetPath,
 
@@ -13427,17 +13419,11 @@ function(aRequest) {
 
     doc = TP.nodeGetDocument(node);
 
-    //  If there's no document element, then just exit... nothing to do
-    //  here.
-    if (!TP.isElement(docElem = doc.documentElement)) {
-        return TP.CONTINUE;
-    }
-
-    //  See if the document element has a TP.SRC_LOCATION property. If so, we
-    //  can try to use it to provide a collection path (if the sheet needs
-    //  it - i.e. it's not an absolute path).
-    if (TP.isValid(docElem[TP.SRC_LOCATION])) {
-        sheetPath = TP.uriCollectionPath(docElem[TP.SRC_LOCATION]);
+    //  See if the document has a TP.SRC_LOCATION property. If so, we can try to
+    //  use it to provide a collection path (if the sheet needs it - i.e. it's
+    //  not an absolute path).
+    if (TP.isValid(doc[TP.SRC_LOCATION])) {
+        sheetPath = TP.uriCollectionPath(doc[TP.SRC_LOCATION]);
     } else if (TP.isValid(aRequest)) {
         //  Otherwise, see if the request has that path under the 'uri' key.
 
@@ -16641,8 +16627,6 @@ function(aRequest) {
                         TP.elementGetAttribute(elem, 'tibet:mime', true));
 
         replacementClone = TP.unwrap(replacement.clone());
-        replacementClone[TP.SRC_LOCATION] =
-                            TP.unwrap(replacement)[TP.SRC_LOCATION];
         replacement = replacementClone;
 
         replacement[TP.GENERATOR] = canonicalName;

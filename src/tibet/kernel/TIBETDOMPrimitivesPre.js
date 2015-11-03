@@ -381,9 +381,12 @@ function(srcNode, destNode, shouldRemove) {
                                 val :
                                 destNode[TP.GENERATOR];
 
-    destNode[TP.SRC_LOCATION] = TP.notEmpty(val = srcNode[TP.SRC_LOCATION]) ?
+    if (TP.isDocument(srcNode) && TP.isDocument(destNode)) {
+        destNode[TP.SRC_LOCATION] =
+                    TP.notEmpty(val = srcNode[TP.SRC_LOCATION]) ?
                                 val :
                                 destNode[TP.SRC_LOCATION];
+    }
 
     if (TP.notFalse(shouldRemove)) {
         srcNode[TP.EVENT_IDS] = null;
@@ -396,7 +399,9 @@ function(srcNode, destNode, shouldRemove) {
 
         srcNode[TP.GENERATOR] = null;
 
-        srcNode[TP.SRC_LOCATION] = null;
+        if (TP.isDocument(srcNode) && TP.isDocument(destNode)) {
+            srcNode[TP.SRC_LOCATION] = null;
+        }
     }
 
     return;

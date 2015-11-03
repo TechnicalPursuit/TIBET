@@ -627,10 +627,10 @@ function(aRequest) {
     //  Start by looking for 'src' rather than embedded content, unless the
     //  fallback attribute is present and set to true for testing/forced
     //  use.
-    if (TP.isValid(elem[TP.SRC_LOCATION]) &&
+    if (TP.isValid(elem.ownerDocument[TP.SRC_LOCATION]) &&
         TP.notTrue(TP.bc(TP.elementGetAttribute(
                                     elem, 'tsh:fallback', true)))) {
-        src = elem[TP.SRC_LOCATION];
+        src = elem.ownerDocument[TP.SRC_LOCATION];
         if (TP.isEmpty(src) || TP.notValid(uri = TP.uc(src))) {
             this.raise('TP.sig.InvalidURI',
                         'Invalid URI in src attribute: ' + src);

@@ -626,27 +626,33 @@ function(aDocument, trimFileAndFragment, trimFragment) {
         return '';
     }
 
+    win = TP.nodeGetWindow(doc);
+
     //  first choice is always the TP.SRC_LOCATION value since we try to keep
     //  this accurate relative to the original source file name
-    if (TP.notEmpty(loc = doc.documentElement[TP.SRC_LOCATION])) {
+    if (TP.notEmpty(loc = doc[TP.SRC_LOCATION])) {
         //  we need to expand these since they're often virtual paths
         loc = TP.uriExpandPath(loc);
-    } else if (TP.notTrue(trimBoth) &&
-                TP.notEmpty(loc = TP.elementGetAttribute(
+    } else if (!TP.isWindow(win)) {
+
+        //  If we don't have an associated window, try to use either the
+        //  'xml:base' or the 'base', in that order, if they're available.
+        if (TP.notEmpty(loc = TP.elementGetAttribute(
                                         doc.documentElement,
                                         'xml:base',
                                         true))) {
-        //  we need to expand these since they're often virtual paths
-        loc = TP.uriExpandPath(loc);
-    } else if (TP.notTrue(trimBoth) &&
-                TP.notEmpty(htmlBase = doc.getElementsByTagName('base')[0])) {
-        //  this won't be a virtual path
-        loc = TP.elementGetAttribute(htmlBase, 'href');
+            //  we need to expand these since they're often virtual paths
+            loc = TP.uriExpandPath(loc);
+        } else if (TP.notEmpty(
+                        htmlBase = doc.getElementsByTagName('base')[0])) {
+            //  this won't be a virtual path
+            loc = TP.elementGetAttribute(htmlBase, 'href');
+        }
     }
 
     if (TP.isEmpty(loc)) {
         //  If there is no valid window, return the empty string.
-        if (TP.notValid(win = TP.nodeGetWindow(doc))) {
+        if (!TP.isWindow(win)) {
             return '';
         }
 
@@ -950,7 +956,7 @@ function(aDocument, aURIStr, force) {
     /**
      * @method documentSetLocation
      * @summary Sets the document's location. This is done by stamping the
-     *     document's 'root element' with a TP.SRC_LOCATION property.
+     *     document with a TP.SRC_LOCATION property.
      * @param {Document} aDocument The document to use.
      * @param {String} aURIStr The URL string to use as the document's location.
      * @param {Boolean} force If true, this method will ignore any existing
@@ -961,8 +967,7 @@ function(aDocument, aURIStr, force) {
      */
 
     var doc,
-        url,
-        node;
+        url;
 
     //  make sure we're really dealing with a document
     if (!TP.isDocument(doc = aDocument)) {
@@ -977,17 +982,12 @@ function(aDocument, aURIStr, force) {
         return;
     }
 
-    node = doc.documentElement;
-    if (TP.notValid(node)) {
-        return;
-    }
-
     //  If its already got either a TP.SRC_LOCATION, bail out here.
-    if (TP.isValid(node[TP.SRC_LOCATION]) && TP.notTrue(force)) {
+    if (TP.isValid(doc[TP.SRC_LOCATION]) && TP.notTrue(force)) {
         return;
     }
 
-    node[TP.SRC_LOCATION] = url;
+    doc[TP.SRC_LOCATION] = url;
 
     return;
 });

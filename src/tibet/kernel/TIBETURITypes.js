@@ -380,8 +380,7 @@ function(aDocument) {
      * @returns {TP.core.URI} A new instance.
      */
 
-    var elem,
-        path;
+    var path;
 
     if (!TP.isDocument(aDocument)) {
         this.raise('TP.sig.InvalidDocument');
@@ -390,12 +389,9 @@ function(aDocument) {
     }
 
     //  document objects can be flagged by TIBET, in which case that wins...
-    elem = aDocument.documentElement;
-    if (TP.isElement(elem)) {
-        path = elem[TP.SRC_LOCATION];
-        if (TP.notEmpty(path)) {
-            return this.construct(path + '#document');
-        }
+    path = aDocument[TP.SRC_LOCATION];
+    if (TP.notEmpty(path)) {
+        return this.construct(path + '#document');
     }
 
     //  they also have their own location
