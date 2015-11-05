@@ -817,7 +817,7 @@ function(aNode) {
      *     object that can directly produce 'clean' JSON.
      * @description This method is used by TIBET internal machinery to produce a
      *     JavaScript object from a specific XML format used with TIBET's
-     *     implemenration of JSONPaths (it is the inverse of the
+     *     implementation of JSONPaths (it is the inverse of the
      *     'TP.$jsonObj2xml' method). Therefore, it is not intended to be a
      *     general purpose transformation for XML -> JavaScript data. Use the
      *     public TP.xml2json() method for that purpose.
