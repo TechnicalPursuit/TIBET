@@ -3019,7 +3019,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).timeout(10000);
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ========================================================================
