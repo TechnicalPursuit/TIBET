@@ -1363,7 +1363,7 @@ TP.FOCUSABLE_QUERIES = [
     'textarea:not([disabled])',
     'button:not([disabled])',
     'iframe:not([disabled])',
-    '*[tabindex]:not([disabled])'
+    '*[tabindex]:not(*[tabindex=-1]):not([disabled])'
 ];
 
 //  ---
