@@ -89,8 +89,6 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
-                test.thenWait(1000);
-
                 //  The first focused element in this file will be the <body>
                 //  Test that theory.
                 focusedElem = driver.getFocusedElement();
@@ -238,8 +236,6 @@ function() {
                 elem2 = TP.byId('focusTestField2', windowContext, false);
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
-
-                test.thenWait(1000);
 
                 TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
@@ -391,8 +387,6 @@ function() {
                 elem2 = TP.byId('focusTestField2', windowContext, false);
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
-
-                test.thenWait(1000);
 
                 TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
@@ -617,8 +611,6 @@ function() {
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
-
-                test.thenWait(1000);
 
                 TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
@@ -846,8 +838,6 @@ function() {
                 //  In this test, the 'fooGroup' does *not* wrap (since it
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
-
-                test.thenWait(1000);
 
                 TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
@@ -1086,8 +1076,6 @@ function() {
                 elem6 = TP.byId('focusTestField6', windowContext, false);
                 elem7 = TP.byId('focusTestField7', windowContext, false);
                 elem8 = TP.byId('focusTestField8', windowContext, false);
-
-                test.thenWait(1000);
 
                 TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
@@ -1420,8 +1408,6 @@ function() {
                 elem6 = TP.byId('focusTestField6', windowContext, false);
                 elem7 = TP.byId('focusTestField7', windowContext, false);
                 elem8 = TP.byId('focusTestField8', windowContext, false);
-
-                test.thenWait(1000);
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
@@ -1767,8 +1753,6 @@ function() {
                 elem6 = TP.byId('focusTestField6', windowContext, false);
                 elem7 = TP.byId('focusTestField7', windowContext, false);
                 elem8 = TP.byId('focusTestField8', windowContext, false);
-
-                test.thenWait(1000);
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
@@ -2333,8 +2317,6 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
-                test.thenWait(1000);
-
                 //  The first focused element in this file will be the <body>
                 //  Test that theory.
                 focusedElem = driver.getFocusedElement();
@@ -2350,6 +2332,10 @@ function() {
                 //  'tibet:focuscontext' attribute, tabbing (or shift-tabbing)
                 //  to it will push the last element onto the focus stack and
                 //  that element is what will be focused when elem3 is blurred.
+
+                //  Give the browser (ok, IE) a chance to settle a bit before
+                //  continuing.
+                test.thenWait(100);
 
                 //  ---
 
