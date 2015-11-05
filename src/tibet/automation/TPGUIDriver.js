@@ -423,49 +423,52 @@ function(aURI, aWindow) {
      *     is available.
      */
 
-    var tpWin,
-
-        promise;
+    var tpWin;
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  Fetch the result and then set the Window's body to the result.
-    //  'Then' a Function onto our internal Promise that will itself return a
-    //  Promise when called upon. That Promise will await the 'onload' to fire
-    //  from setting the content, wait 100ms (to give the GUI a chance to draw)
-    //  and then resolve the Promise.
+    //  Set the Window's location to the supplied URI. 'then()' a Function onto
+    //  our internal Promise that will itself return a Promise when called upon.
+    //  That Promise will await the 'onload' to fire from setting the location,
+    //  wait 100ms (to give the GUI a chance to draw) and then resolve the
+    //  Promise.
 
     tpWin = TP.ifInvalid(aWindow, this.get('windowContext'));
 
-    promise = TP.extern.Promise.construct(
-                    function(resolver, rejector) {
-                        var request,
-                            onloadFunc;
+    return this.get('promiseProvider').then(
+        function() {
+            var promise;
 
-                        request = TP.request();
+            promise = TP.extern.Promise.construct(
+                            function(resolver, rejector) {
+                                var request,
+                                    onloadFunc;
 
-                        //  We fork() the onload function here to give
-                        //  the GUI a chance to refresh before we
-                        //  manipulate it. Note that the return value
-                        //  from fork() is the timeout used to schedule
-                        //  it - but the TP.ONLOAD property on the
-                        //  request expects a Function object, therefore
-                        //  we have to wrap it.
+                                request = TP.request();
 
-                        onloadFunc =
-                            function() {
-                                resolver.fork(100);
-                            };
+                                //  We fork() the onload function here to give
+                                //  the GUI a chance to refresh before we
+                                //  manipulate it. Note that the return value
+                                //  from fork() is the timeout used to schedule
+                                //  it - but the TP.ONLOAD property on the
+                                //  request expects a Function object, therefore
+                                //  we have to wrap it.
 
-                        request.atPut(TP.ONLOAD, onloadFunc);
-                        request.atPut(TP.ONFAIL, rejector);
+                                onloadFunc =
+                                    function() {
+                                        resolver.fork(100);
+                                    };
 
-                        tpWin.setLocation(aURI, request);
-                    });
+                                request.atPut(TP.ONLOAD, onloadFunc);
+                                request.atPut(TP.ONFAIL, rejector);
 
-    return promise;
+                                tpWin.setLocation(aURI, request);
+                            });
+
+            return promise;
+        });
 });
 
 //  ------------------------------------------------------------------------
