@@ -968,8 +968,11 @@ function(currentcase, result, options) {
     var func;
 
     //  Check to see if raise has been invoked. See the 'executeBefore' method
-    //  as to why we install a spy on TP.raise().
-    if (TP.raise.called) {
+    //  as to why we install a spy on TP.raise(). Note here how we check to make
+    //  sure that TP.raise() has the special 'shouldFailTest' property. This is
+    //  so that we can discern it from any other stubs/spies that are installed
+    //  by 'raises' or 'signals' assertions.
+    if (TP.raise.called && TP.raise.shouldFailTest) {
         currentcase.set('statusCode', TP.ACTIVE);
         currentcase.fail();
     }
@@ -1002,8 +1005,11 @@ function(result, options) {
     //  testing. This is so that if any raise calls occur during the execution
     //  of a test, the test will fail. Many times, the try...catch machinery of
     //  TIBET will not propagate the error all of the way to the top, nor should
-    //  they.
+    //  they. Note that we also tag this call with a special 'shouldFailTest'
+    //  property so that we can discern it from any other stubs/spies that are
+    //  installed by 'raises' or 'signals' assertions.
     TP.raise = TP.raise.asSpy();
+    TP.raise.shouldFailTest = true;
 
     this.set('msstart', Date.now());
 

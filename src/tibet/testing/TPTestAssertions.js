@@ -1986,6 +1986,12 @@ function(aFunction, anException) {
         name = TP.isString(anException) ? anException : TP.name(anException);
     }
 
+    //  TP.raise will have been installed as a spy by the test harness to track
+    //  exceptions, etc., so we need to restore it here before installing it as
+    //  a stub. Since we're intentionally tracking raise calls here, we don't
+    //  consider raise()s in this context to be test failures.
+    TP.raise.restore();
+
     //  Stub out raise so it doesn't actually invoke/throw etc.
     TP.raise = TP.raise.asStub(
                     function() {
@@ -2020,7 +2026,16 @@ function(aFunction, anException) {
             retVal = false;
         }
     } finally {
+
+        //  Restore the core TP.raise() from the stub
         TP.raise.restore();
+
+        //  Reinstall the spy on TP.raise()
+        TP.raise = TP.raise.asSpy();
+
+        //  Mark this spy with the 'shouldFailTest' property so that it actually
+        //  fails tests.
+        TP.raise.shouldFailTest = true;
     }
 
     return retVal;
@@ -2050,6 +2065,12 @@ function(aFunction, aSignal) {
                         signal = arguments[1];
                     });
 
+    //  TP.raise will have been installed as a spy by the test harness to track
+    //  exceptions, etc., so we need to restore it here before installing it as
+    //  a stub. Since we're intentionally ignoring raise calls here, we don't
+    //  consider raise()s in this context to be test failures.
+    TP.raise.restore();
+
     //  Stub out raise to avoid seeing any exception output so we stay focused
     //  on the signaling test aspect.
     TP.raise = TP.raise.asStub();
@@ -2057,8 +2078,18 @@ function(aFunction, aSignal) {
     try {
         aFunction();
     } finally {
+        //  Restore the core TP.signal() from the stub
         TP.signal.restore();
+
+        //  Restore the core TP.raise() from the stub
         TP.raise.restore();
+
+        //  Reinstall the spy on TP.raise()
+        TP.raise = TP.raise.asSpy();
+
+        //  Mark this spy with the 'shouldFailTest' property so that it actually
+        //  fails tests.
+        TP.raise.shouldFailTest = true;
     }
 
     if (TP.isValid(signal)) {
