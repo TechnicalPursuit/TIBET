@@ -2333,6 +2333,15 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
+                test.thenWait(1000);
+
+                //  The first focused element in this file will be the <body>
+                //  Test that theory.
+                focusedElem = driver.getFocusedElement();
+                test.assert.isIdenticalTo(focusedElem, bodyElem);
+
+                //  ---
+
                 //  Due to the way the markup is written here, the tab order for
                 //  this test is:
                 //      1 - 2 - 3 - 4
@@ -2341,33 +2350,6 @@ function() {
                 //  'tibet:focuscontext' attribute, tabbing (or shift-tabbing)
                 //  to it will push the last element onto the focus stack and
                 //  that element is what will be focused when elem3 is blurred.
-
-                //  The first focused element in this file will be the <body>
-                //  Test that theory.
-                focusedElem = driver.getFocusedElement();
-                test.assert.isIdenticalTo(focusedElem, bodyElem);
-
-                dumpFocusStack('Step #0', test, focusedElem);
-
-                if (TP.sys.isUA('IE')) {
-                    //  IE, unfortunately, doesn't *really* focus the 'body'
-                    //  element when the window is focused, even though it
-                    //  reports it as the focused element. So we have to 'type'
-                    //  a [Tab] key to force it to really recognize that it's
-                    //  the body that is focused.
-                    driver.startSequence().
-                            sendKeys('[Tab]').
-                            perform();
-                }
-
-                //  ---
-
-                test.then(
-                    function() {
-                        //  Reset the spy on TP.signal in preparation for the
-                        //  next step in this test.
-                        TP.signal.reset();
-                    });
 
                 //  ---
 
