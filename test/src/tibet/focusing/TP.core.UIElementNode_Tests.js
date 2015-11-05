@@ -2265,6 +2265,9 @@ function() {
     shouldDumpFocusStack = false;
 
     dumpFocusStack = function(identifier, test, focusedElem) {
+
+        var signalInfos;
+
         if (shouldDumpFocusStack) {
             //  NB: Use the low-level console call to avoid Sherpa focusing
             //  back-and-forth problems.
@@ -2272,13 +2275,25 @@ function() {
             console.log(
                 '--- ' + identifier + '---' + '\n\n' +
                 'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
-                'focus stack:\n' + $focus_stack.collect(
-                                        function(elem) {
-                                            return TP.id(elem);
-                                        }).join('\n') + '\n\n' +
-                'signals fired to achieve state:\n' +
-                            test.getFiredSignalInfosString({localID: true}) +
-                            '\n\n');
+                'focus stack:');
+
+            $focus_stack.perform(
+                        function(elem) {
+                            console.log(TP.id(elem));
+                        });
+
+            console.log('\n\n' +
+                        'signals fired to achieve state:\n');
+
+            signalInfos = test.getFiredSignalInfosString({localID: true});
+            signalInfos = signalInfos.match(/[\s\S]{1,500}/g);
+
+            signalInfos.perform(
+                        function(chunk) {
+                            console.log(chunk);
+                        });
+
+            console.log('\n\n');
             /* eslint-enable no-console */
         }
     };
