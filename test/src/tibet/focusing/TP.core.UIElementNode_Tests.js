@@ -2360,7 +2360,10 @@ function() {
                 test.then(
                     function() {
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem1);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem1,
+                                'Focused element not identical in Step #1');
 
                         dumpFocusStack('Step #1', test, focusedElem);
 
@@ -2370,8 +2373,10 @@ function() {
                                 $focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #1');
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem1));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem1),
+                                'Stack last element not identical in Step #1');
 
                         //  TP.sig.UIFocusNext      -   bodyElem
                         test.assert.didSignal(bodyElem, 'TP.sig.UIFocusNext');
@@ -2402,7 +2407,10 @@ function() {
                 test.then(
                     function() {
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem2);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem2,
+                                'Focused element not identical in Step #2');
 
                         dumpFocusStack('Step #2', test, focusedElem);
 
@@ -2412,8 +2420,10 @@ function() {
                                 $focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #2');
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem2));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem2),
+                                'Stack last element not identical in Step #2');
 
                         //  TP.sig.UIFocusNext      -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIFocusNext');
@@ -2456,7 +2466,10 @@ function() {
                 test.then(
                     function() {
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem3);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem3,
+                                'Focused element not identical in Step #3');
 
                         dumpFocusStack('Step #3', test, focusedElem);
 
@@ -2468,10 +2481,14 @@ function() {
                                 $focus_stack,
                                 2,
                                 'Focus stack not correct size in Step #3');
-                        test.assert.isIdenticalTo($focus_stack.first(),
-                                                    TP.wrap(elem2));
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem3));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.first(),
+                                TP.wrap(elem2),
+                                'Stack first element not identical in Step #3');
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem3),
+                                'Stack last element not identical in Step #3');
 
                         //  No 'Pop' event since we entered a new context.
 
@@ -2519,7 +2536,10 @@ function() {
                         //  elem2 will be refocused.
 
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem2);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem2,
+                                'Focused element not identical in Step #4');
 
                         dumpFocusStack('Step #4', test, focusedElem);
 
@@ -2529,8 +2549,10 @@ function() {
                                 $focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #4');
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem2));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem2),
+                                'Stack last element not identical in Step #4');
 
                         //  TP.sig.UIFocusNext      -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocusNext');
@@ -2576,7 +2598,10 @@ function() {
 
                         //  This should've put us at elem4
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem4);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem4,
+                                'Focused element not identical in Step #5');
 
                         dumpFocusStack('Step #5', test, focusedElem);
 
@@ -2586,8 +2611,10 @@ function() {
                                 $focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #5');
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem4));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem4),
+                                'Stack last element not identical in Step #5');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2603,7 +2630,10 @@ function() {
                 test.then(
                     function() {
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem3);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem3,
+                                'Focused element not identical in Step #6');
 
                         dumpFocusStack('Step #6', test, focusedElem);
 
@@ -2615,10 +2645,14 @@ function() {
                                 $focus_stack,
                                 2,
                                 'Focus stack not correct size in Step #6');
-                        test.assert.isIdenticalTo($focus_stack.first(),
-                                                    TP.wrap(elem4));
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem3));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.first(),
+                                TP.wrap(elem4),
+                                'Stack first element not identical in Step #6');
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem3),
+                                'Stack last element not identical in Step #6');
 
                         //  No 'Pop' event since we entered a new context.
 
@@ -2659,7 +2693,6 @@ function() {
 
                 test.then(
                     function() {
-                        focusedElem = driver.getFocusedElement();
 
                         //  We're currently on elem3, but because of the focus
                         //  stack when we leave elem3, elem2 will be briefly
@@ -2667,7 +2700,11 @@ function() {
                         //  prevent default - for the focus event) and then
                         //  elem4 will be refocused.
 
-                        test.assert.isIdenticalTo(focusedElem, elem4);
+                        focusedElem = driver.getFocusedElement();
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem4,
+                                'Focused element not identical in Step #7');
 
                         dumpFocusStack('Step #7', test, focusedElem);
 
@@ -2677,8 +2714,10 @@ function() {
                                 $focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #7');
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem4));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem4),
+                                'Stack last element not identical in Step #7');
 
                         //  TP.sig.UIFocusPrevious  -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocusPrevious');
@@ -2724,7 +2763,10 @@ function() {
 
                         //  This should've put us at elem1
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem1);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem1,
+                                'Focused element not identical in Step #8');
 
                         dumpFocusStack('Step #8', test, focusedElem);
 
@@ -2734,8 +2776,10 @@ function() {
                                 $focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #8');
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem1));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem1),
+                                'Stack last element not identical in Step #8');
 
                         //  Reset the spy on TP.signal in preparation for the
                         //  next step in this test.
@@ -2754,7 +2798,10 @@ function() {
 
                         //  This should've put us at elem2
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem2);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem2,
+                                'Focused element not identical in Step #9');
 
                         dumpFocusStack('Step #9', test, focusedElem);
 
@@ -2820,7 +2867,10 @@ function() {
 
                         //  This should've put us at elem3
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem3);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem3,
+                                'Focused element not identical in Step #10');
 
                         dumpFocusStack('Step #10', test, focusedElem);
 
@@ -2832,10 +2882,14 @@ function() {
                                 $focus_stack,
                                 2,
                                 'Focus stack not correct size in Step #10');
-                        test.assert.isIdenticalTo($focus_stack.first(),
-                                                    TP.wrap(elem2));
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem3));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.first(),
+                                TP.wrap(elem2),
+                                'Stack first element not identical in Step #10');
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem3),
+                                'Stack last element not identical in Step #10');
 
                         //  No 'Pop' event since we entered a new context.
 
@@ -2896,7 +2950,10 @@ function() {
                         //  elem2 will be refocused.
 
                         focusedElem = driver.getFocusedElement();
-                        test.assert.isIdenticalTo(focusedElem, elem2);
+                        test.assert.isIdenticalTo(
+                                focusedElem,
+                                elem2,
+                                'Focused element not identical in Step #11');
 
                         dumpFocusStack('Step #11', test, focusedElem);
 
@@ -2906,8 +2963,10 @@ function() {
                                 $focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #11');
-                        test.assert.isIdenticalTo($focus_stack.last(),
-                                                    TP.wrap(elem2));
+                        test.assert.isIdenticalTo(
+                                $focus_stack.last(),
+                                TP.wrap(elem2),
+                                'Stack last element not identical in Step #11');
 
                         //  TP.sig.UIActivate       -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIActivate');
