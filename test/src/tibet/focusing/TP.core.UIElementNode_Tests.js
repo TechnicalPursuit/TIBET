@@ -89,21 +89,12 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
+                test.thenWait(1000);
+
                 //  The first focused element in this file will be the <body>
                 //  Test that theory.
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
-
-                if (TP.sys.isUA('IE')) {
-                    //  IE, unfortunately, doesn't *really* focus the 'body'
-                    //  element when the window is focused, even though it
-                    //  reports it as the focused element. So we have to 'type'
-                    //  a [Tab] key to force it to really recognize that it's
-                    //  the body that is focused.
-                    driver.startSequence().
-                            sendKeys('[Tab]').
-                            perform();
-                }
 
                 //  ---
 
@@ -248,11 +239,9 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
-                if (TP.sys.isUA('IE')) {
-                    //  IE won't autofocus in our test environment, even though
-                    //  it should, so we force it here.
-                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
-                }
+                test.thenWait(1000);
+
+                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
                 //  The first focused element in this file will be elem2,
                 //  because it has an 'autofocus="true"' attribute.
@@ -403,11 +392,9 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
-                if (TP.sys.isUA('IE')) {
-                    //  IE won't autofocus in our test environment, even though
-                    //  it should, so we force it here.
-                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
-                }
+                test.thenWait(1000);
+
+                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
                 //  The first focused element in this file will be elem3,
                 //  because it has an 'autofocus="true"' attribute.
@@ -631,11 +618,9 @@ function() {
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
-                if (TP.sys.isUA('IE')) {
-                    //  IE won't autofocus in our test environment, even though
-                    //  it should, so we force it here.
-                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
-                }
+                test.thenWait(1000);
+
+                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
                 //  The first focused element in this file will be elem1,
                 //  because it has an 'autofocus="true"' attribute.
@@ -862,11 +847,9 @@ function() {
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
-                if (TP.sys.isUA('IE')) {
-                    //  IE won't autofocus in our test environment, even though
-                    //  it should, so we force it here.
-                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
-                }
+                test.thenWait(1000);
+
+                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
                 //  The first focused element in this file will be elem2,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
@@ -1104,11 +1087,9 @@ function() {
                 elem7 = TP.byId('focusTestField7', windowContext, false);
                 elem8 = TP.byId('focusTestField8', windowContext, false);
 
-                if (TP.sys.isUA('IE')) {
-                    //  IE won't autofocus in our test environment, even though
-                    //  it should, so we force it here.
-                    TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
-                }
+                test.thenWait(1000);
+
+                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
 
                 //  The first focused element in this file will be elem1,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
@@ -1440,19 +1421,10 @@ function() {
                 elem7 = TP.byId('focusTestField7', windowContext, false);
                 elem8 = TP.byId('focusTestField8', windowContext, false);
 
+                test.thenWait(1000);
+
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
-
-                if (TP.sys.isUA('IE')) {
-                    //  IE, unfortunately, doesn't *really* focus the 'body'
-                    //  element when the window is focused, even though it
-                    //  reports it as the focused element. So we have to 'type'
-                    //  a [Tab] key to force it to really recognize that it's
-                    //  the body that is focused.
-                    driver.startSequence().
-                            sendKeys('[Tab]').
-                            perform();
-                }
 
                 //  ---
 
@@ -1796,19 +1768,10 @@ function() {
                 elem7 = TP.byId('focusTestField7', windowContext, false);
                 elem8 = TP.byId('focusTestField8', windowContext, false);
 
+                test.thenWait(1000);
+
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, bodyElem);
-
-                if (TP.sys.isUA('IE')) {
-                    //  IE, unfortunately, doesn't *really* focus the 'body'
-                    //  element when the window is focused, even though it
-                    //  reports it as the focused element. So we have to 'type'
-                    //  a [Tab] key to force it to really recognize that it's
-                    //  the body that is focused.
-                    driver.startSequence().
-                            sendKeys('[Tab]').
-                            perform();
-                }
 
                 //  ---
 
