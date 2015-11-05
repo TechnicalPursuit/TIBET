@@ -41,8 +41,14 @@ TP.core.UIElementNode.Type.defineAttribute('keyBindingsURI');
 //  The XML document holding the key bindings
 TP.core.UIElementNode.Type.defineAttribute('keyBindingsMap');
 
-//  The TP.core.UIElementNode that focus is moving to.
-TP.core.UIElementNode.Type.defineAttribute('$focusingTPElement');
+//  The TP.core.UIElementNode that focus is moving to, based on TIBET
+//  calculations.
+TP.core.UIElementNode.Type.defineAttribute('$calculatedFocusingTPElem');
+
+//  The Element that the system is trying to move the focus to, but which TIBET
+//  will do its best to prevent in favor of the TIBET-calculated element (i.e.
+//  focus/blur events are not cancellable - sigh).
+TP.core.UIElementNode.Type.defineAttribute('$systemFocusingElement');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -353,10 +359,36 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem;
+    var evtTargetTPElem,
+        focusIDs,
+
+        systemFocuser;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  If the 'system focusing element' that we're tracking as the one that the
+    //  system will try to focus is the same as the target element *and it
+    //  doesn't exist somewhere in our focusing stack* (we might be trying to
+    //  focus elements ourselves from our focus stack, which is perfectly ok and
+    //  isn't considered to "be the system focusing outside of our control"),
+    //  then we prevent any signaling of UI* signals.
+    //  See the 'onfocus' and other focus calculation machinery methods for more
+    //  information.
+    if (TP.isValid(systemFocuser = this.get('$systemFocusingElement'))) {
+
+        if (systemFocuser === aTargetElem) {
+
+            focusIDs = $focus_stack.collect(
+                            function(item) {
+                                return item.getLocalID();
+                            });
+
+            if (!focusIDs.contains(TP.lid(systemFocuser))) {
+                return this;
+            }
+        }
     }
 
     //  Grab the event target element and wrap it
@@ -392,10 +424,48 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem;
+    var evtTargetTPElem,
+        focusingTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  If there is a system focusing element, that means that the system is
+    //  trying to focus an element against TIBET's calculated focus element
+    //  Because focus/blur events are not cancellable, this will be called even
+    //  though we don't want it, but we can prevent having any TIBET-level UI*
+    //  signals from being dispatched.
+    if (TP.isValid(this.get('$systemFocusingElement'))) {
+        //  Reset this to null for the next pass.
+        this.set('$systemFocusingElement', null);
+
+        return this;
+    }
+
+    //  If there is a calculated TIBET focusing TP.core.ElementNode, and its
+    //  native node isn't the target element, then configure 'system focusing
+    //  element' to be the target element, and force the calculated one to
+    //  focus. Note that we return here. That will avoid any extraneous TIBET
+    //  signaling of UI* signals. These will be signaled when the 'focus()' call
+    //  here comes back through this mechanism and the calculated one *will* be
+    //  the same as the target.
+    if (TP.isValid(focusingTPElem = this.get('$calculatedFocusingTPElem'))) {
+
+        if (focusingTPElem.getNativeNode() !== aTargetElem) {
+            this.set('$systemFocusingElement', aTargetElem);
+
+            focusingTPElem.focus();
+            focusingTPElem.signal('TP.sig.UIFocus');
+        } else {
+            //  It was the same as the target, so reset this to null for the
+            //  next pass.
+            this.set('$calculatedFocusingTPElem', null);
+        }
+
+        //  Whether or not this was the calculated element, we return here - the
+        //  rest of the machinery will take care of things.
+        return this;
     }
 
     //  Grab the event target element and wrap it
@@ -612,7 +682,7 @@ function(aTargetElem, anEvent) {
     //  does after it computes a 'successor element to focus' - in this case,
     //  that successor element is the element that is our target.
     if (evtTargetTPElem.canFocus()) {
-        this.set('$focusingTPElement', evtTargetTPElem);
+        this.set('$calculatedFocusingTPElem', evtTargetTPElem);
     }
 
     return this;
@@ -1044,14 +1114,14 @@ function() {
 
     var focusTPElem;
 
-    //  If the type is holding a real $focusingTPElement, then we want to
+    //  If the type is holding a real $calculatedFocusingTPElem, then we want to
     //  reject accepting focused responder status because this means that the
     //  element that we *really* want to focus on (and which is now contained in
-    //  this type's '$focusingTPElement' property) is a different element than
-    //  the one we're processing focused responder status for. So we reject
+    //  this type's '$calculatedFocusingTPElem' property) is a different element
+    //  than the one we're processing focused responder status for. So we reject
     //  focused responder status here and then this property will be cleared
     //  and when the desired target element is focused, we will accept it.
-    focusTPElem = this.getType().get('$focusingTPElement');
+    focusTPElem = this.getType().get('$calculatedFocusingTPElem');
 
     if (TP.isKindOf(focusTPElem, TP.core.UIElementNode) &&
         !focusTPElem.identicalTo(this)) {
@@ -2557,8 +2627,8 @@ function(moveAction) {
     //  no other element is focused
     currentTPElem = this.getFocusedElement(true);
 
-    //  If there was a real currently focused element, then we move away
-    //  from it to the desired element.
+    //  If there was a real currently focused element, then we move away from it
+    //  to the desired element.
     if (TP.isKindOf(currentTPElem, TP.core.UIElementNode)) {
         //  Now, compute the 'successor' element to focus based on the move
         //  action, the event and the currently focused element (which is
@@ -2573,15 +2643,15 @@ function(moveAction) {
                                         null, moveAction);
     }
 
-    //  If there's a real successor element, then focus it. This will cause
-    //  the standard focusing behavior to take over which should cause
+    //  If there's a real successor element, then focus it. This will cause the
+    //  standard focusing behavior to take over which should cause
     //  UIFocus/UIDidFocus to be signaled, etc. etc.
     if (TP.isKindOf(successorTPElem, TP.core.UIElementNode)) {
 
-        this.getType().set('$focusingTPElement', successorTPElem);
+        this.getType().set('$calculatedFocusingTPElem', successorTPElem);
 
-        //  We do this to match the native focusing behavior that haven't
-        //  been sent through this computation routine (i.e. clicks, etc.)
+        //  We do this to match the native focusing behavior that haven't been
+        //  sent through this computation routine (i.e. clicks, etc.)
 
         //  Note that we pass the moveAction here - if this is a group, it will
         //  act as a hint as to where to put the focus within the group.
@@ -2634,16 +2704,16 @@ function() {
         foundContext,
         tpElementToFocus;
 
-    //  The element that the focus is moving to. This might be null if we
-    //  aren't being told to resign focus because of the TIBET focus manager.
-    newFocusTPElem = this.getType().get('$focusingTPElement');
+    //  The element that the focus is moving to. This might be null if we aren't
+    //  being told to resign focus because of the TIBET focus manager.
+    newFocusTPElem = this.getType().get('$calculatedFocusingTPElem');
 
-    //  Now, we should clear the $focusingTPElement property so that focusing
-    //  on the new element will succeed. We'll adjust this below as necessary in
-    //  case we don't want the focusing to happen on the 'current new element'
-    //  that the system thinks it wants to focus on, but another element of our
-    //  own choosing.
-    this.getType().set('$focusingTPElement', null);
+    //  Now, we should clear the $calculatedFocusingTPElem property so that
+    //  focusing on the new element will succeed. We'll adjust this below as
+    //  necessary in case we don't want the focusing to happen on the 'current
+    //  new element' that the system thinks it wants to focus on, but another
+    //  element of our own choosing.
+    this.getType().set('$calculatedFocusingTPElem', null);
 
     //  If the focus stack is empty, exit here - the 'becomeFocusedResponder'
     //  routine will take care of pushing the new element on the stack.
@@ -2675,9 +2745,9 @@ function() {
         return this;
     }
 
-    //  Look at the stack to see if the focus context for the 'new' element
-    //  is the same as the focus context of one of the elements that has
-    //  already been pushed at some point.
+    //  Look at the stack to see if the focus context for the 'new' element is
+    //  the same as the focus context of one of the elements that has already
+    //  been pushed at some point.
 
     foundContext = $focus_stack.detect(
             function(aTPElement) {
@@ -2704,17 +2774,7 @@ function() {
         //  the 'focus' call below will try to focus this element *after it is
         //  forked* (allowing the stack to unwind).
         //  See 'acceptFocusedResponder' for more information.
-        this.getType().set('$focusingTPElement', tpElementToFocus);
-
-        (function() {
-            //  Clear the $focusingTPElement property so that the focusing on
-            //  this element will succeed.
-            this.getType().set('$focusingTPElement', null);
-
-            //  This will do the proper signaling for accepting/becoming the
-            //  focused responder
-            tpElementToFocus.focus();
-        }.bind(this)).afterUnwind();
+        this.getType().set('$calculatedFocusingTPElem', tpElementToFocus);
     }
 
     //  The new element's focusing context has never been encountered before -
@@ -4801,7 +4861,7 @@ function(aSignal) {
         //  to next. If we're blurring but not coming through the TIBET focus
         //  manager, this will be null.
 
-        focusingTPElem = this.getType().get('$focusingTPElement');
+        focusingTPElem = this.getType().get('$calculatedFocusingTPElem');
 
         if (!this.shouldPerformUIHandler(aSignal) ||
             !this.yieldFocusedResponder(focusingTPElem)) {
