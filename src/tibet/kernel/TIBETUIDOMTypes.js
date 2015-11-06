@@ -4833,6 +4833,10 @@ function(aSignal) {
         this.displayAlert(aSignal.getPayload().at('msg'));
 
         this.signalAfterUnwind('TP.sig.UIDidAlert');
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -4904,6 +4908,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrBusy(true, aSignal.getPayload().at('msg'));
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -4923,6 +4931,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrClosed(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -4942,6 +4954,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrCollapsed(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5010,6 +5026,10 @@ function(aSignal) {
         this.removeAttribute('selected');
 
         this.signalAfterUnwind('TP.sig.UIDidDeselect');
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5029,6 +5049,10 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did blur');
         void 0;
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5048,6 +5072,10 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
     //  alert('got to did focus');
         void 0;
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5098,6 +5126,10 @@ function(aSignal) {
                  $focus_stack.collect(
                      function (item) {return item.asString()}).join('\n')) : 0;
         */
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5117,6 +5149,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrDisabled(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5150,6 +5186,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrDisabled(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5169,6 +5209,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrCollapsed(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5233,6 +5277,10 @@ function(aSignal) {
             //  events, the 'UIFocus' handler above will be called.
             this.select();
         }
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5274,6 +5322,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrHidden(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5315,6 +5367,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrBusy(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5334,6 +5390,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrOfOutRange(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5367,6 +5427,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrInvalid(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5386,6 +5450,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrClosed(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5405,6 +5473,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrRequired(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5424,6 +5496,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrOfOutRange(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5443,6 +5519,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrReadonly(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5462,6 +5542,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrReadonly(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5481,6 +5565,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrRequired(true);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5527,6 +5615,10 @@ function(aSignal) {
         this.setAttribute('selected', 'true');
 
         this.signalAfterUnwind('TP.sig.UIDidSelect');
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5546,6 +5638,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrHidden(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
@@ -5565,6 +5661,10 @@ function(aSignal) {
 
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrInvalid(false);
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
