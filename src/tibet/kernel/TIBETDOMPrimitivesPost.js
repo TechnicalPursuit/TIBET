@@ -7276,7 +7276,15 @@ function(aNode, anXPath, resultType, logErrors) {
                                             TP.$$xpathResolverFunction,
                                             XPathResult.ANY_TYPE,
                                             null);
-                            return result.iterateNext();
+
+                            //  This should return a Text node
+                            result = result.iterateNext();
+                            if (TP.isTextNode(result) &&
+                                TP.isEmpty(result.nodeValue)) {
+                                return null;
+                            }
+
+                            return NaN;
                         }
                     } else {
                         return result.numberValue;
