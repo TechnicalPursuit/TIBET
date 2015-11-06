@@ -6081,8 +6081,6 @@ function(aNode, prevNode) {
 
         action;
 
-    address = TP.nodeGetDocumentPosition(aNode);
-
     if (TP.isAttributeNode(aNode)) {
 
         attrName = TP.attributeGetLocalName(aNode);
@@ -6119,6 +6117,9 @@ function(aNode, prevNode) {
             action = TP.UPDATE;
         }
     }
+
+    //  Obtain the node's document position - we will use this as our address.
+    address = TP.nodeGetDocumentPosition(aNode);
 
     //  If we're doing a TP.UPDATE, we message ourself to determine whether to
     //  change an 'update' to a 'delete'/'create' combination. If so, then we
