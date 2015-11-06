@@ -7163,7 +7163,7 @@ function(aNode, anXPath, resultType, logErrors) {
                     //  If the expression has a 'namespace-uri' call in it
                     //  somewhere, then we can't trust wgxpath to return the
                     //  proper results. Invoke the jQuery XPath processor.
-                    if (/namespace-uri/.test(expression)) {
+                    if (/(namespace-uri|number\()/.test(expression)) {
                         emulatedResult = TP.extern.jxpath(
                                     contextNode, expression, resolver);
                     } else {
@@ -7216,6 +7216,48 @@ function(aNode, anXPath, resultType, logErrors) {
                 TP.isBoolean(firstItem)) {
 
                 return firstItem;
+            }
+
+            //  If what we got back was a NaN here, then we see if the path we
+            //  were trying to run was trying to convert into a scalar (number()
+            //  value). If so, then we strip off the conversion, run it again
+            //  and return the 'first result' in the iteration. This allows us
+            //  to have an 'empty Text node' that resolves to a null, rather
+            //  than a NaN - important in cases where we're trying to determine
+            //  whether we have a real value or not.
+            if (TP.isNaN(firstItem)) {
+                if (TP.regex.XPATH_HAS_SCALAR_CONVERSION.test(
+                                                        theXPath)) {
+                    nodePath =
+                        TP.regex.XPATH_HAS_SCALAR_CONVERSION.match(
+                                                        theXPath).at(1);
+                    result = doc.evaluate(
+                                    nodePath,
+                                    aNode,
+                                    TP.$$xpathResolverFunction,
+                                    XPathResult.ANY_TYPE,
+                                    null);
+
+                    //  Extract the jQuery results into a regular Array
+                    resultArr = TP.extern.jQuery.makeArray(result);
+
+                    //  This should return a Text node (but may also return
+                    //  null due to a bug in wgxpath).
+                    result = resultArr.first();
+
+                    //  If it's either null or an empty Text node, then return
+                    //  null
+                    if (TP.isNull(result)) {
+                        return null;
+                    }
+                    if (TP.isTextNode(result) &&
+                        TP.isEmpty(result.nodeValue)) {
+                        return null;
+                    }
+
+                    //  Otherwise, return the original NaN
+                    return NaN;
+                }
             }
 
             //  If the caller wanted a nodeset, just return the Array.
@@ -7279,11 +7321,14 @@ function(aNode, anXPath, resultType, logErrors) {
 
                             //  This should return a Text node
                             result = result.iterateNext();
+
+                            //  If the Text node is empty, return null
                             if (TP.isTextNode(result) &&
                                 TP.isEmpty(result.nodeValue)) {
                                 return null;
                             }
 
+                            //  Otherwise, return the original NaN
                             return NaN;
                         }
                     } else {
