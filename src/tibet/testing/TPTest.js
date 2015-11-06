@@ -921,13 +921,18 @@ function(setup) {
 TP.test.Suite.Inst.defineMethod('executeAfter',
 function(result, options) {
 
-    var func,
+    var spy,
+
+        func,
 
         drivers,
-        thisArg;
+        thisArg,
+
+        retVal;
 
     //  Restore the original TP.raise() call, uninstalling its spy. See the
     //  'executeBefore' method as to why we install a spy on TP.raise().
+    spy = TP.raise;
     TP.raise.restore();
 
     this.set('msend', Date.now());
@@ -953,10 +958,17 @@ function(result, options) {
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
-            return func.call(this, this, options);
+            retVal = func.call(this, this, options);
         } catch (e) {
             TP.sys.logTest('# error in after: ' + e.message);
         }
+
+        //  Need to make sure that if the 'after()' method 'unsuspended' the
+        //  TP.raise() call that we copy the value from our spy over to the real
+        //  spied function
+        TP.raise.$suspended = spy.$suspended;
+
+        return retVal;
     }
 });
 
@@ -972,7 +984,7 @@ function(currentcase, result, options) {
     //  sure that TP.raise() has the special 'shouldFailTest' property. This is
     //  so that we can discern it from any other stubs/spies that are installed
     //  by 'raises' or 'signals' assertions.
-    if (TP.raise.called && TP.raise.shouldFailTest) {
+    if (TP.raise.called && TP.raise.shouldFailTest && !TP.raise.$suspended) {
         currentcase.set('statusCode', TP.ACTIVE);
         currentcase.fail();
     }
@@ -999,7 +1011,9 @@ function(result, options) {
     var func,
 
         drivers,
-        thisArg;
+        thisArg,
+
+        retVal;
 
     //  Install a spy on TP.raise() so that any calls to it get tracked during
     //  testing. This is so that if any raise calls occur during the execution
@@ -1034,10 +1048,17 @@ function(result, options) {
         try {
             //  Call the Function with ourself as 'this' and then ourself again
             //  as the first parameter and the options as the second parameter
-            return func.call(this, this, options);
+            retVal = func.call(this, this, options);
         } catch (e) {
             TP.sys.logTest('# error in before: ' + e.message);
         }
+
+        //  Need to make sure that if the 'before()' method 'suspended' the
+        //  TP.raise() call that we copy the value from our spy over to the real
+        //  spied function
+        TP.raise.$spiedFunc.$suspended = TP.raise.$suspended;
+
+        return retVal;
     }
 });
 

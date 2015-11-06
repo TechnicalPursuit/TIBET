@@ -1974,6 +1974,9 @@ TP.test.TestMethodCollection.defineAssertion('raises',
 function(aFunction, anException) {
 
     var name,
+
+        suspendedVal,
+
         exception,
 
         retVal;
@@ -1990,6 +1993,7 @@ function(aFunction, anException) {
     //  exceptions, etc., so we need to restore it here before installing it as
     //  a stub. Since we're intentionally tracking raise calls here, we don't
     //  consider raise()s in this context to be test failures.
+    suspendedVal = TP.raise.$suspended;
     TP.raise.restore();
 
     //  Stub out raise so it doesn't actually invoke/throw etc.
@@ -2032,6 +2036,7 @@ function(aFunction, anException) {
 
         //  Reinstall the spy on TP.raise()
         TP.raise = TP.raise.asSpy();
+        TP.raise.$suspended = suspendedVal;
 
         //  Mark this spy with the 'shouldFailTest' property so that it actually
         //  fails tests.
@@ -2047,6 +2052,9 @@ TP.test.TestMethodCollection.defineAssertion('signals',
 function(aFunction, aSignal) {
 
     var name,
+
+        suspendedVal,
+
         signal,
 
         retVal;
@@ -2069,6 +2077,7 @@ function(aFunction, aSignal) {
     //  exceptions, etc., so we need to restore it here before installing it as
     //  a stub. Since we're intentionally ignoring raise calls here, we don't
     //  consider raise()s in this context to be test failures.
+    suspendedVal = TP.raise.$suspended;
     TP.raise.restore();
 
     //  Stub out raise to avoid seeing any exception output so we stay focused
@@ -2086,6 +2095,7 @@ function(aFunction, aSignal) {
 
         //  Reinstall the spy on TP.raise()
         TP.raise = TP.raise.asSpy();
+        TP.raise.$suspended = suspendedVal;
 
         //  Mark this spy with the 'shouldFailTest' property so that it actually
         //  fails tests.
