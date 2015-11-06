@@ -1356,8 +1356,11 @@ function() {
 
                 //  ---
 
-                //  Reset the metrics we're tracking.
-                TP.signal.reset();
+                test.then(
+                    function() {
+                        //  Reset the metrics we're tracking.
+                        TP.signal.reset();
+                    });
 
                 //  ---
 
