@@ -930,11 +930,6 @@ function(result, options) {
 
         retVal;
 
-    //  Restore the original TP.raise() call, uninstalling its spy. See the
-    //  'executeBefore' method as to why we install a spy on TP.raise().
-    spy = TP.raise;
-    TP.raise.restore();
-
     this.set('msend', Date.now());
 
     //  Run any after() which was registered.
@@ -963,13 +958,41 @@ function(result, options) {
             TP.sys.logTest('# error in after: ' + e.message);
         }
 
-        //  Need to make sure that if the 'after()' method 'unsuspended' the
-        //  TP.raise() call that we copy the value from our spy over to the real
-        //  spied function
-        TP.raise.$suspended = spy.$suspended;
-
-        return retVal;
     }
+
+    //  Set up a Promise to restore 'raise' from a spy and either chain it onto
+    //  any Promise returned by the 'after()' method, or just make a new one.
+    if (TP.isThenable(retVal)) {
+        retVal.then(
+                function() {
+                    //  Restore the original TP.raise() call, uninstalling its
+                    //  spy. See the 'executeBefore' method as to why we install
+                    //  a spy on TP.raise().
+                    spy = TP.raise;
+                    TP.raise.restore();
+
+                    //  Need to make sure that if the 'after()' method
+                    //  'unsuspended' the TP.raise() call that we copy the value
+                    //  from our spy over to the real spied function
+                    TP.raise.$suspended = spy.$suspended;
+                });
+    } else {
+        retVal = TP.extern.Promise.resolve().then(
+                    function() {
+                        //  Restore the original TP.raise() call, uninstalling
+                        //  its spy. See the 'executeBefore' method as to why we
+                        //  install a spy on TP.raise().
+                        spy = TP.raise;
+                        TP.raise.restore();
+
+                        //  Need to make sure that if the 'after()' method
+                        //  'unsuspended' the TP.raise() call that we copy the
+                        //  value from our spy over to the real spied function
+                        TP.raise.$suspended = spy.$suspended;
+                    });
+    }
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -977,17 +1000,9 @@ function(result, options) {
 TP.test.Suite.Inst.defineMethod('executeAfterEach',
 function(currentcase, result, options) {
 
-    var func;
+    var func,
 
-    //  Check to see if raise has been invoked. See the 'executeBefore' method
-    //  as to why we install a spy on TP.raise(). Note here how we check to make
-    //  sure that TP.raise() has the special 'shouldFailTest' property. This is
-    //  so that we can discern it from any other stubs/spies that are installed
-    //  by 'raises' or 'signals' assertions.
-    if (TP.raise.called && TP.raise.shouldFailTest && !TP.raise.$suspended) {
-        currentcase.set('statusCode', TP.ACTIVE);
-        currentcase.fail();
-    }
+        retVal;
 
     //  Run any afterEach which was registered.
     func = this.get('afterEvery');
@@ -996,11 +1011,54 @@ function(currentcase, result, options) {
             //  Call the Function with the current test case as 'this' and then
             //  it again as the first parameter and the options as the second
             //  parameter
-            return func.call(currentcase, currentcase, options);
+            retVal = func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in afterEach: ' + e.message);
         }
     }
+
+    //  Set up a Promise to check on 'raise' from out spy and either chain it
+    //  onto any Promise returned by the 'afterEach()' method, or just make a
+    //  new one.
+    if (TP.isThenable(retVal)) {
+        retVal.then(
+                function() {
+                    //  Check to see if raise has been invoked. See the
+                    //  'executeBefore' method as to why we install a spy on
+                    //  TP.raise(). Note here how we check to make sure that
+                    //  TP.raise() has the special 'shouldFailTest' property.
+                    //  This is so that we can discern it from any other
+                    //  stubs/spies that are installed by 'raises' or 'signals'
+                    //  assertions.
+                    if (TP.raise.called &&
+                        TP.raise.shouldFailTest &&
+                        !TP.raise.$suspended) {
+
+                        currentcase.set('statusCode', TP.ACTIVE);
+                        currentcase.fail();
+                    }
+                });
+    } else {
+        retVal = TP.extern.Promise.resolve().then(
+                    //  Check to see if raise has been invoked. See the
+                    //  'executeBefore' method as to why we install a spy on
+                    //  TP.raise(). Note here how we check to make sure that
+                    //  TP.raise() has the special 'shouldFailTest' property.
+                    //  This is so that we can discern it from any other
+                    //  stubs/spies that are installed by 'raises' or 'signals'
+                    //  assertions.
+                    function() {
+                        if (TP.raise.called &&
+                            TP.raise.shouldFailTest &&
+                            !TP.raise.$suspended) {
+
+                            currentcase.set('statusCode', TP.ACTIVE);
+                            currentcase.fail();
+                        }
+                    });
+    }
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -1067,11 +1125,9 @@ function(result, options) {
 TP.test.Suite.Inst.defineMethod('executeBeforeEach',
 function(currentcase, result, options) {
 
-    var func;
-
-    //  Reset the raise invocation counter. See the 'executeBefore' method as to
-    //  why we install a spy on TP.raise().
-    TP.raise.reset();
+    var func,
+        beforeEachRetVal,
+        retVal;
 
     //  Run any beforeEach which was registered.
     func = this.get('beforeEvery');
@@ -1080,11 +1136,25 @@ function(currentcase, result, options) {
             //  Call the Function with the current test case as 'this' and then
             //  it again as the first parameter and the options as the second
             //  parameter
-            return func.call(currentcase, currentcase, options);
+            beforeEachRetVal = func.call(currentcase, currentcase, options);
         } catch (e) {
             TP.sys.logTest('# error in beforeEach: ' + e.message);
         }
     }
+
+    retVal = TP.extern.Promise.resolve().then(
+                function() {
+                    //  Reset the raise invocation counter. See the
+                    //  'executeBefore' method as to why we install a spy on
+                    //  TP.raise().
+                    TP.raise.reset();
+
+                    if (TP.isThenable(beforeEachRetVal)) {
+                        return beforeEachRetVal;
+                    }
+                });
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------

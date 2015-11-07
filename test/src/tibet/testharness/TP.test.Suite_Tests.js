@@ -149,6 +149,104 @@ function() {
     });
 });
 
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.describe('TP.test.Suite - promise chaining',
+function() {
+
+    this.before(
+        function() {
+            //  A statement in the code body should be seen first
+            TP.sys.logTest('You should see this - #1', TP.DEBUG);
+
+            //  Then anything added to the internal promise
+            this.then(
+                function() {
+                    TP.sys.logTest('You should see this - #2', TP.DEBUG);
+                });
+
+            //  Then anything you do in a Promise that you hand back
+            return TP.extern.Promise.resolve().then(
+                    function() {
+                        TP.sys.logTest('You should see this - #3', TP.DEBUG);
+                    });
+        });
+
+    this.beforeEach(
+        function() {
+            //  A statement in the code body should be seen first
+            TP.sys.logTest('You should see this - #4', TP.DEBUG);
+
+            //  Then anything added to the internal promise
+            this.then(
+                function() {
+                    TP.sys.logTest('You should see this - #5', TP.DEBUG);
+                });
+
+            //  Then anything you do in a Promise that you hand back
+            return TP.extern.Promise.resolve().then(
+                    function() {
+                        TP.sys.logTest('You should see this - #6', TP.DEBUG);
+                    });
+        });
+
+    this.it('promise chain test', function(test, options) {
+
+        test.pass();
+
+        //  A statement in the code body should be seen first
+        TP.sys.logTest('You should see this - #7', TP.DEBUG);
+
+        //  Then anything added to the internal promise
+        this.then(
+            function() {
+                TP.sys.logTest('You should see this - #8', TP.DEBUG);
+            });
+
+        //  Then anything you do in a Promise that you hand back
+        return TP.extern.Promise.resolve().then(
+                function(resolver, rejector) {
+                    TP.sys.logTest('You should see this - #9', TP.DEBUG);
+                });
+    });
+
+    this.afterEach(
+        function() {
+            //  A statement in the code body should be seen first
+            TP.sys.logTest('You should see this - #10', TP.DEBUG);
+
+            //  Then anything added to the internal promise
+            this.then(
+                function() {
+                    TP.sys.logTest('You should see this - #11', TP.DEBUG);
+                });
+
+            //  Then anything you do in a Promise that you hand back
+            return TP.extern.Promise.resolve().then(
+                    function() {
+                        TP.sys.logTest('You should see this - #12', TP.DEBUG);
+                    });
+        });
+
+    this.after(
+        function() {
+            //  A statement in the code body should be seen first
+            TP.sys.logTest('You should see this - #13', TP.DEBUG);
+
+            //  Then anything added to the internal promise
+            this.then(
+                function() {
+                    TP.sys.logTest('You should see this - #14', TP.DEBUG);
+                });
+
+            //  Then anything you do in a Promise that you hand back
+            return TP.extern.Promise.resolve().then(
+                    function() {
+                        TP.sys.logTest('You should see this - #15', TP.DEBUG);
+                    });
+        });
+});
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
