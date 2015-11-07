@@ -7116,8 +7116,15 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  some events require interaction with an "owner", typically a
     //  TP.core.Device, responsible for events of that type which may also
     //  decide to manage observations directly
-    //  TODO: probably not require(), should be getTypeByName?
-    type = TP.isTypeName(signame) ? TP.sys.require(signame) : signame;
+
+    //  If the signal name looks like it could be a type name, try to get the
+    //  type behind it. First check what was handed to us and if that doesn't
+    //  resolve to a type, expand the signal name and check again.
+    if (TP.isTypeName(signame)) {
+        if (!TP.isType(type = TP.sys.getTypeByName(signame))) {
+            type = TP.sys.getTypeByName(TP.expandSignalName(signame));
+        }
+    }
 
     //  If we were using a spoofed signal name we may not have a real type, but
     //  we need one to determine if the signal is of a type that has an owner,
