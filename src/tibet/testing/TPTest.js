@@ -1653,25 +1653,11 @@ function(options) {
                                 }
                             };
 
-                        //  If a last internal Promise is available, chain the
-                        //  'afterEachHandler' onto it. This should allow any
-                        //  Promises that were generated as part of running the
-                        //  Case (i.e. by using 'this.then()' inside of a Case)
-                        //  to be the last case and then the afterEach comes
-                        //  after all of those.
-                        //  If it's not available, then just use the promise
-                        //  that was returned by running the test case above.
-                        if (TP.isValid(lastPromise = current.$get(
-                                                        '$internalPromise'))) {
-                            return lastPromise.then(
-                                            finalAfterEachHandler,
-                                            finalAfterEachHandler);
-                        } else {
-                            return promise.then(
-                                            finalAfterEachHandler,
-                                            finalAfterEachHandler);
-                        }
-
+                        //  Return the main test case Promise - all else follows
+                        //  from that.
+                        return promise.then(
+                                        finalAfterEachHandler,
+                                        finalAfterEachHandler);
                     },
                     function(err) {
                         //  TODO: the suite run() operation errored out, now
