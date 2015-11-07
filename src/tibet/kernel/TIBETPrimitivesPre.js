@@ -2733,6 +2733,31 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isThenable',
+function(anObj) {
+
+    /**
+     * @method isThenable
+     * @summary Returns true if the object provided acts as a 'thenable' (most
+     *     likely, a Promise).
+     * @param {Object} anObj The object to test.
+     * @example Test what's a thenable and what's not:
+     *     <code>
+     *          anObj = TP.lang.Object.construct();
+     *          TP.isThenable(anObj);
+     *          <samp>false</samp>
+     *          anObj = TP.extern.Promise.resolve();
+     *          TP.isThenable(anObj);
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a thenable.
+     */
+
+    return TP.canInvoke(anObj, 'then');
+}, null, 'TP.isThenable');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isType',
 function(anObj) {
 
