@@ -7160,10 +7160,11 @@ function(aNode, anXPath, resultType, logErrors) {
 
                     //  Most of this function is to work around wgxpath bugs.
 
-                    //  If the expression has a 'namespace-uri' call in it
-                    //  somewhere, then we can't trust wgxpath to return the
-                    //  proper results. Invoke the jQuery XPath processor.
-                    if (/(namespace-uri|number\()/.test(expression)) {
+                    //  If the expression has a 'namespace-uri()' or 'number()'
+                    //  call in it somewhere, then we can't trust wgxpath to
+                    //  return the proper results. Invoke the jQuery XPath
+                    //  processor.
+                    if (/(namespace-uri\(|number\()/.test(expression)) {
                         emulatedResult = TP.extern.jxpath(
                                     contextNode, expression, resolver);
                     } else {
