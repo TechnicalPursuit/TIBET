@@ -93,8 +93,12 @@ function(aString) {
      * @returns {String} A properly quoted JSON string.
      */
 
-    var lastNonSpaceValue,
-        nextNonSpaceValue,
+    var isBooleanToken,
+
+        lastNonSpaceToken,
+        nextNonSpaceToken,
+        lastTokenNeedsQuote,
+        nextTokenNeedsQuote,
 
         tokens,
 
@@ -130,26 +134,63 @@ function(aString) {
 
     len = tokens.getSize();
 
+    isBooleanToken = function(aToken) {
+        if (aToken.name === 'keyword' &&
+            (aToken.value === 'true' || aToken.value === 'false')) {
+            return true;
+        }
+
+        return false;
+    };
+
     //  A function to find the last non-space token starting at an index
-    lastNonSpaceValue = function(startIndex) {
+    lastNonSpaceToken = function(startIndex) {
         var j;
 
         for (j = startIndex - 1; j >= 0; j--) {
             if (tokens.at(j).name !== 'space') {
-                return tokens.at(j).value;
+                return tokens.at(j);
             }
         }
     };
 
     //  A function to find the next non-space token starting at an index
-    nextNonSpaceValue = function(startIndex) {
+    nextNonSpaceToken = function(startIndex) {
         var j;
 
         for (j = startIndex + 1; j < len; j++) {
             if (tokens.at(j).name !== 'space') {
-                return tokens.at(j).value;
+                return tokens.at(j);
             }
         }
+    };
+
+    lastTokenNeedsQuote = function(startIndex) {
+        var lastToken;
+
+        lastToken = lastNonSpaceToken(startIndex);
+
+        if (lastToken.value === '}' ||
+            isBooleanToken(lastToken) ||
+            lastToken.name === 'number') {
+            return false;
+        }
+
+        return true;
+    };
+
+    nextTokenNeedsQuote = function(startIndex) {
+        var nextToken;
+
+        nextToken = nextNonSpaceToken(startIndex);
+
+        if (nextToken.value === '{' ||
+            isBooleanToken(nextToken) ||
+            nextToken.name === 'number') {
+            return false;
+        }
+
+        return true;
     };
 
     for (i = 0; i < len; i++) {
@@ -198,16 +239,21 @@ function(aString) {
 
                     break;
                 } else if (val === '{') {
-                    str += '{"';
+                    str += '{';
+
+                    if (nextTokenNeedsQuote(i)) {
+                        str += '"';
+                    }
+
                     context = null;
                 } else if (val === ':') {
-                    if (lastNonSpaceValue(i) !== '}') {
+                    if (lastTokenNeedsQuote(i)) {
                         str += '"';
                     }
 
                     str += ':';
 
-                    if (nextNonSpaceValue(i) !== '{') {
+                    if (nextTokenNeedsQuote(i)) {
                         str += '"';
                     }
 
@@ -217,18 +263,21 @@ function(aString) {
                     //  value.
                     useGlobalContext = true;
                 } else if (val === ',') {
+
+                    //  We're at the end of a value - need to consume the
+                    //  context
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
                     }
 
-                    if (lastNonSpaceValue(i) !== '}') {
+                    if (lastTokenNeedsQuote(i)) {
                         str += '"';
                     }
 
                     str += ',';
 
-                    if (nextNonSpaceValue(i) !== '{') {
+                    if (nextTokenNeedsQuote(i)) {
                         str += '"';
                     }
 
@@ -238,12 +287,14 @@ function(aString) {
                     //  value.
                     useGlobalContext = true;
                 } else if (val === '}') {
+
+                    //  We're at the end of a value - need to consume the
                     if (TP.isValid(context)) {
                         val = context;
                         str += val;
                     }
 
-                    if (lastNonSpaceValue(i) !== '}') {
+                    if (lastTokenNeedsQuote(i)) {
                         str += '"';
                     }
 
