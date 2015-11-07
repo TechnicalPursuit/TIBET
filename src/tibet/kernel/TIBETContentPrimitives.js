@@ -191,11 +191,9 @@ function(aString) {
                     //  as the context. If we've already flipped
                     //  useGlobalContext to false, then we're not at the 'first
                     //  segment' of a '.' separated value and, therefore, should
-                    //  just use the value.
+                    //  just skip the value (the '.' - we don't want it).
                     if (TP.notValid(context) && useGlobalContext) {
                         context = tokens.at(i - 1).value;
-                    } else {
-                        str += val;
                     }
 
                     break;
@@ -214,6 +212,10 @@ function(aString) {
                     }
 
                     context = null;
+
+                    //  We're at the end of a value - need to reset for the next
+                    //  value.
+                    useGlobalContext = true;
                 } else if (val === ',') {
                     if (TP.isValid(context)) {
                         val = context;
@@ -248,6 +250,10 @@ function(aString) {
                     str += '}';
 
                     context = null;
+
+                    //  We're at the end of a value - need to reset for the next
+                    //  value.
+                    useGlobalContext = true;
                 } else {
                     str += val;
                 }
