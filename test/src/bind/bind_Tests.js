@@ -209,35 +209,48 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: simple binds',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
 
+    //  ---
+
     this.after(
         function() {
             this.getDriver().showTestLog();
         });
+
+    //  ---
 
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
         });
 
+    //  ---
+
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
 
     this.it('simple binding with text fields - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleXML.xhtml');
 
@@ -298,12 +311,6 @@ function() {
 
                 //  firstNameField is just another text field - same logic
                 //  should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -314,8 +321,6 @@ function() {
     //  ---
 
     this.it('simple binding with various XHTML controls - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLAllXHTMLControls.xhtml');
 
@@ -489,12 +494,6 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -505,8 +504,6 @@ function() {
     //  ---
 
     this.it('bind:scope, no fragment, qualified binding with various XHTML controls - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLNoFragment.xhtml');
 
@@ -680,12 +677,6 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -696,8 +687,6 @@ function() {
     //  ---
 
     this.it('bind:scope, single-level fragment, qualified binding with various XHTML controls - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLSingleFragment.xhtml');
 
@@ -871,12 +860,6 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -887,8 +870,6 @@ function() {
     //  ---
 
     this.it('bind:scope, multi-level fragment, qualified binding with various XHTML controls - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleXMLMultiFragment.xhtml');
 
@@ -1062,12 +1043,6 @@ function() {
                             TP.val(modelObj.get('/person/color')),
                             'red, blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1078,8 +1053,6 @@ function() {
     //  ---
 
     this.it('simple binding with text fields - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSON.xhtml');
 
@@ -1140,12 +1113,6 @@ function() {
 
                 //  firstNameField is just another text field - same logic
                 //  should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1156,8 +1123,6 @@ function() {
     //  ---
 
     this.it('simple binding with various XHTML controls - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONAllXHTMLControls.xhtml');
 
@@ -1331,12 +1296,6 @@ function() {
                             TP.val(modelObj.get('$.person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1347,8 +1306,6 @@ function() {
     //  ---
 
     this.it('bind:scope, no fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONNoFragment.xhtml');
 
@@ -1522,12 +1479,6 @@ function() {
                             TP.val(modelObj.get('$.person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1538,8 +1489,6 @@ function() {
     //  ---
 
     this.it('bind:scope, single-level fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONSingleFragment.xhtml');
 
@@ -1713,12 +1662,6 @@ function() {
                             TP.val(modelObj.get('$.person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1729,8 +1672,6 @@ function() {
     //  ---
 
     this.it('bind:scope, multi-level fragment, qualified binding with various XHTML controls - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSONMultiFragment.xhtml');
 
@@ -1904,12 +1845,6 @@ function() {
                             TP.val(modelObj.get('$.person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1920,8 +1855,6 @@ function() {
     //  ---
 
     this.it('simple binding with text fields - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObj.xhtml');
 
@@ -1982,12 +1915,6 @@ function() {
 
                 //  firstNameField is just another text field - same logic
                 //  should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -1998,8 +1925,6 @@ function() {
     //  ---
 
     this.it('simple binding with various XHTML controls - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjAllXHTMLControls.xhtml');
 
@@ -2173,12 +2098,6 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2189,8 +2108,6 @@ function() {
     //  ---
 
     this.it('bind:scope, no fragment, qualified binding with various XHTML controls - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjNoFragment.xhtml');
 
@@ -2364,12 +2281,6 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2380,8 +2291,6 @@ function() {
     //  ---
 
     this.it('bind:scope, single-level fragment, qualified binding with various XHTML controls - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjSingleFragment.xhtml');
 
@@ -2555,12 +2464,6 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2571,8 +2474,6 @@ function() {
     //  ---
 
     this.it('bind:scope, multi-level fragment, qualified binding with various XHTML controls - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindSimpleJSObjMultiFragment.xhtml');
 
@@ -2746,12 +2647,6 @@ function() {
                             TP.val(modelObj.get('person.color')),
                             TP.ac('red', 'blue'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2765,7 +2660,8 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: numerically indexed binds',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -2795,13 +2691,17 @@ function() {
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
 
     this.it('simple numeric indexed binds - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedXML.xhtml');
 
@@ -2901,12 +2801,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -2917,8 +2811,6 @@ function() {
     //  ---
 
     this.it('simple numeric indexed binds with scoping - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedXMLWithScopes.xhtml');
 
@@ -3018,12 +2910,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3034,8 +2920,6 @@ function() {
     //  ---
 
     this.it('simple numeric indexed binds - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSON.xhtml');
 
@@ -3135,12 +3019,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3151,8 +3029,6 @@ function() {
     //  ---
 
     this.it('simple numeric indexed binds with scoping - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSONWithScopes.xhtml');
 
@@ -3252,12 +3128,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3268,8 +3138,6 @@ function() {
     //  ---
 
     this.it('simple numeric indexed binds - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSObj.xhtml');
 
@@ -3369,12 +3237,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3385,8 +3247,6 @@ function() {
     //  ---
 
     this.it('simple numeric indexed binds with scoping - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindNumericIndexedJSObjWithScopes.xhtml');
 
@@ -3486,12 +3346,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3505,35 +3359,48 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: bind repeats',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
 
+    //  ---
+
     this.after(
         function() {
             this.getDriver().showTestLog();
         });
+
+    //  ---
 
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
         });
 
+    //  ---
+
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
 
     this.it('repeat binding with text fields - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatXML.xhtml');
 
@@ -3621,12 +3488,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3637,8 +3498,6 @@ function() {
     //  ---
 
     this.it('nested repeat binding with text fields - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLNested.xhtml');
 
@@ -3911,10 +3770,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -3925,8 +3780,6 @@ function() {
     //  ---
 
     this.it('nested repeat binding with text fields - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONNested.xhtml');
 
@@ -4094,10 +3947,6 @@ function() {
 
                 //  All of the others are just other text fields - same logic
                 //  should work
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4108,8 +3957,6 @@ function() {
     //  ---
 
     this.it('repeat binding with text fields - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObj.xhtml');
 
@@ -4199,10 +4046,6 @@ function() {
 
                 //  firstNameField1 and firstNameField2 are just other text
                 //  fields - same logic should work
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4213,8 +4056,6 @@ function() {
     //  ---
 
     this.it('nested repeat binding with text fields - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjNested.xhtml');
 
@@ -4382,10 +4223,6 @@ function() {
 
                 //  All of the others are just other text fields - same logic
                 //  should work
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4396,8 +4233,6 @@ function() {
     //  ---
 
     this.it('repeat binding with text fields and paging - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLPaging.xhtml');
 
@@ -4550,10 +4385,6 @@ function() {
                             TP.byId('firstNameField2', windowContext).get('value'),
                             'Billy');
                     });
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4564,8 +4395,6 @@ function() {
     //  ---
 
     this.it('nested repeat binding with text fields and paging - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLNestedPaging.xhtml');
 
@@ -4784,10 +4613,6 @@ function() {
                             TP.byId('addressCityField22', windowContext).get('value'),
                             'Middle Of Nowhere');
                     });
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4798,8 +4623,6 @@ function() {
     //  ---
 
     this.it('repeat binding with text fields and paging - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONPaging.xhtml');
 
@@ -4952,10 +4775,6 @@ function() {
                             TP.byId('firstNameField1', windowContext).get('value'),
                             'Billy');
                     });
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -4966,8 +4785,6 @@ function() {
     //  ---
 
     this.it('nested repeat binding with text fields and paging - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONNestedPaging.xhtml');
 
@@ -5186,10 +5003,6 @@ function() {
                             TP.byId('addressCityField11', windowContext).get('value'),
                             'Middle Of Nowhere');
                     });
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -5200,8 +5013,6 @@ function() {
     //  ---
 
     this.it('repeat binding with text fields and paging - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjPaging.xhtml');
 
@@ -5354,10 +5165,6 @@ function() {
                             TP.byId('firstNameField1', windowContext).get('value'),
                             'Billy');
                     });
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -5368,8 +5175,6 @@ function() {
     //  ---
 
     this.it('nested repeat binding with text fields and paging - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjNestedPaging.xhtml');
 
@@ -5588,10 +5393,6 @@ function() {
                             TP.byId('addressCityField11', windowContext).get('value'),
                             'Middle Of Nowhere');
                     });
-
-                test.getDriver().setLocation(unloadURI);
-
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -5605,14 +5406,19 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: static tables',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
+
+    //  ---
 
     this.after(
         function() {
@@ -5621,9 +5427,19 @@ function() {
 
     //  ---
 
-    this.it('Simple table - XML data source', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('Simple table - XML data source', function(test, options) {
 
         loadURI = TP.uc('~lib_test/src/bind/BindStaticTableXML.xhtml');
 
@@ -5688,8 +5504,6 @@ function() {
 
     this.it('Simple table - JSON data source', function(test, options) {
 
-        var loadURI;
-
         loadURI = TP.uc('~lib_test/src/bind/BindStaticTableJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
@@ -5751,8 +5565,6 @@ function() {
     //  ---
 
     this.it('Simple table - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindStaticTableJSObj.xhtml');
 
@@ -5818,14 +5630,19 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: inline bind expressions',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
+
+    //  ---
 
     this.after(
         function() {
@@ -5834,9 +5651,19 @@ function() {
 
     //  ---
 
-    this.it('whole attribute expression - XML data source', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('whole attribute expression - XML data source', function(test, options) {
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeXML.xhtml');
 
@@ -5881,12 +5708,6 @@ function() {
                             TP.val(modelObj.get('/people/person[1]/color')),
                             'purple');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -5897,8 +5718,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, no fragment, qualified binding - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeNoFragmentXML.xhtml');
 
@@ -5944,12 +5763,6 @@ function() {
                             TP.val(modelObj.get('/people/person[2]/color')),
                             'yellow');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -5960,8 +5773,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, single-level fragment, qualified binding - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeSingleFragmentXML.xhtml');
 
@@ -6007,12 +5818,6 @@ function() {
                             TP.val(modelObj.get('/people/person[3]/color')),
                             'orange');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6023,8 +5828,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, multi-level fragment, qualified binding - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeMultiFragmentXML.xhtml');
 
@@ -6070,12 +5873,6 @@ function() {
                             TP.val(modelObj.get('/people/person[4]/color')),
                             'blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6086,8 +5883,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeXML.xhtml');
 
@@ -6149,12 +5944,6 @@ function() {
                             TP.val(modelObj.get('/people/person[1]/color')),
                             'purple');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6165,8 +5954,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, no fragment, qualified binding - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeNoFragmentXML.xhtml');
 
@@ -6229,12 +6016,6 @@ function() {
                             TP.val(modelObj.get('/people/person[2]/color')),
                             'yellow');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6245,8 +6026,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, single-level fragment, qualified binding - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeSingleFragmentXML.xhtml');
 
@@ -6308,12 +6087,6 @@ function() {
                             TP.val(modelObj.get('/people/person[3]/color')),
                             'orange');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6324,8 +6097,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, multi-level fragment, qualified binding - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeMultiFragmentXML.xhtml');
 
@@ -6387,12 +6158,6 @@ function() {
                             TP.val(modelObj.get('/people/person[4]/color')),
                             'blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6403,8 +6168,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeJSON.xhtml');
 
@@ -6450,12 +6213,6 @@ function() {
                             TP.val(modelObj.get('$.people[0].color')),
                             'purple');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6466,8 +6223,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeNoFragmentJSON.xhtml');
 
@@ -6513,12 +6268,6 @@ function() {
                             TP.val(modelObj.get('$.people[1].color')),
                             'yellow');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6529,8 +6278,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeSingleFragmentJSON.xhtml');
 
@@ -6576,12 +6323,6 @@ function() {
                             TP.val(modelObj.get('$.people[2].color')),
                             'orange');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6592,8 +6333,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeMultiFragmentJSON.xhtml');
 
@@ -6639,12 +6378,6 @@ function() {
                             TP.val(modelObj.get('$.people[3].color')),
                             'blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6655,8 +6388,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeJSON.xhtml');
 
@@ -6718,12 +6449,6 @@ function() {
                             TP.val(modelObj.get('$.people[0].color')),
                             'purple');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6734,8 +6459,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, no fragment, qualified binding - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeNoFragmentJSON.xhtml');
 
@@ -6798,12 +6521,6 @@ function() {
                             TP.val(modelObj.get('$.people[1].color')),
                             'yellow');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6814,8 +6531,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, single-level fragment, qualified binding - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeSingleFragmentJSON.xhtml');
 
@@ -6877,12 +6592,6 @@ function() {
                             TP.val(modelObj.get('$.people[2].color')),
                             'orange');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6893,8 +6602,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, multi-level fragment, qualified binding - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeMultiFragmentJSON.xhtml');
 
@@ -6956,12 +6663,6 @@ function() {
                             TP.val(modelObj.get('$.people[3].color')),
                             'blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -6972,8 +6673,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeJSObj.xhtml');
 
@@ -7019,12 +6718,6 @@ function() {
                             TP.val(modelObj.get('people[0].color')),
                             'purple');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7035,8 +6728,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, no fragment, qualified binding - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeNoFragmentJSObj.xhtml');
 
@@ -7082,12 +6773,6 @@ function() {
                             TP.val(modelObj.get('people[1].color')),
                             'yellow');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7098,8 +6783,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, single-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeSingleFragmentJSObj.xhtml');
 
@@ -7145,12 +6828,6 @@ function() {
                             TP.val(modelObj.get('people[2].color')),
                             'orange');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7161,8 +6838,6 @@ function() {
     //  ---
 
     this.it('whole attribute expression, multi-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindWholeAttributeMultiFragmentJSObj.xhtml');
 
@@ -7208,12 +6883,6 @@ function() {
                             TP.val(modelObj.get('people[3].color')),
                             'blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7224,8 +6893,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeJSObj.xhtml');
 
@@ -7287,12 +6954,6 @@ function() {
                             TP.val(modelObj.get('people[0].color')),
                             'purple');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7303,8 +6964,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, no fragment, qualified binding - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeNoFragmentJSObj.xhtml');
 
@@ -7367,12 +7026,6 @@ function() {
                             TP.val(modelObj.get('people[1].color')),
                             'yellow');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7383,8 +7036,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, single-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeSingleFragmentJSObj.xhtml');
 
@@ -7446,12 +7097,6 @@ function() {
                             TP.val(modelObj.get('people[2].color')),
                             'orange');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7462,8 +7107,6 @@ function() {
     //  ---
 
     this.it('partial attribute expression, multi-level fragment, qualified binding - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindPartialAttributeMultiFragmentJSObj.xhtml');
 
@@ -7525,12 +7168,6 @@ function() {
                             TP.val(modelObj.get('people[3].color')),
                             'blue');
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7545,14 +7182,19 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: expressions with variables',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
+
+    //  ---
 
     this.after(
         function() {
@@ -7561,9 +7203,19 @@ function() {
 
     //  ---
 
-    this.it('bind:io attributes - no literal expression content', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('bind:io attributes - no literal expression content', function(test, options) {
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsNoLiterals.xhtml');
 
@@ -7607,12 +7259,6 @@ function() {
                 test.assert.isEqualTo(
                     jsobjField.getValue(),
                     'SMITH');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7623,8 +7269,6 @@ function() {
     //  ---
 
     this.it('bind:io attributes - literal expression content', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsWithLiterals.xhtml');
 
@@ -7668,12 +7312,6 @@ function() {
                 test.assert.isEqualTo(
                     jsobjField.getValue(),
                     'The data source\'s last name field value uppercased: SMITH');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7684,8 +7322,6 @@ function() {
     //  ---
 
     this.it('embedded syntax - no literal expression content', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsEmbedded.xhtml');
 
@@ -7729,12 +7365,6 @@ function() {
                 test.assert.isEqualTo(
                     jsobjField.getValue(),
                     'SMITH');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7745,8 +7375,6 @@ function() {
     //  ---
 
     this.it('embedded syntax - literal expression content', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsAndLiteralsEmbedded.xhtml');
 
@@ -7790,12 +7418,6 @@ function() {
                 test.assert.isEqualTo(
                     jsobjField.getValue(),
                     'The data source\'s last name field value uppercased: SMITH');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7806,8 +7428,6 @@ function() {
     //  ---
 
     this.it('bind:io attributes - no literal expression content - repeating context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsIOAttrsRepeating.xhtml');
 
@@ -7907,12 +7527,6 @@ function() {
                 test.assert.isEqualTo(
                     jsobjField.getValue(),
                     'Jones');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -7923,8 +7537,6 @@ function() {
     //  ---
 
     this.it('bind:io attributes - literal expression content - repeating context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsAndLiteralsIOAttrsRepeating.xhtml');
 
@@ -7999,12 +7611,6 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     'The last name: Jones');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8015,8 +7621,6 @@ function() {
     //  ---
 
     this.it('embedded syntax - no literal expression content - repeating context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsEmbeddedRepeating.xhtml');
 
@@ -8091,12 +7695,6 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     'Jones');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8107,8 +7705,6 @@ function() {
     //  ---
 
     this.it('embedded syntax - literal expression content - repeating context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindExprsWithVarsAndLiteralsEmbeddedRepeating.xhtml');
 
@@ -8184,12 +7780,6 @@ function() {
                 test.assert.isEqualTo(
                     jsonField.getValue(),
                     'The last name: Jones');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8200,8 +7790,6 @@ function() {
     //  ---
 
     this.it('Table - XML data source - repeating context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindTableXMLRepeating.xhtml');
 
@@ -8261,12 +7849,6 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(dataCells.at(11)),
                     'Professional');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8277,8 +7859,6 @@ function() {
     //  ---
 
     this.it('Table - JSON data source - repeating context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindTableJSONRepeating.xhtml');
 
@@ -8337,12 +7917,6 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(dataCells.at(11)),
                     'Professional');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8353,8 +7927,6 @@ function() {
     //  ---
 
     this.it('Table - JavaScript Object data source - repeating context', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindTableJSObjRepeating.xhtml');
 
@@ -8413,12 +7985,6 @@ function() {
                 test.assert.isEqualTo(
                     TP.nodeGetTextContent(dataCells.at(11)),
                     'Professional');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8432,7 +7998,8 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: standalone expressions',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -8452,9 +8019,19 @@ function() {
 
     //  ---
 
-    this.it('fully qualified expressions - XML data source', function(test, options) {
+    this.afterEach(
+        function() {
 
-        var loadURI;
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('fully qualified expressions - XML data source', function(test, options) {
 
         loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsXML.xhtml');
 
@@ -8474,12 +8051,6 @@ function() {
                 test.assert.isEqualTo(
                     fields.at(1).getValue(),
                     'Smith');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8490,8 +8061,6 @@ function() {
     //  ---
 
     this.it('fully qualified expressions - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSON.xhtml');
 
@@ -8511,12 +8080,6 @@ function() {
                 test.assert.isEqualTo(
                     fields.at(1).getValue(),
                     'Smith');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8527,8 +8090,6 @@ function() {
     //  ---
 
     this.it('fully qualified expressions - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSObj.xhtml');
 
@@ -8548,12 +8109,6 @@ function() {
                 test.assert.isEqualTo(
                     fields.at(1).getValue(),
                     'Smith');
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8568,35 +8123,47 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: insert into repeat',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
 
+    //  ---
+
     this.after(
         function() {
             this.getDriver().showTestLog();
         });
+
+    //  ---
 
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
         });
 
+    //  ---
+
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
         });
 
     //  ---
 
     this.it('insert into repeat - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLInsert.xhtml');
 
@@ -8678,12 +8245,6 @@ function() {
                         test.assert.isEmpty(
                         TP.byId('lastNameField7', windowContext).get('value'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8694,8 +8255,6 @@ function() {
     //  ---
 
     this.it('insert into repeat - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONInsert.xhtml');
 
@@ -8777,12 +8336,6 @@ function() {
                         test.assert.isEmpty(
                         TP.byId('lastNameField6', windowContext).get('value'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8793,8 +8346,6 @@ function() {
     //  ---
 
     this.it('insert into repeat - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjInsert.xhtml');
 
@@ -8876,12 +8427,6 @@ function() {
                         test.assert.isEmpty(
                         TP.byId('lastNameField6', windowContext).get('value'));
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8895,35 +8440,47 @@ function() {
 TP.bind.XMLNS.Type.describe('bind: delete from repeat',
 function() {
 
-    var unloadURI;
+    var unloadURI,
+        loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
 
     this.before(
         function() {
             this.getDriver().showTestGUI();
         });
 
+    //  ---
+
     this.after(
         function() {
             this.getDriver().showTestLog();
         });
+
+    //  ---
 
     this.beforeEach(
         function() {
             this.getSuite().startTrackingSignals();
         });
 
+    //  ---
+
     this.afterEach(
         function() {
             this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
         });
 
     //  ---
 
     this.it('delete from repeat - XML data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatXMLDelete.xhtml');
 
@@ -8982,12 +8539,6 @@ function() {
 
                         test.assert.isSizeOf(fields, 2);
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8998,8 +8549,6 @@ function() {
     //  ---
 
     this.it('delete from repeat - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSONDelete.xhtml');
 
@@ -9058,12 +8607,6 @@ function() {
 
                         test.assert.isSizeOf(fields, 2);
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -9074,8 +8617,6 @@ function() {
     //  ---
 
     this.it('delete from repeat - JavaScript Object data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSObjDelete.xhtml');
 
@@ -9134,12 +8675,6 @@ function() {
 
                         test.assert.isSizeOf(fields, 2);
                     });
-
-                //  Unload the current page by setting it to the blank
-                test.getDriver().setLocation(unloadURI);
-
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
