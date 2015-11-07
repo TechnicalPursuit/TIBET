@@ -1524,7 +1524,7 @@ function(options) {
     firstPromise = firstPromise.then(
         function() {
             var beforeMaybe,
-                lastPromise;
+                generatedPromise;
 
             //  Run any 'before' hook for the suite. Note that this may
             //  generate a Promise that will now be in '$internalPromise'.
@@ -1532,18 +1532,18 @@ function(options) {
 
             //  Grab any internal promise that might have been created by
             //  running the 'before' hook. This might or might not exist.
-            lastPromise = suite.$get('$internalPromise');
+            generatedPromise = suite.$get('$internalPromise');
 
             //  If the before method returned a Promise, hook it up into the
             //  chain.
-            if (TP.canInvoke(beforeMaybe, 'then')) {
+            if (TP.isThenable(beforeMaybe)) {
 
                 //  If there was also a valid internal Promise, chain it on.
                 //  Otherwise, just return the Promise that was returned by the
                 //  'before' hook.
 
-                if (TP.isValid(lastPromise)) {
-                    lastPromise.then(
+                if (TP.isThenable(generatedPromise)) {
+                    generatedPromise.then(
                         function() {
                             return beforeMaybe;
                         });
@@ -1555,8 +1555,8 @@ function(options) {
             //  The 'before' hook did not return a Promise, but if it created an
             //  internal one, make sure to return that to keep things hooked up
             //  properly.
-            if (TP.isValid(lastPromise)) {
-                return lastPromise;
+            if (TP.isThenable(generatedPromise)) {
+                return generatedPromise;
             }
         });
 
@@ -1570,7 +1570,7 @@ function(options) {
                 return chain.then(
                     function(obj) {
                         var beforeEachMaybe,
-                            lastPromise,
+                            generatedPromise,
                             promise,
 
                             finalAfterEachHandler;
@@ -1581,14 +1581,14 @@ function(options) {
 
                         //  A last promise can be obtained which means that
                         //  'beforeEach' must've generated one.
-                        if (TP.isValid(lastPromise = current.$get(
+                        if (TP.isValid(generatedPromise = current.$get(
                                                 '$internalPromise'))) {
 
                             //  If a Promise was also *returned* from executing
                             //  'beforeEach', then chain it onto the last
                             //  promise.
-                            if (TP.canInvoke(beforeEachMaybe, 'then')) {
-                                promise = lastPromise.then(
+                            if (TP.isThenable(beforeEachMaybe)) {
+                                promise = generatedPromise.then(
                                         function() {
                                             return beforeEachMaybe;
                                         }).then(
@@ -1597,14 +1597,14 @@ function(options) {
                                         });
                             } else {
                                 //  No returned Promise, just a last promise.
-                                promise = lastPromise.then(
+                                promise = generatedPromise.then(
                                         function() {
                                             return current.run(TP.hc(options));
                                         });
                             }
                         } else {
                             //  Returned Promise, no last promise
-                            if (TP.canInvoke(beforeEachMaybe, 'then')) {
+                            if (TP.isThenable(beforeEachMaybe)) {
                                 promise = beforeEachMaybe.then(
                                         function() {
                                             return current.run(TP.hc(options));
@@ -1637,7 +1637,7 @@ function(options) {
                                     //  If a Promise was also *returned* from
                                     //  executing 'afterEach', then chain it
                                     //  onto the last promise.
-                                    if (TP.canInvoke(afterEachMaybe, 'then')) {
+                                    if (TP.isThenable(afterEachMaybe)) {
                                         return finalPromise.then(
                                                 function() {
                                                     return afterEachMaybe;
@@ -1647,8 +1647,7 @@ function(options) {
                                         //  promise.
                                         return finalPromise;
                                     }
-                                } else if (TP.canInvoke(
-                                                    afterEachMaybe, 'then')) {
+                                } else if (TP.isThenable(afterEachMaybe)) {
                                     //  Returned Promise, no last promise
                                     return afterEachMaybe;
                                 }
@@ -1710,7 +1709,7 @@ function(options) {
 
                     //  If a Promise was also *returned* from executing 'after',
                     //  then chain it on the last Promise.
-                    if (TP.canInvoke(afterMaybe, 'then')) {
+                    if (TP.isThenable(afterMaybe)) {
                         return finalPromise.then(
                                         function() {
                                             return afterMaybe;
@@ -1725,7 +1724,7 @@ function(options) {
                                             suite.report(options);
                                         });
                     }
-                } else if (TP.canInvoke(afterMaybe, 'then')) {
+                } else if (TP.isThenable(afterMaybe)) {
                     //  Returned Promise, no last promise
                     return afterMaybe.then(
                                     function() {
@@ -1899,7 +1898,7 @@ function(onFulfilled, onRejected) {
 
             //  If we got a Promise back from the fulfillment handler, chain it
             //  on to the 'sub return promise' here.
-            if (TP.canInvoke(maybe, 'then')) {
+            if (TP.isThenable(maybe)) {
                 subReturnPromise = subReturnPromise.then(
                                         function() {
                                             return maybe;
@@ -1932,7 +1931,7 @@ function(onFulfilled, onRejected) {
             subReturnPromise = thisArg.$get('$currentPromise');
             thisArg.$set('$currentPromise', null);
 
-            if (TP.canInvoke(maybe, 'then')) {
+            if (TP.isThenable(maybe)) {
                 subReturnPromise = subReturnPromise.then(
                                         function() {
                                             return maybe;
@@ -2891,7 +2890,7 @@ function(options) {
                         //  the test case.
                         //  If 'maybe' contains a Promise (or at least a
                         //  'thenable'), use it.
-                        if (TP.canInvoke(maybe, 'then')) {
+                        if (TP.isThenable(maybe)) {
 
                             //  NB: We use 'done()' here rather than 'then()'
                             //  as per the recommendation of the Q
@@ -2966,7 +2965,7 @@ function(options) {
                         //  NB: Note how we use 'done()' here as the *last* part
                         //  of the chain rather than 'then()' as per the
                         //  recommendation of the Q documentation.
-                        if (TP.canInvoke(maybe, 'then')) {
+                        if (TP.isThenable(maybe)) {
                             internalPromise.then(
                                 function(obj) {
                                     return maybe;
@@ -3170,7 +3169,7 @@ function(onFulfilled, onRejected) {
 
             //  If we got a Promise back from the fulfillment handler, chain it
             //  on to the 'sub return promise' here.
-            if (TP.canInvoke(maybe, 'then')) {
+            if (TP.isThenable(maybe)) {
                 subReturnPromise = subReturnPromise.then(
                                         function() {
                                             return maybe;
@@ -3203,7 +3202,7 @@ function(onFulfilled, onRejected) {
             subReturnPromise = thisArg.$get('$currentPromise');
             thisArg.$set('$currentPromise', null);
 
-            if (TP.canInvoke(maybe, 'then')) {
+            if (TP.isThenable(maybe)) {
                 subReturnPromise = subReturnPromise.then(
                                         function() {
                                             return maybe;
