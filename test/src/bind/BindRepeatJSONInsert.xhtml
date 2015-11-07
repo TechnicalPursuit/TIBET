@@ -43,11 +43,11 @@
             <input type="text" id="lastNameField" bind:io="{value: lastname}" tabindex="0"/><br/>
         </span>
 
-        <button id="insertBeforeBegin" on:click="TP.sig.CreateItem({index:0, position:TP.BEFORE})">Click to insert a row before the beginning</button>
-        <button id="insertAfterBegin" on:click="TP.sig.CreateItem({index:0})">Click to insert a row after the beginning</button>
+        <button id="insertBeforeBegin" on:click="{signal: CreateItem, payload:{index:0, position:TP.BEFORE}}">Click to insert a row before the beginning</button>
+        <button id="insertAfterBegin" on:click="{signal: CreateItem, payload:{index:0}}">Click to insert a row after the beginning</button>
 
-        <button id="insertBeforeEnd" on:click="TP.sig.CreateItem({position:TP.BEFORE})">Click to insert a row before end</button>
-        <button id="insertAfterEnd" on:click="TP.sig.CreateItem">Click to insert a row after end</button>
+        <button id="insertBeforeEnd" on:click="{signal: CreateItem, payload:{position:TP.BEFORE}}">Click to insert a row before end</button>
+        <button id="insertAfterEnd" on:click="CreateItem">Click to insert a row after end</button>
     </span>
 </body>
 </html>

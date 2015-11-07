@@ -44,8 +44,8 @@
             <input type="text" id="lastNameField" bind:io="{value: lastname}" tabindex="0"/><br/>
         </span>
 
-        <button id="deleteFirstRow" on:click="TP.sig.DeleteItem({index:0})">Click to delete the first row</button>
-        <button id="deleteLastRow" on:click="TP.sig.DeleteItem">Click to delete the last row</button>
+        <button id="deleteFirstRow" on:click="{signal: DeleteItem, payload: {index:0}}">Click to delete the first row</button>
+        <button id="deleteLastRow" on:click="DeleteItem">Click to delete the last row</button>
     </span>
 
 </body>
