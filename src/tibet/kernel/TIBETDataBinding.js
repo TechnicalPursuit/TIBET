@@ -1405,7 +1405,13 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
                     '$INPUT', val);
             }
 
-            retVal = expr.transform(val, params);
+            //  Don't try to template invalid values.
+            if (TP.isValid(val)) {
+                retVal = expr.transform(val, params);
+            } else {
+                //  null or undefined, but let's be pendantic
+                retVal = val;
+            }
 
             return retVal;
         }.bind(this);
@@ -2642,11 +2648,12 @@ function(aResource) {
         }
     }
 
-    //  If we still couldn't get a valid resource, then just log a warning and
+    //  If we still couldn't get a valid resource, then empty ourself and
     //  return.
     if (TP.notValid(repeatResourceResult)) {
-        TP.ifWarn() ?
-                TP.warn('Could not obtain a repeating resource') : 0;
+
+        //  Empty out whatever content we used to have.
+        this.empty();
 
         return this;
     }
