@@ -685,6 +685,14 @@ function(src, ops, tsh, exp, alias, args) {
                             uriParenCount++;
                         }
 
+                        //  we could also be processing a closing paren if our
+                        //  overall expression started with an opening paren. We
+                        //  need to decrement the count here to keep things
+                        //  balanced.
+                        if (c === ')') {
+                            uriParenCount--;
+                        }
+
                         str += c;
                         i += 1;
 
