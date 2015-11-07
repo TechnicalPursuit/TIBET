@@ -2489,6 +2489,57 @@ function(aSuspectValue, aDefaultValue) {
 //  TYPE CHECKS
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isNativeFunction',
+function(anObj) {
+
+    /**
+     * @method isNativeFunction
+     * @summary Returns true if the object provided acts as a native (i.e.
+     *     builtin) Function.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} Whether or not the supplied object is a native
+     *     Function (that is, one that is built into the browser).
+     */
+
+    return TP.regex.NATIVE_CODE.test(anObj.toString());
+
+}, null, 'TP.isNativeFunction');
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('isNativeType',
+function(anObj) {
+
+    /**
+     * @method isNativeType
+     * @summary Returns true if the object provided is a native type for the
+     *     current browser.
+     * @description Because the browsers don't have a common set of types the
+     *     results of this method may vary based on the browser in question.
+     *     The results are consistent for the "big 8" and the major types which
+     *     extend those 8 such as Event, but most HTML/DOM types will vary
+     *     between implementations. By also checking for 'non Function'
+     *     constructors here, we try to mitigate this problem.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean} Whether or not the supplied object is a native type
+     *     (that is, one that is built into the browser).
+     */
+
+    //  Many 'native types' on Chrome will report as NaN using the standard
+    //  isNaN() test - weird
+    if (typeof anObj === 'number') {
+        return false;
+    }
+
+    /* eslint-disable no-extra-parens */
+    return ((TP.isFunction(anObj) || TP.isNonFunctionConstructor(anObj)) &&
+                 TP.isType(anObj)) ||
+            (anObj === Function);
+    /* eslint-enable no-extra-parens */
+}, null, 'TP.isNativeType');
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isNode',
 function(anObj) {
 
@@ -2833,57 +2884,6 @@ function(anObj) {
 
     return false;
 }, null, 'TP.isType');
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('isNativeFunction',
-function(anObj) {
-
-    /**
-     * @method isNativeFunction
-     * @summary Returns true if the object provided acts as a native (i.e.
-     *     builtin) Function.
-     * @param {Object} anObj The object to test.
-     * @returns {Boolean} Whether or not the supplied object is a native
-     *     Function (that is, one that is built into the browser).
-     */
-
-    return TP.regex.NATIVE_CODE.test(anObj.toString());
-
-}, null, 'TP.isNativeFunction');
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('isNativeType',
-function(anObj) {
-
-    /**
-     * @method isNativeType
-     * @summary Returns true if the object provided is a native type for the
-     *     current browser.
-     * @description Because the browsers don't have a common set of types the
-     *     results of this method may vary based on the browser in question.
-     *     The results are consistent for the "big 8" and the major types which
-     *     extend those 8 such as Event, but most HTML/DOM types will vary
-     *     between implementations. By also checking for 'non Function'
-     *     constructors here, we try to mitigate this problem.
-     * @param {Object} anObj The object to test.
-     * @returns {Boolean} Whether or not the supplied object is a native type
-     *     (that is, one that is built into the browser).
-     */
-
-    //  Many 'native types' on Chrome will report as NaN using the standard
-    //  isNaN() test - weird
-    if (typeof anObj === 'number') {
-        return false;
-    }
-
-    /* eslint-disable no-extra-parens */
-    return ((TP.isFunction(anObj) || TP.isNonFunctionConstructor(anObj)) &&
-                 TP.isType(anObj)) ||
-            (anObj === Function);
-    /* eslint-enable no-extra-parens */
-}, null, 'TP.isNativeType');
 
 //  ------------------------------------------------------------------------
 
