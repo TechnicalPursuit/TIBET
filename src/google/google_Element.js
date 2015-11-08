@@ -9,15 +9,14 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.sig.AmazonSimpleDBResponse}
- * @summary A subtype of TP.sig.RESTResponse that is used in conjunction with
- *     the TP.amz.AmazonSimpleDBService type to communicate to the Amazon
- *     SimpleDB service.
+ * @type {google:Element}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sig.RESTResponse.defineSubtype('AmazonSimpleDBResponse');
+TP.core.ElementNode.defineSubtype('google.Element');
+
+TP.w3.Xmlns.registerNSInfo('urn:google', TP.hc('prefix', 'google'));
 
 //  ------------------------------------------------------------------------
 //  end

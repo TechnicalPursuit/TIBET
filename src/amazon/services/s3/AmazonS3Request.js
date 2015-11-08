@@ -11,7 +11,7 @@
 /**
  * @type {TP.sig.AmazonS3Request}
  * @summary A subtype of TP.sig.RESTRequest that is used in conjunction with
- *     the TP.amz.AmazonS3Service type to communicate to the Amazon S3 service.
+ *     the TP.amazon.AmazonS3Service type to communicate to the Amazon S3 service.
  * @example Accessing Amazon S3 from TIBET consists of:
  *
  *     1. Define the operation you want to perform via a set of 'request
@@ -27,7 +27,7 @@
  *     not defined in the request, they will be obtained either by looking for a
  *     vCard entry matching the service's 'resourceID' in the current
  *     application's 'cfg' hash or by prompting the user. See the type comment
- *     in TP.amz.AmazonS3Service for more information.
+ *     in TP.amazon.AmazonS3Service for more information.
  *
  *     Here is an example of them defined in the request:
  *

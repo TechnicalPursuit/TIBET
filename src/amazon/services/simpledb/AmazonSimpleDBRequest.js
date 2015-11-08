@@ -11,7 +11,7 @@
 /**
  * @type {TP.sig.AmazonSimpleDBRequest}
  * @summary A subtype of TP.sig.RESTRequest that is used in conjunction with
- *     the TP.amz.AmazonSimpleDBService type to communicate to the Amazon
+ *     the TP.amazon.AmazonSimpleDBService type to communicate to the Amazon
  *     SimpleDB service.
  * @example Accessing Amazon SimpleDB from TIBET consists of:
  *
@@ -28,7 +28,7 @@
  *     not defined in the request, they will be obtained either by looking for a
  *     vCard entry matching the service's 'resourceID' in the current
  *     application's 'cfg' hash or by prompting the user. See the type comment
- *     in TP.amz.AmazonSimpleDBService for more information.
+ *     in TP.amazon.AmazonSimpleDBService for more information.
  *
  *     Here is an example of them defined in the request:
  *

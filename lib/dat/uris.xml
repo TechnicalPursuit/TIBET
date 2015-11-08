@@ -123,22 +123,22 @@
 
   <!-- rely on the specified type (sample only)  -->
   <delegateURI tibet:uriMatchString="http://s3.amazonaws.com.*"
-    tibet:urihandler="TP.amz.AmazonS3Handler"/>
+    tibet:urihandler="TP.amazon.AmazonS3Handler"/>
 
   <delegateURI tibet:uriMatchString="https://sdb.amazonaws.com.*"
-    tibet:urihandler="TP.amz.AmazonSimpleDBHandler"/>
+    tibet:urihandler="TP.amazon.AmazonSimpleDBHandler"/>
 
   <delegateURI tibet:uriMatchString="http://demo.sabredav.org.*"
     tibet:urihandler="TP.core.WebDAVHandler"/>
 
   <delegateURI tibet:uriMatchString="http://docs.google.com.*"
-    tibet:urihandler="TP.goog.GoogleDocsHandler"/>
+    tibet:urihandler="TP.google.GoogleDocsHandler"/>
 
   <delegateURI tibet:uriMatchString="ws://.*:10081"
     tibet:urihandler="TP.test.WSEchoHandler"/>
 
   <delegateURI uriStartString="jsonp://ajax.googleapis.com/ajax/services/search/web"
-    tibet:contenttype="TP.goog.GoogleSearchData"/>
+    tibet:contenttype="TP.google.GoogleSearchData"/>
 
   <!-- Mapping for CouchDB servers running on the default port of 5984 whose
        URLs have *no* extension (so they are not attachments in a TIBETan

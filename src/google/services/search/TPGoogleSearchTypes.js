@@ -9,46 +9,46 @@
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.goog.GoogleSearchData
+//  TP.google.GoogleSearchData
 //  ========================================================================
 
 /**
- * @type {TP.goog.GoogleSearchData}
+ * @type {TP.google.GoogleSearchData}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.defineSubtype('goog.GoogleSearchData');
+TP.core.JSONContent.defineSubtype('google.GoogleSearchData');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleSearchData.Inst.defineAttribute(
+TP.google.GoogleSearchData.Inst.defineAttribute(
         'results',
         {value:
                 TP.apc('responseData.results')});
 
-TP.goog.GoogleSearchData.Inst.defineAttribute(
+TP.google.GoogleSearchData.Inst.defineAttribute(
         'resultsFromTo',
         {value:
                 TP.apc('responseData.results[{{0}}:{{1}}]')});
 
-TP.goog.GoogleSearchData.Inst.defineAttribute(
+TP.google.GoogleSearchData.Inst.defineAttribute(
         'estimatedResultCount',
         {value:
                 TP.apc('responseData.cursor.estimatedResultCount',
                         TP.hc('shouldCollapse', true))
         });
 
-TP.goog.GoogleSearchData.Inst.defineAttribute(
+TP.google.GoogleSearchData.Inst.defineAttribute(
         'currentPageIndex',
         {value:
                 TP.apc('responseData.cursor.currentPageIndex',
                         TP.hc('shouldCollapse', true)
         )});
 
-TP.goog.GoogleSearchData.Inst.defineAttribute(
+TP.google.GoogleSearchData.Inst.defineAttribute(
         'moreResultsUrl',
         {value:
                 TP.apc('responseData.cursor.moreResultsUrl',

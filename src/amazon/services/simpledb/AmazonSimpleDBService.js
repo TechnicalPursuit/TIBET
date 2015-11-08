@@ -9,12 +9,12 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.amz.AmazonSimpleDBService}
+ * @type {TP.amazon.AmazonSimpleDBService}
  * @summary A subtype of TP.core.RESTService that communicates with the Amazon
- *     TP.amz.SimpleDB service.
+ *     TP.amazon.SimpleDB service.
  * @example If the TP.sig.AmazonSimpleDBRequest / TP.sig.AmazonSimpleDBResponse
  *     processing model is used, it is unnecessary to manually set up an
- *     TP.amz.AmazonSimpleDBService. As part of the TIBET infrastructure of
+ *     TP.amazon.AmazonSimpleDBService. As part of the TIBET infrastructure of
  *     using request/response pairs, a 'default' instance of this service will
  *     be instantiated and registered to handle all
  *     TP.sig.AmazonSimpleDBRequests.
@@ -30,7 +30,7 @@
  *     It is possible, however, to manually set up a server. To do so, either
  *     supply the 'key' and 'secretkey' to the service:
  *
- *     simpleDBService = TP.amz.AmazonSimpleDBService.construct(
+ *     simpleDBService = TP.amazon.AmazonSimpleDBService.construct(
  *                  'myAmazonSimpleDBServer',
  *                  TP.hc('uri', 'http://sdb.amazonaws.com',
  *                          'key', '<developer key from Amazon>',
@@ -65,7 +65,7 @@
  *
  *     You will then need to register your service instance so that it services
  *     TP.sig.AmazonSimpleDBRequests (otherwise, the TIBET machinery will
- *     instantiate the 'default' instance of TP.amz.AmazonSimpleDBService and
+ *     instantiate the 'default' instance of TP.amazon.AmazonSimpleDBService and
  *     register it to service these kinds of requests):
  *
  *     simpleDBService.register();
@@ -73,31 +73,31 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.RESTService.defineSubtype('amz.AmazonSimpleDBService');
+TP.core.RESTService.defineSubtype('amazon.AmazonSimpleDBService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Type.defineAttribute(
+TP.amazon.AmazonSimpleDBService.Type.defineAttribute(
     'triggerSignals', 'TP.sig.AmazonSimpleDBRequest');
 
-TP.amz.AmazonSimpleDBService.Type.defineAttribute('version', '2009-04-15');
+TP.amazon.AmazonSimpleDBService.Type.defineAttribute('version', '2009-04-15');
 
-TP.amz.AmazonSimpleDBService.register();
+TP.amazon.AmazonSimpleDBService.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineAttribute('serverKey');
-TP.amz.AmazonSimpleDBService.Inst.defineAttribute('secretServerKey');
+TP.amazon.AmazonSimpleDBService.Inst.defineAttribute('serverKey');
+TP.amazon.AmazonSimpleDBService.Inst.defineAttribute('secretServerKey');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineMethod('init',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
@@ -122,7 +122,7 @@ function(resourceID, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineMethod('clearAuthData',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('clearAuthData',
 function() {
 
     /**
@@ -142,7 +142,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineMethod('configureAuthData',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('configureAuthData',
 function(aRequest) {
 
     /**
@@ -217,7 +217,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineMethod('encodeURIParam',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('encodeURIParam',
 function(uriParam) {
 
     /**
@@ -239,7 +239,7 @@ function(uriParam) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineMethod('finalizeRequest',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
@@ -271,7 +271,7 @@ function(aRequest) {
     if (TP.isEmpty(key = this.get('serverKey')) &&
             TP.isEmpty(key = aRequest.at('key'))) {
         aRequest.fail(
-            'No key in TP.amz.AmazonSimpleDBService::finalizeRequest');
+            'No key in TP.amazon.AmazonSimpleDBService::finalizeRequest');
 
         return null;
     }
@@ -280,7 +280,7 @@ function(aRequest) {
     if (TP.isEmpty(secretKey = this.get('secretServerKey')) &&
             TP.isEmpty(secretKey = aRequest.at('secretkey'))) {
         aRequest.fail(
-            'No secretKey in TP.amz.AmazonSimpleDBService::finalizeRequest');
+            'No secretKey in TP.amazon.AmazonSimpleDBService::finalizeRequest');
 
         return null;
     }
@@ -310,7 +310,7 @@ function(aRequest) {
         'SignatureVersion', '2',
         'SignatureMethod', 'HmacSHA1',
         'Timestamp', urlDate,
-        'Version', TP.amz.AmazonSimpleDBService.get('version'));
+        'Version', TP.amazon.AmazonSimpleDBService.get('version'));
 
     //  If there were existing 'uri parameters' in the incoming request, add
     //  them (and overlay any values in) the resource components.
@@ -376,7 +376,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineMethod('repackageAttributes',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('repackageAttributes',
 function(aRequest) {
 
     /**
@@ -535,7 +535,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBService.Inst.defineMethod('rewriteRequestVerb',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**

@@ -9,19 +9,19 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.goog.GoogleDocsService}
+ * @type {TP.google.GoogleDocsService}
  * @summary A subtype of GoogleService that communicates with the Google-hosted
  *     Google Docs server.
  * @example If the TP.sig.GoogleDocsRequest/TP.sig.GoogleDocsResponse processing
  *     model is used, it is unnecessary to manually set up an
- *     TP.goog.GoogleDocsService. As part of the TIBET infrastructure of using
+ *     TP.google.GoogleDocsService. As part of the TIBET infrastructure of using
  *     request/response pairs, a 'default' instance of this service will be
  *     instantiated and registered to handle all TP.sig.GoogleDocsRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'TP.goog.GoogleDocsServiceDefault'. It should have
+ *     system under the name 'TP.google.GoogleDocsServiceDefault'. It should have
  *     a vCard entry in the currently executing project (with an 'FN' of
- *     'TP.goog.GoogleDocsServiceDefault'). If this vCard cannot be found, the
+ *     'TP.google.GoogleDocsServiceDefault'). If this vCard cannot be found, the
  *     user will be prompted to enter the information about the default server.
  *     If only part of the information is found the user can be prompted to
  *     enter the missing information.
@@ -29,7 +29,7 @@
  *     It is possible, however, to manually set up a server. To do so, simply
  *     instantiate a server:
  *
- *     docsService = TP.goog.GoogleDocsService.construct(
+ *     docsService = TP.google.GoogleDocsService.construct(
  *     'GoogleDocsTestServer');
  *
  *     Or have a vCard entry where the 'FN' entry matches the resource ID that
@@ -43,11 +43,11 @@
  *     and then construct it using:
  *
  *     docsService =
- *     TP.goog.GoogleDocsService.construct('GoogleDocsTestServer');
+ *     TP.google.GoogleDocsService.construct('GoogleDocsTestServer');
  *
  *     You will then need to register your service instance so that it services
  *     TP.sig.GoogleDocsRequests (otherwise, the TIBET machinery will
- *     instantiate the 'default' instance of TP.goog.GoogleDocsService as
+ *     instantiate the 'default' instance of TP.google.GoogleDocsService as
  *     described above and register it to service these kinds of requests):
  *
  *     waveService.register();
@@ -55,29 +55,29 @@
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.defineSubtype('GoogleDocsService');
+TP.google.GoogleService.defineSubtype('GoogleDocsService');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleDocsService.Type.defineAttribute('triggerSignals',
+TP.google.GoogleDocsService.Type.defineAttribute('triggerSignals',
                                             'TP.sig.GoogleDocsRequest');
 
 //  We basically ignore serviceURI, auth and iswebdav for Contacts, but
 //  we need to give them values to avoid prompting on service creation.
-TP.goog.GoogleDocsService.Type.defineAttribute('defaultedParameters',
+TP.google.GoogleDocsService.Type.defineAttribute('defaultedParameters',
         TP.hc('serviceURI', TP.NONE,
                 'auth', TP.NONE,
                 'iswebdav', false));
 
-TP.goog.GoogleDocsService.register();
+TP.google.GoogleDocsService.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleDocsService.Inst.defineMethod('finalizeRequest',
+TP.google.GoogleDocsService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
@@ -121,7 +121,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleDocsService.Inst.defineMethod('rewriteRequestBody',
+TP.google.GoogleDocsService.Inst.defineMethod('rewriteRequestBody',
 function(aRequest) {
 
     /**
@@ -183,7 +183,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleDocsService.Inst.defineMethod('rewriteRequestURI',
+TP.google.GoogleDocsService.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
@@ -212,7 +212,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleDocsService.Inst.defineMethod('rewriteRequestVerb',
+TP.google.GoogleDocsService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**

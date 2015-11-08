@@ -16,8 +16,8 @@
 <config id="full">
     <config ref="standard"/>
 
-    <config ref="goog"/>
-    <config ref="amz"/>
+    <config ref="google"/>
+    <config ref="amazon"/>
 
     <config ref="xctrls"/>
 
@@ -42,35 +42,35 @@
     <script src="ev/ev_script.js"/>
 </config>
 
-<config id="amz">
-    <script src="amz/services/s3/AmazonS3Response.js"/>
-    <script src="amz/services/s3/AmazonS3Request.js"/>
-    <script src="amz/services/s3/AmazonS3Handler.js"/>
-    <script src="amz/services/s3/AmazonS3Service.js"/>
+<config id="amazon">
+    <script src="amazon/services/s3/AmazonS3Response.js"/>
+    <script src="amazon/services/s3/AmazonS3Request.js"/>
+    <script src="amazon/services/s3/AmazonS3Handler.js"/>
+    <script src="amazon/services/s3/AmazonS3Service.js"/>
 
-    <script src="amz/services/simpledb/AmazonSimpleDBResponse.js"/>
-    <script src="amz/services/simpledb/AmazonSimpleDBRequest.js"/>
-    <script src="amz/services/simpledb/AmazonSimpleDBHandler.js"/>
-    <script src="amz/services/simpledb/AmazonSimpleDBService.js"/>
+    <script src="amazon/services/simpledb/AmazonSimpleDBResponse.js"/>
+    <script src="amazon/services/simpledb/AmazonSimpleDBRequest.js"/>
+    <script src="amazon/services/simpledb/AmazonSimpleDBHandler.js"/>
+    <script src="amazon/services/simpledb/AmazonSimpleDBService.js"/>
 </config>
 
-<config id="goog">
-    <script src="goog/goog_Element.js"/>
+<config id="google">
+    <script src="google/google_Element.js"/>
 
-    <script src="goog/services/TPGoogleResponse.js"/>
-    <script src="goog/services/TPGoogleRequest.js"/>
-    <script src="goog/services/TPGoogleService.js"/>
+    <script src="google/services/TPGoogleResponse.js"/>
+    <script src="google/services/TPGoogleRequest.js"/>
+    <script src="google/services/TPGoogleService.js"/>
 
-    <script src="goog/services/docs/GoogleDocsResponse.js"/>
-    <script src="goog/services/docs/GoogleDocsRequest.js"/>
-    <script src="goog/services/docs/GoogleDocsHandler.js"/>
-    <script src="goog/services/docs/GoogleDocsService.js"/>
+    <script src="google/services/docs/GoogleDocsResponse.js"/>
+    <script src="google/services/docs/GoogleDocsRequest.js"/>
+    <script src="google/services/docs/GoogleDocsHandler.js"/>
+    <script src="google/services/docs/GoogleDocsService.js"/>
 
-    <script src="goog/services/contacts/GoogleContactsResponse.js"/>
-    <script src="goog/services/contacts/GoogleContactsRequest.js"/>
-    <script src="goog/services/contacts/GoogleContactsService.js"/>
+    <script src="google/services/contacts/GoogleContactsResponse.js"/>
+    <script src="google/services/contacts/GoogleContactsRequest.js"/>
+    <script src="google/services/contacts/GoogleContactsService.js"/>
 
-    <script src="goog/services/search/TPGoogleSearchTypes.js"/>
+    <script src="google/services/search/TPGoogleSearchTypes.js"/>
 </config>
 
 <config id="html">

@@ -9,12 +9,12 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.amz.AmazonS3Service}
+ * @type {TP.amazon.AmazonS3Service}
  * @summary A subtype of TP.core.RESTService that communicates with the Amazon
  *     S3 service.
  * @example If the TP.sig.AmazonS3Request/TP.sig.AmazonS3Response processing
  *     model is used, it is unnecessary to manually set up an
- *     TP.amz.AmazonS3Service. As part of the TIBET infrastructure of using
+ *     TP.amazon.AmazonS3Service. As part of the TIBET infrastructure of using
  *     request/response pairs, a 'default' instance of this service will be
  *     instantiated and registered to handle all TP.sig.AmazonS3Requests.
  *
@@ -29,7 +29,7 @@
  *     It is possible, however, to manually set up a server. To do so, either
  *     supply the 'key' and 'secretkey' to the service:
  *
- *     s3Service = TP.amz.AmazonS3Service.construct(
+ *     s3Service = TP.amazon.AmazonS3Service.construct(
  *                  'myAmazonS3Server',
  *                  TP.hc('uri', 'http://s3.amazonaws.com',
  *                          'key', '<developer key from Amazon>',
@@ -64,7 +64,7 @@
  *
  *     You will then need to register your service instance so that it services
  *     TP.sig.AmazonS3Requests (otherwise, the TIBET machinery will instantiate
- *     the 'default' instance of TP.amz.AmazonS3Service as described above and
+ *     the 'default' instance of TP.amazon.AmazonS3Service as described above and
  *     register it to service these kinds of requests):
  *
  *     s3Service.register();
@@ -72,28 +72,28 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.RESTService.defineSubtype('amz.AmazonS3Service');
+TP.core.RESTService.defineSubtype('amazon.AmazonS3Service');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Type.defineAttribute('triggerSignals',
+TP.amazon.AmazonS3Service.Type.defineAttribute('triggerSignals',
     'TP.sig.AmazonS3Request');
-TP.amz.AmazonS3Service.register();
+TP.amazon.AmazonS3Service.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Inst.defineAttribute('serverKey');
-TP.amz.AmazonS3Service.Inst.defineAttribute('secretServerKey');
+TP.amazon.AmazonS3Service.Inst.defineAttribute('serverKey');
+TP.amazon.AmazonS3Service.Inst.defineAttribute('secretServerKey');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Inst.defineMethod('init',
+TP.amazon.AmazonS3Service.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
@@ -118,7 +118,7 @@ function(resourceID, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Inst.defineMethod('clearAuthData',
+TP.amazon.AmazonS3Service.Inst.defineMethod('clearAuthData',
 function() {
 
     /**
@@ -138,7 +138,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Inst.defineMethod('configureAuthData',
+TP.amazon.AmazonS3Service.Inst.defineMethod('configureAuthData',
 function(aRequest) {
 
     /**
@@ -223,7 +223,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Inst.defineMethod('rewriteRequestVerb',
+TP.amazon.AmazonS3Service.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**
@@ -269,7 +269,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Inst.defineMethod('rewriteRequestURI',
+TP.amazon.AmazonS3Service.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
@@ -315,7 +315,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Service.Inst.defineMethod('rewriteRequestHeaders',
+TP.amazon.AmazonS3Service.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
@@ -348,7 +348,7 @@ function(aRequest) {
     //  No verb? Then fail the request and return.
     if (TP.isEmpty(verb = aRequest.at('verb'))) {
         aRequest.fail(
-            'No verb in TP.amz.AmazonS3Service::rewriteRequestHeaders');
+            'No verb in TP.amazon.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
     }
@@ -356,7 +356,7 @@ function(aRequest) {
     //  No resource? Then fail the request and return.
     if (TP.isEmpty(resource = aRequest.at('resource'))) {
         aRequest.fail(
-        'No resource in TP.amz.AmazonS3Service::rewriteRequestHeaders');
+        'No resource in TP.amazon.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
     }
@@ -365,7 +365,7 @@ function(aRequest) {
     if (TP.isEmpty(key = this.get('serverKey')) &&
             TP.isEmpty(key = aRequest.at('key'))) {
         aRequest.fail(
-        'No key in TP.amz.AmazonS3Service::rewriteRequestHeaders');
+        'No key in TP.amazon.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
     }
@@ -374,7 +374,7 @@ function(aRequest) {
     if (TP.isEmpty(secretKey = this.get('secretServerKey')) &&
             TP.isEmpty(secretKey = aRequest.at('secretKey'))) {
         aRequest.fail(
-        'No secretKey in TP.amz.AmazonS3Service::rewriteRequestHeaders');
+        'No secretKey in TP.amazon.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
     }

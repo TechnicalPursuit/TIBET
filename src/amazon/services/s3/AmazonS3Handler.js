@@ -9,19 +9,19 @@
 //  ========================================================================
 
 /**
- * @type {TP.amz.AmazonS3Handler}
+ * @type {TP.amazon.AmazonS3Handler}
  * @summary A URL handler type that can store and load from Amazon S3 URLs.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('amz.AmazonS3Handler');
+TP.core.URIHandler.defineSubtype('amazon.AmazonS3Handler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Handler.Type.defineMethod('load',
+TP.amazon.AmazonS3Handler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
@@ -83,7 +83,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Handler.Type.defineMethod('nuke',
+TP.amazon.AmazonS3Handler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
@@ -102,7 +102,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonS3Handler.Type.defineMethod('save',
+TP.amazon.AmazonS3Handler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**

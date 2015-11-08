@@ -11,7 +11,8 @@
 /**
  * @type {TP.sig.AmazonS3Response}
  * @summary A subtype of TP.sig.RESTResponse that is used in conjunction with
- *     the TP.amz.AmazonS3Service type to communicate to the Amazon S3 service.
+ *     the TP.amazon.AmazonS3Service type to communicate to the Amazon S3
+ *     service.
  */
 
 //  ------------------------------------------------------------------------

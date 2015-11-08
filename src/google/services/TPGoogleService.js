@@ -9,7 +9,7 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.goog.GoogleService}
+ * @type {TP.google.GoogleService}
  * @summary A subtype of TP.core.HTTPService that communicates with a Google
  *     server.
  * @summary This is an abstract supertype for all Google-related services.
@@ -19,9 +19,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.defineSubtype('goog.GoogleService');
+TP.core.HTTPService.defineSubtype('google.GoogleService');
 
-TP.goog.GoogleService.isAbstract(true);
+TP.google.GoogleService.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -29,28 +29,28 @@ TP.goog.GoogleService.isAbstract(true);
 
 //  The version of the GData API that we're using for this service. The
 //  default is '3.0', but subtypes can override.
-TP.goog.GoogleService.Type.defineAttribute('gdataVersion', '3.0');
+TP.google.GoogleService.Type.defineAttribute('gdataVersion', '3.0');
 
-TP.goog.GoogleService.Type.defineAttribute('defaultedParameters',
+TP.google.GoogleService.Type.defineAttribute('defaultedParameters',
                 TP.hc('auth', TP.NONE,
                         'iswebdav', false));
 
-TP.goog.GoogleService.register();
+TP.google.GoogleService.register();
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineAttribute('authToken');
+TP.google.GoogleService.Inst.defineAttribute('authToken');
 
-TP.goog.GoogleService.Inst.defineAttribute('username');
-TP.goog.GoogleService.Inst.defineAttribute('password');
+TP.google.GoogleService.Inst.defineAttribute('username');
+TP.google.GoogleService.Inst.defineAttribute('password');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineMethod('init',
+TP.google.GoogleService.Inst.defineMethod('init',
 function(resourceID, aRequest) {
 
     /**
@@ -63,7 +63,7 @@ function(resourceID, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
      *     hash containing a serviceURI if the service is going to be tied to a
      *     particular target location.
-     * @returns {TP.goog.GoogleService} A new instance.
+     * @returns {TP.google.GoogleService} A new instance.
      */
 
     var paramDict,
@@ -113,7 +113,7 @@ function(resourceID, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineMethod('finalizeRequest',
+TP.google.GoogleService.Inst.defineMethod('finalizeRequest',
 function(aRequest) {
 
     /**
@@ -156,7 +156,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineHandler('RequestSucceeded',
+TP.google.GoogleService.Inst.defineHandler('RequestSucceeded',
 function(aSignal) {
 
     /**
@@ -217,7 +217,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineHandler('HTTPRequest',
+TP.google.GoogleService.Inst.defineHandler('HTTPRequest',
 function(aRequest) {
 
     /**
@@ -294,7 +294,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineMethod('rewriteRequestHeaders',
+TP.google.GoogleService.Inst.defineMethod('rewriteRequestHeaders',
 function(aRequest) {
 
     /**
@@ -333,14 +333,14 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineMethod('rewriteRequestURI',
+TP.google.GoogleService.Inst.defineMethod('rewriteRequestURI',
 function(aRequest) {
 
     /**
      * @method rewriteRequestURI
      * @summary Rewrites the request's URI.
      * @param {TP.sig.GoogleRequest} aRequest The request to rewrite.
-     * @returns {TP.goog.URI} The new/updated URI instance.
+     * @returns {TP.google.URI} The new/updated URI instance.
      */
 
     switch (aRequest.at('action')) {
@@ -362,7 +362,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.goog.GoogleService.Inst.defineMethod('rewriteRequestVerb',
+TP.google.GoogleService.Inst.defineMethod('rewriteRequestVerb',
 function(aRequest) {
 
     /**

@@ -9,19 +9,23 @@
 //  ========================================================================
 
 /**
- * @type {TP.amz.AmazonSimpleDBHandler}
- * @summary A URL handler type that can store and load from Amazon S3 URLs.
+ * @type {TP.google.GoogleDocsHandler}
+ * @summary A URL handler type that can store and load from Google Docs URLs.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.defineSubtype('amz.AmazonSimpleDBHandler');
+TP.core.URIHandler.defineSubtype('google.GoogleDocsHandler');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBHandler.Type.defineMethod('load',
+//  ------------------------------------------------------------------------
+//  CONTENT METHODS
+//  ------------------------------------------------------------------------
+
+TP.google.GoogleDocsHandler.Type.defineMethod('load',
 function(targetURI, aRequest) {
 
     /**
@@ -42,42 +46,27 @@ function(targetURI, aRequest) {
 
     var request,
         response,
-        loadRequest,
-        domainName,
-        itemName;
+
+        loadRequest;
 
     request = TP.request(aRequest);
     response = request.getResponse();
 
-    //  If neither a domainName or a itemName is defined, then we just go
-    //  with a request that has an action of 'ListDomains'.
-    if (TP.isEmpty(domainName = request.at('DomainName'))) {
-        loadRequest = TP.sig.AmazonSimpleDBRequest.construct(
-            TP.hc('action', 'ListDomains',
-                  'uri', targetURI.asString()));
-    } else if (TP.isEmpty(itemName = request.at('ItemName'))) {
-        loadRequest = TP.sig.AmazonSimpleDBRequest.construct(
-            TP.hc('action', 'ListDomains',
-                  'uri', targetURI.asString()));
-    } else {
-        loadRequest = TP.sig.AmazonSimpleDBRequest.construct(
-            TP.hc('action', 'GetAttributes',
-                  'uri', targetURI.asString(),
-                  'uriparams', TP.hc('DomainName', domainName,
-                                     'ItemName', itemName)));
-    }
-
-    //  Make sure the 'key' and 'secretkey' are populated into the load
-    //  request.
-    loadRequest.atPut('key', request.at('key'));
-    loadRequest.atPut('secretkey', request.at('secretkey'));
+    //  Construct and initialize an TP.sig.GoogleDocsRequest, defaulting the
+    //  'action' to 'downloadDoc' if the load request hasn't specified one.
+    loadRequest = TP.sig.GoogleDocsRequest.construct(
+            TP.hc('action', request.atIfInvalid('action', 'downloadDoc'),
+                    'docId', request.at('docId'),
+                    'username', request.at('username'),
+                    'password', request.at('password')
+                    ));
 
     //  'Join' that request to the incoming request. This will cause the
     //  incoming request to 'pause' until the get item request finishes and
     //  to be 'dependent' on the success/failure of the get item request.
     request.andJoinChild(loadRequest);
 
-    //  Fire the get item request to trigger service operation.
+    //  Fire the load request to trigger service operation.
     loadRequest.fire();
 
     //  Make sure that the 2 requests match on sync/async
@@ -88,7 +77,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBHandler.Type.defineMethod('nuke',
+TP.google.GoogleDocsHandler.Type.defineMethod('nuke',
 function(targetURI, aRequest) {
 
     /**
@@ -107,7 +96,7 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amz.AmazonSimpleDBHandler.Type.defineMethod('save',
+TP.google.GoogleDocsHandler.Type.defineMethod('save',
 function(targetURI, aRequest) {
 
     /**
@@ -124,63 +113,31 @@ function(targetURI, aRequest) {
 
     var request,
         response,
+
         resp,
         content,
-        domainName,
-        itemName,
-        names,
-        values,
+
         saveRequest;
 
     request = TP.request(aRequest);
     response = request.getResponse();
 
-    //  Saving data to Amazon requires 'data' to save ;-)
-    resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
+    //  Saving data to Google requires 'data' to save ;-)
+    resp = targetURI.getResource(TP.hc('async', false));
 
     if (TP.isEmpty(content = resp.get('result'))) {
-        request.fail('No content to send for: ' + TP.str(targetURI));
-
+        request.fail();
         return response;
     }
 
-    if (TP.isString(content)) {
-        //  If its a String, we treat it like an 'action=Select'
-        saveRequest = TP.sig.AmazonSimpleDBRequest.construct(
-            TP.hc('action', 'Select',
-                  'uri', targetURI.asString(),
-                  'uriparams', TP.hc('SelectExpression', content)));
-    } else {
-        //  Otherwise, we treat it like an 'action=PutAttributes'
-
-        if (TP.isEmpty(domainName = request.at('DomainName'))) {
-            request.fail('Missing parameter: DomainName');
-
-            return response;
-        }
-
-        if (TP.isEmpty(itemName = request.at('ItemName'))) {
-            request.fail('Missing parameter: ItemName');
-
-            return response;
-        }
-
-        names = content.getKeys();
-        values = content.getValues();
-
-        saveRequest = TP.sig.AmazonSimpleDBRequest.construct(
-            TP.hc('action', 'PutAttributes',
-                  'uri', targetURI.asString(),
-                  'uriparams', TP.hc('DomainName', domainName,
-                                     'ItemName', itemName),
-                  'Names', names,
-                  'Values', values));
-    }
-
-    //  Make sure the 'key' and 'secretkey' are populated into the save
-    //  request.
-    saveRequest.atPut('key', request.at('key'));
-    saveRequest.atPut('secretkey', request.at('secretkey'));
+    saveRequest = TP.sig.GoogleDocsRequest.construct(
+                    TP.hc('action', 'uploadDoc',
+                            'body', content,
+                            'docName', request.at('name'),
+                            'refreshContent', false,
+                            'username', request.at('username'),
+                            'password', request.at('password')
+                            ));
 
     //  'Join' that request to the incoming request. This will cause the
     //  incoming request to 'pause' until the put item request finishes and
