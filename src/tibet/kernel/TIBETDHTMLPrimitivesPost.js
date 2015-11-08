@@ -6552,7 +6552,7 @@ function(anElement) {
                     if (escapeText) {
                         xhtmlResult.push(
                             TP.xmlLiteralsToEntities(
-                                TP.htmlEntitiesToXmlEntities(
+                                TP.htmlEntitiesToXMLEntities(
                                             nonElementNode.nodeValue)));
                     } else {
                         //  Otherwise, we must be in a 'pre' or something,
@@ -6584,7 +6584,7 @@ function(anElement) {
     //  Join together the result Array and convert any HTML entities to
     //  their XML equivalent. This causes replacements such as any HTML
     //  '&nbsp;'s with the XML-compliant '&#160;'s.
-    xhtmlResult = TP.htmlEntitiesToXmlEntities(xhtmlResult.join(''));
+    xhtmlResult = TP.htmlEntitiesToXMLEntities(xhtmlResult.join(''));
 
     return xhtmlResult;
 });

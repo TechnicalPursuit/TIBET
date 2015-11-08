@@ -54,7 +54,7 @@ function() {
      */
 
     return TP.xmlLiteralsToEntities(
-                    TP.htmlEntitiesToXmlEntities(TP.str(this)));
+                    TP.htmlEntitiesToXMLEntities(TP.str(this)));
 });
 
 //  ========================================================================

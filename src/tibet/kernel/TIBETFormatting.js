@@ -929,7 +929,7 @@ function() {
         return str;
     }
 
-    return TP.xmlLiteralsToEntities(TP.htmlEntitiesToXmlEntities(str));
+    return TP.xmlLiteralsToEntities(TP.htmlEntitiesToXMLEntities(str));
 });
 
 //  ------------------------------------------------------------------------

@@ -17117,7 +17117,7 @@ function(anObj, filter, useNil) {
         stringElem,
         TP.XML_FACTORY_DOCUMENT.createTextNode(
             TP.xmlLiteralsToEntities(
-                TP.htmlEntitiesToXmlEntities(anObj.asString()))));
+                TP.htmlEntitiesToXMLEntities(anObj.asString()))));
 
     return stringElem;
 });

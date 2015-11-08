@@ -2065,7 +2065,7 @@ function(text, type, report) {
     try {
         //  Make sure to convert HTML entities to XML entities,
         //  especially for IE's XML parser
-        docText = TP.htmlEntitiesToXmlEntities(text);
+        docText = TP.htmlEntitiesToXMLEntities(text);
         doc = TP.documentFromString(docText, null, report);
     } catch (e) {
         if (TP.notFalse(report)) {

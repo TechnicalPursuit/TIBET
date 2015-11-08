@@ -1337,7 +1337,7 @@ function(anObject, aRequest) {
 
     if (TP.isTrue(aRequest.at('escapeContent'))) {
         val = TP.xmlLiteralsToEntities(
-                        TP.htmlEntitiesToXmlEntities(TP.str(anObject)));
+                        TP.htmlEntitiesToXMLEntities(TP.str(anObject)));
     } else {
         val = TP.str(anObject);
     }

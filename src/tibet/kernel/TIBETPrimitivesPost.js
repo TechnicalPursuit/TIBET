@@ -1179,11 +1179,11 @@ function(aString, replaceSpaces) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('htmlEntitiesToXmlEntities',
+TP.definePrimitive('htmlEntitiesToXMLEntities',
 function(aString) {
 
     /**
-     * @method htmlEntitiesToXmlEntities
+     * @method htmlEntitiesToXMLEntities
      * @summary Converts an HTML string to an XML equivalent. This attempts to
      *     preserve entities that exist in the HTML in the XML.
      * @param {String} aString The string that may contain HTML entities.
@@ -1209,11 +1209,11 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('xmlEntitiesToHtmlEntities',
+TP.definePrimitive('xmlEntitiesToHTMLEntities',
 function(aString) {
 
     /**
-     * @method xmlEntitiesToHtmlEntities
+     * @method xmlEntitiesToHTMLEntities
      * @summary Converts an XML string to an HTML equivalent. This attempts to
      *     preserve entities that exist in the XML in the HTML.
      * @param {String} aString The string that may contain XML entities.
@@ -3934,7 +3934,7 @@ function(anObject) {
     //  other cases should be dealt with by just returning the string rep (after
     //  doing literal-to-entity replacement)
     return TP.xmlLiteralsToEntities(
-            TP.htmlEntitiesToXmlEntities(
+            TP.htmlEntitiesToXMLEntities(
             TP.str(anObject)));
 });
 
