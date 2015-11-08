@@ -78,10 +78,10 @@ TP.sys.defineMethod('isSupported', TP.sys.isSupported);
 
 TP.sys.defineMethod('getLaunchRoot', TP.sys.getLaunchRoot);
 TP.sys.defineMethod('getLaunchURL', TP.sys.getLaunchURL);
-TP.sys.defineMethod('getHost', TP.sys.getHost);
-TP.sys.defineMethod('getPathname', TP.sys.getPathname);
-TP.sys.defineMethod('getPort', TP.sys.getPort);
-TP.sys.defineMethod('getScheme', TP.sys.getScheme);
+TP.sys.defineMethod('getLaunchHost', TP.sys.getLaunchHost);
+TP.sys.defineMethod('getLaunchPathname', TP.sys.getLaunchPathname);
+TP.sys.defineMethod('getLaunchPort', TP.sys.getLaunchPort);
+TP.sys.defineMethod('getLaunchScheme', TP.sys.getLaunchScheme);
 
 TP.boot.defineMethod('$httpConstruct', TP.boot.$httpConstruct);
 TP.boot.defineMethod('$httpError', TP.boot.$httpError);

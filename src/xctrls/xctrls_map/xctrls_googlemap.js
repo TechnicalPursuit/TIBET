@@ -64,24 +64,24 @@ function() {
                     '=api&amp;v' +
                     '=2';
 
-    if (TP.sys.getHost() === 'www.teamtibet.com') {
+    if (TP.sys.getLaunchHost() === 'www.teamtibet.com') {
         scriptSrcURL += '&amp;key=';
         scriptSrcURL += 'ABQIAAAAzoA5NNjo_-QiYUYvQRpT0RSjtrq-CQXrGeMzST1i1B8lQE1tOxSt-Axj-Be6w0eRhU_n84bqnK92wA';
 
         return scriptSrcURL;
-    } else if (TP.sys.getHost() === 'localhost') {
+    } else if (TP.sys.getLaunchHost() === 'localhost') {
         scriptSrcURL += '&amp;key=';
         scriptSrcURL += 'ABQIAAAAzoA5NNjo_-QiYUYvQRpT0RT2yXp_ZAY8_ufC3CFXhHIE1NvwkxSGIytpSlL94aueLIRsScd7x4WogA';
 
         return scriptSrcURL;
-    } else if (TP.isEmpty(TP.sys.getHost())) {
+    } else if (TP.isEmpty(TP.sys.getLaunchHost())) {
         //  File-based
 
         scriptSrcURL += '';
 
         return scriptSrcURL;
     } else {
-        promptResponse = TP.prompt('You loaded a TIBET-based application from a domain that has no known Google Maps key: ' + TP.sys.getHost() + '. Please enter your Google Maps key (only the part after "key' + '=").');
+        promptResponse = TP.prompt('You loaded a TIBET-based application from a domain that has no known Google Maps key: ' + TP.sys.getLaunchHost() + '. Please enter your Google Maps key (only the part after "key' + '=").');
 
         if (TP.notEmpty(promptResponse)) {
             scriptSrcURL += '&amp;key=';

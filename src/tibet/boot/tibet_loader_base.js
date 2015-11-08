@@ -1636,8 +1636,8 @@ TP.sys.getLaunchRoot = function() {
 
     if (TP.sys.isHTTPBased()) {
         //  on http uris you need the host:port portion as a root
-        str = TP.sys.getScheme() + '://' + TP.sys.getHost();
-        if (TP.boot.$isValid(port = TP.sys.getPort()) &&
+        str = TP.sys.getLaunchScheme() + '://' + TP.sys.getLaunchHost();
+        if (TP.boot.$isValid(port = TP.sys.getLaunchPort()) &&
             port.toString() !== '80') {
             str += ':' + port;
         }
@@ -1726,10 +1726,10 @@ TP.sys.getHomeURL = function(checkSession) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.getHost = function() {
+TP.sys.getLaunchHost = function() {
 
     /**
-     * @method getHost
+     * @method getLaunchHost
      * @summary Returns the hostname from which TIBET was loaded.
      * @returns {String} The host from which TIBET was loaded.
      */
@@ -1739,10 +1739,10 @@ TP.sys.getHost = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.getPathname = function() {
+TP.sys.getLaunchPathname = function() {
 
     /**
-     * @method getPathname
+     * @method getLaunchPathname
      * @summary Returns the pathname from which TIBET was loaded.
      * @returns {String} The pathname from which TIBET was loaded.
      */
@@ -1752,10 +1752,10 @@ TP.sys.getPathname = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.getPort = function() {
+TP.sys.getLaunchPort = function() {
 
     /**
-     * @method getPort
+     * @method getLaunchPort
      * @summary Returns the port number string from which TIBET was loaded. If
      *     no port number was specified in the load URL this string is empty.
      * @returns {Number} The port number from which TIBET was loaded.
@@ -1766,10 +1766,10 @@ TP.sys.getPort = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.getScheme = function() {
+TP.sys.getLaunchScheme = function() {
 
     /**
-     * @method getScheme
+     * @method getLaunchScheme
      * @summary Returns the scheme used when TIBET was loaded. This is
      *     typically http or https which allows TIBET to determine if a secure
      *     connection is required as the default for future connections to the
