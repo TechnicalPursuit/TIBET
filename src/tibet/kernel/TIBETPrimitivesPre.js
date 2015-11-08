@@ -593,8 +593,8 @@ TP.registerLoadInfo(TP.StringProto.strip);
 //  allow for custom OID generation routines to be installed prior to
 //  this. we install this via a test so it's easy to define your own
 //  routine in the tibet.xml file if you like.
-if (!TP.sys.constructOID) {
-    TP.sys.constructOID = function(aPrefix) {
+if (!TP.constructOID) {
+    TP.constructOID = function(aPrefix) {
 
         /**
          * @method constructOID
@@ -631,15 +631,15 @@ if (!TP.sys.constructOID) {
 }
 
 //  Manual setup
-TP.sys.constructOID[TP.NAME] = 'constructOID';
-TP.sys.constructOID[TP.OWNER] = TP.sys;
-TP.sys.constructOID[TP.TRACK] = TP.LOCAL_TRACK;
-TP.sys.constructOID[TP.DISPLAY] = 'TP.sys.constructOID';
-TP.registerLoadInfo(TP.sys.constructOID);
+TP.constructOID[TP.NAME] = 'constructOID';
+TP.constructOID[TP.OWNER] = TP;
+TP.constructOID[TP.TRACK] = TP.LOCAL_TRACK;
+TP.constructOID[TP.DISPLAY] = 'TP.constructOID';
+TP.registerLoadInfo(TP.constructOID);
 
 //  ---
 
-TP.genID = TP.sys.constructOID;
+TP.genID = TP.constructOID;
 
 //  ------------------------------------------------------------------------
 //  OBJECT NAMING - PART I
@@ -840,7 +840,7 @@ TP.boot.PHash = function() {
     this.$$hash = new Object();
     /* eslint-enable no-new-object */
     /* jshint +W010 */
-    this[TP.ID] = TP.sys.constructOID();
+    this[TP.ID] = TP.constructOID();
 
     //  no signaling until we're observed
     this.$suspended = true;
@@ -4729,7 +4729,7 @@ function(aPrefix) {
     if (this.$$oid === undefined && !TP.isNode(this)) {
         //  some native objects will complain bitterly about this
         try {
-            this.$$oid = TP.sys.constructOID(prefix);
+            this.$$oid = TP.constructOID(prefix);
         } catch (e) {
             TP.ifError() ? TP.error(TP.ec(e, 'Could not obtain OID')) : 0;
         }
@@ -4737,7 +4737,7 @@ function(aPrefix) {
         //  watch out for TP.FunctionProto :). Endless recursion is possible if
         //  this test isn't performed.
         if (this !== this.getPrototype()) {
-            this.$$oid = TP.sys.constructOID(prefix);
+            this.$$oid = TP.constructOID(prefix);
         }
     }
 
@@ -5805,7 +5805,7 @@ function(aPrefix) {
     //  NOTE the logic here is intended to return a newly generated OID if
     //  the receiver turns out to be non-mutable
     if (TP.notValid(oid = this.$$oid) && !TP.isNode(this)) {
-        oid = TP.sys.constructOID(TP.ifInvalid(aPrefix, 'window'));
+        oid = TP.constructOID(TP.ifInvalid(aPrefix, 'window'));
         this.$$oid = oid;
     }
 
@@ -12232,7 +12232,7 @@ TP.sys.addMetadata(TP, TP.owns, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.asMethod,
                     TP.METHOD, TP.INST_TRACK);
 TP.sys.addMetadata(String, TP.StringProto.strip, TP.METHOD, TP.INST_TRACK);
-TP.sys.addMetadata(TP.sys, TP.sys.constructOID, TP.METHOD, TP.LOCAL_TRACK);
+TP.sys.addMetadata(TP, TP.constructOID, TP.METHOD, TP.LOCAL_TRACK);
 TP.sys.addMetadata(TP, TP.getFunctionName, TP.METHOD, TP.PRIMITIVE_TRACK);
 TP.sys.addMetadata(Function, TP.FunctionProto.$getName,
                     TP.METHOD, TP.INST_TRACK);
