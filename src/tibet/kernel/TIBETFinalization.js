@@ -603,6 +603,15 @@ function(aURI) {
 //  whether then can invoke kernel versions of primitives etc.
 TP.sys.hasKernel(true);
 
+//  ----------------------------------------------------------------------------
+
+/**
+ * The namespace used for temporary data
+ */
+/* eslint-disable no-unused-vars */
+TP.defineNamespace('TP.tmp');
+/* eslint-enable no-unused-vars */
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
