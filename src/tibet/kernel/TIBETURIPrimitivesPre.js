@@ -484,23 +484,23 @@ function(aPath) {
     path = start;
 
     if (path === '~') {
-        return TP.sys.getAppHead();
+        return TP.getAppHead();
     } else if (path === '~app') {
-        return TP.sys.getAppRoot();
+        return TP.getAppRoot();
     } else if (path === '~lib') {
-        return TP.sys.getLibRoot();
+        return TP.getLibRoot();
     } else if (path.indexOf('~/') === 0) {
         //  Note here how we also slice off the leading slash so that
         //  TP.uriJoinPaths() doesn't think 'path' is an absolute path.
-        path = TP.uriJoinPaths(TP.sys.getAppHead(), path.slice(2));
+        path = TP.uriJoinPaths(TP.getAppHead(), path.slice(2));
     } else if (path.indexOf('~app/') === 0) {
         //  Note here how we also slice off the leading slash so that
         //  TP.uriJoinPaths() doesn't think 'path' is an absolute path.
-        path = TP.uriJoinPaths(TP.sys.getAppRoot(), path.slice(5));
+        path = TP.uriJoinPaths(TP.getAppRoot(), path.slice(5));
     } else if (path.indexOf('~lib/') === 0) {
         //  Note here how we also slice off the leading slash so that
         //  TP.uriJoinPaths() doesn't think 'path' is an absolute path.
-        path = TP.uriJoinPaths(TP.sys.getLibRoot(), path.slice(5));
+        path = TP.uriJoinPaths(TP.getLibRoot(), path.slice(5));
     } else {
         arr = path.match(/~([^\/]*)\/(.*)/);
         if (TP.notValid(arr)) {
@@ -961,7 +961,7 @@ function(aPath, aRoot) {
      *     for an end user.
      * @param {String} aPath The path to repair.
      * @param {String} aRoot The root to use for relative path resolution.
-     *     Default is TP.sys.getAppRoot();.
+     *     Default is TP.getAppRoot();.
      * @returns {String}
      */
 
@@ -1944,22 +1944,22 @@ function(aPath, resourceOnly) {
     //  cases now, which are those involving ~ references (otherwise why use
     //  a TIBET URI :))
     if (path === '~app') {
-        return TP.sys.getAppRoot();
+        return TP.getAppRoot();
     } else if (path === '~lib') {
-        return TP.sys.getLibRoot();
+        return TP.getLibRoot();
     } else if (path === '~') {
-        return TP.sys.getAppHead();
+        return TP.getAppHead();
     } else if (path === '/') {
         return TP.sys.getLaunchRoot();
     } else if (path.indexOf('~app/') === 0) {
         arr = path.match(/~app\/(.*)/);
-        path = TP.uriJoinPaths(TP.sys.getAppRoot(), arr.last());
+        path = TP.uriJoinPaths(TP.getAppRoot(), arr.last());
     } else if (path.indexOf('~lib/') === 0) {
         arr = path.match(/~lib\/(.*)/);
-        path = TP.uriJoinPaths(TP.sys.getLibRoot(), arr.last());
+        path = TP.uriJoinPaths(TP.getLibRoot(), arr.last());
     } else if (path.indexOf('~/') === 0) {
         arr = path.match(/~\/(.*)/);
-        path = TP.uriJoinPaths(TP.sys.getAppHead(), arr.last());
+        path = TP.uriJoinPaths(TP.getAppHead(), arr.last());
     } else if (path.indexOf('~') === 0) {
         arr = path.match(/~([^\/]*)\/(.*)/);
         if (TP.notValid(arr)) {
@@ -2293,7 +2293,7 @@ the current application root paths.
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getAppHead',
+TP.defineMethod('getAppHead',
 function() {
 
     /**
@@ -2308,7 +2308,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getAppRoot',
+TP.defineMethod('getAppRoot',
 function() {
 
     /**
@@ -2324,7 +2324,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getLibRoot',
+TP.defineMethod('getLibRoot',
 function() {
 
     /**
@@ -2375,7 +2375,7 @@ function(targetUrl, aRoot) {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('fileWithRoot', TP.uriWithRoot.copy());
+TP.defineMethod('fileWithRoot', TP.uriWithRoot.copy());
 
 //  ------------------------------------------------------------------------
 //  TEMP FILES

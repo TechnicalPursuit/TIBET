@@ -2895,7 +2895,7 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
     //  note the use of the 'current root' path here since we can't assume
     //  that this should be rooted against libroot or approot without help
     if (TP.boot.$notValid(aRoot)) {
-        base = TP.sys.getAppHead();
+        base = TP.getAppHead();
     } else {
         base = aRoot;
     }

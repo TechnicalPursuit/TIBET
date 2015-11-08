@@ -26,7 +26,7 @@ function() {
 
         test.assert.isEqualTo(
             TP.uc('tibet:///~').getLocation(),
-            TP.sys.getAppRoot(),
+            TP.getAppRoot(),
             TP.sc('tibet:///~ and app root should be equivalent paths.'));
 
         test.assert.isEqualTo(
@@ -36,7 +36,7 @@ function() {
 
         test.assert.isEqualTo(
             TP.uc('tibet:///~tibet').getLocation(),
-            TP.sys.getLibRoot(),
+            TP.getLibRoot(),
             TP.sc('tibet:///~tibet and lib root should be equivalent paths.'));
 
         test.assert.isEqualTo(

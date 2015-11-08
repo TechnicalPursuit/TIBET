@@ -1825,7 +1825,7 @@ function(aPath) {
      *
      *     When a ~ is used as the start of a path the expansion is done
      *     relative to the current launch directory for the application, the
-     *     default value of TP.sys.getAppRoot() for ~app, or the library root if
+     *     default value of TP.getAppRoot() for ~app, or the library root if
      *     ~lib is specified.
      *
      *     Paths starting with an = followed by either - or a digit will be
@@ -1856,7 +1856,7 @@ function(aPath) {
         return this.getPath();
     }
 
-    home = TP.ifInvalid(this.getVariable('HOME'), TP.sys.getAppRoot());
+    home = TP.ifInvalid(this.getVariable('HOME'), TP.getAppRoot());
 
     //  ensure we strip any quotes the user may have used
     url = aPath.unquoted();
@@ -1890,11 +1890,11 @@ function(aPath) {
     } else if (aPath.toLowerCase().startsWith('~lib/')) {
         //  NB: We slice off the slash here too, so that TP.uriJoinPaths()
         //  doesn't think its absolute.
-        url = TP.uriJoinPaths(TP.sys.getLibRoot(), aPath.slice(5));
+        url = TP.uriJoinPaths(TP.getLibRoot(), aPath.slice(5));
     } else if (aPath.startsWith('~/')) {
         //  NB: We slice off the slash here too, so that TP.uriJoinPaths()
         //  doesn't think its absolute.
-        url = TP.uriJoinPaths(TP.sys.getAppHead(), aPath.slice(2));
+        url = TP.uriJoinPaths(TP.getAppHead(), aPath.slice(2));
     } else if (aPath.first() === '=') {
         arr = aPath.split('/');
         ndx = arr.shift().slice(1);
@@ -1955,7 +1955,7 @@ function(anIndex) {
 
     //  we use the lib root for defaults
     if (TP.notValid(path)) {
-        return TP.sys.getLibRoot();
+        return TP.getLibRoot();
     }
 
     return path;
