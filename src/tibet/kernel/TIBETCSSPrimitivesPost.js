@@ -388,11 +388,11 @@ TP.regex.JQUERY_EXTENDED_SELECTORS =
 //  COLOR PRIMITIVES
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('convertHueToRGB',
+TP.definePrimitive('rgbValuesAsHue',
 function(m1, m2, aHue) {
 
     /**
-     * @method convertHueToRGB
+     * @method rgbValuesAsHue
      * @summary Converts the supplied hue (given by the values) to its RGB
      *     equivalent.
      * @description This uses the CSS3 Color Module algorithm for converting
@@ -442,11 +442,11 @@ function(m1, m2, aHue) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('convertHSLAToRGBA',
+TP.definePrimitive('rgbaValuesAsHSLA',
 function(aHue, aSaturation, aLightness, anAlpha) {
 
     /**
-     * @method convertHSLAToRGBA
+     * @method rgbaValuesAsHSLA
      * @summary Converts the supplied hue, saturation, lightness and alpha
      *     values to their RGB equivalents.
      * @description This uses the CSS3 Color Module algorithm for converting
@@ -494,13 +494,13 @@ function(aHue, aSaturation, aLightness, anAlpha) {
     m1 = (aLightness * 2) - m2;
 
     //  Red value
-    redVal = TP.convertHueToRGB(m1, m2, theHue + (1 / 3)) * 256;
+    redVal = TP.rgbValuesAsHue(m1, m2, theHue + (1 / 3)) * 256;
 
     //  Blue value
-    blueVal = TP.convertHueToRGB(m1, m2, theHue) * 256;
+    blueVal = TP.rgbValuesAsHue(m1, m2, theHue) * 256;
 
     //  Green value
-    greenVal = TP.convertHueToRGB(m1, m2, theHue - (1 / 3)) * 256;
+    greenVal = TP.rgbValuesAsHue(m1, m2, theHue - (1 / 3)) * 256;
 
     /* eslint-enable no-extra-parens */
 
@@ -516,11 +516,11 @@ function(aHue, aSaturation, aLightness, anAlpha) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('convertColorStringToHex',
+TP.definePrimitive('colorStringAsHex',
 function(aString) {
 
     /**
-     * @method convertColorStringToHex
+     * @method colorStringAsHex
      * @summary Converts a String containing a color value to a String
      *     containing the hex-formatted value: #RRGGBB
      * @description The supplied String can be in one of nine formats: FFFFFF
@@ -589,7 +589,7 @@ function(aString) {
         TP.regex.CSS_RGBA.test(aString) ||
         TP.regex.CSS_HSL.test(aString) ||
         TP.regex.CSS_HSLA.test(aString)) {
-        rgbResults = TP.convertColorStringToArray(aString);
+        rgbResults = TP.colorStringAsArray(aString);
     }
 
     if (TP.isArray(rgbResults)) {
@@ -636,11 +636,11 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('convertColorStringToArray',
+TP.definePrimitive('colorStringAsArray',
 function(aString) {
 
     /**
-     * @method convertColorStringToArray
+     * @method colorStringAsArray
      * @summary Converts a String containing a color to an Array containing,
      *     [r, g, b]
      * @description The supplied String can be in one of nine formats: FFFFFF
@@ -720,7 +720,7 @@ function(aString) {
         //  Hue, Saturation, Lightness, Alpha
 
         //  Convert to RGB
-        results = TP.convertHSLAToRGBA(parseFloat(results.at(0)),
+        results = TP.rgbaValuesAsHSLA(parseFloat(results.at(0)),
                                         parseFloat(results.at(1)) / 100,
                                         parseFloat(results.at(2)) / 100,
                                         parseFloat(results.at(3)));
@@ -742,7 +742,7 @@ function(aString) {
         //  Hue, Saturation, Lightness, Alpha
 
         //  Convert to RGB
-        results = TP.convertHSLAToRGBA(parseFloat(results.at(0)),
+        results = TP.rgbaValuesAsHSLA(parseFloat(results.at(0)),
                                         parseFloat(results.at(1)) / 100,
                                         parseFloat(results.at(2)) / 100);
 
@@ -750,7 +750,7 @@ function(aString) {
     }
 
     //  Get the color string canonicalized into a form of '#RRGGBB'
-    colorString = TP.convertColorStringToHex(aString);
+    colorString = TP.colorStringAsHex(aString);
 
     if (TP.isEmpty(colorString)) {
         return null;
@@ -767,11 +767,11 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('convertColorStringToLongNumber',
+TP.definePrimitive('colorStringAsLongNumber',
 function(aString) {
 
     /**
-     * @method convertColorStringToLongNumber
+     * @method colorStringAsLongNumber
      * @summary Converts a String containing a color value to a 'long' number
      *     representing the color numerically.
      * @description The supplied String can be in one of nine formats: FFFFFF
@@ -790,7 +790,7 @@ function(aString) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    if (TP.isString(hexString = TP.convertColorStringToHex(aString))) {
+    if (TP.isString(hexString = TP.colorStringAsHex(aString))) {
         //  Make sure and slice off the '#'
         return parseInt(hexString.slice(1), 16);
     }
@@ -800,11 +800,11 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('convertLongNumberToColorString',
+TP.definePrimitive('longNumberAsColorString',
 function(aLongNumber) {
 
     /**
-     * @method convertLongNumberToColorString
+     * @method longNumberAsColorString
      * @summary Converts a 'long' number representing a color numerically to
      *     the equivalent 'hex' color (#RRGGBB) used for CSS colors.
      * @description This algorithm from Oliver Steele (http://osteele.com).
@@ -839,11 +839,11 @@ function(aLongNumber) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('interpolateColors',
+TP.definePrimitive('colorValuesInterpolate',
 function(color1, color2, aPercentage) {
 
     /**
-     * @method interpolateColors
+     * @method colorValuesInterpolate
      * @summary Interpolates a mixture of color2 into color1 according to the
      *     supplied percentage.
      * @description This algorithm from Oliver Steele (http://osteele.com).

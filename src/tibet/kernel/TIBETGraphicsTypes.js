@@ -4089,7 +4089,7 @@ function(red, green, blue, alpha) {
                             a: theData.a};
             } else if (TP.isString(theData)) {
                 if (TP.notValid(theData =
-                                TP.convertColorStringToArray(theData))) {
+                                TP.colorStringAsArray(theData))) {
                     return;
                 }
 
@@ -4323,7 +4323,7 @@ function() {
      *     string.
      */
 
-    return TP.convertColorStringToHex(this.asRGBString());
+    return TP.colorStringAsHex(this.asRGBString());
 });
 
 //  ------------------------------------------------------------------------
@@ -4462,15 +4462,13 @@ function(toColor, weight) {
         balanceWeight = weight.min(1).max(0);
     }
 
-    colorAsNum = TP.convertColorStringToLongNumber(
-                                                this.asHexString());
-    otherColorAsNum = TP.convertColorStringToLongNumber(
-                                                toColor.asHexString());
+    colorAsNum = TP.colorStringAsLongNumber(this.asHexString());
+    otherColorAsNum = TP.colorStringAsLongNumber(toColor.asHexString());
 
-    colorVal = TP.convertLongNumberToColorString(
-                        TP.interpolateColors(colorAsNum,
-                                                otherColorAsNum,
-                                                balanceWeight));
+    colorVal = TP.longNumberAsColorString(
+                        TP.colorValuesInterpolate(colorAsNum,
+                                                    otherColorAsNum,
+                                                    balanceWeight));
 
     return TP.core.Color.construct(colorVal);
 });

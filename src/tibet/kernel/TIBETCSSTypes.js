@@ -844,7 +844,7 @@ function(job, params) {
         valuesAsNumbers = values.collect(
                 function(aValue) {
 
-                    return TP.convertColorStringToLongNumber(aValue);
+                    return TP.colorStringAsLongNumber(aValue);
                 });
 
         params.atPut('values', valuesAsNumbers);
@@ -875,14 +875,14 @@ function(job, params) {
         //  We were handed a 'color value' (a name, a hex, an rgb(...),
         //  etc.) string, so convert it into a number so that we can use it
         //  in the animation.
-        fromAsNumber = TP.convertColorStringToLongNumber(from);
+        fromAsNumber = TP.colorStringAsLongNumber(from);
     } else {
         //  Otherwise, we weren't given a 'from' color value, so we need to
         //  compute one. If the property that we're changing is the
         //  background color, we use a special routine that will determine
         //  background color, even if the element is transparent.
         if (styleProperty === 'backgroundColor') {
-            fromAsNumber = TP.convertColorStringToLongNumber(
+            fromAsNumber = TP.colorStringAsLongNumber(
                         TP.elementGetEffectiveBackgroundColor(element));
         } else {
             if (TP.notValid(computedStyle =
@@ -890,7 +890,7 @@ function(job, params) {
                 return this.raise('TP.sig.InvalidStyle');
             }
 
-            fromAsNumber = TP.convertColorStringToLongNumber(
+            fromAsNumber = TP.colorStringAsLongNumber(
                                             computedStyle[styleProperty]);
         }
     }
@@ -901,7 +901,7 @@ function(job, params) {
         //  We were handed a 'color value' (a name, a hex, an rgb(...),
         //  etc.) string, so convert it into a number so that we can use it
         //  in the animation.
-        toAsNumber = TP.convertColorStringToLongNumber(to);
+        toAsNumber = TP.colorStringAsLongNumber(to);
     } else if (TP.notEmpty(by)) {
         //  Otherwise, we didn't have a 'to' value, but we did have a 'by'
         //  value, so we can compute a 'to' value from it by adding it to
@@ -910,7 +910,7 @@ function(job, params) {
         //  We were handed a 'color value' (a name, a hex, an rgb(...),
         //  etc.) string, so convert it into a number so that we can use it
         //  in the animation.
-        byAsNumber = TP.convertColorStringToLongNumber(by);
+        byAsNumber = TP.colorStringAsLongNumber(by);
 
         //  It's easy to compute 'to' now - its just 'from' plus 'by'
         toAsNumber = fromAsNumber + byAsNumber;
@@ -976,7 +976,7 @@ function(job, params) {
     //  interpolation necessary between the start and end colors, so we just
     //  grab the value.
     if (TP.notEmpty(params.at('values'))) {
-        stepval = TP.convertLongNumberToColorString(job.getStepValue());
+        stepval = TP.longNumberAsColorString(job.getStepValue());
     } else {
         fromAsNumber = params.at('from');
         toAsNumber = params.at('to');
@@ -986,8 +986,8 @@ function(job, params) {
         if (TP.isNumber(colorStep = job.getPercentComplete())) {
             //  We compute the step color by using the step value in a color
             //  interpolation and then turn that into a hex color.
-            stepval = TP.convertLongNumberToColorString(
-                                            TP.interpolateColors(
+            stepval = TP.longNumberAsColorString(
+                                            TP.colorValuesInterpolate(
                                                     fromAsNumber,
                                                     toAsNumber,
                                                     colorStep));
