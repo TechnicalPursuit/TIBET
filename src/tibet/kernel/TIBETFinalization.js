@@ -491,7 +491,7 @@ function() {
     //  interface.
     hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_key'));
 
-    if (!inPhantom && !TP.sys.hasSherpa() && hasBootToggle) {
+    if (!inPhantom && !TP.sys.hasFeature('sherpa') && hasBootToggle) {
 
         //  No hook file in the boot screen so we initialize manually.
         bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
