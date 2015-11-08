@@ -1186,7 +1186,7 @@ function(aRequest) {
         }
     } else {
         if (TP.nodeIsDetached(node)) {
-            rootDoc = TP.createDocument('', 'request');
+            rootDoc = TP.constructDocument('', 'request');
             rootDoc.documentElement.appendChild(node);
         } else {
             rootDoc = TP.nodeGetDocument(node);

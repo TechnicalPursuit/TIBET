@@ -576,7 +576,7 @@ function(aRequest) {
         //  our 'TP.webSocketCall()' in as our 'open callback' (which will
         //  only be invoked if the WebSocket was successfully opened).
         if (TP.notValid(url.get('webSocketObj'))) {
-            TP.webSocketCreate(url,
+            TP.webSocketConstruct(url,
                                 function() {
 
                                     TP.webSocketCall(url, aRequest);

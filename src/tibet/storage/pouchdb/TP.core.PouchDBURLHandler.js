@@ -290,7 +290,7 @@ function(targetURI, aRequest) {
     }
 
     //  If the user forces a POST, then we go ahead and configure the request to
-    //  be 'createItem' - otherwise, we specify 'updateOrCreateItem' and let the
+    //  be 'createItem' - otherwise, we specify 'updateOrConstructItem' and let the
     //  service object handle the case where an item needs to be created.
     if (verb === TP.HTTP_POST) {
 
@@ -309,7 +309,7 @@ function(targetURI, aRequest) {
         }
 
         requestParams = TP.hc(
-                        'action', 'updateOrCreateItem',
+                        'action', 'updateOrConstructItem',
                         'dbName', dbName,
                         'securePW', securePW,
                         'id', resourceID,

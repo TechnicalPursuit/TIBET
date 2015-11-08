@@ -246,11 +246,11 @@ function(targetUrl, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('webSocketCreate',
+TP.definePrimitive('webSocketConstruct',
 function(targetUrl, openCallback) {
 
     /**
-     * @method webSocketCreate
+     * @method webSocketConstruct
      * @summary Returns a WebSocket object for use.
      * @param {String} targetUrl The request's target URL.
      * @param {Function} openCallback
@@ -372,7 +372,7 @@ function(targetUrl, openCallback) {
     if (TP.notValid(wsObj)) {
         return TP.webSocketError(
                         targetUrl,
-                        'WebSocketCreateException',
+                        'WebSocketConstructException',
                         TP.hc('message',
                                 'Unable to instantiate WebSocket object.'));
     }

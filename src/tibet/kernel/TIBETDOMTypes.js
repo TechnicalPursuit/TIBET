@@ -150,7 +150,7 @@ function(nodeSpec, varargs) {
                 (TP.notValid(node.ownerDocument) ||
                  !TP.nodeContainsNode(node.ownerDocument, node))) {
 
-            newDoc = TP.createDocument();
+            newDoc = TP.constructDocument();
 
             //  Note here how we use a 'low level' append child. That is
             //  because we don't want any 'importNode' or anything to be run

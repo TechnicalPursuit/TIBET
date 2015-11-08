@@ -404,7 +404,7 @@ function(aRequest) {
 
             break;
 
-        case 'updateOrCreateItem':
+        case 'updateOrConstructItem':
 
             if (TP.isEmpty(id)) {
 

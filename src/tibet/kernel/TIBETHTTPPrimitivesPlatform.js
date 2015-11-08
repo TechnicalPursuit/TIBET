@@ -306,7 +306,7 @@ TP.hc(
 
         //  set up the actual request
         try {
-            httpObj = TP.httpCreate(url);
+            httpObj = TP.httpConstruct(url);
             request.atPut('xhr', httpObj);
 
             //  if either username or password use our special value, TP.NONE,
@@ -566,7 +566,7 @@ TP.hc(
 
         //  set up the actual request
         try {
-            httpObj = TP.httpCreate(url);
+            httpObj = TP.httpConstruct(url);
             request.atPut('xhr', httpObj);
 
             //  if either username or password use our special value, TP.NONE,
@@ -797,7 +797,7 @@ TP.hc(
 
         //  set up the actual request
         try {
-            httpObj = TP.httpCreate(url);
+            httpObj = TP.httpConstruct(url);
             request.atPut('xhr', httpObj);
 
             //  if either username or password use our special value, TP.NONE,

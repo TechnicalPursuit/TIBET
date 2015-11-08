@@ -202,7 +202,7 @@ function(aRequest) {
     htmlElementVal = top.document.body;
 
     //  XML Document
-    xmlDocumentVal = TP.createDocument();
+    xmlDocumentVal = TP.constructDocument();
     xmlDocumentVal.appendChild(TP.elem('<foo bar="baz">Hi there<\/foo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<boo><goo/><\/boo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<moo\/>'));

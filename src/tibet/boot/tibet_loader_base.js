@@ -1846,7 +1846,7 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
     }
 
     try {
-        httpObj = TP.boot.$httpCreate();
+        httpObj = TP.boot.$httpConstruct();
 
         //  If its Mozilla, and we're not trying to load XML, then set
         //  the MIME type to 'text/plain' to avoid parsing errors due to
@@ -1923,10 +1923,10 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$httpCreate = function() {
+TP.boot.$httpConstruct = function() {
 
     /**
-     * @method $httpCreate
+     * @method $httpConstruct
      * @summary Returns a platform-specific XMLHttpRequest object for use.
      * @returns {XMLHttpRequest} A new XMLHttpRequest object.
      */
@@ -3109,7 +3109,7 @@ TP.boot.$uriLastModifiedMozFile = function(targetUrl) {
         info,
         mod;
 
-    httpObj = TP.boot.$httpCreate();
+    httpObj = TP.boot.$httpConstruct();
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
@@ -3306,7 +3306,7 @@ TP.boot.$uriExistsFile = function(targetUrl) {
     var httpObj;
 
     //  using HTTP object avoids permission problems on all browsers
-    httpObj = TP.boot.$httpCreate();
+    httpObj = TP.boot.$httpConstruct();
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
@@ -3524,7 +3524,7 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
 
     returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
-    httpObj = TP.boot.$httpCreate();
+    httpObj = TP.boot.$httpConstruct();
 
     //  If its Mozilla, and we're not trying to load XML, then set the MIME
     //  type to 'text/plain' to avoid parsing errors.
@@ -3577,7 +3577,7 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
 
     if (returnType === TP.DOM) {
         //  leverage IE's ActiveX DOMDocument's ability to load synchronously
-        doc = TP.boot.$activeXDocumentCreateIE();
+        doc = TP.boot.$activeXDocumentConstructIE();
         doc.load(targetUrl);
 
         if (doc.xml == null || doc.xml === '') {
@@ -3591,7 +3591,7 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
         //  causes disconcerting ActiveX alerts even when we're just reading
         //  a file from the same domain we booted from).
 
-        httpObj = TP.boot.$httpCreate();
+        httpObj = TP.boot.$httpConstruct();
 
         try {
             httpObj.open(TP.HTTP_GET, targetUrl, false);
@@ -4175,10 +4175,10 @@ Minimal functions to support boot system requirements for new documents.
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$activeXDocumentCreateIE = function(versionNumber) {
+TP.boot.$activeXDocumentConstructIE = function(versionNumber) {
 
     /**
-     * @method $activeXDocumentCreateIE
+     * @method $activeXDocumentConstructIE
      * @summary Creates a DOM document element for use.
      * @param {Number} versionNumber A specific version number which must be
      *     returned as a minimum version.
@@ -4593,7 +4593,7 @@ TP.boot.$documentFromStringIE = function(aString, prohibitDTD) {
         successfulParse,
         parseErrorObj;
 
-    xmlDoc = TP.boot.$activeXDocumentCreateIE();
+    xmlDoc = TP.boot.$activeXDocumentConstructIE();
 
     successfulParse = xmlDoc.loadXML(aString);
 

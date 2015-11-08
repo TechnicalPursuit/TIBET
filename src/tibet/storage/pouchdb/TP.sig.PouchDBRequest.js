@@ -27,7 +27,7 @@
  *          placed in the 'body' parameter.
  *
  *     req = TP.sig.PouchDBRequest.construct(
- *                  TP.hc('action', 'updateOrCreateItem',
+ *                  TP.hc('action', 'updateOrConstructItem',
  *                          'dbName', 'pouchdb_test',
  *                          'id', 'author_info',
  *                          'body', TP.hc('foo', 'bar')));
@@ -60,7 +60,7 @@
  *
  *     - 'Update' an item in PouchDB
  *
- *     requestParams = TP.hc('action', 'updateOrCreateItem',
+ *     requestParams = TP.hc('action', 'updateOrConstructItem',
  *                              'dbName', 'pouchdb_test',
  *                              'id', 'author_info',
  *                              'body', TP.hc('foo', 'baz'));

@@ -6756,7 +6756,7 @@ function(aNode, aDocument) {
                     TP.htmlElementAsXHTMLString(aNode.documentElement));
 
             if (!TP.isDocument(node)) {
-                node = TP.createDocument(null, 'htmlNodeConversionError');
+                node = TP.constructDocument(null, 'htmlNodeConversionError');
                 TP.nodeAppendChild(
                     node.documentElement,
                     node.createTextNode(TP.nodeAsString(aNode)),
@@ -7052,7 +7052,7 @@ function(aNode, aDocument) {
                     }
                 }
             } else {
-                node = TP.createDocument(null, 'xmlNodeConversionError');
+                node = TP.constructDocument(null, 'xmlNodeConversionError');
                 TP.nodeAppendChild(
                     node.documentElement,
                     node.createTextNode(TP.nodeAsString(aNode)),

@@ -1944,7 +1944,7 @@ TP.hc(
             //      3.  Replace the existing document element of the new
             //          document (i.e. the nonsense element) with the
             //          imported document element.
-            newDoc = TP.createDocument(null, 'nonsense');
+            newDoc = TP.constructDocument(null, 'nonsense');
 
             newDocElem = newDoc.importNode(aNode.documentElement,
                                             shouldBeDeep);

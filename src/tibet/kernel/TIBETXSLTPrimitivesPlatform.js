@@ -998,7 +998,7 @@ TP.hc(
                                 TP.w3.Xmlns.XHTML);
 
         if (!TP.isDocument(inputNode)) {
-            node = TP.createDocument();
+            node = TP.constructDocument();
             node.appendChild(TP.nodeCloneNode(inputNode, true));
         } else {
             node = inputNode;
@@ -1178,7 +1178,7 @@ TP.hc(
         }
 
         //  NB: We *must* capture the output into this temporary variable
-        //  here. TP.documentFromString() calls TP.createDocument() which
+        //  here. TP.documentFromString() calls TP.constructDocument() which
         //  does a 'loadXML' of 'blank content'. This parsing causes
         //  processor.output to be emptied out.
         result = processor.output;

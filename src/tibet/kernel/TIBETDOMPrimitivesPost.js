@@ -27,11 +27,11 @@
 //  DOCUMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('createDocument',
+TP.definePrimitive('constructDocument',
 function(aNamespace, aTagname) {
 
     /**
-     * @method createDocument
+     * @method constructDocument
      * @summary Creates an XML document. Note that if a tag name isn't
      *     supplied to this method, a documentElement will *not* be created
      *     for the returned document.
@@ -42,7 +42,7 @@ function(aNamespace, aTagname) {
      * @example Create an XML document, with no namespace and no document
      *     element:
      *     <code>
-     *          xmlDoc = TP.createDocument();
+     *          xmlDoc = TP.constructDocument();
      *          <samp>[object XMLDocument]</samp>
      *          TP.nodeAsString(xmlDoc);
      *          <samp></samp>
@@ -50,7 +50,7 @@ function(aNamespace, aTagname) {
      * @example Create an XML document, with no namespace and a document
      *     element of 'foo':
      *     <code>
-     *          xmlDoc = TP.createDocument(null, 'foo');
+     *          xmlDoc = TP.constructDocument(null, 'foo');
      *          <samp>[object XMLDocument]</samp>
      *          TP.nodeAsString(xmlDoc);
      *          <samp>&lt;foo xmlns=""/&gt;</samp>
@@ -58,7 +58,7 @@ function(aNamespace, aTagname) {
      * @example Create an XML document, with a default namespace of
      *     'http://www.bar.com' and a document element of 'foo':
      *     <code>
-     *          xmlDoc = TP.createDocument('http://www.bar.com', 'foo');
+     *          xmlDoc = TP.constructDocument('http://www.bar.com', 'foo');
      *          <samp>[object XMLDocument]</samp>
      *          TP.nodeAsString(xmlDoc);
      *          <samp>&lt;foo xmlns="http://www.bar.com"/&gt;</samp>
@@ -66,7 +66,7 @@ function(aNamespace, aTagname) {
      * @example Create an XML document, with a 'bar' prefixed namespace of
      *     'http://www.bar.com' and a document element of 'foo':
      *     <code>
-     *          xmlDoc = TP.createDocument('http://www.bar.com',
+     *          xmlDoc = TP.constructDocument('http://www.bar.com',
      *          'bar:foo');
      *          <samp>[object XMLDocument]</samp>
      *          TP.nodeAsString(xmlDoc);
@@ -128,7 +128,7 @@ function(aNamespace, aTagname) {
 
 //  ------------------------------------------------------------------------
 
-TP.XML_FACTORY_DOCUMENT = TP.createDocument();
+TP.XML_FACTORY_DOCUMENT = TP.constructDocument();
 
 //  ------------------------------------------------------------------------
 
@@ -160,8 +160,8 @@ function(aDocument, elementName, elementNS) {
      *     provided to the method.
      * @exception TP.sig.InvalidString Raised when a null or empty element name
      *     is provided to the method.
-     * @exception TP.sig.DOMCreateException Raised when the element cannot be
-     *     created in the supplied document.
+     * @exception TP.sig.DOMConstructException Raised when the element cannot be
+     *     constructed in the supplied document.
      */
 
     var aNamespace,
@@ -188,7 +188,7 @@ function(aDocument, elementName, elementNS) {
             newElement = aDocument.createElement(elementName);
         }
     } catch (e) {
-        return TP.raise(this, 'TP.sig.DOMCreateException',
+        return TP.raise(this, 'TP.sig.DOMConstructException',
                         TP.ec(e));
     }
 
@@ -257,7 +257,7 @@ function(aNode) {
 
     //  Create a new XML document and append the node to it as the first
     //  child. Normally this would be the document element.
-    newDoc = TP.createDocument();
+    newDoc = TP.constructDocument();
 
     //  TP.nodeAppendChild() will automatically import the appended node if
     //  it needs to.
@@ -5015,7 +5015,7 @@ function(aNodeList, aTagname, aNamespace) {
     tagName = TP.ifEmpty(aTagname, 'instanceData');
 
     //  create the document
-    if (TP.notValid(doc = TP.createDocument(aNamespace, tagName))) {
+    if (TP.notValid(doc = TP.constructDocument(aNamespace, tagName))) {
         return;
     }
 
@@ -13565,7 +13565,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
      *          srcDoc = TP.documentFromString(
      *          '<foo><goo>Hi</goo></foo>');
      *          <samp>[object XMLDocument]</samp>
-     *          destDoc = TP.createDocument();
+     *          destDoc = TP.constructDocument();
      *          <samp>[object XMLDocument]</samp>
      *          TP.nodeCopyChildNodesTo(srcDoc, destDoc);
      *          <samp>undefined</samp>
@@ -13665,7 +13665,7 @@ function(fromNode, toNode, beforeNode, shouldAwake) {
      *          srcDoc = TP.documentFromString(
      *          '<foo><goo>Hi</goo></foo>');
      *          <samp>[object XMLDocument]</samp>
-     *          destDoc = TP.createDocument();
+     *          destDoc = TP.constructDocument();
      *          <samp>[object XMLDocument]</samp>
      *          TP.nodeMoveChildNodesTo(srcDoc, destDoc);
      *          <samp>undefined</samp>
@@ -14176,7 +14176,7 @@ function(anObject, defaultNS, shouldReport) {
     var doc;
 
     if (TP.notValid(anObject)) {
-        return TP.createDocument();
+        return TP.constructDocument();
     }
 
     //  for permission reasons it's important to check for xhr's early
@@ -14638,7 +14638,7 @@ function(anObject, defaultNS, shouldReport) {
     var doc;
 
     if (TP.notValid(anObject)) {
-        return TP.core.DocumentNode.construct(TP.createDocument());
+        return TP.core.DocumentNode.construct(TP.constructDocument());
     }
 
     //  already one? don't want to unwrap/rewrap...

@@ -15,11 +15,11 @@
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('httpCreate',
+TP.definePrimitive('httpConstruct',
 function(targetUrl) {
 
     /**
-     * @method httpCreate
+     * @method httpConstruct
      * @summary Returns a platform-specific XMLHttpRequest object for use.
      * @param {String} targetUrl The request's target URL.
      * @returns {XMLHttpRequest}
@@ -32,7 +32,7 @@ function(targetUrl) {
 
     if (TP.notValid(xhr)) {
         return TP.httpError(
-                targetUrl, 'HTTPCreateException',
+                targetUrl, 'HTTPConstructException',
                         TP.hc('message',
                                 'Unable to instantiate XHR object.'));
     }

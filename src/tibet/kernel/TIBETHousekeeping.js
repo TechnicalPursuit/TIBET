@@ -83,7 +83,7 @@ TP.sys.defineMethod('getPathname', TP.sys.getPathname);
 TP.sys.defineMethod('getPort', TP.sys.getPort);
 TP.sys.defineMethod('getScheme', TP.sys.getScheme);
 
-TP.boot.defineMethod('$httpCreate', TP.boot.$httpCreate);
+TP.boot.defineMethod('$httpConstruct', TP.boot.$httpConstruct);
 TP.boot.defineMethod('$httpError', TP.boot.$httpError);
 TP.boot.defineMethod('$httpCall', TP.boot.$httpCall);
 
@@ -133,8 +133,8 @@ TP.boot.defineMethod('$uriSaveWebkitFile', TP.boot.$uriSaveWebkitFile);
 TP.boot.defineMethod('$uriSaveHttp', TP.boot.$uriSaveHttp);
 
 TP.boot.defineMethod('$documentConstruct', TP.boot.$documentConstruct);
-TP.boot.defineMethod('$activeXDocumentCreateIE',
-                                        TP.boot.$activeXDocumentCreateIE);
+TP.boot.defineMethod('$activeXDocumentConstructIE',
+                                        TP.boot.$activeXDocumentConstructIE);
 
 TP.boot.defineMethod('$nodeAppendChild', TP.boot.$nodeAppendChild);
 TP.boot.defineMethod('$nodeInsertBefore', TP.boot.$nodeInsertBefore);

@@ -408,7 +408,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         try {
-            httpObj = TP.httpCreate(path);
+            httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
                 request.atPut('xhr', httpObj);
             }
@@ -471,7 +471,7 @@ TP.hc(
                 fname = path;
 
                 try {
-                    httpObj = TP.httpCreate(path);
+                    httpObj = TP.httpConstruct(path);
                     if (TP.canInvoke(request, 'atPut')) {
                         request.atPut('xhr', httpObj);
                     }
@@ -595,7 +595,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         try {
-            httpObj = TP.httpCreate(path);
+            httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
                 request.atPut('xhr', httpObj);
             }
@@ -674,7 +674,7 @@ TP.hc(
         request = TP.request(aRequest);
 
         try {
-            httpObj = TP.httpCreate(path);
+            httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
                 request.atPut('xhr', httpObj);
             }
@@ -850,7 +850,7 @@ TP.hc(
             }
         } else {
             try {
-                httpObj = TP.httpCreate(path);
+                httpObj = TP.httpConstruct(path);
                 if (TP.canInvoke(request, 'atPut')) {
                     request.atPut('xhr', httpObj);
                 }
@@ -935,7 +935,7 @@ TP.hc(
         report = TP.ifKeyInvalid(request, 'shouldReport', false);
 
         try {
-            httpObj = TP.httpCreate(path);
+            httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
                 request.atPut('xhr', httpObj);
             }
@@ -1093,7 +1093,7 @@ TP.hc(
         report = TP.ifKeyInvalid(request, 'shouldReport', false);
 
         try {
-            httpObj = TP.httpCreate(path);
+            httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
                 request.atPut('xhr', httpObj);
             }
@@ -1212,7 +1212,7 @@ TP.hc(
         report = TP.ifKeyInvalid(request, 'shouldReport', false);
 
         try {
-            httpObj = TP.httpCreate(path);
+            httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
                 request.atPut('xhr', httpObj);
             }
