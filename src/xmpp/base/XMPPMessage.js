@@ -90,12 +90,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Message.Inst.defineMethod('getHtml',
+TP.xmpp.Message.Inst.defineMethod('getHTML',
 function() {
 
     /**
-     * @method getHtml
-     * @summary Returns the html content, if any, of the receiver.
+     * @method getHTML
+     * @summary Returns the HTML content, if any, of the receiver.
      * @returns {String}
      */
 
@@ -248,13 +248,13 @@ function(aString) {
 
 //  ------------------------------------------------------------------------
 
-TP.xmpp.Message.Inst.defineMethod('setHtml',
+TP.xmpp.Message.Inst.defineMethod('setHTML',
 function(aString) {
 
     /**
-     * @method setHtml
-     * @summary Sets the html content of the receiver. If the content includes
-     *     an opening/closing html tag pair it is removed.
+     * @method setHTML
+     * @summary Sets the HTML content of the receiver. If the content includes
+     *     an opening/closing HTML tag pair it is removed.
      * @param {String} aString The HTML content to set.
      * @returns {TP.xmpp.Message} The receiver.
      */
