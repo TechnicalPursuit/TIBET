@@ -8320,7 +8320,7 @@ function(aWindow) {
     //  Set up any 'backspace' key handlers on the window so that backspace key
     //  presses won't cause the standard "Back" button behavior that would
     //  cause the TIBET frame to be flushed.
-    TP.windowSetupBackKeyHandlers(aWindow);
+    TP.windowInstallBackspaceHook(aWindow);
 
     //  Make sure that if there is an Element that wanted to be focused as the
     //  first focused element on the page (using the HTML5 'autofocus'
@@ -8336,7 +8336,7 @@ function(aWindow) {
     //  Set up any focus handlers for the various windows/frames that we use in
     //  TIBET so that the user experiences 'proper' behavior when using the
     //  keyboard during application execution.
-    TP.windowSetupFocusHandlers(aWindow);
+    TP.windowInstallFocusHook(aWindow);
 
     //  Update the top-level window title if we loaded into the UICANVAS and
     //  push the URI into our history record.
@@ -9214,11 +9214,11 @@ function(aWindow) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('windowSetupBackKeyHandlers',
+TP.definePrimitive('windowInstallBackspaceHook',
 function(aWindow) {
 
     /**
-     * @method windowSetupBackKeyHandlers
+     * @method windowInstallBackspaceHook
      * @summary Configures the top level window(s) so that keydown (in the case
      *     of IE) or keypress (in the case of Mozilla) with the 'backspace' key
      *     received by the window itself will not cause TIBET to be flushed back
@@ -9249,11 +9249,11 @@ function(aWindow) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('windowSetupFocusHandlers',
+TP.definePrimitive('windowInstallFocusHook',
 function(aWindow) {
 
     /**
-     * @method windowSetupFocusHandlers
+     * @method windowInstallFocusHook
      * @summary Configures the top level window(s) so that focus will return to
      *     the canvas rather than moving outside the ui frame(s).
      * @param {Window} aWindow The window to configure.
