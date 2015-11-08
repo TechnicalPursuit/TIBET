@@ -65,7 +65,7 @@ function() {
 
     if (!TP.isElement(iframeElem =
                         TP.nodeGetElementById(win.document, iframeName))) {
-        iframeElem = TP.documentCreateIFrameElement(win.document,
+        iframeElem = TP.documentConstructIFrameElement(win.document,
                                                     null,
                                                     iframeName);
         TP.elementSetAttribute(iframeElem, 'style', 'display: none');
@@ -1236,7 +1236,7 @@ shouldRaise) {
     //  Create a script element using this document and adding a parameter
     //  on the end that contains the JSONP callback name and our callback
     //  function ID (which the caller will return).
-    elem = TP.documentCreateScriptElement(
+    elem = TP.documentConstructScriptElement(
             contextDoc,
             url,
             function() {

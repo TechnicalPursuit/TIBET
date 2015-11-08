@@ -1618,7 +1618,7 @@ function(target, type, args, callback, currentElement) {
         case 'sendevent':
 
             doc = TP.nodeGetDocument(finalTarget);
-            newEvent = TP.documentCreateEvent(doc, args);
+            newEvent = TP.documentConstructEvent(doc, args);
 
             /* eslint-disable wrap-iife */
             (function() {
@@ -1657,7 +1657,7 @@ function(eventInfo, aPath) {
     /**
      * @method sendEvent
      * @summary Sends the event as described in the supplied eventInfo. See the
-     *     TP.documentCreateEvent() call for more information on the fields
+     *     TP.documentConstructEvent() call for more information on the fields
      *     recognized ere.
      * @param {TP.core.Hash|Object} eventInfo The event information used to
      *     create the event to send.

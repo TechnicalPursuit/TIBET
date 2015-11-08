@@ -264,7 +264,7 @@ function(aDocument) {
 
     head = TP.documentGetHead(aDocument);
     if (TP.notValid(head)) {
-        head = TP.documentCreateElement(
+        head = TP.documentConstructElement(
                                 aDocument,
                                 'head',
                                 TP.w3.Xmlns.XHTML);
@@ -1053,7 +1053,7 @@ function(aDocument, titleText) {
 
     titleElem = TP.nodeGetFirstElementByTagName(aDocument, 'title');
     if (TP.notValid(titleElem)) {
-        titleElem = TP.documentCreateElement(
+        titleElem = TP.documentConstructElement(
                                 aDocument,
                                 'title',
                                 TP.w3.Xmlns.XHTML);
@@ -1232,7 +1232,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         } else {
             //  Couldn't find a 'head' element, so we create one in the
             //  XHTML namespace and append it to the document element.
-            headElem = TP.documentCreateElement(
+            headElem = TP.documentConstructElement(
                                     TP.nodeGetDocument(nodeContent),
                                     'head',
                                     TP.w3.Xmlns.XHTML);
@@ -1255,7 +1255,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
                 baseVal += '/';
             }
 
-            baseElem = TP.documentCreateElement(
+            baseElem = TP.documentConstructElement(
                             TP.nodeGetDocument(nodeContent),
                             'base',
                             TP.w3.Xmlns.XHTML);
@@ -4825,7 +4825,7 @@ function(aNode) {
     currentValue = TP.nodeGetTextContent(aNode);
 
     //  Create the 'input' field.
-    textInputElement = TP.documentCreateElement(nodeDoc,
+    textInputElement = TP.documentConstructElement(nodeDoc,
                                                 'input',
                                                 TP.w3.Xmlns.XHTML);
 
@@ -7035,7 +7035,7 @@ function(aNode, aDocument) {
             if (TP.isElement(elem)) {
                 if (TP.isHTMLDocument(
                         node = TP.elementGetIFrameDocument(
-                                    TP.documentCreateIFrameElement(doc)))) {
+                                    TP.documentConstructIFrameElement(doc)))) {
                     //  If there's a 'body' on the HTML document, use that.
                     //  Otherwise, just use the document element.
 
@@ -7235,7 +7235,7 @@ function(aString, aDocument) {
         //  create an iframe, using the HTML document we computed earlier
         //  This method 'initializes' it and attaches it to that document's
         //  'body' element.
-        grabFrame = TP.documentCreateIFrameElement(doc);
+        grabFrame = TP.documentConstructIFrameElement(doc);
         grabDoc = TP.elementGetIFrameDocument(grabFrame);
 
         //  grab the 'html' string from the content

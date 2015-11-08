@@ -162,7 +162,7 @@ function(aDocument) {
 
         //  It's another kind of style - set up a 'tibet:style' element and let
         //  the processing machinery handle it.
-        styleElem = TP.documentCreateElement(
+        styleElem = TP.documentConstructElement(
                         aDocument,
                         'tibet:style',
                         TP.w3.Xmlns.TIBET);

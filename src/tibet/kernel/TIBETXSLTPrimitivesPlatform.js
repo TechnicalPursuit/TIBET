@@ -977,7 +977,7 @@ TP.hc(
             //  we create one, set its 'cdata-section-elements' attribute
             //  and append it to the documentElement of the style document
             //  (which should be an 'xsl:stylesheet' element).
-            theOutputElement = TP.documentCreateElement(styleDoc,
+            theOutputElement = TP.documentConstructElement(styleDoc,
                                                         'output',
                                                         TP.w3.Xmlns.XSLT);
 
@@ -1322,7 +1322,7 @@ TP.hc(
                                     //  Create an 'xsl:variable' element and set
                                     //  it's name to be the same as the
                                     //  'xsl:param'
-                                    newElem = TP.documentCreateElement(
+                                    newElem = TP.documentConstructElement(
                                                         realStyleDoc,
                                                         'xsl:variable',
                                                         TP.w3.Xmlns.XSLT);

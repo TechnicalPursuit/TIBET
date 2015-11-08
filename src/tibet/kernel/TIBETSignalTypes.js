@@ -1262,7 +1262,7 @@ function(aPayload) {
 
     //  either we can create a native event or we'll use the hash itself and
     //  hope it has the right keys :)
-    return TP.documentCreateEvent(null, hash) || hash;
+    return TP.documentConstructEvent(null, hash) || hash;
 });
 
 //  ------------------------------------------------------------------------

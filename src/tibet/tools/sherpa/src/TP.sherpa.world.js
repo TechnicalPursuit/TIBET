@@ -122,7 +122,7 @@ function(anID, position) {
 
     var newScreenElem;
 
-    newScreenElem = TP.documentCreateElement(this.getNativeDocument(),
+    newScreenElem = TP.documentConstructElement(this.getNativeDocument(),
                                             'screen',
                                             TP.w3.Xmlns.SHERPA);
     TP.elementSetAttribute(newScreenElem, 'id', anID);

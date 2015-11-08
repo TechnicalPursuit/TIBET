@@ -132,7 +132,7 @@ TP.boot.defineMethod('$uriSaveMozFile', TP.boot.$uriSaveMozFile);
 TP.boot.defineMethod('$uriSaveWebkitFile', TP.boot.$uriSaveWebkitFile);
 TP.boot.defineMethod('$uriSaveHttp', TP.boot.$uriSaveHttp);
 
-TP.boot.defineMethod('$documentCreate', TP.boot.$documentCreate);
+TP.boot.defineMethod('$documentConstruct', TP.boot.$documentConstruct);
 TP.boot.defineMethod('$activeXDocumentCreateIE',
                                         TP.boot.$activeXDocumentCreateIE);
 

@@ -2352,7 +2352,7 @@ function(anObject, shallow) {
     } else if (TP.isEvent(anObject)) {
         if (TP.isDocument(eventDocument =
                         TP.eventGetTarget(anObject).document)) {
-            return TP.documentCreateEvent(eventDocument, anObject);
+            return TP.documentConstructEvent(eventDocument, anObject);
         }
     } else if (TP.isPlainObject(anObject)) {
         newObj = {};
@@ -5581,14 +5581,14 @@ function(eventObj) {
     arr = TP.ac();
 
     if (TP.isNode(target = eventObj.target)) {
-        arr.push('TP.documentCreateEvent(',
+        arr.push('TP.documentConstructEvent(',
                     TP.gid(TP.nodeGetWindow(target)),
                     '.document,');
     } else {
         //  NOTE the use of 'window.document' here to try to capture the current
         //  window context rather than 'top.document' in case we didn't load
         //  into the top window.
-        arr.push('TP.documentCreateEvent(window.document, ');
+        arr.push('TP.documentConstructEvent(window.document, ');
     }
 
     keys = TP.keys(eventObj);

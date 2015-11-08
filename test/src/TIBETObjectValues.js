@@ -253,7 +253,7 @@ function(aRequest) {
     errorVal = new Error('There was an error');
 
     //  Event
-    eventVal = TP.documentCreateEvent(
+    eventVal = TP.documentConstructEvent(
                     TP.sys.uidoc(true), TP.ac('type', 'mouseover'));
 
     //  XHR

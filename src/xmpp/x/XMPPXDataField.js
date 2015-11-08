@@ -152,7 +152,7 @@ function(isRequired) {
         //  If a 'required' Element isn't already present.
         if (TP.notValid(requiredElem =
                 TP.unwrap(this.getElementsByTagName('required').first()))) {
-            requiredElem = TP.documentCreateElement(
+            requiredElem = TP.documentConstructElement(
                                 this.getNativeDocument(),
                                 'required',
                                 TP.xmpp.XMLNS.X_DATA);

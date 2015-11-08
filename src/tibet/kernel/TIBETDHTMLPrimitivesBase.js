@@ -126,11 +126,11 @@ function(anObject) {
 //  DOCUMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentCreateScriptElement',
+TP.definePrimitive('documentConstructScriptElement',
 function(aDocument, aURL, aContent, aLoadedFunction) {
 
     /**
-     * @method documentCreateScriptElement
+     * @method documentConstructScriptElement
      * @summary Creates an (X)HTML 'script' element in the document, using
      *     the URL provided and configures it to call the supplied loaded
      *     function when it completes loading.
@@ -156,7 +156,7 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    newScriptElement = TP.documentCreateElement(aDocument,
+    newScriptElement = TP.documentConstructElement(aDocument,
                                                 'script',
                                                 TP.w3.Xmlns.XHTML);
     TP.elementSetAttribute(newScriptElement,
@@ -479,11 +479,11 @@ function(aDocument, toStart) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentCreateSelectionMarker',
+TP.definePrimitive('documentConstructSelectionMarker',
 function(aDocument) {
 
     /**
-     * @method documentCreateSelectionMarker
+     * @method documentConstructSelectionMarker
      * @summary Returns an object that can be used in conjunction with
      *     TP.documentMoveSelectionToMarker() to move around in the document.
      * @param {Document} aDocument The document to create the selection marker

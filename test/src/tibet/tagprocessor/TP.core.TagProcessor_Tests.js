@@ -103,7 +103,7 @@ function() {
                     newElem;
 
                 if (TP.isElement(node = aRequest.at('node'))) {
-                    newElem = TP.documentCreateElement(
+                    newElem = TP.documentConstructElement(
                                             TP.nodeGetDocument(node),
                                             'div',
                                             TP.w3.Xmlns.XHTML);
@@ -134,7 +134,7 @@ function() {
                 if (TP.isElement(node = aRequest.at('node'))) {
                     TP.elementSetAttribute(node, 'allNodesMark', 'true');
                     if (!TP.elementHasAttribute(node, 'donttransform')) {
-                        newElem = TP.documentCreateElement(
+                        newElem = TP.documentConstructElement(
                                                 TP.nodeGetDocument(node),
                                                 'div',
                                                 TP.w3.Xmlns.XHTML);

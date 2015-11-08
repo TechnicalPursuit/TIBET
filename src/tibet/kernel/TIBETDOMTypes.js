@@ -13212,7 +13212,7 @@ function(aRequest) {
     //  Create a new span and set a 'bind:in' attribute on it, binding it's
     //  'content' property using the expression given (minus the leading and
     //  trailing brackets).
-    newSpan = TP.documentCreateElement(TP.doc(node),
+    newSpan = TP.documentConstructElement(TP.doc(node),
                                         'span',
                                         TP.w3.Xmlns.XHTML);
     TP.elementSetAttribute(newSpan,
@@ -16588,7 +16588,7 @@ function(aRequest) {
         //  itself with the result of running itself immediately. The
         //  TP.GENERATOR property gives the template a reference back to the
         //  original type which built it.
-        replacement = TP.documentCreateElement(
+        replacement = TP.documentConstructElement(
                             TP.nodeGetDocument(elem),
                             'tsh:template',
                             TP.w3.Xmlns.TSH);

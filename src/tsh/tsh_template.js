@@ -185,7 +185,7 @@ function(anElement, aName, aURI) {
 
             default:
                 //  Have to create a fragment.
-                fragment = TP.documentCreateFragment(
+                fragment = TP.documentConstructFragment(
                                         TP.nodeGetDocument(anElement));
 
                 len = elements.getSize();
@@ -413,7 +413,7 @@ function(aTemplateName, aDataSource, formatParams) {
 
                     var newDummyElem;
 
-                    newDummyElem = TP.documentCreateElement(
+                    newDummyElem = TP.documentConstructElement(
                                                 natDoc, 'templateDummy');
 
                     TP.nodeReplaceChild(anElem.parentNode,
@@ -756,7 +756,7 @@ function(aRequest) {
 
             //  The shell can't process document fragments, so wrap it in
             //  something we can identify and remove after processing.
-            wrapper = TP.documentCreateElement(TP.nodeGetDocument(elem),
+            wrapper = TP.documentConstructElement(TP.nodeGetDocument(elem),
                                                 'fragwrapper');
             wrapper.appendChild(newNode);
 

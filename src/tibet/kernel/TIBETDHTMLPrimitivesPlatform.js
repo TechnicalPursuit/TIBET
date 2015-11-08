@@ -26,7 +26,7 @@ Platform-specific functionality related to DHTML operations.
 //  DOCUMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentCreateIFrameElement',
+TP.definePrimitive('documentConstructIFrameElement',
 TP.hc(
     'test',
     'webkit',
@@ -34,7 +34,7 @@ TP.hc(
     function(aDocument, forcedMIMEType, iframeID) {
 
         /**
-         * @method documentCreateIFrameElement
+         * @method documentConstructIFrameElement
          * @summary Creates an (X)HTML 'iframe' element in the document and
          *     'initializes' it to make sure its set up for manipulation.
          * @description In order for the frame element produced by this routine
@@ -83,7 +83,7 @@ TP.hc(
         }
 
         if (docMIMEType === TP.ietf.Mime.HTML) {
-            newIFrameElement = TP.documentCreateElement(aDocument,
+            newIFrameElement = TP.documentConstructElement(aDocument,
                                                         'iframe',
                                                         TP.w3.Xmlns.XHTML);
 
@@ -116,7 +116,7 @@ TP.hc(
             //  differently to make it 'take'
 
             //  First, we create a 'span' element.
-            newIFrameElement = TP.documentCreateElement(aDocument,
+            newIFrameElement = TP.documentConstructElement(aDocument,
                                                         'span',
                                                         TP.w3.Xmlns.XHTML);
 
@@ -165,7 +165,7 @@ TP.hc(
     function(aDocument, forcedMIMEType, iframeID) {
 
         /**
-         * @method documentCreateIFrameElement
+         * @method documentConstructIFrameElement
          * @summary Creates an (X)HTML 'iframe' element in the document and
          *     'initializes' it to make sure its set up for manipulation.
          * @description In order for the frame element produced by this routine
@@ -212,7 +212,7 @@ TP.hc(
         }
 
         if (docMIMEType === TP.ietf.Mime.HTML) {
-            newIFrameElement = TP.documentCreateElement(aDocument,
+            newIFrameElement = TP.documentConstructElement(aDocument,
                                                         'iframe',
                                                         TP.w3.Xmlns.XHTML);
 
@@ -241,7 +241,7 @@ TP.hc(
         } else {
             //  For XHTML documents, we actually create 'object' elements
 
-            newIFrameElement = TP.documentCreateElement(aDocument,
+            newIFrameElement = TP.documentConstructElement(aDocument,
                                                         'object',
                                                         TP.w3.Xmlns.XHTML);
 
@@ -282,7 +282,7 @@ TP.hc(
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentCreateEvent',
+TP.definePrimitive('documentConstructEvent',
 TP.hc(
     'test',
     TP.sys.getBrowserUI,
@@ -290,7 +290,7 @@ TP.hc(
     function(aDocument, anEventSpec) {
 
         /**
-         * @method documentCreateEvent
+         * @method documentConstructEvent
          * @summary Creates a native Event object, populating it with the event
          *     spec data provided. The spec must exist, and must contain a
          *     'type' key to construct a valid Event. NOTE that the keys in the
@@ -524,7 +524,7 @@ TP.hc(
     function(aDocument, anEventSpec) {
 
         /**
-         * @method documentCreateEvent
+         * @method documentConstructEvent
          * @summary Creates a native Event object, populating it with the event
          *     spec data provided. The spec must exist, and must contain a
          *     'type' key to construct a valid Event. NOTE that the keys in the
@@ -747,7 +747,7 @@ TP.hc(
     function(aDocument, anEventSpec) {
 
         /**
-         * @method documentCreateEvent
+         * @method documentConstructEvent
          * @summary Creates a native Event object, populating it with the event
          *     spec data provided. The spec must exist, and must contain a
          *     'type' key to construct a valid Event. NOTE that the keys in the

@@ -160,7 +160,7 @@ function() {
 
     //  Inject the hook file into the page so it has all the necessary TIBET
     //  page elements.
-    elem = TP.documentCreateScriptElement(
+    elem = TP.documentConstructScriptElement(
                 doc,
                 TP.uc('~lib_build/tibet_hook.min.js').getLocation());
     head = TP.documentEnsureHeadElement(doc);

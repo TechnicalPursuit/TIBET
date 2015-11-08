@@ -49,7 +49,7 @@ function() {
 
     cols = ['name', 'owner'];
 
-    wrapper = TP.documentCreateElement(this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
+    wrapper = TP.documentConstructElement(this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
 
     sections = TP.extern.d3.select(wrapper).selectAll('div.parent').data(data);
 

@@ -4306,10 +4306,10 @@ TP.boot.$documentAddCSSStyleElement = function(aDocument, styleText) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentCreate = function(versionNumber) {
+TP.boot.$documentConstruct = function(versionNumber) {
 
     /**
-     * @method $documentCreate
+     * @method $documentConstruct
      * @summary Creates a DOM document element for use.
      * @param {Number} versionNumber A specific version number which must be
      *     returned as a minimum version.

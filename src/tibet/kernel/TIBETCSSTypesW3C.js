@@ -100,7 +100,7 @@ function(anElement, idValue, gradientTagName) {
                                                 svgElem, 'defs'))) {
         //  No pre-existing 'defs' element, so we create one and insert it
         //  as the first child to the 'svg' element.
-        defsElem = TP.documentCreateElement(nativeDoc,
+        defsElem = TP.documentConstructElement(nativeDoc,
                                             'defs',
                                             TP.w3.Xmlns.SVG);
         svgElem.insertBefore(defsElem, svgElem.firstChild);
@@ -119,7 +119,7 @@ function(anElement, idValue, gradientTagName) {
     //  and put it at the proper place within the SVG DOM.
     if (TP.isEmpty(gradID) ||
         !TP.isElement(gradElem = TP.byId(gradID, nativeDoc, false))) {
-        gradElem = TP.documentCreateElement(nativeDoc,
+        gradElem = TP.documentConstructElement(nativeDoc,
                                             gradientTagName,
                                             TP.w3.Xmlns.SVG);
 
@@ -155,7 +155,7 @@ function(anElement, idValue, gradientTagName) {
 
             var stopElem;
 
-            stopElem = TP.documentCreateElement(
+            stopElem = TP.documentConstructElement(
                                     nativeDoc,
                                     'stop',
                                     TP.w3.Xmlns.SVG);
@@ -523,7 +523,7 @@ function(anElement, idValue) {
                                                 svgElem, 'defs'))) {
         //  No pre-existing 'defs' element, so we create one and insert it
         //  as the first child to the 'svg' element.
-        defsElem = TP.documentCreateElement(nativeDoc,
+        defsElem = TP.documentConstructElement(nativeDoc,
                                             'defs',
                                             TP.w3.Xmlns.SVG);
         svgElem.insertBefore(defsElem, svgElem.firstChild);
@@ -542,7 +542,7 @@ function(anElement, idValue) {
     //  and put it at the proper place within the SVG DOM.
     if (TP.isEmpty(patID) ||
         !TP.isElement(patternElem = TP.byId(patID, nativeDoc, false))) {
-        patternElem = TP.documentCreateElement(nativeDoc,
+        patternElem = TP.documentConstructElement(nativeDoc,
                                                 'pattern',
                                                 TP.w3.Xmlns.SVG);
 
@@ -566,7 +566,7 @@ function(anElement, idValue) {
     //  then create one and append it in.
     if (TP.notValid(imageElem =
                     patternElem.getElementsByTagName('image')[0])) {
-        imageElem = TP.documentCreateElement(nativeDoc,
+        imageElem = TP.documentConstructElement(nativeDoc,
                                                 'image',
                                                 TP.w3.Xmlns.SVG);
 

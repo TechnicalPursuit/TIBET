@@ -1081,11 +1081,11 @@ TP.hc(
          *          <samp>[object XMLDocument]</samp>
          *          TP.nodeAppendChild(
          *          xmlDoc.documentElement,
-         *          TP.documentCreateElement(xmlDoc, 'bar', null));
+         *          TP.documentConstructElement(xmlDoc, 'bar', null));
          *          <samp>[object Element]</samp>
          *          TP.nodeAppendChild(
          *          xmlDoc.documentElement,
-         *          TP.documentCreateElement(xmlDoc, 'baz', ''));
+         *          TP.documentConstructElement(xmlDoc, 'baz', ''));
          *          <samp>[object Element]</samp>
          *          TP.nodeAsString(xmlDoc, true);
          *          <samp>&lt;foo xmlns="http://www.foo.com"&gt;&lt;bar
@@ -1098,14 +1098,14 @@ TP.hc(
          *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
          *         there</foo>');
          *          <samp>[object XMLDocument]</samp>
-         *          docFrag = TP.documentCreateFragment(xmlDoc);
+         *          docFrag = TP.documentConstructFragment(xmlDoc);
          *          TP.nodeAppendChild(
          *          docFrag,
-         *          TP.documentCreateElement(xmlDoc, 'span',
+         *          TP.documentConstructElement(xmlDoc, 'span',
          *         TP.w3.Xmlns.XHTML));
          *          TP.nodeAppendChld(
          *          docFrag,
-         *          TP.documentCreateElement(xmlDoc, 'span',
+         *          TP.documentConstructElement(xmlDoc, 'span',
          *         TP.w3.Xmlns.XHTML));
          *          TP.nodeAsString(docFrag);
          *          <samp>&lt;span
@@ -1366,11 +1366,11 @@ TP.hc(
          *          <samp>[object XMLDocument]</samp>
          *          TP.nodeAppendChild(
          *          xmlDoc.documentElement,
-         *          TP.documentCreateElement(xmlDoc, 'bar', null));
+         *          TP.documentConstructElement(xmlDoc, 'bar', null));
          *          <samp>[object Element]</samp>
          *          TP.nodeAppendChild(
          *          xmlDoc.documentElement,
-         *          TP.documentCreateElement(xmlDoc, 'baz', ''));
+         *          TP.documentConstructElement(xmlDoc, 'baz', ''));
          *          <samp>[object Element]</samp>
          *          TP.nodeAsString(xmlDoc, true);
          *          <samp>&lt;foo xmlns="http://www.foo.com"&gt;&lt;bar
@@ -1383,14 +1383,14 @@ TP.hc(
          *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
          *         there</foo>');
          *          <samp>[object XMLDocument]</samp>
-         *          docFrag = TP.documentCreateFragment(xmlDoc);
+         *          docFrag = TP.documentConstructFragment(xmlDoc);
          *          TP.nodeAppendChild(
          *          docFrag,
-         *          TP.documentCreateElement(xmlDoc, 'span',
+         *          TP.documentConstructElement(xmlDoc, 'span',
          *         TP.w3.Xmlns.XHTML));
          *          TP.nodeAppendChld(
          *          docFrag,
-         *          TP.documentCreateElement(xmlDoc, 'span',
+         *          TP.documentConstructElement(xmlDoc, 'span',
          *         TP.w3.Xmlns.XHTML));
          *          TP.nodeAsString(docFrag);
          *          <samp>&lt;span
@@ -1645,11 +1645,11 @@ TP.hc(
          *          <samp>[object XMLDocument]</samp>
          *          TP.nodeAppendChild(
          *          xmlDoc.documentElement,
-         *          TP.documentCreateElement(xmlDoc, 'bar', null));
+         *          TP.documentConstructElement(xmlDoc, 'bar', null));
          *          <samp>[object Element]</samp>
          *          TP.nodeAppendChild(
          *          xmlDoc.documentElement,
-         *          TP.documentCreateElement(xmlDoc, 'baz', ''));
+         *          TP.documentConstructElement(xmlDoc, 'baz', ''));
          *          <samp>[object Element]</samp>
          *          TP.nodeAsString(xmlDoc, true);
          *          <samp>&lt;foo xmlns="http://www.foo.com"&gt;&lt;bar
@@ -1662,14 +1662,14 @@ TP.hc(
          *          '<foo xmlns:bar="http://www.bar.com" bar:baz="bazify">Hi
          *         there</foo>');
          *          <samp>[object XMLDocument]</samp>
-         *          docFrag = TP.documentCreateFragment(xmlDoc);
+         *          docFrag = TP.documentConstructFragment(xmlDoc);
          *          TP.nodeAppendChild(
          *          docFrag,
-         *          TP.documentCreateElement(xmlDoc, 'span',
+         *          TP.documentConstructElement(xmlDoc, 'span',
          *         TP.w3.Xmlns.XHTML));
          *          TP.nodeAppendChld(
          *          docFrag,
-         *          TP.documentCreateElement(xmlDoc, 'span',
+         *          TP.documentConstructElement(xmlDoc, 'span',
          *         TP.w3.Xmlns.XHTML));
          *          TP.nodeAsString(docFrag);
          *          <samp>&lt;span

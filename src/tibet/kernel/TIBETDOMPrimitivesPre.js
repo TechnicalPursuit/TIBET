@@ -99,11 +99,11 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentCreateFragment',
+TP.definePrimitive('documentConstructFragment',
 function(aDocument) {
 
     /**
-     * @method documentCreateFragment
+     * @method documentConstructFragment
      * @summary Creates and returns a new document fragment for the document
      *     provided, or the document of the code frame. You should provide the
      *     document that you will append/insert the fragment into to avoid
@@ -112,7 +112,7 @@ function(aDocument) {
      *     process. There is no default value.
      * @example Create a document fragment in myDocument
      *     <code>
-     *          aFrag = TP.documentCreateFragment(document);
+     *          aFrag = TP.documentConstructFragment(document);
      *          <samp>[object DocumentFragment]</samp>
      *     </code>
      * @returns {DocumentFragment} A valid DOM DocumentFragment.

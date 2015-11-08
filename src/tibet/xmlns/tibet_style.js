@@ -247,12 +247,12 @@ function(lessLoc, lessText) {
                             if (!TP.isElement(styleElem)) {
 
                                 if (isCSS) {
-                                    styleElem = TP.documentCreateElement(
+                                    styleElem = TP.documentConstructElement(
                                                     natDoc,
                                                     'style',
                                                     TP.w3.Xmlns.XHTML);
                                 } else {
-                                    styleElem = TP.documentCreateElement(
+                                    styleElem = TP.documentConstructElement(
                                                     natDoc,
                                                     'tibet:style',
                                                     TP.w3.Xmlns.TIBET);

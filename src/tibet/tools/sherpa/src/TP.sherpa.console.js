@@ -579,7 +579,7 @@ function(aRange, completionContent) {
 
     doc = this.getNativeDocument();
 
-    elem = TP.documentCreateElement(doc, 'span', TP.w3.Xmlns.XHTML);
+    elem = TP.documentConstructElement(doc, 'span', TP.w3.Xmlns.XHTML);
     TP.elementSetClass(elem, 'completion-mark');
     TP.xmlElementSetContent(elem, TP.xmlEntitiesToLiterals(completionContent));
 
@@ -673,7 +673,7 @@ function(range, cssClass, promptText) {
 
     doc = this.getNativeDocument();
 
-    elem = TP.documentCreateElement(doc, 'span', TP.w3.Xmlns.XHTML);
+    elem = TP.documentConstructElement(doc, 'span', TP.w3.Xmlns.XHTML);
     TP.elementSetClass(elem, cssClass);
     TP.elementAddClass(elem, 'noselect');
     TP.elementSetAttribute(elem, 'id', TP.sys.cfg('sherpa.console_prompt'));
@@ -1737,7 +1737,7 @@ function(uniqueID, dataRecord) {
             //  If we couldn't find an existing coalescing record for the
             //  supplied ID, then we create a coalescing fragment and a record
             //  holding it, the data record and the overall output element.
-            coalesceFragment = TP.documentCreateFragment(doc);
+            coalesceFragment = TP.documentConstructFragment(doc);
             outputCoalesceRecords.atPut(
                                     uniqueID,
                                     TP.hc('fragment', coalesceFragment,

@@ -48,7 +48,7 @@ function(resourceName) {
 
     //  Make a node in the 'resource binding' namespace with a tag name of
     //  'resource'.
-    resourceNode = TP.documentCreateElement(this.getNativeDocument(),
+    resourceNode = TP.documentConstructElement(this.getNativeDocument(),
                                             'resource',
                                             TP.xmpp.XMLNS.BIND);
 

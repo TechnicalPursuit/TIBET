@@ -418,7 +418,7 @@ function() {
     uiDoc = uiScreensWin.document;
 
     //  Create the <sherpa:world> tag
-    worldElem = TP.documentCreateElement(uiDoc, 'sherpa:world', TP.w3.Xmlns.SHERPA);
+    worldElem = TP.documentConstructElement(uiDoc, 'sherpa:world', TP.w3.Xmlns.SHERPA);
     TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld');
 
     //  Append the <sherpa:world> tag into the loaded Sherpa document.
@@ -437,7 +437,7 @@ function() {
                 var elem;
 
                 //  Wrap each iframe inside of a 'sherpa:screen' element
-                elem = TP.documentCreateElement(uiDoc,
+                elem = TP.documentConstructElement(uiDoc,
                                                 'sherpa:screen',
                                                 TP.w3.Xmlns.SHERPA);
 
@@ -454,10 +454,10 @@ function() {
     //  the user, create more.
     if (configNumIFrames > numIFrames) {
         for (i = 0; i < configNumIFrames - numIFrames; i++) {
-            screenElem = TP.documentCreateElement(uiDoc,
+            screenElem = TP.documentConstructElement(uiDoc,
                                                     'sherpa:screen',
                                                     TP.w3.Xmlns.SHERPA);
-            iFrameElem = TP.documentCreateElement(uiDoc,
+            iFrameElem = TP.documentConstructElement(uiDoc,
                                                     'iframe',
                                                     TP.w3.Xmlns.XHTML);
 

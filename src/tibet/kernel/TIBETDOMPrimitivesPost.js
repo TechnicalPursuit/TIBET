@@ -132,11 +132,11 @@ TP.XML_FACTORY_DOCUMENT = TP.createDocument();
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentCreateElement',
+TP.definePrimitive('documentConstructElement',
 function(aDocument, elementName, elementNS) {
 
     /**
-     * @method documentCreateElement
+     * @method documentConstructElement
      * @summary Creates a new element in the document and namespace provided.
      * @param {Document} aDocument The document that will contain the new
      *     element.
@@ -144,7 +144,7 @@ function(aDocument, elementName, elementNS) {
      * @param {String} elementNS The namespace to use.
      * @example Create an HTML element in an HTML document:
      *     <code>
-     *          TP.documentCreateElement(document, 'span');
+     *          TP.documentConstructElement(document, 'span');
      *          <samp>[object HTMLSpanElement]</samp>
      *     </code>
      * @example Create an XHTML element in an XML document:
@@ -152,7 +152,7 @@ function(aDocument, elementName, elementNS) {
      *          xmlDoc = TP.documentFromString('<foo
      *         xmlns="http://www.foo.com"/>');
      *          <samp>[object XMLDocument]</samp>
-     *          TP.documentCreateElement(xmlDoc, 'span', TP.w3.Xmlns.XHTML);
+     *          TP.documentConstructElement(xmlDoc, 'span', TP.w3.Xmlns.XHTML);
      *          <samp>[object HTMLSpanElement]</samp>
      *     </code>
      * @returns {Element} The newly created Element.
@@ -820,7 +820,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             //  Shift off the next script URL out of the queue
             scriptURL = scriptURLs.shift();
 
-            newScript = TP.documentCreateScriptElement(
+            newScript = TP.documentConstructScriptElement(
                                     aDocument,
                                     scriptURL);
             newScript.addEventListener('load', loadFunc, false);
@@ -4934,7 +4934,7 @@ function(aString, defaultNS, shouldReport) {
     } else if (TP.isNode(aNode)) {
         //  Otherwise, construct a fragment and append the node returned to
         //  that.
-        fragment = TP.documentCreateFragment(TP.nodeGetDocument(aNode));
+        fragment = TP.documentConstructFragment(TP.nodeGetDocument(aNode));
 
         //  Note here how we pass 'false' to *not* awaken any content that
         //  gets appended.
@@ -5119,7 +5119,7 @@ function(aNodeList, aDocument, shouldClone) {
     if (aNodeList.length < 1) {
         doc = TP.ifInvalid(aDocument, TP.XML_FACTORY_DOCUMENT);
 
-        return TP.documentCreateFragment(doc);
+        return TP.documentConstructFragment(doc);
     }
 
     //  default to the document provided, or the document of the first node
@@ -5127,7 +5127,7 @@ function(aNodeList, aDocument, shouldClone) {
     doc = TP.ifInvalid(aDocument, TP.nodeGetDocument(firstNode));
 
     //  create the fragment
-    if (TP.notValid(fragment = TP.documentCreateFragment(doc))) {
+    if (TP.notValid(fragment = TP.documentConstructFragment(doc))) {
         return;
     }
 
@@ -14364,7 +14364,7 @@ function(anObject, defaultNS, shouldReport) {
         fragment;
 
     if (TP.notValid(anObject)) {
-        return TP.documentCreateFragment(TP.XML_FACTORY_DOCUMENT);
+        return TP.documentConstructFragment(TP.XML_FACTORY_DOCUMENT);
     }
 
     //  for permission reasons it's important to check for xhr's early
@@ -14393,13 +14393,13 @@ function(anObject, defaultNS, shouldReport) {
             node = anObject.documentElement;
         }
 
-        fragment = TP.documentCreateFragment(TP.nodeGetDocument(node));
+        fragment = TP.documentConstructFragment(TP.nodeGetDocument(node));
 
         //  Note here how we pass 'false' to *not* awaken any content that
         //  gets appended.
         TP.nodeAppendChild(fragment, node, false);
     } else if (TP.isKindOf(anObject, 'TP.core.Node')) {
-        fragment = TP.documentCreateFragment(anObject.getNativeDocument());
+        fragment = TP.documentConstructFragment(anObject.getNativeDocument());
 
         //  Note here how we pass 'false' to *not* awaken any content that
         //  gets appended.
@@ -14408,13 +14408,13 @@ function(anObject, defaultNS, shouldReport) {
         fragment = TP.fragmentFromString(anObject, defaultNS, shouldReport);
     } else if (TP.isWindow(anObject)) {
         node = TP.nodeCloneNode(anObject.document.documentElement);
-        fragment = TP.documentCreateFragment(TP.nodeGetDocument(node));
+        fragment = TP.documentConstructFragment(TP.nodeGetDocument(node));
 
         //  Note here how we pass 'false' to *not* awaken any content that
         //  gets appended.
         TP.nodeAppendChild(fragment, node, false);
     } else if (TP.canInvoke(anObject, 'getNativeNode')) {
-        fragment = TP.documentCreateFragment(anObject.getNativeDocument());
+        fragment = TP.documentConstructFragment(anObject.getNativeDocument());
         if (TP.isDocument(node = anObject.getNativeNode())) {
             node = TP.nodeCloneNode(node.documentElement);
         }
@@ -14778,7 +14778,7 @@ function(anObject, defaultNS, shouldReport) {
 
     if (TP.notValid(anObject)) {
         return TP.core.DocumentFragmentNode.construct(
-                    TP.documentCreateFragment(TP.XML_FACTORY_DOCUMENT));
+                    TP.documentConstructFragment(TP.XML_FACTORY_DOCUMENT));
     }
 
     //  already one? don't want to unwrap/rewrap...

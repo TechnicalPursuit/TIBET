@@ -284,7 +284,7 @@ function(targetDoc, linkHref, beforeNode) {
     targetHead = TP.documentEnsureHeadElement(targetDoc);
 
     //  Create a new 'link' element.
-    newLinkElement = TP.documentCreateElement(targetDoc,
+    newLinkElement = TP.documentConstructElement(targetDoc,
                                                 'link',
                                                 TP.w3.Xmlns.XHTML);
 
@@ -337,8 +337,8 @@ function(targetDoc, styleText, beforeNode) {
     targetHead = TP.documentEnsureHeadElement(targetDoc);
 
     //  Create a new 'style' element
-    newStyleElement = TP.documentCreateElement(targetDoc, 'style',
-                                                TP.w3.Xmlns.XHTML);
+    newStyleElement = TP.documentConstructElement(targetDoc, 'style',
+                                                    TP.w3.Xmlns.XHTML);
 
     TP.elementSetAttribute(newStyleElement, 'type', TP.CSS_TEXT_ENCODED);
 

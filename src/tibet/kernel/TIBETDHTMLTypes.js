@@ -1356,7 +1356,7 @@ function(aSignal) {
 
     //  Create an 'overlay element' that will overlay the entire action
     //  element during the time that the gesture is active.
-    overlayElem = TP.documentCreateElement(
+    overlayElem = TP.documentConstructElement(
                             TP.nodeGetDocument(actionElem),
                             'div',
                             TP.w3.Xmlns.XHTML);
@@ -2269,7 +2269,7 @@ function(aSignal) {
 
     //  Create an 'overlay element' that will overlay the entire action
     //  element during the time that the gesture is active.
-    overlayElem = TP.documentCreateElement(
+    overlayElem = TP.documentConstructElement(
                             TP.nodeGetDocument(actionElem),
                             'div',
                             TP.w3.Xmlns.XHTML);
@@ -3130,7 +3130,7 @@ function(anElement) {
     }
 
     //  Create a drag element and identify it for later lookup.
-    dragElement = TP.documentCreateElement(dragDoc,
+    dragElement = TP.documentConstructElement(dragDoc,
                                             'div',
                                             TP.w3.Xmlns.XHTML);
     dragElement.setAttribute('id', '__dragElement__');
@@ -3168,8 +3168,8 @@ function(anElement) {
     //  actually dragged the mouse *back* over the top of the dragElement
     //  those events will be trapped by this drag cover element.
     if (TP.notValid(dragCoverElement = dragElement.dragCoverElement)) {
-        dragCoverElement = TP.documentCreateElement(dragDoc, 'div',
-                                                    TP.w3.Xmlns.XHTML);
+        dragCoverElement = TP.documentConstructElement(dragDoc, 'div',
+                                                        TP.w3.Xmlns.XHTML);
 
         dragCoverElement.setAttribute(
                     'style',
