@@ -351,9 +351,12 @@ TP.hc(
             activeXDoc = TP.boot.$documentFromStringIE(str);
 
             //  Look for any attributes that contain '[[' - these are binding
-            //  expressions
+            //  expressions. Note how *do not* look for any that are in the
+            //  TP.w3.Xmlns.BIND namespace, which means any 'bind:*' attributes
+            //  themselves.
             activeXBindingAttrs = activeXDoc.selectNodes(
-                                    '//*/@*[contains(., "[[")]');
+                    '//*/@*[contains(., "[[") and ' +
+                    'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]');
 
             //  Loop over any found and desugar them into 'bind:io' attributes.
             for (i = 0; i < activeXBindingAttrs.length; i++) {
