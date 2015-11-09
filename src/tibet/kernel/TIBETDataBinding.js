@@ -2057,6 +2057,7 @@ function(aSignalOrHash) {
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
 
+                    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
                     if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
                         attrVal = '[[' + attrVal + ']]';
                     }
@@ -2087,6 +2088,7 @@ function(aSignalOrHash) {
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
 
+                    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
                     if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
                         attrVal = '[[' + attrVal + ']]';
                     }
@@ -2117,6 +2119,7 @@ function(aSignalOrHash) {
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
 
+                    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
                     if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
                         attrVal = '[[' + attrVal + ']]';
                     }
@@ -2179,6 +2182,7 @@ function(aSignalOrHash) {
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
 
+                    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
                     if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
                         attrVal = '[[' + attrVal + ']]';
                     }
@@ -2211,6 +2215,7 @@ function(aSignalOrHash) {
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
 
+                    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
                     if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
                         attrVal = '[[' + attrVal + ']]';
                     }
@@ -2243,6 +2248,7 @@ function(aSignalOrHash) {
                     attrName = kvPair.first();
                     attrVal = kvPair.last();
 
+                    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
                     if (!TP.regex.BINDING_STATEMENT_EXTRACT.test(attrVal)) {
                         attrVal = '[[' + attrVal + ']]';
                     }
