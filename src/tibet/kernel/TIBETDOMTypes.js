@@ -13209,15 +13209,27 @@ function(aRequest) {
     //  Get the text of exprNode, which will now be the '[[...]]' expression.
     str = TP.nodeGetTextContent(exprNode);
 
+    //  Trim off the surrounding whitespace
+    str = TP.trim(str);
+
+    //  If the expression doesn't contain a '%', then it doesn't need quoting,
+    //  but does need the leading and trailing '[[' and ']]' to be trimmed.
+    if (!TP.regex.HAS_PERCENT.test(str)) {
+        str = str.slice(2, -2);
+    } else {
+        str = str.quoted('\'');
+    }
+
     //  Create a new span and set a 'bind:in' attribute on it, binding it's
     //  'content' property using the expression given (minus the leading and
     //  trailing brackets).
     newSpan = TP.documentConstructElement(TP.doc(node),
-                                        'span',
-                                        TP.w3.Xmlns.XHTML);
+                                            'span',
+                                            TP.w3.Xmlns.XHTML);
+
     TP.elementSetAttribute(newSpan,
                             'bind:in',
-                            '{content: ' + str.slice(2, -2) + '}',
+                            '{content: ' + str + '}',
                             true);
 
     //  Replace that text node with the span, leaving the text nodes to the left
