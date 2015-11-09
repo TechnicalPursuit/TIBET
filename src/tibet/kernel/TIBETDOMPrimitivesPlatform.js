@@ -285,6 +285,19 @@ TP.hc(
             errorRecord,
 
             activeXDoc,
+
+            activeXBindingAttrs,
+            i,
+
+            srcAttr,
+
+            ownerElem,
+            j,
+
+            ownerElemAttr,
+            val,
+            bindAttr,
+
             activeXBody,
             regularBody;
 
@@ -324,6 +337,102 @@ TP.hc(
             str = aString.replace(
                 TP.regex.ALL_ELEM_MARKUP,
                 str + '>$&</root>');
+        }
+
+        //  Unfortunately, the DOMParser in IE decides to 'help' us by not
+        //  allowing certain constructs (like binding expressions) in certain
+        //  attributes (like 'style') if we're parsing XHTML. Therefore, we try
+        //  to detect things like binding expressions here and use 'another
+        //  way'.
+        TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
+        if (TP.regex.BINDING_STATEMENT_EXTRACT.test(str)) {
+            //  Use the 'old ActiveX way' to parse the document - this parser
+            //  does *not* strip "invalid" constructs from the markup.
+            activeXDoc = TP.boot.$documentFromStringIE(str);
+
+            //  Look for any attributes that contain '[[' - these are binding
+            //  expressions
+            activeXBindingAttrs = activeXDoc.selectNodes(
+                                    '//*/@*[contains(., "[[")]');
+
+            //  Loop over any found and desugar them into 'bind:io' attributes.
+            for (i = 0; i < activeXBindingAttrs.length; i++) {
+
+                srcAttr = activeXBindingAttrs[i];
+
+                //  Grab the Element node that owns this Attribute node.
+                ownerElem = srcAttr.selectSingleNode('..');
+
+                //  Initally set the bindAttr to null
+                bindAttr = null;
+
+                //  Loop over all of the attributes of the owner Element,
+                //  looking to see if they're named 'bind:io' or if they're
+                //  named 'io' with a namespaceURI of TP.w3.Xmlns.BIND. This
+                //  means that we have an existing bind:io attribute that we
+                //  should just add to.
+                for (j = 0; j < ownerElem.attributes.length; j++) {
+                    ownerElemAttr = ownerElem.attributes[j];
+
+                    /* eslint-disable no-extra-parens */
+                    if (ownerElemAttr.name === 'bind:io' ||
+                        (ownerElemAttr.name === 'io' &&
+                         ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND)) {
+                        bindAttr = ownerElemAttr;
+                    }
+                    /* eslint-enable no-extra-parens */
+                }
+
+                //  Make sure that we don't (re)process bind:io attributes
+                if (bindAttr === srcAttr) {
+                    continue;
+                }
+
+                val = srcAttr.nodeValue;
+
+                //  If the expression starts and ends exactly (modulo
+                //  whitepsace) with '[[' and ']]', then it doesn't need
+                //  quoting.
+                if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val)) {
+                    //  Trim off whitespace
+                    val = TP.trim(val);
+
+                    //  Slice off the leading and trailing '[[' and ']]'
+                    val = val.slice(2, -2);
+                } else {
+                    val = val.quoted('\'');
+                }
+
+                //  There was no existing bind:io attribute - build one and set
+                //  it's value.
+                if (!TP.isAttributeNode(bindAttr)) {
+                    bindAttr = activeXDoc.createNode(
+                                            Node.ATTRIBUTE_NODE,
+                                            'bind:io',
+                                            TP.w3.Xmlns.BIND);
+
+                    ownerElem.setAttributeNode(bindAttr);
+
+                    bindAttr.nodeValue = '{' + srcAttr.name + ': ' + val + '}';
+                } else {
+                    //  Already have a bind:io attribute - add to it.
+                    bindAttr.nodeValue =
+                        bindAttr.nodeValue.slice(
+                            0, bindAttr.nodeValue.lastIndexOf('}')) +
+                        '; ' +
+                        srcAttr.name +
+                        ': ' +
+                        val +
+                        '}';
+                }
+
+                //  Remove the original Attribute node containing the '[[...]]'
+                //  expression.
+                ownerElem.removeAttributeNode(srcAttr);
+            }
+
+            //  Turn it back into a String.
+            str = activeXDoc.xml;
         }
 
         parser = new DOMParser();
