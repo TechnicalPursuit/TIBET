@@ -7175,7 +7175,7 @@ function() {
             });
     });
 
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+}).timeout(45000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
