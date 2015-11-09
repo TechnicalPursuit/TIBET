@@ -391,9 +391,10 @@ TP.hc(
                 val = srcAttr.nodeValue;
 
                 //  If the expression starts and ends exactly (modulo
-                //  whitepsace) with '[[' and ']]', then it doesn't need
-                //  quoting.
-                if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val)) {
+                //  whitespace) with '[[' and ']]', and it doesn't contain a
+                //  '%', then it doesn't need quoting.
+                if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val) &&
+                    !TP.regex.HAS_PERCENT.test(val)) {
                     //  Trim off whitespace
                     val = TP.trim(val);
 
