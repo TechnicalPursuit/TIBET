@@ -27,7 +27,7 @@ TP.sherpa.breadcrumb.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.breadcrumb.Inst.defineMethod('refresh',
+TP.sherpa.breadcrumb.Inst.defineMethod('render',
 function() {
 
     var sourceObj,
@@ -95,7 +95,7 @@ function(anObj) {
 
     this.$set('sourceObject', anObj);
 
-    this.refresh();
+    this.render();
 
     return this;
 });

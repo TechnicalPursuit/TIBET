@@ -65,7 +65,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.elementeditor.Inst.defineMethod('refresh',
+TP.sherpa.elementeditor.Inst.defineMethod('render',
 function() {
 
     var editor,
@@ -106,7 +106,7 @@ function(anObj) {
 
     this.$set('sourceObject', anObj);
 
-    this.refresh();
+    this.render();
 
     return this;
 });

@@ -128,7 +128,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('refresh',
+TP.sherpa.methodeditor.Inst.defineMethod('render',
 function() {
 
     var editor,
@@ -170,7 +170,7 @@ function(anObj) {
     this.$set('sourceObject', anObj);
     this.$set('serverSourceObject', anObj);
 
-    this.refresh();
+    this.render();
 
     return this;
 });

@@ -43,18 +43,18 @@ function(tileID, tileName) {
 
     this.get('tileEntries').atPut(tileID, tileName);
 
-    this.refresh();
+    this.render();
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('refresh',
+TP.sherpa.tiledock.Inst.defineMethod('render',
 function() {
 
     /**
-     * @method refresh
+     * @method render
      */
 
     var targetList,

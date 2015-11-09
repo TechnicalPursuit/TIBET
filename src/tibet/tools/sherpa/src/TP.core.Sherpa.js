@@ -100,7 +100,7 @@ function(aName) {
 
                     /* eslint-disable no-wrap-func,no-extra-parens */
                     (function() {
-                        TP.byId('SherpaConsole', TP.win('UIROOT')).refresh();
+                        TP.byId('SherpaConsole', TP.win('UIROOT')).render();
                     }).fork(750);
                     /* eslint-enable no-wrap-func,no-extra-parens */
 
@@ -202,7 +202,6 @@ function() {
         toggleKey,
 
         sherpaEastDrawer,
-        tileDockTPElem;
 
     //  Set up the HUD
     this.setupHUD();
@@ -255,8 +254,6 @@ function() {
                             'template',
                             TP.ietf.Mime.XHTML));
     tileDockTPElem.setID('tileDock');
-    tileDockTPElem.awaken();
-    tileDockTPElem.refresh();
 
     return this;
 });

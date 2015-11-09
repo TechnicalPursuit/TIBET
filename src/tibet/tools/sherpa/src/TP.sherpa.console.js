@@ -287,11 +287,11 @@ function(aSignal) {
 //  Other instance methods
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('refresh',
+TP.sherpa.console.Inst.defineMethod('render',
 function() {
 
     /**
-     * @method refresh
+     * @method render
      */
 
     var consoleInput;

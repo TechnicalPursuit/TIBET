@@ -297,7 +297,7 @@ function() {
                                     this.getCenter());
                 }.bind(this)));
 
-    this.refresh();
+    this.render();
 
     return this.callNextMethod();
 });

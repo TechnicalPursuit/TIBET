@@ -26,7 +26,7 @@ TP.sherpa.typedisplay.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.typedisplay.Inst.defineMethod('refresh',
+TP.sherpa.typedisplay.Inst.defineMethod('render',
 function() {
 
     var sourceObj,
@@ -125,7 +125,7 @@ function(anObj) {
 
     this.$set('sourceObject', anObj);
 
-    this.refresh();
+    this.render();
 
     return this;
 });

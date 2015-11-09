@@ -128,7 +128,7 @@ function() {
 
     this.set('currentData', null);
 
-    this.refresh();
+    this.render();
 
     //  Make sure to 'call up' so that signaling of 'TP.sig.DOMReady'
     //  occurs.
@@ -167,21 +167,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.chart.Inst.defineMethod('refresh',
-function(aSignal) {
+TP.xctrls.chart.Inst.defineMethod('render',
+function() {
 
     /**
-     * @method refresh
-     * @summary Updates the receiver to reflect the current value of any data
-     *     binding it may have. If the signal argument's payload specified a
-     *     'deep' refresh then descendant elements are also updated.
-     * @param {TP.sig.UIRefresh|TP.core.Hash} aSignalOrHash An optional signal
-     *     which triggered this action or a hash.
-     *     This signal or hash should include a key of 'deep' and a value
-     *     of true to cause a deep refresh that updates all nodes.
+     * @method render
+     * @summary
+     * @returns {TP.xctrls.chart} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -202,7 +197,7 @@ function(aValue) {
 
     this.set('currentData', aValue);
 
-    this.refresh();
+    this.render();
 
     return this;
 });

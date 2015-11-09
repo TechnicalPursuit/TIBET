@@ -321,21 +321,16 @@ function(aText) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.codeeditor.Inst.defineMethod('refresh',
-function(aSignal) {
+TP.xctrls.codeeditor.Inst.defineMethod('render',
+function() {
 
     /**
-     * @method refresh
-     * @summary Updates the receiver to reflect the current value of any data
-     *     binding it may have. If the signal argument's payload specified a
-     *     'deep' refresh then descendant elements are also updated.
-     * @param {TP.sig.UIRefresh|TP.core.Hash} aSignalOrHash An optional signal
-     *     which triggered this action or a hash.
-     *     This signal or hash should include a key of 'deep' and a value
-     *     of true to cause a deep refresh that updates all nodes.
+     * @method render
+     * @summary
+     * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
