@@ -17,6 +17,8 @@
 TP.sherpa.Element.defineSubtype('sherpa:elementeditor');
 
 TP.sherpa.elementeditor.Inst.defineAttribute('didSetup');
+
+TP.sherpa.elementeditor.Inst.defineAttribute('serverSourceObject');
 TP.sherpa.elementeditor.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.elementeditor.Inst.defineAttribute(
@@ -65,6 +67,82 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.elementeditor.Inst.defineMethod('acceptMarkup',
+function() {
+
+    var newSourceText,
+        newElem,
+        sourceObject,
+        newSourceTPElem;
+
+    newSourceText = this.get('editor').getDisplayValue();
+
+    if (!TP.isElement(newElem = TP.nodeFromString(newSourceText))) {
+        //  TODO: Warn
+        return this;
+    }
+
+    sourceObject = this.get('sourceObject');
+
+    newSourceTPElem = sourceObject.replaceContent(newElem);
+
+    this.$set('sourceObject', newSourceTPElem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.elementeditor.Inst.defineHandler('MarkupAccept',
+function(aSignal) {
+
+    this.acceptMarkup();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.elementeditor.Inst.defineHandler('MarkupPush',
+function(aSignal) {
+
+    var newSourceText,
+
+        sourceObject,
+        sourceLocation;
+
+    this.acceptMarkup();
+
+    sourceObject = this.get('sourceObject');
+
+    newSourceText = sourceObject.getDocument().asString();
+    sourceLocation = sourceObject.getSourcePath();
+
+    TP.bySystemId('Sherpa').saveFile(sourceLocation, newSourceText);
+
+    /*
+    newSourceText = this.get('editor').getDisplayValue();
+
+    serverSourceObject = this.get('serverSourceObject');
+
+    patchText = serverSourceObject.getMarkupPatch(newSourceText);
+
+    if (TP.notEmpty(patchText)) {
+
+        patchPath = TP.objectGetSourcePath(this.get('sourceObject'));
+
+        TP.bySystemId('Sherpa').postPatch(patchText, patchPath);
+
+        //  TODO: Only do this if the patch operation succeeded
+        this.set('serverSourceObject', this.get('sourceObject'));
+    }
+    */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.elementeditor.Inst.defineMethod('render',
 function() {
 
@@ -105,6 +183,7 @@ TP.sherpa.elementeditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
     this.$set('sourceObject', anObj);
+    this.$set('serverSourceObject', anObj);
 
     this.render();
 

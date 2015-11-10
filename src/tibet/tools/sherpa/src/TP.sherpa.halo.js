@@ -67,6 +67,7 @@ function() {
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
 
+    /*
     (function(aSignal) {
         if (TP.notTrue(this.getAttribute('hidden'))) {
             aSignal.preventDefault();
@@ -75,6 +76,7 @@ function() {
             TP.bySystemId('SherpaConsoleService').sendShellCommand(':edit $HALO');
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMDblClick');
+    */
     /* eslint-disable no-wrap-func,no-extra-parens */
 
     return this;

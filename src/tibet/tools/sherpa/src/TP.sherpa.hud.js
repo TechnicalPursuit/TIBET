@@ -32,6 +32,14 @@ TP.sherpa.hud.Inst.resolveTraits(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.hud.Inst.defineMethod('isVisible',
+function() {
+
+    return !TP.bc(this.getAttribute('hidden'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.hud.Inst.defineMethod('setup',
 function() {
 
