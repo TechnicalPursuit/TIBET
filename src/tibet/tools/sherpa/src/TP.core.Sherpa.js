@@ -140,6 +140,28 @@ function(aName) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Type.defineMethod('hasStarted',
+function() {
+    return TP.isValid(TP.bySystemId('Sherpa'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Type.defineMethod('isOpen',
+function() {
+
+    var elem;
+
+    elem = TP.byId('SherpaHUD', this.get('vWin'));
+    if (TP.isValid(elem)) {
+        elem.isVisible();
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -202,6 +224,10 @@ function() {
         toggleKey,
 
         sherpaEastDrawer,
+        tileDockTPElem,
+
+        sherpaWestDrawer,
+        snippetBarTPElem;
 
     //  Set up the HUD
     this.setupHUD();
@@ -254,6 +280,21 @@ function() {
                             'template',
                             TP.ietf.Mime.XHTML));
     tileDockTPElem.setID('tileDock');
+    //tileDockTPElem.awaken();
+    //tileDockTPElem.render();
+
+
+    sherpaWestDrawer = TP.byCSSPath('#west > .drawer',
+                                    this.get('vWin').document,
+                                    true);
+
+    snippetBarTPElem = sherpaWestDrawer.addContent(
+                        TP.sherpa.snippetbar.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML));
+    snippetBarTPElem.setID('snippetBar');
+    //snippetBarTPElem.awaken();
+    //snippetBarTPElem.render();
 
     return this;
 });
@@ -505,6 +546,36 @@ function(patchText, patchVirtualPath, onsuccess, onfailure) {
                                 'content', patchText));
 
     patchURL.save(postRequest);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('saveFile',
+function(fileURL, fileContent, onsuccess, onfailure) {
+
+    var url,
+        pathname,
+
+        webDavSaveLocation,
+        params,
+        request;
+
+    url = TP.uc(fileURL);
+    pathname = url.getPath().slice(url.getRoot().getSize());
+
+    webDavSaveLocation = url.getRoot() +
+                            TP.sys.cfg('tds.webdav.uri') +
+                            pathname;
+
+    url = TP.uc(webDavSaveLocation);
+
+    params = TP.hc('refresh', true, 'async', true, 'verb', TP.HTTP_PUT);
+    request = url.constructRequest(params);
+
+    url.setResource(fileContent);
+    url.save(request);
 
     return this;
 });
