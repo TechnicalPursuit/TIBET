@@ -1,0 +1,78 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+sherpa|snippetbar {
+
+    display: block;
+	position: absolute;
+
+	bottom: 0px;
+	left: 0px;
+
+    width: 100%;
+	height: 50%;
+}
+
+/*
+sherpa|snippetbar > .body {
+
+    position: absolute;
+
+
+    color: black;
+
+    background-color: white;
+
+    top: 0px;
+    bottom: 0px;
+
+    width: 100%;
+}
+*/
+
+sherpa|snippetbar > .body {
+
+    position: absolute;
+
+    top: 5px;
+    bottom: 5px;
+
+    width: 100%;
+
+    font: 10px/1.0 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+
+    ul, ul li {
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+    }
+
+    ul li {
+
+        margin-top: 1px;
+        margin-bottom: 1px;
+
+        border-radius: 3px;
+        border: solid 1px black;
+
+        background-color: maroon;
+
+        width: 100%;
+        cursor: pointer;
+
+        text-align: center;
+    }
+
+    ul li:hover {
+        background-color: blue;
+    }
+
+    ul li a {
+        display: block;
+
+        border-radius: 3px;
+
+        color: white;
+        text-decoration: none;
+    }
+}
