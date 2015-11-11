@@ -2921,6 +2921,8 @@ function(aNode, aResource, pathValues, anIndex, numTotalValues, repeatResourceRe
 
         params,
 
+        resourceIsHash,
+
         j,
 
         textNode,
@@ -2929,6 +2931,7 @@ function(aNode, aResource, pathValues, anIndex, numTotalValues, repeatResourceRe
         parts,
 
         template,
+        slot,
 
         vals,
 
@@ -2960,6 +2963,8 @@ function(aNode, aResource, pathValues, anIndex, numTotalValues, repeatResourceRe
         '$ODD', index % 2 !== 0,
         '$#', index);
 
+    resourceIsHash = TP.isKindOf(aResource, TP.core.Hash);
+
     for (j = 0; j < allTextNodes.length; j++) {
         textNode = allTextNodes[j];
         if (!TP.isTextNode(textNode)) {
@@ -2973,35 +2978,52 @@ function(aNode, aResource, pathValues, anIndex, numTotalValues, repeatResourceRe
 
         if (TP.notEmpty(parts) && parts.getSize() > 1) {
 
-            template = '{{' + parts.at(1) + '}}';
-
-            if (!TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(template) &&
-                isXMLResource &&
-                !template.startsWith('{{./')) {
-
-                vals = pathValues.concat(template.slice(2, -2));
-                template = '{{(./' + template.slice(2, -2) + ').value}}';
+            if (TP.regex.JS_IDENTIFIER.test(parts.at(1))) {
+                textNode.simpleSlot = parts.at(1);
             } else {
-                vals = pathValues;
+                template = '{{' + parts.at(1) + '}}';
 
-                if (/\$TAG/.test(template)) {
-                    tagNode = TP.nodeCloneNode(textNode.parentNode);
-                    params.atPut('$TAG', TP.wrap(tagNode));
+                if (!TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(template) &&
+                    isXMLResource &&
+                    !template.startsWith('{{./')) {
+
+                    vals = pathValues.concat(template.slice(2, -2));
+                    template = '{{(./' + template.slice(2, -2) + ').value}}';
+                } else {
+                    vals = pathValues;
+
+                    if (/\$TAG/.test(template)) {
+                        tagNode = TP.nodeCloneNode(textNode.parentNode);
+                        params.atPut('$TAG', TP.wrap(tagNode));
+                    }
                 }
+
+                path = TP.uriJoinFragments.apply(TP, vals);
+
+                //  Cache values used by a possible editor
+                textNode.template = template;
             }
 
-            path = TP.uriJoinFragments.apply(TP, vals);
-
-            //  Cache values used by a possible editor
-            textNode.template = template;
             textNode.updatePath = path;
             textNode.updateAspect = parts.at(1);
             textNode.index = index;
             textNode.repeatResourceResult = repeatResourceResult;
+        }
 
-            value = template.transform(aResource, params);
+        if (TP.isValid(slot = textNode.simpleSlot)) {
+            if (params.hasKey(slot)) {
+                value = params.at(slot);
+            } else {
+                if (resourceIsHash) {
+                    value = aResource.at(slot);
+                } else if (isXMLResource) {
+                    value = TP.val(aResource, 'string(./' + slot + ')');
+                } else {
+                    value = TP.val(aResource, slot);
+                }
+            }
+
             TP.nodeSetTextContent(textNode, value);
-
         } else if (TP.isString(template = textNode.template)) {
             value = template.transform(aResource, params);
             TP.nodeSetTextContent(textNode, value);
