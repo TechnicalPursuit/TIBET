@@ -8378,32 +8378,41 @@ function(anObj) {
     //  We may have already been through the test below and captured that
     //  value, so return it if we have.
     if (TP.isDefined(anObj[TP.IS_XHTML])) {
-        return !anObj[TP.IS_XHTML];
+        return !anObj[TP.IS_XHTML] && !anObj[TP.IS_XML];
     }
 
     //  If the document has a contentType then we test for either HTML or XHTML.
     //  Note here how we make the tests explicit - otherwise, we drop down into
     //  more complex logic.
     if (anObj.contentType === TP.HTML_TEXT_ENCODED) {
+        anObj[TP.IS_XML] = false;
         anObj[TP.IS_XHTML] = false;
         return true;
     } else if (anObj.contentType === TP.XHTML_ENCODED) {
+        anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = true;
-        return false;
-    }
-
-    //  If the document doesn't have a Window, then its not HTML
-    if (TP.notValid(TP.nodeGetWindow(anObj))) {
         return false;
     }
 
     //  Sometimes we get a Document that doesn't have a document element
     if (!TP.isElement(anObj.documentElement)) {
+        anObj[TP.IS_XML] = false;
         anObj[TP.IS_XHTML] = false;
         return false;
     }
 
+    //  If the document doesn't have a Window, then its not HTML
+    if (TP.notValid(TP.nodeGetWindow(anObj))) {
+        anObj[TP.IS_XML] = true;
+        anObj[TP.IS_XHTML] = anObj.documentElement.tagName === 'html' &&
+                                anObj.documentElement.namespaceURI ===
+                                    'http://www.w3.org/1999/xhtml';
+
+        return !anObj[TP.IS_XHTML];
+    }
+
     if (anObj.documentElement.tagName.toLowerCase() !== 'html') {
+        anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;
         return false;
     }
@@ -8413,6 +8422,7 @@ function(anObj) {
     anObj[TP.IS_XHTML] = anObj.createElement('foo').tagName === 'FOO' ?
                     false :
                     true;
+    anObj[TP.IS_XML] = anObj[TP.IS_XHTML];
 
     return !anObj[TP.IS_XHTML];
 });
@@ -8816,15 +8826,18 @@ function(anObj) {
     //  If the document has a contentType and that contentType is
     //  TP.XHTML_ENCODED, then we know it's HTML
     if (anObj.contentType === TP.XHTML_ENCODED) {
+        anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = true;
         return true;
     } else if (anObj.contentType === TP.HTML_TEXT_ENCODED) {
+        anObj[TP.IS_XML] = false;
         anObj[TP.IS_XHTML] = false;
         return false;
     }
 
     //  Sometimes we get a Document that doesn't have a document element
     if (!TP.isElement(anObj.documentElement)) {
+        anObj[TP.IS_XML] = false;
         anObj[TP.IS_XHTML] = false;
         return false;
     }
@@ -8833,10 +8846,16 @@ function(anObj) {
     //  document element is 'html' - in which case, we can still think of it
     //  as XHTML.
     if (TP.notValid(TP.nodeGetWindow(anObj))) {
-        return anObj.documentElement.tagName === 'html';
+        anObj[TP.IS_XML] = true;
+        anObj[TP.IS_XHTML] = anObj.documentElement.tagName === 'html' &&
+                                anObj.documentElement.namespaceURI ===
+                                    'http://www.w3.org/1999/xhtml';
+
+        return anObj[TP.IS_XHTML];
     }
 
-    if (anObj.documentElement.tagName !== 'html') {
+    if (anObj.documentElement.tagName.toLowerCase() !== 'html') {
+        anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;
         return false;
     }
@@ -8846,6 +8865,7 @@ function(anObj) {
     anObj[TP.IS_XHTML] = anObj.createElement('foo').tagName === 'FOO' ?
                     false :
                     true;
+    anObj[TP.IS_XML] = anObj[TP.IS_XHTML];
 
     return anObj[TP.IS_XHTML];
 });
@@ -8915,6 +8935,19 @@ function(anObj) {
         return false;
     }
 
+    //  We may have already been through the test below and captured that
+    //  value, so return it if we have.
+    if (TP.isDefined(anObj[TP.IS_XML])) {
+        return anObj[TP.IS_XML];
+    }
+
+    if (anObj.contentType === TP.XML_ENCODED) {
+        anObj[TP.IS_XML] = true;
+        return true;
+    }
+
+    //  NB: This call will stamp TP.IS_XML on the document, whatever the value
+    //  is.
     return !TP.isHTMLDocument(anObj);
 });
 

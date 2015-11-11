@@ -762,6 +762,7 @@ TP.SHOULD_SUSPEND_SIGNALING = 'tp_shouldSuspendSignaling';
 TP.WRAPPER = 'tp_wrapper';
 TP.GENERATOR = 'tp_generator';
 TP.IS_XHTML = 'tp_isXHTML';
+TP.IS_XML = 'tp_isXML';
 TP.SRC_LOCATION = 'tp_sourcelocation';
 TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
