@@ -2746,7 +2746,7 @@ function(aResource) {
             elemsWithIds = TP.nodeGetDescendantElementsByAttribute(
                                                             newNode, 'id');
             /* eslint-disable no-loop-func */
-            elemsWithIds.perform(
+            elemsWithIds.forEach(
                     function(anElem) {
                         TP.elementSetAttribute(
                             anElem,
@@ -2808,7 +2808,7 @@ function(aResource) {
 
         //  Grab all of the elements with a 'bind scope' attribute and rebuild
         //  them.
-        TP.byCSSPath('[bind|scope]', elem, false, false).perform(
+        TP.byCSSPath('[bind|scope]', elem, false, false).forEach(
                 function(anElem) {
                     TP.wrap(anElem).rebuild(
                             TP.hc('shouldDefine', true,
@@ -3114,7 +3114,7 @@ function(aSignalOrHash) {
         //  lot of extra work in our descendants as they traverse.
         aSignalOrHash.atPut('deep', false);
 
-        boundDescendants.perform(
+        boundDescendants.forEach(
                 function(aTPElement) {
                     aTPElement.refresh(aSignalOrHash);
                 });
