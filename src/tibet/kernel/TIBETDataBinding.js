@@ -2439,6 +2439,7 @@ function(aSignalOrHash) {
         this.defineBinding('repeatValue', obsURI, 'value');
 
         this.setAttribute('oldObsLoc', obsURI.asString());
+        this.setAttribute('tibet:noawaken', 'true');
 
         //  If we have real resource result data and either had an old URI or
         //  we're not a primary URI, then we won't have gotten notified from the
