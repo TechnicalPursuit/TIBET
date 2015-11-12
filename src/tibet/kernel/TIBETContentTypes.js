@@ -8370,6 +8370,45 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XPathPath.Inst.defineMethod('getReferencedLocationStepsAtPath',
+function(aPathIndex) {
+
+    /**
+     * @method getReferencedLocationStepsAtPath
+     * @summary Returns an Array of location steps that make up the location
+     *     path at the index supplied.
+     * @param {Number} aPathIndex The index of the location path to obtain the
+     *     steps for. This will default to 0 if not supplied.
+     * @returns {Array} An array of Strings that represent location steps
+     *     that make up the location path at the supplied index.
+     */
+
+    var pathIndex,
+        locationPaths,
+        locationSteps;
+
+    pathIndex = TP.ifInvalid(aPathIndex, 0);
+
+    //  Grab all of the location paths referenced by the receiver.
+    locationPaths = this.$getReferencedLocationPathObjects();
+
+    if (TP.isEmpty(locationPaths)) {
+        return TP.ac();
+    }
+
+    locationSteps = locationPaths.at(pathIndex).locationPath.steps;
+    locationSteps.convert(
+            function(aStepObj) {
+                //  These are Objects produced by the custom XPath parser - we
+                //  need to '.toString()' them.
+                return aStepObj.toString();
+            });
+
+    return locationSteps;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XPathPath.Inst.defineMethod('isAbsolute',
 function() {
 
