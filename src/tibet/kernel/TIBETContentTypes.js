@@ -8320,17 +8320,11 @@ function() {
      * @method getReferencedLocationPaths
      * @summary Returns an Array of the location path Strings that are used by
      *     this path any place in its expression.
-     * @returns {Array} The array of PathExpr object that represent location
-     *     paths referenced by expression in the receiver.
+     * @returns {Array} An array of Strings that represent location paths
+     *     referenced by the expression in the receiver.
      */
 
     var locationPaths;
-
-    //  force creation of a non-native path processing context, which will
-    //  ensure that we get a parsed path set in the tpPath attribute
-    if (TP.notValid(this.$get('$tpContext'))) {
-        this.$createNonNativeParserContext();
-    }
 
     //  Grab all of the location paths referenced by the receiver and
     //  transform them into their String representation.
@@ -8354,8 +8348,8 @@ function() {
      * @method $getReferencedLocationPathObjects
      * @summary Returns an Array of the location path objects that are used by
      *     this path any place in its expression.
-     * @returns {Array} The array of PathExpr object that represent location
-     *     paths referenced by expression in the receiver.
+     * @returns {Array} The array of PathExpr objects that represent location
+     *     paths referenced by the expression in the receiver.
      */
 
     var locationPaths;
