@@ -2395,7 +2395,7 @@ PathExpr.prototype.gatherLocationPathsInto = function(arr) {
 		this.filter.gatherLocationPathsInto(arr);
 	}
 	if (this.locationPath != undefined) {
-	arr.push(this.toString());
+	    arr.push(this);
 	}
 };
 

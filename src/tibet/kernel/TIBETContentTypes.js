@@ -8256,7 +8256,7 @@ function(aNode) {
 
     var context,
 
-        stepExprs,
+        pathExprs,
         parser,
         stepNodes,
 
@@ -8274,11 +8274,11 @@ function(aNode) {
     }
 
     //  collect the location "subpaths" in this XPath
-    stepExprs = this.getReferencedLocationSteps();
+    pathExprs = this.getReferencedLocationPaths();
 
     //  if the location subpaths contains 1 path it's the path itself, so there
     //  are no 'referenced nodes'
-    if (stepExprs.getSize() === 1) {
+    if (pathExprs.getSize() === 1) {
         return TP.ac();
     }
 
@@ -8294,9 +8294,9 @@ function(aNode) {
 
     //  Loop over each referenced location path, parsing and evaluating
     //  each path and adding the results to stepNodes.
-    len = stepExprs.getSize();
+    len = pathExprs.getSize();
     for (i = 0; i < len; i++) {
-        expr = stepExprs.at(i);
+        expr = pathExprs.at(i);
 
         tpPath = parser.parse(expr);
         tpResult = tpPath.evaluate(context);
@@ -8313,18 +8313,18 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XPathPath.Inst.defineMethod('getReferencedLocationSteps',
+TP.core.XPathPath.Inst.defineMethod('getReferencedLocationPaths',
 function() {
 
     /**
-     * @method getReferencedLocationSteps
-     * @summary Returns an Array of the location steps that are used by this
-     *     path any place in its expression.
-     * @returns {Array} The array of Strings that represent location steps
-     *     referenced by expression in the receiver.
+     * @method getReferencedLocationPaths
+     * @summary Returns an Array of the location path Strings that are used by
+     *     this path any place in its expression.
+     * @returns {Array} The array of PathExpr object that represent location
+     *     paths referenced by expression in the receiver.
      */
 
-    var locationSteps;
+    var locationPaths;
 
     //  force creation of a non-native path processing context, which will
     //  ensure that we get a parsed path set in the tpPath attribute
@@ -8332,13 +8332,46 @@ function() {
         this.$createNonNativeParserContext();
     }
 
-    locationSteps = TP.ac();
-
     //  Grab all of the location paths referenced by the receiver and
     //  transform them into their String representation.
-    this.$get('$tpPath').expression.gatherLocationPathsInto(locationSteps);
+    locationPaths = this.$getReferencedLocationPathObjects();
+    locationPaths.convert(
+            function(aPathObj) {
+                //  These are Objects produced by the custom XPath parser - we
+                //  need to '.toString()' them.
+                return aPathObj.toString();
+            });
 
-    return locationSteps;
+    return locationPaths;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XPathPath.Inst.defineMethod('$getReferencedLocationPathObjects',
+function() {
+
+    /**
+     * @method $getReferencedLocationPathObjects
+     * @summary Returns an Array of the location path objects that are used by
+     *     this path any place in its expression.
+     * @returns {Array} The array of PathExpr object that represent location
+     *     paths referenced by expression in the receiver.
+     */
+
+    var locationPaths;
+
+    //  force creation of a non-native path processing context, which will
+    //  ensure that we get a parsed path set in the tpPath attribute
+    if (TP.notValid(this.$get('$tpContext'))) {
+        this.$createNonNativeParserContext();
+    }
+
+    locationPaths = TP.ac();
+
+    //  Grab all of the location paths referenced by the receiver.
+    this.$get('$tpPath').expression.gatherLocationPathsInto(locationPaths);
+
+    return locationPaths;
 });
 
 //  ------------------------------------------------------------------------
