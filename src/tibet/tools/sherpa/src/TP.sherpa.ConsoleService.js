@@ -220,23 +220,15 @@ function() {
      */
 
     var keyboardSM,
-        newResponder;
+
+        normalResponder,
+        evalMarkingResponder,
+        autocompleteResponder;
 
     keyboardSM = TP.core.StateMachine.construct();
 
     this.set('keyboardStateMachine', keyboardSM);
-/*
- * with these the keyboard runs fast again...but fails to find handlers. sigh.
-    keyboardSM.defineHandler('NormalInput', function(aSignal) {
-        aSignal.shouldStop(true);
-        return;
-    });
 
-    keyboardSM.defineHandler('EvalmarkingInput', function(aSignal) {
-        aSignal.shouldStop(true);
-        return;
-    });
-*/
     keyboardSM.setTriggerSignals(TP.ac('TP.sig.DOMKeyDown', 'TP.sig.DOMKeyUp'));
     keyboardSM.setTriggerOrigins(TP.ac(TP.core.Keyboard));
 
@@ -247,25 +239,59 @@ function() {
 
     //  'normal' is the initial state
 
-    newResponder = TP.sherpa.NormalKeyResponder.construct(keyboardSM);
-    newResponder.set('$consoleService', this);
-    newResponder.set('$consoleGUI', this.get('$consoleGUI'));
+    normalResponder = TP.sherpa.NormalKeyResponder.construct(keyboardSM);
+    normalResponder.set('$consoleService', this);
+    normalResponder.set('$consoleGUI', this.get('$consoleGUI'));
+
+    keyboardSM.defineHandler('NormalInput', function(aSignal) {
+        var triggerSignal,
+            triggerEvent;
+
+        triggerSignal = aSignal.getPayload().at('trigger');
+        triggerEvent = triggerSignal.getEvent();
+
+        if (normalResponder.isCommandEvent(triggerEvent)) {
+            normalResponder.executeTriggerSignalHandler(triggerSignal);
+        }
+
+        aSignal.shouldStop(true);
+
+        return;
+    });
 
     //  ---  evalmarking
 
     //  'evalmarking' is the state used...
 
-    newResponder = TP.sherpa.EvalMarkingKeyResponder.construct(keyboardSM);
-    newResponder.set('$consoleService', this);
-    newResponder.set('$consoleGUI', this.get('$consoleGUI'));
+    evalMarkingResponder = TP.sherpa.EvalMarkingKeyResponder.construct(keyboardSM);
+    evalMarkingResponder.set('$consoleService', this);
+    evalMarkingResponder.set('$consoleGUI', this.get('$consoleGUI'));
+
+    keyboardSM.defineHandler('EvalmarkingInput', function(aSignal) {
+
+        var triggerSignal,
+            triggerEvent;
+
+        triggerSignal = aSignal.getPayload().at('trigger');
+        triggerEvent = triggerSignal.getEvent();
+
+        if (normalResponder.isCommandEvent(triggerEvent)) {
+            normalResponder.executeTriggerSignalHandler(triggerSignal);
+        }
+
+        aSignal.shouldStop(true);
+
+        return;
+    });
 
     //  ---  autocomplete
 
     //  'autocomplete' is the state used...
 
-    newResponder = TP.sherpa.AutoCompletionKeyResponder.construct(keyboardSM);
-    newResponder.set('$consoleService', this);
-    newResponder.set('$consoleGUI', this.get('$consoleGUI'));
+    autocompleteResponder =
+            TP.sherpa.AutoCompletionKeyResponder.construct(keyboardSM);
+    autocompleteResponder.set('$consoleService', this);
+    autocompleteResponder.set('$consoleGUI', this.get('$consoleGUI'));
 
     return this;
 });
@@ -346,162 +372,6 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 //  Event Handling
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('isCommandEvent',
-function(anEvent) {
-
-    /**
-     * @method isCommandEvent
-     * @summary Returns true if the event represents a key binding used to
-     *     trigger command processing of some kind for the console.
-     * @param {Event} anEvent The native event that fired.
-     * @returns {Boolean} Whether or not the supplied event has a key binding
-     *     that triggers command processing.
-     */
-
-    var keyname;
-
-    keyname = TP.eventGetDOMSignalName(anEvent);
-
-    switch (keyname) {
-        case 'DOM_Shift_Enter_Down':
-        case 'DOM_Shift_Enter_Press':
-        case 'DOM_Shift_Enter_Up':
-
-        case 'DOM_Shift_Down_Down':
-        case 'DOM_Shift_Down_Up':
-        case 'DOM_Shift_Up_Down':
-        case 'DOM_Shift_Up_Up':
-        case 'DOM_Shift_Right_Down':
-        case 'DOM_Shift_Right_Up':
-        case 'DOM_Shift_Left_Down':
-        case 'DOM_Shift_Left_Up':
-
-        case 'DOM_Alt_Shift_Down_Down':
-        case 'DOM_Alt_Shift_Down_Up':
-        case 'DOM_Alt_Shift_Up_Down':
-        case 'DOM_Alt_Shift_Up_Up':
-        case 'DOM_Alt_Shift_Right_Down':
-        case 'DOM_Alt_Shift_Right_Up':
-        case 'DOM_Alt_Shift_Left_Down':
-        case 'DOM_Alt_Shift_Left_Up':
-
-        case 'DOM_Ctrl_U_Down':
-        case 'DOM_Ctrl_U_Press':
-        case 'DOM_Ctrl_U_Up':
-
-        case 'DOM_Ctrl_K_Down':
-        case 'DOM_Ctrl_K_Press':
-        case 'DOM_Ctrl_K_Up':
-
-        case 'DOM_Shift_Esc_Down':
-        case 'DOM_Shift_Esc_Up':
-
-        case 'DOM_Ctrl_Enter_Down':
-        case 'DOM_Ctrl_Enter_Press':
-        case 'DOM_Ctrl_Enter_Up':
-
-            return true;
-
-        default:
-            return false;
-    }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineHandler('CommandEvent',
-function(anEvent) {
-
-    /**
-     * @method handleCommandEvent
-     * @summary Handles incoming events from the view.
-     * @param {Event} anEvent The native event that fired.
-     */
-
-    var keyname,
-        consoleGUI;
-
-    keyname = TP.eventGetDOMSignalName(anEvent);
-    consoleGUI = this.get('$consoleGUI');
-
-    switch (keyname) {
-        case 'DOM_Shift_Enter_Up':
-            this[TP.composeHandlerName('RawInput')](anEvent);
-            break;
-
-        case 'DOM_Shift_Down_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.DOWN, TP.ANCHOR);
-            } else {
-                this[TP.composeHandlerName('HistoryNext')](anEvent);
-            }
-            break;
-
-        case 'DOM_Shift_Up_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.UP, TP.ANCHOR);
-            } else {
-                this[TP.composeHandlerName('HistoryPrev')](anEvent);
-            }
-            break;
-
-        case 'DOM_Shift_Right_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.RIGHT, TP.ANCHOR);
-            }
-            break;
-
-        case 'DOM_Shift_Left_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.LEFT, TP.ANCHOR);
-            }
-            break;
-
-        case 'DOM_Alt_Shift_Down_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.DOWN, TP.HEAD);
-            }
-            break;
-
-        case 'DOM_Alt_Shift_Up_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.UP, TP.HEAD);
-            }
-            break;
-
-        case 'DOM_Alt_Shift_Right_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.RIGHT, TP.HEAD);
-            }
-            break;
-
-        case 'DOM_Alt_Shift_Left_Up':
-            if (consoleGUI.showingEvalMark()) {
-                consoleGUI.shiftEvalMark(TP.LEFT, TP.HEAD);
-            }
-            break;
-
-        case 'DOM_Ctrl_U_Up':
-            this[TP.composeHandlerName('ClearInput')](anEvent);
-            break;
-
-        case 'DOM_Ctrl_K_Up':
-            this.clearConsole(true);
-            break;
-
-        case 'DOM_Shift_Esc_Up':
-            this[TP.composeHandlerName('Cancel')](anEvent);
-            break;
-
-        default:
-            break;
-    }
-
-    return;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineHandler(
@@ -2009,6 +1879,71 @@ TP.core.KeyResponder.defineSubtype('TP.sherpa.ConsoleKeyResponder');
 
 TP.sherpa.ConsoleKeyResponder.Inst.defineAttribute('$consoleService');
 TP.sherpa.ConsoleKeyResponder.Inst.defineAttribute('$consoleGUI');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleKeyResponder.Inst.defineMethod('isCommandEvent',
+function(anEvent) {
+
+    /**
+     * @method isCommandEvent
+     * @summary Returns true if the event represents a key binding used to
+     *     trigger command processing of some kind for the console.
+     * @param {Event} anEvent The native event that fired.
+     * @returns {Boolean} Whether or not the supplied event has a key binding
+     *     that triggers command processing.
+     */
+
+    var keyname;
+
+    keyname = TP.eventGetDOMSignalName(anEvent);
+
+    switch (keyname) {
+        case 'DOM_Shift_Enter_Down':
+        case 'DOM_Shift_Enter_Press':
+        case 'DOM_Shift_Enter_Up':
+
+        case 'DOM_Shift_Down_Down':
+        case 'DOM_Shift_Down_Up':
+        case 'DOM_Shift_Up_Down':
+        case 'DOM_Shift_Up_Up':
+        case 'DOM_Shift_Right_Down':
+        case 'DOM_Shift_Right_Up':
+        case 'DOM_Shift_Left_Down':
+        case 'DOM_Shift_Left_Up':
+
+        case 'DOM_Alt_Shift_Down_Down':
+        case 'DOM_Alt_Shift_Down_Up':
+        case 'DOM_Alt_Shift_Up_Down':
+        case 'DOM_Alt_Shift_Up_Up':
+        case 'DOM_Alt_Shift_Right_Down':
+        case 'DOM_Alt_Shift_Right_Up':
+        case 'DOM_Alt_Shift_Left_Down':
+        case 'DOM_Alt_Shift_Left_Up':
+
+        case 'DOM_Ctrl_U_Down':
+        case 'DOM_Ctrl_U_Press':
+        case 'DOM_Ctrl_U_Up':
+
+        case 'DOM_Ctrl_K_Down':
+        case 'DOM_Ctrl_K_Press':
+        case 'DOM_Ctrl_K_Up':
+
+        case 'DOM_Shift_Esc_Down':
+        case 'DOM_Shift_Esc_Up':
+
+        case 'DOM_Ctrl_Enter_Down':
+        case 'DOM_Ctrl_Enter_Press':
+        case 'DOM_Ctrl_Enter_Up':
+
+            return true;
+
+        default:
+            return false;
+    }
+});
 
 //  ========================================================================
 //  TP.sherpa.NormalKeyResponder
