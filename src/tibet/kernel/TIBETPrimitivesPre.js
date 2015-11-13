@@ -8378,7 +8378,7 @@ function(anObj) {
     //  We may have already been through the test below and captured that
     //  value, so return it if we have.
     if (TP.isDefined(anObj[TP.IS_XHTML])) {
-        return !anObj[TP.IS_XHTML] && !anObj[TP.IS_XML];
+        return !(anObj[TP.IS_XHTML] || anObj[TP.IS_XML]);
     }
 
     //  If the document has a contentType then we test for either HTML or XHTML.
@@ -8404,14 +8404,12 @@ function(anObj) {
     //  If the document doesn't have a Window, then its not HTML
     if (TP.notValid(TP.nodeGetWindow(anObj))) {
         anObj[TP.IS_XML] = true;
-        anObj[TP.IS_XHTML] = anObj.documentElement.tagName === 'html' &&
-                                anObj.documentElement.namespaceURI ===
+        anObj[TP.IS_XHTML] = anObj.documentElement.namespaceURI ===
                                     'http://www.w3.org/1999/xhtml';
-
         return !anObj[TP.IS_XHTML];
     }
 
-    if (anObj.documentElement.tagName.toLowerCase() !== 'html') {
+    if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;
         return false;
@@ -8847,14 +8845,13 @@ function(anObj) {
     //  as XHTML.
     if (TP.notValid(TP.nodeGetWindow(anObj))) {
         anObj[TP.IS_XML] = true;
-        anObj[TP.IS_XHTML] = anObj.documentElement.tagName === 'html' &&
-                                anObj.documentElement.namespaceURI ===
+        anObj[TP.IS_XHTML] = anObj.documentElement.namespaceURI ===
                                     'http://www.w3.org/1999/xhtml';
 
         return anObj[TP.IS_XHTML];
     }
 
-    if (anObj.documentElement.tagName.toLowerCase() !== 'html') {
+    if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;
         return false;
