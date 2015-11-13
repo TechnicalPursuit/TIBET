@@ -10841,8 +10841,7 @@ function(resource, mimeType, setupFunc) {
 
     //  Make sure that the resource had real markup that could be built as such.
     if (!TP.isDocument(doc) || !TP.isElement(elem = doc.documentElement)) {
-        //  TODO: Raise an exception
-        return this;
+        return this.raise('InvalidTemplate', src);
     }
 
     //  If we were able to load a real document from the source URI stamp that
@@ -16637,6 +16636,12 @@ function(aRequest) {
         replacement = this.getResourceElement(
                         'template',
                         TP.elementGetAttribute(elem, 'tibet:mime', true));
+
+        //  If no replacement came back we're dealing with likely problems in
+        //  the template itself. Those should be notified via the prior call.
+        if (TP.notValid(replacement)) {
+            return;
+        }
 
         replacementClone = TP.unwrap(replacement.clone());
         replacement = replacementClone;
