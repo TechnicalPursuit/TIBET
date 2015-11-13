@@ -8377,7 +8377,7 @@ function(anObj) {
 
     //  We may have already been through the test below and captured that
     //  value, so return it if we have.
-    if (TP.isDefined(anObj[TP.IS_XHTML])) {
+    if (TP.isDefined(anObj[TP.IS_XML]) || TP.isDefined(anObj[TP.IS_XHTML])) {
         return !(anObj[TP.IS_XHTML] || anObj[TP.IS_XML]);
     }
 
