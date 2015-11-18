@@ -303,6 +303,11 @@ Cmd.prototype.addXMLEntry = function(node, prefix, content, suffix) {
     node.appendChild(doc.createTextNode(prefix));
 
     doc = parser.parseFromString(content, 'text/xml');
+    if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
+        this.error('Error parsing ' + content + '. Not well-formed?');
+        throw new Error();
+    }
+
     newElem = doc.documentElement;
     node.appendChild(newElem);
     newElem.ownerDocument = node.ownerDocument;
@@ -388,6 +393,10 @@ Cmd.prototype.readConfigNode = function(pkgfile, cfgname) {
     parser = this.getXMLParser();
 
     doc = parser.parseFromString(pkgtext);
+    if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
+        this.error('Error parsing package text. Not well-formed?');
+        throw new Error();
+    }
 
     if (!(config = doc.getElementById(cfgname))) {
         this.warn('Could not find config named: ' + cfgname +

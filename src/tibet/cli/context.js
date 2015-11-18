@@ -117,6 +117,10 @@ Cmd.prototype.execute = function() {
 
     if (text) {
         doc = parser.parseFromString(text);
+        if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
+            this.error('Error parsing ' + cfg + '. Not well-formed?');
+            throw new Error();
+        }
         configs = doc.getElementsByTagName('config');
         configs = Array.prototype.slice.call(configs, 0);
         configs = configs.filter(function(config) {

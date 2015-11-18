@@ -818,7 +818,8 @@ function(anObject, rootName) {
     //  Try to turn that a real XML DOM.
     doc = (new DOMParser()).parseFromString(str, 'application/xml');
 
-    if (TP.isXMLDocument(doc)) {
+    if (TP.isXMLDocument(doc) &&
+        TP.notValid(doc.getElementsByTagName('parsererror')[0])) {
 
         //  If we a real result, then we either use the documentElement's
         //  firstChild or, if there are multiple children under the
@@ -831,6 +832,9 @@ function(anObject, rootName) {
         }
 
         return result;
+    } else {
+        TP.ifWarn() ?
+            TP.warn('Unable to convert JSON to XML for: ' + str) : 0;
     }
 
     return null;

@@ -3355,7 +3355,8 @@ function(targetObj, varargs) {
         //  get a JSON String representation and then turn it into 'plain JSON'.
         if (TP.isString(currentJSONData = target.$get('data'))) {
             currentJSONData = TP.json2js(currentJSONData, false);
-        } else if (!TP.isKindOf(currentJSONData, TP.core.Node)) {
+        } else if (TP.isValid(currentJSONData) &&
+                !TP.isKindOf(currentJSONData, TP.core.Node)) {
             currentJSONData = TP.json2js(TP.js2json(currentJSONData), false);
         }
 
@@ -3412,10 +3413,12 @@ function(targetObj, varargs) {
                 rootObj = {rootObj: aDataObject};
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
-                //  Locally program a reference to ourself on the generated XML
-                //  TP.core.Document.
-                tpValueDoc.defineAttribute('$$realData');
-                tpValueDoc.$set('$$realData', this);
+                if (TP.isValid(tpValueDoc)) {
+                    //  Locally program a reference to ourself on the generated
+                    //  XML TP.core.Document.
+                    tpValueDoc.defineAttribute('$$realData');
+                    tpValueDoc.$set('$$realData', this);
+                }
 
                 //  Call 'up' to our super method to set the real underlying
                 //  'data' slot to our XML data.
@@ -3593,7 +3596,8 @@ function(targetObj, varargs) {
 
     //  Make sure that we're holding wrapped XML node
     if (!TP.isValid(tpXMLDoc)) {
-        return this.raise('TP.sig.InvalidNode');
+        return this.raise('JSONPathException',
+            'Unable to convert to internal rep for JSONPath execution.');
     }
 
     srcPath = this.get('srcPath');

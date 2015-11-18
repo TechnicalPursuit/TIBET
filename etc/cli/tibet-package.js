@@ -27,6 +27,7 @@
         parser,
         serializer,
         isEmpty,
+        isParserError,
         isValid,
         notEmpty,
         notValid;
@@ -48,6 +49,10 @@
             (typeof aReference === 'object' &&
                 Object.keys(aReference).length === 0);
         /* eslint-enable no-extra-parens */
+    };
+
+    isParserError = function(aDocument) {
+        return isValid(aDocument.getElementsByTagName('parsererror')[0]);
     };
 
     isValid = function(aReference) {
@@ -516,7 +521,7 @@
                 }
 
                 doc = parser.parseFromString(xml);
-                if (!doc) {
+                if (!doc || isParserError(doc)) {
                     msg = 'Error parsing: ' + expanded;
                     throw new Error(msg);
                 }
@@ -650,10 +655,12 @@
                                 '\'' + level + ');' +
                                 ']]></script>';
                             doc = parser.parseFromString(str);
-                            echo = doc.childNodes[0];
-                            pkg.copyAttributes(anElement, echo);
+                            if (doc && !isParserError(doc)) {
+                                echo = doc.childNodes[0];
+                                pkg.copyAttributes(anElement, echo);
 
-                            child.parentNode.replaceChild(echo, child);
+                                child.parentNode.replaceChild(echo, child);
+                            }
 
                         } catch (e) {
                             msg = e.message;
@@ -724,11 +731,12 @@
                                     ');' +
                                     ']]></script>';
                                 doc = parser.parseFromString(str);
-                                elem = doc.childNodes[0];
-                                pkg.copyAttributes(anElement, elem);
+                                if (doc && !isParserError(doc)) {
+                                    elem = doc.childNodes[0];
+                                    pkg.copyAttributes(anElement, elem);
 
-                                child.parentNode.replaceChild(elem, child);
-
+                                    child.parentNode.replaceChild(elem, child);
+                                }
                             } catch (e) {
                                 msg = e.message;
                                 throw new Error('Error expanding: ' +
@@ -862,7 +870,7 @@
                 }
 
                 doc = parser.parseFromString(xml);
-                if (!doc) {
+                if (!doc || isParserError(doc)) {
                     msg = 'Error parsing: ' + expanded;
                     throw new Error(msg);
                 }
