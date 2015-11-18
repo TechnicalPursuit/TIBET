@@ -731,6 +731,13 @@ function(anObject, rootName) {
             i,
             keys;
 
+        if (!TP.regex.XML_NAMEREF.match(slotName)) {
+            TP.ifWarn() ?
+                TP.warn('Stripping invalid XML name in JSON conversion: ' +
+                slotName) : 0;
+            return;
+        }
+
         theType = typeof obj;
 
         switch (theType) {
