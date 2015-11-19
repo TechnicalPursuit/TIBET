@@ -2383,7 +2383,7 @@ function(aRequest) {
 
     checklib = this.getArgument(aRequest, 'tsh:tibet', false);
 
-    filter = this.getArgument(aRequest, 'tsh:filter', false);
+    filter = this.getArgument(aRequest, 'tsh:filter', null);
     if (TP.notEmpty(filter)) {
         filter = filter.unquoted();
         if (/^\/.+\/([ig]*)$/.test(filter)) {
