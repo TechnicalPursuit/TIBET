@@ -8401,12 +8401,13 @@ function(anObj) {
         return false;
     }
 
-    //  If the document doesn't have a Window, then its not HTML
+    //  If the document doesn't have a Window, then its not HTML, but go ahead
+    //  and stamp the markers in anyway.
     if (TP.notValid(TP.nodeGetWindow(anObj))) {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = anObj.documentElement.namespaceURI ===
                                     'http://www.w3.org/1999/xhtml';
-        return !anObj[TP.IS_XHTML];
+        return false;
     }
 
     if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
