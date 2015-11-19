@@ -89,9 +89,11 @@ Cmd.prototype.HELP =
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['tibet'],
+        'boolean': ['tibet', 'tap'],
         'string': [],
-        'default': {}
+        'default': {
+            tap: true
+        }
     },
     Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
