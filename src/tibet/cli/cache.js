@@ -576,7 +576,8 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     }
 
     doc = parser.parseFromString(text);
-    if (!doc) {
+
+    if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
         this.error('Error parsing index.html. Not well-formed?');
         throw new Error();
     }

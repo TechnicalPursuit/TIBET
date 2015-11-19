@@ -940,7 +940,8 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
             try {
                 doc = parser.parseFromString(text);
-                if (!doc) {
+                if (!doc || CLI.isValid(
+                        doc.getElementsByTagName('parsererror')[0])) {
                     cmd.error(file);
                     res.errors += 1;
                 }
