@@ -1216,7 +1216,7 @@ function(options) {
                 //  against the test suite instance. See 'it()' for more
                 //  information.
                 try {
-                    func.apply(suite);
+                    func.call(suite, suite.get('suiteOwner'));
                 } catch (e) {
                     TP.sys.logTest(
                         '# error in describe(' + suite.getSuiteName() +
