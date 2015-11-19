@@ -1258,6 +1258,19 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Suite.Inst.defineMethod('getOUT',
+function() {
+
+    /**
+     * Returns the object under test (i.e. the suite owner).
+     * @returns {Object} The object under test.
+     */
+
+    return this.get('suiteOwner');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Suite.Inst.defineMethod('getSuiteList',
 function() {
 
@@ -2376,6 +2389,19 @@ function(aKey) {
     driverKey = TP.ifInvalid(aKey, 'gui');
 
     return this.getSuite().$get('drivers').at(driverKey);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Case.Inst.defineMethod('getOUT',
+function() {
+
+    /**
+     * Returns the object under test (i.e. the case's suite owner).
+     * @returns {Object} The object under test.
+     */
+
+    return this.getSuite().get('suiteOwner');
 });
 
 //  ------------------------------------------------------------------------
