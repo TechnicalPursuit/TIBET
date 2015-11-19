@@ -20,17 +20,7 @@ function(aRequest) {
      * @returns {Element} The element that this tag has become.
      */
 
-    var elem,
-        newElem;
-
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    newElem = TP.xhtmlnode(
-        '<h1 tibet:tag="{{nsname}}:{{tagname}}">Compiled Tag!</h1>');
-
-    TP.elementReplaceWith(elem, newElem);
+    this.callNextMethod();
 
     return;
 });
