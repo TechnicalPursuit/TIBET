@@ -214,8 +214,9 @@ function(aString) {
                     } else {
                         //  There was no context or value that resolved to a
                         //  context, so we trim the value and then unquote the
-                        //  result.
-                        str += TP.trim(val).unquoted();
+                        //  result (but only unquote double quotes - leave
+                        //  single quotes alone).
+                        str += TP.trim(val).unquoted('"');
                     }
                 }
 
@@ -324,6 +325,10 @@ function(aString) {
                 break;
         }
     }
+
+    //  Because JSON doesn't allow for escaped single quotes, we have to make
+    //  sure to replace them all here.
+    str = str.replace(/\\'/g,'\'');
 
     return str;
 });
