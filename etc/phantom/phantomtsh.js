@@ -193,8 +193,7 @@
         'string': ['script', 'url', 'profile', 'params', 'level'],
         'number': ['timeout', 'remote-debug-port'],
         'default': {
-            color: true,
-            tap: true
+            color: true
         }
     };
     /* eslint-enable quote-props */
