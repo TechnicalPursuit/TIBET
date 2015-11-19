@@ -227,14 +227,21 @@ function(aString) {
             case 'operator':
                 if (val === '.' && TP.isValid(tokens.at(i - 1))) {
 
-                    //  If there isn't a valid context, and useGlobalContext is
-                    //  still true, then try to use the previous token's value
-                    //  as the context. If we've already flipped
-                    //  useGlobalContext to false, then we're not at the 'first
-                    //  segment' of a '.' separated value and, therefore, should
-                    //  just skip the value (the '.' - we don't want it).
-                    if (TP.notValid(context) && useGlobalContext) {
-                        context = tokens.at(i - 1).value;
+                    //  If there isn't a valid context, test to see if we can
+                    //  obtain one or not.
+                    if (TP.notValid(context)) {
+
+                        //  If useGlobalContext is still true, try to use the
+                        //  previous token's value as the context. Otherwise, if
+                        //  we've already flipped useGlobalContext to false,
+                        //  then we're not at the 'first segment' of a '.'
+                        //  separated value and so we just append the '.' and
+                        //  move on.
+                        if (useGlobalContext) {
+                            context = tokens.at(i - 1).value;
+                        } else {
+                            str += '.';
+                        }
                     }
 
                     break;
