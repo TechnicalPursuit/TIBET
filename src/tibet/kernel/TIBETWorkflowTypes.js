@@ -6212,8 +6212,8 @@ function(aSignal) {
      * @method start
      * @summary Starts the application, performing any initialization necessary
      *     for startup.
-     * @param {TP.sig.AppWillStart} aSignal The "will start" signal that
-     *     triggered our startup sequence.
+     * @param {TP.sig.AppStart} aSignal The  start signal that triggered out
+     *     startup sequence.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -6281,10 +6281,10 @@ TP.core.Application.Inst.defineHandler('AppStart',
 function(aSignal) {
 
     /**
-     * @method handleAppWillStart
+     * @method handleAppStart
      * @summary A handler that is called when the system has loaded everything
      *     and is ready to activate your TIBET application.
-     * @param {TP.sig.AppWillStart} aSignal The startup signal.
+     * @param {TP.sig.AppStart} aSignal The startup signal.
      * @returns {TP.core.Application} The receiver.
      */
 
