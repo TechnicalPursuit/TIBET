@@ -106,10 +106,10 @@ function() {
     /**
      * @method activate
      * @summary Activates the entire TIBET 'system'.
-     * @summary TP.sys's 'activate()' method is called from $initialize
-     *     in the boot system once the blank page has been loaded and the UI
-     *     canvas is read to display initialization messages. The handler here
-     *     is responsible for performing all code initialization, activating the
+     * @summary TP.sys's 'activate()' method is called from $activate in the
+     *     boot system once the blank page has been loaded and the UI canvas is
+     *     read to display initialization messages. The handler here is
+     *     responsible for performing all code initialization, activating the
      *     TP.core.Application object and then signaling the next signal in the
      *     startup sequence. Activation of the TIBET system includes:
      *     - Initializing all of the TIBET types loaded.
@@ -134,6 +134,9 @@ function() {
     if (TP.sys.hasInitialized()) {
         return;
     }
+
+    //  Final signal before UI begins processing.
+    TP.signal('TP.sys', 'AppWillInitialize');
 
     TP.boot.$setStage('initializing');
 
@@ -327,6 +330,9 @@ function() {
     //  they're ready for operation. this may cause them to load other types
     //  so we do this before proxy setup.
     try {
+        //  Final signal before initializers are run.
+        TP.signal('TP.sys', 'AppInitialize');
+
         msg = 'Initializing TIBET types...';
 
         TP.ifTrace() ? TP.trace(msg) : 0;
@@ -468,7 +474,14 @@ function() {
         //  signaling here but we have to let that happen via either the
         //  tibet:root or tibet:sherpa tag processing for proper sequencing.
         if (inPhantom) {
+            //  Signal we are starting. This provides a hook for extensions etc.
+            //  to tap into the startup sequence before routing or other
+            //  behaviors but after we're sure the UI is finalized.
             TP.signal('TP.sys', 'AppWillStart');
+
+            //  Signal actual start. The default handler on Application will
+            //  invoke the start() method in response to this signal.
+            TP.signal('TP.sys', 'AppStart');
         }
     });
 

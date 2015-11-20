@@ -6233,11 +6233,6 @@ function(aSignal) {
             }
         }
 
-        //  Signal that we are starting. This provides a hook point for
-        //  extensions etc. to tap into the startup sequence before routing or
-        //  other behaviors but after we're sure the UI has been finalized.
-        this.signal('TP.sig.AppStart');
-
         //  Note that we check and clear sessionStorage here to avoid having any
         //  values set by a bookmark or reload operation on a hooked file from
         //  hanging around and affecting future operations.
@@ -6282,7 +6277,7 @@ function(aSignal) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineHandler('AppWillStart',
+TP.core.Application.Inst.defineHandler('AppStart',
 function(aSignal) {
 
     /**
