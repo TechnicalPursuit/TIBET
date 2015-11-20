@@ -457,7 +457,8 @@ function(dictionary) {
 
     var iso,
         data,
-        dict;
+        dict,
+        current;
 
     if (TP.isEmpty(dictionary)) {
         return this.raise('InvalidParameter',
@@ -487,10 +488,11 @@ function(dictionary) {
         }
     });
 
-    //  If we're the currently active locale we need to reactivate the string
-    //  table on TP.msg at this point.
-    if (TP.sys.getLocale() === this) {
-        this.activate();
+    //  Force reactivation of the current locale. We can't be sure that the
+    //  strings just registered don't fall somewhere along the lookup chain.
+    current = TP.sys.getLocale();
+    if (TP.isValid(current)) {
+        current.activate();
     }
 
     return dict;
