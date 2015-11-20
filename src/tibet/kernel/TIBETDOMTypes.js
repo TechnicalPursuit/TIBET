@@ -12468,7 +12468,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
-    this.setContent(newValue);
+    if (TP.isString(newValue)) {
+        this.setTextContent(newValue, shouldSignal);
+    } else {
+        this.setContent(newValue);
+    }
 
     //  signal as needed
 
