@@ -5952,6 +5952,102 @@ function(aVal) {
 });
 
 //  ------------------------------------------------------------------------
+//  SOURCE LANGUAGE
+//  ------------------------------------------------------------------------
+
+/*
+When doing localization you need to know two languages, the one you've got,
+and the one you want to translate to. The one you've got is what TIBET
+refers to as the "source language". This is normally U.S. English since
+that's the language typically used when authoring source code. But if you
+want to author your applications in German or French for example, you can
+alter the source language so that TIBET will start there when doing its
+translations.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getSourceLanguage',
+function() {
+
+    /**
+     * @method getSourceLanguage
+     * @summary Returns the current source 'lang', the language most source
+     *     strings will be in.
+     * @description This value is typically en-us, but can be changed to adapt
+     *     to local coding preferences. The source language is used as the key
+     *     during localization lookups.
+     * @example Get TIBET's current 'source language':
+     *     <code>
+     *          TP.sys.getSourceLanguage();
+     *          <samp>en-us</samp>
+     *     </code>
+     * @returns {String} The current value for source language. The default is
+     *     'en-us'.
+     */
+
+    return TP.sys.cfg('tibet.sourcelang',
+                        TP.sys.env('tibet.xmllang', 'en-us'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getTargetLanguage',
+function() {
+
+    /**
+     * @method getTargetLanguage
+     * @summary Returns the target 'lang', the user's targeted language
+     *     setting.
+     * @description This method leverages TP.core.Locale data whenever possible,
+     *     otherwise the boot property for userlang is used. When translations
+     *     are performed this is the language being targeted using the current
+     *     source language as the key.
+     * @example Get TIBET's current 'target language':
+     *     <code>
+     *          TP.sys.getTargetLanguage();
+     *          <samp>en-us</samp>
+     *     </code>
+     * @returns {String} The current target language key. The default is
+     *     'en-us'.
+     */
+
+    //  leverage the TP.core.Locale type if we've loaded it at this point
+    if (TP.isType(TP.sys.require('TP.core.Locale'))) {
+        return TP.ifInvalid(TP.sys.getLocale().getISOKey(), 'en-us');
+    }
+
+    return TP.sys.cfg('tibet.sourcelang',
+                        TP.sys.env('tibet.xmllang', 'en-us'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('setSourceLanguage',
+function(aLangCode) {
+
+    /**
+     * @method getSourceLanguage
+     * @summary Returns the current source 'lang', the language most source
+     *     strings will be in.
+     * @description This is typically en-us, but can be changed to adapt to
+     *     local coding preferences. The source language is used as the key
+     *     during localization lookups.
+     * @example Set TIBET's current 'source language':
+     *     <code>
+     *          TP.sys.setSourceLanguage('en-gb');
+     *          <samp>en-gb</samp>
+     *     </code>
+     * @returns {String} The current value for source language. The default is
+     *     'en-us'.
+     */
+
+    return TP.sys.setcfg(
+        'tibet.sourcelang',
+        TP.ifInvalid(aLangCode, TP.sys.env('tibet.xmllang', 'en-us')));
+});
+
+//  ------------------------------------------------------------------------
 //  STRING PROCESSING
 //  ------------------------------------------------------------------------
 
@@ -5965,28 +6061,43 @@ function(varargs) {
      *     localized. All arguments used in constructing Strings using TP.sc()
      *     are subject to localization based on the current source and target
      *     locale information. See TP.core.Locale for more information. The
-     *     simple version uses TP.msg.at() to look up any mapped values.
+     *     simple version uses TP.msg[key] to look up any mapped values.
      * @param {Object} varargs A variable list of 0 to N values to build
-     *     the String from.
+     *     the String from. Multiple chunks are joined with a single space.
      * @returns {String} A new instance.
      */
 
     var arr,
-        str;
+        str,
+        result,
+        len,
+        i,
+        key;
 
     switch (arguments.length) {
         case 0:
             return '';
         case 1:
             str = '' + varargs;
-            break;
+            if (TP.owns(TP.msg, str)) {
+                return TP.msg[str];
+            }
+            return str;
         default:
+            result = TP.ac();
             arr = TP.ac(arguments);
-            str = arr.join(' ');
-            break;
+            len = arr.length;
+            for (i = 0; i < len; i++) {
+                key = arr[i];
+                if (TP.owns(TP.msg, key)) {
+                    result.push(TP.msg[key]);
+                } else {
+                    result.push(key);
+                }
+            }
+            return result.join(' ');
     }
 
-    return TP.msg.at(str) || str;
 });
 
 //  ------------------------------------------------------------------------
@@ -11951,102 +12062,6 @@ function(aStatusCode) {
     }
 
     return $STATUS;
-});
-
-//  ------------------------------------------------------------------------
-//  SOURCE LANGUAGE
-//  ------------------------------------------------------------------------
-
-/*
-When doing localization you need to know two languages, the one you've got,
-and the one you want to translate to. The one you've got is what TIBET
-refers to as the "source language". This is normally U.S. English since
-that's the language typically used when authoring source code. But if you
-want to author your applications in German or French for example, you can
-alter the source language so that TIBET will start there when doing its
-translations.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getSourceLanguage',
-function() {
-
-    /**
-     * @method getSourceLanguage
-     * @summary Returns the current source 'lang', the language most source
-     *     strings will be in.
-     * @description This value is typically en-us, but can be changed to adapt
-     *     to local coding preferences. The source language is used as the key
-     *     during localization lookups.
-     * @example Get TIBET's current 'source language':
-     *     <code>
-     *          TP.sys.getSourceLanguage();
-     *          <samp>en-us</samp>
-     *     </code>
-     * @returns {String} The current value for source language. The default is
-     *     'en-us'.
-     */
-
-    return TP.sys.cfg('tibet.sourcelang',
-                        TP.sys.env('tibet.xmllang', 'en-us'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getTargetLanguage',
-function() {
-
-    /**
-     * @method getTargetLanguage
-     * @summary Returns the target 'lang', the user's targeted language
-     *     setting.
-     * @description This method leverages TP.core.Locale data whenever possible,
-     *     otherwise the boot property for userlang is used. When translations
-     *     are performed this is the language being targeted using the current
-     *     source language as the key.
-     * @example Get TIBET's current 'target language':
-     *     <code>
-     *          TP.sys.getTargetLanguage();
-     *          <samp>en-us</samp>
-     *     </code>
-     * @returns {String} The current target language key. The default is
-     *     'en-us'.
-     */
-
-    //  leverage the TP.core.Locale type if we've loaded it at this point
-    if (TP.isType(TP.sys.require('TP.core.Locale'))) {
-        return TP.ifInvalid(TP.sys.getLocale().getISOKey(), 'en-us');
-    }
-
-    return TP.sys.cfg('tibet.sourcelang',
-                        TP.sys.env('tibet.xmllang', 'en-us'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('setSourceLanguage',
-function(aLangCode) {
-
-    /**
-     * @method getSourceLanguage
-     * @summary Returns the current source 'lang', the language most source
-     *     strings will be in.
-     * @description This is typically en-us, but can be changed to adapt to
-     *     local coding preferences. The source language is used as the key
-     *     during localization lookups.
-     * @example Set TIBET's current 'source language':
-     *     <code>
-     *          TP.sys.setSourceLanguage('en-gb');
-     *          <samp>en-gb</samp>
-     *     </code>
-     * @returns {String} The current value for source language. The default is
-     *     'en-us'.
-     */
-
-    return TP.sys.setcfg(
-        'tibet.sourcelang',
-        TP.ifInvalid(aLangCode, TP.sys.env('tibet.xmllang', 'en-us')));
 });
 
 //  ------------------------------------------------------------------------
