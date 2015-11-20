@@ -267,7 +267,7 @@ function(aString) {
 
                     context = null;
 
-                    //  We're at the end of a value - need to reset for the next
+                    //  We're at the end of a key - need to reset for the next
                     //  value.
                     useGlobalContext = true;
                 } else if (val === ',') {
