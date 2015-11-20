@@ -1532,10 +1532,12 @@ function(varargs) {
         default:
             result = TP.ac();
             arr = TP.ac(arguments);
-            len = arr.length;
+
+            len = arr.getSize();
             for (i = 0; i < len; i++) {
                 result.push(locale.localizeString('' + arr[i]));
             }
+
             return result.join(' ');
     }
 });

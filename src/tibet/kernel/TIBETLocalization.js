@@ -348,11 +348,8 @@ function() {
      * @return {TP.core.Locale} The receiver.
      */
 
-    var strings,
-        locales,
+    var locales,
         msg;
-
-    strings = TP.core.Locale.get('strings');
 
     msg = {};
 
@@ -362,14 +359,15 @@ function() {
     locales = locales.slice(0, locales.indexOf(TP.core.Locale) + 1);
     locales.reverse();
 
-    locales.forEach(function(locale) {
-        var dict;
+    locales.forEach(
+            function(locale) {
+                var dict;
 
-        dict = locale.getISOStrings();
-        TP.keys(dict).forEach(function(key) {
-            msg[key] = dict[key];
-        });
-    });
+                dict = locale.getISOStrings();
+                TP.keys(dict).forEach(function(key) {
+                    msg[key] = dict[key];
+                });
+            });
 
     //  Update the map reference.
     TP.msg = msg;
@@ -480,13 +478,14 @@ function(dictionary) {
     dict = this.getISOStrings(iso);
 
     //  Iterate over data (hash, obj, etc) and load up our strings.
-    TP.keys(data).forEach(function(key) {
-        if (TP.canInvoke(data, 'at')) {
-            dict[key] = data.at(key);
-        } else {
-            dict[key] = data[key];
-        }
-    });
+    TP.keys(data).forEach(
+            function(key) {
+                if (TP.canInvoke(data, 'at')) {
+                    dict[key] = data.at(key);
+                } else {
+                    dict[key] = data[key];
+                }
+            });
 
     //  Force reactivation of the current locale. We can't be sure that the
     //  strings just registered don't fall somewhere along the lookup chain.
