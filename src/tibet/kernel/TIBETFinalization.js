@@ -288,6 +288,9 @@ function() {
         //  Get the Application subtype instance configured.
         TP.sys.configureAppInstance();
 
+        //  Final signal before UI begins processing.
+        TP.signal('TP.sys', 'AppDidInitialize');
+
         //  Load the UI. This will ultimately trigger UIReady.
         TP.sys.loadUIRoot();
     };

@@ -101,6 +101,11 @@ function(aLocale) {
         }
     }
 
+    //  We don't force locales to load string tables if they're not going to
+    //  ever be activated via setLocale, but if we're going to use the locale we
+    //  need to activate it so we can switch string tables etc.
+    locale.activate();
+
     this.$set('locale', locale);
 
     return this;
@@ -111,18 +116,12 @@ function(aLocale) {
 //  ========================================================================
 
 TP.defineCommonMethod('localize',
-function(aLocale, sourceLocale, forceRefresh) {
+function(aLocale) {
 
     /**
      * @method localize
      * @summary Returns a localized string version of the receiver.
      * @param {TP.core.Locale|String} aLocale The locale to use for resolution.
-     * @param {TP.core.Locale|String} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
-     * @param {Boolean} forceRefresh True to force the new object to be built
-     *     from a refreshed resource bundle.
      * @returns {Object} A localized version of the source object.
      */
 
@@ -148,7 +147,7 @@ function(aLocale, sourceLocale, forceRefresh) {
         return this;
     }
 
-    return localeObj.localize(this, sourceLocale, forceRefresh);
+    return localeObj.localize(this);
 });
 
 //  ========================================================================
@@ -189,7 +188,13 @@ TP.lang.Object.defineSubtype('core.Locale');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+//  the language code for this locale. this value is typically set by the locale
+//  as part of the type's definition. we default them to empty strings to avoid
+//  getting null values when building out our ID etc.
 TP.core.Locale.Type.defineAttribute('langCode', '');
+
+//  the country code for the locale. not set in all cases, but a good example is
+//  'us' for en-us and 'gb' for en-gb as defined by those locales.
 TP.core.Locale.Type.defineAttribute('countryCode', '');
 
 //  Boolean defaults
@@ -230,57 +235,62 @@ TP.core.Locale.Type.defineAttribute('thousandsSeparator', ',');
 TP.core.Locale.Type.defineAttribute('decimalPoint', '.');
 TP.core.Locale.Type.defineAttribute('thousandsGroupSize', 3);
 
-//  the ISO key, which is the language code plus country code if the country code
-//  isn't empty.
+//  the ISO key, which is the language code plus country code if the country
+//  code isn't empty.
 TP.core.Locale.Type.defineAttribute('langID');
-
-//  the current XML node containing localized string translations
-TP.core.Locale.Type.defineAttribute('stringXML');
-
-//  string value of the current string table, for use in regex testing
-TP.core.Locale.Type.defineAttribute('stringSTR');
 
 TP.core.Locale.Type.defineAttribute('locales', TP.hc());
 
-//  the language code for this locale. this value is typically set by
-//  the locale as part of the type's definition. we default them to
-//  empty strings to avoid getting null values when building out our ID
-//  etc.
 //  ------------------------------------------------------------------------
-//  Type Methods
+//  Type.Local Attributes/Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getISOKey',
-function() {
+//  The system string table. All string localization calls ultimately try to
+//  find a key/value mapping in this object, which is maintained in raw form
+//  to support usage of slices of this content as the system's TP.msg object.
+//  NOTE that this is a raw object, not a hash or other augmented object so
+//  as a result we have to use the full descriptor syntax of defineAttribute.
+TP.core.Locale.defineAttribute('strings', {value: {}});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Locale.defineConstant('ROOT_ISO_KEY', 'root');
+
+//  ------------------------------------------------------------------------
+
+TP.core.Locale.defineMethod('registerLocale',
+function(aLocale, aKey) {
 
     /**
-     * @method getISOKey
-     * @summary Returns the receiver's ISO key, for a Locale the language code
-     *     plus country code if the country code isn't empty.
-     * @returns {String} The receiver's language code.
+     * @method registerLocale
+     * @summary Registers the locale provided under the locale's language code,
+     *     allowing it to be found quickly. Note that by using one or more calls
+     *     and different keys you can map a particular locale as the handler for
+     *     a number of language and country code combinations.
+     * @param {TP.meta.Locale} aLocale A TP.core.Locale subtype type object.
+     * @param {String} aKey The language-country code key to use to register
+     *     this locale.
+     * @returns {TP.meta.Locale} A TP.core.Locale subtype type object.
      */
 
-    var id,
-        country;
+    var key;
 
-    if (TP.notEmpty(id = this.get('langID'))) {
-        return id;
+    if (!TP.isSubtypeOf(aLocale, TP.core.Locale)) {
+        return this.raise('TP.sig.InvalidLocale', aLocale);
     }
 
-    if (TP.notEmpty(country = this.$get('countryCode'))) {
-        id = TP.join(this.get('langCode'), '-', country);
-    } else {
-        id = this.get('langCode');
-    }
+    key = TP.ifInvalid(aKey, aLocale.getISOKey());
 
-    this.$set('langID', id);
+    //  NOTE the reference to the TP.core.Locale type here rather than
+    //  "this", so we use the shared hash
+    TP.core.Locale.get('locales').atPut(key, aLocale);
 
-    return id;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('getLocaleById',
+TP.core.Locale.defineMethod('getLocaleById',
 function(aLocaleID) {
 
     /**
@@ -325,35 +335,167 @@ function(aLocaleID) {
 });
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
-TP.core.Locale.Type.defineMethod('registerLocale',
-function(aLocale, aKey) {
+TP.core.Locale.Type.defineMethod('activate',
+function() {
 
     /**
-     * @method registerLocale
-     * @summary Registers the locale provided under the locale's language code,
-     *     allowing it to be found quickly. Note that by using one or more calls
-     *     and different keys you can map a particular locale as the handler for
-     *     a number of language and country code combinations.
-     * @param {TP.meta.Locale} aLocale A TP.core.Locale subtype type object.
-     * @param {String} aKey The language-country code key to use to register
-     *     this locale.
-     * @returns {TP.meta.Locale} A TP.core.Locale subtype type object.
+     * @method activate
+     * @summary Ensures any resources such as string table content is loaded for
+     *     the receiver.
+     * @return {TP.core.Locale} The receiver.
      */
 
-    var key;
+    var strings,
+        locales,
+        msg;
 
-    if (!TP.isSubtypeOf(aLocale, TP.core.Locale)) {
-        return this.raise('TP.sig.InvalidLocale', aLocale);
-    }
+    strings = TP.core.Locale.get('strings');
 
-    key = TP.ifInvalid(aKey, aLocale.getISOKey());
+    msg = {};
 
-    //  NOTE the reference to the TP.core.Locale type here rather than
-    //  "this", so we use the shared hash
-    TP.core.Locale.get('locales').atPut(key, aLocale);
+    //  Loop over our supertypes to ensure we catch things like en for en-gb.
+    locales = this.getSupertypes();
+    locales.unshift(this);
+    locales = locales.slice(0, locales.indexOf(TP.core.Locale) + 1);
+    locales.reverse();
+
+    locales.forEach(function(locale) {
+        var dict;
+
+        dict = locale.getISOStrings();
+        TP.keys(dict).forEach(function(key) {
+            msg[key] = dict[key];
+        });
+    });
+
+    //  Update the map reference.
+    TP.msg = msg;
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Locale.Type.defineMethod('getISOKey',
+function() {
+
+    /**
+     * @method getISOKey
+     * @summary Returns the receiver's ISO key, for a Locale the language code
+     *     plus country code if the country code isn't empty.
+     * @returns {String} The receiver's language code.
+     */
+
+    var id,
+        country;
+
+    if (TP.notEmpty(id = this.get('langID'))) {
+        return id;
+    }
+
+    if (TP.notEmpty(country = this.$get('countryCode'))) {
+        id = TP.join(this.get('langCode'), '-', country);
+    } else {
+        id = this.get('langCode');
+    }
+
+    this.$set('langID', id);
+
+    return id;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Locale.Type.defineMethod('getISOStrings',
+function(aKey) {
+
+    /**
+     * @method getISOStrings
+     * @param {String} aKey The language-country code key to use to register
+     *     this locale.
+     * @return {Object} The populated string dictionary for the key.
+     */
+
+    var iso,
+        strings,
+        dict;
+
+    //  Get the key we'll be registering under. This depends on the receiving
+    //  locale's iso key by default.
+    iso = TP.ifInvalid(aKey, this.getISOKey());
+    iso = TP.ifEmpty(iso, TP.core.Locale.ROOT_ISO_KEY);
+
+    //  Check for existing string definitions for this locale/key and create it
+    //  if it's not found.
+    strings = TP.core.Locale.get('strings');
+    dict = strings[iso];
+    if (TP.notValid(dict)) {
+        dict = {};
+        strings[iso] = dict;
+    }
+
+    return dict;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Locale.Type.defineMethod('registerStrings',
+function(dictionary) {
+
+    /**
+     * @method registerStrings
+     * @summary Registers one or more key/value pairs as localizable strings.
+     *     The keys ultimately are leveraged via TP.msg[key] for use in code
+     *     Values are provided in response to localizeString, TP.sc(), and
+     *     String.construct methods.
+     * @param {Object|TP.lang.Hash} dictionary The set of key/value pairs.
+     * @return {Object} The resulting populated string lookup object.
+     */
+
+    var iso,
+        data,
+        dict,
+        current;
+
+    if (TP.isEmpty(dictionary)) {
+        return this.raise('InvalidParameter',
+            'Empty or non-existing string data.');
+    }
+
+    if (TP.isString(dictionary)) {
+        try {
+            data = JSON.parse(dictionary);
+        } catch (e) {
+            return this.raise('InvalidParameter',
+                'Non-JSON string table data in string form.');
+        }
+    } else {
+        data = dictionary;
+    }
+
+    //  Get our locale-specific string table, building as necessary.
+    dict = this.getISOStrings(iso);
+
+    //  Iterate over data (hash, obj, etc) and load up our strings.
+    TP.keys(data).forEach(function(key) {
+        if (TP.canInvoke(data, 'at')) {
+            dict[key] = data.at(key);
+        } else {
+            dict[key] = data[key];
+        }
+    });
+
+    //  Force reactivation of the current locale. We can't be sure that the
+    //  strings just registered don't fall somewhere along the lookup chain.
+    current = TP.sys.getLocale();
+    if (TP.isValid(current)) {
+        current.activate();
+    }
+
+    return dict;
 });
 
 //  ========================================================================
@@ -368,7 +510,7 @@ function(aLocale, aKey) {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('localize',
-function(anObject, sourceLocale, forceRefresh) {
+function(anObject) {
 
     /**
      * @method localize
@@ -378,12 +520,6 @@ function(anObject, sourceLocale, forceRefresh) {
      *     the TP.core.Locale type itself, so unless a locale is installed via
      *     TP.sys.setLocale() this method will return the original object.
      * @param {Object} anObject The object to localize.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
-     * @param {Boolean} forceRefresh True to force the new object to be built
-     *     from a refreshed resource bundle.
      * @returns {Object} A localized version of the source object.
      */
 
@@ -399,30 +535,22 @@ function(anObject, sourceLocale, forceRefresh) {
     switch (tname) {
         case 'String':
 
-            return this.localizeString(anObject,
-                                        sourceLocale,
-                                        forceRefresh);
+            return this.localizeString(anObject);
         case 'Boolean':
 
-            return this.localizeBoolean(anObject,
-                                        sourceLocale,
-                                        forceRefresh);
+            return this.localizeBoolean(anObject);
         case 'Number':
 
-            return this.localizeNumber(anObject,
-                                        sourceLocale,
-                                        forceRefresh);
+            return this.localizeNumber(anObject);
         case 'Date':
 
-            return this.localizeDate(anObject,
-                                        sourceLocale,
-                                        forceRefresh);
+            return this.localizeDate(anObject);
         default:
 
             //  default is to do simplified "callBestMethod" approach
             fname = 'localize' + tname;
             if (TP.canInvoke(this, fname)) {
-                return this.fname(anObject, forceRefresh);
+                return this.fname(anObject);
             }
 
             break;
@@ -435,18 +563,12 @@ function(anObject, sourceLocale, forceRefresh) {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('localizeBoolean',
-function(aBoolean, sourceLocale, forceRefresh) {
+function(aBoolean) {
 
     /**
      * @method localizeBoolean
      * @summary Returns the translated string value of the boolean provided.
      * @param {Boolean} aBoolean The boolean to localize.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
-     * @param {Boolean} forceRefresh True to force the new object to be built
-     *     from a refreshed resource bundle.
      * @returns {String} The translation of the boolean, or the boolean if no
      *     translation was found.
      */
@@ -455,7 +577,7 @@ function(aBoolean, sourceLocale, forceRefresh) {
 
     str = aBoolean.toString();
 
-    return this.localizeString(str, sourceLocale, forceRefresh);
+    return this.localizeString(str);
 });
 
 //  ------------------------------------------------------------------------
@@ -497,18 +619,12 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('localizeDate',
-function(aDate, sourceLocale, forceRefresh) {
+function(aDate) {
 
     /**
      * @method localizeDate
      * @summary Returns the translated string value of the date provided.
      * @param {Date} aDate The date to localize.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
-     * @param {Boolean} forceRefresh True to force the new object to be built
-     *     from a refreshed resource bundle.
      * @returns {String} The translation of the date, or the date if no
      *     translation was found.
      */
@@ -652,18 +768,12 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('localizeNumber',
-function(aNumber, sourceLocale, forceRefresh) {
+function(aNumber) {
 
     /**
      * @method localizeNumber
      * @summary Returns the translated string value of the number provided.
      * @param {Number} aNumber The number to localize.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
-     * @param {Boolean} forceRefresh True to force the new object to be built
-     *     from a refreshed resource bundle.
      * @returns {String} The translation of the number, or the number if no
      *     translation was found.
      */
@@ -774,270 +884,35 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('localizeString',
-function(aString, sourceLocale, forceRefresh) {
+function(aString) {
 
     /**
      * @method localizeString
-     * @summary Returns the translated value of the string provided.
+     * @summary Returns the translated value of the string if one has been
+     * registered via registerString(s).
      * @param {String} aString The string to localize.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
-     * @param {Boolean} forceRefresh True to force the new object to be built
-     *     from a refreshed resource bundle.
      * @returns {String} The translation of the string, or the string if no
      *     translation was found.
      */
 
-    var source,
-        lang,
-
-        map,
-        key,
-
-        xml,
-        xp,
-        seg,
-        tu,
-        str;
+    var str,
+        dict;
 
     if (TP.isEmpty(aString)) {
         return aString;
     }
 
-    //  Make sure it's a primitive
+    //  Make sure we have a string primitive.
     str = '' + aString;
 
-    //  source defaults to the current user language in effect
-    source = TP.ifInvalid(sourceLocale, TP.sys.getSourceLanguage());
-
-    if (!TP.isString(source)) {
-        source = source.getISOKey();
+    //  If we're current then we can defer to the TP.msg content.
+    if (TP.sys.getLocale() === this) {
+        return TP.msg[str] || str;
     }
 
-    lang = this.getISOKey();
+    dict = this.getISOStrings();
 
-    if (!source || !lang || source === lang) {
-        //  Always allow for simple TP.msg.FOO keys even in same language.
-        return TP.msg.at(str) || str;
-    }
-
-    //  get the string representation of our translation map
-    map = this.$getStringXMLString(forceRefresh);
-    if (TP.notValid(map)) {
-        //  apparently we don't have a string bundle to work with
-
-        //  simpler case (non-tmx) is TP.msg lookups.
-        return TP.msg.at(str) || str;
-    }
-
-    //  regex tests are fastest to see if we need to look deeper. if the
-    //  regex fails we can just return the string without xpath overhead
-    key = str;
-    try {
-        if (TP.notTrue(TP.rc(key).test(map))) {
-            //  Always allow for simple TP.msg.FOO keys even in same language.
-            return TP.msg.at(str) || str;
-        }
-    } catch (e) {
-        //  typical case here is something the regex parser thinks isn't
-        //  valid as a regex (invalid quantifier etc) so we have to keep
-        //  going
-        //  empty
-    }
-
-    //  trick now is to find the parent containing our "key", which is the
-    //  string value
-    xml = this.getStringXML();
-
-    //  this should get us the segment whose value matches the key in the
-    //  source language...
-    xp = TP.join('//*[local-name() = "tuv" and @xml:lang = "',
-                source.toLowerCase(),
-                '"]/*[local-name() = "seg" and text() = ',
-                key.quoted('"'),
-                ']');
-
-    seg = TP.nodeEvaluateXPath(xml, xp, TP.FIRST_NODE, false);
-
-    //  not found for this language for some reason, so just return
-    if (TP.notValid(seg)) {
-        //  second chance is that we have a root language match...
-        if (TP.regex.HAS_HYPHEN.test(source)) {
-            xp = TP.join('//*[local-name() = "tuv" and @xml:lang = "',
-                        source.split('-').first().toLowerCase(),
-                        '"]/*[local-name() = "seg" and text() = ',
-                        key.quoted('"'),
-                        ']');
-
-            seg = TP.nodeEvaluateXPath(xml, xp, TP.FIRST_NODE, false);
-
-            if (TP.notValid(seg)) {
-                return TP.msg.at(str) || str;
-            }
-        } else {
-            return TP.msg.at(str) || str;
-        }
-    }
-
-    //  we want the segment's parent TU element (/tmx/body/tu/tvu/seg) for
-    //  the next query
-    tu = seg.parentNode.parentNode;
-
-    //  now ask for the target language's translation in that language
-    xp = TP.join('string(./*[local-name() = "tuv" and @xml:lang = "',
-                    lang.toLowerCase(),
-                    '"]/*[local-name() = "seg"]/text())');
-
-    str = TP.nodeEvaluateXPath(tu, xp, TP.FIRST_NODE, false);
-
-    if (TP.notEmpty(str)) {
-        return str;
-    }
-
-    //  if the lang has a hyphen we can also search for the "root language"
-    if (TP.regex.HAS_HYPHEN.test(lang)) {
-        xp = TP.join('string(./*[local-name() = "tuv" and @xml:lang = "',
-                        lang.split('-').first().toLowerCase(),
-                        '"]/*[local-name() = "seg"]/text())');
-
-        str = TP.nodeEvaluateXPath(tu, xp, TP.FIRST_NODE, false);
-    }
-
-    if (TP.notEmpty(str)) {
-        return str;
-    }
-
-    return TP.msg.at(str) || str;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Locale.Type.defineMethod('$getStringXMLString',
-function(forceRefresh) {
-
-    /**
-     * @method $getStringXMLString
-     * @summary Private method which returns the string table in string form.
-     *     This offers a fast way to test for a string's value via regular
-     *     expression matching rather than XPath.
-     * @param {Boolean} forceRefresh True to force the string form to be built
-     *     from a refreshed copy of the string XML document.
-     * @returns {String} The string table in string form.
-     */
-
-    var str,
-        node;
-
-    if (TP.isTrue(forceRefresh)) {
-        this.$set('stringSTR', null);
-    }
-
-    if (TP.notValid(str = this.$get('stringSTR'))) {
-        if (TP.notValid(node = this.getStringXML(forceRefresh))) {
-            str = '';
-            this.$set('stringSTR', str);
-        } else {
-            str = TP.nodeAsString(node);
-            this.$set('stringSTR', str);
-        }
-    }
-
-    return str;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Locale.Type.defineMethod('getStringXML',
-function(forceRefresh) {
-
-    /**
-     * @method getStringXML
-     * @summary Returns the XML document containing the locale's string
-     *     mappings. The root file name for the file containing these strings is
-     *     found in the TIBET boot property 'strings'.
-     * @param {Boolean} forceRefresh True to force the string form to be built
-     *     from a refreshed copy of the string XML document.
-     * @returns {DocumentNode} The native document element for the locale's
-     *     string file.
-     * @dicussion TIBET can localize strings by using either a single string
-     *     file or a set of string files, one per language code, or a mix of the
-     *     two strategies. When asked for a string table (XML) TIBET uses the
-     *     boot property 'strings' to find the file name to use. This file name
-     *     is typically strings.tmx. The file name is used as a template in the
-     *     sense that TIBET will split off any extension, add the language code
-     *     with underscores (ie. strings_en_us.xml for US English) and try to
-     *     load the file. If that file doesn't exist the root file is loaded
-     *     (strings.tmx) and used. Note that since each locale will only use one
-     *     string file all strings needing translation in that language should
-     *     be included in the file.
-     */
-
-    var resp,
-        node,
-        flag,
-
-        fname,
-        parts,
-        url;
-
-    //  if we're being asked to refresh clear our cached copy
-    if (TP.isTrue(forceRefresh)) {
-        this.$set('stringXML', null);
-    }
-
-    //  if we've got a cached version use that
-    if (TP.isNode(node = this.$get('stringXML'))) {
-        return node;
-    }
-
-    flag = TP.sys.shouldLogRaise();
-    TP.sys.shouldLogRaise(false);
-
-    try {
-        try {
-            //  first choice is whatever the boot system parameter tells us
-            if (TP.notEmpty(fname = TP.sys.cfg('tibet.strings'))) {
-                parts = fname.split('.');
-
-                //  the final url here should resemble strings_en_us.xml
-                //  where the en_us portion is the receiver's language code
-                url = TP.uc(
-                    parts.join(
-                        '_' +
-                        this.getISOKey().toLowerCase().replace('-', '_') +
-                        '.'));
-
-                if (TP.isURI(url)) {
-                    resp = url.getNativeNode(TP.hc('async', false));
-                    node = resp.get('result');
-                }
-            }
-        } catch (e) {
-            TP.ifError() ?
-                TP.error(TP.ec(e, 'Error retrieving TIBET strings.')) : 0;
-        }
-
-        if (TP.notValid(node)) {
-            url = TP.uc(TP.sys.cfg('path.string_file'));
-            if (TP.isURI(url)) {
-                resp = url.getNativeNode(TP.hc('async', false));
-                node = resp.get('result');
-            }
-        }
-    } finally {
-        if (TP.notValid(node)) {
-            node = TP.documentFromString(
-                        '<tmx xmlns="' + TP.w3.Xmlns.TMX + '"></tmx>');
-        }
-
-        this.$set('stringXML', node);
-
-        TP.sys.shouldLogRaise(flag);
-    }
-
-    return node;
+    return dict[str] || str;
 });
 
 //  ========================================================================
@@ -1049,23 +924,19 @@ function(forceRefresh) {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('parseBoolean',
-function(aString, sourceLocale) {
+function(aString) {
 
     /**
      * @method parseBoolean
      * @summary Returns the Boolean value of the string provided, as localized
      *     for the receiving locale.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
      * @returns {Boolean} The localized Boolean value.
      */
 
     var str;
 
-    str = this.localizeString(aString, sourceLocale);
+    str = this.localizeString(aString);
 
     //  match against our false strings and consider everything else true
     return !this.getFalseStrings().containsString(str);
@@ -1076,17 +947,13 @@ function(aString, sourceLocale) {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('parseDate',
-function(aString, sourceLocale) {
+function(aString) {
 
     /**
      * @method parseDate
      * @summary Returns the Date value of the string provided, as localized for
      *     the receiving locale.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
      * @returns {Date} The localized Date value.
      */
 
@@ -1106,17 +973,13 @@ function(aString, sourceLocale) {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('parseNumber',
-function(aString, sourceLocale) {
+function(aString) {
 
     /**
      * @method parseNumber
      * @summary Returns the Number value of the string provided, as localized
      *     for the receiving locale.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
      * @returns {Number} The localized Number value.
      */
 
@@ -1146,21 +1009,17 @@ function(aString, sourceLocale) {
 //  ------------------------------------------------------------------------
 
 TP.core.Locale.Type.defineMethod('parseString',
-function(aString, sourceLocale) {
+function(aString) {
 
     /**
      * @method parseString
      * @summary Returns the String value of the string provided, as localized
      *     for the receiving locale.
      * @param {String} aString The input string to parse.
-     * @param {String|TP.core.Locale} sourceLocale A source xml:lang or
-     *     TP.core.Locale defining the language the string is now in. Defaults
-     *     to getTargetLanguage() which is based on the current locale's
-     *     language-country value.
      * @returns {String} The localized String value.
      */
 
-    return this.localizeString(aString, sourceLocale);
+    return this.localizeString(aString);
 });
 
 //  ------------------------------------------------------------------------

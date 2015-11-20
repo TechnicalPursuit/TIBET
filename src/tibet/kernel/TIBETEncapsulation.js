@@ -1494,6 +1494,10 @@ TP.defineMethodAlias(TP, 'rc', RegExp.construct);
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$sc', TP.sc);
+
+//  ------------------------------------------------------------------------
+
 String.Type.defineMethod('construct',
 function(varargs) {
 
@@ -1506,32 +1510,34 @@ function(varargs) {
      * @returns {String} A new instance.
      */
 
-    var currentLocale,
-        newStr,
-
+    var locale,
+        result,
+        arr,
         len,
         i;
 
-    //  if we've got a string and a full kernel we can try to localize
-    if (TP.sys.hasKernel()) {
-        currentLocale = TP.sys.getLocale();
-
-        newStr = [];
-
-        len = arguments.length;
-        for (i = 0; i < len; i++) {
-            newStr.push(currentLocale.localize(arguments[i]));
-        }
-
-        //  This should cause 'toString' to be called on each item in the
-        //  Array.
-        return newStr.join('');
+    //  Use the original primitive version that leverages TP.msg lookup if we
+    //  haven't loaded enough kernel to have locale support.
+    if (!TP.sys.hasKernel()) {
+        return TP.$sc.apply(TP, arguments);
     }
 
-    newStr = TP.ac(arguments);
+    locale = TP.sys.getLocale();
 
-    //  This should cause 'toString' to be called on each item in the Array.
-    return newStr.join('');
+    switch (arguments.length) {
+        case 0:
+            return '';
+        case 1:
+            return locale.localizeString('' + varargs);
+        default:
+            result = TP.ac();
+            arr = TP.ac(arguments);
+            len = arr.length;
+            for (i = 0; i < len; i++) {
+                result.push(locale.localizeString('' + arr[i]));
+            }
+            return result.join(' ');
+    }
 });
 
 //  ------------------------------------------------------------------------

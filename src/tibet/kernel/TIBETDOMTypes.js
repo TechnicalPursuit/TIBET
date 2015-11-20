@@ -883,6 +883,8 @@ function(aRequest) {
      * @description This method populates the following variables into a hash
      *     that it returns, useful for executing substitutions.
      *
+     *          $TP         ->  The TP root.
+     *          $APP        ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
      *          $TAG        ->  The TP.core.ElementNode that contains this text
      *                          node.
@@ -954,6 +956,8 @@ function(aRequest) {
 
     info = TP.hc(
         '$REQUEST', aRequest,
+        '$TP', TP,
+        '$APP', APP,
         '$TAG', TP.wrap(parentNode),
         '$TARGET', aRequest.at('target'),
         '$SOURCE', TP.wrap(source),
@@ -979,6 +983,8 @@ function(aRequest) {
      *     text content of the node and supplies the following variables to the
      *     substitutions expressions:
      *
+     *          $TP         ->  The TP root.
+     *          $APP        ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
      *          $TAG        ->  The TP.core.ElementNode that contains this text
      *                          node.
