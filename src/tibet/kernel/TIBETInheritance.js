@@ -97,6 +97,20 @@ function(ensureUniqueness) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('definingTypename', function(typename) {
+
+    /**
+     * @method definingTypename
+     * @summary A hook function used by import logic in various locations
+     *     to capture the list of type names imported during script loading.
+     * @param {String} typename The typename being imported.
+     */
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 //  and don't forget to add the root type to the metadata
 TP.sys.addCustomType('TP.lang.RootObject', TP.lang.RootObject);
 
@@ -232,6 +246,10 @@ function(name) {
     nsObj = TP.defineNamespace(root + '.' + nsName);
 
     wholeName = root + '.' + nsName + '.' + subtypeName;
+
+    //  Invoke hook function import code can use to determine which types may be
+    //  loading during a specific import sequence.
+    TP.sys.definingTypename(wholeName);
 
     //  check with TIBET so we don't try to build type twice
     if (TP.sys.cfg('oo.unique_types')) {
