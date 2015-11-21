@@ -132,7 +132,8 @@ Cmd.prototype.execute = function() {
         code,       // Result code. Set if an error occurs in nested callbacks.
         dna,        // The dna template we're using.
         err,        // Error string returned by shelljs.error() test function.
-        ignore,     // List of extensions we'll ignore when templating.
+        badexts,    // List of extensions we'll ignore when templating.
+        badpaths,   // List of extensions we'll ignore when templating.
         finder,     // The find event emitter we'll handle find events on.
         target,     // The target directory name (based on appname).
         params,     // Parameter data for template processing.
@@ -141,7 +142,8 @@ Cmd.prototype.execute = function() {
 
     cmd = this;
 
-    ignore = ['.png', '.gif', '.jpg', '.ico', 'jpeg'];
+    badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg'];
+    badpaths = ['.DS_Store'];
 
     options = this.options;
     dirname = options._[1];    // Command is at 0, dirname should be [1].
@@ -334,55 +336,57 @@ Cmd.prototype.execute = function() {
             data,     // File data.
             template; // The compiled template content.
 
-        if (ignore.indexOf(path.extname(file)) === -1) {
+        if (badexts.indexOf(path.extname(file)) !== -1 ||
+            badpaths.indexOf(path.basename(file)) !== -1) {
+            return;
+        }
 
-            cmd.verbose('Processing file: ' + file);
+        cmd.verbose('Processing file: ' + file);
+        try {
+            data = fs.readFileSync(file, {encoding: 'utf8'});
+            if (!data) {
+                throw new Error('Empty');
+            }
+        } catch (e) {
+            cmd.error('Error reading ' + file + ': ' + e.message);
+            code = 1;
+            return;
+        }
+
+        try {
+            template = hb.compile(data);
+            if (!template) {
+                throw new Error('InvalidTemplate');
+            }
+        } catch (e) {
+            cmd.error('Error compiling template ' + file + ': ' +
+                e.message);
+            code = 1;
+            return;
+        }
+
+        try {
+            content = template(params);
+            if (!content) {
+                throw new Error('InvalidContent');
+            }
+        } catch (e) {
+            cmd.error('Error injecting template data in ' + file +
+                ': ' + e.message);
+            code = 1;
+            return;
+        }
+
+        if (data === content) {
+            cmd.verbose('Ignoring static file: ' + file);
+        } else {
+            cmd.verbose('Updating file: ' + file);
             try {
-                data = fs.readFileSync(file, {encoding: 'utf8'});
-                if (!data) {
-                    throw new Error('Empty');
-                }
+                fs.writeFileSync(file, content);
             } catch (e) {
-                cmd.error('Error reading ' + file + ': ' + e.message);
+                cmd.error('Error writing file ' + file + ': ' + e.message);
                 code = 1;
                 return;
-            }
-
-            try {
-                template = hb.compile(data);
-                if (!template) {
-                    throw new Error('InvalidTemplate');
-                }
-            } catch (e) {
-                cmd.error('Error compiling template ' + file + ': ' +
-                    e.message);
-                code = 1;
-                return;
-            }
-
-            try {
-                content = template(params);
-                if (!content) {
-                    throw new Error('InvalidContent');
-                }
-            } catch (e) {
-                cmd.error('Error injecting template data in ' + file +
-                    ': ' + e.message);
-                code = 1;
-                return;
-            }
-
-            if (data === content) {
-                cmd.verbose('Ignoring static file: ' + file);
-            } else {
-                cmd.verbose('Updating file: ' + file);
-                try {
-                    fs.writeFileSync(file, content);
-                } catch (e) {
-                    cmd.error('Error writing file ' + file + ': ' + e.message);
-                    code = 1;
-                    return;
-                }
             }
         }
 
