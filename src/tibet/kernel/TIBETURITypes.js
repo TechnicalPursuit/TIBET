@@ -11131,13 +11131,13 @@ function(aURI) {
      *     changes.
      * @param {TP.core.URI} aURI The URI representing the resource to be
      *     watched.
-     * @returns {TP.sig.RemoteURLChangeSignal} The type that will be
+     * @returns {TP.sig.RemoteURLChange} The type that will be
      *     instantiated to construct new signals that notify observers that the
      *     *remote* version of the supplied URI's resource has changed. At this
      *     level, this returns the common supertype of all such signals.
      */
 
-    return TP.sig.RemoteURLChangeSignal;
+    return TP.sig.RemoteURLChange;
 });
 
 //  ------------------------------------------------------------------------
@@ -11245,10 +11245,10 @@ function(targetURI, aRequest) {
 });
 
 //  =======================================================================
-//  TP.sig.RemoteURLChangeSignal
+//  TP.sig.RemoteURLChange
 //  ========================================================================
 
-TP.sig.RemoteSourceSignal.defineSubtype('RemoteURLChangeSignal');
+TP.sig.RemoteSourceSignal.defineSubtype('RemoteURLChange');
 
 //  ========================================================================
 //  end

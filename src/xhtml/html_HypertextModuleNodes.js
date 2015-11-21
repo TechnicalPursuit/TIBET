@@ -27,11 +27,11 @@ TP.html.a.Type.set('uriAttrs', TP.ac('href'));
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.html.a.Type.defineMethod('isResponderForUIFocusChangeSignal',
+TP.html.a.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusChangeSignal
+     * @method isResponderForUIFocusChange
      * @summary Returns true if the node has an 'href' attribute (but not if it
      *     has a 'disabled' attribute) to match (X)HTML semantics.
      * @param {Node} aNode The node to check which may have further data as to
@@ -47,11 +47,11 @@ function(aNode, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.a.Type.defineMethod('isResponderForUIFocusComputationSignal',
+TP.html.a.Type.defineMethod('isResponderForUIFocusComputation',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusComputationSignal
+     * @method isResponderForUIFocusComputation
      * @summary Returns true if the node has an 'href' attribute (but not if it
      *     has a 'disabled' attribute) to match (X)HTML semantics.
      * @param {Node} aNode The node to check which may have further data as to

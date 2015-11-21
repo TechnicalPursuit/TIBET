@@ -310,11 +310,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusChangeSignal',
+TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusChangeSignal
+     * @method isResponderForUIFocusChange
      * @summary Returns true if the node has a 'tabindex' attribute (but not if
      *     it has a 'disabled' attribute) to match (X)HTML semantics.
      * @param {Node} aNode The node to check which may have further data as to
@@ -330,11 +330,11 @@ function(aNode, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusComputationSignal',
+TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusComputation',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusComputationSignal
+     * @method isResponderForUIFocusComputation
      * @summary Returns true if the node has a 'tabindex' attribute (but not if
      *     it has a 'disabled' attribute) to match (X)HTML semantics.
      * @param {Node} aNode The node to check which may have further data as to

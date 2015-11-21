@@ -52,11 +52,11 @@ TP.html.body.Type.set('uriAttrs', TP.ac('background'));
 
 //  ------------------------------------------------------------------------
 
-TP.html.body.Type.defineMethod('isResponderForUIFocusChangeSignal',
+TP.html.body.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusChangeSignal
+     * @method isResponderForUIFocusChange
      * @summary Returns true because the body is always focusable.
      * @param {Node} aNode The node to check which may have further data as to
      *     whether this type should be considered to be a responder.
@@ -70,11 +70,11 @@ function(aNode, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.body.Type.defineMethod('isResponderForUIFocusComputationSignal',
+TP.html.body.Type.defineMethod('isResponderForUIFocusComputation',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusComputationSignal
+     * @method isResponderForUIFocusComputation
      * @summary Returns true because the body can always participate in focus
      *     computations.
      * @param {Node} aNode The node to check which may have further data as to

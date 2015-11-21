@@ -55,12 +55,12 @@ function(aURI) {
      *     changes.
      * @param {TP.core.URI} aURI The URI representing the resource to be
      *     watched.
-     * @returns {TP.sig.TDSFileChangeSignal} The type that will be instantiated
+     * @returns {TP.sig.TDSFileChange} The type that will be instantiated
      *     to construct new signals that notify observers that the *remote*
      *     version of the supplied URI's resource has changed.
      */
 
-    return TP.sig.TDSFileChangeSignal;
+    return TP.sig.TDSFileChange;
 });
 
 //  ------------------------------------------------------------------------
@@ -92,13 +92,13 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineHandler('TDSFileChangeSignal',
+TP.tds.TDSURLHandler.Type.defineHandler('TDSFileChange',
 function(aSignal) {
 
     /**
-     * @method handleTDSFileChangeSignal
+     * @method handleTDSFileChange
      * @summary Handles when a TDS-managed resource has changed.
-     * @param {TP.sig.TDSFileChangeSignal} aSignal The signal indicating that a
+     * @param {TP.sig.TDSFileChange} aSignal The signal indicating that a
      *     TDS-managed resource has changed.
      * @returns {TP.tds.TDSURLHandler} The receiver.
      */
@@ -157,14 +157,14 @@ function(aSignal) {
 });
 
 //  =======================================================================
-//  TP.sig.TDSFileChangeSignal
+//  TP.sig.TDSFileChange
 //  ========================================================================
 
-TP.sig.RemoteURLChangeSignal.defineSubtype('TDSFileChangeSignal');
+TP.sig.RemoteURLChange.defineSubtype('TDSFileChange');
 
 //  We configure our NATIVE_NAME to the same SSE-level event that the TDS is
 //  configured to send.
-TP.sig.TDSFileChangeSignal.Type.defineConstant('NATIVE_NAME',
+TP.sig.TDSFileChange.Type.defineConstant('NATIVE_NAME',
     TP.sys.cfg('tds.watch.event'));
 
 //  ------------------------------------------------------------------------

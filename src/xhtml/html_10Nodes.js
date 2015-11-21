@@ -142,11 +142,11 @@ TP.html.iframe.Type.set('uriAttrs', TP.ac('src', 'longdesc'));
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.html.iframe.Type.defineMethod('isResponderForUIFocusChangeSignal',
+TP.html.iframe.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusChangeSignal
+     * @method isResponderForUIFocusChange
      * @summary Returns true if the node does not have a 'disabled' attribute to
      *     match (X)HTML semantics.
      * @param {Node} aNode The node to check which may have further data as to
@@ -161,11 +161,11 @@ function(aNode, aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.iframe.Type.defineMethod('isResponderForUIFocusComputationSignal',
+TP.html.iframe.Type.defineMethod('isResponderForUIFocusComputation',
 function(aNode, aSignal) {
 
     /**
-     * @method isResponderForUIFocusComputationSignal
+     * @method isResponderForUIFocusComputation
      * @summary Returns true if the node does not have a 'disabled' attribute to
      *     match (X)HTML semantics.
      * @param {Node} aNode The node to check which may have further data as to
