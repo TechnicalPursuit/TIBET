@@ -177,7 +177,8 @@ function(aRequest) {
     // NOTE that we produce output which prompts for overriding and providing a
     // proper implementation here.
     newElem = TP.xhtmlnode(
-        '<a onclick="alert(\'Update tagCompile!\')" href="#" tibet:tag="' +
+        '<a onclick="alert(\'Update the ' + this.getID() +
+            '.Type tagCompile method.\')" href="#" tibet:tag="' +
             this.getCanonicalName() + '">' +
             '&lt;' + this.getCanonicalName() + '/&gt;' +
             '</a>');
