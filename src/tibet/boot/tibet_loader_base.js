@@ -9269,6 +9269,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     //  url reference
     TP.boot.$$onerrorURL = scriptUrl;
 
+    TP.boot.$srcPath = scriptUrl;
+    TP.boot.$loadPath = scriptUrl;
+
     try {
         //  first, check to see if we already have a 'script' node with a
         //  'source' attribute equal to scriptUrl. If we do, that means we've
@@ -9289,6 +9292,10 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     } catch (e) {
         $ERROR = e;
     } finally {
+
+        TP.boot.$srcPath = null;
+        TP.boot.$loadPath = null;
+
         //  appends with source code that has syntax errors or other issues
         //  won't trigger Error conditions we can catch, but they will hit
         //  the onerror hook so we can check $STATUS and proceed from there.
