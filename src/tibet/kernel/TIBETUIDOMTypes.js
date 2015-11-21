@@ -1023,7 +1023,7 @@ function(aRequest) {
     if (TP.notEmpty(ns = elem.namespaceURI) &&
         TP.w3.Xmlns.isNative(ns) &&
         !TP.elementHasAttribute(elem, 'tibet:tag', true)) {
-        return;
+        return elem;
     }
 
     //  One last check is to see if we're not operating in an HTML document.
@@ -1032,7 +1032,7 @@ function(aRequest) {
     //  alone.
     if (TP.isValid(targetDoc = aRequest.at('doc'))) {
         if (!TP.isHTMLDocument(targetDoc)) {
-            return;
+            return elem;
         }
     }
 

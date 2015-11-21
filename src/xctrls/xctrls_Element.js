@@ -68,6 +68,7 @@ function(aRequest) {
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} The element.
      */
 
     var elem,
@@ -94,7 +95,7 @@ function(aRequest) {
         TP.elementSetAttributes(elem, compAttrs, true);
     }
 
-    return;
+    return elem;
 });
 
 //  ------------------------------------------------------------------------

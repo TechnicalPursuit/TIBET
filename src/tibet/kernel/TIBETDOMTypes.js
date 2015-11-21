@@ -15421,6 +15421,7 @@ function(aRequest) {
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} The new element.
      */
 
     var elem;
@@ -15431,7 +15432,7 @@ function(aRequest) {
     elem = aRequest.at('node');
     TP.elementAddClass(elem, 'tibet-action');
 
-    return;
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -15903,6 +15904,7 @@ function(aRequest) {
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} The new element.
      */
 
     var elem;
@@ -15913,8 +15915,7 @@ function(aRequest) {
     elem = aRequest.at('node');
     TP.elementAddClass(elem, 'tibet-info');
 
-    return;
-
+    return elem;
 });
 
 //  ========================================================================
@@ -16597,10 +16598,10 @@ function(aRequest) {
 
     //  If the element already has a TP.GENERATOR, then it had to be placed here
     //  by some template in an earlier iteration. If the generator was ourself,
-    //  return nothing, thereby causing elem to be untouched.
+    //  return the original element.
     if (TP.notEmpty(genName = elem[TP.GENERATOR]) &&
         genName === this.getCanonicalName()) {
-        return;
+        return elem;
     }
 
     wantsTemplateWrapper = TP.ifInvalid(this.get('wantsTemplateWrapper'),
