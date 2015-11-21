@@ -1176,9 +1176,16 @@ function(aNode, aProcessor, aRequest) {
                 TP.elementBubbleXMLNSAttributes(result);
             }
 
-            if ((result === node || TP.nodeEqualsNode(result, node)) &&
-                TP.notValid(node[TP.GENERATOR])) {
-                continue;
+            if (result === node || TP.nodeEqualsNode(result, node)) {
+                if (TP.isValid(node[TP.GENERATOR]) &&
+                    node[TP.GENERATOR] !== result[TP.GENERATOR]) {
+                    //  More processing to do... we'll make a produced entry -
+                    //  see below.
+
+                    //  empty
+                } else {
+                    continue;
+                }
             }
         }
 
