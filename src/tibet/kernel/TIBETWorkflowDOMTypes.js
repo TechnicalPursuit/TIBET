@@ -1161,8 +1161,7 @@ function(aNode, aProcessor, aRequest) {
             TP.ifError() ?
                 TP.error(TP.ec(e,
                         'Error in ' +
-                        this.getTypeName().split('.').last() +
-                        ' for: ' + TP.str(node))) : 0;
+                        type.getTypeName() + ' for: ' + TP.str(node))) : 0;
         }
 
         //  The node that we got handed back was either identical to the node we
