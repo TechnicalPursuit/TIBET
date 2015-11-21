@@ -104,7 +104,7 @@ Cmd.prototype.HELP =
 '\'cfg\' parameter that points to this tag type\'s template. If this\n' +
 'parameter is not supplied, this defaults to null as, if the tag is\n' +
 'a templated (i.e. not compiled) one, the system will automatically\n' +
-'associated a same named .xhtml file with the tag\'s template (this\n' +
+'associate a similarly-named .xhtml file with the tag\'s template (this\n' +
 'parameter is not used for compiled tags at all). It will assume that\n' +
 'this file is in the same directory as the tag\'s source .js file.\n' +
 'Supply a value here if the template file you wish to use for the\n' +
@@ -112,10 +112,10 @@ Cmd.prototype.HELP =
 'different type (i.e. a .svg file). This is highly recommended to\n' +
 'use a virtual URI here (i.e. a URI with a leading \'~\').\n\n' +
 
-'The --style optional parameter is used to configure the system\'s\n' +
-'\'cfg\' parameter that points to this tag type\'s style file. If this\n' +
-'parameter is not supplied, this defaults to "NO_RESULT as, by default\n' +
-'tags do not have associated style (i.e. they are style-less by default)\n' +
+'The --style optional parameter is used to determine the style sheet\n' +
+'configuration for the tag. By default each tag gets a specific style\n' +
+'sheet in the same directory with tag type and optional template. If\n' +
+'you want no style associated you can use the special value NO_RESULT.\n' +
 'Supply a value here if the tag you are defining has CSS or LESS style\n' +
 'associated with it. This is highly recommended to use a virtual URI\n' +
 ' here (i.e. a URI with a leading \'~\').\n\n';
@@ -135,7 +135,7 @@ Cmd.prototype.HELP =
  * dir              '~app_src/tags'        '~lib_src/<nsname>'
  * compiled         false                   false
  * template         ''                      ''
- * style            'NO_RESULT'             'NO_RESULT'
+ * style            '~app_src/tags/.'      '~lib/styles'
 */
 
 /**
@@ -150,8 +150,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'string': ['package', 'config', 'dir', 'template', 'style'],
         'default': {
             compiled: false,
-            template: '',
-            style: 'NO_RESULT'
+            template: ''
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -163,7 +162,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet tag [[<root>.]<namespace>:]<tagname> [--package <pkgname>] [--config <cfgname>] [--dir <dirname>] [--compiled] [--template <uri>] [--style <uri>]';
+    'tibet tag [[<root>.]<namespace>:]<tagname> [--package <pkgname>] [--config <cfgname>] [--dir <dirname>] [--compiled] [--template <uri>] [--style <uri>|NO_RESULT]';
 
 
 //  ---
@@ -625,6 +624,12 @@ Cmd.prototype.execute = function() {
         if (/__nsroot__/.test(file)) {
 
             cmd.verbose('Processing file: ' + file);
+            if (opts.style && path.extname(file) === '.css') {
+                cmd.verbose('Removing unused style: ' + file);
+                sh.rm('-f', file);
+                return;
+            }
+
             try {
                 data = fs.readFileSync(file, {encoding: 'utf8'});
                 if (!data) {

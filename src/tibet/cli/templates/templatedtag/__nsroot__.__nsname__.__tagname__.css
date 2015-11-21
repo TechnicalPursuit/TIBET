@@ -1,0 +1,21 @@
+/**
+ * { {{~nsroot~}}.{{nsname}}.{{~tagname~}} } styles.
+ */
+
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace {{nsname}} url(urn:tibet:{{nsname}});
+
+/**
+ * If you don't transform from XML form to tibet:tag form use this approach:
+ */
+{{nsname}}|{{tagname}} {
+    /* style here for xml formatted tags */
+}
+
+/**
+ * If you transform tags from XML form to tibet:tag form use this approach:
+ */
+*[tibet|tag="{{nsname}}:{{tagname}}"] {
+    /* style here for xhtml converted tags */
+}
+
