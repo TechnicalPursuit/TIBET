@@ -43,100 +43,6 @@ TP.core.CustomTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-//  A dictionary of element IDs and their 'authored representations'.
-TP.core.CustomTag.Type.defineAttribute('$authoredReps');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Type.defineMethod('registerAuthored',
-function(anElement) {
-
-    /**
-     * @method registerAuthored
-     * @summary Registers the authored version of the element under it's local
-     *     ID for use by the change notification system to process updates.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     * @returns {TP.core.CustomTag} The receiver.
-     */
-
-    var theID,
-        origDict;
-
-    if (!TP.isElement(anElement)) {
-        return this.raise('TP.sig.InvalidElement');
-    }
-
-    //  Grab the local ID, assigning it if necessary.
-    theID = TP.lid(anElement, true);
-
-    //  Allocate the dictionary of the 'authored representations' of elements
-    if (TP.isValid(origDict = this.get('$authoredReps'))) {
-        if (!origDict.hasKey(theID)) {
-            origDict.atPut(theID, TP.nodeCloneNode(anElement));
-        }
-    } else {
-        this.set('$authoredReps', TP.hc(theID, TP.nodeCloneNode(anElement)));
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Type.defineHandler('ValueChange',
-function(aSignal) {
-
-    /**
-     * @method handleValueChange
-     * @summary Handles notification of a change.
-     * @description If the origin is a URI that one of our 'reloadable
-     *     attributes' has as the reference to its remote resource, then the
-     *     'reloadFrom<Attr>' method is invoked on the receiver.
-     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
-     */
-
-    var cssQuery,
-        instances,
-        authoredReps;
-
-    //  Compute the CSS query path, indicating that we want a path that will
-    //  find both 'deep elements' (i.e. elements even under other elements of
-    //  this same type) and compiled representations of this element.
-    cssQuery = this.getQueryPath(true, true);
-
-    //  Find any instances that are currently drawn on the UI canvas.
-    instances = TP.byCSSPath(cssQuery, TP.sys.uidoc(true));
-
-    //  Grab the 'authored representations' of the receiver - that is, the
-    //  representations as the author originally wrote them (or updated them -
-    //  but not any compiled or transformation representations of what they
-    //  became).
-    authoredReps = this.get('$authoredReps');
-
-    //  Iterate over the instances that were found.
-    instances.forEach(
-                function(aTPElem) {
-                    var authoredElem;
-
-                    //  Grab the authored representation of the element.
-                    authoredElem = authoredReps.at(aTPElem.getLocalID());
-
-                    //  Compile and awaken the content, supplying the authored
-                    //  element as the 'alternate element' to compile.
-                    aTPElem.compile(null, true, authoredElem);
-                    aTPElem.awaken();
-                });
-
-    return;
-});
-
 //  ========================================================================
 //  TP.core.CompiledTag
 //  ========================================================================
@@ -162,6 +68,7 @@ function(aRequest) {
      * @summary Convert instances of the tag into their HTML representation.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} The new element.
      */
 
     var elem,
@@ -170,9 +77,6 @@ function(aRequest) {
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
-
-    //  Register the 'originally authored' representation of the Element.
-    this.registerAuthored(elem);
 
     // NOTE that we produce output which prompts for overriding and providing a
     // proper implementation here.
@@ -183,9 +87,9 @@ function(aRequest) {
             '&lt;' + this.getCanonicalName() + '/&gt;' +
             '</a>');
 
-    TP.elementReplaceWith(elem, newElem);
-
-    return;
+    //  Note here how we return the *result* of this method due to node
+    //  importing, etc.
+    return TP.elementReplaceWith(elem, newElem);
 });
 
 //  ========================================================================
@@ -206,89 +110,6 @@ TP.core.CustomTag.defineSubtype('TP.core.TemplatedTag');
 TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
-
-//  ------------------------------------------------------------------------
-
-//  A Boolean denoting whether or not we're registered for updates coming from
-//  our template URI.
-TP.core.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.TemplatedTag.Type.defineMethod('construct',
-function(nodeSpec, varargs) {
-
-    /**
-     * @method construct
-     * @summary Constructs a new instance to wrap a native node. The native node
-     *     may have been provided or a String could have been provided. By far
-     *     the most common usage is construction of a wrapper around an existing
-     *     node.
-     * @param {Node|URI|String|TP.core.Node} nodeSpec Some suitable object to
-     *     construct a source node. See type discussion above. Can also be null.
-     * @param {Array} varargs Optional additional arguments for the
-     *     constructor.
-     * @returns {TP.core.TemplatedTag} A new instance.
-     */
-
-    var retVal,
-
-        elem,
-        uri;
-
-    //  Call up to get the instance of this type wrapping our native node.
-    retVal = this.callNextMethod();
-
-    //  Grab the native node
-    elem = retVal.getNativeNode();
-
-    //  If we haven't set up this type to register for updates coming from it's
-    //  URI, do so now.
-    if (TP.notTrue(this.get('registeredForURIUpdates'))) {
-
-        uri = this.getResourceURI(
-                        'template',
-                        TP.elementGetAttribute(elem, 'tibet:mime', true));
-
-        if (TP.isURI(uri)) {
-            this.observe(uri, 'TP.sig.ValueChange');
-            uri.watch();
-        }
-
-        //  Set the flag so that we don't do this again.
-        this.set('registeredForURIUpdates', true);
-    }
-
-    return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TemplatedTag.Type.defineMethod('tagCompile',
-function(aRequest) {
-
-    /**
-     * @method tagCompile
-     * @summary Convert instances of the tag into a format suitable for
-     *     inclusion in a markup DOM.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    //  Register the 'originally authored' representation of the Element.
-    this.registerAuthored(elem);
-
-    //  Call up to continue processing.
-    return this.callNextMethod();
-});
 
 //  ========================================================================
 //  TP.tibet.app
@@ -346,7 +167,7 @@ function(aRequest) {
      *     environment is set to 'development' or not.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {null}
+     * @returns {Element} The new element.
      */
 
     var elem,
@@ -395,9 +216,9 @@ function(aRequest) {
         '</p>' +
     '</div>');
 
-    TP.elementReplaceWith(elem, newElem);
-
-    return;
+    //  Note here how we return the *result* of this method due to node
+    //  importing, etc.
+    return TP.elementReplaceWith(elem, newElem);
 });
 
 //  ========================================================================
