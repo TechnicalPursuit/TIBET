@@ -622,7 +622,7 @@ function(anInstance) {
     dict = this.$get('instances');
 
     //  If the URI has sub URIs we need to remove them too.
-    if (TP.notEmpty(subURIs = anInstance.getSubURIs())) {
+    if (TP.notEmpty(subURIs = anInstance.getSecondaryURIs())) {
         for (i = 0; i < subURIs.getSize(); i++) {
             this.removeInstance(subURIs.at(i));
         }
@@ -2070,7 +2070,7 @@ function(anAspect, anAction, aDescription) {
     //  If this this doesn't have any sub URIs, then it's we'll just let all of
     //  the parameters default in the supertype call, except we do provide the
     //  'path' and 'target' here.
-    if (TP.isEmpty(subURIs = this.getSubURIs())) {
+    if (TP.isEmpty(subURIs = this.getSecondaryURIs())) {
 
         desc = TP.isValid(aDescription) ? aDescription : TP.hc();
         desc.atPutIfAbsent('path', this.getFragmentExpr());
@@ -3048,12 +3048,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getSubURIs',
+TP.core.URI.Inst.defineMethod('getSecondaryURIs',
 function(onlySecondaries) {
 
     /**
-     * @method getSubURIs
-     * @summary Returns an Array of the 'sub URIs' of the receiver. These are
+     * @method getSecondaryURIs
+     * @summary Returns an Array of secondary URIs of the receiver. These are
      *     URIs which point to the same primary resource as the receiver, but
      *     also have a secondary resource pointed to by a fragment. If the
      *     receiver has a secondary resource itself, it returns null.
@@ -3209,7 +3209,7 @@ function(aSignal) {
     //  SubURIs are URIs that have the same primary resource as us, but also
     //  have a fragment, indicating that they also have a secondary resource
     //  pointed to by the fragment.
-    subURIs = this.getSubURIs();
+    subURIs = this.getSecondaryURIs();
 
     if (TP.notEmpty(aSignal.at(TP.CHANGE_PATHS))) {
 
@@ -4872,7 +4872,7 @@ function(aResource, aRequest) {
         //  Sub URIs are URIs that have the same primary resource as us, but
         //  also have a fragment, indicating that they also have a secondary
         //  resource pointed to by the fragment.
-        subURIs = this.getSubURIs();
+        subURIs = this.getSecondaryURIs();
 
         if (TP.notEmpty(subURIs)) {
 
@@ -6069,15 +6069,15 @@ function() {
      * @returns {TP.core.URI} The receiver.
      */
 
-    var subURIs;
+    var uri,
+        subURIs;
 
     if (TP.notFalse(this.get('shouldRefresh'))) {
         this.isLoaded(false);
     }
 
     //  Make sure to let subURIs know too.
-    if (TP.notEmpty(subURIs = this.getSubURIs())) {
-
+    if (TP.notEmpty(subURIs = this.getSecondaryURIs())) {
         subURIs.forEach(
                 function(aURI) {
                     if (TP.notFalse(aURI.get('shouldRefresh'))) {
@@ -6086,8 +6086,11 @@ function() {
                 });
     }
 
-    //  NB: The $changed() call will also let subURIs know.
-    this.$changed();
+    //  Force a reload.
+    uri = this;
+    this.getResource().then(function() {
+        uri.$changed();
+    });
 
     return this;
 });

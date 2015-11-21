@@ -158,6 +158,11 @@ function(aDocument) {
         //  element more than once).
         TP.elementSetAttribute(styleElem, 'id', sheetID, true);
 
+        //  Chrome, at least as of the time of this writing, wouldn't trigger a
+        //  mutation event for insertion of the link. We do the following to
+        //  force processing that will ensure we observe the link href URI.
+        TP.nodeAwakenContent(styleElem);
+
     } else {
 
         //  It's another kind of style - set up a 'tibet:style' element and let
@@ -770,6 +775,12 @@ function(aTargetElem, nodesAdded) {
     len = nodesAdded.getSize();
     for (i = 0; i < len; i++) {
         node = nodesAdded.at(i);
+
+        //  Check to ensure we're not coming through invocation of the
+        //  nodeAwakenContent call, if so we want to exit.
+        if (node.$$awakened) {
+            continue;
+        }
 
         //  It seems weird that the node might be detached since it was 'added',
         //  but the way that mutation observers work (they trigger this code) is

@@ -11210,6 +11210,10 @@ function(aNode) {
     //  Process the tree of markup
     processor.processTree(aNode);
 
+    //  Flag the node as having been awakened. This state is checked by mutation
+    //  handlers etc. to avoid duplicate effort.
+    aNode.$$awakened = true;
+
     return;
 });
 
