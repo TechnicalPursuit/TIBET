@@ -712,7 +712,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
  */
 
 /*
- * NOTE that the code below is _really old_ and desperately in need of an update
+ * NOTE that the code below is _really old_ and probably in need of an update
  * to be current regarding things like mobile devices etc.
  */
 
@@ -9380,27 +9380,6 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$importApplication = function() {
-
-    /**
-     * @method $importApplication
-     * @summary Dynamically imports application content.
-     * @summary This method makes heavy use of the config/build file
-     *     information to construct a list of script files and inline source
-     *     code to import/execute to create a running application image in the
-     *     browser. Note that this method 'chains' its parts via setTimeout so
-     *     that interim output can be displayed. This helps to avoid long delays
-     *     without user feedback.
-     * @returns {null}
-     */
-
-    TP.boot.$$importPhaseOne();
-
-    return;
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.$$importComplete = function() {
 
     /**
@@ -9514,8 +9493,7 @@ TP.boot.$importComponents = function(loadSync) {
      * @summary Dynamically imports a set of application elements read from a
      *     list of 'bootnodes' configured by the invoking function. This boot
      *     node list is a shared property on TP.boot so only one import sequence
-     *     can be running at a time. Normally you'd call importPackage instead
-     *     of this routine to trigger imports.
+     *     can be running at a time.
      * @param {Boolean} loadSync Should the import be done synchronously or not?
      *     Default is false so that each file is loaded via a short setTimeout.
      * @returns {null}
@@ -9844,19 +9822,9 @@ TP.boot.$$importPhase = function() {
     TP.boot.$$bootindex = 0;
 
     TP.boot.$$workload = nodelist.length;
-
     TP.boot.$$totalwork += nodelist.length;
-/*
-    //  TODO: this should happen based on a return value being provided.
-    window.$$phase_two = true;
-*/
 
     TP.boot.$importComponents();
-/*
-
-    TP.boot.$$importComplete();
-*/
-
 };
 
 //  ----------------------------------------------------------------------------
@@ -9910,8 +9878,19 @@ TP.boot.$$importPhaseTwo = function(manifest) {
 };
 
 //  ============================================================================
-//  5.0 IMPORT FUNCTIONS
+//  5.0 IMPORT SUPPORT
 //  ============================================================================
+
+TP.boot.$$configs = [];
+TP.boot.$$packageStack = [];
+
+TP.boot.$$assets = {};
+TP.boot.$$packages = {};
+TP.boot.$$paths = {};
+
+TP.boot.$$assets_list = null;
+
+//  ----------------------------------------------------------------------------
 
 TP.boot.$config = function() {
 
@@ -10001,20 +9980,6 @@ TP.boot.$expand = function() {
 
     return;
 };
-
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-
-TP.boot.$$configs = [];
-TP.boot.$$packageStack = [];
-
-TP.boot.$$assets = {};
-TP.boot.$$packages = {};
-TP.boot.$$paths = {};
-
-TP.boot.$$assets_list = null;
 
 //  ----------------------------------------------------------------------------
 
@@ -10527,67 +10492,6 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$ifUnlessPassedLite = function(anElement) {
-
-    /**
-     * @method $ifUnlessPassedLite
-     * @summary Tests if and unless conditions on the node, returning true if
-     *     the node passes and should be retained based on those conditions.
-     * @param {Node} anElement The element to test.
-     * @returns {Boolean} True if the element passes the filtering tests.
-     */
-
-    var i,
-        condition,
-        conditions,
-        key,
-        invalid;
-
-    invalid = false;
-
-    //  process any unless="a b c" entries on the element
-    condition = anElement.getAttribute('unless');
-    if (TP.boot.$notEmpty(condition)) {
-
-        conditions = condition.split(' ');
-
-        for (i = 0; i < conditions.length; i++) {
-
-            key = conditions[i].trim();
-            condition = TP.sys.cfg(key);
-
-            if (condition === true) {
-                invalid = true;
-                break;
-            }
-        }
-    }
-
-    //  process any if="a b c" entries on the element
-    condition = anElement.getAttribute('if');
-    if (TP.boot.$notEmpty(condition)) {
-
-        conditions = condition.split(' ');
-
-        for (i = 0; i < conditions.length; i++) {
-
-            key = conditions[i].trim();
-
-            condition = TP.sys.cfg(key);
-
-            if (TP.boot.$notValid(condition) || condition === false) {
-
-                invalid = true;
-                break;
-            }
-        }
-    }
-
-    return !invalid;
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.$listConfigAssets = function(anElement, aList) {
 
     /**
@@ -10797,11 +10701,39 @@ TP.boot.$pushPackage = function(aPath) {
 };
 
 //  ----------------------------------------------------------------------------
+
+TP.boot.$refreshPackages = function() {
+    var packages,
+        keys,
+        stderr;
+
+    packages = TP.boot.$$packages;
+    keys = Object.keys(packages);
+
+    //  Force refresh of the documents held in the package cache.
+    keys.forEach(function(key) {
+        packages[key] = TP.boot.$uriLoad(key);
+    });
+
+    //  Re-expand the resulting packages, but turn off any error reporting since
+    //  this will trigger duplicate reference warnings.
+    try {
+        stderr = TP.boot.$stderr;
+        TP.boot.$stderr = TP.boot.STDERR_NULL;
+        TP.boot.$expand();
+    } finally {
+        TP.boot.$stderr = stderr;
+    }
+
+    return;
+};
+
+//  ----------------------------------------------------------------------------
 //  ----------------------------------------------------------------------------
 //  ----------------------------------------------------------------------------
 //  ----------------------------------------------------------------------------
 
-TP.boot.$import = function() {
+TP.boot.$importApplication = function() {
 
     //  Clear script dictionary. This will be used to unique across all imports.
     TP.boot.$$scripts = {};
@@ -10834,7 +10766,7 @@ TP.boot.boot = function() {
 
     //  import based on expanded package. startup is invoked once the async
     //  import process completes.
-    TP.boot.$import();
+    TP.boot.$importApplication();
 
     return;
 };
