@@ -6108,20 +6108,20 @@ function() {
      */
 
     var autoRefresh,
-        ext;
+        watched,
+        uri;
 
     //  See if we have an explicit value for autoRefresh - note the use of
     //  $get() to avoid endless recursion. If we don't have one, then we have
     //  intelligent defaults for URLs with certain extensions.
     if (TP.isNull(autoRefresh = this.$get('autoRefresh'))) {
 
-        //  By default CSS, XHTML and LESS resources auto refresh.
-        ext = this.getExtension();
-        if (/(css|xhtml|less)/.test(ext)) {
-            autoRefresh = true;
-        } else {
-            autoRefresh = false;
-        }
+        watched = TP.ifInvalid(TP.sys.cfg('uri.remote_watch_sources'), TP.ac());
+        uri = TP.uriInTIBETFormat(this.getLocation())
+
+        autoRefresh = watched.some(function(prefix) {
+            return uri.indexOf(prefix) === 0;
+        });
 
         this.set('autoRefresh', autoRefresh);
     }
