@@ -20,18 +20,8 @@ function(aRequest) {
      * @returns {Element} The element that this tag has become.
      */
 
-    this.callNextMethod();
-
-    return;
+    return this.callNextMethod();
 });
-
-//  ------------------------------------------------------------------------
-
-/*
- * For information on how to expand the functionality in this type visit:
- *
- * https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Getting-Started
- */
 
 //  ------------------------------------------------------------------------
 //  end
