@@ -1217,7 +1217,7 @@
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
-    TP.sys.setcfg('tds.watch.ignore', null);
+    TP.sys.setcfg('tds.watch.ignore', ['node_modules']);
     TP.sys.setcfg('tds.watch.root', '~app');
     TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
 
@@ -1225,7 +1225,7 @@
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
     TP.sys.setcfg('couch.app.root', 'attachments');
-    TP.sys.setcfg('couch.watch.ignore', null);
+    TP.sys.setcfg('couch.watch.ignore', ['node_modules']);
     TP.sys.setcfg('couch.watch.root', '~app');
 
     //  ---
@@ -1513,7 +1513,7 @@
     TP.sys.setcfg('uri.remote_watch', true);
 
     //  remote resources that we should try to watch.
-    TP.sys.setcfg('uri.remote_watch_sources', ['~app_src', '~app_styles']);
+    TP.sys.setcfg('uri.remote_watch_sources', ['~app_src', '~app_styles', '~app_cfg']);
 
     //  should we process the queue of remote resource changes?
     TP.sys.setcfg('uri.process_remote_changes', false);
