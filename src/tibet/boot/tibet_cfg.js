@@ -697,6 +697,10 @@
     //  unless overridden.
     TP.sys.setcfg('content.max_traversal', 2500);
 
+    //  should the tag processing system retain the original nodes? By default
+    //  this is true, but can be switched off for production.
+    TP.sys.setcfg('content.retain_originals', true);
+
     //  should content objects cache their generated reps on the filesystem
     //  (and then use them)? you can use caches during development but during
     //  production we typically rely on URI rewriting to map over to cache

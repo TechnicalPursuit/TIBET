@@ -1521,7 +1521,7 @@ function() {
      *     the target content.
      */
 
-    return 'tagCompile';
+    return '$tagCompileAndRegister';
 });
 
 //  ------------------------------------------------------------------------

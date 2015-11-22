@@ -3997,6 +3997,9 @@ TP.core.CollectionNode.Type.defineAttribute('namespace', null);
 //  other data is available
 TP.core.CollectionNode.Type.defineAttribute('tagname', null);
 
+//  a registry of 'original nodes' that were authored.
+TP.core.CollectionNode.Type.defineAttribute('originals');
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -4007,6 +4010,144 @@ TP.core.CollectionNode.Type.defineAttribute('tagname', null);
 TP.core.CollectionNode.Inst.defineAttribute('$alreadyTransforming');
 
 TP.core.CollectionNode.Inst.defineAttribute('preppedReps');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Type.defineMethod('refreshInstances',
+function(aDocument) {
+
+    /**
+     * @method refreshInstances
+     * @summary Refreshes instances on the supplied Document or the current
+     *     uicanvas if aDocument isn't supplied.
+     * @description This method attempts to obtain the node as it was originally
+     *     authored, recompile and re-awaken it.
+     * @param {Document} aDocument The native document containing instances of
+     *     this node to refresh instances of. This defaults to the document of
+     *     the current uicanvas.
+     */
+
+    var originals,
+
+        cssQuery,
+        doc,
+        instances;
+
+    //  Grab our 'originals' registry. This is where we store clones of the
+    //  original node.
+    if (!TP.isValid(originals = this.get('originals'))) {
+        return;
+    }
+
+    //  Compute the CSS query path, indicating that we want a path that will
+    //  find both 'deep elements' (i.e. elements even under other elements of
+    //  this same type) and compiled representations of this element.
+    cssQuery = this.getQueryPath(true, true);
+
+    //  Default the document to the uicanvas's document. Note the 'true' here to
+    //  get the native document.
+    doc = TP.ifInvalid(aDocument, TP.sys.uidoc(true));
+
+    //  Find any instances that are currently drawn on the document.
+    instances = TP.byCSSPath(cssQuery, doc);
+
+    //  Iterate over the instances that were found.
+    instances.forEach(
+                function(aTPNode) {
+                    var authoredNode;
+
+                    //  Grab the originally authored representation of the node.
+                    authoredNode = originals.at(aTPNode.getLocalID());
+
+                    if (TP.isNode(authoredNode)) {
+                        authoredNode = TP.nodeCloneNode(authoredNode);
+
+                        //  Compile and awaken the content, supplying the
+                        //  authored node as the 'alternate element' to compile.
+                        aTPNode.compile(null, true, authoredNode);
+                        aTPNode.awaken();
+                    }
+                });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Type.defineMethod('$tagCompileAndRegister',
+function(aRequest) {
+
+    /**
+     * @method $tagCompileAndRegister
+     * @summary A private method that is used by the tag processing system to
+     *      store off a copy of the original collection node if the system is
+     *      configured to do. It then calls the authored 'tagCompile' method.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The new element.
+     */
+
+    var elem,
+        result,
+
+        originals,
+        localID;
+
+    elem = aRequest.at('node');
+
+    //  Make sure that we can invoke 'tagCompile' on ourself - if not, just
+    //  exit.
+    if (!TP.canInvoke(this, 'tagCompile')) {
+        return elem;
+    }
+
+    result = this.tagCompile(aRequest);
+
+    //  We didn't get a valid Node or Array back - log an Error
+    if (!TP.isNode(result) && !TP.isArray(result)) {
+        TP.ifError() ?
+            TP.error('Error: Invalid result in ' +
+                        this.getTypeName() + ' for: ' + TP.str(elem)) : 0;
+    }
+
+    //  If we got a collection node back, register a reference to a clone of the
+    //  original element (if the 'content.retain_originals' cfg flag is on).
+    if (TP.isCollectionNode(result)) {
+        if (result !== elem && TP.sys.cfg('content.retain_originals')) {
+
+            //  Make sure to create the type-level (each type - not shared)
+            //  originals registry. This will hold clones of the original nodes
+            //  shared by type.
+            if (!TP.isValid(originals = this.get('originals'))) {
+                originals = TP.hc();
+                this.set('originals', originals);
+            }
+
+            //  Retrieve and, if necessary, compute a local ID. This will be our
+            //  key into the registry.
+            localID = TP.lid(elem, true);
+
+            //  If the registry doesn't have it, then register the original.
+            //  Note that this is one-time only so that we don't overwrite what
+            //  the author originally intended with subsequent renderings.
+            if (!originals.hasKey(localID)) {
+                originals.atPut(localID, TP.nodeCloneNode(elem));
+            }
+
+            //  Make sure to *always* set the ID on the result - this is
+            //  important so that we can find the copy in the registry more than
+            //  once.
+            TP.elementSetAttribute(result, 'id', localID, true);
+        }
+    } else if (TP.isArray(result)) {
+        //  TODO: We don't currently handle setting the original element on an
+        //  Array of returned elements - might not be possible.
+    }
+
+    return result;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
