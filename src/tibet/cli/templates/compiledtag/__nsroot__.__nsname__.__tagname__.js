@@ -1,6 +1,6 @@
 /**
  * @type { {{~nsroot~}}.{{nsname}}.{{~tagname~}} }
- * @summary A new tag
+ * @summary A compiled tag which...
  */
 
 //  ------------------------------------------------------------------------
@@ -13,11 +13,12 @@ TP.core.CompiledTag.defineSubtype('{{nsroot}}.{{nsname}}:{{tagname}}');
 function(aRequest) {
 
     /**
-     * @name tagCompile
-     * @synopsis Convert instances of the tag into their HTML representation.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     * @returns {Element} The element that this tag has become.
+     * @method tagCompile
+     * @synopsis Convert instances of the tag into their XHTML form.
+     * @param {TP.sig.Request} aRequest A request containing the tag element
+     *     to convert along with other optional processing parameters.
+     * @returns {Element|Array<Element>} The element(s) to replace the inbound
+     *     element with in the final DOM.
      */
 
     return this.callNextMethod();

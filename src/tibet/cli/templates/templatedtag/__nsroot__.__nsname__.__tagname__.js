@@ -1,6 +1,6 @@
 /**
  * @type { {{~nsroot~}}.{{nsname}}.{{~tagname~}} }
- * @summary A new tag
+ * @summary A templated tag which...
  */
 
 //  ------------------------------------------------------------------------
