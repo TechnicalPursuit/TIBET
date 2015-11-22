@@ -143,7 +143,9 @@ function(aSrc) {
 
         //  A little trick here to intercept which types load in the source.
         defining = TP.sys.definingTypename;
-        typenames = [];
+
+        typenames = TP.ac();
+
         TP.sys.definingTypename = function(typename) {
             typenames.push(typename);
         };
