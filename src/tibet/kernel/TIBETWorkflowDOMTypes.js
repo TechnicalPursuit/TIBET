@@ -1187,7 +1187,9 @@ function(aNode, aProcessor, aRequest) {
                 } else {
                     continue;
                 }
-            } else {
+            }
+            /*
+            else {
 
                 //  If both the original type and the result type match, then we
                 //  continue - note that this does prevent re-entrant methods on
@@ -1199,6 +1201,7 @@ function(aNode, aProcessor, aRequest) {
                     continue;
                 }
             }
+            */
         }
 
         //  If either a singular Node or Array of Nodes was returned, then push
