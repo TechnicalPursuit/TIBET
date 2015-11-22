@@ -6148,9 +6148,12 @@ function() {
     if (TP.isNull(autoRefresh = this.$get('autoRefresh'))) {
 
         watched = TP.ifInvalid(TP.sys.cfg('uri.remote_watch_sources'), TP.ac());
-        uri = TP.uriInTIBETFormat(this.getLocation())
+        uri = this.getLocation();
 
-        autoRefresh = watched.some(function(prefix) {
+        autoRefresh = watched.some(function(path) {
+            var prefix;
+
+            prefix = TP.uriExpandPath(prefix);
             return uri.indexOf(prefix) === 0;
         });
 
