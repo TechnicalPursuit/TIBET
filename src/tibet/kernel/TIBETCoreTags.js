@@ -398,14 +398,14 @@ function(aRequest) {
     var elem,
         newElem;
 
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then turn the receiver into a 'tibet:sherpa' tag.
     if (TP.sys.hasFeature('sherpa')) {
-
-        //  Make sure that we have an element to work from.
-        if (!TP.isElement(elem = aRequest.at('node'))) {
-            return;
-        }
 
         newElem = TP.elementBecome(elem, 'tibet:sherpa');
 
@@ -416,7 +416,7 @@ function(aRequest) {
         return newElem;
     }
 
-    return;
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
