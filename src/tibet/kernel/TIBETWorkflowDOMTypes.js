@@ -1165,10 +1165,8 @@ function(aNode, aProcessor, aRequest) {
                         type.getTypeName() + ' for: ' + TP.str(node))) : 0;
         }
 
-        //  The node that we got handed back was either identical to the node we
-        //  handed in or it equals it, according to the W3C's definition of
-        //  'node equality'. Therefore, we just continue without further
-        //  processing of the result.
+        //  If we got a node we need to inspect that node and compare to result
+        //  to determine the right action to take.
         if (TP.isNode(result)) {
 
             //  To reduce markup clutter, try to propagate namespaces as high
@@ -1177,31 +1175,46 @@ function(aNode, aProcessor, aRequest) {
                 TP.elementBubbleXMLNSAttributes(result);
             }
 
+            //  Compare result. If identical or equal we essentially have an
+            //  "unprocessed" variation of the original node as our result.
             if (result === node || TP.nodeEqualsNode(result, node)) {
+
+                //  If the node had a generator and it's not the same as the one
+                //  for our result node we've got outstanding work to do due to
+                //  the generator change, otherwise we're done here.
                 if (TP.isValid(node[TP.GENERATOR]) &&
                     node[TP.GENERATOR] !== result[TP.GENERATOR]) {
-                    //  More processing to do... we'll make a produced entry -
-                    //  see below.
-
-                    //  empty
+                    void 0;
                 } else {
+                    //  If we were to reprocess here the likely result is an
+                    //  endless recursion since we got back matching content the
+                    //  first time through.
                     continue;
                 }
-            }
-            /*
-            else {
+            } else {
+                //  We got back "processed" content, but that may have child
+                //  content that includes unprocessed custom tags as part of
+                //  either a template or tagCompile that generates new tags.
 
-                //  If both the original type and the result type match, then we
-                //  continue - note that this does prevent re-entrant methods on
-                //  the same type, but that seems like a small compromise (the
-                //  method should do all of the work it needs to when it has the
-                //  chance).
-                resultType = TP.core.Node.getConcreteType(result);
-                if (resultType === type) {
-                    continue;
+                //  If we got back a result node of the same concrete type as
+                //  the original then we only want to process children,
+                //  otherwise we want to process new tag type.
+                if (TP.core.Node.getConcreteType(result) === type) {
+                    //  The tricky part is we don't want to reprocess the top
+                    //  node since it's already had it's change to alter itself,
+                    //  we only want to descend if necessary.
+                    result = TP.nodeGetChildElements(result);
+                    if (result.getSize() === 0) {
+                        continue;
+                    } else {
+                        //  have children that need additional processing so we
+                        //  have to fall through and continue processing phases.
+                        void 0;
+                    }
+                } else {
+                    void 0;
                 }
             }
-            */
         }
 
         //  If either a singular Node or Array of Nodes was returned, then push
