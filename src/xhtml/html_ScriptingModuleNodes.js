@@ -159,7 +159,14 @@ function(aSrc) {
             TP.sys.definingTypename = defining;
         }
 
-        top.console.log('loaded types: ' + typenames);
+        typenames.forEach(function(typename) {
+            var type;
+
+            type = TP.sys.getTypeByName(typename);
+            if (TP.canInvoke(type, 'refreshInstances')) {
+                type.refreshInstances();
+            }
+        });
     }
 
     return this;
