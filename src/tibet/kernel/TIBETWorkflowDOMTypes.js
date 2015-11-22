@@ -1082,6 +1082,7 @@ function(aNode, aProcessor, aRequest) {
         type,
 
         result,
+        resultType,
 
         subPhases,
         subProcessor,
@@ -1184,6 +1185,17 @@ function(aNode, aProcessor, aRequest) {
 
                     //  empty
                 } else {
+                    continue;
+                }
+            } else {
+
+                //  If both the original type and the result type match, then we
+                //  continue - note that this does prevent re-entrant methods on
+                //  the same type, but that seems like a small compromise (the
+                //  method should do all of the work it needs to when it has the
+                //  chance).
+                resultType = TP.core.Node.getConcreteType(result);
+                if (resultType === type) {
                     continue;
                 }
             }
