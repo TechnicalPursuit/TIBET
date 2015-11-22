@@ -43,6 +43,27 @@ TP.core.CustomTag.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CustomTag.Type.defineHandler('ValueChange',
+function(aSignal) {
+
+    /**
+     * @method handleValueChange
+     * @summary Handles notification of a change.
+     * @description If the origin is a URI that one of our 'reloadable
+     *     attributes' has as the reference to its remote resource, then the
+     *     'reloadFrom<Attr>' method is invoked on the receiver.
+     * @param {TP.sig.Signal} aSignal The signal instance to respond to.
+     */
+
+    if (TP.canInvoke(this, 'refreshInstances')) {
+        this.refreshInstances();
+    }
+});
+
 //  ========================================================================
 //  TP.core.CompiledTag
 //  ========================================================================
@@ -110,6 +131,57 @@ TP.core.CustomTag.defineSubtype('TP.core.TemplatedTag');
 TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Type.defineMethod('construct',
+function(nodeSpec, varargs) {
+
+    /**
+     * @method construct
+     * @summary Constructs a new instance to wrap a native node. The native node
+     *     may have been provided or a String could have been provided. By far
+     *     the most common usage is construction of a wrapper around an existing
+     *     node.
+     * @param {Node|URI|String|TP.core.Node} nodeSpec Some suitable object to
+     *     construct a source node. See type discussion above. Can also be null.
+     * @param {Array} varargs Optional additional arguments for the
+     *     constructor.
+     * @returns {TP.core.TemplatedTag} A new instance.
+     */
+
+    var retVal,
+
+        elem,
+        uri;
+
+    //  Call up to get the instance of this type wrapping our native node.
+    retVal = this.callNextMethod();
+
+    //  Grab the native node
+    elem = retVal.getNativeNode();
+
+    //  If we haven't set up this type to register for updates coming from it's
+    //  URI, do so now.
+    if (TP.notTrue(this.get('registeredForURIUpdates'))) {
+
+        uri = this.getResourceURI(
+                        'template',
+                        TP.elementGetAttribute(elem, 'tibet:mime', true));
+
+        if (TP.isURI(uri)) {
+            this.observe(uri, 'TP.sig.ValueChange');
+            uri.watch();
+        }
+
+        //  Set the flag so that we don't do this again.
+        this.set('registeredForURIUpdates', true);
+    }
+
+    return retVal;
+});
 
 //  ========================================================================
 //  TP.tibet.app
