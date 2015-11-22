@@ -4108,8 +4108,8 @@ function(aRequest) {
     //  We didn't get a valid Node or Array back - log an Error
     if (!TP.isNode(result) && !TP.isArray(result)) {
         TP.ifError() ?
-            TP.error('Error: Invalid result in ' +
-                        this.getTypeName() + ' for: ' + TP.str(elem)) : 0;
+            TP.error(this.getTypeName() +
+                ' compile returned invalid replacement for: ' + TP.str(elem)) : 0;
     }
 
     //  If we got a collection node back, register a reference to a clone of the
