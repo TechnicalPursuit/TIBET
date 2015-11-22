@@ -132,6 +132,8 @@ TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
+TP.core.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
