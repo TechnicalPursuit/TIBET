@@ -7,11 +7,11 @@
     <config ref="local_storage"/>
     <config ref="workflow"/>
     <config ref="shells"/>
+    <config ref="parsers"/>
 </config>
 
 <config id="full">
     <config ref="content"/>
-    <config ref="parsers"/>
     <config ref="local_storage"/>
     <config ref="pouchdb_storage"/>
     <config ref="json_schema"/>
