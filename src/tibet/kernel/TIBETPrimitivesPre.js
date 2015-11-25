@@ -218,8 +218,7 @@ TP.canInvoke = function(anObj, anInterface) {
         i,
         len;
 
-    if (anObj === undefined || anObj === null ||
-            anInterface === undefined || anInterface === null) {
+    if (anObj === undefined || anObj === null) {
         return false;
     }
 
@@ -228,7 +227,7 @@ TP.canInvoke = function(anObj, anInterface) {
     if (anInterface.charAt !== undefined) {
         obj = anObj[anInterface];
         /* eslint-disable no-extra-parens */
-        return (obj !== undefined && obj.apply && obj.$$dnu !== true);
+        return (obj instanceof Function && !obj.$$dnu);
         /* eslint-enable no-extra-parens */
     } else if (TP.isArray(anInterface)) {
         len = anInterface.length;
