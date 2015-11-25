@@ -758,7 +758,7 @@ function(aPrompt, aCSSClass) {
     } else {
         TP.elementSetClass(elem, cssClass);
         TP.elementAddClass(elem, 'noselect');
-        TP.htmlElementSetContent(elem, promptStr);
+        TP.elementSetContent(elem, TP.xmlEntitiesToLiterals(promptStr));
     }
 
     //  We probably resized the prompt mark - tell the editor to refresh.

@@ -6233,7 +6233,7 @@ function(aMessage, aTarget) {
         if (TP.isElement(elem)) {
             //  Note how we pass 'null' here for the 'loaded function' and
             //  'false' to not awaken the content.
-            TP.htmlElementSetContent(elem, msg, null, false);
+            TP.elementSetContent(elem, msg, null, false);
         }
     } else if (TP.isWindow(aTarget)) {
         aTarget.top.status = msg;
