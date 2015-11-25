@@ -4125,9 +4125,19 @@ function(aRequest) {
                 this.set('originals', originals);
             }
 
-            //  Retrieve and, if necessary, compute a local ID. This will be our
-            //  key into the registry.
-            localID = TP.lid(elem, true);
+            //  If the result defined an ID, then we use that - note how we pass
+            //  'false' to *not* assign an ID
+            localID = TP.lid(result, false);
+
+            if (TP.isEmpty(localID)) {
+                //  The result didn't have an ID - compute one. This will be our
+                //  key into the registry.
+                localID = TP.lid(elem, true);
+            } else {
+                //  The result had an ID - we need to make sure that original
+                //  elem has a matching one.
+                TP.elementSetAttribute(elem, 'id', localID, true);
+            }
 
             //  If the registry doesn't have it, then register the original.
             //  Note that this is one-time only so that we don't overwrite what
