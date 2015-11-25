@@ -1686,8 +1686,7 @@ function(aPath) {
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
-    //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.TIBET_PATH.test(path) || /\.\[|\]\./.test(path)) {
+    if (TP.regex.TIBET_PATH.test(path)) {
         return TP.core.ComplexTIBETPath;
     }
 
@@ -4696,8 +4695,7 @@ function(aPath, config) {
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
-    //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.TIBET_PATH.test(aPath) || /\.\[|\]\./.test(aPath)) {
+    if (TP.regex.TIBET_PATH.test(aPath)) {
         return TP.core.ComplexTIBETPath.construct.apply(
                             TP.core.ComplexTIBETPath, arguments);
     }

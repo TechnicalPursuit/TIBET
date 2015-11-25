@@ -2907,11 +2907,15 @@ TP.regex.JSON_PATH = /^\$\.+/;
 
 TP.regex.TIBET_POINTER = /tibet\((.*)\)/;
 
-//  Forms of TIBETan access paths can include words separated by periods ('.'),
-//  brackets ('[]') with either string or numeric indexes and brackets with
-//  numeric ranges (or just a colon ':' signifying the whole range).
+//  Forms of TIBETan access paths can either
+//      - be words separated by periods ('.'),
+//      - be brackets ('[]') with either string or numeric indexes
+//      - be brackets with numeric ranges (or just a colon ':' signifying the
+//          whole range).
+//      - be a period ('.') or a word character followed by brackets containing
+//          a number.
 TP.regex.TIBET_PATH =
-    /^(\$|_)?\w+[\.]{1}\w+|\[\w+(,\w+)+\]|\[-?\d*:-?\d*(:-?\d*)?\]/;
+    /^(\$|_)?\w+[\.]{1}\w+|\[\w+(,\w+)+\]|\[-?\d*:-?\d*(:-?\d*)?\]|(\.|\w)\[-?\d+\]/;
 
 TP.regex.TIBET_PATH_CHAR = /[\.:,]+/;
 TP.regex.TIBET_PATH_TEMPLATE = /(^|\s+)(\w[\w\.:,]*)(\s+|$)/g; //  needs reset
