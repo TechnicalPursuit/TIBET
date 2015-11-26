@@ -226,8 +226,11 @@ TP.canInvoke = function(anObj, anInterface) {
     //  because this method (with a String parameter) gets called so much.
     if (anInterface.charAt !== undefined) {
         obj = anObj[anInterface];
+        //  NOTE: On some platforms, if obj is a '[native code]' function,
+        //  'instanceof Function' will return false. This is the only consistent
+        //  test for whether something can truly respond.
         /* eslint-disable no-extra-parens */
-        return (obj instanceof Function && !obj.$$dnu);
+        return (obj !== undefined && obj.apply && !obj.$$dnu);
         /* eslint-enable no-extra-parens */
     } else if (TP.isArray(anInterface)) {
         len = anInterface.length;
