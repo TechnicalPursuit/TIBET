@@ -29,6 +29,13 @@ function() {
 
         test.assert.isIdenticalTo(handler, TP.tds.TDSURLHandler);
     });
+
+    this.it('remaps 127.0.0.1 to a TDS handler', function(test, options) {
+        uri = TP.uriExpandPath('http://127.0.0.1:1407');
+        handler = TP.core.URIMapper.Type.remap(uri);
+
+        test.assert.isIdenticalTo(handler, TP.tds.TDSURLHandler);
+    });
 });
 
 //  ========================================================================
