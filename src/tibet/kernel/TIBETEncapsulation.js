@@ -1432,7 +1432,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 RegExp.Type.defineMethod('construct',
-function(pattern, flags) {
+function(pattern, flags, silent) {
 
     /**
      * @method construct
@@ -1444,6 +1444,8 @@ function(pattern, flags) {
      *     'i' ignore case
      *     'm' match over multiple lines.
      *     'y' whether the regular expression search starts from its lastIndex
+     * @param {Boolean} [silent=false] True to turn off error logging for bad
+     *     regular expression source text.
      * @returns {RegExp} A new instance.
      */
 
@@ -1460,8 +1462,10 @@ function(pattern, flags) {
 
     parts = TP.stringRegExpComponents(pattern);
     if (TP.isEmpty(parts)) {
-        msg = TP.join('Error creating regex: ', pattern);
-        TP.ifError() ? TP.error(msg) : 0;
+        if (TP.notTrue(silent)) {
+            msg = TP.join('Error creating regex: ', pattern);
+            TP.ifError() ? TP.error(msg) : 0;
+        }
 
         return null;
     }
@@ -1477,9 +1481,10 @@ function(pattern, flags) {
     try {
         newinst = new RegExp(restr, attrs);
     } catch (e) {
-        msg = TP.join('Error creating regex: ', restr);
-
-        TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+        if (TP.notTrue(silent)) {
+            msg = TP.join('Error creating regex: ', restr);
+            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+        }
 
         return null;
     }

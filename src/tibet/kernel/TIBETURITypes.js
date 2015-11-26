@@ -101,16 +101,10 @@ virtual URIs:
  *     approach to support your own custom data formats as you require by
  *     pairing the MIME type your server sends with a client-side handler.
  *
- *     For flexibility, TP.core.URI uses a combination of URI "mappers" and URI
+ *     For flexibility, TP.core.URI uses a combination of URI "helpers" and URI
  *     "handlers". Certain operations on a URI such as load, save, or 'nuke'
- *     (delete), are first "mapped" meaning they look in TIBET's URI map for a
- *     mapping which defines a URI handler based on that URIs values and on
- *     current application state. The resulting handler type is then assigned to
- *     do the low-level work for the operation in question. This approach allows
- *     you to create custom logic for different data sources or data sinks much
- *     like server-side products map URI handlers. An example of this can be
- *     found in TIBET's Amazon S3 handler processing which performs special work
- *     to process S3 URIs.
+ *     (delete), are first checked for rewrite and remap data which would either
+ *     change the concrete URI or delegate it to a different concrete handler.
  */
 
 //  ------------------------------------------------------------------------
@@ -127,6 +121,34 @@ TP.core.URI.addTraits(TP.core.SyncAsync);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Type.defineAttribute('BEST_URIMAP_SORT',
+function(a, b) {
+    var aMatch,
+        bMatch;
+
+    aMatch = a.first();
+    bMatch = b.first();
+
+    //  First criteria is number of parts matches.
+    if (aMatch.length > bMatch.length) {
+        return -1;
+    } else if (aMatch.length < bMatch.length) {
+        return 1;
+    } else {
+        //  Second criteria is length of the full match string.
+        if (aMatch.first().length > bMatch.first().length) {
+            return -1;
+        } else if (aMatch.first().length < bMatch.first().length) {
+            return 1;
+        } else {
+            //  All else being equal last definition wins.
+            return -1;
+        }
+    }
+});
+
 //  ------------------------------------------------------------------------
 
 //  placeholder for the scheme specific to the receiving type
@@ -645,12 +667,6 @@ function(anInstance) {
  * used to good effect to switch URIs when moving between online and offline
  * operation, when moving between development, production, and test environments
  * or when using different "mocks" for various testing purposes.
- *
- * The foundation of rewriting/routing in TIBET is processing of XML Catalog
- * specification file(s) which provide the mapping information. We do those
- * operations on the TP.core.URI type so they can be leveraged by consumers
- * without creating too many inter-dependencies specific to the maps
- * themselves.
  */
 
 //  ------------------------------------------------------------------------
@@ -697,749 +713,106 @@ function(aURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('$getURICatalog',
-function(aURI, aCatalog, aFilter) {
-
-    /**
-     * @method $getURICatalog
-     * @summary Returns the XML Catalog data for this application, converted
-     *     into rough hash form for processing by consumers.
-     * @description The actual XML for the URI catalog can be obtained using
-     *     TP.sys.getURIXML(). Passing aURI value will cause the specific
-     *     catalog related to that URI to be returned (typically a nextCatalog
-     *     or delegateURI entry).
-     * @param {TP.core.URI|String} aURI A URI defining a specific catalog file
-     *     to access and process as needed.
-     * @param {TP.core.Hash} aCatalog A TIBET URL Catalog to merge the data
-     *     into. This is normally the root catalog during nextCatalog processing
-     *     since order is maintained in this process.
-     * @param {String} aFilter An optional regular expression string used only
-     *     when integrating delegateURI node content to ensure matches observe
-     *     the delegation test.
-     * @returns {TP.core.Hash} A hash of URI rewriting/routing information.
-     */
-
-    var cat,
-        path,
-        resp,
-        subcat,
-        url,
-        xml,
-
-        list,
-        len,
-        i,
-        elem,
-
-        name,
-        entry,
-        mappings,
-
-        dict,
-        key,
-
-        rewrites,
-
-        catalog,
-        delegates;
-
-    //  typically we'll be using a cached catalog, or a root catalog passed
-    //  in so we can merge data with it properly
-    cat = this.$get('uriCatalog') || aCatalog;
-
-    if (TP.isURI(aURI)) {
-        //  Expand and strip any fragment, we map to primary resources.
-        path = TP.uriExpandPath(aURI.asString()).split('#').at(0);
-        if (TP.isValid(cat)) {
-            //  top level catalog exists, question is have we processed this
-            //  particular subcatalog before?
-            if (TP.isValid(subcat = cat.at(path))) {
-                return subcat;
-            } else {
-                //  attempt to load the catalog file, must be valid XML
-                if (TP.isURI(url = TP.uc(path))) {
-                    resp = url.getNativeNode(
-                                        TP.request(
-                                            'no_rewrite', true,
-                                            'shouldReport', false,
-                                            'async', false));
-                    xml = resp.get('result');
-                }
-
-                if (TP.notValid(xml)) {
-                    this.raise('TP.sig.InvalidXML',
-                                'Catalog files must be valid XML.');
-
-                    return;
-                }
-            }
-        } else {
-            //  no existing top-level catalog, we'll have to populate that
-            //  one first and then redispatch.
-            cat = TP.core.URI.$getURICatalog();
-            if (TP.isValid(cat)) {
-                //  redispatching this way should mean we take the other
-                //  branch, check for having had the top-level catalog
-                //  create the desired subcatalog already, or have the new
-                //  URIs catalog data added to the overall catalog
-                return TP.core.URI.$getURICatalog(aURI);
-            } else {
-                //  error creating top-level catalog...just complain and
-                //  exit
-                this.raise('TP.sig.InvalidCatalog',
-                            'Unable to create top-level URI catalog.');
-
-                return;
-            }
-        }
-    } else {
-        //  no uri means top-level catalog request. if that catalog already
-        //  exists we can just return it
-        if (TP.isValid(cat)) {
-            return cat;
-        }
-
-        //  no catalog built yet, so build it from XML if we can find it
-        cat = TP.hc();
-        this.$set('uriCatalog', cat);
-
-        //  no XML Catalog data so we have no entries to process
-        xml = TP.sys.getURIXML();
-        if (TP.notValid(xml)) {
-            return cat;
-        }
-    }
-
-    //  if we got XML then we have a couple of things we process, uri nodes
-    //  which are unique mappings for a specific uri, rewriteURI nodes which
-    //  are patterns for the rewriter, delegateURI nodes which point to
-    //  another catalog for a specific pattern, and nextCatalog entries
-    //  which point to generic add-on catalogs.
-
-    list = TP.nodeGetElementsByTagName(xml, '*');
-    len = list.getSize();
-
-    for (i = 0; i < len; i++) {
-        elem = list.at(i);
-
-        switch (TP.elementGetLocalName(elem)) {
-            case 'uri':
-
-                //  URI entries map a URI to another when a particular set
-                //  of conditions is true. There can be more than one entry
-                //  for a particular URI however, since the conditions can
-                //  vary. as a result we keep an array of possible mappings
-                name = TP.uriExpandPath(elem.getAttribute('name'));
-
-                //  may need to build if this is the first for this uri
-                entry = cat.at(name) || TP.hc();
-                mappings = entry.at('mappings') || TP.ac();
-
-                //  get a hash from the element and use that to construct
-                //  our key for testing...forcing the key to use regex
-                //  wildcards where no values are found
-                dict = TP.elementGetAttributes(elem);
-                key = TP.core.URI.$getURIProfileKey(dict, true);
-                mappings.push(TP.ac(key, dict, aFilter));
-
-                //  ensure mapping array and entry are in catalog
-                entry.atPut('mappings', mappings);
-                cat.atPut(name, entry);
-
-                break;
-
-            case 'rewriteURI':
-
-                //  rewrites are "catalog wide" since they're pattern-based.
-                //  also, since they're order-dependent we can push them all
-                //  into one list as long as we can remember if they're
-                //  coming from a delegation or not
-                rewrites = cat.at('rewrites') || TP.ac();
-
-                //  get a hash from the element and use that to construct
-                //  our key for testing...forcing the key to use regex
-                //  wildcards where no values are found
-                dict = TP.elementGetAttributes(elem);
-                key = TP.core.URI.$getURIProfileKey(dict, true);
-                rewrites.push(TP.ac(key, dict, aFilter));
-
-                //  ensure mapping array and entry are in catalog
-                cat.atPut('rewrites', rewrites);
-
-                break;
-
-            case 'delegateURI':
-
-                //  delegations are regex matches which redirect mappings
-                //  for a matching URI to a sub-catalog. TIBET also uses
-                //  them as a way of defining a handler for a set of URIs
-                //  matching the delegation test
-                catalog = elem.getAttribute('catalog');
-                if (TP.notEmpty(catalog)) {
-                    //  force integration of the delegate map's entries,
-                    //  flagging them with additional filtering via the
-                    //  delegateURI 'tibet:uriMatchString' or
-                    //  'uriStartString' value
-                    TP.core.URI.$getURICatalog(
-                        catalog,
-                        cat,
-                        elem.getAttribute('tibet:uriMatchString') ||
-                        elem.getAttribute('uriStartString'));
-                }
-
-                //  Any attributes other than catalog will cause us to save
-                //  the delegate entry for other lookup purposes.
-                dict = TP.elementGetAttributes(elem);
-                if (!dict.hasKey('catalog')) {
-                    delegates = cat.at('delegations') || TP.ac();
-
-                    key = TP.core.URI.$getURIProfileKey(dict, true);
-                    delegates.push(TP.ac(key, dict, aFilter));
-
-                    cat.atPut('delegations', delegates);
-                }
-
-                break;
-
-            case 'nextCatalog':
-
-                //  nextCatalog entries are a way to modularize a set of XML
-                //  Catalog files. all we need to do is get the URI and ask
-                //  for that catalog's content to be merged into the current
-                //  catalog, usually the top-level catalog
-                catalog = elem.getAttribute('catalog');
-                TP.core.URI.$getURICatalog(catalog, cat);
-
-                break;
-
-            default:
-                //  elements of other types aren't processed, just ignore
-                break;
-        }
-    }
-
-    return cat;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Type.defineMethod('$getURIEntry',
+TP.core.URI.Type.defineMethod('$getURIMap',
 function(aURI) {
 
     /**
-     * @method $getURIEntry
-     * @summary Returns a catalog entry for the URI provided.
-     * @description The return value from this method is a URI entry is
-     *     populated with all <uri>, <delegateURI>, and <rewriteURI> nodes which
-     *     match at the URI level. Any items with delegateURI filters in place
-     *     will be trimmed if they don't match the concrete URI to ensure that
-     *     by the time a rewrite or mapping call is invoked no additional
-     *     filtering is required other than checking the current runtime
-     *     profile.
-     * @param {TP.core.URI|String} aURI A URI to obtain the catalog entry for.
-     * @returns {TP.core.Hash} A URI Catalog entry hash.
+     * @method $getURIMap
+     * @summary Scans configuration data for uri.map entries representing the
+     *     best match for the URI provided. Only entries from a single mapping
+     *     will be returned and only if a match is found.
+     * @param {TP.core.URI|String} aURI The URI to locate mapping data for.
+     * @return {?TP.core.Hash} A dictionary of matching key values, if any.
      */
 
-    var cat,
-        uri,
-        url,
-        entry,
+    var url,
+        config,
+        patterns,
+        exact,
+        matches,
+        mapregex,
+        mapname;
 
-        arr,
-
-        count,
-        len,
-        i,
-
-        str,
-        re,
-        hash,
-
-        delegates,
-        rewrites;
-
-    //  NOTE that this will force catalog creation on first invocation
-    cat = this.$getURICatalog();
-
-    //  get a "normalized" representation of the URI so we avoid as many
-    //  lookup problems around differing virtual prefixes as possible
-    uri = TP.isString(aURI) ? TP.uc(aURI) : aURI;
-    url = TP.uriExpandPath(uri.asString()).split('#').at(0);
-
-    //  this entry will have the URI mappings in place since they can be
-    //  sorted by uri to begin with, but delegateURI and rewriteURI entries
-    //  can only be filtered once we've got this concrete URI to test
-    entry = cat.at(url) || TP.hc();
-
-    //  if we've already done this we'll have flagged the entry as having
-    //  already been completed
-    if (TP.isTrue(entry.get('$complete'))) {
-        return entry;
+    if (TP.notValid(aURI)) {
+        return this.raise('InvalidURI');
     }
 
-    //  filter any mapping entries whose filter (if there is one) doesn't
-    //  actually match in practice
-    if (TP.isArray(arr = entry.at('mappings'))) {
-        count = 0;
-        len = arr.getSize();
+    url = TP.str(aURI);
 
-        for (i = 0; i < len; i++) {
-            //  convert keys to regexes for faster testing later on. NOTE
-            //  that we don't escape metachars here, we built this one so we
-            //  know what it's asking for
-            str = arr.at(i).at(0);
-            re = TP.rc(str);
-            arr.at(i).atPut(0, re);
+    mapregex = /^uri\.map\.(?:.*)\.pattern$/;
+    config = TP.sys.cfg();
 
-            //  mappings are [key, hash, filter] where filter is delegateURI
-            //  filter which may have applied to this mapping rule
-            if (TP.notEmpty(str = arr.at(i).at(2))) {
-                re = TP.rc(TP.regExpEscape(str));
-                if (!re.test(url)) {
-                    arr.atPut(i, null);
-                    count++;
-                }
+    //  TODO: cache the result and flush on setcfg calls with new values.
+
+    //  Scan for any uri map patterns of any kind.
+    patterns = config.getKeys().filter(function(key) {
+        return mapregex.match(key);
+    });
+
+    //
+    if (TP.isEmpty(patterns)) {
+        return;
+    }
+
+    //  We have at least one pattern. Run each one, collecting match data so we
+    //  can sort it in the next step to determine the best match.
+    matches = TP.ac();
+    patterns.some(function(key) {
+        var pattern,
+            regex,
+            match;
+
+        pattern = TP.sys.cfg(key);
+        if (TP.isString(pattern)) {
+            //  special case here. if the string is a virtual path we expand it
+            //  and match the value for the URI. if it's identical we call that
+            //  an exact match and communicate that.
+            if (TP.uriExpandPath(pattern) === url) {
+                exact = key;
+                return true;
+            }
+
+            regex = TP.rc(pattern, null, true);
+        } else {
+            regex = pattern;
+        }
+
+        if (regex) {
+            match = regex.match(url);
+            if (TP.notEmpty(match)) {
+                matches.push(TP.ac(match, key));
             }
         }
 
-        //  found something we nulled? compact the array to remove nulls
-        if (count > 0) {
-            arr.compact();
-        }
+        return false;
+    })
+
+    //  If the search found a pattern value that expanded to an exact file match
+    //  that one "wins" and we need to return that configuration block.
+    if (TP.notEmpty(exact)) {
+        mapname = mapname.slice(0, mapname.lastIndexOf('.'));
+        return TP.sys.cfg(mapname);
     }
 
-    //  get the list of all delegations from the catalog. we have to scan
-    //  them to see if any match the uri in question
-    if (TP.isArray(arr = cat.at('delegations'))) {
-        len = arr.getSize();
-        for (i = 0; i < len; i++) {
-            //  if there's a filter entry it's because this entry came from
-            //  a delegated catalog and needs filtering based on the
-            //  original delegateURI tag
-            if (TP.notEmpty(str = arr.at(i).at(2))) {
-                re = TP.rc(TP.regExpEscape(str));
-                if (!re.test(url)) {
-                    continue;
-                }
-            }
-
-            //  delegations are [key, hash, filter] so we want to check the
-            //  hash for either a start or match string (indexOf vs. RegExp)
-            hash = arr.at(i).at(1);
-            if (TP.notEmpty(str = hash.at('uriStartString'))) {
-                if (url.indexOf(str) !== 0) {
-                    continue;
-                }
-            } else if (TP.notEmpty(str = hash.at('tibet:uriMatchString'))) {
-                if (TP.notValid(re = TP.rc(str))) {
-                    TP.ifWarn() ?
-                        TP.warn('Invalid RegExp source: ' + str +
-                                    ' in URI catalog.') : 0;
-
-                    continue;
-                }
-
-                if (!re.test(url)) {
-                    continue;
-                }
-            }
-
-            //  seems to have gotten past our checks...add to
-            //  entry...NOTE that this is the delegations list on the
-            //  entry, not the catalog
-            delegates = entry.at('delegations') || TP.ac();
-            delegates.push(arr.at(i));
-            entry.atPut('delegations', delegates);
-        }
+    //  No matches means the URI is "unmapped".
+    if (TP.isEmpty(matches)) {
+        return;
     }
 
-    //  get the list of all rewrites from the catalog. we have to scan
-    //  them to see if any match the uri in question
-    if (TP.isArray(arr = cat.at('rewrites'))) {
-        len = arr.getSize();
-        for (i = 0; i < len; i++) {
-            //  if there's a filter entry it's because this entry came from
-            //  a delegated catalog and needs filtering based on the
-            //  original delegateURI tag
-            if (TP.notEmpty(str = arr.at(i).at(2))) {
-                re = TP.rc(TP.regExpEscape(str));
-                if (!re.test(url)) {
-                    continue;
-                }
-            }
+    //  Sort based on criteria for a best fit (more segments, longest match).
+    matches = matches.sort(TP.core.URI.Type.BEST_URIMAP_SORT);
 
-            //  rewrites are [key, hash, filter] so we want to check the
-            //  hash for either a start or match string (indexOf vs. RegExp)
-            hash = arr.at(i).at(1);
-            if (TP.notEmpty(str = hash.at('uriStartString'))) {
-                if (url.indexOf(str) !== 0) {
-                    continue;
-                }
-            } else if (TP.notEmpty(str = hash.at('tibet:uriMatchString'))) {
-                if (TP.notValid(re = TP.rc(str))) {
-                    TP.ifWarn() ?
-                        TP.warn('Invalid RegExp source: ' + str +
-                                    ' in URI catalog.') : 0;
+    //  Capture the name of the mapping that owns the pattern.
+    mapname = matches.first().last();
+    mapname = mapname.slice(0, mapname.lastIndexOf('.'));
 
-                    continue;
-                }
-
-                if (!re.test(url)) {
-                    continue;
-                }
-            }
-
-            //  seems to have gotten past our checks...add to
-            //  entry...NOTE that this is the rewrites list on the
-            //  entry, not the catalog
-            rewrites = entry.at('rewrites') || TP.ac();
-            rewrites.push(arr.at(i));
-            entry.atPut('rewrites', rewrites);
-        }
-    }
-
-    //  update entry to avoid reprocessing overhead on future calls
-    entry.set('$complete', true);
-
-    cat.atPut(url, entry);
-
-    return entry;
+    //  Get the entire set of keys for that mapping entry.
+    return TP.sys.cfg(mapname);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Type.defineMethod('$getURIMapForKey',
-function(url, entry, key) {
-
-    /**
-     * @method $getURIMapForKey
-     * @summary Searches the URI map for the uri provided and returns the data
-     *     found.
-     * @param {String} url The url to search for as the primary key.
-     * @param {Object} entry The URI catalog hash entry to leverage.
-     * @param {String} key The specific hash entry key to look up.
-     * @returns {TP.core.Hash} A URI Catalog entry hash.
-     */
-
-    var map,
-
-        arr,
-
-        len,
-        i,
-
-        hash,
-        str,
-        re;
-
-    //  construct empty map so we don't have to do this work twice
-    map = TP.hc();
-    entry.atPut(key, map);
-
-    //  going to have to populate/filter the overall entry content so we
-    //  get a specific entry for this particular profile
-
-    //  when the URI's entry is built it sorts all elements matching this
-    //  URI so we can loop to see if any fit this profile key...first one
-    //  wins :)
-    if (TP.isArray(arr = entry.at('mappings'))) {
-        //  loop over individual entries to see if any of them match the
-        //  current conditions/runtime settings
-        len = arr.getSize();
-        for (i = 0; i < len; i++) {
-            //  for our purposes a <uri> entry becomes a regex built from
-            //  the profile key for the entry and the uri to use if that
-            //  profile is a match
-            if (TP.rc(arr.at(i).at(0)).test(key)) {
-                //  found one...store the element hash so we can find it,
-                //  using a key that'll tell us what kind it is
-                map.atPut('mapping', arr.at(i).at(1));
-
-                break;
-            }
-        }
-    }
-
-    //  check for overall regex rewrite rules that might alter the URI
-    //  value. NOTE that these also have to respect current environment
-    //  checks *and* match the URI itself
-    if (TP.isArray(arr = entry.at('rewrites'))) {
-        //  loop over rewrite rules and if any of the regexs match then
-        //  perform the associated replacement
-        len = arr.getSize();
-        for (i = 0; i < len; i++) {
-            //  for our purposes a <rewriteURI> entry becomes a regex built
-            //  from the profile key for the entry and a test which should
-            //  match the URI string. when both match we have a valid
-            //  rewrite rule for this URI and profile
-            if (TP.rc(arr.at(i).at(0)).test(key)) {
-                hash = arr.at(i).at(1);
-                if (TP.notEmpty(str = hash.at('uriStartString'))) {
-                    if (url.indexOf(str) === 0) {
-                        map.atPut('rewrite', hash);
-                        break;
-                    }
-                } else if (TP.notEmpty(str = hash.at('tibet:uriMatchString'))) {
-                    if (TP.isRegExp(re = TP.rc(str))) {
-                        if (re.test(url)) {
-                            map.atPut('rewrite', hash);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    //  check for overall regex delegation rules that might alter the
-    //  handler. NOTE that these also have to respect current environment
-    //  checks *and* match the URI itself
-    if (TP.isArray(arr = entry.at('delegations'))) {
-        //  loop over delegate rules and if any of the regexps match then
-        //  perform the associated replacement
-        len = arr.getSize();
-        for (i = 0; i < len; i++) {
-            //  for our purposes a <delegateURI> entry becomes a regex built
-            //  from the profile key for the entry and a regex which should
-            //  match the URI string. when both match we have a valid
-            //  delegation rule for this URI and profile
-            if (TP.rc(arr.at(i).at(0)).test(key)) {
-                hash = arr.at(i).at(1);
-
-                //  if this delegation rule isn't about mapping some kind of
-                //  handler or controller then skip to next one
-                if (TP.isEmpty(hash.at('tibet:urihandler')) &&
-                    TP.isEmpty(hash.at('tibet:contenttype'))) {
-                    continue;
-                }
-
-                if (TP.notEmpty(str = hash.at('uriStartString'))) {
-                    if (url.indexOf(str) === 0) {
-                        map.atPut('delegate', hash);
-                        break;
-                    }
-                } else if (TP.notEmpty(
-                            str = hash.at('tibet:uriMatchString'))) {
-                    if (TP.isRegExp(re = TP.rc(str))) {
-                        if (re.test(url)) {
-                            map.atPut('delegate', hash);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return map;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Type.defineMethod('$getURIProfile',
-function(forceRefresh) {
-
-    /**
-     * @method $getURIProfile
-     * @summary Returns the current runtime environment profile, a hash of
-     *     key/value pairs defining the current runtime state that should be
-     *     used when rewriting URIs.
-     * @description The 'key' entry in this hash provides a string
-     *     representation of the current profile that is useful for testing URI
-     *     mappings for matching rules. The return value is cached as
-     *     TP.sys.cfg('tibet.uriprofile') to avoid having to rebuild this
-     *     information too often.
-     * @param {Boolean} forceRefresh True to ignore any current setting and
-     *     rebuild it.
-     * @returns {TP.core.Hash} The shared hash.
-     */
-
-    var hash,
-
-        tpuser,
-
-        unit,
-        role,
-        user,
-
-        key;
-
-    //  NOTE that this profile is cached under tibet.uriprofile so it can be
-    //  looked up only when it's changing
-    hash = TP.sys.cfg('tibet.uriprofile');
-    if (TP.isValid(hash) && TP.notTrue(forceRefresh)) {
-        return hash;
-    }
-
-    //  didn't find one, so we'll build it. NOTE that the keys we use here
-    //  are those found in the XML as well so that a profile hash can be
-    //  built from the elements in the XML Catalog quickly.
-    hash = TP.hc();
-
-    hash.atPut('xml:lang', TP.sys.getTargetLanguage());
-    hash.atPut('tibet:browser', TP.sys.env('tibet.browser'));
-    hash.atPut('tibet:browserUI', TP.sys.env('tibet.browserUI'));
-
-    hash.atPut('tibet:env', TP.sys.getProfile());
-    hash.atPut('tibet:state', TP.sys.getState());
-    hash.atPut('tibet:offline', TP.str(TP.sys.isOffline()));
-
-    if (TP.isValid(tpuser = TP.sys.getEffectiveUser())) {
-        unit = tpuser.getPrimaryUnit();
-        hash.atPut('tibet:unit',
-                    TP.notValid(unit) ? 'ANY' : unit.getID());
-
-        role = tpuser.getPrimaryRole();
-        hash.atPut('tibet:role',
-                    TP.notValid(role) ? 'ANY' : role.getID());
-
-        user = tpuser.getID();
-        hash.atPut('tibet:user',
-                    TP.notValid(tpuser) ? 'ANY' : user.getID());
-    } else {
-        hash.atPut('tibet:unit', 'ANY');
-        hash.atPut('tibet:role', 'ANY');
-        hash.atPut('tibet:user', 'ANY');
-    }
-
-    //  recompute a key from our hash values in standard form and force
-    //  explicit values, not wildcarding to be used to build this key
-    key = TP.core.URI.$getURIProfileKey(hash, false);
-
-    //  store the key along with the data that constructed it in the hash
-    hash.atPut('key', key);
-
-    //  cache so we only build this once per application if things aren't
-    //  changing in the environment profile
-    TP.sys.setcfg('tibet.uriprofile', hash);
-
-    return hash;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Type.defineMethod('$getURIProfileKey',
-function(aProfile, useWildcards) {
-
-    /**
-     * @method $getURIProfileKey
-     * @summary Returns the normalized (standard order) key string used when
-     *     testing for URI map entries.
-     * @description The key is built using the data found in the profile
-     *     provided, which should include keys matching those available in
-     *     TIBET's extended XML Catalog file format. The second parameter
-     *     determines whether missing keys are defaulted to the values at the
-     *     time of the call or wildcarded for use in testing against a range.
-     * @param {TP.core.Hash} aProfile A hash providing parameters. These values
-     *     default to their current runtime states. Keys include:
-     *     'tibet:browser'. 'tibet:browserUI'. 'tibet:offline', 'tibet:env',
-     *     'tibet:state', 'tibet:unit', 'tibet:role', 'tibet:user', 'xml:lang'.
-     * @param {Boolean} useWildcards True if the returned string has wildcards
-     *     in places where no value was found.
-     * @returns {String} A map key string in one of two forms, regex form used
-     *     for testing, or static form.
-     */
-
-    var profile,
-        wildcards,
-
-        key,
-
-        browser,
-        browserUI,
-
-        off,
-
-        env,
-        state,
-
-        lang,
-
-        unit,
-        tpuser,
-        role,
-        user;
-
-    //  profile defaults to current runtime profile
-    profile = aProfile || TP.core.URI.$getURIProfile();
-    wildcards = TP.isTrue(useWildcards);
-
-    //  may have cached it with the hash during an earlier process, in which
-    //  case we can avoid reconstruction
-    if (TP.isValid(key = profile.at('key'))) {
-        return key;
-    }
-
-    browser = profile.atIfInvalid('tibet:browser',
-        wildcards ? '([^_]+)' : TP.sys.env('tibet.browser'));
-    browserUI = profile.atIfInvalid('tibet:browserUI',
-        wildcards ? '([^_]+)' : TP.sys.env('tibet.browserUI'));
-    off = TP.str(profile.atIfInvalid('tibet:offline',
-        wildcards ? '([^_]+)' : TP.sys.isOffline()));
-    //env = profile.atIfInvalid('tibet:env',
-    //    wildcards ? '([^_]+)' : TP.sys.getProfile());
-    env = 'ANY';
-    state = profile.atIfInvalid('tibet:state',
-        wildcards ? '([^_]+)' : TP.sys.getState());
-    state = TP.isEmpty(state) ? 'ANY' : state;
-    lang = profile.atIfInvalid('xml:lang',
-        wildcards ? '([^_]+)' : TP.sys.getTargetLanguage());
-    lang = TP.isEmpty(lang) ? 'ANY' : lang;
-
-    //  we cache the values for 'unit', 'role', and 'user' as 'cfg()' values
-    //  because the performance implications, particularly during startup, are
-    //  profound.
-
-    if (TP.isEmpty(unit = profile.at('tibet:unit'))) {
-        if (TP.isEmpty(unit = TP.sys.cfg('tibet.uriprofile.unit'))) {
-            if (TP.isValid(tpuser = TP.sys.getEffectiveUser())) {
-                unit = tpuser.getPrimaryUnit();
-                unit = TP.notValid(unit) ? '' : unit.getID();
-                TP.sys.setcfg('tibet.uriprofile.unit', unit);
-            }
-        }
-
-        unit = TP.isEmpty(unit) && wildcards ? '([^_]+)' : unit;
-    }
-
-    if (TP.isEmpty(role = profile.at('tibet:role'))) {
-        if (TP.isEmpty(role = TP.sys.cfg('tibet.uriprofile.role'))) {
-            if (TP.isValid(tpuser = TP.sys.getEffectiveUser())) {
-                role = tpuser.getPrimaryRole();
-                role = TP.notValid(role) ? '' : role.getID();
-                TP.sys.setcfg('tibet.uriprofile.role', role);
-            }
-        }
-
-        role = TP.isEmpty(role) && wildcards ? '([^_]+)' : role;
-    }
-
-    if (TP.isEmpty(user = profile.at('tibet:user'))) {
-        if (TP.isEmpty(user = TP.sys.cfg('tibet.uriprofile.user'))) {
-            if (TP.isValid(tpuser = TP.sys.getEffectiveUser())) {
-                user = tpuser.getID();
-                TP.sys.setcfg('tibet.uriprofile.user', user);
-            }
-        }
-
-        user = TP.isEmpty(user) && wildcards ? '([^_]+)' : user;
-    }
-
-    //  our key is always in the same order to 'normalize' it. the join
-    //  characters are intended to support valid Js identifier form that can
-    //  also be used as part of a regular expression test() invocation
-    key = TP.ac(browser, browserUI,
-                off, env, state, lang,
-                unit, role, user).join('_');
-
-    profile.atPut('key', key);
-
-    return key;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Type.defineMethod('map',
+TP.core.URI.Type.defineMethod('remap',
 function(aURI, aRequest) {
 
     /**
@@ -1463,15 +836,15 @@ function(aURI, aRequest) {
     mapper = TP.sys.cfg('uri.mapper');
     type = TP.sys.require(mapper);
 
-    if (TP.canInvoke(type, 'map')) {
-        return type.map(aURI, aRequest);
+    if (TP.canInvoke(type, 'remap')) {
+        return type.remap(aURI, aRequest);
     } else {
         TP.ifWarn() ?
             TP.warn('URI mapper: ' + mapper +
-                    ' does not support map(); using default.',
+                    ' does not support remap(); using default.',
                     TP.IO_LOG) : 0;
 
-        return TP.core.URIMapper.map(aURI, aRequest);
+        return TP.core.URIMapper.remap(aURI, aRequest);
     }
 });
 
@@ -1484,10 +857,8 @@ function(aURI, aRequest) {
      * @method rewrite
      * @summary Rewrites the incoming URI as appropriate by invoking the
      *     current TP.sys.cfg('uri.rewriter') responsible for URI rewriting.
-     * @description The default is the TP.core.URIRewriter type, which leverages
-     *     data in an XML Catalog file (typically uris.xml). This rewriting step
-     *     is performed prior to any operations which require a URI handler such
-     *     as load or save.
+     * @description This rewriting step is performed prior to any operations
+     *     which require a URI handler such as load or save.
      * @param {TP.core.URI|String} aURI The URI to rewrite.
      * @param {TP.sig.Request} aRequest An optional request whose values may
      *     inform the rewrite.
@@ -3461,31 +2832,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('map',
-function(aRequest) {
-
-    /**
-     * @method map
-     * @summary Directs the operation implied by any data in aRequest to a
-     *     viable handler for the URI. This typically results in the request
-     *     being passed to a TP.core.URIHandler type/subtype. Note that the URI
-     *     is expected to have been rewritten as needed prior to this call so
-     *     that the handler is appropriate for the concrete URI being accessed.
-     * @param {TP.sig.Request} aRequest The request whose values should inform
-     *     the routing assignment.
-     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
-     *     subtype type object that can handle the request for the supplied URI.
-     */
-
-    if (TP.isFalse(this.isMappedURI())) {
-        return this.$getDefaultHandler(aRequest);
-    }
-
-    return this.getType().map(this, aRequest);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.URI.Inst.defineMethod('refreshFromRemoteResource',
 function() {
 
@@ -3635,6 +2981,31 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     //  If the routine was invoked synchronously then the data will have
     //  been placed in the subrequest.
     return subrequest.getResponse();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('remap',
+function(aRequest) {
+
+    /**
+     * @method remap
+     * @summary Directs the operation implied by any data in aRequest to a
+     *     viable handler for the URI. This typically results in the request
+     *     being passed to a TP.core.URIHandler type/subtype. Note that the URI
+     *     is expected to have been rewritten as needed prior to this call so
+     *     that the handler is appropriate for the concrete URI being accessed.
+     * @param {TP.sig.Request} aRequest The request whose values should inform
+     *     the routing assignment.
+     * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
+     *     subtype type object that can handle the request for the supplied URI.
+     */
+
+    if (TP.isFalse(this.isMappedURI())) {
+        return this.$getDefaultHandler(aRequest);
+    }
+
+    return this.getType().remap(this, aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -5642,26 +5013,9 @@ function(aRequest) {
     if (TP.notValid(handler)) {
         //  check on uri mapping to see if the URI maps define a wrapper.
         if (TP.notFalse(this.isMappedURI())) {
-            entry = TP.core.URI.$getURIEntry(this);
-
-            //  the entry for the URI caches lookup results by 'profile' key
-            //  so we need to get that to see if a content handler was
-            //  defined. by passing no profile we get the one for the
-            //  current runtime environment, and we turn off wildcard
-            //  generation to get explicit values
-            key = TP.core.URI.$getURIProfileKey(null, false);
-
-            if (TP.notValid(map = entry.at(key))) {
-                path = TP.uriExpandPath(this.asString()).split('#').at(0);
-                map = TP.core.URI.$getURIMapForKey(path, entry, key);
-            }
-
+            map = TP.core.URI.$getURIMap(this);
             if (TP.isValid(map)) {
-                if (TP.isValid(item = map.at('mapping'))) {
-                    handler = item.at('tibet:contenttype');
-                } else if (TP.isValid(item = map.at('delegate'))) {
-                    handler = item.at('tibet:contenttype');
-                }
+                handler = map.at('contenttype');
             }
         }
 
@@ -5976,7 +5330,7 @@ function(aRequest) {
     //  map the load operation so we get the right handler based on any
     //  rewriting and routing logic in place for the original URI
     request.atPut('operation', 'load');
-    handler = url.map(this, request);
+    handler = url.remap(this, request);
 
     return handler.load(url, request);
 });
@@ -6013,7 +5367,7 @@ function(aRequest) {
     url = this.rewrite(request);
 
     request.atPut('operation', 'nuke');
-    handler = url.map(this, request);
+    handler = url.remap(this, request);
 
     return handler.nuke(url, request);
 });
@@ -6052,7 +5406,7 @@ function(aRequest) {
     url = this.rewrite(request);
 
     request.atPut('operation', 'save');
-    handler = url.map(this, request);
+    handler = url.remap(this, request);
 
     return handler.save(url, request);
 });
@@ -6223,7 +5577,7 @@ function(aRequest) {
     url = this.rewrite(request);
 
     request.atPut('operation', 'watch');
-    handler = url.map(this, request);
+    handler = url.remap(this, request);
 
     this.set('watched', true);
 
@@ -6261,7 +5615,7 @@ function(aRequest) {
     url = this.rewrite(request);
 
     request.atPut('operation', 'unwatch');
-    handler = url.map(this, request);
+    handler = url.remap(this, request);
 
     this.set('watched', false);
 
@@ -8846,16 +8200,12 @@ function(targetURI, aRequest) {
 
 /**
  * @type {TP.core.URIRewriter}
- * @summary TP.core.URIRewriters process any rewrite rules that may be defined,
- *     allowing TIBET's URIs to work more like "keys" than "values". As a
- *     result, rewriting can be leveraged as part of a strategy to redirect URI
- *     references based on various runtime parameters including whether the
- *     application is offline, in test mode, etc.
- *
- *     The default process of rewriting URIs is done by examining data in an
- *     XML Catalog file, typically uris.xml, and remapping the URI based on
- *     either explicit match or regular expression match rules. See the sample
- *     uris.xml file for examples.
+ * @summary TP.core.URIRewriter processes any uri.map.*.rewrite entries which
+ *     match a particular URI based on that map entry's pattern value. This
+ *     rewrite capability allows TIBET's URIs to work more like "keys" than
+ *     "values". Rewrite ability is limited to simple URI "part substitution"
+ *     by default. To perform more advanced operations you can create your own
+ *     rewriter(s) or simply override the rewrite method of the desired URI.
  */
 
 //  ------------------------------------------------------------------------
@@ -8871,217 +8221,71 @@ function(aURI, aRequest) {
 
     /**
      * @method rewrite
-     * @summary Rewrites the receiver based on any XML Catalog data which
-     *     matches the current filtering parameter values and the URI.
-     * @description The rewrite routine allows TP.core.URI to alter the real URI
-     *     used for various operations based on XML Catalog data enhanced for
-     *     use with TIBET. This data is typically found in the file uris.xml in
-     *     the application's data directory.
-     *
-     *     NOTE that one potentially unexpected element here is that <uri>
-     *     mappings are done as if no URI fragments exist, meaning that only the
-     *     "document href" portion of the URI is rewritten and any trailing
-     *     fragment is reattached after rewriting has been completed. NOTE that
-     *     this does not affect <rewriteURI> element definitions which replace
-     *     any content which matches their regular expression, including
-     *     fragments.
+     * @summary Rewrites the receiver based on any uri.map configuration data
+     *     which matches the URI. The rewrite is limited to replacing specific
+     *     portions of the uri with fixed strings.
      * @param {TP.core.URI|String} aURI The URI to rewrite.
      * @param {TP.sig.Request} aRequest An optional request whose values may
      *     inform the rewrite.
      * @returns {TP.core.URI} The true URI for the resource.
      */
 
-    var entry,
-
-        uri,
-        key,
-        url,
+    var uri,
         map,
-
-        rewrite,
-
-        item,
-
-        localurl,
-        duration,
-        updated,
-        upDate,
-        newurl,
-
+        rewrites,
         str,
+        scheme,
+        ssp,
+        parts;
 
-        newuri;
+    uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
-        return aURI;
-    }
-
-    //  get/init the catalog entry for the URI. the resulting entry contains
-    //  all element data that could have anything to do with this URI based
-    //  on matching the URI value either explicitly or via regex match
-    entry = TP.core.URI.$getURIEntry(aURI);
-    if (TP.isEmpty(entry)) {
-        //  the entry will only be empty if there were no rules of any kind
-        //  that match up with this URI, which is actually the typical case.
-        //  when this is true we can avoid overhead by flagging the instance
-        //  as non-mapped so we don't try to look it up again
-        uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
-        uri.isMappedURI(false);
-
         return uri;
     }
 
-    //  the entry for the URI caches lookup results by 'profile' key so we
-    //  need to get that for the next phase. by passing no profile we get
-    //  the one for the current runtime environment, and we turn off
-    //  wildcard generation to get explicit values
-    key = TP.core.URI.$getURIProfileKey(null, false);
+    //  capture the best uri map configuration data for the URI.
+    map = TP.core.URI.$getURIMap(uri);
 
-    //  we'll need a string-based version of our original URI for some
-    //  of what follows
-    url = TP.uriExpandPath(aURI.asString()).split('#').at(0);
-
-    //  given that the runtime profile will rarely change we can see if
-    //  a prior lookup has used the same key and stored the result for us.
-    if (TP.isValid(map = entry.at(key))) {
-        //  most common case is that we've been here before and determined
-        //  that the URI has no entries which apply to it specific to this
-        //  runtime config...or it had one and we've cached it in the map
-        if (TP.isEmpty(map)) {
-            //  when map is empty it's because the URI is its own rewrite
-            return TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
-        } else if (TP.isValid(rewrite = map.at('rewrite'))) {
-            //  if we cached our results we can use that instead
-            return rewrite;
-        } else {
-            //  map isn't empty, and doesn't have a cached value? have to
-            //  compute from what's there to construct cacheable value
-
-            //  fall through past outer IF/ELSE so we can process the map
-            //  in one place regardless of how it was acquired/built
-            void 0;
-        }
-    } else {    //  map not found -- first time for this URI/profile pair
-        map = TP.ifInvalid(TP.core.URI.$getURIMapForKey(url, entry, key),
-                            TP.hc());
+    if (TP.isEmpty(map)) {
+        //  No mappings means we can avoid overhead in the future.
+        uri.isMappedURI(false);
+        return uri;
     }
 
-    //  each runtime situation can result in us finding either a mapping
-    //  or a rewrite rule (or nothing). if an item is found the item
-    //  returned is a hash of the element that was mapped, so the keys are
-    //  the attribute names from the original element.
-    if (TP.isValid(item = map.at('mapping'))) {
-        //  OK, this one's a bit more complicated due to extensions we make
-        //  for TIBET to support local disk/db caches of resources
+    rewrites = map.getKeys().filter(function(key) {
+        return /\.rewrite\./.test(key);
+    });
 
-        //  In particular, we allow URIs to have "localuri" entries which
-        //  define a local storage location for a remote URI. This is useful
-        //  for things like large lookup tables which don't change often and
-        //  for which the user is willing to agree to local disk/db storage
-        //  since they can be loaded directly from cache if it still appears
-        //  to be valid based on duration and last update times.
-
-        localurl = TP.uriExpandPath(item.at('tibet:localuri'));
-        if (TP.notEmpty(localurl)) {
-            TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                TP.trace('Found local cache \'' + localurl +
-                                '\' for uri: ' + url) : 0;
-
-            duration = item.at('tibet:duration');
-            if (TP.notEmpty(duration)) {
-                TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-                    TP.trace('Found cache duration \'' + duration +
-                                    '\' for uri: ' + url) : 0;
-
-                updated = item.at('tibet:updated');
-                if (TP.notEmpty(updated)) {
-                    //  if the cache shows an update time we can consider
-                    //  using it if a few more things check out...
-                    upDate = Date.from(updated);
-                    upDate = upDate.addDuration(duration);
-
-                    //  if we haven't reached the time predicted by the
-                    //  duration for expiration we can use the cache URI
-                    if (TP.dc().getTime() < upDate.getTime()) {
-                        newurl = localurl;
-                    } else {
-                        //  out of date, can't use that data yet
-                        newurl = TP.uriExpandPath(item.at('uri'));
-                    }
-                } else {
-                    //  duration, but no update timestamp. presumably out of
-                    //  date since it appears to have never been updated
-                    newurl = TP.uriExpandPath(item.at('uri'));
-                }
-            } else {
-                //  empty duration, so effectively no expiration time...but
-                //  if the update date is empty there's no local copy yet
-
-                updated = item.at('tibet:updated');
-                if (TP.notEmpty(updated)) {
-                    newurl = localurl;
-                } else {
-                    //  no data locally yet, rewrite to standard URI
-                    newurl = TP.uriExpandPath(item.at('uri'));
-                }
-            }
-        } else {
-            //  empty localuri so use the standard entry attribute data
-            newurl = TP.uriExpandPath(item.at('uri'));
-        }
-
-        //  if original URI has a fragment we need to adjust newurl to match
-        if (TP.regex.HAS_HASH.test(url)) {
-            newurl = TP.join(newurl, '#', url.split('#').last());
-        }
-
-        //  support pipelines of rewrites, but watch for recursion by making
-        //  sure alterations are actually changing the value
-        if (url !== newurl) {
-            newurl = TP.core.URI.rewrite(newurl, aRequest);
-        }
-
-        newuri = TP.core.URI.construct(newurl);
-    } else if (TP.isValid(item = map.at('rewrite'))) {
-        //  rewrites are relatively easy, just a regex replace and try to
-        //  construct a viable URI instance from the result
-
-        //  NOTE that while we retain the XML Catalog names here we expand
-        //  the semantics so they are not limited to prefix manipulations
-        newurl = TP.isString(aURI) ? aURI : aURI.getLocation();
-        str = newurl.replace(item.at('uriStartString') ||
-                                item.at('tibet:uriMatchString'),
-                            item.at('rewritePrefix'));
-
-        newuri = TP.core.URI.construct(str);
-    } else {
-        //  no mappings of any kind apparently so we can leave the map empty
-        //  (which will say there's no mapping for this profile) and return
-        //  a viable URI representation of the input
-        return TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
+    if (TP.isEmpty(rewrites)) {
+        return uri;
     }
 
-    //  if we got here without a viable rewrite uri then we've got to
-    //  default back to the original and log a warning
-    if (TP.notValid(newuri)) {
-        TP.ifWarn() && TP.$$DEBUG && TP.$$VERBOSE ?
-            TP.warn('Invalid rewrite uri: ' +
-                        newurl + '. Using ' + url) : 0;
+//  TODO:   fix up to support replacing individual uri parts.
+    return uri;
 
-        uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
-    } else {
-        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-            TP.trace('Found rewrite uri \'' + newurl + '\' for uri: ' + url) :
-            0;
+/*
+    str = TP.str(uri);
+    scheme = str.slice(0, str.indexOf(':'));
+    ssp = str.slice(str.indexOf(':') + 1);
+    parts = uri.$parseSchemeSpecificPart(ssp);
 
-        uri = newuri;
-    }
+    //  At least one rewrite property so process them.
+    rewrites.forEach(function(key) {
+        var slot,
+            value;
 
-    //  went to some trouble to come up with this, so cache it for next time
-    map.atPut('rewrite', uri);
+        slot = key.slice(key.lastIndexOf('.') + 1);
+        value = TP.sys.cfg(key);
+
+        parts.atPut(slot, value);
+    });
+
+
 
     return uri;
+*/
 });
 
 //  ========================================================================
@@ -9095,12 +8299,6 @@ function(aURI, aRequest) {
  *     front-controllers which examine a URI and determine which class should be
  *     invoked to perform the actual processing. The actual action processing in
  *     TIBET is done by TP.core.URIHandler subtypes.
- *
- *     Note that mapping rules in TIBET are processed much like those in other
- *     environments, too many can slow things down -- and the first match wins.
- *     The data used for mapping is the same URI catalog data used by rewriting,
- *     however mapping makes use of a specific tibet:urihandler attribute to
- *     define a mapping's result.
  */
 
 //  ------------------------------------------------------------------------
@@ -9111,11 +8309,11 @@ TP.lang.Object.defineSubtype('core.URIMapper');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.URIMapper.Type.defineMethod('map',
+TP.core.URIMapper.Type.defineMethod('remap',
 function(aURI, aRequest) {
 
     /**
-     * @method map
+     * @method remap
      * @summary Locates and returns the proper TP.core.URIHandler type for the
      *     URI and request pair provided. The handler type defaults to the type
      *     returned by the uri's getDefaultHandler method.
@@ -9127,91 +8325,39 @@ function(aURI, aRequest) {
      */
 
     var uri,
-        entry,
-
-        key,
-        url,
         map,
+        handler,
+        type;
 
-        mapping,
-        item,
-
-        handler;
+    uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
-        return aURI;
+        return uri;
     }
 
-    //  typically we're passed a URI instance but just in case...
-    uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
+    //  capture the best uri map configuration data for the URI.
+    map = TP.core.URI.$getURIMap(uri);
 
-    //  get/init the catalog entry for the URI. the resulting entry contains
-    //  all entries that could have anything to do with this URI based on
-    //  matching the URI value either explicitly or via regex match
-    entry = TP.core.URI.$getURIEntry(aURI);
-    if (TP.isEmpty(entry)) {
-        //  the entry will only be empty if there were no rules of any kind
-        //  that match up with this URI, which is actually the typical case.
-        //  when this is true we can avoid overhead by flagging the instance
-        //  as non-mapped so we don't try to look it up again
+    if (TP.isEmpty(map)) {
+        //  No mappings means we can avoid overhead in the future.
         uri.isMappedURI(false);
 
         return uri.$getDefaultHandler(aRequest);
     }
 
-    //  the entry for the URI caches lookup results by 'profile' key so we
-    //  need to get that for the next phase. by passing no profile we get
-    //  the one for the current runtime environment, and we turn off
-    //  wildcard generation to get explicit values
-    key = TP.core.URI.$getURIProfileKey(null, false);
-
-    //  we'll need a string-based version of our original URI
-    //  for some of what follows
-    url = TP.uriExpandPath(aURI.asString()).split('#').at(0);
-
-    //  given that the runtime profile will rarely change we can see if
-    //  a prior lookup has used the same key and stored the result for us.
-    if (TP.isValid(map = entry.at(key))) {
-        //  most common case is that we've been here and the URI has no
-        //  entries which apply to it specific to this runtime config...or
-        //  it had one and we've cached it in the map for this profile
-        if (TP.isEmpty(map)) {
-            return uri.$getDefaultHandler(aRequest);
-        } else if (TP.isValid(mapping = map.at('handlerType'))) {
-            return mapping;
-        }
-
-        //  fall through to after the IF/ELSE so we can process the map
-        //  in one place regardless of how it was acquired/built
-    } else {
-        map = TP.ifInvalid(TP.core.URI.$getURIMapForKey(url, entry, key),
-                            TP.hc());
+    if (TP.isValid(map)) {
+        handler = map.at('urihandler');
     }
 
-    //  each runtime situation can result in us finding either a mapping
-    //  or a delegation rule (or nothing). when found, the item returned is
-    //  a hash of the element that was mapped, so the keys are the attribute
-    //  names from the original element
-    if (TP.isValid(item = map.at('mapping'))) {
-        mapping = item.at('tibet:urihandler');
-    } else if (TP.isValid(item = map.at('delegate'))) {
-        mapping = item.at('tibet:urihandler');
-    }
-
-    //  should have found a mapping in the item if routing is applicable,
-    //  otherwise we'll continue to default
-    if (TP.isEmpty(mapping)) {
-        TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-            TP.trace('Returning default handler type: TP.core.URIHandler') : 0;
-
+    if (TP.isEmpty(handler)) {
         return uri.$getDefaultHandler(aRequest);
     }
 
-    handler = TP.sys.require(mapping);
-    if (TP.notValid(handler)) {
+    type = TP.sys.getTypeByName(handler);
+    if (TP.notValid(type)) {
         TP.ifWarn() ?
-            TP.warn('Unable to load handler: ' + mapping) : 0;
+            TP.warn('Unable to load handler: ' + handler) : 0;
 
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.trace('Returning default handler type: TP.core.URIHandler') : 0;
@@ -9220,7 +8366,7 @@ function(aURI, aRequest) {
     }
 
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-        TP.trace('Found mapping \'' + mapping + '\' for uri: ' + url) : 0;
+        TP.trace('Found mapping \'' + handler + '\' for uri: ' + uri) : 0;
 
     //  went to some trouble to come up with this, so cache it for next time
     map.atPut('handlerType', handler);
@@ -9263,9 +8409,9 @@ function(a, b) {
         return 1;
     } else {
         //  Second criteria is length of the full match string.
-        if (aMatch.first().length < bMatch.first().length) {
+        if (aMatch.first().length > bMatch.first().length) {
             return -1;
-        } else if (aMatch.first().length > bMatch.first().length) {
+        } else if (aMatch.first().length < bMatch.first().length) {
             return 1;
         } else {
             //  All else being equal last definition wins.
