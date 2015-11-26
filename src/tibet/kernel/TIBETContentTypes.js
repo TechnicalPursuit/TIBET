@@ -4206,6 +4206,13 @@ function() {
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
+    var srcObj;
+
+    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    if (TP.owns(srcObj, '$$noPathTracking')) {
+        return this;
+    }
+
     this.get('$prefixParts').pop();
 
     return this;
@@ -4256,12 +4263,19 @@ function(addressPart) {
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
-    var prefixParts,
+    var srcObj,
+
+        prefixParts,
 
         sourceObjectID,
         srcPath,
 
         address;
+
+    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    if (TP.owns(srcObj, '$$noPathTracking')) {
+        return this;
+    }
 
     prefixParts = this.get('$prefixParts');
 
@@ -4276,7 +4290,7 @@ function(addressPart) {
     srcPath = srcPath.replace(/\.\[/g, '[');
 
     //  Grab the ID of the current source object
-    sourceObjectID = TP.id(TP.core.SimpleTIBETPath.get('$currentSource'));
+    sourceObjectID = TP.id(srcObj);
 
     this.registerObservedAddress(address, sourceObjectID, srcPath);
 

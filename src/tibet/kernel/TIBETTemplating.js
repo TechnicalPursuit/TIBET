@@ -870,6 +870,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
         '    source;\n',
         '\n',
         'params = TP.ifInvalid(aParamHash, TP.hc());\n',
+        'params.$$noPathTracking = true;\n',
         'source = TP.wrap(aDataSource);\n',
         '\n\n',
 
