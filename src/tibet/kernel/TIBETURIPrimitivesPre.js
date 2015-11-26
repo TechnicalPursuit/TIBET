@@ -1177,9 +1177,6 @@ function(aPath, aFragment) {
                 break;
 
             case 'tibet':
-                joinChar = '.';
-                break;
-
             case 'json':
                 if (expr.charAt(0) === '[') {
                     joinChar = '';

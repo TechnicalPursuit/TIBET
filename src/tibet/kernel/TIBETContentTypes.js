@@ -4206,6 +4206,13 @@ function() {
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
+    var srcObj;
+
+    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    if (TP.owns(srcObj, '$$noPathTracking')) {
+        return this;
+    }
+
     this.get('$prefixParts').pop();
 
     return this;
@@ -4221,7 +4228,8 @@ function() {
      * @returns {String}
      */
 
-    return this.get('$prefixParts').join('.');
+    //  Note here the conversion from 'foo.[1]' to 'foo[1]'
+    return this.get('$prefixParts').join('.').replace(/\.\[/g, '[');
 });
 
 //  ------------------------------------------------------------------------
@@ -4255,21 +4263,36 @@ function(addressPart) {
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
-    var prefixParts,
+    var srcObj,
+
+        prefixParts,
 
         sourceObjectID,
-        srcPath;
+        srcPath,
+
+        address;
+
+    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    if (TP.owns(srcObj, '$$noPathTracking')) {
+        return this;
+    }
 
     prefixParts = this.get('$prefixParts');
 
     prefixParts.push(addressPart);
 
-    sourceObjectID = TP.id(TP.core.SimpleTIBETPath.get('$currentSource'));
+    //  Note here the conversion from 'foo.[1]' to 'foo[1]'
+    address = prefixParts.join('.').replace(/\.\[/g, '[');
+
     srcPath = TP.core.SimpleTIBETPath.get('$currentPath').get('srcPath');
 
-    this.registerObservedAddress(prefixParts.join('.'),
-                                    sourceObjectID,
-                                    srcPath);
+    //  Note here the conversion from 'foo.[1]' to 'foo[1]'
+    srcPath = srcPath.replace(/\.\[/g, '[');
+
+    //  Grab the ID of the current source object
+    sourceObjectID = TP.id(srcObj);
+
+    this.registerObservedAddress(address, sourceObjectID, srcPath);
 
     return this;
 });
