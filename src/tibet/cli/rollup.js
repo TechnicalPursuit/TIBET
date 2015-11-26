@@ -97,7 +97,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'default': {
             color: false,
             headers: true,
-            'package': 'standard',
+            'package': 'app',
             config: 'base'
         }
     },

@@ -8481,7 +8481,7 @@ TP.boot.$configurePackage = function() {
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
-            package = '~app_cfg/' + TP.sys.cfg('project.name');
+            package = '~app_cfg/app.xml';
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
                 package + '.', TP.DEBUG);

@@ -144,7 +144,7 @@ CLI.NPM_FILE = 'package.json';
  * be kept in sync with the tibet_cfg value for boot.default_package.
  * @type {string}
  */
-CLI.PACKAGE_FILE = '~app_cfg/standard.xml';
+CLI.PACKAGE_FILE = '~app_cfg/app.xml';
 
 /**
  * Command argument parsing options for minimist. The defaults handle the common

@@ -6,9 +6,6 @@
     "tibet": {
         "dna": "{{dna}}"
     },
-    "boot": {
-        "profile": "{{appname}}"
-    },
     "escodegen": {
         "format": {
             "compact": true

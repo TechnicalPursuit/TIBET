@@ -78,8 +78,8 @@ Cmd.prototype.HELP =
 'The --package optional parameter is used to determine the cfg package\n' +
 'file that will be updated with entries to load the new tag type and\n' +
 'configure it. If this parameter is not supplied, the default for a tag\n' +
-'being created in a project is \'~app_cfg/app.xml\' and for a tag being\n' +
-'created in the TIBET library is \'lib_cfg/lib_namespaces.xml\'.\n\n' +
+'being created in a project is \'~app_cfg/{{appname}}.xml\'. For a tag\n' +
+'created in the TIBET library it\'s \'lib_cfg/lib_namespaces.xml\'.\n\n' +
 
 'The --config optional parameter is used as the name of the \'config\'\n' +
 'package in the cfg package file that the new tag will be made a part of.\n' +
@@ -130,7 +130,7 @@ Cmd.prototype.HELP =
  * nsname           appname                 cannot default
  * tagname          cannot default          cannot default
  *
- * package          '~app_cfg/app.xml'      '~lib_cfg/lib_namespaces.xml'
+ * package          '~app_cfg/{{appname}}.xml'   '~lib_cfg/lib_namespaces.xml'
  * config           'app_img'               '<nsname>'
  * dir              '~app_src/tags'        '~lib_src/<nsname>'
  * compiled         false                   false
@@ -234,7 +234,7 @@ Cmd.prototype.configureOptions = function() {
 
     if (!(opts.pkgname = this.options.package)) {
         opts.pkgname = inProj ?
-                        '~app_cfg/app.xml' :
+                        '~app_cfg/' + CLI.getcfg('npm.name') + '.xml' :
                         '~lib_cfg/lib_namespaces.xml';
     } else {
         delete opts.package;

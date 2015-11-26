@@ -1,35 +1,31 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="{{appname}}" default="base" basedir="~app_src">
+    name="{{appname}}" default="base" basedir="~app_cfg">
 
-<config id="base" if="boot.phase_two">
-    <config ref="app_img"/>
+<config id="base">
+    <package src="tibet.xml" config="base"/>
+    <package src="{{appname}}.xml" config="base"/>
 </config>
 
-<config id="full" if="boot.phase_two">
-    <config ref="base"/>
+<config id="full">
+    <package src="tibet.xml" config="full"/>
+    <package src="{{appname}}.xml" config="full"/>
 </config>
 
-<config id="developer" if="boot.phase_two">
-    <config ref="base"/>
+<config id="developer">
+    <package src="tibet.xml" config="developer"/>
+    <package src="{{appname}}.xml" config="developer"/>
 </config>
 
-<config id="app_img">
-    <!-- put your source scripts here -->
-    <script src="~app_src/APP.{{appname}}.js" />
-    <script src="~app_src/APP.{{appname}}.Application.js" />
-    <script src="~app_src/tags/APP.{{appname}}.app.js" />
+<config id="contributor">
+    <package src="tibet.xml" config="contributor"/>
+    <package src="{{appname}}.xml" config="developer"/>
 </config>
 
-<config id="test" if="boot.phase_two">
+<config id="test">
     <config ref="developer"/>
-    <config ref="tests"/>
-</config>
-
-<config id="tests">
-    <!-- put your test scripts here -->
-    <script src="~app_test/APP.js" />
+    <package src="{{appname}}.xml" config="tests"/>
 </config>
 
 </package>

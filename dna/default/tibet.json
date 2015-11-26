@@ -7,7 +7,6 @@
         "dna": "{{dna}}"
     },
     "boot": {
-        "profile": "{{appname}}",
         "use_login": false
     },
     "escodegen": {
