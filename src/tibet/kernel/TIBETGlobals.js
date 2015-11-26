@@ -2050,12 +2050,12 @@ TP.sort.TABINDEX_ORDER = function(a, b) {
     //  Neither 'a' or 'b' has a tabindex value. Leave the elements in
     //  document order.
     if (isNaN(aVal) && isNaN(bVal)) {
-        return 0;
+        return TP.sort.DOCUMENT_ORDER(a, b);
     } else if (isNaN(aVal) && !isNaN(bVal)) {
         //  'a' has no tabindex value and 'b's is either -1 or 0. Leave
         //  elements in document order.
         if (bVal <= 0) {
-            return 0;
+            return TP.sort.DOCUMENT_ORDER(a, b);
         }
 
         //  'b' has a real, positive integer tabindex - it should come
@@ -2065,7 +2065,7 @@ TP.sort.TABINDEX_ORDER = function(a, b) {
         //  'b' has no tabindex value and 'a's is either -1 or 0. Leave
         //  elements in document order.
         if (aVal <= 0) {
-            return 0;
+            return TP.sort.DOCUMENT_ORDER(a, b);
         }
 
         //  'a' has a real, positive integer tabindex - it should come
@@ -2074,7 +2074,7 @@ TP.sort.TABINDEX_ORDER = function(a, b) {
     } else if (aVal <= 0 && bVal <= 0) {
         //  Both 'a' and 'b' have a tabindex value that is either -1 or
         //  0. Leave elements in document order.
-        return 0;
+        return TP.sort.DOCUMENT_ORDER(a, b);
     } else if (aVal <= 0 && bVal > 0) {
         //  'a' has a tabindex value of either -1 or 0 and 'b' has a
         //  real, positive integer tabindex - it should come before 'a'
