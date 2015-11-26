@@ -234,6 +234,8 @@ function(aURI, $$vetted) {
         if (TP.isKindOf(aURI, TP.core.URI)) {
             return aURI;
         } else {
+            //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
+            //          with URI components (via rewrite() or other means).
             return;
         }
     } else {
