@@ -151,6 +151,10 @@ function(a, b) {
 
 //  ------------------------------------------------------------------------
 
+//  regex used to scan uri map configuration settings for pattern keys.
+TP.core.URI.Type.defineConstant('URI_PATTERN_REGEX',
+    /^uri\.map\.(?:.*)\.pattern$/);
+
 //  placeholder for the scheme specific to the receiving type
 TP.core.URI.Type.defineConstant('SCHEME');
 
@@ -726,36 +730,50 @@ function(aURI) {
      */
 
     var url,
+        str,
         config,
         patterns,
         exact,
         matches,
-        mapregex,
-        mapname;
+        mapname,
+        map;
 
     if (TP.notValid(aURI)) {
         return this.raise('InvalidURI');
     }
 
-    url = TP.str(aURI);
+    url = TP.uc(aURI);
+    if (TP.notValid(url)) {
+        return this.raise('InvalidURI');
+    }
 
-    mapregex = /^uri\.map\.(?:.*)\.pattern$/;
+    //  check the uri instance for a map. if it exists use that cached map.
+    map = url.get('urimap');
+    if (TP.isValid(map)) {
+        return map;
+    }
+
+    //  Pattern matching requires the string version of our URI.
+    str = TP.str(aURI);
+
     config = TP.sys.cfg();
-
-    //  TODO: cache the result and flush on setcfg calls with new values.
 
     //  Scan for any uri map patterns of any kind.
     patterns = config.getKeys().filter(function(key) {
-        return mapregex.match(key);
+        return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
     });
 
-    //
+    //  No patterns means no mappings. But ensure we cache a map as needed.
     if (TP.isEmpty(patterns)) {
+        if (TP.sys.hasStarted()) {
+            url.$set('$urimap', TP.hc(), false);
+        }
         return;
     }
 
     //  We have at least one pattern. Run each one, collecting match data so we
-    //  can sort it in the next step to determine the best match.
+    //  can sort it in the next step to determine the best match. NOTE we use
+    //  some() here to allow for quick return when we find an exact mapping.
     matches = TP.ac();
     patterns.some(function(key) {
         var pattern,
@@ -767,7 +785,7 @@ function(aURI) {
             //  special case here. if the string is a virtual path we expand it
             //  and match the value for the URI. if it's identical we call that
             //  an exact match and communicate that.
-            if (TP.uriExpandPath(pattern) === url) {
+            if (TP.uriExpandPath(pattern) === str) {
                 exact = key;
                 return true;
             }
@@ -778,7 +796,7 @@ function(aURI) {
         }
 
         if (regex) {
-            match = regex.match(url);
+            match = regex.match(str);
             if (TP.notEmpty(match)) {
                 matches.push(TP.ac(match, key));
             }
@@ -791,11 +809,27 @@ function(aURI) {
     //  that one "wins" and we need to return that configuration block.
     if (TP.notEmpty(exact)) {
         mapname = mapname.slice(0, mapname.lastIndexOf('.'));
-        return TP.sys.cfg(mapname);
+        map = TP.sys.cfg(mapname);
+
+        //  Adjust keys since the caller won't know pattern prefix etc.
+        map.getKeys().forEach(function(key) {
+            map.atPut(key.slice(key.lastIndexOf('.') + 1), map.at(key));
+        });
+
+        //  Ensure we cache a map as needed.
+        if (TP.sys.hasStarted()) {
+            url.$set('$urimap', map, false);
+        }
+
+        return map;
     }
 
     //  No matches means the URI is "unmapped".
     if (TP.isEmpty(matches)) {
+        //  Ensure we cache a map as needed.
+        if (TP.sys.hasStarted()) {
+            url.$set('$urimap', TP.hc(), false);
+        }
         return;
     }
 
@@ -807,7 +841,19 @@ function(aURI) {
     mapname = mapname.slice(0, mapname.lastIndexOf('.'));
 
     //  Get the entire set of keys for that mapping entry.
-    return TP.sys.cfg(mapname);
+    map = TP.sys.cfg(mapname);
+
+    //  Adjust keys since the caller won't know pattern prefix etc.
+    map.getKeys().forEach(function(key) {
+        map.atPut(key.slice(key.lastIndexOf('.') + 1), map.at(key));
+    });
+
+    //  Ensure we cache a map as needed.
+    if (TP.sys.hasStarted()) {
+        url.$set('$urimap', map, false);
+    }
+
+    return map;
 });
 
 //  ------------------------------------------------------------------------
@@ -1022,8 +1068,8 @@ TP.core.URI.Inst.defineAttribute('$dirty', false);
 //  load status flag
 TP.core.URI.Inst.defineAttribute('$loaded', false);
 
-//  uri mapping/rewriting flag
-TP.core.URI.Inst.defineAttribute('$mapped', null);
+//  uri mapping/rewriting configuration
+TP.core.URI.Inst.defineAttribute('$urimap', null);
 
 //  the default MIME type for this instance
 TP.core.URI.Inst.defineAttribute('defaultMIMEType');
@@ -2793,30 +2839,6 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('isMappedURI',
-function(aFlag) {
-
-    /**
-     * @method isMappedURI
-     * @summary Returns true if the receiver has a URI map entry. Note that
-     *     this value is set based on the first map lookup and won't be reset
-     *     unless you clear the flag (make it non-boolean).
-     * @param {?Boolean} aFlag The value to set for whether the receiver is a
-     *     mapped URI or not.
-     * @returns {Boolean} Whether or not the receiver is a 'mapped' URI.
-     */
-
-    //  NOTE the isDefined test rather than an TP.isBoolean() here to allow
-    //  clearing of the flag
-    if (TP.isDefined(aFlag)) {
-        this.$set('$mapped', aFlag);
-    }
-
-    return this.$get('$mapped');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.URI.Inst.defineMethod('isPrimaryURI',
 function() {
 
@@ -3001,7 +3023,7 @@ function(aRequest) {
      *     subtype type object that can handle the request for the supplied URI.
      */
 
-    if (TP.isFalse(this.isMappedURI())) {
+    if (TP.isEmpty(this.get('urimap'))) {
         return this.$getDefaultHandler(aRequest);
     }
 
@@ -3022,9 +3044,7 @@ function(aRequest) {
      * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
      */
 
-    //  vast majority of URIs are not mapped so once we know that we can
-    //  skip the overhead of rewriting and just return the URI itself
-    if (TP.isFalse(this.isMappedURI())) {
+    if (TP.isEmpty(this.get('urimap'))) {
         return this;
     }
 
@@ -5012,11 +5032,9 @@ function(aRequest) {
     handler = aRequest.at('contenttype');
     if (TP.notValid(handler)) {
         //  check on uri mapping to see if the URI maps define a wrapper.
-        if (TP.notFalse(this.isMappedURI())) {
-            map = TP.core.URI.$getURIMap(this);
-            if (TP.isValid(map)) {
-                handler = map.at('contenttype');
-            }
+        map = TP.core.URI.$getURIMap(this);
+        if (TP.isValid(map)) {
+            handler = map.at('contenttype');
         }
 
         if (TP.notValid(handler)) {
@@ -8247,10 +8265,8 @@ function(aURI, aRequest) {
 
     //  capture the best uri map configuration data for the URI.
     map = TP.core.URI.$getURIMap(uri);
-
     if (TP.isEmpty(map)) {
         //  No mappings means we can avoid overhead in the future.
-        uri.isMappedURI(false);
         return uri;
     }
 
@@ -8338,11 +8354,7 @@ function(aURI, aRequest) {
 
     //  capture the best uri map configuration data for the URI.
     map = TP.core.URI.$getURIMap(uri);
-
     if (TP.isEmpty(map)) {
-        //  No mappings means we can avoid overhead in the future.
-        uri.isMappedURI(false);
-
         return uri.$getDefaultHandler(aRequest);
     }
 
@@ -8369,9 +8381,9 @@ function(aURI, aRequest) {
         TP.trace('Found mapping \'' + handler + '\' for uri: ' + uri) : 0;
 
     //  went to some trouble to come up with this, so cache it for next time
-    map.atPut('handlerType', handler);
+    map.atPut('handlerType', type);
 
-    return handler;
+    return type;
 });
 
 //  ========================================================================
