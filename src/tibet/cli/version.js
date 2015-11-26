@@ -129,7 +129,7 @@ Cmd.prototype.execute = function() {
 
     //  Library version is always at ~lib/package.json.
     root = CLI.getLibRoot();
-    fullpath = path.join(root, CLI.NPM_FILE);
+    fullpath = CLI.expandPath(path.join(root, CLI.NPM_FILE));
     if (sh.test('-f', fullpath)) {
         try {
             npm = require(fullpath) || {tibet_project: false};
