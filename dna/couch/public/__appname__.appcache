@@ -1,0 +1,118 @@
+CACHE MANIFEST
+
+# ---
+# !!! TIBET-managed appcache. Do not remove comment blocks of this form.
+# ---
+
+## You can have comments ignored by prefixing ala: # !!!, # ---, or ##.
+## It is recommended that you not alter the section headings or # !!!
+## comments since those help guide the 'tibet cache' command operation.
+
+
+CACHE:
+# !!! lib
+
+TIBET-INF/tibet/lib/xhtml/blank.xhtml
+TIBET-INF/tibet/lib/styles/tibet_boot.css
+TIBET-INF/tibet/lib/media/boot/tpi_logo.png
+TIBET-INF/tibet/lib/media/boot/nojs.png
+
+TIBET-INF/tibet/lib/styles/normalize.css
+TIBET-INF/tibet/lib/styles/tibet_normalize.css
+TIBET-INF/tibet/lib/styles/tibet_reset.css
+TIBET-INF/tibet/lib/styles/tibet_content.css
+TIBET-INF/tibet/lib/styles/tibet_framing.css
+TIBET-INF/tibet/lib/styles/tibet_boot.css
+TIBET-INF/tibet/lib/styles/tibet.css
+
+TIBET-INF/tibet/lib/media/boot/dark_fiber.png
+TIBET-INF/tibet/lib/media/boot/white_fiber.png
+
+TIBET-INF/tibet/lib/cfg/TIBET.xml
+TIBET-INF/tibet/lib/cfg/tibet_kernel.xml
+TIBET-INF/tibet/lib/cfg/tibet_extensions.xml
+TIBET-INF/tibet/lib/cfg/lib_namespaces.xml
+
+TIBET-INF/tibet/lib/media/boot/tibet_logo.png
+
+TIBET-INF/tibet/lib/dat/keyrings.xml
+TIBET-INF/tibet/lib/dat/uris.xml
+TIBET-INF/tibet/lib/dat/vcards.xml
+TIBET-INF/tibet/lib/dat/uris_delegated.xml
+TIBET-INF/tibet/lib/dat/uris_next.xml
+TIBET-INF/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
+
+TIBET-INF/tibet/lib/schema/html401_strict.json
+TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
+
+TIBET-INF/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
+TIBET-INF/tibet/src/tibet/tools/tdc/styles/TP.tsh.console.css
+TIBET-INF/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
+
+# --- don't cache multiple copies of TIBET, only the desired one(s)
+
+## TIBET-INF/tibet/lib/src/tibet_loader.js
+## TIBET-INF/tibet/lib/src/tibet_hook.js
+## TIBET-INF/tibet/lib/src/tibet_base.js
+## TIBET-INF/tibet/lib/src/tibet_full.js
+## TIBET-INF/tibet/lib/src/tibet_developer.js
+
+## TIBET-INF/tibet/lib/src/tibet_loader.js.gz
+## TIBET-INF/tibet/lib/src/tibet_hook.js.gz
+## TIBET-INF/tibet/lib/src/tibet_base.js.gz
+## TIBET-INF/tibet/lib/src/tibet_full.js.gz
+## TIBET-INF/tibet/lib/src/tibet_developer.js.gz
+
+TIBET-INF/tibet/lib/src/tibet_loader.min.js
+TIBET-INF/tibet/lib/src/tibet_hook.min.js
+TIBET-INF/tibet/lib/src/tibet_base.min.js
+TIBET-INF/tibet/lib/src/tibet_full.min.js
+TIBET-INF/tibet/lib/src/tibet_developer.min.js
+
+## TIBET-INF/tibet/lib/src/tibet_loader.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_hook.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_base.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_full.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_developer.min.js.gz
+
+
+CACHE:
+# !!! app
+
+tibet.json
+
+TIBET-INF/xhtml/UIROOT.xhtml
+TIBET-INF/xhtml/UIBOOT.xhtml
+TIBET-INF/xhtml/home.xhtml
+
+styles/app.css
+
+TIBET-INF/cfg/app.xml
+TIBET-INF/cfg/development.xml
+TIBET-INF/cfg/phantom.xml
+TIBET-INF/cfg/production.xml
+TIBET-INF/cfg/{{appname}}.xml
+TIBET-INF/cfg/tibet.xml
+
+# src/tags/APP.{{appname}}.app.js
+
+# --- don't cache multiple copies of APP, only the desired one(s)
+
+# --- NOTE: do not uncomment until after a build. If there are any
+# --- 404 result codes the appcache is NOT used.
+
+## build/app_base.js
+## build/app_base.min.js
+## build/app_base.js.gz
+## build/app_base.min.js.gz
+
+
+NETWORK:
+*
+
+
+FALLBACK:
+
+# ---
+# !!! ID: 0000000000000
+# ---

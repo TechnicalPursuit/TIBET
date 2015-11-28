@@ -264,7 +264,8 @@
                 attachments = [];
 
                 files.forEach(function(item) {
-                    var spec;
+                    var spec,
+                        json;
 
                     spec = {};
 
@@ -278,6 +279,16 @@
                     spec.name = couchAttachment(item);
                     spec.content_type = couchMime(item);
                     spec.data = fs.readFileSync(item);
+
+                    //  One thing we have to adjust during push is that we need
+                    //  to reset the app_root to point to app_head. This is
+                    //  needed since couch will want to work from db_app which
+                    //  doesn't allow for the typical app_root of '~/public'.
+                    if (/tibet.json$/.test(spec.name)) {
+                        json = JSON.parse(spec.data);
+                        json.path.app_root = '~';
+                        spec.data = JSON.stringify(json);
+                    }
 
                     attachments.push(spec);
                 });
@@ -432,7 +443,17 @@
                         return new Promise(function(resolve2, reject2) {
 
                             //  existing attachment, does the digest match?
-                            readFile(item).then(function(data) {
+                            readFile(item).then(function(dat) {
+                                var json,
+                                    data;
+
+                                if (/tibet.json$/.test(name)) {
+                                    json = JSON.parse(dat);
+                                    json.path.app_root = '~';
+                                    data = JSON.stringify(json);
+                                } else {
+                                    data = dat;
+                                }
 
                                 //  Store the data. We'll need this for push.
                                 current.data = data;

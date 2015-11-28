@@ -6,9 +6,6 @@
     "tibet": {
         "dna": "{{dna}}"
     },
-    "boot": {
-        "use_login": false
-    },
     "path": {
         "lib_root": "~app/TIBET-INF/tibet"
     },
