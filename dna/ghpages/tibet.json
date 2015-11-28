@@ -1,5 +1,5 @@
 {
-    "//" : "TIBET project file. Set configuration parameters here.",
+    "NOTE" : "TIBET project file. Set configuration parameters here.",
     "project": {
         "name": "{{appname}}"
     },
