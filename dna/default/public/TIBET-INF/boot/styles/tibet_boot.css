@@ -1,0 +1,287 @@
+/**
+ * @file tibet_boot.css
+ * @overview Simple CSS-driven progress bar styles.
+ */
+
+/* ---  tibet_content.css overrides --- */
+
+.detail-intro .lead {
+    margin-left: 112px;
+}
+.detail-intro .follow {
+    margin-left: 112px;
+}
+.detail-intro a.image-link img {
+    width: 64px;
+    height: 64px;
+}
+
+.yesscript.detail-intro {
+    max-height: 136px;
+    overflow: hidden;
+}
+
+/* ---  progress bar baseline --- */
+
+.tibet-progress {
+    position: relative;
+    height: 12px;
+    margin: 0 48px;
+    background-color: #666;
+
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px solid #666;
+
+    padding: 5px;
+}
+
+.tibet-progress .state {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: auto;
+    left: 0;
+    width: 0;
+    margin: 1px;
+       -webkit-border-top-right-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+           -moz-border-radius-topright: 4px;
+        -moz-border-radius-bottomright: 4px;
+               border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        -webkit-border-top-left-radius: 4px;
+     -webkit-border-bottom-left-radius: 4px;
+            -moz-border-radius-topleft: 4px;
+         -moz-border-radius-bottomleft: 4px;
+                border-top-left-radius: 4px;
+             border-bottom-left-radius: 4px;
+    background-color: #eee;
+    overflow: hidden;
+}
+
+/* ---  boot css --- */
+
+body.showlog #BOOT-CONSOLE {
+    display: block;
+}
+
+#BOOT-CONSOLE {
+    display: none;
+    position: absolute;
+    top: 148px;
+    bottom: 64px;
+    right: 0;
+    left: 0;
+    margin: 0 48px;
+    color: white;
+    overflow: hidden;
+}
+#BOOT-CONSOLE .edge {
+    overflow: auto;
+    border-radius: 3px;
+}
+#BOOT-CONSOLE .edge.done {
+    overflow: auto;
+}
+
+#BOOT-LOG {
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-size: 85%;
+    text-align: left;
+    color: white;
+    margin: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+#BOOT-LOG * {
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+}
+
+#BOOT-PROGRESS {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    margin: 0 48px;
+}
+
+/* the colors here should match those set in the boot code for the theme. */
+#BOOT-PROGRESS.log-trace {
+}
+#BOOT-PROGRESS.log-info {
+}
+#BOOT-PROGRESS.log-warn {
+    border-color: yellow;
+}
+#BOOT-PROGRESS.log-error {
+    border-color: magenta;
+}
+#BOOT-PROGRESS.log-severe {
+    border-color: magenta;
+}
+#BOOT-PROGRESS.log-fatal {
+    border-color: red;
+}
+
+
+#BOOT-PERCENT {
+}
+/* the colors here should match those set in the boot code for the theme. */
+#BOOT-PERCENT.log-trace {
+}
+#BOOT-PERCENT.log-info {
+}
+#BOOT-PERCENT.log-warn {
+    background-image: none;
+    background-color: yellow;
+}
+#BOOT-PERCENT.log-error {
+    background-image: none;
+    background-color: magenta;
+}
+#BOOT-PERCENT.log-severe {
+    background-image: none;
+    background-color: magenta;
+}
+#BOOT-PERCENT.log-fatal {
+    background-image: none;
+    background-color: red;
+}
+
+body.showlog #BOOT-SPLASH {
+    display: none;
+}
+
+#BOOT-SPLASH {
+    display: block;
+    position: absolute;
+    top: 148px;
+    bottom: 64px;
+    right: 0;
+    left: 0;
+    margin: 0 48px;
+    color: white;
+    overflow: hidden;
+    background: url(../media/tibet_world.gif) center center no-repeat;
+}
+
+#BOOT-VERSION {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    color: white;
+    text-align: center;
+    font-size: 85%;
+    margin: 2px;
+}
+
+.hole {
+    background-color: #666;
+    border-radius: 5px;
+    border: 1px solid #666;
+    padding: 1px;
+}
+
+.edge {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid #eee;
+    border-radius: 5px;
+}
+
+/* ---  tibet_content overrides  --- */
+
+#BOOT-LOG .detail-topics dt {
+    width: 128px;
+    margin-bottom: 12px;
+}
+
+#BOOT-LOG .detail-topics dd {
+    color: white;
+    width: 65%;
+}
+
+#BOOT-LOG .detail-topics .pointer {
+    visibility: visible;
+}
+
+#BOOT-LOG a {
+    color: LightSkyBlue;
+}
+
+#BOOT-LOG .header {
+    font-weight: bold;
+    margin: 24px 48px 0 48px;
+    font-size: 138.5%;
+    clear: both;
+    text-decoration: underline;
+}
+
+#BOOT-LOG .more {
+    margin: 24px 48px 0 48px;
+    font-size: 123.1%
+}
+
+/* --- Full-window mode --- */
+
+body.full_console #content {
+    max-width: 100%;
+}
+
+body.full_console .detail-intro {
+    display: none;
+}
+
+body.full_console #BOOT-CONSOLE {
+    top: 48px;
+}
+
+#LOGIN-SPLASH {
+    display: block;
+    position: absolute;
+    top: 148px;
+    bottom: 64px;
+    right: 0;
+    left: 0;
+    margin: 0 48px;
+    color: black;
+    overflow: hidden;
+    background: url(../media/tibet_world.gif) center center no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#LOGIN-FORM form {
+    display: flex;
+    flex-flow: row wrap;
+    width: 408px;
+}
+
+#LOGIN-FORM label {
+    display: block;
+    width: 150px;
+}
+
+#LOGIN-FORM input {
+    width: 250px;
+    margin-bottom: 7px;
+}
+
+#LOGIN-FORM button {
+    margin-left: auto;
+    width: 250px;
+    margin-top: 3em;
+}
+

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<package xmlns="http://www.technicalpursuit.com/1999/tibet"
+    name="{{appname}}" default="base" basedir="~app_cfg">
+
+<config id="properties" if="boot.phase_one">
+    <property name="sherpa.enabled" value="true"/>
+    <property name="debug.use_debugger" value="true"/>
+    <property name="log.bootcfg" value="true"/>
+    <property name="log.bootenv" value="true"/>
+    <property name="log.level" value="DEBUG"/>
+    <property name="log.inferences" value="true"/>
+    <property name="log.null_namespaces" value="true"/>
+    <property name="log.stack" value="true"/>
+    <property name="log.signal_stack" value="true"/>
+    <property name="security.request_privileges" value="true"/>
+    <property name="tibet.$debug" value="true"/>
+    <property name="tibet.$verbose" value="true"/>
+</config>
+
+<config id="base">
+    <config ref="properties"/>
+    <package src="{{appname}}.xml" config="base"/>
+</config>
+
+<config id="full">
+    <config ref="properties"/>
+    <package src="{{appname}}.xml" config="full"/>
+</config>
+
+<config id="developer">
+    <config ref="properties"/>
+    <package src="{{appname}}.xml" config="developer"/>
+</config>
+
+<config id="contributor">
+    <config ref="properties"/>
+    <package src="{{appname}}.xml" config="contributor"/>
+</config>
+
+<config id="test">
+    <config ref="properties"/>
+    <package src="{{appname}}.xml" config="test"/>
+</config>
+
+</package>
+
