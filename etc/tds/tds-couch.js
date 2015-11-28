@@ -12,8 +12,6 @@
 //  TODO:   use options passed from server.js
 //  TODO:   integrate config flags better
 
-/* eslint no-console:0 */
-
 (function() {
 
     'use strict';
@@ -50,7 +48,11 @@
     //  ---
 
     TDS.couchdb = function(options) {
-        var opts,
+        var app,
+            env,
+            argv,
+            logger,
+            opts,
             project,
             feed,
             baseline,
@@ -82,6 +84,15 @@
         //writeFile = Promise.promisify(fs.writeFile);
 
         //  ---
+        //  Options / Arguments
+        //  ---
+
+        app = options.app;
+        env = options.env;
+        argv = options.argv;
+        logger = app.logger;
+
+        //  ---
         //  CouchDB-To-File
         //  ---
 
@@ -103,7 +114,7 @@
          * @param {Array.<Object>} list The list of changes to process.
          */
         applyChanges = function(list) {
-            //console.log('CouchDB changes:\n' + beautify(JSON.stringify(list)));
+            //logger.debug('CouchDB changes:\n' + beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
                 //var fullpath;
@@ -112,17 +123,17 @@
 
                 switch (item.action) {
                     case 'added':
-                        console.log('CouchDB change: insert ' + item.name);
+                        logger.info('CouchDB change: insert ' + item.name);
                         //  Fetch the CouchDB content and write to the FS in the
                         //  proper fully-qualified path location.
                         break;
                     case 'changed':
-                        console.log('CouchDB change: update ' + item.name);
+                        logger.info('CouchDB change: update ' + item.name);
                         //  Fetch the CouchDB content and write to the FS in the
                         //  proper fully-qualified path location.
                         break;
                     case 'deleted':
-                        console.log('CouchDB change: delete ' + item.name);
+                        logger.info('CouchDB change: delete ' + item.name);
                         //  Not going to do this here. fs.unlink tho.
                         break;
                     default:
@@ -152,7 +163,7 @@
             ok = doc._id === '_design/app';
 
             if (!ok) {
-                console.log('filtering: ' + beautify(JSON.stringify(doc)));
+                logger.info('filtering: ' + beautify(JSON.stringify(doc)));
             }
 
             return ok;
@@ -187,7 +198,7 @@
                 //  more likely that we need to verify revpos values between
                 //  baseline and current, not just a single revpos.
 
-                //console.log('CouchDB change:\n' +
+                //logger.debug('CouchDB change:\n' +
                     //beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
@@ -227,9 +238,9 @@
 
         feed.on('error', function(err) {
             if (/EMFILE/.test(err)) {
-                console.error('Too many files open. Try increasing ulimit.');
+                logger.error('Too many files open. Try increasing ulimit.');
             } else {
-                console.error(err);
+                logger.error(err);
             }
 
             return true;
@@ -238,7 +249,7 @@
         try {
             feed.follow();
         } catch (e) {
-            console.error(e.message);
+            logger.error(e.message);
         }
 
         //  ---
@@ -333,9 +344,9 @@
             name = couchAttachmentName(file, root);
 
             if (!quiet) {
-                console.log('Host FS change: insert ' + name);
+                logger.info('Host FS change: insert ' + name);
             }
-            //console.log('fetching ' + name + ' doc._rev for CRUD insert');
+            //logger.debug('fetching ' + name + ' doc._rev for CRUD insert');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -345,7 +356,7 @@
                     var doc,
                         rev;
 
-                    //console.log(beautify(JSON.stringify(response)));
+                    //logger.debug(beautify(JSON.stringify(response)));
 
                     //  Data comes in the form of an array with doc and status
                     //  so find the doc one.
@@ -373,11 +384,11 @@
                     readFile(file).then(function(data) {
                         var type;
 
-                        //console.log('read:\n' + data);
+                        //logger.debug('read:\n' + data);
 
                         type = mime.lookup(path.extname(file).slice(1));
 
-                        console.log('Inserting attachment ' + name);
+                        logger.info('Inserting attachment ' + name);
 
                         //  TODO: couch.app_name
                         db.attachment.insert(
@@ -385,12 +396,12 @@
                                 function(err, body) {
 
                                     if (err) {
-                                        console.log('err: ' + err);
+                                        logger.error('err: ' + err);
                                         reject(err);
                                         return;
                                     }
 
-                                    console.log(beautify(JSON.stringify(body)));
+                                    logger.info(beautify(JSON.stringify(body)));
                                     resolve();
                                 });
                     },
@@ -415,9 +426,9 @@
             name = couchAttachmentName(file, root);
 
             if (!quiet) {
-                console.log('Host FS change: update ' + name);
+                logger.info('Host FS change: update ' + name);
             }
-            //console.log('fetching ' + name + ' doc._rev for CRUD update');
+            //logger.debug('fetching ' + name + ' doc._rev for CRUD update');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -433,7 +444,7 @@
                         rev,
                         att;
 
-                    //console.log(beautify(JSON.stringify(response)));
+                    //logger.debug(beautify(JSON.stringify(response)));
 
                     doc = response.filter(function(item) {
                         //  TODO: db_app
@@ -441,7 +452,7 @@
                     })[0];
 
                     rev = doc._rev;
-                    //console.log('document revision: ' + rev);
+                    //logger.debug('document revision: ' + rev);
 
                     att = doc._attachments[name];
                     if (!att) {
@@ -455,40 +466,40 @@
                                 });
                             return;
                         } else {
-                            console.log('Unable to find attachment: ' + name);
+                            logger.warn('Unable to find attachment: ' + name);
                             reject('No attachment');
                             return;
                         }
                     }
 
                     //  Read the file content in preparation for a push.
-                    //console.log('reading attachment data');
+                    //logger.debug('reading attachment data');
                     readFile(file).then(function(data) {
                         var type;
 
-                        //console.log('read:\n' + data);
-                        //console.log('computing file system checksum digest');
+                        //logger.debug('read:\n' + data);
+                        //logger.debug('computing file system checksum digest');
 
                         couchDigest(data, att.encoding).then(function(digest) {
 
-                            //console.log('comparing attachment digest ' + digest);
+                            //logger.debug('comparing attachment digest ' + digest);
 
                             if (digest === att.digest) {
-                                //console.log(couchAttachmentName(file) +
+                                //logger.debug(couchAttachmentName(file) +
                                 //' digest values match. Skipping push.');
                                 resolve();
                                 return;
                             }
 
-                            //console.log(couchAttachmentName(file) +
+                            //logger.debug(couchAttachmentName(file) +
                             //' digest values differ. Pushing to CouchDB.');
-                            //console.log(
+                            //logger.debug(
                                 //'digest ' + digest + ' and ' + att.digest +
                                 //' differ. Pushing data to CouchDB.');
 
                             type = mime.lookup(path.extname(file).slice(1));
 
-                            console.log('Updating attachment ' + name);
+                            logger.info('Updating attachment ' + name);
 
                             //  TODO: db_app
                             db.attachment.insert('_design/app', name, data,
@@ -496,12 +507,12 @@
                                     function(err, body) {
 
                                         if (err) {
-                                            console.log('err: ' + err);
+                                            logger.error('err: ' + err);
                                             reject(err);
                                             return;
                                         }
 
-                                        console.log(
+                                        logger.info(
                                                 beautify(JSON.stringify(body)));
                                         resolve();
                                     });
@@ -521,9 +532,9 @@
             name = couchAttachmentName(file, root);
 
             if (!quiet) {
-                console.log('Host FS change: remove ' + name);
+                logger.info('Host FS change: remove ' + name);
             }
-            //console.log('fetching ' + name + ' doc._rev for CRUD remove');
+            //logger.debug('fetching ' + name + ' doc._rev for CRUD remove');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -533,7 +544,7 @@
                     var doc,
                         rev;
 
-                    //console.log(beautify(JSON.stringify(response)));
+                    //logger.debug(beautify(JSON.stringify(response)));
 
                     //  Data comes in the form of an array with doc and status
                     //  so find the doc one.
@@ -549,20 +560,20 @@
                         return;
                     }
 
-                    console.log('Removing attachment ' + name);
+                    logger.info('Removing attachment ' + name);
 
                     db.attachment.destroy(
                             '_design/app', name, {rev: rev},
                             function(err, body) {
 
                                 if (err) {
-                                    console.log('err: ' + err);
+                                    logger.error('err: ' + err);
                                     reject(err);
                                     return;
                                 }
 
-                                //console.log('deleted ' + file);
-                                console.log(beautify(JSON.stringify(body)));
+                                //logger.debug('deleted ' + file);
+                                logger.info(beautify(JSON.stringify(body)));
 
                                 resolve();
                             });
@@ -605,7 +616,7 @@
             try {
                 pattern = new RegExp(pattern);
             } catch (e) {
-                return console.log('Error creating RegExp: ' +
+                return logger.error('Error creating RegExp: ' +
                     e.message);
             }
             */
@@ -626,7 +637,7 @@
             gaze(pattern, watchParams, function(err, watcher) {
 
                 if (err) {
-                    console.error(err);
+                    logger.error(err);
                     watcher.close();
                     return;
                 }
@@ -638,11 +649,11 @@
             });
         } catch (e) {
             if (/EMFILE/.test(e.message)) {
-                console.error('Too many files open. Try increasing ulimit.');
+                logger.error('Too many files open. Try increasing ulimit.');
                 return;
             } else {
-                console.error(e.message);
-                console.error(e.stack);
+                logger.error(e.message);
+                logger.error(e.stack);
                 return;
             }
         }

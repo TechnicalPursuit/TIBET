@@ -325,7 +325,11 @@
     }
 
     //  Activate the CouchDB integration layer.
-    TDS.couchdb();
+    TDS.couchdb({
+        app: app,
+        env: env,
+        argv: argv
+    });
 
     //  ---
     //  Server Fallbacks
