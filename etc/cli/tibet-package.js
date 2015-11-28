@@ -239,7 +239,7 @@
      * The default package file to process.
      * @type {string}
      */
-    Package.PACKAGE = '~app_cfg/standard.xml';
+    Package.PACKAGE = '~app_cfg/app.xml';
 
 
     /**
@@ -254,7 +254,7 @@
      * for the server separate from those used for the client.
      * @type {string}
      */
-    Package.SERVER_FILE = 'tibet-server.json';
+    Package.SERVER_FILE = 'tds.json';
 
 
     /**
@@ -413,7 +413,7 @@
 
 
     /**
-     * Contents of any SERVER_FILE (tibet-server.json) relative to the project.
+     * Contents of any SERVER_FILE (tds.json) relative to the project.
      * @type {Object.<string, object>}
      */
     Package.prototype.tds = null;
@@ -967,6 +967,7 @@
                 virtual === '~app_root') {
                 nvpath = this.getAppRoot();
             } else if (virtual === '~lib' ||
+                virtual === '~tibet' ||
                 virtual === '~lib_root') {
                 nvpath = this.getLibRoot();
             } else {
@@ -1030,10 +1031,10 @@
 
 
     /**
-     * Returns the initial application root also referred to as the 'app head'. This
-     * is the location where the tibet.json and/or package.json files are found
-     * for the current context. This value is always computed and never set via
-     * property values. The virtual path for this root is '~' or '~/'.
+     * Returns the initial application root also referred to as the 'app head'.
+     * This is the location where the package.json file is found for the current
+     * context. This value is always computed and never set via property values.
+     * The virtual path for this root is '~' or '~/'.
      * @returns {String} The application's 'head' location.
      */
     Package.prototype.getAppHead = function() {
@@ -1050,14 +1051,13 @@
             return this.app_head;
         }
 
-        // One tricky aspect is that we don't want to confuse lib root and app head.
-        // That means for the app head computation we don't work from the module
-        // filename, but only from the current working directory.
+        // One tricky aspect is that we don't want to confuse lib root and app
+        // head. That means for the app head computation we don't work from the
+        // module filename, but only from the current working directory.
 
         cwd = process.cwd();
         checks = [
-            [cwd, Package.NPM_FILE],
-            [cwd, Package.PROJECT_FILE]
+            [cwd, Package.NPM_FILE]
         ];
 
         len = checks.length;
@@ -1093,6 +1093,11 @@
      * @returns {String} The application root.
      */
     Package.prototype.getAppRoot = function() {
+        var head,
+            tibet,
+            approot,
+            fullpath,
+            list;
 
         // Return cached value if available.
         if (this.app_root) {
@@ -1112,7 +1117,45 @@
             return this.app_root;
         }
 
-        this.app_root = this.getAppHead();
+        head = this.getAppHead();
+        if (!head) {
+            return;
+        }
+
+        //  Found the project file for NPM, now to find the TIBET
+        //  project file, which is allowed to be in either the same
+        //  location or in an immediate subdirectory.
+        tibet = Package.PROJECT_FILE;
+        approot = head;
+        fullpath = path.join(head, tibet);
+        if (!sh.test('-f', fullpath)) {
+            //  Not found in the immediate location of package file
+            //  so try to locate it in a direct subdirectory.
+            list = sh.ls(head);
+            list.some(function(file) {
+                var full;
+
+                full = path.join(head, file);
+                if (!sh.test('-d', full)) {
+                    fullpath = null;
+                    return false;
+                }
+
+                approot = file;
+                fullpath = path.join(full, tibet);
+                return sh.test('-f', fullpath);
+            });
+        }
+
+        if (!fullpath) {
+            this.error('getAppRoot failed to find app root relative to:' + head, true);
+            return;
+        }
+
+        if (!this.isAbsolutePath(approot)) {
+            approot = path.join('~/', approot);
+        }
+        this.app_root = approot;
         this.debug('getAppRoot defaulted to launch root: ' + this.app_root, true);
 
         return this.app_root;
@@ -1212,12 +1255,16 @@
         ];
 
         if (app_root) {
+            //  Frozen variant. This comes first so it's found only if we're
+            //  unable to find the node_modules directory which should exist.
             checks.unshift([app_root, path.join(tibet_inf, tibet_lib)]);
-            // NOTE node_modules does not float with app_root, it's always found at
-            // the application head.
+
+            // NOTE node_modules does not float with app_root, it's always found
+            // at the application head.
             if (tibet_dir === 'node_modules') {
                 checks.unshift([this.getAppHead(),
                     path.join(tibet_dir, tibet_lib)]);
+
             } else {
                 checks.unshift([app_root, path.join(tibet_dir, tibet_lib)]);
             }
@@ -1443,7 +1490,7 @@
 
     /**
      * Returns the project configuration data from the SERVER_FILE.
-     * @returns {Object} Returns the tibet-server.json content.
+     * @returns {Object} Returns the tds.json content.
      */
     Package.prototype.getServerConfig = function() {
         return this.tds;
@@ -1642,6 +1689,12 @@
             file,
             found;
 
+        //  We can essentially act in a "cached result" form by looking at any
+        //  npm package info and checking the name.
+        if (this.npm && this.npm.name) {
+            return this.npm.name === 'tibet';
+        }
+
         // Since the CLI can be invoked from anywhere we need to be explicit here
         // relative to the cwd. If we find a project file, and it's 'tibet' we're
         // truly _inside_ the library.
@@ -1662,59 +1715,96 @@
 
 
     /**
-     * Returns true if the current context is inside a TIBET project. The check here
-     * is based on loading the TIBET project file and checking for specific content
-     * (or the lack thereof).
+     * Returns true if the current context is inside a TIBET project. The check
+     * here is based on loading the TIBET project file and checking for specific
+     * content (or the lack thereof).
      * @param {Boolean} silent True to turn off warnings about certain errors.
      * @returns {Boolean} True if the current context is inside a TIBET project.
      */
     Package.prototype.inProject = function(silent) {
-        var cwd, // Where are we being run?
-            file, // What file are we looking for?
-            fullpath; // What full path are we checking?
+        var cwd,            // Where are we being run?
+            list,           // List of potential public directories
+            approot,        // Where did we find the actual file?
+            package,        // What package file are we looking for?
+            tibet,          // What tibet file are we looking for?
+            fullpath;       // What full path are we checking?
+
+        //  We can essentially act in a "cached result" form by looking at any
+        //  npm package info and checking the name.
+        if (this.npm && this.npm.name) {
+            return this.npm.name !== 'tibet';
+        }
 
         cwd = process.cwd();
-        file = Package.PROJECT_FILE;
+        tibet = Package.PROJECT_FILE;
+        package = Package.NPM_FILE;
 
-        // Walk the directory path from cwd "up" checking for the signifying file
-        // which tells us we're in a TIBET project.
+        // Walk the directory path from cwd "up" checking for the signifying
+        // file which tells us we're in a TIBET project.
         while (cwd.length > 0) {
-            fullpath = path.join(cwd, file);
+            fullpath = path.join(cwd, package);
             if (sh.test('-f', fullpath)) {
-                this.cfg.app_root = cwd;
 
                 // Relocate cwd to the new root so our paths for things like
                 // grunt and gulp work without requiring global installs etc.
                 process.chdir(cwd);
 
-                // Once we find the directory of a project root load any tibet.json
-                // configuration found there.
+                // Load the package.json file so we can access current
+                // project configuration info specific to npm.
+                try {
+                    this.npm = require(path.join(cwd, package));
+                } catch (e) {
+                    // Make sure we default to some value.
+                    this.npm = this.npm || {};
+                }
+
+                // One check. The TIBET library will have a package and project
+                // file but we don't consider it to be a "project" per se.
+                if (this.npm.name === 'tibet') {
+                    return false;
+                }
+
+                //  Found the project file for NPM, now to find the TIBET
+                //  project file, which is allowed to be in either the same
+                //  location or in an immediate subdirectory.
+                approot = cwd;
+                fullpath = path.join(cwd, tibet);
+                if (!sh.test('-f', fullpath)) {
+                    //  Not found in the immediate location of package file
+                    //  so try to locate it in a direct subdirectory.
+                    list = sh.ls(cwd);
+                    list.some(function(file) {
+                        if (!sh.test('-d', file)) {
+                            fullpath = null;
+                            return false;
+                        }
+
+                        approot = file;
+                        fullpath = path.join(file, tibet);
+                        return sh.test('-f', fullpath);
+                    });
+                }
+
+                if (!fullpath) {
+                    return false;
+                }
+
+                this.cfg.app_root = approot;
+
+                // Once we find the directory of a project root load any
+                // tibet.json configuration found there.
                 try {
                     this.tibet = require(fullpath);
                 } catch (e) {
                     // Make sure we default to some value.
                     this.tibet = this.tibet || {};
 
-                    // Don't output warnings about project issues when providing
-                    // help text.
+                    // Don't output warnings about project issues when
+                    // providing help text.
                     if (!silent) {
-                        this.warn('Error loading project file: ' + e.message);
+                        this.warn('Error loading project file: ' +
+                            e.message);
                     }
-                }
-
-                // Load the package.json file as well so we can access current
-                // project configuration info specific to npm.
-                try {
-                    this.npm = require(path.join(cwd, Package.NPM_FILE));
-                } catch (e) {
-                    // Make sure we default to some value.
-                    this.npm = this.npm || {};
-                }
-
-                // One last check. The TIBET library will have a package and project
-                // file but we don't consider it to be a "project" per se.
-                if (this.npm.name === 'tibet') {
-                    return false;
                 }
 
                 return true;
@@ -2215,10 +2305,19 @@
     Package.prototype.setProjectOptions = function() {
 
         var msg,
+            head,
             root,
             env,
             fullpath,
             tibet_npm;
+
+        // We use app head to load package.json and tds.json since those live at
+        // the top of the project outside the app root (which is often 'public'
+        // below the app head.
+        head = this.getAppHead();
+        if (isEmpty(head)) {
+            return;
+        }
 
         // We need app root to load tibet.json, which hopefully has additional
         // configuration information we can leverage such as the lib_root path.
@@ -2233,7 +2332,7 @@
             return;
         }
 
-        fullpath = path.join(root, Package.PROJECT_FILE);
+        fullpath = this.expandPath(path.join(root, Package.PROJECT_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 // Load project file, or default to an object we can test to see
@@ -2249,9 +2348,12 @@
                 }
                 throw new Error(msg);
             }
+        } else {
+            msg = 'Error loading project file. Not found.';
+            throw new Error(msg);
         }
 
-        fullpath = path.join(root, Package.SERVER_FILE);
+        fullpath = this.expandPath(path.join(head, Package.SERVER_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 this.tds = require(fullpath) || {
@@ -2266,7 +2368,7 @@
             }
         }
 
-        fullpath = path.join(root, Package.NPM_FILE);
+        fullpath = this.expandPath(path.join(head, Package.NPM_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 this.npm = require(fullpath) || {};
@@ -2320,9 +2422,9 @@
             this.lib_root = root;
         }
 
-        //  With lib_root hopefully ready we want to access the package.json from
-        //  the library to get the version of TIBET being used.
-        fullpath = path.join(this.lib_root, Package.NPM_FILE);
+        //  With lib_root hopefully ready we want to access the package.json
+        //  from the library to get the version of TIBET being used.
+        fullpath = this.expandPath(path.join(this.lib_root, Package.NPM_FILE));
         if (sh.test('-f', fullpath)) {
             try {
                 tibet_npm = require(fullpath) || {};

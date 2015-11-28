@@ -543,10 +543,7 @@ Cmd.prototype.execute = function() {
     cmd = this;
 
     if (CLI.inProject()) {
-        //  Compute the appname first - it is used when configuring our opts, etc.
-        appname = CLI.expandPath('~app');
-        appname = appname.slice(appname.lastIndexOf('/') + 1);
-        //console.log('appname: ' + appname);
+        appname = CLI.cfg('npm.name');
     } else {
         //  outside of a project, appname means nothing.
         appname = null;
@@ -597,7 +594,7 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    //  NOTE: a trailing slash says to copy source content, not source directory.
+    //  NOTE: trailing slash says to copy source content, not source directory.
     sh.cp('-r', src + '/', target);
     err = sh.error();
     if (err) {

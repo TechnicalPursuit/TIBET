@@ -7,6 +7,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+//  TODO:   use app logger instance for logging
 //  TODO:   improve error logging
 //  TODO:   use options passed from server.js
 //  TODO:   integrate config flags better
@@ -93,7 +94,7 @@
 
         //  TODO:   update config path(s)
         root = path.resolve(TDS.expandPath(
-            TDS.getcfg('couch.app.root') || 'attachments'));
+            TDS.getcfg('couch.app.root') || 'public'));
 
 
         /**
@@ -425,6 +426,7 @@
                 //  Fetch revision of document, we'll need that for the update. Note
                 //  that we also ask for encoding info since that's necessary to do
                 //  the right process when building a digest for change detection.
+                //  TODO: db_app
                 dbGet('_design/app', {att_encoding_info: true}).
                 then(function(response) {
                     var doc,
@@ -434,6 +436,7 @@
                     //console.log(beautify(JSON.stringify(response)));
 
                     doc = response.filter(function(item) {
+                        //  TODO: db_app
                         return item._id === '_design/app';
                     })[0];
 
@@ -487,6 +490,7 @@
 
                             console.log('Updating attachment ' + name);
 
+                            //  TODO: db_app
                             db.attachment.insert('_design/app', name, data,
                                     type, {rev: rev},
                                     function(err, body) {
@@ -594,17 +598,22 @@
                 return str ? str + '|' + escaper(item) : escaper(item);
             }, '');
 
+            /*
+             * NOTE gaze doesn't like actual regexes (throws an error related to
+             * not supporting indexOf) so leave this commented out until we
+             * switch back to chokidar.
             try {
                 pattern = new RegExp(pattern);
             } catch (e) {
                 return console.log('Error creating RegExp: ' +
                     e.message);
             }
+            */
         } else {
             pattern = '**/*';
         }
 
-        //  TODO:   allow configuration of these parameters from tibet-server.
+        //  TODO:   allow configuration of these parameters from server config.
         watchParams =  {
             cwd: root,
             mode: 'auto',
@@ -633,6 +642,7 @@
                 return;
             } else {
                 console.error(e.message);
+                console.error(e.stack);
                 return;
             }
         }

@@ -1095,7 +1095,7 @@ CLI.runViaGrunt = function(command) {
     //child = require('child_process').spawn('./node_modules/.bin/grunt',
     child = require('child_process').spawn('grunt',
         process.argv.slice(2),
-        {cwd: this.getAppRoot()}
+        {cwd: this.getAppHead()}
     );
 
     child.stdout.on('data', function(data) {
@@ -1142,7 +1142,7 @@ CLI.runViaGulp = function(command) {
 
     child = require('child_process').spawn('gulp',
         process.argv.slice(2),
-        {cwd: cmd.getAppRoot()}
+        {cwd: cmd.getAppHead()}
     );
 
     child.stdout.on('data', function(data) {

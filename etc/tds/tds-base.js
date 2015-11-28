@@ -66,6 +66,16 @@
     };
 
     /**
+     * Return the application head, the location serving as the top-level root.
+     * @returns {String} The application head path.
+     */
+    TDS.getAppRoot = function() {
+        this.initPackage();
+
+        return TDS._package.getAppRoot();
+    };
+
+    /**
      * Returns the value for a specific configuration property.
      * @param {String} property A configuration property name.
      * @returns {Object} The property value, if found.

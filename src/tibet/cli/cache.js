@@ -211,9 +211,6 @@ Cmd.prototype.execute = function() {
         cachefile = CLI.expandPath('~app/' + appname + '.appcache');
     }
 
-    //  resolve the cache file path relative to our current location
-    cachefile = '.' + cachefile.replace(CLI.expandPath('~app'), '');
-
     if (!sh.test('-e', cachefile)) {
         this.error('Cannot find cache file: ' + cachefile);
         throw new Error();
@@ -555,7 +552,8 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
  */
 Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
-    var text,
+    var file,
+        text,
         doc,
         html,
         value,
@@ -564,12 +562,13 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     this.log('checking application cache status...');
 
-    if (!sh.test('-e', 'index.html')) {
+    file = CLI.expandPath('~app/index.html');
+    if (!sh.test('-e', file)) {
         this.error('Cannot find index.html');
         throw new Error();
     }
 
-    text = sh.cat('index.html');
+    text = sh.cat(file);
     if (!text) {
         this.error('Unable to read index.html content.');
         throw new Error();
@@ -629,7 +628,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     // Serializer has a habit of not placing a newline after the DOCTYPE.
     text = text.replace(/html><html/, 'html>\n<html');
-    text.to('index.html');
+    text.to(file);
 
     operation = this.options.enable ? 'enabled' : 'disabled';
 

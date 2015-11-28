@@ -167,6 +167,7 @@
     TP.sys.setcfg('boot.tibet_dir', 'node_modules');
     TP.sys.setcfg('boot.tibet_lib', 'tibet');
     TP.sys.setcfg('boot.tibet_inf', 'TIBET-INF');
+    TP.sys.setcfg('boot.tibet_pub', 'public');
 
     //  The file here is used as our source for project configuration data. If
     //  you don't want this loaded set boot.no_tibet_file to true.
@@ -659,7 +660,7 @@
     //  app-only virtual paths
     TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
     TP.sys.setcfg('path.app_change', '~app_src/changes');
-    TP.sys.setcfg('path.app_log', '~app_inf/logs');
+    TP.sys.setcfg('path.app_log', '~/log');
     TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
     TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
@@ -1214,6 +1215,12 @@
     TP.sys.setcfg('tds.404', 'NotFound');
     TP.sys.setcfg('tds.500', 'ServerError');
 
+    TP.sys.setcfg('tds.log.file', '~app_log/tds.log');
+    TP.sys.setcfg('tds.log.format', 'dev');
+    TP.sys.setcfg('tds.log.level', 'info');
+
+    TP.sys.setcfg('tds.max_bodysize', '5mb');
+
     TP.sys.setcfg('tds.use.cli', false);
     TP.sys.setcfg('tds.use.patcher', false);
     TP.sys.setcfg('tds.use.watcher', false);
@@ -1221,15 +1228,15 @@
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
-    TP.sys.setcfg('tds.watch.ignore', ['node_modules']);
+    TP.sys.setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('tds.watch.root', '~app');
     TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
 
     TP.sys.setcfg('tds.webdav.root', '~app_src');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
-    TP.sys.setcfg('couch.app.root', 'attachments');
-    TP.sys.setcfg('couch.watch.ignore', ['node_modules']);
+    TP.sys.setcfg('couch.app.root', 'public');
+    TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('couch.watch.root', '~app');
 
     //  ---
@@ -1434,7 +1441,7 @@
     //  the code frame. when booting in a single phase this page replaces the
     //  index file and booting has to be restarted by the page returned from
     //  your server on successful login.
-    TP.sys.setcfg('path.index_page', '~/index.html');
+    TP.sys.setcfg('path.index_page', '~app/index.html');
 
     TP.sys.setcfg('path.login_page', '~boot_xhtml/login.xhtml');
 
