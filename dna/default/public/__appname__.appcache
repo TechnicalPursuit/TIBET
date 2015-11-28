@@ -12,68 +12,68 @@ CACHE MANIFEST
 CACHE:
 # !!! lib
 
-node_modules/tibet/lib/xhtml/blank.xhtml
-node_modules/tibet/lib/styles/tibet_boot.css
-node_modules/tibet/lib/media/boot/tpi_logo.png
-node_modules/tibet/lib/media/boot/nojs.png
+TIBET-INF/tibet/lib/xhtml/blank.xhtml
+TIBET-INF/tibet/lib/styles/tibet_boot.css
+TIBET-INF/tibet/lib/media/boot/tpi_logo.png
+TIBET-INF/tibet/lib/media/boot/nojs.png
 
-node_modules/tibet/lib/styles/normalize.css
-node_modules/tibet/lib/styles/tibet_normalize.css
-node_modules/tibet/lib/styles/tibet_reset.css
-node_modules/tibet/lib/styles/tibet_content.css
-node_modules/tibet/lib/styles/tibet_framing.css
-node_modules/tibet/lib/styles/tibet_boot.css
-node_modules/tibet/lib/styles/tibet.css
+TIBET-INF/tibet/lib/styles/normalize.css
+TIBET-INF/tibet/lib/styles/tibet_normalize.css
+TIBET-INF/tibet/lib/styles/tibet_reset.css
+TIBET-INF/tibet/lib/styles/tibet_content.css
+TIBET-INF/tibet/lib/styles/tibet_framing.css
+TIBET-INF/tibet/lib/styles/tibet_boot.css
+TIBET-INF/tibet/lib/styles/tibet.css
 
-node_modules/tibet/lib/media/boot/dark_fiber.png
-node_modules/tibet/lib/media/boot/white_fiber.png
+TIBET-INF/tibet/lib/media/boot/dark_fiber.png
+TIBET-INF/tibet/lib/media/boot/white_fiber.png
 
-node_modules/tibet/lib/cfg/TIBET.xml
-node_modules/tibet/lib/cfg/tibet_kernel.xml
-node_modules/tibet/lib/cfg/tibet_extensions.xml
-node_modules/tibet/lib/cfg/lib_namespaces.xml
+TIBET-INF/tibet/lib/cfg/TIBET.xml
+TIBET-INF/tibet/lib/cfg/tibet_kernel.xml
+TIBET-INF/tibet/lib/cfg/tibet_extensions.xml
+TIBET-INF/tibet/lib/cfg/lib_namespaces.xml
 
-node_modules/tibet/lib/media/boot/tibet_logo.png
+TIBET-INF/tibet/lib/media/boot/tibet_logo.png
 
-node_modules/tibet/lib/dat/keyrings.xml
-node_modules/tibet/lib/dat/uris.xml
-node_modules/tibet/lib/dat/vcards.xml
-node_modules/tibet/lib/dat/uris_delegated.xml
-node_modules/tibet/lib/dat/uris_next.xml
-node_modules/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
+TIBET-INF/tibet/lib/dat/keyrings.xml
+TIBET-INF/tibet/lib/dat/uris.xml
+TIBET-INF/tibet/lib/dat/vcards.xml
+TIBET-INF/tibet/lib/dat/uris_delegated.xml
+TIBET-INF/tibet/lib/dat/uris_next.xml
+TIBET-INF/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 
-node_modules/tibet/lib/schema/html401_strict.json
-node_modules/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
+TIBET-INF/tibet/lib/schema/html401_strict.json
+TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
 
-node_modules/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
-node_modules/tibet/src/tibet/tools/tdc/styles/TP.tsh.console.css
-node_modules/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
+TIBET-INF/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
+TIBET-INF/tibet/src/tibet/tools/tdc/styles/TP.tsh.console.css
+TIBET-INF/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
 
 # --- don't cache multiple copies of TIBET, only the desired one(s)
 
-## node_modules/tibet/lib/src/tibet_loader.js
-## node_modules/tibet/lib/src/tibet_hook.js
-## node_modules/tibet/lib/src/tibet_base.js
-## node_modules/tibet/lib/src/tibet_full.js
-## node_modules/tibet/lib/src/tibet_developer.js
+## TIBET-INF/tibet/lib/src/tibet_loader.js
+## TIBET-INF/tibet/lib/src/tibet_hook.js
+## TIBET-INF/tibet/lib/src/tibet_base.js
+## TIBET-INF/tibet/lib/src/tibet_full.js
+## TIBET-INF/tibet/lib/src/tibet_developer.js
 
-## node_modules/tibet/lib/src/tibet_loader.js.gz
-## node_modules/tibet/lib/src/tibet_hook.js.gz
-## node_modules/tibet/lib/src/tibet_base.js.gz
-## node_modules/tibet/lib/src/tibet_full.js.gz
-## node_modules/tibet/lib/src/tibet_developer.js.gz
+## TIBET-INF/tibet/lib/src/tibet_loader.js.gz
+## TIBET-INF/tibet/lib/src/tibet_hook.js.gz
+## TIBET-INF/tibet/lib/src/tibet_base.js.gz
+## TIBET-INF/tibet/lib/src/tibet_full.js.gz
+## TIBET-INF/tibet/lib/src/tibet_developer.js.gz
 
-node_modules/tibet/lib/src/tibet_loader.min.js
-node_modules/tibet/lib/src/tibet_hook.min.js
-node_modules/tibet/lib/src/tibet_base.min.js
-node_modules/tibet/lib/src/tibet_full.min.js
-node_modules/tibet/lib/src/tibet_developer.min.js
+TIBET-INF/tibet/lib/src/tibet_loader.min.js
+TIBET-INF/tibet/lib/src/tibet_hook.min.js
+TIBET-INF/tibet/lib/src/tibet_base.min.js
+TIBET-INF/tibet/lib/src/tibet_full.min.js
+TIBET-INF/tibet/lib/src/tibet_developer.min.js
 
-## node_modules/tibet/lib/src/tibet_loader.min.js.gz
-## node_modules/tibet/lib/src/tibet_hook.min.js.gz
-## node_modules/tibet/lib/src/tibet_base.min.js.gz
-## node_modules/tibet/lib/src/tibet_full.min.js.gz
-## node_modules/tibet/lib/src/tibet_developer.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_loader.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_hook.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_base.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_full.min.js.gz
+## TIBET-INF/tibet/lib/src/tibet_developer.min.js.gz
 
 
 CACHE:
