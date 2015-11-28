@@ -8118,7 +8118,6 @@ function() {
     /**
      * @method closeConnection
      * @summary Closes the connection to the remote server-sent events server.
-     * @exception TP.sig.InvalidSource
      * @returns {Boolean} Whether or not the connection closed successfully.
      */
 
@@ -8126,8 +8125,8 @@ function() {
 
     //  Try to obtain the event source object.
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource');
-
+        //  NOTE we don't raise here since this is often called during shutdown
+        //  and we don't want to report on errors we can't do anything about.
         return false;
     }
 
@@ -8495,7 +8494,6 @@ function(signalTypes) {
      *     private EventSource objec
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
-     * @exception TP.sig.InvalidSource
      * @returns {TP.core.SSESignalSource} The receiver.
      */
 
@@ -8503,8 +8501,8 @@ function(signalTypes) {
         handlerRegistry;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource');
-
+        //  NOTE we don't raise here since this is often called during shutdown
+        //  and we don't want to report on errors we can't do anything about.
         return this;
     }
 
