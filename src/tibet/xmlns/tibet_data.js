@@ -263,7 +263,9 @@ function(aContentObject, aRequest) {
         mimeType,
         resultType,
 
-        newResource;
+        newResource,
+
+        isValid;
 
     this.callNextMethod();
 
@@ -278,11 +280,21 @@ function(aContentObject, aRequest) {
         mimeType = TP.ietf.Mime.guessMIMEType(aContentObject);
     }
 
+    //  Obtain a MIME type for the result and use it to obtain a result type.
     resultType = this.getResultType(mimeType);
 
     //  If a result type couldn't be determined, then just use String.
     if (!TP.isType(resultType)) {
         resultType = String;
+    }
+
+    //  Make sure that it's valid for its container. Note that we pass 'false'
+    //  as a second parameter here for content objects that do both trivial and
+    //  full facet checks on their data. We only want trival checks here (i.e.
+    //  is the XML inside of a TP.core.XMLContent really XML - same for JSON)
+    isValid = resultType.validate(aContentObject, false);
+    if (!isValid) {
+        return this.raise('TP.sig.InvalidValue');
     }
 
     newResource = resultType.construct();

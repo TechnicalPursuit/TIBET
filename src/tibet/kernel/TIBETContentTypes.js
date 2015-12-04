@@ -864,13 +864,16 @@ function(data) {
 //  ------------------------------------------------------------------------
 
 TP.core.JSONContent.Type.defineMethod('validate',
-function(anObject) {
+function(anObject, includeFacetChecks) {
 
     /**
      * @method validate
      * @summary Returns true if the string parameter is valid
      *     TP.core.JSONContent.
      * @param {Object} anObject The object to test.
+     * @param {Boolean} [includeFacetChecks=true] Whether or not to include
+     *     'facet checks' or just do trivial checking to see if the data is even
+     *     in the correct format for this content type.
      * @returns {Boolean} True if the object can be validated.
      */
 
@@ -885,7 +888,7 @@ function(anObject) {
     //  next method to check facets, etc.
     str = TP.js2json(anObj);
 
-    if (TP.isValid(TP.json2js(str))) {
+    if (TP.isValid(TP.json2js(str)) && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
@@ -1242,13 +1245,16 @@ function(data) {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLContent.Type.defineMethod('validate',
-function(anObject) {
+function(anObject, includeFacetChecks) {
 
     /**
      * @method validate
      * @summary Returns true if the string parameter is valid
      *     TP.core.XMLContent.
      * @param {Object} anObject The object to test.
+     * @param {Boolean} [includeFacetChecks=true] Whether or not to include
+     *     'facet checks' or just do trivial checking to see if the data is even
+     *     in the correct format for this content type.
      * @returns {Boolean} True if the object can be validated.
      */
 
@@ -1263,7 +1269,7 @@ function(anObject) {
     //  next method to check facets, etc.
     str = TP.str(anObj);
 
-    if (TP.isNode(TP.node(str))) {
+    if (TP.isNode(TP.node(str)) && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
