@@ -378,18 +378,10 @@ function(aString, smartConversion, shouldReport) {
      * @method json2js
      * @summary Transforms a JSON-formatted string into the equivalent
      *     JavaScript objects.
-     * @description The TIBET version of this process extends the standard JSON
-     *     processing to allow strings in ISO8601 format
-     *     (YYYY-MM-DDTHH:MM:SS[Z|+/-HH:MM]) to be reconstituted as Date
-     *     instances. For more information on the JSON format see:
-     *     http://www.json.org. Note that 'smart conversion' does impose quite a
-     *     performance hit, so large blocks of JSON data should probably set it
-     *     to false.
      * @param {String} aString A JSON-formatted string.
      * @param {Boolean} smartConversion Whether or not to 'smart convert' the
-     *     JSON into JS. This includes detecting for Date data to construct Date
-     *     objects, detecting for RegExp data to construct RegExp objects and
-     *     construct TP.core.Hashes instead of Objects. This defaults to true.
+     *     JSON into JS. This causes the construction of TP.core.Hashes instead
+     *     of Objects. This defaults to true.
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
      * @returns {Object} A JavaScript object containing the JSON data.
      * @exception InvalidJSON
@@ -401,7 +393,7 @@ function(aString, smartConversion, shouldReport) {
 
         obj,
 
-        tpHashProto;
+        tpHashInstProto;
 
     //  avoid changing parameter value
     text = aString;
@@ -426,9 +418,8 @@ function(aString, smartConversion, shouldReport) {
         //  read and write) the __proto__ slot of a JavaScript object instance.
         //  This is now supported in all environments we run in.
 
-        //  To do this, we first create a real TP.core.Hash and grab the value
-        //  in it's __proto__ slot.
-        tpHashProto = TP.core.Hash.construct().__proto__;
+        //  To do this, we first grab the 'instance prototype' of TP.core.Hash
+        tpHashInstProto = TP.core.Hash.Inst;
 
         //  NB: Some of the constructs in the following loop are 'bare JS' to
         //  get the required performance.
@@ -452,7 +443,7 @@ function(aString, smartConversion, shouldReport) {
                             //  Create a new value to replace the object handed
                             //  to us by the parse routine and set its prototype
                             //  to the hash prototype obtained above.
-                            newVal = Object.create(tpHashProto);
+                            newVal = Object.create(tpHashInstProto);
 
                             newVal.$$type = TP.core.Hash;
 
