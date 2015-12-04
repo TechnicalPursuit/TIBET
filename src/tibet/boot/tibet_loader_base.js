@@ -8170,16 +8170,6 @@ TP.boot.$getAppHead = function() {
     //  the "collection path" that contains index.html, or the full path
     //  if we're basically looking at host:port[/].
 
-    //  Another option is an explicit setting for an offset from the launch file
-    //  (normally provided as a launch parameter). If found use that to compute
-    //  relative to the URL in question.
-    offset = TP.sys.getcfg('path.head_offset');
-    if (TP.boot.$notEmpty(offset)) {
-        TP.boot.$$apphead = TP.boot.$uriCollapsePath(
-            TP.boot.$uriJoinPaths(path, offset));
-        return TP.boot.$$apphead;
-    }
-
     //  Process the path as a typical HTTP launch path which means finding the
     //  host:port portion (if any) or the final "collection path".
     parts = path.split('/');
@@ -8217,6 +8207,7 @@ TP.boot.$getAppRoot = function() {
      */
 
     var approot,
+        pub,
         path,
         keys,
         len,
@@ -8232,6 +8223,16 @@ TP.boot.$getAppRoot = function() {
     approot = TP.sys.cfg('path.app_root');
     if (TP.boot.$notEmpty(approot)) {
         return TP.boot.$setAppRoot(approot);
+    }
+
+    //  PhantomJS launches are unique in that they leverage a page that resides
+    //  in the library (usually under node_modules) and therefore one that will
+    //  not expose a tibet_pub reference. We have to add that in manually.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        pub = TP.sys.getcfg('boot.tibet_pub');
+        TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
+            TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
+        return TP.boot.$$approot;
     }
 
     //  Compute from the window location, normally a reference to an index.html
@@ -8381,7 +8382,7 @@ TP.boot.$getLibRoot = function() {
                     TP.boot.$uriCollapsePath(
                         TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(
                             libroot, path),
-                        TP.sys.cfg('boot.loadoffset'))));
+                        TP.sys.cfg('boot.loader_offset'))));
             }
 
             break;
@@ -10833,8 +10834,6 @@ TP.boot.launch = function(options) {
      *     boot.no_url_args in this option list (which is useful in certain
      *     production setups).
      * @param {Object} options A set of options which control the boot process.
-     *     Common keys used by this function include 'use_login' and 'parallel'.
-     *     Other keys are passed through to boot(), config() et al.
      * @returns {Window} The window the application launched in.
      */
 
@@ -11269,9 +11268,7 @@ TP.boot.$uiRootReady = function() {
 
     var uiRootID,
         win,
-        login,
-        parallel,
-        file;
+        login;
 
     uiRootID = TP.sys.cfg('tibet.uiroot') || 'UIROOT';
     win = TP.sys.getWindowById(uiRootID);
@@ -11283,36 +11280,31 @@ TP.boot.$uiRootReady = function() {
         win = window;
     }
 
-    login = TP.sys.cfg('boot.use_login');
-    if (login !== true) {
-        //  without a login sequence there won't be a page coming back to
-        //  say that we're authenticated for phase two, we have to do that
-        //  manually here.
-        win.$$phase_two = true;
-
-        TP.boot.boot();
-    } else {
-        //  login was explicitly true
-        file = TP.sys.cfg('path.login_page');
-        file = TP.boot.$uriExpandPath(file);
-
-        parallel = TP.sys.cfg('boot.parallel');
-        if (parallel === false) {
-            //  sequential login means we don't start booting, we just
-            //  have to put the login page into place and rely on the page
-            //  that comes back to re-start the boot sequence without
-            //  needing a login (since it just completed)...
-
-            //  NOTE 'window' here, not win, is intentional
-            window.location.replace(file);
+    //  If we're loading from HTTP we depend on the server to determine what
+    //  we're up to. The only consideration we have in that case is whether we
+    //  expect a second phase or not.
+    if (TP.sys.isHTTPBased()) {
+        login = TP.sys.cfg('boot.use_login');
+        if (login !== true) {
+            win.$$phase_two = true;
+            TP.boot.boot();
         } else {
-            //  parallel booting means we'll put the login page into the
-            //  ui canvas while booting in the background. The login
-            //  response must set $$phase_two to allow booting to proceed
-            //  beyond the first phase.
-            TP.boot.showUICanvas(file);
+            //  If login is true then the server will be in control of the pages
+            //  we receive. There are two models: single-phase and two-phase.
+            //  If we're booting single-phase we probably had a pure login page
+            //  and only on successful authentication was a page with the loader
+            //  vended to the client. In two-phase we're loading and showing the
+            //  login page at the same time and will only get a "keep booting"
+            //  option when authentication passes. So two phase booting (aka
+            //  parallel booting) means we want the phase_two flag turned off.
+            win.$$phase_two = !TP.sys.cfg('boot.parallel');
             TP.boot.boot();
         }
+    } else {
+        //  Without logins and success pages we can't rely on a "second phase"
+        //  component to trigger booting phase two so we set it explicitly.
+        win.$$phase_two = true;
+        TP.boot.boot();
     }
 
     return;

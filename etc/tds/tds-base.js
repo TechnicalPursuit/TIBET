@@ -7,8 +7,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint no-console:0 */
-
 (function() {
 
     'use strict';
@@ -32,7 +30,7 @@
      */
     /* eslint-disable quote-props */
     TDS.PARSE_OPTIONS = {
-        'string': ['app_root', 'config'],
+        'string': ['config'],
         'number': ['tds.port'],
         'default': {}
     };

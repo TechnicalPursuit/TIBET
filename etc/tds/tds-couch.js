@@ -7,7 +7,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-//  TODO:   use app logger instance for logging
 //  TODO:   improve error logging
 //  TODO:   use options passed from server.js
 //  TODO:   integrate config flags better
@@ -114,7 +113,8 @@
          * @param {Array.<Object>} list The list of changes to process.
          */
         applyChanges = function(list) {
-            //logger.debug('CouchDB changes:\n' + beautify(JSON.stringify(list)));
+            //logger.debug('CouchDB changes:\n' +
+            //  beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
                 //var fullpath;
@@ -434,9 +434,10 @@
 
             return new Promise(function(resolve, reject) {
 
-                //  Fetch revision of document, we'll need that for the update. Note
-                //  that we also ask for encoding info since that's necessary to do
-                //  the right process when building a digest for change detection.
+                //  Fetch revision of document, we'll need that for the update.
+                //  Note that we also ask for encoding info since that's
+                //  necessary to do the right process when building a digest for
+                //  change detection.
                 //  TODO: db_app
                 dbGet('_design/app', {att_encoding_info: true}).
                 then(function(response) {
@@ -482,7 +483,8 @@
 
                         couchDigest(data, att.encoding).then(function(digest) {
 
-                            //logger.debug('comparing attachment digest ' + digest);
+                            //logger.debug('comparing attachment digest ' +
+                            //  digest);
 
                             if (digest === att.digest) {
                                 //logger.debug(couchAttachmentName(file) +

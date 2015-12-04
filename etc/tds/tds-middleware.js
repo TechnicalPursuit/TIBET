@@ -9,8 +9,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint no-console:0 */
-
 (function() {
 
     'use strict';
@@ -293,6 +291,10 @@
                     channel.write('id: ' + sseId + '\n');
                     channel.write('event: ' + name + '\n');
                     channel.write('data: ' + JSON.stringify(data) + '\n\n');
+
+                    //  Be sure to flush or compression will cause things to
+                    //  fail to be delivered properly.
+                    channel.flush();
                 } catch (e) {
                     app.logger.error('Error writing SSE data: ' + e.message);
                 }
