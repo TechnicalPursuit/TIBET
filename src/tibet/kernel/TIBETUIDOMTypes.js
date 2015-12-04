@@ -776,8 +776,8 @@ function(aTargetElem, nodesAdded) {
     for (i = 0; i < len; i++) {
         node = nodesAdded.at(i);
 
-        //  Check to make sure we haven't already awakened this content.if so we
-        //  want to exit.
+        //  Check to make sure we haven't already awakened this content. If so
+        //  we want to exit.
         if (node.$$awakened) {
             continue;
         }
