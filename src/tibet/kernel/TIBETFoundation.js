@@ -6360,6 +6360,12 @@ function(attributeName) {
 
         args;
 
+    //  A shortcut - if the attribute name is '.', then that's shorthand for
+    //  returning ourselves.
+    if (attributeName === '.') {
+        return this;
+    }
+
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
@@ -6405,11 +6411,6 @@ function(attributeName) {
     //  access path, then invoke the path.
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
-
-        pathStr = path.asString();
-        if (pathStr === '.') {
-            return this;
-        }
 
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
@@ -6542,6 +6543,12 @@ function(attributeName) {
 
         args;
 
+    //  A shortcut - if the attribute name is '.', then that's shorthand for
+    //  returning ourselves.
+    if (attributeName === '.') {
+        return this;
+    }
+
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
         path = attributeName;
@@ -6596,11 +6603,6 @@ function(attributeName) {
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
 
-        pathStr = path.asString();
-        if (pathStr === '.') {
-            return this;
-        }
-
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
         //  and invoke with an apply(). Otherwise, we make an Array that has our
@@ -6640,6 +6642,14 @@ function(attributeName) {
         funcName,
 
         args;
+
+    //  A shortcut - if the attribute name is '.', then that's shorthand for
+    //  returning ourselves.
+    if (attributeName === '.') {
+
+        //  NB: Here we return the primitive string.
+        return this.toString();
+    }
 
     //  If we got handed an 'access path', then we need to let it handle this.
     if (!TP.isString(attributeName) && attributeName.isAccessPath()) {
@@ -6692,11 +6702,6 @@ function(attributeName) {
     //  access path, then invoke the path.
     if (TP.isValid(path) ||
         TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
-
-        pathStr = path.asString();
-        if (pathStr === '.') {
-            return this;
-        }
 
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
