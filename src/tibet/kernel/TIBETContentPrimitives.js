@@ -240,6 +240,16 @@ function(aString) {
                         //  move on.
                         if (useGlobalContext) {
                             context = tokens.at(i - 1).value;
+
+                            //  If we got an empty (or whitespace only) context,
+                            //  then we don't really have a context at all, but
+                            //  a standalone '.'. Just append it and move on.
+                            context = TP.trim(context);
+                            if (TP.isEmpty(context)) {
+                                useGlobalContext = false;
+                                str += '.';
+                            }
+
                         } else {
                             str += '.';
                         }
