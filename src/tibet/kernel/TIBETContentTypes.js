@@ -4915,7 +4915,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  NB: We have to do this *after* the preSetAccess call so that change
     //  path data structures are set up properly.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
-    if (traversalLevel === 0) {
+    if (traversalLevel === 1) {
 
         if (TP.regex.HAS_ACP.test(srcPath)) {
             //  Grab the arguments and slice the first three off (since they're
