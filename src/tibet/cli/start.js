@@ -125,11 +125,20 @@ Cmd.prototype.execute = function() {
     if (!sh.test('-f', 'server.js')) {
         // If there's no server.js assume a 'noserver' template or 'couchdb'
         // template of some sort and default to opening the index.html.
-        url = CLI.expandPath(CLI.getcfg('path.index_page'));
-        msg = 'No server.js. Opening ' + url;
-        cmd.system(msg);
 
-        server = child.spawn('open', [url]);
+        //  If we see electron.js and we can find an electron binary we can
+        //  spawn it and fire up the electron engine.
+        if (sh.test('-f', 'electron.js') && sh.which('electron')) {
+            msg = 'Found electron.js. Launching Electron.';
+            cmd.system(msg);
+            server = child.spawn('electron', ['./electron.js']);
+        } else {
+            url = CLI.expandPath(CLI.getcfg('path.start_page'));
+            msg = 'No server.js. Opening ' + url;
+            cmd.system(msg);
+
+            server = child.spawn('open', [url]);
+        }
     } else {
         //  Capture the command line arguments and place server.js on the front.
         //  This essentially becomes the command line for a new 'node' command.

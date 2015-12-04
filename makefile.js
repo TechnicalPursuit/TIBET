@@ -466,7 +466,7 @@ targets.build_tibet = function(make) {
 /**
  * NOTE that if you change the 'loader' here so the final file name changes
  * from tibet_loader you need to update tibet_cfg.js to have the new value for
- * the 'tibetload' flag. Also adjust the offset if the file target moves.
+ * 'boot.tibet_loader'. Also adjust the offset if the file target moves.
  */
 targets.rollup_loader = function(make) {
     var date,

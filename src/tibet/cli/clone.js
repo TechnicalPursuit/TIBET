@@ -66,8 +66,8 @@ Cmd.prototype.DNA_ROOT = '../../../../dna/';
 Cmd.prototype.HELP =
 'Clones a TIBET application template from a supplied \'dna\' directory.\n\n' +
 
-'<dirname> is required and must be a valid directory name to clone to.\n' +
-'By default the dirname will be the appname unless otherwise specified.\n' +
+'<target> is required and must be a valid directory name to clone to.\n' +
+'By default the target will be the appname unless otherwise specified.\n' +
 'You can use \'.\' to clone to the current directory HOWEVER no checks\n' +
 'are currently done to prevent potential data loss. Be careful!\n\n' +
 
@@ -107,7 +107,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet clone <dirname> [--list] [--force] [--name <appname>] [--dna <template>]';
+    'tibet clone <target> [--list] [--force] [--name <appname>] [--dna <template>]';
 
 
 //  ---

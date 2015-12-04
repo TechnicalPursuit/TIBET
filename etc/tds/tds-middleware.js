@@ -9,8 +9,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint no-console:0 */
-
 (function() {
 
     'use strict';
@@ -138,13 +136,13 @@
                 err;
 
             err = function(code, message) {
-                console.error(message);
+                req.app.logger.error(message);
                 res.send(code, message);
                 res.end();
                 return;
             };
 
-            console.log('Processing patch request.');
+            req.app.logger.info('Processing patch request.');
 
             fs = require('fs');
 
@@ -202,7 +200,7 @@
             // process the patch
             // ---
 
-            console.log('Processing patch for ' + url);
+            req.app.logger.info('Processing patch for ' + url);
 
             // TODO: remove sync versions
 
@@ -254,8 +252,8 @@
             watcher;
 
         //  Helper function to start an SSE connection.
-        startSSE = function(channel) {
-            console.log('Opening SSE channel for file watcher.');
+        startSSE = function(channel, app) {
+            app.logger.info('Opening SSE channel for file watcher.');
 
             //  Write the proper SSE headers to establish the connection. Note
             //  that the charset here is important...without it some versions of
@@ -272,7 +270,7 @@
             //  Respond to notifications that we're closed on the client side by
             //  shutting down the connection on our end
             channel.on('close', function() {
-                console.log('Closing SSE channel for file watcher.');
+                app.logger.info('Closing SSE channel for file watcher.');
                 clearInterval(interval);
                 watcher.close();
             });
@@ -285,7 +283,7 @@
                 sseId = id || (new Date()).getTime();
 
                 if (name !== 'sse-heartbeat') {
-                    console.log('Sending SSE data for ' + name + '#' + sseId +
+                    app.logger.info('Sending SSE data for ' + name + '#' + sseId +
                         ': ' + JSON.stringify(data));
                 }
 
@@ -293,8 +291,12 @@
                     channel.write('id: ' + sseId + '\n');
                     channel.write('event: ' + name + '\n');
                     channel.write('data: ' + JSON.stringify(data) + '\n\n');
+
+                    //  Be sure to flush or compression will cause things to
+                    //  fail to be delivered properly.
+                    channel.flush();
                 } catch (e) {
-                    console.error('Error writing SSE data: ' + e.message);
+                    app.logger.error('Error writing SSE data: ' + e.message);
                 }
             };
         };
@@ -343,7 +345,7 @@
                     try {
                         pattern = new RegExp(pattern);
                     } catch (e) {
-                        return console.log('Error creating RegExp: ' +
+                        return req.app.logger.error('Error creating RegExp: ' +
                             e.message);
                     }
                 } else {
@@ -356,7 +358,7 @@
                 //  Write out the headers and hold on to the event writer
                 //  returned by that method. We'll invoke that function from
                 //  within our watch handler on file changes.
-                sendSSE = startSSE(res);
+                sendSSE = startSSE(res, req.app);
 
                 //  Configure a watcher for our root, including any ignore
                 //  patterns etc.

@@ -11577,17 +11577,23 @@ function(aRequest) {
 
             if (obsAttrs.contains(attrName)) {
 
-                //  If we can create a valid URI from the value we find there,
-                //  ignore it for changes and tell it to unwatch its handler for
-                //  change notifications.
+                if (TP.notEmpty(val =
+                        TP.elementGetAttribute(elem, attrName, true))) {
 
-                uri = TP.uc(val);
-                if (TP.isURI(uri)) {
-                    tpElem.ignore(uri, 'TP.sig.ValueChange');
-                    uri.unwatch();
+                    //  If we can create a valid URI from the value we find
+                    //  there, ignore it for changes and tell it to unwatch its
+                    //  handler for change notifications.
+
+                    uri = TP.uc(val);
+                    if (TP.isURI(uri)) {
+                        tpElem.ignore(uri, 'TP.sig.ValueChange');
+
+                        //  NOTE: we DO NOT unwatch() the URI since other
+                        //  elements may be observing it.
+                    }
+
+                    obsAttrs.splice(obsAttrs.indexOf(attrName), 1);
                 }
-
-                obsAttrs.splice(obsAttrs.indexOf(attrName), 1);
             }
         }
 

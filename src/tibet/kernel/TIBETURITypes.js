@@ -234,6 +234,8 @@ function(aURI, $$vetted) {
         if (TP.isKindOf(aURI, TP.core.URI)) {
             return aURI;
         } else {
+            //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
+            //          with URI components (via rewrite() or other means).
             return;
         }
     } else {
@@ -748,7 +750,7 @@ function(aURI) {
     }
 
     //  check the uri instance for a map. if it exists use that cached map.
-    map = url.get('urimap');
+    map = url.$get('$uriMap');
     if (TP.isValid(map)) {
         return map;
     }
@@ -763,11 +765,8 @@ function(aURI) {
         return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
     });
 
-    //  No patterns means no mappings. But ensure we cache a map as needed.
+    //  No patterns means no mappings.
     if (TP.isEmpty(patterns)) {
-        if (TP.sys.hasStarted()) {
-            url.$set('$urimap', TP.hc(), false);
-        }
         return;
     }
 
@@ -818,7 +817,7 @@ function(aURI) {
 
         //  Ensure we cache a map as needed.
         if (TP.sys.hasStarted()) {
-            url.$set('$urimap', map, false);
+            url.$set('$uriMap', map, false);
         }
 
         return map;
@@ -826,10 +825,6 @@ function(aURI) {
 
     //  No matches means the URI is "unmapped".
     if (TP.isEmpty(matches)) {
-        //  Ensure we cache a map as needed.
-        if (TP.sys.hasStarted()) {
-            url.$set('$urimap', TP.hc(), false);
-        }
         return;
     }
 
@@ -850,7 +845,7 @@ function(aURI) {
 
     //  Ensure we cache a map as needed.
     if (TP.sys.hasStarted()) {
-        url.$set('$urimap', map, false);
+        url.$set('$uriMap', map, false);
     }
 
     return map;
@@ -1069,7 +1064,13 @@ TP.core.URI.Inst.defineAttribute('$dirty', false);
 TP.core.URI.Inst.defineAttribute('$loaded', false);
 
 //  uri mapping/rewriting configuration
-TP.core.URI.Inst.defineAttribute('$urimap', null);
+TP.core.URI.Inst.defineAttribute('$uriMap', null);
+
+//  uri handler type based on remap process caching
+TP.core.URI.Inst.defineAttribute('$uriHandler', null);
+
+//  uri as rewritten based on rewrite process caching
+TP.core.URI.Inst.defineAttribute('$uriRewrite', null);
 
 //  the default MIME type for this instance
 TP.core.URI.Inst.defineAttribute('defaultMIMEType');
@@ -3023,10 +3024,6 @@ function(aRequest) {
      *     subtype type object that can handle the request for the supplied URI.
      */
 
-    if (TP.isEmpty(this.get('urimap'))) {
-        return this.$getDefaultHandler(aRequest);
-    }
-
     return this.getType().remap(this, aRequest);
 });
 
@@ -3043,10 +3040,6 @@ function(aRequest) {
      *     inform the rewrite.
      * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
      */
-
-    if (TP.isEmpty(this.get('urimap'))) {
-        return this;
-    }
 
     return this.getType().rewrite(this, aRequest);
 });
@@ -8254,9 +8247,16 @@ function(aURI, aRequest) {
         str,
         scheme,
         ssp,
-        parts;
+        parts,
+        newuri;
 
     uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
+
+    //  Return cached rewrite if found, avoiding additional overhead.
+    newuri = uri.$get('$uriRewrite');
+    if (TP.isValid(newuri)) {
+        return newuri;
+    }
 
     //  the request can decline rewriting via flag...check that first
     if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
@@ -8278,16 +8278,15 @@ function(aURI, aRequest) {
         return uri;
     }
 
-//  TODO:   fix up to support replacing individual uri parts.
-    return uri;
-
-/*
+    //  Pull the URI apart using scheme-specific parsing.
     str = TP.str(uri);
     scheme = str.slice(0, str.indexOf(':'));
     ssp = str.slice(str.indexOf(':') + 1);
     parts = uri.$parseSchemeSpecificPart(ssp);
+    parts.atPut('scheme', scheme);
 
-    //  At least one rewrite property so process them.
+    //  At least one rewrite property so process them, updating any named
+    //  portions in the parts list with the rewrite value.
     rewrites.forEach(function(key) {
         var slot,
             value;
@@ -8298,10 +8297,12 @@ function(aURI, aRequest) {
         parts.atPut(slot, value);
     });
 
+    //  Build a new URI using the updated parts.
+    newuri = TP.uc(parts);
 
+    uri.$set('$uriRewrite', newuri, false);
 
-    return uri;
-*/
+    return newuri;
 });
 
 //  ========================================================================
@@ -8348,22 +8349,31 @@ function(aURI, aRequest) {
     uri = TP.isString(aURI) ? TP.core.URI.construct(aURI) : aURI;
 
     //  the request can decline rewriting via flag...check that first
-    if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_rewrite'))) {
+    if (TP.isValid(aRequest) && TP.isTrue(aRequest.at('no_remap'))) {
         return uri;
+    }
+
+    //  Return cached type if found, avoiding additional overhead.
+    type = uri.$get('$uriHandler');
+    if (TP.isValid(type)) {
+        return type;
     }
 
     //  capture the best uri map configuration data for the URI.
     map = TP.core.URI.$getURIMap(uri);
-    if (TP.isEmpty(map)) {
-        return uri.$getDefaultHandler(aRequest);
+    if (TP.notValid(map) || TP.isEmpty(map)) {
+        type = uri.$getDefaultHandler(aRequest);
+        uri.$set('$uriHandler', type, false);
+
+        return type;
     }
 
-    if (TP.isValid(map)) {
-        handler = map.at('urihandler');
-    }
-
+    handler = map.at('urihandler');
     if (TP.isEmpty(handler)) {
-        return uri.$getDefaultHandler(aRequest);
+        type = uri.$getDefaultHandler(aRequest);
+        uri.$set('$uriHandler', type, false);
+
+        return type;
     }
 
     type = TP.sys.getTypeByName(handler);
@@ -8372,16 +8382,19 @@ function(aURI, aRequest) {
             TP.warn('Unable to load handler: ' + handler) : 0;
 
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
-            TP.trace('Returning default handler type: TP.core.URIHandler') : 0;
+            TP.trace('Returning default handler for instance.') : 0;
 
-        return uri.$getDefaultHandler(aRequest);
+        type = uri.$getDefaultHandler(aRequest);
+        uri.$set('$uriHandler', type, false);
+
+        return type;
     }
 
     TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
         TP.trace('Found mapping \'' + handler + '\' for uri: ' + uri) : 0;
 
     //  went to some trouble to come up with this, so cache it for next time
-    map.atPut('handlerType', type);
+    uri.$set('$uriHandler', type, false);
 
     return type;
 });

@@ -1,0 +1,24 @@
+{
+    "NOTE" : "TIBET project file. Set configuration parameters here.",
+    "project": {
+        "name": "{{appname}}"
+    },
+    "tibet": {
+        "dna": "{{dna}}"
+    },
+    "path": {
+        "lib_root": "~app/TIBET-INF/tibet"
+    },
+    "escodegen": {
+        "format": {
+            "compact": true
+        }
+    },
+    "couch": {
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "port": 5984,
+        "db_name": "{{appname}}",
+        "app_name": "app"
+    }
+}

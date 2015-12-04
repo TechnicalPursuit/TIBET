@@ -7,8 +7,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint no-console:0 */
-
 (function() {
 
     'use strict';
@@ -32,7 +30,7 @@
      */
     /* eslint-disable quote-props */
     TDS.PARSE_OPTIONS = {
-        'string': ['app_root', 'config'],
+        'string': ['config'],
         'number': ['tds.port'],
         'default': {}
     };
@@ -63,6 +61,16 @@
         this.initPackage();
 
         return TDS._package.getAppHead();
+    };
+
+    /**
+     * Return the application head, the location serving as the top-level root.
+     * @returns {String} The application head path.
+     */
+    TDS.getAppRoot = function() {
+        this.initPackage();
+
+        return TDS._package.getAppRoot();
     };
 
     /**

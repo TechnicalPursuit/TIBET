@@ -167,6 +167,7 @@
     TP.sys.setcfg('boot.tibet_dir', 'node_modules');
     TP.sys.setcfg('boot.tibet_lib', 'tibet');
     TP.sys.setcfg('boot.tibet_inf', 'TIBET-INF');
+    TP.sys.setcfg('boot.tibet_pub', 'public');
 
     //  The file here is used as our source for project configuration data. If
     //  you don't want this loaded set boot.no_tibet_file to true.
@@ -174,16 +175,16 @@
 
     //  text pattern matching the load file used to check script tags during lib
     //  root computation if no other method is specified.
-    TP.sys.setcfg('boot.tibetload', 'tibet_loader');
+    TP.sys.setcfg('boot.tibet_loader', 'tibet_loader');
+
     //  how deep under lib_root is the tibet_loader file?
-    TP.sys.setcfg('boot.loadoffset', '../../..');
+    TP.sys.setcfg('boot.loader_offset', '../../..');
+
+    //  how far from lib_root is the phantom loader?
+    TP.sys.setcfg('boot.phantom_offset', '../../..');
 
     // Ensure we use the tibet_dir approach to computing root paths.
     TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
-
-    //  What path prefix do we expect during initial startup under Karma. If
-    //  this isn't set some computations of lib/app paths may fail.
-    TP.sys.setcfg('boot.karma_root', 'base');
 
     //  ---
     //  package/config setup
@@ -659,7 +660,7 @@
     //  app-only virtual paths
     TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
     TP.sys.setcfg('path.app_change', '~app_src/changes');
-    TP.sys.setcfg('path.app_log', '~app_inf/logs');
+    TP.sys.setcfg('path.app_log', '~/log');
     TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
     TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
@@ -1209,10 +1210,20 @@
     //  NOTE we do _not_ default this here so env.PORT etc can be used when the
     //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
     TP.sys.setcfg('tds.port', null);
-    TP.sys.setcfg('tds.secret', 'change this in your TIBET config');
+    TP.sys.setcfg('tds.secret', 'ThisIsNotSecureChangeIt');
+    TP.sys.setcfg('tds.session', 'T1B3TS3SS10N');   // change this too :)
 
     TP.sys.setcfg('tds.404', 'NotFound');
     TP.sys.setcfg('tds.500', 'ServerError');
+
+    TP.sys.setcfg('tds.log.count', 5);
+    TP.sys.setcfg('tds.log.file', '~app_log/tds.log');
+    TP.sys.setcfg('tds.log.format', 'dev');
+    TP.sys.setcfg('tds.log.level', 'info');
+    TP.sys.setcfg('tds.log.routes', false);
+    TP.sys.setcfg('tds.log.size', 5242880); // 5MB
+
+    TP.sys.setcfg('tds.max_bodysize', '5mb');
 
     TP.sys.setcfg('tds.use.cli', false);
     TP.sys.setcfg('tds.use.patcher', false);
@@ -1221,15 +1232,15 @@
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
-    TP.sys.setcfg('tds.watch.ignore', ['node_modules']);
+    TP.sys.setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('tds.watch.root', '~app');
     TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
 
     TP.sys.setcfg('tds.webdav.root', '~app_src');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
-    TP.sys.setcfg('couch.app.root', 'attachments');
-    TP.sys.setcfg('couch.watch.ignore', ['node_modules']);
+    TP.sys.setcfg('couch.app.root', 'public');
+    TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('couch.watch.root', '~app');
 
     //  ---
@@ -1428,23 +1439,20 @@
     //  what CSS theme should we use? default is none.
     TP.sys.setcfg('tibet.theme', null);
 
-    //  the application login page. when booting in two-phase mode with logins
-    //  turned on this page is displayed in the uicanvas while the root page
-    //  loads the TIBET target (kernel + any other TIBET code you configure) in
-    //  the code frame. when booting in a single phase this page replaces the
-    //  index file and booting has to be restarted by the page returned from
-    //  your server on successful login.
-    TP.sys.setcfg('path.index_page', '~/index.html');
-
-    TP.sys.setcfg('path.login_page', '~boot_xhtml/login.xhtml');
+    //  what path should be opened by the 'start' command in the CLI?
+    TP.sys.setcfg('path.start_page', '~app/index.html');
 
     //  ---
     //  karma integration
     //  ---
 
+    //  What path prefix do we expect during initial startup under Karma. If
+    //  this isn't set some computations of lib/app paths may fail.
+    TP.sys.setcfg('boot.karma_root', 'base');
+
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
-    TP.sys.setcfg('karma.boot.profile', 'standard#contributor');
+    TP.sys.setcfg('karma.boot.profile', 'app#contributor');
     TP.sys.setcfg('karma.boot.unminified', false);
     TP.sys.setcfg('karma.boot.unpackaged', false);
 

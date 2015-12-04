@@ -2869,11 +2869,9 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
      * @method $uriWithRoot
      * @summary Returns the path provided with any additional root information
      * which is necessary to create a full path name. The root used is the
-     * result of calling TP.boot.$getRootPath(), which may be referencing either
-     * the lib or app root at the time of the call depending on the current
-     * settings.
+     * result of calling TP.boot.$getAppHead().
      * @param {String} targetUrl A url to expand as needed.
-     * @param {String} aRoot The root path to use. Default is launch root.
+     * @param {String} aRoot The root path to use. Default is app head.
      * @returns {String} The url - after ensuring a root exists.
      */
 
@@ -2895,7 +2893,7 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
     //  note the use of the 'current root' path here since we can't assume
     //  that this should be rooted against libroot or approot without help
     if (TP.boot.$notValid(aRoot)) {
-        base = TP.getAppHead();
+        base = TP.boot.$getAppHead();
     } else {
         base = aRoot;
     }
@@ -8110,9 +8108,12 @@ TP.boot.$getAppHead = function() {
 
     /**
      * @method $getAppHead
-     * @summary Returns the portion of the launch location just above whichever
-     *     file actually triggered the launch sequence. Always computed from the
-     *     window.location (if available).
+     * @summary Returns the application "head", the location normally associated
+     *     with '/' for HTTP launches but trickier to compute for file launches
+     *     where it typically refers to the location containing the public app
+     *     resources as identified by the boot.tibet_pub configuration value.
+     *     The value here is typically computed from the window location to help
+     *     identify the scheme and path to the file containing tibet_loader.js.
      * @returns {String} The computed path.
      */
 
@@ -8129,43 +8130,48 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
-    //  Compute from the window location. This presumes window is a real slot
-    //  (which means it won't work on Node.js etc by default).
+    //  Compute from the window location, normally a reference to an index.html
+    //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
     path = path.split(/[#?]/)[0];
 
-    //  From a semantic viewpoint the app head can't be inside the library
-    //  area, it has to be above it, typically where we'd think of app root
-    keys = [TP.sys.cfg('boot.tibet_dir'), TP.sys.cfg('boot.tibet_inf')];
-    len = keys.length;
-    for (i = 0; i < len; i++) {
-        key = '/' + keys[i] + '/';
-        if (path.indexOf(key) !== -1) {
-            TP.boot.$$apphead = path.slice(0, path.indexOf(key));
+    //  App head is the location containing the public or node_modules directory
+    //  in the majority of cases since these are the app_root and lib_root
+    //  default locations and app_head is by definition their parent location.
+
+    //  For file: launches the public directory or the node_modules directory
+    //  is likely to be on the URI path.
+    if (path.indexOf('file:') === 0) {
+        keys = [TP.sys.cfg('boot.tibet_pub'), TP.sys.cfg('boot.tibet_dir')];
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            key = '/' + keys[i] + '/';
+            if (path.indexOf(key) !== -1) {
+                TP.boot.$$apphead = path.slice(0, path.indexOf(key));
+                return TP.boot.$$apphead;
+            }
+        }
+
+        //  Didn't find a typical project library location on the path. Check to
+        //  see if we're _in_ the library.
+        lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibet_lib');
+        if (path.indexOf('/' + lib + '/') !== -1) {
+            TP.boot.$$apphead = path.slice(0,
+                path.indexOf('/' + lib + '/') + lib.length + 1);
             return TP.boot.$$apphead;
         }
     }
 
-    //  Didn't find a typical project library location on the path. Check to see
-    //  if we're _in_ the library.
-    lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibet_lib');
-    if (path.indexOf('/' + lib + '/') !== -1) {
-        TP.boot.$$apphead = path.slice(0,
-            path.indexOf('/' + lib + '/') + lib.length + 1);
-        return TP.boot.$$apphead;
-    }
+    //  HTTP or similar protocol where we're likely rooted from some host
+    //  and a path directly to the index.html (or no visible path at all).
 
-    //  Should have found boot.tibet_lib but just in case we can just use an
-    //  offset from the current window location (minus noise for # etc.)
-    offset = TP.sys.getcfg('path.head_offset');
-    if (TP.boot.$notEmpty(offset)) {
-        TP.boot.$$apphead = TP.boot.$uriCollapsePath(
-            TP.boot.$uriJoinPaths(path, offset));
-        return TP.boot.$$apphead;
-    }
+    //  In neither case will we normally find a public or node_modules
+    //  directory reference on the URI. It'll usually just be whatever is
+    //  the "collection path" that contains index.html, or the full path
+    //  if we're basically looking at host:port[/].
 
-    //  If we're not launching from somewhere below the typical library root we
-    //  try to work from the last portion of the path prior to any hash value.
+    //  Process the path as a typical HTTP launch path which means finding the
+    //  host:port portion (if any) or the final "collection path".
     parts = path.split('/');
     if (parts[parts.length - 1].match(/\./)) {
         parts.length = parts.length - 1;
@@ -8193,14 +8199,20 @@ TP.boot.$getAppRoot = function() {
      * @method $getAppRoot
      * @summary Returns the root path for the application, the point from which
      *     most if not all "app path" resolution occurs. Unless this has been
-     *     defined otherwise the return value is computed based on the value
-     *     found via $getAppHead. If the application launch path includes a
-     *     reference to node_modules the app root is presumed to be the location
-     *     containing node_modules and it is adjusted accordingly.
+     *     defined otherwise the return value is computed based on the launch
+     *     path and then adjusted relative to $getAppHead. If the launch path
+     *     includes a reference to boot.tibet_pub the app root is presumed to be
+     *     the location boot.tibet_pub and it is adjusted accordingly.
      * @returns {String} The computed path.
      */
 
-    var approot;
+    var approot,
+        pub,
+        path,
+        keys,
+        len,
+        i,
+        key;
 
     //  first check for a cached value. this is what's used during booting
     if (TP.boot.$$approot != null) {
@@ -8213,10 +8225,40 @@ TP.boot.$getAppRoot = function() {
         return TP.boot.$setAppRoot(approot);
     }
 
-    //  If app root isn't going to match up with app head it's going to
-    //  typically be set via launch parameters, url parameters, or via
-    //  tibet.json. We can set it initially here and it'll be reset once those
-    //  are processed.
+    //  PhantomJS launches are unique in that they leverage a page that resides
+    //  in the library (usually under node_modules) and therefore one that will
+    //  not expose a tibet_pub reference. We have to add that in manually.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        pub = TP.sys.getcfg('boot.tibet_pub');
+        TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
+            TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
+        return TP.boot.$$approot;
+    }
+
+    //  Compute from the window location, normally a reference to an index.html
+    //  file somewhere below a host (but maybe a file:// reference as well).
+    path = decodeURI(window.location.toString());
+    path = path.split(/[#?]/)[0];
+
+    //  Normally we want the location below public, but that will typically be
+    //  found only when launching via the file system. When running from a
+    //  typical web server the index.html file will be at '/' with no prefix for
+    //  the public directory (since the TDS etc. normally root the server there.
+    if (path.indexOf('file:') === 0) {
+        keys = [TP.sys.cfg('boot.tibet_pub'), TP.sys.cfg('boot.tibet_inf')];
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            key = '/' + keys[i] + '/';
+            if (path.indexOf(key) !== -1) {
+                TP.boot.$$approot = path.slice(0,
+                    path.indexOf(key) + key.length);
+                return TP.boot.$$approot;
+            }
+        }
+    }
+
+    //  For HTTP launches where there's rarely an extra subdirectory we will
+    //  almost always see app root and app head pointing to the same path.
     return TP.boot.$setAppRoot(TP.boot.$getAppHead());
 };
 
@@ -8340,7 +8382,7 @@ TP.boot.$getLibRoot = function() {
                     TP.boot.$uriCollapsePath(
                         TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(
                             libroot, path),
-                        TP.sys.cfg('boot.loadoffset'))));
+                        TP.sys.cfg('boot.loader_offset'))));
             }
 
             break;
@@ -8481,7 +8523,7 @@ TP.boot.$configurePackage = function() {
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
-            package = '~app_cfg/' + TP.sys.cfg('project.name');
+            package = '~app_cfg/app.xml';
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
                 package + '.', TP.DEBUG);
@@ -10792,8 +10834,6 @@ TP.boot.launch = function(options) {
      *     boot.no_url_args in this option list (which is useful in certain
      *     production setups).
      * @param {Object} options A set of options which control the boot process.
-     *     Common keys used by this function include 'use_login' and 'parallel'.
-     *     Other keys are passed through to boot(), config() et al.
      * @returns {Window} The window the application launched in.
      */
 
@@ -11228,9 +11268,7 @@ TP.boot.$uiRootReady = function() {
 
     var uiRootID,
         win,
-        login,
-        parallel,
-        file;
+        login;
 
     uiRootID = TP.sys.cfg('tibet.uiroot') || 'UIROOT';
     win = TP.sys.getWindowById(uiRootID);
@@ -11242,36 +11280,31 @@ TP.boot.$uiRootReady = function() {
         win = window;
     }
 
-    login = TP.sys.cfg('boot.use_login');
-    if (login !== true) {
-        //  without a login sequence there won't be a page coming back to
-        //  say that we're authenticated for phase two, we have to do that
-        //  manually here.
-        win.$$phase_two = true;
-
-        TP.boot.boot();
-    } else {
-        //  login was explicitly true
-        file = TP.sys.cfg('path.login_page');
-        file = TP.boot.$uriExpandPath(file);
-
-        parallel = TP.sys.cfg('boot.parallel');
-        if (parallel === false) {
-            //  sequential login means we don't start booting, we just
-            //  have to put the login page into place and rely on the page
-            //  that comes back to re-start the boot sequence without
-            //  needing a login (since it just completed)...
-
-            //  NOTE 'window' here, not win, is intentional
-            window.location.replace(file);
+    //  If we're loading from HTTP we depend on the server to determine what
+    //  we're up to. The only consideration we have in that case is whether we
+    //  expect a second phase or not.
+    if (TP.sys.isHTTPBased()) {
+        login = TP.sys.cfg('boot.use_login');
+        if (login !== true) {
+            win.$$phase_two = true;
+            TP.boot.boot();
         } else {
-            //  parallel booting means we'll put the login page into the
-            //  ui canvas while booting in the background. The login
-            //  response must set $$phase_two to allow booting to proceed
-            //  beyond the first phase.
-            TP.boot.showUICanvas(file);
+            //  If login is true then the server will be in control of the pages
+            //  we receive. There are two models: single-phase and two-phase.
+            //  If we're booting single-phase we probably had a pure login page
+            //  and only on successful authentication was a page with the loader
+            //  vended to the client. In two-phase we're loading and showing the
+            //  login page at the same time and will only get a "keep booting"
+            //  option when authentication passes. So two phase booting (aka
+            //  parallel booting) means we want the phase_two flag turned off.
+            win.$$phase_two = !TP.sys.cfg('boot.parallel');
             TP.boot.boot();
         }
+    } else {
+        //  Without logins and success pages we can't rely on a "second phase"
+        //  component to trigger booting phase two so we set it explicitly.
+        win.$$phase_two = true;
+        TP.boot.boot();
     }
 
     return;
