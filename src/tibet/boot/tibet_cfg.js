@@ -59,7 +59,7 @@
 
     //  when using a login page do we boot in parallel, meaning we start loading
     //  the tibet code (phase one) in parallel or wait until login succeeds?
-    TP.sys.setcfg('boot.parallel', true);
+    TP.sys.setcfg('boot.parallel', false);
 
     //  should we skip loading path.tibet_file? default is false to load the
     //  boot.boostrap JSON file (tibet.json by default). turning this off means
@@ -1197,6 +1197,12 @@
     //  machinery to manually replace 'tibet:root' with the app's app tag.
     TP.sys.setcfg('path.sherpa_screen_0', '~boot_xhtml/home.xhtml');
 
+    //  ---
+    //  SSE support
+    //  ---
+
+    //  How many errors on SSE connection before UnstableConnection exception?
+    TP.sys.setcfg('sse.max_errors', 10);
 
     //  ---
     //  tds support
@@ -1212,9 +1218,6 @@
     TP.sys.setcfg('tds.port', null);
     TP.sys.setcfg('tds.secret', 'ThisIsNotSecureChangeIt');
     TP.sys.setcfg('tds.session', 'T1B3TS3SS10N');   // change this too :)
-
-    TP.sys.setcfg('tds.404', 'NotFound');
-    TP.sys.setcfg('tds.500', 'ServerError');
 
     TP.sys.setcfg('tds.log.count', 5);
     TP.sys.setcfg('tds.log.file', '~app_log/tds.log');

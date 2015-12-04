@@ -1704,6 +1704,9 @@ TP.sys.getHomeURL = function(checkSession) {
 
     if (checkSession && window.sessionStorage) {
         homeURL = window.sessionStorage.getItem('TIBET.project.home_page');
+
+        //  This is a "one time use" value. Clear after fetching.
+        window.sessionStorage.removeItem('TIBET.project.home_page');
     }
 
     //  NOTE that the session.home_page value is set during startup to preserve
@@ -8622,8 +8625,9 @@ TP.boot.$configureBootstrap = function() {
 
     //  Launch parameters can be provided directly to the launch command such
     //  that the bootstrap file isn't needed. If that's the case we can skip
-    //  loading the file and cut out one more HTTP call.
-    if (TP.sys.cfg('boot.no_tibet_file')) {
+    //  loading the file and cut out one more HTTP call...or if we've already
+    //  done this once during launch vs. boot processing.
+    if (TP.sys.cfg('boot.no_tibet_file') || TP.boot.$$bootstrap) {
         return;
     }
 
@@ -8639,6 +8643,10 @@ TP.boot.$configureBootstrap = function() {
             TP.boot.$stderr('Failed to load: ' + file, TP.FATAL);
         }
         obj = JSON.parse(str);
+
+        //  Cache as bootstrap for reference.
+        TP.boot.$$bootstrap = obj;
+
     } catch (e) {
         TP.boot.$stderr('Failed to load: ' + logpath,
             TP.boot.$ec(e), TP.FATAL);
@@ -11050,8 +11058,10 @@ TP.boot.$stageAction = function() {
         case 'import_paused':
             //  Happens in two-phase booting when waiting for login to return us
             //  a hook file to trigger the second phase of the boot process.
-
-            //  TODO: is there a 'user accessible' trigger we want to add here?
+            TP.boot.$$restarttime = new Date();
+            TP.boot.$stdout('Startup process reengaged by user.',
+                TP.SYSTEM);
+            TP.boot.$$importPhaseTwo();
             break;
         default:
             break;

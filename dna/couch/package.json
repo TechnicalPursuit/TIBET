@@ -1,15 +1,16 @@
 {
-  "//": "{{appname}} npm package configuration.",
   "name": "{{appname}}",
   "version": "0.1.0",
   "dependencies": {
-    "bluebird": "^2.9.34",
+    "bluebird": "*",
     "body-parser": "*",
     "compression": "*",
     "cookie-parser": "*",
     "crypto": "0.0.3",
     "express": "*",
+    "express-handlebars": "^2.0.1",
     "express-session": "*",
+    "express-winston": "*",
     "helmet": "*",
     "js-beautify": "*",
     "mime-types": "^2.1.4",
@@ -17,6 +18,8 @@
     "morgan": "*",
     "nano": "*",
     "node-snappy": "^0.1.4",
+    "passport": "*",
+    "passport-local": "*",
     "require-dir": "*",
     "serve-static": "*",
     "shelljs": "TechnicalPursuit/shelljs",
@@ -34,4 +37,3 @@
   "preferGlobal": "false",
   "private": true
 }
-

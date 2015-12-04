@@ -255,50 +255,59 @@
         startSSE = function(channel, app) {
             app.logger.info('Opening SSE channel for file watcher.');
 
-            //  Write the proper SSE headers to establish the connection. Note
-            //  that the charset here is important...without it some versions of
-            //  Chrome (and maybe other browsers) will throw errors re: chunked
-            //  data formatting.
-            channel.writeHead(200, {
-                'Content-Type': 'text/event-stream; charset=UTF-8',
-                'Cache-Control': 'no-cache',
-                'transfer-encoding': '',
-                Connection: 'keep-alive'
-            });
-            channel.write('\n');
+            try {
 
-            //  Respond to notifications that we're closed on the client side by
-            //  shutting down the connection on our end
-            channel.on('close', function() {
-                app.logger.info('Closing SSE channel for file watcher.');
-                clearInterval(interval);
-                watcher.close();
-            });
+                //  Write the proper SSE headers to establish the connection.
+                //  Note that the charset here is important...without it some
+                //  versions of Chrome (and maybe other browsers) will throw
+                //  errors re: chunked data formatting.
+                channel.writeHead(200, {
+                    'Content-Type': 'text/event-stream; charset=UTF-8',
+                    'Cache-Control': 'no-cache',
+                    'transfer-encoding': '',
+                    Connection: 'keep-alive'
+                });
+                channel.write('\n');
 
-            //  Return a function with a persistent handle to the original
-            //  response. We can use this to send out events at any time.
-            return function(name, data, id) {
-                var sseId;
+                //  Respond to notifications that we're closed on the client
+                //  side by shutting down the connection on our end
+                channel.on('close', function() {
+                    app.logger.info('Closing SSE channel for file watcher.');
+                    clearInterval(interval);
+                    watcher.close();
+                });
 
-                sseId = id || (new Date()).getTime();
+                //  Return a function with a persistent handle to the original
+                //  response. We can use this to send out events at any time.
+                return function(name, data, id) {
+                    var sseId;
 
-                if (name !== 'sse-heartbeat') {
-                    app.logger.info('Sending SSE data for ' + name + '#' + sseId +
-                        ': ' + JSON.stringify(data));
-                }
+                    sseId = id || (new Date()).getTime();
 
-                try {
-                    channel.write('id: ' + sseId + '\n');
-                    channel.write('event: ' + name + '\n');
-                    channel.write('data: ' + JSON.stringify(data) + '\n\n');
+                    if (name !== 'sse-heartbeat') {
+                        app.logger.info('Sending SSE data for ' + name + '#' +
+                            sseId + ': ' + JSON.stringify(data));
+                    }
 
-                    //  Be sure to flush or compression will cause things to
-                    //  fail to be delivered properly.
-                    channel.flush();
-                } catch (e) {
-                    app.logger.error('Error writing SSE data: ' + e.message);
-                }
-            };
+                    try {
+                        channel.write('id: ' + sseId + '\n');
+                        channel.write('event: ' + name + '\n');
+                        channel.write('data: ' + JSON.stringify(data) + '\n\n');
+
+                        //  Be sure to flush or compression will cause things to
+                        //  fail to be delivered properly.
+                        channel.flush();
+                    } catch (e) {
+                        app.logger.error('Error writing SSE data: ' + e.message);
+                    }
+                };
+
+            } catch (e) {
+                app.logger.info('SSE channel error: ' + e.message);
+
+                //  TODO:   something else?
+                return function() {};
+            }
         };
 
         //  The actual middleware. This is our entry point to activating the SSE

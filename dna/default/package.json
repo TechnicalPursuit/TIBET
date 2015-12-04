@@ -1,17 +1,20 @@
 {
-  "//": "{{appname}} npm package configuration.",
   "name": "{{appname}}",
   "version": "0.1.0",
   "dependencies": {
+    "bluebird": "*",
     "body-parser": "*",
     "compression": "*",
     "cookie-parser": "*",
-    "helmet": "*",
     "express": "*",
+    "express-handlebars": "^2.0.1",
     "express-session": "*",
     "express-winston": "*",
+    "helmet": "*",
     "minimist": "*",
     "morgan": "*",
+    "passport": "*",
+    "passport-local": "*",
     "require-dir": "*",
     "serve-static": "*",
     "shelljs": "TechnicalPursuit/shelljs",
@@ -29,4 +32,3 @@
   "preferGlobal": "false",
   "private": true
 }
-
