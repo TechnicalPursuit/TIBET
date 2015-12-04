@@ -638,7 +638,7 @@ function(anInstance) {
 
     var dict,
 
-        subURIs,
+        secondaryURIs,
         i;
 
     if (!TP.canInvoke(anInstance, 'getID')) {
@@ -650,9 +650,9 @@ function(anInstance) {
     dict = this.$get('instances');
 
     //  If the URI has sub URIs we need to remove them too.
-    if (TP.notEmpty(subURIs = anInstance.getSecondaryURIs())) {
-        for (i = 0; i < subURIs.getSize(); i++) {
-            this.removeInstance(subURIs.at(i));
+    if (TP.notEmpty(secondaryURIs = anInstance.getSecondaryURIs())) {
+        for (i = 0; i < secondaryURIs.getSize(); i++) {
+            this.removeInstance(secondaryURIs.at(i));
         }
     }
 
@@ -1470,7 +1470,7 @@ function(anAspect, anAction, aDescription) {
 
     var primaryResource,
 
-        subURIs,
+        secondaryURIs,
 
         desc,
 
@@ -1488,7 +1488,7 @@ function(anAspect, anAction, aDescription) {
     //  If this this doesn't have any sub URIs, then it's we'll just let all of
     //  the parameters default in the supertype call, except we do provide the
     //  'path' and 'target' here.
-    if (TP.isEmpty(subURIs = this.getSecondaryURIs())) {
+    if (TP.isEmpty(secondaryURIs = this.getSecondaryURIs())) {
 
         desc = TP.isValid(aDescription) ? aDescription : TP.hc();
         desc.atPutIfAbsent('path', this.getFragmentExpr());
@@ -1498,11 +1498,11 @@ function(anAspect, anAction, aDescription) {
     } else {
 
         //  Otherwise, this is a primary URI and we need to send change
-        //  notifications from all of it's subURIs, if it has any.
+        //  notifications from all of it's secondaryURIs, if it has any.
 
         //  Note here how we signal one of the types of TP.sig.StructureChange.
         //  This is because the whole value of the primary URI has changed so,
-        //  as far as the subURIs are concerned, the whole structure has
+        //  as far as the secondaryURIs are concerned, the whole structure has
         //  changed.
 
         subDesc = TP.hc('action', anAction,
@@ -1534,11 +1534,11 @@ function(anAspect, anAction, aDescription) {
                 break;
         }
 
-        for (i = 0; i < subURIs.getSize(); i++) {
+        for (i = 0; i < secondaryURIs.getSize(); i++) {
 
-            subDesc.atPut('path', subURIs.at(i).getFragmentExpr());
+            subDesc.atPut('path', secondaryURIs.at(i).getFragmentExpr());
 
-            subURIs.at(i).signal(sigName, subDesc);
+            secondaryURIs.at(i).signal(sigName, subDesc);
         }
 
         //  Now that we're done signaling the sub URIs, it's time to signal a
@@ -4184,7 +4184,7 @@ function(aResource, aRequest) {
 
         shouldSignalChange,
 
-        subURIs,
+        secondaryURIs,
         description,
         fragText,
         i;
@@ -4256,9 +4256,9 @@ function(aResource, aRequest) {
         //  Sub URIs are URIs that have the same primary resource as us, but
         //  also have a fragment, indicating that they also have a secondary
         //  resource pointed to by the fragment.
-        subURIs = this.getSecondaryURIs();
+        secondaryURIs = this.getSecondaryURIs();
 
-        if (TP.notEmpty(subURIs)) {
+        if (TP.notEmpty(secondaryURIs)) {
 
             //  The 'action' here is TP.DELETE, since the entire resource got
             //  changed. This very well may mean structural changes occurred and
@@ -4287,13 +4287,13 @@ function(aResource, aRequest) {
             //  get a TP.sig.StructureDelete with 'value' as the aspect that
             //  changed (we swapped out the entire resource, so the values of
             //  those will have definitely changed).
-            for (i = 0; i < subURIs.getSize(); i++) {
+            for (i = 0; i < secondaryURIs.getSize(); i++) {
 
-                fragText = subURIs.at(i).getFragmentExpr();
+                fragText = secondaryURIs.at(i).getFragmentExpr();
 
                 description.atPut('path', fragText);
 
-                subURIs.at(i).signal('TP.sig.StructureDelete', description);
+                secondaryURIs.at(i).signal('TP.sig.StructureDelete', description);
 
                 aResource.checkFacets(fragText);
             }
@@ -4309,7 +4309,7 @@ function(aResource, aRequest) {
             'path', this.getFragmentExpr(),
 
             //  NB: We supply these values here for consistency with the 'no
-            //  subURIs logic' below.
+            //  secondaryURIs logic' below.
             'target', aResource,
             'oldTarget', resource,
             TP.OLDVAL, resource,
@@ -5435,15 +5435,15 @@ function() {
      */
 
     var uri,
-        subURIs;
+        secondaryURIs;
 
     if (TP.notFalse(this.get('shouldRefresh'))) {
         this.isLoaded(false);
     }
 
-    //  Make sure to let subURIs know too.
-    if (TP.notEmpty(subURIs = this.getSecondaryURIs())) {
-        subURIs.forEach(
+    //  Make sure to let secondaryURIs know too.
+    if (TP.notEmpty(secondaryURIs = this.getSecondaryURIs())) {
+        secondaryURIs.forEach(
                 function(aURI) {
                     if (TP.notFalse(aURI.get('shouldRefresh'))) {
                         aURI.isLoaded(false);

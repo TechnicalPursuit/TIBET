@@ -1761,25 +1761,19 @@ function() {
      */
 
     var node,
-        doc,
-        win;
+        doc;
 
     //  we're after the real document, not the document of some clone, so
     //  we preserve changes here
     node = this.getNativeNode();
+
     doc = TP.nodeGetDocument(node);
     if (!TP.isDocument(doc)) {
         return this.raise('TP.sig.InvalidDocument',
                             'Unable to determine node\'s document.');
     }
 
-    win = TP.nodeGetWindow(doc);
-    if (TP.notValid(win)) {
-        //  document isn't visible so there's no TP.core.Window for it
-        return TP.core.Document.construct(doc);
-    }
-
-    return TP.core.Window.construct(win).getDocument();
+    return TP.wrap(doc);
 });
 
 //  ------------------------------------------------------------------------

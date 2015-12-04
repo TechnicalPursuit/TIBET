@@ -422,7 +422,10 @@ function() {
             var resultType,
                 result,
 
-                mimeType;
+                mimeType,
+
+                isValid,
+                newResource;
 
             //  Signal the fact that we've done the work.
             thisArg.signal('TP.sig.UIDataReceived');
@@ -442,9 +445,36 @@ function() {
                     mimeType = TP.ietf.Mime.guessMIMEType(result, uri);
 
                     resultType = thisArg.getResultType(mimeType);
-                    result = resultType.construct(result);
+
+                    //  If a result type couldn't be determined, then just use
+                    //  String.
+                    if (!TP.isType(resultType)) {
+                        resultType = String;
+                    }
+
+                    //  Make sure that it's valid for its container. Note that we
+                    //  pass 'false' as a second parameter here for content
+                    //  objects that do both trivial and full facet checks on
+                    //  their data. We only want trival checks here (i.e. is the
+                    //  XML inside of a TP.core.XMLContent really XML - same for
+                    //  JSON)
+                    isValid = resultType.validate(result, false);
+                    if (!isValid) {
+                        return this.raise('TP.sig.InvalidValue');
+                    }
+
+                    newResource = resultType.construct();
+
+                    //  If the new resource result is a content object of some
+                    //  sort (highly likely) then it should respond to 'setData'
+                    //  so set its data to the resource String (the content
+                    //  object type will convert it to the proper type).
+                    if (TP.canInvoke(newResource, 'setData')) {
+                        newResource.setData(result);
+                    }
+
                 } else if (TP.isNode(result)) {
-                    result = TP.wrap(result);
+                    newResource = TP.wrap(result);
                 }
 
                 //  If the named URI has existing data, then we signal
@@ -458,7 +488,7 @@ function() {
                 //  Set the resource to the new resource (causing any observers
                 //  of the URI to get notified of a change) and signal
                 //  'TP.sig.UIDataConstruct'.
-                resultURI.setResource(result);
+                resultURI.setResource(newResource);
                 thisArg.signal('TP.sig.UIDataConstruct');
 
                 //  Dispatch 'TP.sig.DOMReady' for consistency with other
