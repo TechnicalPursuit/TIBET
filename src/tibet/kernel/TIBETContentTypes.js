@@ -6973,11 +6973,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
@@ -7211,11 +7207,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
@@ -7282,12 +7274,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.BARENAME_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
