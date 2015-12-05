@@ -1335,7 +1335,7 @@ function(firstPath, secondPath) {
     }
 
     //  while we're being told to 'back up' the path, do so
-    while (second.indexOf('../') === 0) {
+    while (second.indexOf('..') === 0) {
         if (second.charAt(2) === '/') {
             second = second.slice(3, second.getSize());
         } else {
