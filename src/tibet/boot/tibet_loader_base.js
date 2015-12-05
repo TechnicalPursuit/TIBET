@@ -2511,8 +2511,12 @@ TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
     }
 
     //  while we're being told to 'back up' the path, do so
-    while (second.indexOf('../') === 0) {
-        second = second.slice(3, second.length);
+    while (second.indexOf('..') === 0) {
+        if (second.charAt(2) === '/') {
+            second = second.slice(3, second.length);
+        } else {
+            second = second.slice(2, second.length);
+        }
         first = first.slice(0, first.lastIndexOf('/'));
     }
 
