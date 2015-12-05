@@ -8126,6 +8126,7 @@ TP.boot.$getAppHead = function() {
 
     var path,
         offset,
+        head,
         parts,
         keys,
         key,
@@ -8137,14 +8138,26 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
+    //  App head is the location containing the public or node_modules directory
+    //  in the majority of cases since these are the app_root and lib_root
+    //  default locations and app_head is by definition their parent location.
+
     //  Compute from the window location, normally a reference to an index.html
     //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
     path = path.split(/[#?]/)[0];
 
-    //  App head is the location containing the public or node_modules directory
-    //  in the majority of cases since these are the app_root and lib_root
-    //  default locations and app_head is by definition their parent location.
+    //  PhantomJS launches are unique in that they leverage a page that resides
+    //  in the library (usually under node_modules) and therefore one that will
+    //  not expose a tibet_pub reference. We have to add that in manually.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.phantom_offset'));
+        if (head.charAt(head.length - 1) === '/') {
+            head = head.slice(0, -1);
+        }
+        TP.boot.$$apphead = head;
+        return TP.boot.$$apphead;
+    }
 
     //  For file: launches the public directory or the node_modules directory
     //  is likely to be on the URI path.
@@ -8216,6 +8229,7 @@ TP.boot.$getAppRoot = function() {
     var approot,
         pub,
         path,
+        params,
         keys,
         len,
         i,
@@ -8226,25 +8240,38 @@ TP.boot.$getAppRoot = function() {
         return TP.boot.$$approot;
     }
 
-    //  if specified it should be an absolute path we can expand and use
+    //  if specified it should be an absolute path we can expand and use.
     approot = TP.sys.cfg('path.app_root');
     if (TP.boot.$notEmpty(approot)) {
         return TP.boot.$setAppRoot(approot);
     }
 
+    //  Compute from the window location, normally a reference to an index.html
+    //  file somewhere below a host (but maybe a file:// reference as well).
+    path = decodeURI(window.location.toString());
+
     //  PhantomJS launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
+
+        //  First look for help on the URL. TIBET's phantomtsh.js script is
+        //  often invoked via CLI calls that augement the URI with app_root.
+        params = TP.boot.$uriFragmentParameters(path);
+        if (params['path.app_root']) {
+            TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
+                TP.boot.$uriJoinPaths(TP.boot.$$apphead,
+                    params['path.app_root']));
+            return TP.boot.$$approot;
+        }
+
         pub = TP.sys.getcfg('boot.tibet_pub');
         TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
             TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
         return TP.boot.$$approot;
     }
 
-    //  Compute from the window location, normally a reference to an index.html
-    //  file somewhere below a host (but maybe a file:// reference as well).
-    path = decodeURI(window.location.toString());
+    //  Remaining path processing works with just the base path.
     path = path.split(/[#?]/)[0];
 
     //  Normally we want the location below public, but that will typically be
