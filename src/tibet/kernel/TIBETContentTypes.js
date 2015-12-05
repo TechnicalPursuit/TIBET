@@ -878,7 +878,9 @@ function(anObject, includeFacetChecks) {
      */
 
     var anObj,
-        str;
+        str,
+
+        isJSON;
 
     if (TP.notValid(anObj = anObject.get('data'))) {
         anObj = anObject;
@@ -887,12 +889,13 @@ function(anObject, includeFacetChecks) {
     //  First, check to make sure that it's even valid JSON. If it is, then call
     //  next method to check facets, etc.
     str = TP.js2json(anObj);
+    isJSON = TP.isJSONString(str);
 
-    if (TP.isValid(TP.json2js(str)) && TP.notFalse(includeFacetChecks)) {
+    if (isJSON && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
-    return false;
+    return isJSON;
 });
 
 //  ------------------------------------------------------------------------
@@ -1259,7 +1262,9 @@ function(anObject, includeFacetChecks) {
      */
 
     var anObj,
-        str;
+        str,
+
+        isNode;
 
     if (TP.notValid(anObj = anObject.get('data'))) {
         anObj = anObject;
@@ -1268,12 +1273,13 @@ function(anObject, includeFacetChecks) {
     //  First, check to make sure that it's even valid XML. If it is, then call
     //  next method to check facets, etc.
     str = TP.str(anObj);
+    isNode = TP.isNode(TP.node(str));
 
-    if (TP.isNode(TP.node(str)) && TP.notFalse(includeFacetChecks)) {
+    if (isNode && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
-    return false;
+    return isNode;
 });
 
 //  ------------------------------------------------------------------------
