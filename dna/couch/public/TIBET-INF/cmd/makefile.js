@@ -1,5 +1,11 @@
 /**
- * @overview TIBET + CouchDB makefile.js
+ * @overview TIBET + CouchDB make targets. This file provides the supporting
+ *     logic for the various `tibet` commands specific to working with CouchDB.
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     open source waivers to keep your derivative work source code private.
  */
 
 (function() {
@@ -300,11 +306,6 @@
 
                 //make.log('pushing document content: ' + doc_url);
 
-                // TODO: copy the tibet.json from the top level into the
-                // attachments directory but remove 'attachments' from the
-                // app.inf reference and any other paths which might include
-                // attachments.
-
                 //  The base document. Be sure to set the _id here to match the
                 //  document name passed to the multipart insert below.
                 newdoc = {
@@ -571,7 +572,7 @@
                                     rev;
 
                                 doc = response.filter(function(item) {
-                                    return item._id === '_design/' + db_app;
+                                    return item._id === doc_name;
                                 })[0];
 
                                 rev = doc._rev;
@@ -617,7 +618,6 @@
         if (sh.test('-d', target)) {
             list = sh.find(target).filter(function(fname) {
                 //  TODO:   add configuration-driven ignore checks here.
-
                 //  Remove any files which don't pass our ignore criteria.
                 return !sh.test('-d', fname) &&
                     !fname.match(/node_modules/);
@@ -650,8 +650,7 @@
                 //  Data comes in the form of an array with doc and status
                 //  so find the doc one.
                 existing = response.filter(function(item) {
-                    //  TODO: couch.app_name
-                    return item._id === '_design/' + db_app;
+                    return item._id === doc_name;
                 })[0];
 
                 updateAll(existing, list).then(
