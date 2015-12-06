@@ -59,7 +59,7 @@
 
     //  when using a login page do we boot in parallel, meaning we start loading
     //  the tibet code (phase one) in parallel or wait until login succeeds?
-    TP.sys.setcfg('boot.parallel', true);
+    TP.sys.setcfg('boot.parallel', false);
 
     //  should we skip loading path.tibet_file? default is false to load the
     //  boot.boostrap JSON file (tibet.json by default). turning this off means
@@ -587,6 +587,8 @@
     TP.sys.setcfg('path.tibet_lib', 'tibet');   // npm install name here.
     TP.sys.setcfg('path.tibet_file', '~app/tibet.json');
     TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
+
+    TP.sys.setcfg('path.tds_file', '~/tds.json');
 
     TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));
     TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
@@ -1197,24 +1199,26 @@
     //  machinery to manually replace 'tibet:root' with the app's app tag.
     TP.sys.setcfg('path.sherpa_screen_0', '~boot_xhtml/home.xhtml');
 
+    //  ---
+    //  SSE support
+    //  ---
+
+    //  How many errors on SSE connection before UnstableConnection exception?
+    TP.sys.setcfg('sse.max_errors', 10);
 
     //  ---
     //  tds support
     //  ---
 
+    TP.sys.setcfg('couch.app.root', 'public');
+    TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
+    TP.sys.setcfg('couch.watch.root', '~app');
+
+    TP.sys.setcfg('tds.auth.strategy', 'local');
+
     TP.sys.setcfg('tds.cli.uri', '/tds/cli');
 
-    TP.sys.setcfg('tds.patch.root', '~');
-    TP.sys.setcfg('tds.patch.uri', '/tds/patch');
-
-    //  NOTE we do _not_ default this here so env.PORT etc can be used when the
-    //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
-    TP.sys.setcfg('tds.port', null);
-    TP.sys.setcfg('tds.secret', 'ThisIsNotSecureChangeIt');
-    TP.sys.setcfg('tds.session', 'T1B3TS3SS10N');   // change this too :)
-
-    TP.sys.setcfg('tds.404', 'NotFound');
-    TP.sys.setcfg('tds.500', 'ServerError');
+    TP.sys.setcfg('tds.cookie.key', 'T1B3TS3SS10N');   // change this too :)
 
     TP.sys.setcfg('tds.log.count', 5);
     TP.sys.setcfg('tds.log.file', '~app_log/tds.log');
@@ -1225,9 +1229,28 @@
 
     TP.sys.setcfg('tds.max_bodysize', '5mb');
 
+    TP.sys.setcfg('tds.patch.root', '~');
+    TP.sys.setcfg('tds.patch.uri', '/tds/patch');
+
+    //  NOTE we do _not_ default this here so env.PORT etc can be used when the
+    //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
+    TP.sys.setcfg('tds.port', null);
+
+    TP.sys.setcfg('tds.pouch.prefix', './pouch/');
+    TP.sys.setcfg('tds.pouch.route', '/db');
+
+    TP.sys.setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
+
+    TP.sys.setcfg('tds.session.key', 'T1B3TS3SS10N');   // change this too :)
+    TP.sys.setcfg('tds.session.store', 'memory');
+
+    TP.sys.setcfg('tds.stop_onerror', true);
+
     TP.sys.setcfg('tds.use.cli', false);
-    TP.sys.setcfg('tds.use.patcher', false);
-    TP.sys.setcfg('tds.use.watcher', false);
+    TP.sys.setcfg('tds.use.couch', false);
+    TP.sys.setcfg('tds.use.patch', false);
+    TP.sys.setcfg('tds.use.pouch', false);
+    TP.sys.setcfg('tds.use.watch', false);
     TP.sys.setcfg('tds.use.webdav', false);
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
@@ -1238,10 +1261,6 @@
 
     TP.sys.setcfg('tds.webdav.root', '~app_src');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
-
-    TP.sys.setcfg('couch.app.root', 'public');
-    TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
-    TP.sys.setcfg('couch.watch.root', '~app');
 
     //  ---
     //  tsh processing

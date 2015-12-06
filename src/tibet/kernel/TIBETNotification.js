@@ -8389,7 +8389,8 @@ function() {
      * @returns {TP.core.SSESignalSource} The receiver.
      */
 
-    var eventSource;
+    var eventSource,
+        errorCount;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
         this.raise('TP.sig.InvalidSource');
@@ -8437,11 +8438,22 @@ function() {
         }.bind(this),
         false);
 
+    errorCount = 0;
+
     //  Set up the event listener that will trigger when there is an error.
     eventSource.addEventListener(
         'error',
         function(evt) {
             var payload;
+
+            //  Too many errors.
+            if (errorCount > TP.sys.cfg('sse.max_errors')) {
+                this.raise('TP.sig.UnstableConnection');
+                this.closeConnection();
+                return;
+            }
+
+            errorCount++;
 
             //  If the readyState is set to EventSource.CLOSED, then the browser
             //  is 'failing the connection'. In this case, we signal a

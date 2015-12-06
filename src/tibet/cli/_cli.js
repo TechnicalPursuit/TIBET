@@ -998,6 +998,11 @@ CLI.runCommand = function(command, cmdPath) {
         this.handleError(e, 'instantiating', command);
     }
 
+    //  Reparse the options now that we've been able to merge in any
+    //  command-specific ones.
+    this.options = minimist(process.argv.slice(2),
+       cmd.PARSE_OPTIONS) || {_: []};
+
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
     if (!this.options.usage && !this.options.help) {

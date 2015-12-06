@@ -6,8 +6,8 @@
     "tibet": {
         "dna": "{{dna}}"
     },
-    "path": {
-        "lib_root": "~app/TIBET-INF/tibet"
+    "boot": {
+        "use_login": false
     },
     "escodegen": {
         "format": {

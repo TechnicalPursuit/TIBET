@@ -190,7 +190,7 @@
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'errexit', 'errimg', 'help', 'usage', 'debug',
             'tap', 'system', 'quiet'],
-        'string': ['script', 'url', 'profile', 'params', 'level'],
+        'string': ['script', 'url', 'profile', 'params', 'level', 'app-root'],
         'number': ['timeout', 'remote-debug-port'],
         'default': {
             color: true
@@ -637,6 +637,10 @@
                 PhantomTSH.log('PhantomTSH.argv: ' +
                     JSON.stringify(PhantomTSH.argv), 'gray');
             }
+        }
+
+        if (PhantomTSH.argv['app-root']) {
+            PhantomTSH.url += '&path.app_root=' + PhantomTSH.argv['app-root'];
         }
 
         //  Flip flags to allow liberal content loading (cross-origin XHR,

@@ -92,8 +92,10 @@ if (!top.$$TIBET) {
         top.console.log('TIBET hook in \'' + root.name +
             '\' unable to find TIBET.');
 
-        //  "redirect" to the root location. This may cause TIBET to boot if the
-        //  current file was a bookmarked content page.
+        //  Without TIBET we presume the user opened a tibet-hooked page but did
+        //  that outside of a TIBET application. The idea here is to store that
+        //  page in session storage and try to boot TIBET via a root (/) url. If
+        //  that works TIBET will set the home page when it sees session value.
         if (top.sessionStorage) {
             top.sessionStorage.setItem('TIBET.project.home_page',
                 top.location.protocol + '//' + top.location.host +
@@ -109,10 +111,22 @@ if (!top.$$TIBET) {
 
         top.location = $$location;
         return;
+    } else {
+        //  If TIBET is found then the current page shouldn't be preserved as a
+        //  session var to drive home page on startup. Clear any value we have.
+        if (top.sessionStorage) {
+            top.sessionStorage.removeItem('TIBET.project.home_page');
+        }
     }
 
 } else {
     tibet = top.$$TIBET;
+
+    //  If TIBET is found then the current page shouldn't be preserved as a
+    //  session var to drive home page on startup. Clear any value we have.
+    if (top.sessionStorage) {
+        top.sessionStorage.removeItem('TIBET.project.home_page');
+    }
 }
 
 Object.defineProperty(root, 'TP', {value: tibet.TP, writable: false});

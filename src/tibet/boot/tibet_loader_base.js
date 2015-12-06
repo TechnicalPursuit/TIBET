@@ -1704,6 +1704,9 @@ TP.sys.getHomeURL = function(checkSession) {
 
     if (checkSession && window.sessionStorage) {
         homeURL = window.sessionStorage.getItem('TIBET.project.home_page');
+
+        //  This is a "one time use" value. Clear after fetching.
+        window.sessionStorage.removeItem('TIBET.project.home_page');
     }
 
     //  NOTE that the session.home_page value is set during startup to preserve
@@ -2508,8 +2511,12 @@ TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
     }
 
     //  while we're being told to 'back up' the path, do so
-    while (second.indexOf('../') === 0) {
-        second = second.slice(3, second.length);
+    while (second.indexOf('..') === 0) {
+        if (second.charAt(2) === '/') {
+            second = second.slice(3, second.length);
+        } else {
+            second = second.slice(2, second.length);
+        }
         first = first.slice(0, first.lastIndexOf('/'));
     }
 
@@ -8119,6 +8126,7 @@ TP.boot.$getAppHead = function() {
 
     var path,
         offset,
+        head,
         parts,
         keys,
         key,
@@ -8130,14 +8138,26 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
+    //  App head is the location containing the public or node_modules directory
+    //  in the majority of cases since these are the app_root and lib_root
+    //  default locations and app_head is by definition their parent location.
+
     //  Compute from the window location, normally a reference to an index.html
     //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
     path = path.split(/[#?]/)[0];
 
-    //  App head is the location containing the public or node_modules directory
-    //  in the majority of cases since these are the app_root and lib_root
-    //  default locations and app_head is by definition their parent location.
+    //  PhantomJS launches are unique in that they leverage a page that resides
+    //  in the library (usually under node_modules) and therefore one that will
+    //  not expose a tibet_pub reference. We have to add that in manually.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.phantom_offset'));
+        if (head.charAt(head.length - 1) === '/') {
+            head = head.slice(0, -1);
+        }
+        TP.boot.$$apphead = head;
+        return TP.boot.$$apphead;
+    }
 
     //  For file: launches the public directory or the node_modules directory
     //  is likely to be on the URI path.
@@ -8209,6 +8229,7 @@ TP.boot.$getAppRoot = function() {
     var approot,
         pub,
         path,
+        params,
         keys,
         len,
         i,
@@ -8219,25 +8240,38 @@ TP.boot.$getAppRoot = function() {
         return TP.boot.$$approot;
     }
 
-    //  if specified it should be an absolute path we can expand and use
+    //  if specified it should be an absolute path we can expand and use.
     approot = TP.sys.cfg('path.app_root');
     if (TP.boot.$notEmpty(approot)) {
         return TP.boot.$setAppRoot(approot);
     }
 
+    //  Compute from the window location, normally a reference to an index.html
+    //  file somewhere below a host (but maybe a file:// reference as well).
+    path = decodeURI(window.location.toString());
+
     //  PhantomJS launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
     //  not expose a tibet_pub reference. We have to add that in manually.
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
+
+        //  First look for help on the URL. TIBET's phantomtsh.js script is
+        //  often invoked via CLI calls that augement the URI with app_root.
+        params = TP.boot.$uriFragmentParameters(path);
+        if (params['path.app_root']) {
+            TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
+                TP.boot.$uriJoinPaths(TP.boot.$$apphead,
+                    params['path.app_root']));
+            return TP.boot.$$approot;
+        }
+
         pub = TP.sys.getcfg('boot.tibet_pub');
         TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
             TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
         return TP.boot.$$approot;
     }
 
-    //  Compute from the window location, normally a reference to an index.html
-    //  file somewhere below a host (but maybe a file:// reference as well).
-    path = decodeURI(window.location.toString());
+    //  Remaining path processing works with just the base path.
     path = path.split(/[#?]/)[0];
 
     //  Normally we want the location below public, but that will typically be
@@ -8622,8 +8656,9 @@ TP.boot.$configureBootstrap = function() {
 
     //  Launch parameters can be provided directly to the launch command such
     //  that the bootstrap file isn't needed. If that's the case we can skip
-    //  loading the file and cut out one more HTTP call.
-    if (TP.sys.cfg('boot.no_tibet_file')) {
+    //  loading the file and cut out one more HTTP call...or if we've already
+    //  done this once during launch vs. boot processing.
+    if (TP.sys.cfg('boot.no_tibet_file') || TP.boot.$$bootstrap) {
         return;
     }
 
@@ -8639,6 +8674,10 @@ TP.boot.$configureBootstrap = function() {
             TP.boot.$stderr('Failed to load: ' + file, TP.FATAL);
         }
         obj = JSON.parse(str);
+
+        //  Cache as bootstrap for reference.
+        TP.boot.$$bootstrap = obj;
+
     } catch (e) {
         TP.boot.$stderr('Failed to load: ' + logpath,
             TP.boot.$ec(e), TP.FATAL);
@@ -11050,8 +11089,10 @@ TP.boot.$stageAction = function() {
         case 'import_paused':
             //  Happens in two-phase booting when waiting for login to return us
             //  a hook file to trigger the second phase of the boot process.
-
-            //  TODO: is there a 'user accessible' trigger we want to add here?
+            TP.boot.$$restarttime = new Date();
+            TP.boot.$stdout('Startup process reengaged by user.',
+                TP.SYSTEM);
+            TP.boot.$$importPhaseTwo();
             break;
         default:
             break;

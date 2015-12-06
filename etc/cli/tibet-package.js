@@ -2394,7 +2394,7 @@
                 this.overlayProperties(this.tds.default, 'tds');
             }
 
-            env = this.getcfg('env');
+            env = this.getcfg('env') || this.options.env || 'development';
             if (this.tds[env]) {
                 this.overlayProperties(this.tds[env], 'tds');
             }

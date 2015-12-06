@@ -1,5 +1,5 @@
 /**
- * @overview Common functionality used by the TDS components.
+ * @overview Common functionality used by the TIBET Data Server and middleware.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -30,8 +30,9 @@
      */
     /* eslint-disable quote-props */
     TDS.PARSE_OPTIONS = {
-        'string': ['config'],
-        'number': ['tds.port'],
+        'boolean': ['verbose'],
+        'string': ['debug', 'level', 'tds.log.level'],
+        'number': ['port', 'tds.port'],
         'default': {}
     };
     /* eslint-enable quote-props */
