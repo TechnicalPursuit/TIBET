@@ -389,6 +389,7 @@ targets.rollup_sprintf = function(make) {
     sh.exec('cp -f ./dist/sprintf.min.js ../../deps/sprintf-tpi.min.js');
     //  NOTE we copy the map file since it'll 404 on us otherwise. And don't use
     //  tpi in the name, the lookup ends up explicit to the original name.
+    sh.exec('cp -f ./dist/sprintf.min.js.map ../../deps/sprintf.min.js.map');
     sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
 
     targets.rollup_sprintf.resolve();
@@ -459,6 +460,14 @@ targets.build_tibet = function(make) {
         targets.rollup_full).then(
         targets.rollup_developer).then(
         function() {
+            var npmdir;
+
+            //  Sprintf has a map file that will throw 404s in development if we
+            //  don't copy it into the library location.
+            npmdir = path.join(__dirname, 'node_modules');
+            sh.cd(path.join(npmdir, 'sprintf-js'));
+            sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
+
             targets.build_tibet.resolve();
         },
         function() {
