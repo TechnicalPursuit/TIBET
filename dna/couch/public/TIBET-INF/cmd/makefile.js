@@ -9,7 +9,7 @@
     var sh,
         fs,
         zlib,
-        beautify,
+        //beautify,
         crypto,
         snappy,
         readFile,
@@ -25,7 +25,7 @@
 
     snappy = require('node-snappy');
 
-    beautify = require('js-beautify');
+    //beautify = require('js-beautify');
     crypto = require('crypto');
     helpers = require('tibet/src/tibet/cli/_make_helpers');
 
