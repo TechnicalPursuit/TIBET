@@ -571,7 +571,7 @@
                                     rev;
 
                                 doc = response.filter(function(item) {
-                                    return item._id === '_design/app';
+                                    return item._id === '_design/' + db_app;
                                 })[0];
 
                                 rev = doc._rev;
@@ -651,7 +651,7 @@
                 //  so find the doc one.
                 existing = response.filter(function(item) {
                     //  TODO: couch.app_name
-                    return item._id === '_design/app';
+                    return item._id === '_design/' + db_app;
                 })[0];
 
                 updateAll(existing, list).then(
