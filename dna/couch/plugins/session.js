@@ -42,7 +42,7 @@
         //  Require in the session store, allowing it to be separately
         //  configured for MemoryStore, Redis, Couch, etc.
         name = TDS.cfg('tds.session.store');
-        store = require('./' + name + '-store');
+        store = require('./' + name + '-store')(options);
 
         sessionKey = TDS.cfg('tds.session') || 'T1B3TS3SS10N';
         secretKey = TDS.cfg('tds.secret') || 'ThisIsNotSecureChangeIt';

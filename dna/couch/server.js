@@ -104,9 +104,6 @@
 
     require('./plugins/body-parser')(options);
 
-    app.use(options.parsers.json);
-    app.use(options.parsers.urlencoded);
-
     require('./plugins/logger')(options);
 
     require('./plugins/compression')(options);
