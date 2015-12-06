@@ -56,9 +56,13 @@
 
         //  NB: The mount is set to '/' because it is already relative to the
         //  route that got us here (when we got installed as middleware).
-        mount = '/';
+        mount = TDS.getcfg('tds.webdav.mount') || '/';
 
         TDS.webdav = function(req, res, next) {
+
+            //  A little strange but this causes the jsDAV module to position
+            //  itself relative to the "mount point" and then invoke it's
+            //  handler logic to process the request/response pair.
             jsDAV.mount({
                 node: node,
                 mount: mount,
@@ -66,6 +70,7 @@
                 standalone: false,
                 plugins: jsDAV_CORS
             }).exec(req, res);
+
         };
 
         app.use(TDS.cfg('tds.webdav.uri'), loggedIn, TDS.webdav);

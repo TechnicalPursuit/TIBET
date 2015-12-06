@@ -26,10 +26,15 @@
     module.exports = function(options) {
         var app,
             chokidar,
+            escaper,
+            eventName,
+            ignore,
             interval,
             loggedIn,
             logger,
             path,
+            pattern,
+            root,
             startSSE,
             TDS,
             watcher;
@@ -75,7 +80,17 @@
                 channel.on('close', function() {
                     logger.info('Closing SSE channel for file watcher.');
                     clearInterval(interval);
-                    watcher.close();
+
+                    //  If we have multiple consumers of the watcher don't close
+                    //  it, just decrement that count.
+                    if (typeof watcher.consumers === 'number') {
+                        watcher.consumers -= 1;
+                        if (watcher.consumers === 0) {
+                            watcher.close();
+                        }
+                    } else {
+                        watcher.close();
+                    }
                 });
 
                 //  Return a function with a persistent handle to the original
@@ -111,90 +126,108 @@
             }
         };
 
+        //  Configure a watcher for our root, including any ignore patterns etc.
+        if (options.watcher) {
+            watcher = options.watcher;
+            watcher.consumers += 1;
+console.log('tds-watch sharing watcher');
+        } else {
+console.log('tds-watch creating watcher');
+            //  Helper function for escaping regex metacharacters. NOTE
+            //  that we need to take "ignore format" things like path/*
+            //  and make it path/.* or the regex will fail.
+            escaper = function(str) {
+                return str.replace(
+                    /\*/g, '\.\*').replace(
+                    /\./g, '\\.').replace(
+                    /\//g, '\\/');
+            };
+
+            //  Build a pattern we can use to test against ignore files.
+            ignore = TDS.getcfg('tds.watch.ignore');
+            if (ignore) {
+                pattern = ignore.reduce(function(str, item) {
+                    return str ?
+                        str + '|' + escaper(item) :
+                        escaper(item);
+                }, '');
+
+                //  TODO:   expand on this to support .svn or perhaps
+                //  all dot files etc.
+                pattern += '|\\.git';
+
+                try {
+                    pattern = new RegExp(pattern);
+                } catch (e) {
+                    return logger.error('Error creating RegExp: ' +
+                        e.message);
+                }
+            } else {
+                //  TODO:   expand on this to support .svn or perhaps
+                //  all dot files etc.
+                pattern = /\.git/;
+            }
+
+            watcher = chokidar.watch(root, {
+                ignored: pattern,
+                cwd: root,
+                ignoreInitial: true,
+                ignorePermissionErrors: true,
+                persistent: true
+            });
+            watcher.consumers = 1;
+            options.watcher = watcher;
+        }
+
+        //  TODO: let URI parameters override the event name to send.
+        eventName = TDS.getcfg('tds.watch.event');
+
+        watcher.on('change', function(file) {
+            if (watcher.sendSSE) {
+                watcher.sendSSE(eventName, {
+                    path: file,
+                    event: 'change',
+                    details: {}
+                });
+            }
+        });
+
+
+        //  ---
+        //
+        //  ---
+
         //  The actual middleware. This is our entry point to activating the SSE
         //  connection in response to an inbound request on our watcher url.
         TDS.watch = function(req, res, next) {
 
-            var root,
-                escaper,
-                ignore,
-                pattern,
-                eventName,
-                sendSSE;
-
-            //  Confirm this is an SSE request.
-            if (req.headers.accept &&
-                    req.headers.accept === 'text/event-stream') {
-
-                req.socket.setTimeout(Infinity);
-
-                //  TODO: let URI parameters override the watch root.
-                //  Expand out the path we'll be watching.
-                root = path.resolve(TDS.expandPath(
-                    TDS.getcfg('tds.watch.root')));
-
-                //  Helper function for escaping regex metacharacters for
-                //  patterns. NOTE that we need to take "ignore format" things
-                //  like path/* and make it path/.* or the regex will fail.
-                escaper = function(str) {
-                    return str.replace(
-                        /\*/g, '\.\*').replace(
-                        /\./g, '\\.').replace(
-                        /\//g, '\\/');
-                };
-
-                //  Build a pattern we can use to test against ignore files.
-                ignore = TDS.getcfg('tds.watch.ignore');
-                if (ignore) {
-                    pattern = ignore.reduce(function(str, item) {
-                        return str ? str + '|' + escaper(item) : escaper(item);
-                    }, '');
-
-                    pattern += '|\\.git';
-
-                    try {
-                        pattern = new RegExp(pattern);
-                    } catch (e) {
-                        return logger.error('Error creating RegExp: ' +
-                            e.message);
-                    }
-                } else {
-                    pattern = /\.git/;
-                }
-
-                //  TODO: let URI parameters override the event name to send.
-                eventName = TDS.getcfg('tds.watch.event');
-
-                //  Write out the headers and hold on to the event writer
-                //  returned by that method. We'll invoke that function from
-                //  within our watch handler on file changes.
-                sendSSE = startSSE(res);
-
-                //  Configure a watcher for our root, including any ignore
-                //  patterns etc.
-                watcher = chokidar.watch(root, {
-                    ignored: pattern,
-                    cwd: root,
-                    ignorePermissionErrors: true,
-                    persistent: true
-                });
-
-                watcher.on('change', function(file) {
-                    sendSSE(eventName, {
-                        path: file,
-                        event: 'change',
-                        details: {}
-                    });
-                });
-
-                //  Set up a simple SSE pulse to keep proxy servers happy. If
-                //  not set otherwise we'll use ten seconds.
-                interval = setInterval(function() {
-                    sendSSE('sse-heartbeat', {});
-                }, TDS.getcfg('tds.watch.heartbeat') || 10000);
+            //  Confirm this is an SSE request. Otherwise pass it through.
+            if (!req.headers.accept ||
+                    req.headers.accept !== 'text/event-stream') {
+                return next();
             }
+
+            req.socket.setTimeout(Infinity);
+
+            //  TODO: let URI parameters override the watch root.
+            //  Expand out the path we'll be watching.
+            root = path.resolve(TDS.expandPath(
+                TDS.getcfg('tds.watch.root')));
+
+            //  Write out the headers and hold on to the event writer
+            //  returned by that method. We'll invoke that function from
+            //  within our watch handler on file changes.
+            watcher.sendSSE = startSSE(res);
+
+            //  Set up a simple SSE pulse to keep proxy servers happy. If
+            //  not set otherwise we'll use ten seconds.
+            interval = setInterval(function() {
+                watcher.sendSSE('sse-heartbeat', {});
+            }, TDS.getcfg('tds.watch.heartbeat') || 10000);
         };
 
+        //  TODO:   really don't want to activate with every invocation of this
+        //  route...want to set it up once and stop there.
         app.get(TDS.cfg('tds.watch.uri'), loggedIn, TDS.watch);
     };
 

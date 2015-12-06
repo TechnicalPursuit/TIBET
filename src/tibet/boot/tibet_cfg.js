@@ -1211,6 +1211,12 @@
     //  ---
 
     TP.sys.setcfg('couch.app.root', 'public');
+    TP.sys.setcfg('couch.app_name', 'app');
+    TP.sys.setcfg('couch.db_name', null);
+    TP.sys.setcfg('couch.host', '127.0.0.1');
+    TP.sys.setcfg('couch.port', '5984');
+    TP.sys.setcfg('couch.scheme', 'http');
+
     TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('couch.watch.root', '~app');
 
@@ -1257,9 +1263,10 @@
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
     TP.sys.setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('tds.watch.root', '~app');
-    TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
+    TP.sys.setcfg('tds.watch.uri', '/tds/watch');
 
-    TP.sys.setcfg('tds.webdav.root', '~app_src');
+    TP.sys.setcfg('tds.webdav.mount', '/');
+    TP.sys.setcfg('tds.webdav.root', '~app');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
 
     //  ---

@@ -1,5 +1,6 @@
 /**
- * @overview Functionality specific to integrating the TDS with CouchDB.
+ * @overview Functionality specific to integrating the TDS with CouchDB. There
+ *     are
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -7,35 +8,10 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-//  TODO:   improve error logging
-//  TODO:   use options passed from server.js
-//  TODO:   integrate config flags better
 
 (function() {
 
     'use strict';
-
-    var beautify,
-        crypto,
-        follow,
-        fs,
-        gaze,
-        mime,
-        nano,
-        path,
-        Promise,
-        zlib;
-
-    beautify = require('js-beautify');
-    crypto = require('crypto');
-    follow = require('follow');
-    fs = require('fs');
-    gaze = require('gaze');
-    mime = require('mime-types');
-    nano = require('nano');
-    path = require('path');
-    Promise = require('bluebird');
-    zlib = require('zlib');
 
     //  ---
     //  CouchDB Integration
@@ -45,30 +21,43 @@
         var app,
             applyChanges,
             baseline,
+            beautify,
+            chokidar,
             couchAttachmentName,
             couchDigest,
+            crypto,
             db,
             dbAdd,
             dbGet,
             dbRemove,
-            dbRename,
+            //dbRename,
             dbUpdate,
+            db_app,
+            db_host,
+            db_name,
+            db_port,
+            db_scheme,
+            db_url,
+            doc_name,
             escaper,
             feed,
+            follow,
+            fs,
             ignore,
             inserting,
             logger,
-            opts,
+            mime,
+            nano,
+            path,
             pattern,
-            project,
+            Promise,
             readFile,
             root,
+            snappy,
             TDS,
-            watchParams,
-            writeFile;
-
-        readFile = Promise.promisify(fs.readFile);
-        writeFile = Promise.promisify(fs.writeFile);
+            watcher,
+            //writeFile,
+            zlib;
 
         //  ---
         //  Options / Arguments
@@ -84,18 +73,73 @@
             return;
         }
 
+        logger.info('Activating TDS CouchDB plugin.');
+
+        beautify = require('js-beautify');
+        chokidar = require('chokidar');
+        crypto = require('crypto');
+        follow = require('follow');
+        fs = require('fs');
+        mime = require('mime-types');
+        nano = require('nano');
+        path = require('path');
+        Promise = require('bluebird');
+        snappy = require('node-snappy');
+        zlib = require('zlib');
+
+
+        readFile = Promise.promisify(fs.readFile);
+        //writeFile = Promise.promisify(fs.writeFile);
+
+        //  Build up from config or defaults as needed.
+        db_scheme = TDS.getcfg('couch.scheme') || 'http';
+        db_host = TDS.getcfg('couch.host') || '127.0.0.1';
+        db_port = TDS.getcfg('couch.port') || '5984';
+
+        db_url = db_scheme + '://' + db_host + ':' + db_port;
+
+        db_name = TDS.getcfg('couch.db_name') || TDS.getcfg('npm.name');
+        db_app = TDS.getcfg('couch.app_name') || 'app';
+
+        doc_name = '_design/' + db_app;
+
         //  ---
         //  CouchDB-To-File
         //  ---
 
-        //  TODO: tie in real options here
-        opts = {};
-        feed = new follow.Feed(opts);
+        /*
+All of the CouchDB _changes options are allowed. See http://guide.couchdb.org/draft/notifications.html.
 
-        //  TODO: get this in a consistent fashion.
-        project = TDS.getcfg('npm.name');
+db | Fully-qualified URL of a couch database. (Basic auth URLs are ok.)
+since | The sequence number to start from. Use "now" to start from the latest change in the DB.
+heartbeat | Milliseconds within which CouchDB must respond (default: 30000 or 30 seconds)
+feed | Optional but only "continuous" is allowed
+filter | Either a path to design document filter, e.g. app/important
+Or a Javascript function(doc, req) { ... } which should return true or false
+query_params | Optional for use in with filter functions, passed as req.query to the filter function
 
-        //  TODO:   update config path(s)
+Besides the CouchDB options, more are available:
+
+headers | Object with HTTP headers to add to the request
+inactivity_ms | Maximum time to wait between changes. Omitting this means no maximum.
+max_retry_seconds | Maximum time to wait between retries (default: 360 seconds)
+initial_retry_delay | Time to wait before the first retry, in milliseconds (default 1000 milliseconds)
+response_grace_time | Extra time to wait before timing out, in milliseconds (default 5000 milliseconds)
+        */
+
+        feed = new follow.Feed(options);
+
+        feed.db = db_url + '/' + db_name;
+
+        //  NOTE the value here has to be large enough to avoid problems with
+        //  initial connection or a fatal error is thrown by follow(). For
+        //  example, 100ms is often too low even on a local dev machine.
+        //  TODO:   pull from config
+        feed.heartbeat = 500;   //  milliseconds
+
+        //  TODO:   more options per list above
+
+
         root = path.resolve(TDS.expandPath(
             TDS.getcfg('couch.app.root') || 'public'));
 
@@ -106,8 +150,8 @@
          * @param {Array.<Object>} list The list of changes to process.
          */
         applyChanges = function(list) {
-            //logger.debug('CouchDB changes:\n' +
-            //  beautify(JSON.stringify(list)));
+            logger.debug('CouchDB changes:\n' +
+                beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
                 //var fullpath;
@@ -136,14 +180,6 @@
         };
 
 
-        //  TODO:   use project db name and other config variables here.
-        feed.db = 'http://127.0.0.1:5984/' + project;
-
-        //  NOTE the value here has to be large enough to avoid problems with
-        //  initial connection or a fatal error is thrown by follow(). For
-        //  example, 100ms is often too low even on a local dev machine.
-        feed.heartbeat = 500;   //  milliseconds
-
         /**
          * Filters potential changes feed entries before triggering on(change).
          * @param {Object} doc The CouchDB document to potentially filter.
@@ -151,9 +187,8 @@
         feed.filter = function(doc) {
             var ok;
 
-            //  TODO:   remove limitation on only app files at some point.
-            //  TODO:   allow for configuration of app design doc name/id.
-            ok = doc._id === '_design/app';
+            //  TODO:   remove limitation on only _design doc files.
+            ok = doc._id === doc_name;
 
             if (!ok) {
                 logger.info('filtering: ' + beautify(JSON.stringify(doc)));
@@ -192,7 +227,7 @@
                 //  baseline and current, not just a single revpos.
 
                 //logger.debug('CouchDB change:\n' +
-                    //beautify(JSON.stringify(change)));
+                //    beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
                 basepos = baserev.slice(0, 2);
@@ -225,6 +260,8 @@
 
                 if (list.length > 0) {
                     applyChanges(list);
+                } else {
+                    logger.debug('CouchDB change: cyclic update notification.');
                 }
             }
         })
@@ -245,13 +282,13 @@
             logger.error(e.message);
         }
 
+
         //  ---
         //  File-To-CouchDB
         //  ---
 
-        //  TODO:   use project name and configured url endpoint data
-        nano = require('nano')('http://127.0.0.1:5984');
-        db = nano.use(project);
+        nano = require('nano')(db_url);
+        db = nano.use(db_name);
 
         dbGet = Promise.promisify(db.get);
 
@@ -283,7 +320,7 @@
          * between CouchDB changes and file system updates.
          * @param {String} data The file content to compute a hash for.
          */
-        couchDigest = function(data, encoding) {
+        couchDigest = function(data, encoding, zipper) {
 
             return new Promise(function(resolve, reject) {
                 var compute;
@@ -310,12 +347,9 @@
                 //  If an attachment was encoded this will contain the approach.
                 //  TODO: support encodings other than gzip.
                 if (encoding === 'gzip') {
-
-                    //  TODO: see pushdb logic for snappy compression version.
-                    //  It matches the digest consistently where zlib doesn't.
-                    zlib.gzip(data, function(err, zipped) {
-                        if (err) {
-                            reject(err);
+                    zipper(data, function(err2, zipped) {
+                        if (err2) {
+                            reject(err2);
                             return;
                         }
                         resolve(compute(zipped));
@@ -323,8 +357,9 @@
                 } else {
                     resolve(compute(data));
                 }
-            });
+            }).timeout(10000);
         };
+
 
         /**
          * Responds to notifications of new file additions. The resulting file
@@ -339,23 +374,23 @@
             if (!quiet) {
                 logger.info('Host FS change: insert ' + name);
             }
-            //logger.debug('fetching ' + name + ' doc._rev for CRUD insert');
+            logger.debug('fetching ' + name + ' doc._rev for CRUD insert');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
             return new Promise(function(resolve, reject) {
 
-                dbGet('_design/app').then(function(response) {
+                dbGet(doc_name).then(function(response) {
                     var doc,
-                        rev;
+                        rev,
+                        fullpath;
 
                     //logger.debug(beautify(JSON.stringify(response)));
 
                     //  Data comes in the form of an array with doc and status
                     //  so find the doc one.
                     doc = response.filter(function(item) {
-                        //  TODO: couch.app_name
-                        return item._id === '_design/app';
+                        return item._id === doc_name;
                     })[0];
 
                     rev = doc._rev;
@@ -374,18 +409,19 @@
                         return;
                     }
 
+                    fullpath = path.join(root, file);
+
                     readFile(file).then(function(data) {
                         var type;
 
-                        //logger.debug('read:\n' + data);
+                        logger.debug('read:\n' + data);
 
                         type = mime.lookup(path.extname(file).slice(1));
 
                         logger.info('Inserting attachment ' + name);
 
-                        //  TODO: couch.app_name
                         db.attachment.insert(
-                                '_design/app', name, data, type, {rev: rev},
+                                doc_name, name, data, type, {rev: rev},
                                 function(err, body) {
 
                                     if (err) {
@@ -421,7 +457,7 @@
             if (!quiet) {
                 logger.info('Host FS change: update ' + name);
             }
-            //logger.debug('fetching ' + name + ' doc._rev for CRUD update');
+            logger.debug('fetching ' + name + ' doc._rev for CRUD update');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -431,22 +467,25 @@
                 //  Note that we also ask for encoding info since that's
                 //  necessary to do the right process when building a digest for
                 //  change detection.
-                //  TODO: db_app
-                dbGet('_design/app', {att_encoding_info: true}).
-                then(function(response) {
+                dbGet(doc_name, {att_encoding_info: true}).then(
+                function(response) {
                     var doc,
                         rev,
-                        att;
+                        att,
+                        fullpath;
 
                     //logger.debug(beautify(JSON.stringify(response)));
 
-                    doc = response.filter(function(item) {
-                        //  TODO: db_app
-                        return item._id === '_design/app';
-                    })[0];
+                    if (Array.isArray(response)) {
+                        doc = response.filter(function(item) {
+                            return item._id === doc_name;
+                        })[0];
+                    } else {
+                        doc = response;
+                    }
 
                     rev = doc._rev;
-                    //logger.debug('document revision: ' + rev);
+                    logger.debug('document revision: ' + rev);
 
                     att = doc._attachments[name];
                     if (!att) {
@@ -467,51 +506,113 @@
                     }
 
                     //  Read the file content in preparation for a push.
-                    //logger.debug('reading attachment data');
-                    readFile(file).then(function(data) {
+                    logger.debug('reading attachment data');
+
+                    fullpath = path.join(root, file);
+
+                    readFile(fullpath).then(
+                    function(data) {
                         var type;
 
-                        //logger.debug('read:\n' + data);
-                        //logger.debug('computing file system checksum digest');
+                        logger.debug('read:\n' + data);
+                        logger.debug('computing file system checksum digest');
 
-                        couchDigest(data, att.encoding).then(function(digest) {
-
-                            //logger.debug('comparing attachment digest ' +
-                            //  digest);
+                        couchDigest(data, att.encoding, zlib.gzip).then(
+                        function(digest) {
+                            logger.debug('comparing attachment digest ' +
+                                digest);
 
                             if (digest === att.digest) {
-                                //logger.debug(couchAttachmentName(file) +
-                                //' digest values match. Skipping push.');
+                                logger.debug(couchAttachmentName(file) +
+                                    ' gzip digest values match. Skipping push.');
                                 resolve();
                                 return;
                             }
 
-                            //logger.debug(couchAttachmentName(file) +
-                            //' digest values differ. Pushing to CouchDB.');
-                            //logger.debug(
-                                //'digest ' + digest + ' and ' + att.digest +
-                                //' differ. Pushing data to CouchDB.');
+                            //  zlib doesn't always match, but snappy does,
+                            //  unfortunately snappy likes to consume file
+                            //  handles so this is an ugly fallback hack to
+                            //  limit our use of snappy for now.
+                            logger.debug('computing snappy digest for ' + name);
 
-                            type = mime.lookup(path.extname(file).slice(1));
+                            couchDigest(data, att.encoding, snappy.compress.bind(snappy)).then(
+                            function(stuff) {
+                                if (stuff === att.digest) {
+                                    logger.debug(couchAttachmentName(file) +
+                                        ' snappy digest values match. Skipping push.');
+                                    resolve();
+                                    return;
+                                }
 
-                            logger.info('Updating attachment ' + name);
+                                logger.debug(couchAttachmentName(file) +
+                                    ' digest ' + digest + ' and ' + att.digest +
+                                    ' differ. Pushing data to CouchDB.');
+                                type = mime.lookup(path.extname(file).slice(1));
 
-                            //  TODO: db_app
-                            db.attachment.insert('_design/app', name, data,
-                                    type, {rev: rev},
-                                    function(err, body) {
+                                logger.info('Updating attachment ' + name);
 
-                                        if (err) {
-                                            logger.error('err: ' + err);
-                                            reject(err);
+                                db.attachment.insert(doc_name, name, data, type,
+                                        {rev: rev},
+                                function(err, body) {
+                                    if (err) {
+                                        logger.error('err: ' + err);
+                                        reject(err);
+                                        return;
+                                    }
+
+                                    logger.info(beautify(JSON.stringify(body)));
+                                    resolve();
+                                });
+                            },
+                            function(err) {
+                                if (/timed out/.test(err.message)) {
+                                    //  timeout? sigh...snappy
+                                    //  probably used up the file
+                                    //  descriptors so work from the
+                                    //  attachment data.
+                                    logger.debug('comparing data for ' +
+                                         name);
+                                    db.attachment.get(doc_name, name,
+                                    function(error, body) {
+                                        if (error) {
+                                            logger.error(error);
+                                            reject(error);
                                             return;
                                         }
 
-                                        logger.info(
-                                                beautify(JSON.stringify(body)));
-                                        resolve();
+                                        if (body.toString() ===
+                                            data.toString()) {
+                                            resolve();
+                                        } else {
+                                            db.attachment.insert(doc_name, name,
+                                                data, type, {rev: rev},
+                                            function(err2, body2) {
+                                                if (err2) {
+                                                    logger.error('err: ' + err2);
+                                                    reject(err2);
+                                                    return;
+                                                }
+
+                                                logger.info(beautify(
+                                                    JSON.stringify(body2)));
+                                                resolve();
+                                            });
+                                        }
                                     });
+                                } else {
+                                    logger.error(err);
+                                    reject(err);
+                                }
+                            }).timeout(1000);
+                        },
+                        function(err) {
+                            logger.error(err);
+                            reject(err);
                         });
+                    },
+                    function(err) {
+                        logger.error(err);
+                        reject(err);
                     });
                 });
             });
@@ -529,13 +630,13 @@
             if (!quiet) {
                 logger.info('Host FS change: remove ' + name);
             }
-            //logger.debug('fetching ' + name + ' doc._rev for CRUD remove');
+            logger.debug('fetching ' + name + ' doc._rev for CRUD remove');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
             return new Promise(function(resolve, reject) {
 
-                dbGet('_design/app').then(function(response) {
+                dbGet(doc_name).then(function(response) {
                     var doc,
                         rev;
 
@@ -544,7 +645,7 @@
                     //  Data comes in the form of an array with doc and status
                     //  so find the doc one.
                     doc = response.filter(function(item) {
-                        return item._id === '_design/app';
+                        return item._id === doc_name;
                     })[0];
 
                     rev = doc._rev;
@@ -558,7 +659,7 @@
                     logger.info('Removing attachment ' + name);
 
                     db.attachment.destroy(
-                            '_design/app', name, {rev: rev},
+                            doc_name, name, {rev: rev},
                             function(err, body) {
 
                                 if (err) {
@@ -567,7 +668,7 @@
                                     return;
                                 }
 
-                                //logger.debug('deleted ' + file);
+                                logger.debug('deleted ' + file);
                                 logger.info(beautify(JSON.stringify(body)));
 
                                 resolve();
@@ -578,81 +679,98 @@
 
 
         /**
+         * Current commented out since chokidar does not provide a reliable way
+         * to determine that a file was renamed as opposed to an unlink/add.
          *
-         */
         dbRename = function(newPath, oldPath) {
             return dbAdd(newPath).then(dbRemove(oldPath));
         };
+        */
 
 
-        /**
-         * Helper function for escaping regex metacharacters for patterns. NOTE
-         * that we need to take "ignore format" things like path/* and make it
-         * path/.* or the regex will fail.
-         */
-        escaper = function(str) {
-            return str.replace(
-                /\*/g, '\.\*').replace(
-                /\./g, '\\.').replace(
-                /\//g, '\\/');
-        };
-
-        //  Build a pattern we can use to test against ignore files.
-        ignore = TDS.getcfg('couch.watch.ignore');
-        if (ignore) {
-            pattern = ignore.reduce(function(str, item) {
-                return str ? str + '|' + escaper(item) : escaper(item);
-            }, '');
-
-            /*
-             * NOTE gaze doesn't like actual regexes (throws an error related to
-             * not supporting indexOf) so leave this commented out until we
-             * switch back to chokidar.
-            try {
-                pattern = new RegExp(pattern);
-            } catch (e) {
-                return logger.error('Error creating RegExp: ' +
-                    e.message);
-            }
-            */
+        //  Configure a watcher for our root, including any ignore
+        //  patterns etc.
+        if (options.watcher) {
+            watcher = options.watcher;
+            watcher.consumers += 1;
+console.log('tds-couch sharing watcher');
         } else {
-            pattern = '**/*';
-        }
+console.log('tds-couch creating watcher');
+            /**
+             * Helper function for escaping regex metacharacters for patterns. NOTE
+             * that we need to take "ignore format" things like path/* and make it
+             * path/.* or the regex will fail.
+             */
+            escaper = function(str) {
+                return str.replace(
+                    /\*/g, '\.\*').replace(
+                    /\./g, '\\.').replace(
+                    /\//g, '\\/');
+            };
 
-        //  TODO:   allow configuration of these parameters from server config.
-        watchParams =  {
-            cwd: root,
-            mode: 'auto',
-            interval: 250,
-            debounceDelay:100
-        };
+            //  Build a pattern we can use to test against ignore files.
+            ignore = TDS.getcfg('tds.watch.ignore');
+            if (ignore) {
+                pattern = ignore.reduce(function(str, item) {
+                    return str ? str + '|' + escaper(item) : escaper(item);
+                }, '');
 
-        try {
-            //  Configure a watcher instance for the CouchDB watch root.
-            gaze(pattern, watchParams, function(err, watcher) {
+                //  TODO:   expand on this to support .svn or perhaps all
+                //          dot files etc.
+                pattern += '|\\.git';
 
-                if (err) {
-                    logger.error(err);
-                    watcher.close();
-                    return;
+                try {
+                    pattern = new RegExp(pattern);
+                } catch (e) {
+                    return logger.error('Error creating RegExp: ' +
+                        e.message);
                 }
-
-                watcher.on('added', dbAdd);
-                watcher.on('changed', dbUpdate);
-                watcher.on('deleted', dbRemove);
-                watcher.on('renamed', dbRename);
-            });
-        } catch (e) {
-            if (/EMFILE/.test(e.message)) {
-                logger.error('Too many files open. Try increasing ulimit.');
-                return;
             } else {
-                logger.error(e.message);
-                logger.error(e.stack);
-                return;
+                //  TODO:   expand on this to support .svn or perhaps all
+                //          dot files etc.
+                pattern = /\.git/;
             }
-        }
-    };
 
+            //  Configure a watcher for our root, including any ignore
+            //  patterns etc.
+            watcher = chokidar.watch(root, {
+                ignored: pattern,
+                cwd: root,
+                ignoreInitial: true,
+                ignorePermissionErrors: true,
+                persistent: true
+            });
+
+            watcher.consumers = 1;
+            options.watcher = watcher;
+        }
+
+        watcher.on('all', function(event, data) {
+
+            // Events: add, addDir, change, unlink, unlinkDir, ready, raw, error
+            switch (event) {
+                case 'add':
+                    dbAdd(data);
+                    break;
+                case 'change':
+                    dbUpdate(data);
+                    break;
+                case 'unlink':
+                    dbRemove(data);
+                    break;
+                case 'error':
+                    if (/EMFILE/.test(data)) {
+                        logger.error('Too many files open. Try increasing ulimit.');
+                        return;
+                    } else {
+                        logger.error(data);
+                        return;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        });
+    };
 }());
 
