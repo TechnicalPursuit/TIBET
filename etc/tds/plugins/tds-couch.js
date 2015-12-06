@@ -80,7 +80,7 @@
 
         //  Should we add a route for driving the tibet command line tools from
         //  the client? Off by default for profiles other than 'development'.
-        if (TDS.cfg('tds.use.couchdb') !== true) {
+        if (TDS.cfg('tds.use.couch') !== true) {
             return;
         }
 

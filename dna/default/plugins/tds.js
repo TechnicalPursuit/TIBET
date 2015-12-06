@@ -1,6 +1,6 @@
 /**
  * @overview Loads the various plugins in the TDS plugins directory of the
- *     current TIBET library. Examples are the watcher and couchdb plugins.
+ *     current TIBET library. Examples are the watch and couchdb plugins.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL

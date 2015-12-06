@@ -17,11 +17,11 @@
     passport = require('passport');
 
     module.exports = function(options) {
-        var name,
+        var app,
+            name,
             parsers,
             strategy,
-            TDS,
-            app;
+            TDS;
 
         app = options.app;
         if (!app) {
@@ -38,15 +38,10 @@
         app.use(passport.initialize());
         app.use(passport.session());
 
+        //  Map passport into the option list to allow included modules access
+        //  to the passport object as needed.
+        options.passport = passport;
 
-        //  ---
-        //  Strategy
-        //  ---
-
-        name = TDS.cfg('tds.auth.strategy') || 'tdsconfig';
-        strategy = require('./auth-' + name)(options);
-
-        passport.use('local', strategy);
 
         //  ---
         //  Serialization
@@ -66,6 +61,16 @@
         passport.deserializeUser(function(obj, cb) {
             cb(null, obj);
         });
+
+
+        //  ---
+        //  Strategy
+        //  ---
+
+        name = TDS.cfg('tds.auth.strategy') || 'local';
+        strategy = require('./auth-' + name)(options);
+
+        passport.use(strategy.name, strategy);
 
 
         //  ---
@@ -153,7 +158,7 @@
          */
         app.post('/login', parsers.json, parsers.urlencoded, function(req, res, next) {
 
-            passport.authenticate('local', function(err, user, info) {
+            passport.authenticate(name, function(err, user, info) {
 
                 if (err) {
                     return res.redirect('/login');

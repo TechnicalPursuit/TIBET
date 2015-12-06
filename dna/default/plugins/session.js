@@ -14,7 +14,6 @@
 
     var cookieKey,          // Key for cookie configuration.
         cookieParser,       // Express cookie parser.
-
         secretKey,          // Secrete key value.
         session,            // Express session management.
         sessionKey,         // Session key value.
@@ -36,7 +35,7 @@
         TDS = app.TDS;
 
         //  NOTE:   this must be initialized before any session is.
-        cookieKey = TDS.cfg('tds.cookie') || 'T1B3TC00K13';
+        cookieKey = TDS.cfg('tds.cookie.key') || 'T1B3TC00K13';
         app.use(cookieParser(sessionKey));
 
         //  Require in the session store, allowing it to be separately
@@ -44,8 +43,8 @@
         name = TDS.cfg('tds.session.store');
         store = require('./' + name + '-store')(options);
 
-        sessionKey = TDS.cfg('tds.session') || 'T1B3TS3SS10N';
-        secretKey = TDS.cfg('tds.secret') || 'ThisIsNotSecureChangeIt';
+        sessionKey = TDS.cfg('tds.session.key') || 'T1B3TS3SS10N';
+        secretKey = TDS.cfg('tds.secret.key') || 'ThisIsNotSecureChangeIt';
 
         //  Configure a simple memory session by default.
         app.use(session({

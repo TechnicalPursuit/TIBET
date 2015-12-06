@@ -20,7 +20,7 @@
     chokidar = require('chokidar');
 
     //  ---
-    //  File Watcher Middleware
+    //  File Watch Middleware
     //  ---
 
     /**
@@ -49,7 +49,7 @@
 
         //  Activate the file watcher? Used to drive live-syncing functionality.
         //  Off by default for profiles other than 'development'.
-        if (TDS.cfg('tds.use.watcher') !== true) {
+        if (TDS.cfg('tds.use.watch') !== true) {
             return;
         }
 
@@ -114,7 +114,7 @@
 
         //  The actual middleware. This is our entry point to activating the SSE
         //  connection in response to an inbound request on our watcher url.
-        TDS.watcher = function(req, res, next) {
+        TDS.watch = function(req, res, next) {
 
             var root,
                 escaper,
@@ -196,7 +196,7 @@
             }
         };
 
-        app.get(TDS.cfg('tds.watch.uri'), loggedIn, TDS.watcher);
+        app.get(TDS.cfg('tds.watch.uri'), loggedIn, TDS.watch);
     };
 
 }());

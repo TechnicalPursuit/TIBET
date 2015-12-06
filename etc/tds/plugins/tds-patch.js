@@ -45,11 +45,11 @@
 
         //  Should we add routes for source-code patch processor? Off by default
         //  for profiles other than 'development'.
-        if (TDS.cfg('tds.use.patcher') !== true) {
+        if (TDS.cfg('tds.use.patch') !== true) {
             return;
         }
 
-        TDS.patcher = function(req, res, next) {
+        TDS.patch = function(req, res, next) {
 
             var body,
                 data,
@@ -162,9 +162,9 @@
             res.end();
         };
 
-        app.put(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patcher);
-        app.post(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patcher);
-        app.patch(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patcher);
+        app.put(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
+        app.post(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
+        app.patch(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
     };
 
 }());
