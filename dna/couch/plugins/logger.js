@@ -77,7 +77,7 @@
                 while (msg.charAt(msg.length - 1) === '\n') {
                     msg = msg.slice(0, -1);
                 }
-                logger.info(msg);
+                logger[winston.level](msg);
             }
         };
 

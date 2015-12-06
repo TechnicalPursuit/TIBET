@@ -23,6 +23,7 @@
         env,                // Current execution environment.
         express,            // Express web framework.
         http,               // Web server baseline.
+        logger,             // Configured logger instance.
         logo,               // Text logo.
         minimist,           // Argument processing.
         options,            // Common options block.
@@ -133,6 +134,12 @@
     require('./plugins/errors')(options);
 
     //  ---
+    //  Post-Plugins
+    //  ---
+
+    logger = options.logger;
+
+    //  ---
     //  Backstop
     //  ---
 
@@ -146,9 +153,7 @@
             return;
         }
 
-        //  NOTE we don't call error here. That method seems to get "lost" in
-        //  some circumstances so we end up with no output.
-        console.log('Process error: \n' + err.stack);
+        logger.error('Process error: \n' + err.stack);
 
         if (TDS.cfg('tds.stop_onerror')) {
             process.exit(1);
@@ -176,7 +181,7 @@
 
     version = TDS.cfg('tibet.version') || '';
 
-    console.log(project + ' (' + env + ') running on ' +
+    logger.info(project + ' (' + env + ') running on ' +
             'TIBET ' + (version ? version + ' ' : '') +
             'at http://127.0.0.1' +
         (port === 80 ? '' : ':' + port));
@@ -184,7 +189,7 @@
     //  For debugging purposes it can be helpful to see which routes are
     //  actually loaded and active.
     if (TDS.cfg('tds.log.routes')) {
-        console.log(app._router.stack);
+        logger.debug(app._router.stack);
     }
 
     require('./plugins/poststart')(options);

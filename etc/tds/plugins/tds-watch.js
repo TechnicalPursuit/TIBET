@@ -19,9 +19,10 @@
 
     /**
      * Watches for file change activity and passes notifications of changes to
-     * the client.
-     * @param {Object} options Configuration options. Currently ignored.
-     * @returns {Function} A connect/express middleware function.
+     * the TIBET client. Activation is based on the client accessing the current
+     * tds.watch.uri endpoint which is configured in the routes in this plugin.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
@@ -39,6 +40,10 @@
             TDS,
             watcher;
 
+        //  ---
+        //  Config Check
+        //  ---
+
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
@@ -53,9 +58,18 @@
         if (TDS.cfg('tds.use.watch') !== true) {
             return;
         }
+        logger.debug('Activating TDS FileWatch plugin.');
+
+        //  ---
+        //  Requires
+        //  ---
 
         path = require('path');
         chokidar = require('chokidar');
+
+        //  ---
+        //  Helpers
+        //  ---
 
         //  Helper function to start an SSE connection.
         startSSE = function(channel) {
@@ -130,9 +144,13 @@
         if (options.watcher) {
             watcher = options.watcher;
             watcher.consumers += 1;
-console.log('tds-watch sharing watcher');
+
+            logger.debug('TDS FileWatch plugin sharing file watcher.');
+
         } else {
-console.log('tds-watch creating watcher');
+
+            logger.debug('TDS FileWatch plugin creating file watcher.');
+
             //  Helper function for escaping regex metacharacters. NOTE
             //  that we need to take "ignore format" things like path/*
             //  and make it path/.* or the regex will fail.
@@ -194,7 +212,7 @@ console.log('tds-watch creating watcher');
 
 
         //  ---
-        //
+        //  Middleware
         //  ---
 
         //  The actual middleware. This is our entry point to activating the SSE
@@ -225,6 +243,10 @@ console.log('tds-watch creating watcher');
                 watcher.sendSSE('sse-heartbeat', {});
             }, TDS.getcfg('tds.watch.heartbeat') || 10000);
         };
+
+        //  ---
+        //  Routes
+        //  ---
 
         //  TODO:   really don't want to activate with every invocation of this
         //  route...want to set it up once and stop there.

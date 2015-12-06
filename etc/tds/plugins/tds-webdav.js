@@ -21,18 +21,23 @@
      * Provides routing to the jsDAV module for WebDAV support. The primary
      * purpose of this middleware is to give TIBET a way to update the server
      * without relying on any non-standard APIs or server functionality.
-     * @param {Object} options Configuration options. Currently ignored.
-     * @returns {Function} A connect/express middleware function.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
             jsDAV,
             jsDAV_CORS,
             loggedIn,
+            logger,
             mount,
             node,
             path,
             TDS;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
@@ -40,6 +45,7 @@
         }
 
         loggedIn = options.loggedIn;
+        logger = options.logger;
         TDS = app.TDS;
 
         //  Turn on support for webdav verbs? Off by default for profiles other
@@ -47,6 +53,11 @@
         if (TDS.cfg('tds.use.webdav') !== true) {
             return;
         }
+        logger.debug('Activating TDS WebDAV plugin.');
+
+        //  ---
+        //  Requires
+        //  ---
 
         path = require('path');
         jsDAV = require('jsDAV/lib/jsdav');
@@ -57,6 +68,10 @@
         //  NB: The mount is set to '/' because it is already relative to the
         //  route that got us here (when we got installed as middleware).
         mount = TDS.getcfg('tds.webdav.mount') || '/';
+
+        //  ---
+        //  Middleware
+        //  ---
 
         TDS.webdav = function(req, res, next) {
 
@@ -72,6 +87,10 @@
             }).exec(req, res);
 
         };
+
+        //  ---
+        //  Routes
+        //  ---
 
         app.use(TDS.cfg('tds.webdav.uri'), loggedIn, TDS.webdav);
     };

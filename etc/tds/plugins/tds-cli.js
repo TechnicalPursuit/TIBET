@@ -34,13 +34,18 @@
      *
      * :tibet echo fluff --testing=123 --no-color
      *
-     * @param {Object} options Configuration options. Currently ignored.
-     * @returns {Function} A connect/express middleware function.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
             loggedIn,
+            logger,
             TDS;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
@@ -48,6 +53,7 @@
         }
 
         loggedIn = options.loggedIn;
+        logger = options.logger;
         TDS = app.TDS;
 
         //  Should we add a route for driving the tibet command line tools from
@@ -55,6 +61,12 @@
         if (TDS.cfg('tds.use.cli') !== true) {
             return;
         }
+        logger.debug('Activating TDS CLI plugin.');
+
+
+        //  ---
+        //  Middleware
+        //  ---
 
         TDS.cli = function(req, res, next) {
 
@@ -110,7 +122,12 @@
             return;
         };
 
+        //  ---
+        //  Routes
+        //  ---
+
         app.post(TDS.cfg('tds.cli.uri'), loggedIn, TDS.cli);
     };
+
 }());
 

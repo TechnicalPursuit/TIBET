@@ -1,13 +1,14 @@
 /**
  * @overview Functionality specific to integrating the TDS with CouchDB. There
- *     are
+ *     are two primary of functionality: Couch-to-FS and FS-to-Couch. These
+ *     combine to give you a way to keep CouchDB up to date with filesystem
+ *     changes (and if your booting TIBET out of CouchDB it will live-source).
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     open source waivers to keep your derivative work source code private.
  */
-
 
 (function() {
 
@@ -17,6 +18,15 @@
     //  CouchDB Integration
     //  ---
 
+    /**
+     * Watches the CouchDB changes feed and file system, sharing information
+     * about changes between the two data sets. This allows you to use
+     * live-sourcing from the file system into a CouchDB-booted TIBET
+     * application and to propogate changes from CouchDB down to the file
+     * system as desired.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
             applyChanges,
@@ -60,7 +70,7 @@
             zlib;
 
         //  ---
-        //  Options / Arguments
+        //  Config Check
         //  ---
 
         app = options.app;
@@ -72,8 +82,11 @@
         if (TDS.cfg('tds.use.couch') !== true) {
             return;
         }
+        logger.debug('Activating TDS CouchDB plugin.');
 
-        logger.info('Activating TDS CouchDB plugin.');
+        //  ---
+        //  Requires
+        //  ---
 
         beautify = require('js-beautify');
         chokidar = require('chokidar');
@@ -87,6 +100,9 @@
         snappy = require('node-snappy');
         zlib = require('zlib');
 
+        //  ---
+        //  Variables
+        //  ---
 
         readFile = Promise.promisify(fs.readFile);
         //writeFile = Promise.promisify(fs.writeFile);
@@ -127,6 +143,8 @@ initial_retry_delay | Time to wait before the first retry, in milliseconds (defa
 response_grace_time | Extra time to wait before timing out, in milliseconds (default 5000 milliseconds)
         */
 
+        //  TODO:   bring over options from couch.* config data.
+
         feed = new follow.Feed(options);
 
         feed.db = db_url + '/' + db_name;
@@ -137,11 +155,10 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
         //  TODO:   pull from config
         feed.heartbeat = 500;   //  milliseconds
 
-        //  TODO:   more options per list above
-
-
-        root = path.resolve(TDS.expandPath(
-            TDS.getcfg('couch.app.root') || 'public'));
+        //  Most paths that come from CouchDB won't have a root value which
+        //  should normally default to wherever the application has set app root
+        //  (often below the tibet_pub directory location).
+        root = path.resolve(TDS.expandPath('~app'));
 
 
         /**
@@ -150,8 +167,15 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
          * @param {Array.<Object>} list The list of changes to process.
          */
         applyChanges = function(list) {
-            logger.debug('CouchDB changes:\n' +
-                beautify(JSON.stringify(list)));
+
+            //  TODO:   check to see if this feature is even enabled. It might
+            //  be off at the config level.
+
+            //  TODO:   see if we're in a git project, make that a requirement
+            //  since that implies changes aren't inherently irreversible.
+
+            //logger.debug('CouchDB changes:\n' +
+            //  beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
                 //var fullpath;
@@ -166,11 +190,17 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                         break;
                     case 'changed':
                         logger.info('CouchDB change: update ' + item.name);
+
+                        //  TODO:   see if the file is tracked, if not refuse to alter it
+
                         //  Fetch the CouchDB content and write to the FS in the
                         //  proper fully-qualified path location.
                         break;
                     case 'deleted':
                         logger.info('CouchDB change: delete ' + item.name);
+
+                        //  TODO:   see if the file is tracked, if not refuse to alter it
+
                         //  Not going to do this here. fs.unlink tho.
                         break;
                     default:
@@ -186,6 +216,8 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
          */
         feed.filter = function(doc) {
             var ok;
+
+            //  TODO:   how do we make this slice of functionality pluggable?
 
             //  TODO:   remove limitation on only _design doc files.
             ok = doc._id === doc_name;
@@ -261,12 +293,23 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                 if (list.length > 0) {
                     applyChanges(list);
                 } else {
+                    //  Output that we saw the change, but we know about it,
+                    //  probably because it's coming back in response to a file
+                    //  system change we pushed to CouchDB a moment ago.
                     logger.debug('CouchDB change: cyclic update notification.');
                 }
             }
         })
 
+
+        /**
+         * Responds to notifications of an error in the CouchDB changes feed
+         * watcher processing.
+         * @param {Error} err The error that triggered this handler.
+         */
         feed.on('error', function(err) {
+            //  A common problem, especially on Macs, is an error due to running
+            //  out of open file handles. Try to help clarify that one here.
             if (/EMFILE/.test(err)) {
                 logger.error('Too many files open. Try increasing ulimit.');
             } else {
@@ -275,12 +318,6 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
 
             return true;
         });
-
-        try {
-            feed.follow();
-        } catch (e) {
-            logger.error(e.message);
-        }
 
 
         //  ---
@@ -414,7 +451,7 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                     readFile(file).then(function(data) {
                         var type;
 
-                        logger.debug('read:\n' + data);
+                        //logger.debug('read:\n' + data);
 
                         type = mime.lookup(path.extname(file).slice(1));
 
@@ -688,18 +725,36 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
         */
 
 
+        //  ---
+        //  Activation
+        //  ---
+
+        //  Couch-To-FS
+
+        try {
+            feed.follow();
+        } catch (e) {
+            logger.error(e.message);
+        }
+
+        //  FS-To-Couch
+
         //  Configure a watcher for our root, including any ignore
         //  patterns etc.
         if (options.watcher) {
             watcher = options.watcher;
             watcher.consumers += 1;
-console.log('tds-couch sharing watcher');
+
+            logger.debug('TDS CouchDB plugin sharing file watcher.');
+
         } else {
-console.log('tds-couch creating watcher');
+
+            logger.debug('TDS CouchDB plugin creating file watcher.');
+
             /**
-             * Helper function for escaping regex metacharacters for patterns. NOTE
-             * that we need to take "ignore format" things like path/* and make it
-             * path/.* or the regex will fail.
+             * Helper function for escaping regex metacharacters for patterns.
+             * NOTE that we need to take "ignore format" things like path/* and
+             * make it path/.* or the regex will fail.
              */
             escaper = function(str) {
                 return str.replace(
@@ -772,5 +827,6 @@ console.log('tds-couch creating watcher');
             }
         });
     };
+
 }());
 

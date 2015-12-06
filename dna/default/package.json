@@ -23,7 +23,7 @@
     "shelljs": "TechnicalPursuit/shelljs",
     "tibet": "*",
     "winston": "*"
-  },
+    },
   "devDependencies": {},
   "engines": {
     "node": ">=0.10",
