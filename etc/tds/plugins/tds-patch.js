@@ -13,10 +13,6 @@
 
     'use strict';
 
-    var path;
-
-    path = require('path');
-
     //  ---
     //  TIBET Patch Middleware
     //  ---
@@ -32,6 +28,7 @@
         var app,
             loggedIn,
             logger,
+            path,
             TDS;
 
         app = options.app;
@@ -48,6 +45,8 @@
         if (TDS.cfg('tds.use.patch') !== true) {
             return;
         }
+
+        path = require('path');
 
         TDS.patch = function(req, res, next) {
 

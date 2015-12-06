@@ -13,12 +13,6 @@
 
     'use strict';
 
-    var path,
-        chokidar;
-
-    path = require('path');
-    chokidar = require('chokidar');
-
     //  ---
     //  File Watch Middleware
     //  ---
@@ -31,9 +25,11 @@
      */
     module.exports = function(options) {
         var app,
+            chokidar,
             interval,
             loggedIn,
             logger,
+            path,
             startSSE,
             TDS,
             watcher;
@@ -52,6 +48,9 @@
         if (TDS.cfg('tds.use.watch') !== true) {
             return;
         }
+
+        path = require('path');
+        chokidar = require('chokidar');
 
         //  Helper function to start an SSE connection.
         startSSE = function(channel) {

@@ -13,14 +13,6 @@
 
     'use strict';
 
-    var jsDAV,
-        jsDAV_CORS,
-        path;
-
-    path = require('path');
-    jsDAV = require('jsDAV/lib/jsdav');
-    jsDAV_CORS = require('jsDAV/lib/DAV/plugins/cors');
-
     //  ---
     //  WebDAV Middleware
     //  ---
@@ -34,9 +26,12 @@
      */
     module.exports = function(options) {
         var app,
+            jsDAV,
+            jsDAV_CORS,
             loggedIn,
             mount,
             node,
+            path,
             TDS;
 
         app = options.app;
@@ -52,6 +47,10 @@
         if (TDS.cfg('tds.use.webdav') !== true) {
             return;
         }
+
+        path = require('path');
+        jsDAV = require('jsDAV/lib/jsdav');
+        jsDAV_CORS = require('jsDAV/lib/DAV/plugins/cors');
 
         node = path.resolve(TDS.expandPath(TDS.getcfg('tds.webdav.root')));
 
