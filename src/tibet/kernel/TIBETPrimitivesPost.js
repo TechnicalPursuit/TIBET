@@ -4896,16 +4896,17 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getMarkupPathType',
+TP.definePrimitive('getAccessPathType',
 function(aPath) {
 
     /**
-     * @method getMarkupPathType
+     * @method getAccessPathType
      * @summary Obtains the 'path type' of the supplied path. This allows TIBET
      *     to distinguish between different markup query languages.
      * @param {String} aPath The path to obtain the type of.
      * @returns {String} One of the 'path type' constants:
      *     TP.TIBET_PATH_TYPE
+     *     TP.JSON_PATH_TYPE
      *     TP.CSS_PATH_TYPE
      *     TP.XPATH_PATH_TYPE
      *     TP.XPOINTER_PATH_TYPE
@@ -4941,7 +4942,10 @@ function(aPath) {
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
 
-    //  First, test to see if we've just been given an 'access path'.
+    if (TP.regex.JSON_PATH.test(path)) {
+        return TP.JSON_PATH_TYPE;
+    }
+
     if (TP.regex.TIBET_PATH.test(path)) {
         return TP.TIBET_PATH_TYPE;
     }
@@ -5022,6 +5026,7 @@ function(aPath) {
      *     current return values:
      *
      *     TP.TIBET_PATH_TYPE               ->      'tibet'
+     *     TP.JSON_PATH_TYPE                ->      'json'
      *     TP.CSS_PATH_TYPE                 ->      'css'
      *     TP.XPATH_PATH_TYPE               ->      'xpath1'
      *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
@@ -5047,11 +5052,13 @@ function(aPath) {
         return 'tibet';
     }
 
-    pathType = TP.getMarkupPathType(aPath);
+    pathType = TP.getAccessPathType(aPath);
 
     switch (pathType) {
         case TP.TIBET_PATH_TYPE:
             return 'tibet';
+        case TP.JSON_PATH_TYPE:
+            return 'json';
         case TP.CSS_PATH_TYPE:
         case TP.XTENSION_POINTER_PATH_TYPE:
             return 'css';
