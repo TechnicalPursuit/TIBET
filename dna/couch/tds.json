@@ -6,10 +6,8 @@
     },
     "development": {
         "use": {
-            "cli": true,
-            "patcher": true,
-            "watcher": true,
-            "webdav": true
+            "couchdb": true,
+            "watcher": true
         }
     }
 }

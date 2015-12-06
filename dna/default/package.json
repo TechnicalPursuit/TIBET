@@ -6,6 +6,7 @@
     "body-parser": "*",
     "compression": "*",
     "cookie-parser": "*",
+    "crypto": "0.0.3",
     "express": "*",
     "express-handlebars": "^2.0.1",
     "express-session": "*",
@@ -21,14 +22,12 @@
     "tibet": "*",
     "winston": "*"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=0.10",
     "npm": ">=1"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "preferGlobal": "false",
   "private": true
 }

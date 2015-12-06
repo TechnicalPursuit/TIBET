@@ -15,81 +15,74 @@
 
     'use strict';
 
-    var path,
-        //fs,
-        gaze,
-        zlib,
+    var beautify,
         crypto,
-        Promise,
-        nano,
-        mime,
-        beautify,
         follow,
-        TDS;
-
-    TDS = require('./tds-middleware.js');
-    Promise = require('bluebird');
-
-    path = require('path');
-    //fs = require('fs');
-    zlib = require('zlib');
-
-    nano = require('nano');
-    follow = require('follow');
-    mime = require('mime-types');
-    crypto = require('crypto');
+        fs,
+        gaze,
+        mime,
+        nano,
+        path,
+        Promise,
+        zlib;
 
     beautify = require('js-beautify');
+    crypto = require('crypto');
+    follow = require('follow');
+    fs = require('fs');
     gaze = require('gaze');
+    mime = require('mime-types');
+    nano = require('nano');
+    path = require('path');
+    Promise = require('bluebird');
+    zlib = require('zlib');
 
     //  ---
     //  CouchDB Integration
     //  ---
 
-    TDS.couchdb = function(options) {
+    module.exports = function(options) {
         var app,
-            env,
-            argv,
-            logger,
-            opts,
-            project,
-            feed,
-            baseline,
-            db,
-            root,
-            //ready,
-            inserting,
-
             applyChanges,
-
+            baseline,
             couchAttachmentName,
             couchDigest,
-
-            readFile,
-            //writeFile,
-
-            dbGet,
+            db,
             dbAdd,
+            dbGet,
             dbRemove,
             dbRename,
             dbUpdate,
-
-            ignore,
-            pattern,
             escaper,
-            watchParams;
+            feed,
+            ignore,
+            inserting,
+            logger,
+            opts,
+            pattern,
+            project,
+            readFile,
+            root,
+            TDS,
+            watchParams,
+            writeFile;
 
-        //readFile = Promise.promisify(fs.readFile);
-        //writeFile = Promise.promisify(fs.writeFile);
+        readFile = Promise.promisify(fs.readFile);
+        writeFile = Promise.promisify(fs.writeFile);
 
         //  ---
         //  Options / Arguments
         //  ---
 
         app = options.app;
-        env = options.env;
-        argv = options.argv;
-        logger = app.logger;
+        logger = options.logger;
+        TDS = app.TDS;
+
+        //  Should we add a route for driving the tibet command line tools from
+        //  the client? Off by default for profiles other than 'development'.
+        if (TDS.cfg('tds.use.couchdb') !== true) {
+            return;
+        }
 
         //  ---
         //  CouchDB-To-File
@@ -660,8 +653,6 @@
             }
         }
     };
-
-    module.exports = TDS;
 
 }());
 

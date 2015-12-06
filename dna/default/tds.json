@@ -6,10 +6,7 @@
     },
     "development": {
         "use": {
-            "cli": true,
-            "patcher": true,
-            "watcher": true,
-            "webdav": true
+            "watcher": true
         }
     }
 }

@@ -70,6 +70,9 @@ Cmd.prototype.HELP =
 
 'You can dump virtual paths by quoting them as in: \'~app\' or \'~lib\'.\n\n' +
 
+'For set operations you can specify an optional environment value. In the\n' +
+'current implementation this applies only to TDS settings (tds.* values).\n\n' +
+
 'Configuration data can also be updated by adding an \'=\' and value to\n' +
 'a properly defined property name.\n\n' +
 
@@ -85,12 +88,22 @@ Cmd.prototype.HELP =
 'by using the beautify npm module to process the stringified JSON content.\n' +
 'As a result your file may not retain its appearance after updates.\n';
 
+/* eslint-disable quote-props */
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    {
+        'string': ['env'],
+        'default': {
+            'env': 'development'
+        }
+    },
+    Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet config [property[=value]]';
+Cmd.prototype.USAGE = 'tibet config [property[=value]] [--env <env>]';
 
 
 //  ---
@@ -155,6 +168,18 @@ Cmd.prototype.execute = function() {
         return;
     }
 
+    // Filter TDS user keys...
+    keys = Object.keys(cfg).filter(function(key) {
+        return key.indexOf('tds.users') !== 0;
+    });
+    newcfg = {};
+    keys.forEach(function(key) {
+        if (CLI.isValid(cfg[key])) {
+            newcfg[key] = cfg[key];
+        }
+    });
+    cfg = newcfg;
+
     // Object.keys will throw for anything other than Object/Array...
     try {
         str = '{\n';
@@ -202,7 +227,12 @@ Cmd.prototype.setConfig = function(path, value) {
         key,
         val;
 
-    file = CLI.expandPath('~tibet_file');
+    if (/^tds\./.test(path)) {
+        file = CLI.expandPath('~tds_file');
+    } else {
+        file = CLI.expandPath('~tibet_file');
+    }
+
     json = require(file);
     if (!json) {
         this.error('Unable to load: ' + file);
@@ -213,6 +243,13 @@ Cmd.prototype.setConfig = function(path, value) {
     if (parts.length === 1) {
         json[path] = value;
     } else {
+
+        //  TDS values aren't prefixed as such in the TDS file, they're placed
+        //  without prefix under an appropriate environment root.
+        if (/^tds\./.test(path)) {
+            parts[0] = this.options.env;
+        }
+
         root = json;
         while (parts.length > 1) {
             key = parts.shift();
@@ -251,7 +288,12 @@ Cmd.prototype.setConfig = function(path, value) {
     if (text) {
         json = JSON.parse(text);
         /* eslint-disable no-eval */
-        this.info(eval('json.' + path));
+        if (/^tds\./.test(path)) {
+            key = this.options.env + path.slice(3);
+        } else {
+            key = path;
+        }
+        this.info(eval('json.' + key));
         /* eslint-disable no-eval */
     }
 };

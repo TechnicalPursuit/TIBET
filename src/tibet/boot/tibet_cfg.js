@@ -588,6 +588,8 @@
     TP.sys.setcfg('path.tibet_file', '~app/tibet.json');
     TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
 
+    TP.sys.setcfg('path.tds_file', '~/tds.json');
+
     TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));
     TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
 
@@ -1208,10 +1210,16 @@
     //  tds support
     //  ---
 
+    TP.sys.setcfg('tds.auth.strategy', 'tdsconfig');
+    TP.sys.setcfg('tds.session.store', 'memory');
+
     TP.sys.setcfg('tds.cli.uri', '/tds/cli');
 
     TP.sys.setcfg('tds.patch.root', '~');
     TP.sys.setcfg('tds.patch.uri', '/tds/patch');
+
+    TP.sys.setcfg('tds.pouchdb.prefix', './pouch/');
+    TP.sys.setcfg('tds.pouch.uri', '/tds/patch');
 
     //  NOTE we do _not_ default this here so env.PORT etc can be used when the
     //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
@@ -1229,7 +1237,9 @@
     TP.sys.setcfg('tds.max_bodysize', '5mb');
 
     TP.sys.setcfg('tds.use.cli', false);
+    TP.sys.setcfg('tds.use.couchdb', true);
     TP.sys.setcfg('tds.use.patcher', false);
+    TP.sys.setcfg('tds.use.pouchdb', false);
     TP.sys.setcfg('tds.use.watcher', false);
     TP.sys.setcfg('tds.use.webdav', false);
 
@@ -1241,6 +1251,8 @@
 
     TP.sys.setcfg('tds.webdav.root', '~app_src');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
+
+    TP.sys.setcfg('tds.stop_onerror', true);
 
     TP.sys.setcfg('couch.app.root', 'public');
     TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
