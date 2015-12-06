@@ -4942,14 +4942,6 @@ function(aPath) {
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
 
-    if (TP.regex.JSON_PATH.test(path)) {
-        return TP.JSON_PATH_TYPE;
-    }
-
-    if (TP.regex.TIBET_PATH.test(path)) {
-        return TP.TIBET_PATH_TYPE;
-    }
-
     //  We try to determine the path type based on discriminating characters
     //  and regular expression forms but since there's a lot of overlap
     //  between the legal characters for both CSS and XPath paths we will
@@ -4974,6 +4966,32 @@ function(aPath) {
 
     //  strip any id/fragment prefix
     path = path.charAt(0) === '#' ? path.slice(1) : path;
+
+    //  If the path is just '.', then that's the shortcut to just return a TIBET
+    //  path
+    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  A TIBET path - simple or complex
+    if (TP.regex.TIBET_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  A JSON path
+    if (TP.regex.JSON_PATH.test(path)) {
+        return TP.JSON_PATH_TYPE;
+    }
+
+    //  If there is no 'path punctuation' (only JS identifer characters), or
+    //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
+    //  path'.
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.JS_IDENTIFIER.test(path) ||
+        TP.regex.ONLY_NUM.test(path) ||
+        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
 
     //  XPath is typically ./elem, //elem, @attr, or ./elem[predicate], all
     //  of which are going to include a slash (other than 'standalone' attr
