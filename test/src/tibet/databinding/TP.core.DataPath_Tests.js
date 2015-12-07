@@ -1101,7 +1101,7 @@ function() {
     this.it('CSS path', function(test, options) {
 
         path = TP.apc('#css(*)');
-        test.assert.isKindOf(path,
+        test.assert.isKindOf(
                 path, TP.core.XTensionPath,
                 'Wrong path type for: ' + TP.str(path));
 
