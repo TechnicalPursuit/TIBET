@@ -399,6 +399,7 @@ function(aDocument, aNode, aPath, aPathType) {
      * @param {String} aPathType One of the 'path type' constants:
      *     TP.XPATH_PATH_TYPE
      *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
      *     TP.XTENSION_POINTER_PATH_TYPE
      *     TP.CSS_PATH_TYPE
      *     TP.BARENAME_PATH_TYPE
@@ -6900,6 +6901,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
      * @param {String} aPathType One of the 'path type' constants:
      *     TP.XPATH_PATH_TYPE
      *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
      *     TP.XTENSION_POINTER_PATH_TYPE
      *     TP.CSS_PATH_TYPE
      *     TP.BARENAME_PATH_TYPE
@@ -6972,6 +6974,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
             return result;
 
         case TP.XPOINTER_PATH_TYPE:
+        case TP.ELEMENT_PATH_TYPE:
 
             //  #xpointer(...), #xpath1(...) or #element(...) schemes
             return TP.nodeEvaluateXPointer(aNode, aPath, autoCollapse);

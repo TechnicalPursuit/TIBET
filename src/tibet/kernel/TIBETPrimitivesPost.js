@@ -4958,12 +4958,6 @@ function(aPath) {
     //  regular xpointer, either xpointer(), xpath1() or element() scheme
     if (TP.regex.XPOINTER.test(path)) {
 
-        return TP.XPOINTER_PATH_TYPE;
-
-        /*
-         TODO: We should be able to hand one of these path types back, but
-         this currently causes test failures
-
         //  If we're handed an '#element(...)' pointer, then we know what kind
         //  of path it is (or should be, anyway)
 
@@ -4974,7 +4968,6 @@ function(aPath) {
         } else {
             return TP.XPATH_PATH_TYPE;
         }
-        */
     }
 
     //  extended xpointer, perhaps explicit css() scheme (TIBET-only)
