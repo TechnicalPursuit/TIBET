@@ -4919,15 +4919,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     this.set('$createdStructure', false);
 
-    this.preSetAccess(targetObj);
-
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
     //  NB: We have to do this *after* the preSetAccess call so that change
     //  path data structures are set up properly.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
-    if (traversalLevel === 1) {
+    if (traversalLevel === 0) {
 
         if (TP.regex.HAS_ACP.test(srcPath)) {
             //  Grab the arguments and slice the first three off (since they're
@@ -4947,15 +4945,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  by this path and to avoid a lot of unnecessary signaling.
         if (this.checkValueEquality(oldVal, attributeValue)) {
 
-            //  We need to restore the change path data structures before
-            //  exiting.
-            this.postSetAccess(targetObj);
             return oldVal;
         }
     }
 
     //  Note here how we always do the set with a 'false' and then send a
     //  'changed' message later with additional information.
+
+    this.preSetAccess(targetObj);
 
     if (TP.isArray(targetObj)) {
         retVal = this.$executeArraySet(targetObj, attributeValue, false);
