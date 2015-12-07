@@ -453,10 +453,6 @@
                                 //  Store the data. We'll need this for push.
                                 current.data = data;
 
-                                make.verbose(
-                                    'computing zlib digest for ' +
-                                    name);
-
                                 //  TODO:   read the level from _config API
                                 //  value for attachments.compression_level.
                                 zlib.Z_DEFAULT_COMPRESSION = 8;

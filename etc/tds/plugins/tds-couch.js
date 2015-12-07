@@ -418,6 +418,7 @@ console.log('pushpos: ' + pushpos);
 
                 //  Encoding is provided from att_encoding_info on the document.
                 //  If an attachment was encoded this will contain the approach.
+                //  TODO: support encodings other than gzip.
                 if (encoding === 'gzip') {
                     zipper(data, function(err2, zipped) {
                         if (err2) {
@@ -617,16 +618,37 @@ console.log('pushpos: ' + pushpos);
 
                         couchDigest(content, att.encoding, zlib.gzip).then(
                         function(digest) {
-                            logger.debug('comparing attachment digest ' +
-                                digest);
 
                             if (digest === att.digest) {
                                 logger.info(couchAttachmentName(file) +
-                                    ' gzip digest values match. Skipping push.');
+                                    ' digest values match. Skipping push.');
                                 resolve();
-                            } else {
-                                reject();
+                                return;
                             }
+
+                            logger.info(couchAttachmentName(file) + ' digests' +
+                                //' digest ' + digest + ' and ' + att.digest +
+                                ' differ. Pushing data to CouchDB.');
+                            type = mime.lookup(path.extname(file).slice(1));
+
+                            db.attachment.insert(doc_name, name, content,
+                                    type, {rev: rev},
+                            function(err, body) {
+                                if (err) {
+                                    logger.error('err: ' + err);
+                                    reject(err);
+                                    return;
+                                }
+
+                                logger.info(beautify(JSON.stringify(body)));
+
+                                //  Track last pushed revision.
+                                pushrev = body.rev;
+                                pushpos = 1 *
+                                    body.rev.slice(0, body.rev.indexOf('-'));
+
+                                resolve();
+                            });
                         },
                         function(err) {
                             logger.error(err);
