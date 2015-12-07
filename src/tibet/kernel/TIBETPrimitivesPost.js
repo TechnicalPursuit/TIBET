@@ -4909,9 +4909,10 @@ function(aPath) {
      *     TP.JSON_PATH_TYPE
      *     TP.CSS_PATH_TYPE
      *     TP.XPATH_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE
-     *     TP.XTENSION_POINTER_PATH_TYPE
      *     TP.BARENAME_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
      */
 
     var path;
@@ -4956,7 +4957,24 @@ function(aPath) {
 
     //  regular xpointer, either xpointer(), xpath1() or element() scheme
     if (TP.regex.XPOINTER.test(path)) {
+
         return TP.XPOINTER_PATH_TYPE;
+
+        /*
+         TODO: We should be able to hand one of these path types back, but
+         this currently causes test failures
+
+        //  If we're handed an '#element(...)' pointer, then we know what kind
+        //  of path it is (or should be, anyway)
+
+        //  NB: We do *not* check against TP.regex.ELEMENT_PATH here, since it
+        //  matches all IDs ("#"), attributes ("@"), etc.
+        if (TP.regex.ELEMENT_POINTER.test(path)) {
+            return TP.ELEMENT_PATH_TYPE;
+        } else {
+            return TP.XPATH_PATH_TYPE;
+        }
+        */
     }
 
     //  extended xpointer, perhaps explicit css() scheme (TIBET-only)
@@ -5047,9 +5065,10 @@ function(aPath) {
      *     TP.JSON_PATH_TYPE                ->      'json'
      *     TP.CSS_PATH_TYPE                 ->      'css'
      *     TP.XPATH_PATH_TYPE               ->      'xpath1'
-     *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
-     *     TP.XTENSION_POINTER_PATH_TYPE    ->      'css'
      *     TP.BARENAME_PATH_TYPE            ->      ''
+     *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
+     *     TP.ELEMENT_PATH_TYPE             ->      'element'
+     *     TP.XTENSION_POINTER_PATH_TYPE    ->      'css'
      *
      *     Note that if the path consists only of word characters that a value
      *     of 'tibet' will be returned.
@@ -5078,14 +5097,17 @@ function(aPath) {
         case TP.JSON_PATH_TYPE:
             return 'json';
         case TP.CSS_PATH_TYPE:
-        case TP.XTENSION_POINTER_PATH_TYPE:
             return 'css';
         case TP.XPATH_PATH_TYPE:
             return 'xpath1';
-        case TP.XPOINTER_PATH_TYPE:
-            return 'xpointer';
         case TP.BARENAME_PATH_TYPE:
             return '';
+        case TP.XPOINTER_PATH_TYPE:
+            return 'xpointer';
+        case TP.ELEMENT_PATH_TYPE:
+            return 'element';
+        case TP.XTENSION_POINTER_PATH_TYPE:
+            return 'css';
         default:
             return '';
     }

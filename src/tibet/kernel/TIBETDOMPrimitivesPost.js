@@ -397,8 +397,11 @@ function(aDocument, aNode, aPath, aPathType) {
      * @param {Node} aNode The node to test against the result set.
      * @param {String} aPath The path to traverse in locating a value.
      * @param {String} aPathType One of the 'path type' constants:
-     *     TP.CSS_PATH_TYPE TP.XPATH_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE TP.XTENSION_POINTER_PATH_TYPE.
+     *     TP.XPATH_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
+     *     TP.CSS_PATH_TYPE
+     *     TP.BARENAME_PATH_TYPE
      * @returns {Boolean} Whether or not aNode is contained in the set of
      *     results obtained by evaluating aPath against aDocument.
      * @exception TP.sig.InvalidPath Raised when an invalid path is provided to
@@ -6895,8 +6898,11 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
      * @param {Node} aNode The document or element to query.
      * @param {String} aPath The path to traverse in locating a value.
      * @param {String} aPathType One of the 'path type' constants:
-     *     TP.CSS_PATH_TYPE TP.XPATH_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE TP.XTENSION_POINTER_PATH_TYPE.
+     *     TP.XPATH_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
+     *     TP.CSS_PATH_TYPE
+     *     TP.BARENAME_PATH_TYPE
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
      * @param {Boolean} retryWithDocument Whether or not we should retry with
