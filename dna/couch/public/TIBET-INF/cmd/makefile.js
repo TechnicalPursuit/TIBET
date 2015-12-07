@@ -29,7 +29,7 @@
     sh = require('shelljs');
     zlib = require('zlib');
 
-    snappy = require('node-snappy');
+    snappy = require('snappy');
 
     //beautify = require('js-beautify');
     crypto = require('crypto');
@@ -382,13 +382,11 @@
                     buf = new Buffer(hex, 'hex');
 
                     //  Always prepend the hashing model.
-                    //  TODO: support options other than md5 for hashing.
                     resolve('md5-' + buf.toString('base64'));
                 };
 
                 //  Encoding is provided from att_encoding_info on the document.
                 //  If an attachment was encoded this will contain the approach.
-                //  TODO: support encodings other than gzip.
                 if (encoding === 'gzip') {
                     zipper(data, function(err2, zipped) {
                         if (err2) {
@@ -400,7 +398,7 @@
                 } else {
                     resolve(compute(data));
                 }
-            }).timeout(10000);
+            });
         };
 
 
@@ -471,9 +469,8 @@
                                     } else {
                                         //  zlib doesn't always match, but
                                         //  snappy does, unfortunately snappy
-                                        //  likes to consume file handles so
-                                        //  this is an ugly fallback hack to
-                                        //  limit our use of snappy for now.
+                                        //  seems to have other issues so we
+                                        //  try to limit its use to pass two.
                                         make.verbose(
                                             'computing snappy digest for ' +
                                             name);
@@ -490,9 +487,8 @@
                                         function(err3) {
                                             if (/timed out/.test(err3.message)) {
                                                 //  timeout? sigh...snappy
-                                                //  probably used up the file
-                                                //  descriptors so work from the
-                                                //  attachment data.
+                                                //  probably went off the rails
+                                                //  so work from attachment data.
                                                 make.verbose('comparing data for ' +
                                                      name);
                                                 db.attachment.get(doc_name, name,
@@ -514,7 +510,7 @@
                                                 make.error(err3);
                                                 reject2(err3);
                                             }
-                                        }).timeout(1000);
+                                        }).timeout(3000);
                                     }
                                 },
                                 function(err3) {
@@ -571,9 +567,13 @@
                                 var doc,
                                     rev;
 
-                                doc = response.filter(function(item) {
-                                    return item._id === doc_name;
-                                })[0];
+                                if (Array.isArray(response)) {
+                                    doc = response.filter(function(item) {
+                                        return item._id === doc_name;
+                                    })[0];
+                                } else {
+                                    doc = response;
+                                }
 
                                 rev = doc._rev;
 
@@ -611,7 +611,7 @@
         };
 
 
-        make.log('marshaling content for: ' + doc_url);
+        make.log('marshalling content for: ' + doc_url);
 
         //  Scan application directory and get the full list of files.
         target = CLI.expandPath('~app');
@@ -647,11 +647,13 @@
 
                 //make.log(beautify(JSON.stringify(response)));
 
-                //  Data comes in the form of an array with doc and status
-                //  so find the doc one.
-                existing = response.filter(function(item) {
-                    return item._id === doc_name;
-                })[0];
+                if (Array.isArray(response)) {
+                    existing = response.filter(function(item) {
+                        return item._id === doc_name;
+                    })[0];
+                } else {
+                    existing = response;
+                }
 
                 updateAll(existing, list).then(
                     function() {

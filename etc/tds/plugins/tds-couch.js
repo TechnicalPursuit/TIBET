@@ -51,6 +51,7 @@
             doc_name,
             escaper,
             feed,
+            feedopts,
             follow,
             fs,
             ignore,
@@ -60,6 +61,8 @@
             nano,
             path,
             pattern,
+            pushpos,
+            pushrev,
             Promise,
             readFile,
             root,
@@ -97,7 +100,7 @@
         nano = require('nano');
         path = require('path');
         Promise = require('bluebird');
-        snappy = require('node-snappy');
+        snappy = require('snappy');
         zlib = require('zlib');
 
         //  ---
@@ -124,36 +127,61 @@
         //  ---
 
         /*
-All of the CouchDB _changes options are allowed. See http://guide.couchdb.org/draft/notifications.html.
+         * Per docs for the `follow` module:
+         *
 
-db | Fully-qualified URL of a couch database. (Basic auth URLs are ok.)
-since | The sequence number to start from. Use "now" to start from the latest change in the DB.
-heartbeat | Milliseconds within which CouchDB must respond (default: 30000 or 30 seconds)
-feed | Optional but only "continuous" is allowed
-filter | Either a path to design document filter, e.g. app/important
-Or a Javascript function(doc, req) { ... } which should return true or false
-query_params | Optional for use in with filter functions, passed as req.query to the filter function
+        All of the CouchDB _changes options are allowed. See
+        http://guide.couchdb.org/draft/notifications.html.
 
-Besides the CouchDB options, more are available:
+        db | Fully-qualified URL of a couch database. (Basic auth URLs are ok.)
 
-headers | Object with HTTP headers to add to the request
-inactivity_ms | Maximum time to wait between changes. Omitting this means no maximum.
-max_retry_seconds | Maximum time to wait between retries (default: 360 seconds)
-initial_retry_delay | Time to wait before the first retry, in milliseconds (default 1000 milliseconds)
-response_grace_time | Extra time to wait before timing out, in milliseconds (default 5000 milliseconds)
+        since | The sequence number to start from. Use "now" to start from the
+        latest change in the DB.
+
+        heartbeat | Milliseconds within which CouchDB must respond (default:
+        30000 or 30 seconds)
+
+        feed | Optional but only "continuous" is allowed
+
+        filter | Either a path to design document filter, e.g. app/important Or
+        a Javascript function(doc, req) { ... } which should return true or
+        false
+
+        query_params | Optional for use in with filter functions, passed as
+        req.query to the filter function
+
+        *
+        * Besides the CouchDB options, more are available:
+        *
+
+        headers | Object with HTTP headers to add to the request
+
+        inactivity_ms | Maximum time to wait between changes. Omitting this
+        means no maximum.
+
+        max_retry_seconds | Maximum time to wait between retries (default: 360
+        seconds)
+
+        initial_retry_delay | Time to wait before the first retry, in
+        milliseconds (default 1000 milliseconds)
+
+        response_grace_time | Extra time to wait before timing out, in
+        milliseconds (default 5000 milliseconds)
         */
 
-        //  TODO:   bring over options from couch.* config data.
+        feedopts = {
+            db: db_url + '/' + db_name,
+        //    feed: TDS.getcfg('couch.watch.feed') || 'continuous',
+            heartbeat: TDS.getcfg('couch.watch.heartbeat') || 500,
+        //    inactivity_ms: TDS.getcfg('couch.watch.inactivity_ms') || null,
+        //    initial_retry_delay: TDS.getcfg('couch.watch.initial_retry_delay') || 1000,
+        //    max_retry_seconds: TDS.getcfg('couch.watch.max_retry_seconds') || 360,
+        //    response_grace_time: TDS.getcfg('couch.watch.response_grace_time') || 5000,
+        //    since: TDS.getcfg('couch.watch.since') || 'now'
+        };
 
-        feed = new follow.Feed(options);
+        feed = new follow.Feed(feedopts);
 
-        feed.db = db_url + '/' + db_name;
-
-        //  NOTE the value here has to be large enough to avoid problems with
-        //  initial connection or a fatal error is thrown by follow(). For
-        //  example, 100ms is often too low even on a local dev machine.
-        //  TODO:   pull from config
-        feed.heartbeat = 500;   //  milliseconds
 
         //  Most paths that come from CouchDB won't have a root value which
         //  should normally default to wherever the application has set app root
@@ -262,7 +290,11 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                 //    beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
-                basepos = baserev.slice(0, 2);
+console.log('baserev: ' + baserev);
+                basepos = baserev.slice(0, baserev.indexOf('-'));
+console.log('basepos: ' + basepos);
+console.log('pushrev: ' + pushrev);
+console.log('pushpos: ' + pushpos);
 
                 //  Try to diff to figure out what actually changed...
                 atts = change.doc._attachments;
@@ -273,8 +305,10 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                     if (!baseline.doc._attachments[key]) {
                         //  Didn't exist at baseline time, assume an add.
                         list.push({action: 'added', name: key});
-                    } else if (atts[key].revpos >= basepos) {
-                        //  Existed at baseline time, but changed since then.
+                    } else if (atts[key].revpos >= basepos &&
+                            atts[key].revpos !== pushpos) {
+                        //  Existed at baseline time, but changed since then
+                        //  and not due to the last push from the FS watcher.
                         list.push({action: 'changed', name: key});
                     }
                 });
@@ -282,7 +316,11 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                 //  Deleted files will be in the baseline, but not in the new
                 //  changes list.
                 Object.keys(baseline.doc._attachments).forEach(function(key) {
-                    if (!atts[key]) {
+                    if (!atts[key] && pushpos <= basepos) {
+                        //  If the attachment isn't found AND we aren't holding
+                        //  a push position greater than the one we're looking
+                        //  at (meaning it was our push that deleted it). Then
+                        //  track the change in our list.
                         list.push({action: 'deleted', name: key});
                     }
                 });
@@ -296,7 +334,7 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                     //  Output that we saw the change, but we know about it,
                     //  probably because it's coming back in response to a file
                     //  system change we pushed to CouchDB a moment ago.
-                    logger.debug('CouchDB change: cyclic update notification.');
+                    logger.info('CouchDB change: cyclic update notification.');
                 }
             }
         })
@@ -424,13 +462,16 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
 
                     //logger.debug(beautify(JSON.stringify(response)));
 
-                    //  Data comes in the form of an array with doc and status
-                    //  so find the doc one.
-                    doc = response.filter(function(item) {
-                        return item._id === doc_name;
-                    })[0];
+                    if (Array.isArray(response)) {
+                        doc = response.filter(function(item) {
+                            return item._id === doc_name;
+                        })[0];
+                    } else {
+                        doc = response;
+                    }
 
                     rev = doc._rev;
+                    logger.info('document revision: ' + rev);
 
                     if (doc._attachments[name]) {
                         inserting = true;
@@ -448,17 +489,23 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
 
                     fullpath = path.join(root, file);
 
-                    readFile(file).then(function(data) {
-                        var type;
+                    readFile(fullpath).then(function(data) {
+                        var type,
+                            content;
 
                         //logger.debug('read:\n' + data);
 
-                        type = mime.lookup(path.extname(file).slice(1));
+                        //  NOTE:   An empty file will cause nano and ultimately
+                        //  the request object to blow up on an invalid 'body'
+                        //  so we force a default value as content for empty.
+                        content = '' + data || TDS.getcfg('couch.watch.empty');
+
+                        type = mime.lookup(path.extname(fullpath).slice(1));
 
                         logger.info('Inserting attachment ' + name);
 
                         db.attachment.insert(
-                                doc_name, name, data, type, {rev: rev},
+                                doc_name, name, content, type, {rev: rev},
                                 function(err, body) {
 
                                     if (err) {
@@ -468,6 +515,12 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                                     }
 
                                     logger.info(beautify(JSON.stringify(body)));
+
+                                    //  Track last pushed revision.
+                                    pushrev = body.rev;
+                                    pushpos = 1 *
+                                        body.rev.slice(0, body.rev.indexOf('-'));
+
                                     resolve();
                                 });
                     },
@@ -522,7 +575,7 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                     }
 
                     rev = doc._rev;
-                    logger.debug('document revision: ' + rev);
+                    logger.info('document revision: ' + rev);
 
                     att = doc._attachments[name];
                     if (!att) {
@@ -549,47 +602,51 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
 
                     readFile(fullpath).then(
                     function(data) {
-                        var type;
+                        var type,
+                            content;
 
-                        logger.debug('read:\n' + data);
+                        //logger.debug('read:\n' + data);
+
+                        //  NOTE:   An empty file will cause nano and ultimately
+                        //  the request object to blow up on an invalid 'body'
+                        //  so we force a default value as content for empty.
+                        content = '' + data || TDS.getcfg('couch.watch.empty');
+
                         logger.debug('computing file system checksum digest');
 
-                        couchDigest(data, att.encoding, zlib.gzip).then(
+                        couchDigest(content, att.encoding, zlib.gzip).then(
                         function(digest) {
                             logger.debug('comparing attachment digest ' +
                                 digest);
 
                             if (digest === att.digest) {
-                                logger.debug(couchAttachmentName(file) +
+                                logger.info(couchAttachmentName(file) +
                                     ' gzip digest values match. Skipping push.');
                                 resolve();
                                 return;
                             }
 
                             //  zlib doesn't always match, but snappy does,
-                            //  unfortunately snappy likes to consume file
-                            //  handles so this is an ugly fallback hack to
-                            //  limit our use of snappy for now.
+                            //  unfortunately snappy seems to have other issues
+                            //  so we try to limit its use to pass two.
                             logger.debug('computing snappy digest for ' + name);
 
-                            couchDigest(data, att.encoding, snappy.compress.bind(snappy)).then(
+                            couchDigest(content, att.encoding, snappy.compress.bind(snappy)).then(
                             function(stuff) {
                                 if (stuff === att.digest) {
-                                    logger.debug(couchAttachmentName(file) +
+                                    logger.info(couchAttachmentName(file) +
                                         ' snappy digest values match. Skipping push.');
                                     resolve();
                                     return;
                                 }
 
-                                logger.debug(couchAttachmentName(file) +
-                                    ' digest ' + digest + ' and ' + att.digest +
+                                logger.info(couchAttachmentName(file) + ' digests' +
+                                    //' digest ' + digest + ' and ' + att.digest +
                                     ' differ. Pushing data to CouchDB.');
                                 type = mime.lookup(path.extname(file).slice(1));
 
-                                logger.info('Updating attachment ' + name);
-
-                                db.attachment.insert(doc_name, name, data, type,
-                                        {rev: rev},
+                                db.attachment.insert(doc_name, name, content,
+                                        type, {rev: rev},
                                 function(err, body) {
                                     if (err) {
                                         logger.error('err: ' + err);
@@ -598,6 +655,12 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                                     }
 
                                     logger.info(beautify(JSON.stringify(body)));
+
+                                    //  Track last pushed revision.
+                                    pushrev = body.rev;
+                                    pushpos = 1 *
+                                        body.rev.slice(0, body.rev.indexOf('-'));
+
                                     resolve();
                                 });
                             },
@@ -622,7 +685,7 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                                             resolve();
                                         } else {
                                             db.attachment.insert(doc_name, name,
-                                                data, type, {rev: rev},
+                                                content, type, {rev: rev},
                                             function(err2, body2) {
                                                 if (err2) {
                                                     logger.error('err: ' + err2);
@@ -632,6 +695,13 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
 
                                                 logger.info(beautify(
                                                     JSON.stringify(body2)));
+
+                                                //  Track last pushed revision.
+                                                pushrev = body.rev;
+                                                pushpos = 1 *
+                                                    body.rev.slice(0,
+                                                        body.rev.indexOf('-'));
+
                                                 resolve();
                                             });
                                         }
@@ -640,7 +710,7 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                                     logger.error(err);
                                     reject(err);
                                 }
-                            }).timeout(1000);
+                            }).timeout(3000);
                         },
                         function(err) {
                             logger.error(err);
@@ -679,16 +749,20 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
 
                     //logger.debug(beautify(JSON.stringify(response)));
 
-                    //  Data comes in the form of an array with doc and status
-                    //  so find the doc one.
-                    doc = response.filter(function(item) {
-                        return item._id === doc_name;
-                    })[0];
+                    if (Array.isArray(response)) {
+                        doc = response.filter(function(item) {
+                            return item._id === doc_name;
+                        })[0];
+                    } else {
+                        doc = response;
+                    }
 
                     rev = doc._rev;
+                    logger.info('document revision: ' + rev);
 
                     //  Nothing to do. Attachment doesn't exist.
                     if (!doc._attachments[name]) {
+                        logger.info('Ignoring unknown attachment ' + name);
                         resolve();
                         return;
                     }
@@ -705,8 +779,13 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                                     return;
                                 }
 
-                                logger.debug('deleted ' + file);
-                                logger.info(beautify(JSON.stringify(body)));
+                                logger.info('deleted ' + file);
+                                //logger.info(beautify(JSON.stringify(body)));
+
+                                //  Track last pushed revision.
+                                pushrev = body.rev;
+                                pushpos = 1 *
+                                    body.rev.slice(0, body.rev.indexOf('-'));
 
                                 resolve();
                             });
@@ -770,9 +849,7 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                     return str ? str + '|' + escaper(item) : escaper(item);
                 }, '');
 
-                //  TODO:   expand on this to support .svn or perhaps all
-                //          dot files etc.
-                pattern += '|\\.git';
+                pattern += '|\\.git|\\.svn';
 
                 try {
                     pattern = new RegExp(pattern);
@@ -781,9 +858,7 @@ response_grace_time | Extra time to wait before timing out, in milliseconds (def
                         e.message);
                 }
             } else {
-                //  TODO:   expand on this to support .svn or perhaps all
-                //          dot files etc.
-                pattern = /\.git/;
+                pattern = /\.git|\.svn/;
             }
 
             //  Configure a watcher for our root, including any ignore
