@@ -2007,6 +2007,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getFragmentWeight',
+function() {
+
+    /**
+     * @method getFragmentWeight
+     * @summary Returns the 'weight' of the fragment. Typically this is how many
+     *     'parts' the fragment has in any path in it.
+     * @returns {Number} The fragment weight.
+     */
+
+    /* TODO: For now, we just return 1, since that the same as a barename, until
+     * we finish the uriSplitFragment method
+    var frag,
+
+        results;
+
+    //  NOTE that we rely on the initial parse operation to populate any
+    //  fragment portion, otherwise we'd be recomputing.
+    frag = this.$get('fragment');
+
+    //  We do an isValid check since an empty Array is ok - it will just report
+    //  a size of 0.
+    //
+    if (TP.isValid(results = TP.uriSplitFragment(frag))) {
+        return results.getSize();
+    }
+    return 0;
+    */
+
+    return 1;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getHeader',
 function(aHeaderName) {
 
@@ -2467,7 +2501,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('getSecondaryURIs',
-function(onlySecondaries) {
+function(onlyShallow) {
 
     /**
      * @method getSecondaryURIs
@@ -2475,6 +2509,55 @@ function(onlySecondaries) {
      *     URIs which point to the same primary resource as the receiver, but
      *     also have a secondary resource pointed to by a fragment. If the
      *     receiver has a secondary resource itself, it returns null.
+     * @param {Boolean} [onlyShallow=false] Whether or not to only include
+     *     secondary URIs that are 'the shallowest possible set'. I.e. if the
+     *     set of secondary URIs consisted of 'urn:tibet:stuff#tibet(foo)' and
+     *     'urn:tibet:stuff#tibet(foo.bar)', then only the first one will be
+     *     returned.
+     * @returns {Array} An Array of TP.core.URI objects corresponding to the
+     *     'secondary URI's of the receiver.
+     */
+
+    var secondaryURIs,
+        uriGroupings;
+
+    secondaryURIs = this.getSubURIs(true);
+
+    if (onlyShallow) {
+
+        //  Group the secondary URIs by their 'fragment weight'. We want only
+        //  the ones in the group with the lowest weight.
+        uriGroupings = secondaryURIs.groupBy(
+                            function(aURI) {
+                                return aURI.getFragmentWeight();
+                            });
+
+        //  Make sure the hash keys are sorted sorted
+        uriGroupings.sort(TP.sort.NUMERIC);
+
+        //  Get the first item's (a key-value pair) last item, which will be an
+        //  Array.
+        return uriGroupings.first().last();
+    }
+
+    return secondaryURIs;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getSubURIs',
+function(onlySecondaries, onlyShallow) {
+
+    /**
+     * @method getSubURIs
+     * @summary Returns an Array of sub URIs of the receiver.
+     * @description Sub URIs are URIs which match the front part of the URI,
+     *     but could have any trailing portion. So 'urn:tibet:fooBar' is
+     *     considered a 'sub URI' of 'urn:tibet:foo'.
+     *     Note that subURIs could also consist of a URI pointing to a
+     *     secondary resource of the main URI. In this case, 'urn:tibet:foo#baz'
+     *     is considered a secondary URI of the 'urn:tibet:foo' but
+     *     'urn:tibet:fooBar' is not.
      * @param {Boolean} [onlySecondaries=false] Whether or not to only include
      *     secondary resources (i.e. those with a hash)
      * @returns {Array} An Array of TP.core.URI objects corresponding to the
