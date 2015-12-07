@@ -66,7 +66,6 @@
             Promise,
             readFile,
             root,
-            snappy,
             TDS,
             watcher,
             //writeFile,
@@ -100,7 +99,6 @@
         nano = require('nano');
         path = require('path');
         Promise = require('bluebird');
-        snappy = require('snappy');
         zlib = require('zlib');
 
         //  ---
@@ -420,7 +418,6 @@ console.log('pushpos: ' + pushpos);
 
                 //  Encoding is provided from att_encoding_info on the document.
                 //  If an attachment was encoded this will contain the approach.
-                //  TODO: support encodings other than gzip.
                 if (encoding === 'gzip') {
                     zipper(data, function(err2, zipped) {
                         if (err2) {
@@ -614,6 +611,10 @@ console.log('pushpos: ' + pushpos);
 
                         logger.debug('computing file system checksum digest');
 
+                        //  TODO:   read the level from _config API
+                        //  value for attachments.compression_level.
+                        zlib.Z_DEFAULT_COMPRESSION = 8;
+
                         couchDigest(content, att.encoding, zlib.gzip).then(
                         function(digest) {
                             logger.debug('comparing attachment digest ' +
@@ -623,94 +624,9 @@ console.log('pushpos: ' + pushpos);
                                 logger.info(couchAttachmentName(file) +
                                     ' gzip digest values match. Skipping push.');
                                 resolve();
-                                return;
+                            } else {
+                                reject();
                             }
-
-                            //  zlib doesn't always match, but snappy does,
-                            //  unfortunately snappy seems to have other issues
-                            //  so we try to limit its use to pass two.
-                            logger.debug('computing snappy digest for ' + name);
-
-                            couchDigest(content, att.encoding, snappy.compress.bind(snappy)).then(
-                            function(stuff) {
-                                if (stuff === att.digest) {
-                                    logger.info(couchAttachmentName(file) +
-                                        ' snappy digest values match. Skipping push.');
-                                    resolve();
-                                    return;
-                                }
-
-                                logger.info(couchAttachmentName(file) + ' digests' +
-                                    //' digest ' + digest + ' and ' + att.digest +
-                                    ' differ. Pushing data to CouchDB.');
-                                type = mime.lookup(path.extname(file).slice(1));
-
-                                db.attachment.insert(doc_name, name, content,
-                                        type, {rev: rev},
-                                function(err, body) {
-                                    if (err) {
-                                        logger.error('err: ' + err);
-                                        reject(err);
-                                        return;
-                                    }
-
-                                    logger.info(beautify(JSON.stringify(body)));
-
-                                    //  Track last pushed revision.
-                                    pushrev = body.rev;
-                                    pushpos = 1 *
-                                        body.rev.slice(0, body.rev.indexOf('-'));
-
-                                    resolve();
-                                });
-                            },
-                            function(err) {
-                                if (/timed out/.test(err.message)) {
-                                    //  timeout? sigh...snappy
-                                    //  probably used up the file
-                                    //  descriptors so work from the
-                                    //  attachment data.
-                                    logger.debug('comparing data for ' +
-                                         name);
-                                    db.attachment.get(doc_name, name,
-                                    function(error, body) {
-                                        if (error) {
-                                            logger.error(error);
-                                            reject(error);
-                                            return;
-                                        }
-
-                                        if (body.toString() ===
-                                            data.toString()) {
-                                            resolve();
-                                        } else {
-                                            db.attachment.insert(doc_name, name,
-                                                content, type, {rev: rev},
-                                            function(err2, body2) {
-                                                if (err2) {
-                                                    logger.error('err: ' + err2);
-                                                    reject(err2);
-                                                    return;
-                                                }
-
-                                                logger.info(beautify(
-                                                    JSON.stringify(body2)));
-
-                                                //  Track last pushed revision.
-                                                pushrev = body.rev;
-                                                pushpos = 1 *
-                                                    body.rev.slice(0,
-                                                        body.rev.indexOf('-'));
-
-                                                resolve();
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    logger.error(err);
-                                    reject(err);
-                                }
-                            }).timeout(3000);
                         },
                         function(err) {
                             logger.error(err);

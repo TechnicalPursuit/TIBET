@@ -17,7 +17,6 @@
         zlib,
         //beautify,
         crypto,
-        snappy,
         readFile,
         mime,
         helpers,
@@ -28,8 +27,6 @@
     fs = require('fs');
     sh = require('shelljs');
     zlib = require('zlib');
-
-    snappy = require('snappy');
 
     //beautify = require('js-beautify');
     crypto = require('crypto');
@@ -328,8 +325,7 @@
                             return;
                         }
 
-                        make.log('application loaded at ' + doc_url +
-                            '/index.html');
+                        make.log('application loaded at ' + doc_url);
                         resolve();
                     });
             });
@@ -461,56 +457,16 @@
                                     'computing zlib digest for ' +
                                     name);
 
+                                //  TODO:   read the level from _config API
+                                //  value for attachments.compression_level.
+                                zlib.Z_DEFAULT_COMPRESSION = 8;
+
                                 couchDigest(data, encoding, zlib.gzip).then(
                                 function(result) {
-
                                     if (result === digest) {
                                         reject2('unchanged');
                                     } else {
-                                        //  zlib doesn't always match, but
-                                        //  snappy does, unfortunately snappy
-                                        //  seems to have other issues so we
-                                        //  try to limit its use to pass two.
-                                        make.verbose(
-                                            'computing snappy digest for ' +
-                                            name);
-                                        couchDigest(data, encoding,
-                                            snappy.compress.bind(snappy)).then(
-
-                                        function(stuff) {
-                                            if (stuff === digest) {
-                                                reject2('unchanged');
-                                            } else {
-                                                resolve2('update');
-                                            }
-                                        },
-                                        function(err3) {
-                                            if (/timed out/.test(err3.message)) {
-                                                //  timeout? sigh...snappy
-                                                //  probably went off the rails
-                                                //  so work from attachment data.
-                                                make.verbose('comparing data for ' +
-                                                     name);
-                                                db.attachment.get(doc_name, name,
-                                                function(error, body) {
-                                                    if (error) {
-                                                        make.error(error);
-                                                        reject2(error);
-                                                        return;
-                                                    }
-
-                                                    if (body.toString() ===
-                                                        data.toString()) {
-                                                        reject2('unchanged');
-                                                    } else {
-                                                        resolve2('update');
-                                                    }
-                                                });
-                                            } else {
-                                                make.error(err3);
-                                                reject2(err3);
-                                            }
-                                        }).timeout(3000);
+                                        resolve2('update');
                                     }
                                 },
                                 function(err3) {
@@ -599,8 +555,7 @@
                         });
 
                     }, attachments[0]).then(function(summary) {
-                        make.log('application updated at ' + doc_url +
-                            '/index.html');
+                        make.log('application updated at ' + doc_url);
                         resolve();
                     },
                     function(error) {
