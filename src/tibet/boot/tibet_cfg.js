@@ -1217,8 +1217,15 @@
     TP.sys.setcfg('couch.port', '5984');
     TP.sys.setcfg('couch.scheme', 'http');
 
+    TP.sys.setcfg('couch.watch.feed', 'continuous');
+    TP.sys.setcfg('couch.watch.heartbeat', 500);
     TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
+    TP.sys.setcfg('couch.watch.inactivity_ms', null);
+    TP.sys.setcfg('couch.watch.initial_retry_delay', 1000);
+    TP.sys.setcfg('couch.watch.max_retry_seconds', 360);
+    TP.sys.setcfg('couch.watch.response_grace_time', 5000);
     TP.sys.setcfg('couch.watch.root', '~app');
+    TP.sys.setcfg('couch.watch.since', 'now');
 
     TP.sys.setcfg('tds.auth.strategy', 'local');
 
