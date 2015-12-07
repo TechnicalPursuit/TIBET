@@ -169,16 +169,21 @@ Cmd.prototype.execute = function() {
     }
 
     // Filter TDS user keys...
-    keys = Object.keys(cfg).filter(function(key) {
-        return key.indexOf('tds.users') !== 0;
-    });
-    newcfg = {};
-    keys.forEach(function(key) {
-        if (CLI.isValid(cfg[key])) {
-            newcfg[key] = cfg[key];
-        }
-    });
-    cfg = newcfg;
+    try {
+        keys = Object.keys(cfg).filter(function(key) {
+            return key.indexOf('tds.users') !== 0;
+        });
+        newcfg = {};
+        keys.forEach(function(key) {
+            if (CLI.isValid(cfg[key])) {
+                newcfg[key] = cfg[key];
+            }
+        });
+        cfg = newcfg;
+    } catch (e) {
+        //  Ignore, probably not an object with keys.
+        void 0;
+    }
 
     // Object.keys will throw for anything other than Object/Array...
     try {

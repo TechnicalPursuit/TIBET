@@ -13,12 +13,8 @@
 
     'use strict';
 
-    var path;
-
-    path = require('path');
-
     //  ---
-    //  TIBET Patch Middleware
+    //  File Patch Middleware
     //  ---
 
     /**
@@ -27,12 +23,19 @@
      * patch file. The target path must reside under tds.patch_root for the
      * patch to be valid. The default is ~app_src which restricts patches to
      * application assets in the application's source directory.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
             loggedIn,
             logger,
+            path,
             TDS;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
@@ -48,9 +51,20 @@
         if (TDS.cfg('tds.use.patch') !== true) {
             return;
         }
+        logger.debug('Activating TDS FilePatch plugin.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        path = require('path');
+
+
+        //  ---
+        //  Middleware
+        //  ---
 
         TDS.patch = function(req, res, next) {
-
             var body,
                 data,
                 type,
@@ -161,6 +175,10 @@
             res.send('ack');
             res.end();
         };
+
+        //  ---
+        //  Routes
+        //  ---
 
         app.put(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
         app.post(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);

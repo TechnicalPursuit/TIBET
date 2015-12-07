@@ -1,5 +1,11 @@
 /**
- * @overview TIBET + CouchDB makefile.js
+ * @overview TIBET + CouchDB make targets. This file provides the supporting
+ *     logic for the various `tibet` commands specific to working with CouchDB.
+ * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
+ *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
+ *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
+ *     for your rights and responsibilities. Contact TPI to purchase optional
+ *     open source waivers to keep your derivative work source code private.
  */
 
 (function() {
@@ -9,9 +15,8 @@
     var sh,
         fs,
         zlib,
-        beautify,
+        //beautify,
         crypto,
-        snappy,
         readFile,
         mime,
         helpers,
@@ -23,9 +28,7 @@
     sh = require('shelljs');
     zlib = require('zlib');
 
-    snappy = require('node-snappy');
-
-    beautify = require('js-beautify');
+    //beautify = require('js-beautify');
     crypto = require('crypto');
     helpers = require('tibet/src/tibet/cli/_make_helpers');
 
@@ -300,11 +303,6 @@
 
                 //make.log('pushing document content: ' + doc_url);
 
-                // TODO: copy the tibet.json from the top level into the
-                // attachments directory but remove 'attachments' from the
-                // app.inf reference and any other paths which might include
-                // attachments.
-
                 //  The base document. Be sure to set the _id here to match the
                 //  document name passed to the multipart insert below.
                 newdoc = {
@@ -327,8 +325,7 @@
                             return;
                         }
 
-                        make.log('application loaded at ' + doc_url +
-                            '/index.html');
+                        make.log('application loaded at ' + doc_url);
                         resolve();
                     });
             });
@@ -381,13 +378,11 @@
                     buf = new Buffer(hex, 'hex');
 
                     //  Always prepend the hashing model.
-                    //  TODO: support options other than md5 for hashing.
                     resolve('md5-' + buf.toString('base64'));
                 };
 
                 //  Encoding is provided from att_encoding_info on the document.
                 //  If an attachment was encoded this will contain the approach.
-                //  TODO: support encodings other than gzip.
                 if (encoding === 'gzip') {
                     zipper(data, function(err2, zipped) {
                         if (err2) {
@@ -399,7 +394,7 @@
                 } else {
                     resolve(compute(data));
                 }
-            }).timeout(10000);
+            });
         };
 
 
@@ -458,62 +453,16 @@
                                 //  Store the data. We'll need this for push.
                                 current.data = data;
 
-                                make.verbose(
-                                    'computing zlib digest for ' +
-                                    name);
+                                //  TODO:   read the level from _config API
+                                //  value for attachments.compression_level.
+                                zlib.Z_DEFAULT_COMPRESSION = 8;
 
                                 couchDigest(data, encoding, zlib.gzip).then(
                                 function(result) {
-
                                     if (result === digest) {
                                         reject2('unchanged');
                                     } else {
-                                        //  zlib doesn't always match, but
-                                        //  snappy does, unfortunately snappy
-                                        //  likes to consume file handles so
-                                        //  this is an ugly fallback hack to
-                                        //  limit our use of snappy for now.
-                                        make.verbose(
-                                            'computing snappy digest for ' +
-                                            name);
-                                        couchDigest(data, encoding,
-                                            snappy.compress.bind(snappy)).then(
-
-                                        function(stuff) {
-                                            if (stuff === digest) {
-                                                reject2('unchanged');
-                                            } else {
-                                                resolve2('update');
-                                            }
-                                        },
-                                        function(err3) {
-                                            if (/timed out/.test(err3.message)) {
-                                                //  timeout? sigh...snappy
-                                                //  probably used up the file
-                                                //  descriptors so work from the
-                                                //  attachment data.
-                                                make.verbose('comparing data for ' +
-                                                     name);
-                                                db.attachment.get(doc_name, name,
-                                                function(error, body) {
-                                                    if (error) {
-                                                        make.error(error);
-                                                        reject2(error);
-                                                        return;
-                                                    }
-
-                                                    if (body.toString() ===
-                                                        data.toString()) {
-                                                        reject2('unchanged');
-                                                    } else {
-                                                        resolve2('update');
-                                                    }
-                                                });
-                                            } else {
-                                                make.error(err3);
-                                                reject2(err3);
-                                            }
-                                        }).timeout(1000);
+                                        resolve2('update');
                                     }
                                 },
                                 function(err3) {
@@ -570,9 +519,13 @@
                                 var doc,
                                     rev;
 
-                                doc = response.filter(function(item) {
-                                    return item._id === '_design/app';
-                                })[0];
+                                if (Array.isArray(response)) {
+                                    doc = response.filter(function(item) {
+                                        return item._id === doc_name;
+                                    })[0];
+                                } else {
+                                    doc = response;
+                                }
 
                                 rev = doc._rev;
 
@@ -598,8 +551,7 @@
                         });
 
                     }, attachments[0]).then(function(summary) {
-                        make.log('application updated at ' + doc_url +
-                            '/index.html');
+                        make.log('application updated at ' + doc_url);
                         resolve();
                     },
                     function(error) {
@@ -610,14 +562,13 @@
         };
 
 
-        make.log('marshaling content for: ' + doc_url);
+        make.log('marshalling content for: ' + doc_url);
 
         //  Scan application directory and get the full list of files.
         target = CLI.expandPath('~app');
         if (sh.test('-d', target)) {
             list = sh.find(target).filter(function(fname) {
                 //  TODO:   add configuration-driven ignore checks here.
-
                 //  Remove any files which don't pass our ignore criteria.
                 return !sh.test('-d', fname) &&
                     !fname.match(/node_modules/);
@@ -647,12 +598,13 @@
 
                 //make.log(beautify(JSON.stringify(response)));
 
-                //  Data comes in the form of an array with doc and status
-                //  so find the doc one.
-                existing = response.filter(function(item) {
-                    //  TODO: couch.app_name
-                    return item._id === '_design/app';
-                })[0];
+                if (Array.isArray(response)) {
+                    existing = response.filter(function(item) {
+                        return item._id === doc_name;
+                    })[0];
+                } else {
+                    existing = response;
+                }
 
                 updateAll(existing, list).then(
                     function() {

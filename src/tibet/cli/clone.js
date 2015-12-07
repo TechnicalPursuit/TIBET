@@ -142,7 +142,7 @@ Cmd.prototype.execute = function() {
 
     cmd = this;
 
-    badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg'];
+    badexts = ['.bmp', '.png', '.gif', '.jpg', '.ico', '.jpeg', '.handlebars'];
     badpaths = ['.DS_Store'];
 
     options = this.options;

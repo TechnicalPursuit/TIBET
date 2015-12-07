@@ -30,15 +30,15 @@
 
         //  Turn on support for pouchdb? Off by default since it can add a bit
         //  of overhead to the init process and may not be desired.
-        if (TDS.cfg('tds.use.pouchdb') !== true) {
+        if (TDS.cfg('tds.use.pouch') !== true) {
             return;
         }
 
         PouchDB = require('pouchdb');
         expressPouch = require('express-pouchdb');
 
-        prefix = TDS.cfg('tds.pouchdb.prefix') || './prefix/';
-        route = TDS.cfg('tds.pouchdb.route') || '/db';
+        prefix = TDS.cfg('tds.pouch.prefix') || './prefix/';
+        route = TDS.cfg('tds.pouch.route') || '/db';
 
         //  TODO: probably want to support memory based option by default and
         //  include the option to simply "route through" to backend couchdb.
