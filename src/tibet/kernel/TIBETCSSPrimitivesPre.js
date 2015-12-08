@@ -105,7 +105,6 @@ TP.regex.CSS_PNG_IMAGE =
 //  Note that we need to use older 'new RegExp' syntax here because of
 //  bootstrapping issues.
 TP.regex.PCLASS_CONVERSION = new RegExp(':(hover|active|focus)', 'g');  // needs reset
-TP.regex.PCLASS_CHANGE = new RegExp('^(hover|active|focus)$');
 
 TP.regex.UNSUPPORTED_SELECTOR = new RegExp(':()');
 
@@ -221,33 +220,6 @@ function(aNode) {
     }
 
     return node;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('$elementProcessCSSAttributeChange',
-function(anElement, attrName, newValue, changeFunction) {
-
-    /**
-     * @method $elementProcessCSSAttributeChange
-     * @summary Processes an attribute change on the supplied element that may
-     *     affect the CSS layout for the element or other elements in the
-     *     element's document.
-     * @param {HTMLElement} anElement The element currently having the attribute
-     *     changed.
-     * @param {String} attrName The name of the attribute being changed.
-     * @param {String} newValue The new value that the attribute was set to.
-     * @param {Function} changeFunction A Function that will cause the attribute
-     *     change to happen.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
-     */
-
-    //  Just exec the change function and return
-    if (TP.isCallable(changeFunction)) {
-        changeFunction();
-    }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
