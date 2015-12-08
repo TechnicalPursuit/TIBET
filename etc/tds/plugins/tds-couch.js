@@ -43,6 +43,7 @@
             //dbRename,
             dbUpdate,
             db_app,
+            db_config,
             db_host,
             db_name,
             db_port,
@@ -208,23 +209,20 @@
 
                 //fullpath = path.join(root, item.name);
 
+                logger.info('CouchDB item: ' + JSON.stringify(item));
+
                 switch (item.action) {
-                    case 'added':
-                        logger.info('CouchDB change: insert ' + item.name);
+                    case 'add':
                         //  Fetch the CouchDB content and write to the FS in the
                         //  proper fully-qualified path location.
                         break;
-                    case 'changed':
-                        logger.info('CouchDB change: update ' + item.name);
-
+                    case 'change':
                         //  TODO:   see if the file is tracked, if not refuse to alter it
 
                         //  Fetch the CouchDB content and write to the FS in the
                         //  proper fully-qualified path location.
                         break;
-                    case 'deleted':
-                        logger.info('CouchDB change: delete ' + item.name);
-
+                    case 'unlink':
                         //  TODO:   see if the file is tracked, if not refuse to alter it
 
                         //  Not going to do this here. fs.unlink tho.
@@ -278,21 +276,11 @@
                 //  can only be determined properly by comparing to past.
                 baseline = change;
             } else {
-                //  TODO    Note that the change object can include a _set_ of
-                //  revisions. That could imply that we need to check across the
-                //  list to ensure we capture all updates/deletes properly. Or
-                //  more likely that we need to verify revpos values between
-                //  baseline and current, not just a single revpos.
-
                 //logger.debug('CouchDB change:\n' +
                 //    beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
-console.log('baserev: ' + baserev);
                 basepos = baserev.slice(0, baserev.indexOf('-'));
-console.log('basepos: ' + basepos);
-console.log('pushrev: ' + pushrev);
-console.log('pushpos: ' + pushpos);
 
                 //  Try to diff to figure out what actually changed...
                 atts = change.doc._attachments;
@@ -300,14 +288,19 @@ console.log('pushpos: ' + pushpos);
                 //  Anything in the attachments list with a revpos greater than
                 //  or equal to the baseline one is something we haven't seen.
                 Object.keys(atts).forEach(function(key) {
+                    var attachment;
+
+                    attachment = atts[key];
                     if (!baseline.doc._attachments[key]) {
                         //  Didn't exist at baseline time, assume an add.
-                        list.push({action: 'added', name: key});
-                    } else if (atts[key].revpos >= basepos &&
-                            atts[key].revpos !== pushpos) {
+                        list.push({action: 'add', name: key,
+                            type: 'attachment', attachment: attachment});
+                    } else if (attachment.revpos > basepos &&
+                            attachment.revpos !== pushpos) {
                         //  Existed at baseline time, but changed since then
                         //  and not due to the last push from the FS watcher.
-                        list.push({action: 'changed', name: key});
+                        list.push({action: 'change', name: key,
+                            type: 'attachment', attachment: attachment});
                     }
                 });
 
@@ -319,7 +312,9 @@ console.log('pushpos: ' + pushpos);
                         //  a push position greater than the one we're looking
                         //  at (meaning it was our push that deleted it). Then
                         //  track the change in our list.
-                        list.push({action: 'deleted', name: key});
+                        list.push({action: 'unlink', name: key,
+                            type: 'attachment', attachment:
+                                baseline.doc._attachments[key]});
                     }
                 });
 
@@ -412,13 +407,11 @@ console.log('pushpos: ' + pushpos);
                     buf = new Buffer(hex, 'hex');
 
                     //  Always prepend the hashing model.
-                    //  TODO: support options other than md5 for hashing.
                     resolve('md5-' + buf.toString('base64'));
                 };
 
                 //  Encoding is provided from att_encoding_info on the document.
                 //  If an attachment was encoded this will contain the approach.
-                //  TODO: support encodings other than gzip.
                 if (encoding === 'gzip') {
                     zipper(data, function(err2, zipped) {
                         if (err2) {
@@ -447,7 +440,6 @@ console.log('pushpos: ' + pushpos);
             if (!quiet) {
                 logger.info('Host FS change: insert ' + name);
             }
-            logger.debug('fetching ' + name + ' doc._rev for CRUD insert');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -545,7 +537,6 @@ console.log('pushpos: ' + pushpos);
             if (!quiet) {
                 logger.info('Host FS change: update ' + name);
             }
-            logger.debug('fetching ' + name + ' doc._rev for CRUD update');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -594,10 +585,7 @@ console.log('pushpos: ' + pushpos);
                     }
 
                     //  Read the file content in preparation for a push.
-                    logger.debug('reading attachment data');
-
                     fullpath = path.join(root, file);
-
                     readFile(fullpath).then(
                     function(data) {
                         var type,
@@ -610,11 +598,10 @@ console.log('pushpos: ' + pushpos);
                         //  so we force a default value as content for empty.
                         content = '' + data || TDS.getcfg('couch.watch.empty');
 
-                        logger.debug('computing file system checksum digest');
-
-                        //  TODO:   read the level from _config API
-                        //  value for attachments.compression_level.
-                        zlib.Z_DEFAULT_COMPRESSION = 8;
+                        //  Set the compression level for gzip to the one our
+                        //  database is configured to use for attachments.
+                        zlib.Z_DEFAULT_COMPRESSION =
+                            db_config.attachments.compression_level;
 
                         couchDigest(content, att.encoding, zlib.gzip).then(
                         function(digest) {
@@ -675,7 +662,6 @@ console.log('pushpos: ' + pushpos);
             if (!quiet) {
                 logger.info('Host FS change: remove ' + name);
             }
-            logger.debug('fetching ' + name + ' doc._rev for CRUD remove');
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
 
@@ -748,6 +734,18 @@ console.log('pushpos: ' + pushpos);
 
         //  Couch-To-FS
 
+        //  Access the database configuration data. We use this for gzip level
+        //  confirmation and other potential processing.
+        require('nano')(db_url).relax({db: '_config'}, function(err, dat) {
+            if (err) {
+                logger.error(err);
+                return;
+            }
+
+            db_config = dat;
+        });
+
+        //  Activate the database changes feed follower.
         try {
             feed.follow();
         } catch (e) {
