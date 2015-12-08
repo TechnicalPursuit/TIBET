@@ -18,6 +18,7 @@
 
     module.exports = function(options) {
         var app,
+            appname,
             name,
             parsers,
             strategy,
@@ -67,6 +68,8 @@
         //  Strategy
         //  ---
 
+        appname = TDS.cfg('project.name') || TDS.cfg('npm.name');
+
         name = TDS.cfg('tds.auth.strategy') || 'local';
         strategy = require('./auth-' + name)(options);
 
@@ -92,12 +95,14 @@
                         req.session.render = null;
                         res.render('phasetwo', {
                             layout: false,
-                            parallel: false
+                            parallel: false,
+                            appname: appname
                         });
                     } else {
                         res.render('index', {
                             layout: false,
-                            parallel: false
+                            parallel: false,
+                            appname: appname
                         });
                     }
 
@@ -118,7 +123,8 @@
                     //  NOTE: this renders into the current route (/).
                     res.render('index', {
                         layout: false,
-                        parallel: true
+                        parallel: true,
+                        appname: appname
                     });
                     return;
 
@@ -137,7 +143,8 @@
                 //  NOTE: this renders into the current route (/).
                 res.render('index', {
                     layout: false,
-                    parallel: false
+                    parallel: false,
+                    appname: appname
                 });
             }
         });
