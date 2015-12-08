@@ -11704,10 +11704,10 @@ function(attributeName, attributeValue, checkAttrNSURI) {
      *     space-separated portion of the attribute's value.
      * @param {String} attributeName The attribute to set.
      * @param {String} attributeValue The attribute value.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -11726,8 +11726,7 @@ function(attributeName, attributeValue, checkAttrNSURI) {
 
     oldValue = TP.elementGetAttribute(natNode, attributeName, checkAttrNSURI);
 
-    retVal = TP.elementAddAttributeValue(natNode,
-                                            attributeName, attributeValue,
+    retVal = TP.elementAddAttributeValue(natNode, attributeName, attributeValue,
                                             checkAttrNSURI);
 
     newValue = TP.elementGetAttribute(natNode, attributeName, checkAttrNSURI);
