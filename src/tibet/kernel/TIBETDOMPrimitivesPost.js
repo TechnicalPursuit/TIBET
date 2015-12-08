@@ -12608,8 +12608,8 @@ function(aNode, aNamespaceURI, includeDescendants) {
 
     /**
      * @method nodeGetNSPrefixes
-     * @summary Returns an Array of namespace prefixes for aNamespaceURI in the
-     *     supplied node.
+     * @summary Returns an Array of namespace prefixes for aNamespaceURI on or
+     *     in the supplied node.
      * @description The default call searches only the local attributes on the
      *     node. Passing true to includeDescendants will cause the entire node's
      *     content to be searched for prefixes.

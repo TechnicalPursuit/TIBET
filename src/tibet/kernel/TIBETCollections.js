@@ -360,7 +360,7 @@ TP.api.IterationAPI =
  */
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('clearTextContent',
