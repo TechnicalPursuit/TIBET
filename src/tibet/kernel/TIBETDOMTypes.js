@@ -4740,7 +4740,16 @@ function(attributeName, attributeValue, shouldSignal) {
     //  ensure that environments which don't preserve the concept of a
     //  namespace URI consistently (html) won't end up with two attributes
     //  of the same name but different namespace URIs
-    attr = node.getAttributeNode(attributeName);
+
+    if (TP.regex.HAS_COLON.test(attributeName)) {
+        //  Note here the usage of our own call which will attempt to divine
+        //  the namespace URI if the checkAttrNSURIs flag is true.
+        attr = TP.$elementGetPrefixedAttributeNode(node,
+                                                    attributeName,
+                                                    true);
+    } else {
+        attr = node.getAttributeNode(attributeName);
+    }
 
     //  NB: Use this construct this way for better performance
     if (TP.notValid(flag = shouldSignal)) {
