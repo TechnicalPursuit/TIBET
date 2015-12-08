@@ -9204,9 +9204,12 @@ function(aWindow) {
 
                             //  Remove the 'anti-looping' value (described
                             //  above) now that we're done.
+
+                            //  NB: removeAttributeNS, unlike setAttributeNS
+                            //  above, only wants the local attribute name.
                             aWindow.frameElement.removeAttributeNS(
                                         TP.w3.Xmlns.TIBET,
-                                        'tibet:settinglocation');
+                                        'settinglocation');
                         }));
     }).afterUnwind();
     /* eslint-enable no-wrap-func,no-extra-parens */
