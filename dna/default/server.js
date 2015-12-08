@@ -84,7 +84,8 @@
     //  Parse command line arguments, leveraging TDS default parse options.
     argv = minimist(process.argv.slice(2), TDS.PARSE_OPTIONS) || {_: []};
 
-    //  Map the defaulted environment from Express into our argument list.
+    //  Map the defaulted environment from Express into our argument list. This
+    //  will be used by the TDS initialization which may access both.
     argv.env = argv.env || env;
 
     //  Configure the TDS's underlying TIBET Package instance. This instance is
@@ -101,7 +102,7 @@
 
     //  Shared options which allow modules to essentially share values like the
     //  logger, authentication handler, etc.
-    options = {app: app};
+    options = {app: app, argv: argv};
 
     require('./plugins/body-parser')(options);
 
