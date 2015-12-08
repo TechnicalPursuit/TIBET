@@ -397,8 +397,12 @@ function(aDocument, aNode, aPath, aPathType) {
      * @param {Node} aNode The node to test against the result set.
      * @param {String} aPath The path to traverse in locating a value.
      * @param {String} aPathType One of the 'path type' constants:
-     *     TP.CSS_PATH_TYPE TP.XPATH_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE TP.XTENSION_POINTER_PATH_TYPE.
+     *     TP.XPATH_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
+     *     TP.CSS_PATH_TYPE
+     *     TP.BARENAME_PATH_TYPE
      * @returns {Boolean} Whether or not aNode is contained in the set of
      *     results obtained by evaluating aPath against aDocument.
      * @exception TP.sig.InvalidPath Raised when an invalid path is provided to
@@ -1202,10 +1206,10 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      * @param {Element} anElement The element to set the attribute on.
      * @param {String} attributeName The attribute to set.
      * @param {String} attributeValue The attribute value.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      * @exception TP.sig.InvalidName Raised when the supplied attribute name is
@@ -1968,114 +1972,6 @@ function(anElement, locationPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementHasAttribute',
-function(anElement, attributeName, checkAttrNSURI) {
-
-    /**
-     * @method elementHasAttribute
-     * @summary Returns true if the supplied element has the attribute
-     *     matching the attribute name defined on it, even if the value of that
-     *     is null.
-     * @param {Element} anElement The element to test for the existence of the
-     *     attribute.
-     * @param {String} attributeName The name of the attribute to test.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually check for the attribute in that namespace.
-     *     Default is false (to keep things faster).
-     * @example Check to see if the supplied element has a particular attribute:
-     *     <code>
-     *          TP.elementHasAttribute(TP.documentGetBody(document),
-     *         'style');
-     *          <samp>true</samp>
-     *     </code>
-     * @example Check to see if the supplied element has a particular attribute
-     *     in an XML document:
-     *     <code>
-     *          xmlDoc = TP.documentFromString(
-     *          '<foo xmlns="http://www.foo.com"
-     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
-     *         goo="moo">Hi there</foo>');
-     *          <samp>[object XMLDocument]</samp>
-     *          // Simple attribute access
-     *          TP.elementHasAttribute(xmlDoc.documentElement, 'goo');
-     *          <samp>true</samp>
-     *          // Prefixed attribute access
-     *          TP.elementHasAttribute(xmlDoc.documentElement, 'xf:bind');
-     *          <samp>true</samp>
-     *          // Prefixed attribute access without checkAttrNSURI -
-     *          // will fail
-     *          TP.elementHasAttribute(xmlDoc.documentElement,
-     *          'xforms:bind');
-     *          <samp>false</samp>
-     *          // Alternate prefix attribute access (need
-     *          // checkAttrNSURI flag)
-     *          TP.elementHasAttribute(xmlDoc.documentElement,
-     *          'xforms:bind',
-     *          true);
-     *          <samp>true</samp>
-     *     </code>
-     * @returns {Boolean} Whether or not the element has a value for the
-     *     supplied attribute.
-     * @exception TP.sig.InvalidElement Raised when an invalid element is
-     *     provided to the method.
-     * @exception TP.sig.InvalidName Raised when a null or empty attribute name
-     *     is provided to the method.
-     */
-
-    var qualified,
-        attr,
-
-        theAttrName;
-
-    if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
-    }
-
-    if (TP.isEmpty(attributeName)) {
-        return TP.raise(this, 'TP.sig.InvalidName');
-    }
-
-    //  If the document for the supplied element is an XML document, then we
-    //  don't need to go any further. W3C-compliant browsers do this correctly
-    //  and no CSS information needs to be applied.
-
-    if (TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
-        //  we can speed things up quite a bit if we avoid work related to
-        //  namespaces as much as possible. In this case, test to see if the
-        //  attribute name has a colon in it.
-        qualified = TP.regex.HAS_COLON.test(attributeName);
-        if (!qualified) {
-            //  Standards-based browsers do this correctly.
-            return anElement.hasAttribute(attributeName);
-        } else {
-            attr = TP.$elementGetPrefixedAttributeNode(anElement,
-                                                        attributeName,
-                                                        checkAttrNSURI);
-
-            if (TP.isAttributeNode(attr)) {
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    //  If the attribute name matches one of our 'special' pclass
-    //  attributes that are stand ins for pseudo-classes, put a
-    //  'pclass:' on front of it.
-    if (TP.regex.PCLASS_CHANGE.test(attributeName)) {
-        theAttrName = 'pclass:' + attributeName;
-    } else {
-        theAttrName = attributeName;
-    }
-
-    //  Standards-based browsers do this correctly.
-    return anElement.hasAttribute(theAttrName);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('elementGetLocalName',
 function(anElement) {
 
@@ -2231,22 +2127,61 @@ function(aString, defaultNS, shouldReport) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('$elementGetAttribute',
+TP.definePrimitive('elementGetAttribute',
 function(anElement, attributeName, checkAttrNSURI) {
 
     /**
-     * @method $elementGetAttribute
-     * @summary Returns the value of the attribute provided, optionally
-     *     ensuring that a precise namespace URI match for prefixed attribute
-     *     names is observed.
-     * @description This is a private method. See TP.elementGetAttribute() for
-     *     more information and examples on this functionality.
+     * @method elementGetAttribute
+     * @summary Returns the value of the attribute provided.
+     * @description This method provides some additional capabilities over the
+     *     standard DOM '.getAttribute()' method:
+     *          #1: If there is a method defined on the 'TP' object that follows
+     *          a pattern of 'TP.elementGet<attributeName>', then that method
+     *          will be called as a way of specializing attribute access. For
+     *          instance, TIBET provides specialized methods for 'class' and
+     *          'style' attributes. So using:
+     *              TP.elementGetAttribute(anElement, 'class');
+     *              will cause
+     *              TP.elementGetClass(anElement); to be called.
+     *          #2: Typically this method retrieves the attribute using the
+     *          built-in platform attribute and namespace resolution mechanisms,
+     *          but if a value cannot be determined and the supplied attribute
+     *          name is prefixed (i.e. it is a namespaced attribute) and the
+     *          checkAttrNSURI flag is set to 'true' this method tries an
+     *          alternate mechanism to obtain a value. This mechanism uses the
+     *          document's prefixes and TIBET's canonical prefixing information
+     *          regarding namespaces to compute an alternate prefix for the
+     *          attribute. For example, the canonical XHTML prefix is 'html:',
+     *          but if the author has used the 'ht:' prefix for XHTML and the
+     *          system attempts to retrieve the 'ht:foo' attribute, this
+     *          method will (if the checkAttrNSURI parameter is true) also try
+     *          to retrieve the value for the 'html:foo' attribute.
      * @param {Element} anElement The element to retrieve the attribute value
      *     from.
      * @param {String} attributeName The attribute to find.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
+     * @example Get the value of the attribute on an XML element:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"
+     *          xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
+     *          goo="moo">Hi there</foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          //  Simple attribute access
+     *          TP.elementGetAttribute(xmlDoc.documentElement, 'goo');
+     *          <samp>moo</samp>
+     *          //  Prefixed attribute access
+     *          TP.elementGetAttribute(xmlDoc.documentElement, 'xf:bind');
+     *          <samp>theBinder</samp>
+     *          //  Alternate prefix attribute access (need checkAttrNSURI flag)
+     *          TP.elementGetAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>theBinder</samp>
+     *     </code>
      * @returns {String} The attribute value, if found.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
@@ -2256,13 +2191,12 @@ function(anElement, attributeName, checkAttrNSURI) {
 
     var methodName,
 
-        elementNS,
-        elementPrefix,
+        retVal,
 
-        attr,
         qualified,
 
-        prefixToUse;
+        parts,
+        nsURI;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2272,150 +2206,59 @@ function(anElement, attributeName, checkAttrNSURI) {
         return TP.raise(this, 'TP.sig.InvalidName');
     }
 
-    //  we can speed things up quite a bit if we avoid work related to
-    //  namespaces as much as possible. If the element is an HTML element
-    //  we'll never get valid NSURI information for it
-    if (TP.isHTMLNode(anElement)) {
-        //  see if we have a specific getter like elementGetStyle
-        methodName = 'elementGet' + attributeName.asTitleCase();
-        if (TP.canInvoke(TP, methodName)) {
-            return TP[methodName](anElement);
-        }
-
-        //  second common case is that we can just find the attribute, and
-        //  since it's not NS qualified if we don't find the attribute node
-        //  then we're not gonna find it through any means
-        if (TP.isAttributeNode(
-                    attr = anElement.getAttributeNode(attributeName))) {
-            return TP.ifInvalid(attr.value, '');
-        }
-
-        elementNS = TP.w3.Xmlns.XHTML;
-        elementPrefix = 'html';
-    } else {
-        elementNS = anElement.namespaceURI;
-        elementPrefix = anElement.prefix;
+    //  see if we have a specific getter like elementGetStyle
+    methodName = 'elementGet' + attributeName.asTitleCase();
+    if (TP.canInvoke(TP, methodName)) {
+        return TP[methodName](anElement);
     }
 
-    qualified = TP.regex.HAS_COLON.test(attributeName);
-    if (qualified) {
-        attr = TP.$elementGetPrefixedAttributeNode(anElement,
-                                                    attributeName,
-                                                    checkAttrNSURI);
-    } else {
-        if (TP.isAttributeNode(
-                    attr = anElement.getAttributeNode(attributeName))) {
-            return TP.ifInvalid(attr.value, '');
-        }
+    retVal = anElement.getAttribute(attributeName);
 
-        //  If we couldn't find a valid attribute node append either the
-        //  prefix found on the element or the tag's canonical prefix (if
-        //  that can be determined) and try again with the
-        //  $elementGetPrefixedAttributeNode() call.
-        if (TP.isEmpty(prefixToUse = elementPrefix)) {
-            if (TP.isString(elementNS)) {
-                prefixToUse = TP.w3.Xmlns.getURIPrefix(elementNS);
-            }
-        }
+    //  DOM Level 4 says to return null here if attribute is missing, but we use
+    //  an empty check anyway since some older browsers still return the empty
+    //  String. Note that we return empty String here for backwards
+    //  compatibility.
+    if (TP.isEmpty(retVal)) {
 
-        if (TP.isEmpty(prefixToUse)) {
-            //  Element has no prefix and no namespace - can't do
-            //  anything at this point.
+        //  we can speed things up quite a bit if we avoid work related to
+        //  namespaces as much as possible. In this case, test to see if the
+        //  attribute name has a colon in it.
+        qualified = TP.regex.HAS_COLON.test(attributeName);
+        if (!qualified) {
             return '';
         }
 
-        attr = TP.$elementGetPrefixedAttributeNode(
-                                    anElement,
-                                    prefixToUse + ':' + attributeName,
-                                    checkAttrNSURI);
+        parts = attributeName.match(TP.regex.NS_QUALIFIED);
+        if (TP.isEmpty(nsURI = anElement.lookupNamespaceURI(parts.at(1)))) {
+
+            if (!checkAttrNSURI) {
+                return '';
+            }
+
+            //  NOTE the dependency here on the XMLNS type which allows us
+            //  to look up the registered URI for our prefix
+            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            if (TP.isEmpty(nsURI)) {
+                TP.ifWarn() ?  TP.warn(
+                'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
+            }
+
+            //  Note here that we use only the *local* attribute name as
+            //  specified by the 'getAttributeNS' spec.
+            if (TP.notEmpty(
+                retVal = anElement.getAttributeNS(nsURI, parts.at(2)))) {
+                return retVal;
+            }
+
+            return '';
+        }
+
+        //  Note here that we use only the *local* attribute name as specified
+        //  by the 'getAttributeNS' spec.
+        return anElement.getAttributeNS(nsURI, parts.at(2));
     }
 
-    if (TP.isAttributeNode(attr)) {
-        return TP.ifInvalid(attr.value, '');
-    }
-
-    //  always return a string, even if empty
-    return '';
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('elementGetAttribute',
-function(anElement, attributeName, checkAttrNSURI) {
-
-    /**
-     * @method elementGetAttribute
-     * @summary Returns the value of the attribute provided.
-     * @description This method provides some additional capabilities over the
-     *     standard DOM '.getAttribute()' method: #1: If there is a method
-     *     defined on the 'TP' object that follows a pattern of
-     *     'TP.elementGet<attributeName>', then that method will be called as a
-     *     way of specializing attribute access. For instance, TIBET provides
-     *     specialized methods for 'class' and 'style' attributes. So using:
-     *     TP.elementGetAttribute(anElement, 'class'); will cause:
-     *     TP.elementGetClass(anElement); to be called. #2: Typically this
-     *     method retrieves the attribute from the element using its 'full
-     *     name', but if a value cannot be determined and the supplied attribute
-     *     name is prefixed (i.e. it is a namespaced attribute) and the
-     *     checkAttrNSURI flag is set to 'true' this method tries an alternate
-     *     mechanism to obtain a value. This mechanism uses the document's
-     *     prefixes and TIBET's canonical prefixing information regarding
-     *     namespaces to compute an alternate prefix for the attribute. For
-     *     example, the canonical XForms namespace is 'xforms:', but if the
-     *     author has used the 'xf:' prefix for XForms and the system attempts
-     *     to retrieve the 'xforms:bind' attribute, this method will also try to
-     *     retrieve the value for the 'xf:bind' attribute (if the checkAttrNSURI
-     *     parameter is true).
-     * @param {Element} anElement The element to retrieve the attribute value
-     *     from.
-     * @param {String} attributeName The attribute to find.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
-     * @example Get the value of the attribute on an XML element:
-     *     <code>
-     *          xmlDoc = TP.documentFromString(
-     *          '<foo xmlns="http://www.foo.com"
-     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
-     *         goo="moo">Hi there</foo>');
-     *          <samp>[object XMLDocument]</samp>
-     *          // Simple attribute access
-     *          TP.elementGetAttribute(xmlDoc.documentElement, 'goo');
-     *          <samp>moo</samp>
-     *          // Prefixed attribute access
-     *          TP.elementGetAttribute(xmlDoc.documentElement, 'xf:bind');
-     *          <samp>theBinder</samp>
-     *          // Alternate prefix attribute access (need
-     *          // checkAttrNSURI flag)
-     *          TP.elementGetAttribute(xmlDoc.documentElement,
-     *          'xforms:bind',
-     *          true);
-     *          <samp>theBinder</samp>
-     *     </code>
-     * @example Get the value of the attribute on an HTML element:
-     *     <code>
-     *          TP.elementSetAttribute(TP.documentGetBody(document),
-     *          'foo',
-     *          'baz');
-     *          // Simple attribute access
-     *          TP.elementGetAttribute(TP.documentGetBody(document), 'foo');
-     *          <samp>baz</samp>
-     *          // Specialized attribute access
-     *          TP.elementGetAttribute(xmlDoc.documentElement, 'style');
-     *          <samp>theBinder</samp>
-     *     </code>
-     * @returns {String} The attribute value, if found.
-     * @exception TP.sig.InvalidElement Raised when an invalid element is
-     *     provided to the method.
-     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
-     *     empty.
-     */
-
-    //  For this version of 'TP.elementGetAttribute', we just return the
-    //  result of calling the private method. Versions loaded later in the
-    //  kernel will provide more sophisticated versions of this method.
-    return TP.$elementGetAttribute(anElement, attributeName,
-                                    checkAttrNSURI);
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -3433,6 +3276,112 @@ function(anElement, attributeName, checkAttrNSURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementHasAttribute',
+function(anElement, attributeName, checkAttrNSURI) {
+
+    /**
+     * @method elementHasAttribute
+     * @summary Returns true if the supplied element has the attribute
+     *     matching the attribute name defined on it, even if the value of that
+     *     is null.
+     * @param {Element} anElement The element to test for the existence of the
+     *     attribute.
+     * @param {String} attributeName The name of the attribute to test.
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
+     * @example Check to see if the supplied element has a particular attribute:
+     *     <code>
+     *          TP.elementHasAttribute(TP.documentGetBody(document),
+     *         'style');
+     *          <samp>true</samp>
+     *     </code>
+     * @example Check to see if the supplied element has a particular attribute
+     *     in an XML document:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"
+     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
+     *         goo="moo">Hi there</foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          //  Simple attribute access
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'goo');
+     *          <samp>true</samp>
+     *          //  Prefixed attribute access
+     *          TP.elementHasAttribute(xmlDoc.documentElement, 'xf:bind');
+     *          <samp>true</samp>
+     *          //  Prefixed attribute access without checkAttrNSURI - will fail
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind');
+     *          <samp>false</samp>
+     *          //  Alternate prefix attribute access (need checkAttrNSURI flag)
+     *          TP.elementHasAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          true);
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the element has a value for the
+     *     supplied attribute.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     * @exception TP.sig.InvalidName Raised when a null or empty attribute name
+     *     is provided to the method.
+     */
+
+    var qualified,
+
+        parts,
+        nsURI;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isEmpty(attributeName)) {
+        return TP.raise(this, 'TP.sig.InvalidName');
+    }
+
+    if (!anElement.hasAttribute(attributeName)) {
+
+        //  we can speed things up quite a bit if we avoid work related to
+        //  namespaces as much as possible. In this case, test to see if the
+        //  attribute name has a colon in it.
+        qualified = TP.regex.HAS_COLON.test(attributeName);
+        if (!qualified) {
+            return false;
+        }
+
+        parts = attributeName.match(TP.regex.NS_QUALIFIED);
+        if (TP.isEmpty(nsURI = anElement.lookupNamespaceURI(parts.at(1)))) {
+
+            if (!checkAttrNSURI) {
+                return false;
+            }
+
+            //  NOTE the dependency here on the XMLNS type which allows us
+            //  to look up the registered URI for our prefix
+            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            if (TP.isEmpty(nsURI)) {
+                TP.ifWarn() ?  TP.warn(
+                'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
+            }
+
+            //  Yes, this could go below, but let's make it explicit for
+            //  readability here.
+            return anElement.hasAttributeNS(nsURI, parts.at(2));
+        }
+
+        //  Note here that we use only the *local* attribute name as specified
+        //  by the 'hasAttributeNS' spec.
+        return anElement.hasAttributeNS(nsURI, parts.at(2));
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementHasAttributeValue',
 function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
@@ -3444,10 +3393,10 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
      * @param {String} attributeName The attribute to match.
      * @param {String|RegExp} attributeValue The attribute value to try to match
      *     as either a String or as a RegExp.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually check for the attribute in that namespace. Default is false
-     *     (to keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @returns {Boolean} Whether or not the supplied attribute value matches
      *     the attribute value on the supplied element.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
@@ -3471,9 +3420,7 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
         return false;
     }
 
-    value = TP.elementGetAttribute(anElement,
-                                    attributeName,
-                                    checkAttrNSURI);
+    value = TP.elementGetAttribute(anElement, attributeName, checkAttrNSURI);
 
     if (TP.isRegExp(attributeValue)) {
         valueMatch = attributeValue;
@@ -3792,9 +3739,10 @@ function(anElement, attributeName, checkAttrNSURI) {
      *     matches attributeName.
      * @param {Element} anElement The element to remove the attribute from.
      * @param {String} attributeName The name of the attribute to remove.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @example Remove the attribute named for the supplied element in an HTML
      *     document:
      *     <code>
@@ -3871,8 +3819,9 @@ function(anElement, attributeName, checkAttrNSURI) {
      */
 
     var qualified,
-        attr,
-        theAttrName;
+
+        parts,
+        nsURI;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -3882,74 +3831,39 @@ function(anElement, attributeName, checkAttrNSURI) {
         return TP.raise(this, 'TP.sig.InvalidName');
     }
 
-    //  If the document for the supplied element is an XML document, then we
-    //  don't need to go any further. W3C-compliant browsers do this correctly
-    //  and no CSS information needs to be applied.
-    if (TP.isXMLDocument(TP.nodeGetDocument(anElement))) {
-        //  we can speed things up quite a bit if we avoid work related to
-        //  namespaces as much as possible. In this case, test to see if the
-        //  attribute name has a colon in it.
-        qualified = TP.regex.HAS_COLON.test(attributeName);
-        if (!qualified) {
-            //  Standards-based browsers do this correctly.
-            return anElement.removeAttribute(attributeName);
-        } else {
-            attr = TP.$elementGetPrefixedAttributeNode(anElement,
-                                                        attributeName,
-                                                        checkAttrNSURI);
+    //  we can speed things up quite a bit if we avoid work related to
+    //  namespaces as much as possible. In this case, test to see if the
+    //  attribute name has a colon in it.
+    qualified = TP.regex.HAS_COLON.test(attributeName);
+    if (!qualified) {
+        return anElement.removeAttribute(attributeName);
+    } else {
+        parts = attributeName.match(TP.regex.NS_QUALIFIED);
+        if (TP.isEmpty(nsURI = anElement.lookupNamespaceURI(parts.at(1)))) {
 
-            if (TP.isAttributeNode(attr)) {
-                //  'removeAttribute' above returns null, but
-                //  'removeAttributeNode' will return the removed attribute
-                //  node. We want to emulate the behavior above for consistency.
-                anElement.removeAttributeNode(attr);
+            //  If we're not doing any advanced checking of namespaces, then
+            //  exit here.
+            if (!checkAttrNSURI) {
+                return;
             }
 
-            return;
+            //  NOTE the dependency here on the XMLNS type which allows us
+            //  to look up the registered URI for our prefix
+            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            if (TP.isEmpty(nsURI)) {
+                TP.ifWarn() ?  TP.warn(
+                'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
+            }
+
+            //  Yes, this could go below, but let's make it explicit for
+            //  readability here.
+            return anElement.removeAttributeNS(nsURI, parts.at(2));
         }
+
+        //  Note here that we use only the *local* attribute name as specified
+        //  by the 'removeAttributeNS' spec.
+        return anElement.removeAttributeNS(nsURI, parts.at(2));
     }
-
-    //  If the attribute name matches one of our 'special' pclass attributes
-    //  that are stand ins for pseudo-classes, put a 'pclass:' on front of it.
-    if (TP.regex.PCLASS_CHANGE.test(attributeName)) {
-        theAttrName = 'pclass:' + attributeName;
-
-        //  If it matched a pseudo-class, we go ahead and remove the attribute
-        //  we were supplied with anyway. This allows elements like HTML
-        //  checkboxes and radio buttons to remove their 'selected' and
-        //  'checked' attributes.
-        anElement.removeAttribute(theAttrName);
-    } else {
-        theAttrName = attributeName;
-    }
-
-    //  If there has been CSS processing going on in anElement's Window, then go
-    //  ahead and process any changes that removing this attribute will have
-    //  brought.
-    if (TP.isWindow(TP.nodeGetWindow(anElement))) {
-        //  Invoke the CSS attribute change machinery. Note here that we have no
-        //  new value, since we're removing the attribute.
-        TP.$elementProcessCSSAttributeChange(
-                            anElement,
-                            theAttrName,
-                            null,
-                            function() {
-
-                                //  W3C-compliant browsers do this correctly.
-                                anElement.removeAttribute(theAttrName);
-                            });
-
-        //  Update any CSS expressions for the element.
-        //TP.elementUpdateCSSExprValues(anElement);
-    } else {
-        //  Standards-based browsers do this correctly.
-        anElement.removeAttribute(theAttrName);
-    }
-
-    //  Flush any pending CSS changes.
-    TP.$elementCSSFlush(anElement);
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3966,10 +3880,10 @@ function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
      * @param {String} attributeName The attribute to set.
      * @param {String} oldValue The old attribute value.
      * @param {String} newValue The new attribute value.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      * @exception TP.sig.InvalidName Raised when the supplied attribute name is
@@ -3991,9 +3905,7 @@ function(anElement, attributeName, oldValue, newValue, checkAttrNSURI) {
         return;
     }
 
-    value = TP.elementGetAttribute(anElement,
-                                    attributeName,
-                                    checkAttrNSURI);
+    value = TP.elementGetAttribute(anElement, attributeName, checkAttrNSURI);
 
     //  NOTE: The RegExp here makes sure that the oldValue is either first,
     //  last or is surrounded by one character of whitespace.
@@ -4076,31 +3988,91 @@ function(anElement, aPrefix) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('$elementSetAttribute',
+TP.definePrimitive('elementSetAttribute',
 function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
     /**
-     * @method $elementSetAttribute
+     * @method elementSetAttribute
      * @summary Sets the value of the attribute provided.
-     * @description This is a private method. See TP.elementSetAttribute() for
-     *     more information and examples on this functionality.
+     * @description This method provides some additional capabilities over the
+     *     standard DOM '.setAttribute()' method:
+     *          #1: If there is a method defined on the 'TP' object that follows
+     *          a pattern of 'TP.elementSet<attributeName>', then that method
+     *          will be called as a way of specializing attribute access. For
+     *          instance, TIBET provides specialized methods for 'class' and
+     *          'style' attributes. So using:
+     *              TP.elementSetAttribute(anElement, 'class', 'foo');
+     *              will cause
+     *              TP.elementSetClass(anElement, 'foo'); to be called.
+     *          #2: Typically this method retrieves the attribute using the
+     *          built-in platform attribute and namespace resolution mechanisms,
+     *          but if a value cannot be determined and the supplied attribute
+     *          name is prefixed (i.e. it is a namespaced attribute) and the
+     *          checkAttrNSURI flag is set to 'true' this method tries an
+     *          alternate mechanism to set the value. This mechanism uses the
+     *          document's prefixes and TIBET's canonical prefixing information
+     *          regarding namespaces to compute an alternate prefix for the
+     *          attribute. For example, the canonical XHTML prefix is 'html:',
+     *          but if the author has used the 'ht:' prefix for XHTML and the
+     *          system attempts to set the 'ht:foo' attribute, this method will
+     *          (if the checkAttrNSURI parameter is true) also try to set the
+     *          value for the 'html:foo' attribute.
+     *          If you want to force a specific namespace URI to be used you can
+     *          call the companion method TP.elementSetAttributeInNS().
      * @param {Element} anElement The element to set the attribute on.
      * @param {String} attributeName The attribute to set.
      * @param {String} attributeValue The attribute value.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
+     * @example Set the value of the attribute on an XML element:
+     *     <code>
+     *          xmlDoc = TP.documentFromString(
+     *          '<foo xmlns="http://www.foo.com"
+     *          xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
+     *          goo="moo">Hi there</foo>');
+     *          <samp>[object XMLDocument]</samp>
+     *          //  Simple attribute set
+     *          TP.elementSetAttribute(xmlDoc.documentElement, 'goo', 'boo');
+     *          <samp>undefined</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo xmlns="http://www.foo.com"
+     *          xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
+     *          goo="boo"&gt;Hi there&lt;/foo&gt;</samp>
+     *          // Prefixed attribute set
+     *          TP.elementSetAttribute(xmlDoc.documentElement,
+     *          'xf:bind',
+     *          'anotherBinder');
+     *          <samp>undefined</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo xmlns="http://www.foo.com"
+     *          xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="anotherBinder"
+     *          goo="boo"&gt;Hi there&lt;/foo&gt;</samp>
+     *          //  Alternate prefix attribute set (need checkAttrNSURI flag)
+     *          TP.elementSetAttribute(xmlDoc.documentElement,
+     *          'xforms:bind',
+     *          'yetAnotherBinder',
+     *          true);
+     *          <samp>undefined</samp>
+     *          TP.nodeAsString(xmlDoc);
+     *          <samp>&lt;foo xmlns="http://www.foo.com"
+     *          xmlns:xf="http://www.w3.org/2002/xforms"
+     *          xf:bind="yetAnotherBinder" goo="boo"&gt;Hi
+     *          there&lt;/foo&gt;</samp>
+     *     </code>
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
      * @exception TP.sig.InvalidName Raised when the supplied attribute name is
      *     empty.
      */
 
-    var arr,
-        prefix,
-        nsuri,
-        methodName;
+    var methodName,
+
+        qualified,
+
+        parts,
+        nsURI;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -4108,38 +4080,6 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
 
     if (TP.isEmpty(attributeName)) {
         return TP.raise(this, 'TP.sig.InvalidName');
-    }
-
-    //  if it's a prefixed attribute then the question is can we find out
-    //  what namespace that relates to (in canonical terms or local
-    //  document terms) and locate it?
-    if (TP.isTrue(checkAttrNSURI) &&
-            TP.regex.NS_QUALIFIED.test(attributeName)) {
-        arr = attributeName.match(TP.regex.NS_QUALIFIED);
-
-        //  the parts should be in the regex
-        prefix = arr.at(1);
-
-        //  one possible check is whether the tag shares the prefix (a
-        //  presumption admittedly but the most common case)
-        if (anElement.tagName.indexOf(prefix + ':') === 0) {
-            //  the element has our prefix, so we want to set the attribute
-            //  in the element's namespace
-            return TP.elementSetAttributeInNS(anElement,
-                                                attributeName,
-                                                attributeValue,
-                                                anElement.namespaceURI);
-        }
-
-        //  NOTE the dependency here on the XMLNS type
-        nsuri = TP.w3.Xmlns.getPrefixURI(prefix);
-
-        if (TP.notEmpty(nsuri)) {
-            return TP.elementSetAttributeInNS(anElement,
-                                                attributeName,
-                                                attributeValue,
-                                                nsuri);
-        }
     }
 
     //  If we're not strict about namespaces, check to see if we have a
@@ -4151,133 +4091,43 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
         return;
     }
 
-    //  If we're not strict about namespaces and we don't have a
-    //  more-specific 'setter', just use the native call
-
-    //  IE sometimes uses weird values as the result of attribute setting,
-    //  especially around VML elements. If the native setAttribute() call is
-    //  used, it throws an exception, because there's a strange Object in
-    //  that slot which has no enumerable properties, but does seem to have
-    //  a 'value' slot, which contains a String representation.
-    //  We try to use that here.
-    try {
+    //  we can speed things up quite a bit if we avoid work related to
+    //  namespaces as much as possible. In this case, test to see if the
+    //  attribute name has a colon in it.
+    qualified = TP.regex.HAS_COLON.test(attributeName);
+    if (!qualified) {
         return anElement.setAttribute(attributeName, attributeValue);
-    } catch (e) {
-        if (/Member not found/.test(TP.str(e)) &&
-            TP.isValid(anElement[attributeName].value)) {
-            anElement[attributeName].value = attributeValue;
+    } else {
+        parts = attributeName.match(TP.regex.NS_QUALIFIED);
+        if (TP.isEmpty(nsURI = anElement.lookupNamespaceURI(parts.at(1)))) {
+
+            //  If we're not doing any advanced checking of namespaces, then
+            //  exit here.
+            if (!checkAttrNSURI) {
+                return;
+            }
+
+            //  NOTE the dependency here on the XMLNS type which allows us
+            //  to look up the registered URI for our prefix
+            nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
+            if (TP.isEmpty(nsURI)) {
+                TP.ifWarn() ?  TP.warn(
+                'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
+            }
+
+            //  Using our own routine here causes an 'xmlns:<prefix>' definition
+            //  to be stamped onto the element, unlike the native
+            //  'setAttributeNS()' call below (which will use the full name and
+            //  will put it in the right namespace, but not define the
+            //  namespace).
+            return TP.elementSetAttributeInNS(
+                    anElement, attributeName, attributeValue, nsURI);
         }
+
+        //  Note here that we use the full attribute name as specified by the
+        //  'setAttributeNS' spec.
+        return anElement.setAttributeNS(nsURI, attributeName, attributeValue);
     }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('elementSetAttribute',
-function(anElement, attributeName, attributeValue, checkAttrNSURI) {
-
-    /**
-     * @method elementSetAttribute
-     * @summary Sets the value of the attribute provided.
-     * @description This method provides some additional capabilities over the
-     *     standard DOM '.setAttribute()' method: #1: If there is a method
-     *     defined on the 'TP' object that follows a pattern of
-     *     'TP.elementSet<attributeName>', then that method will be called as a
-     *     way of specializing attribute access. For instance, TIBET provides
-     *     specialized methods for 'class' and 'style' attributes. So using:
-     *     TP.elementSetAttribute(anElement, 'class', 'foo'); will cause:
-     *     TP.elementSetClass(anElement, 'foo'); to be called. #2: Typically
-     *     this method sets the attribute on the element using its 'full name',
-     *     but if a value cannot be determined and the supplied attribute name
-     *     is prefixed (i.e. it is a namespaced attribute) and the
-     *     checkAttrNSURI flag is set to 'true' this method tries an alternate
-     *     mechanism to set the value. This mechanism uses the document's
-     *     prefixes and TIBET's canonical prefixing information regarding
-     *     namespaces to compute an alternate prefix for the attribute. For
-     *     example, the canonical XForms namespace is 'xforms:', but if the
-     *     author has used the 'xf:' prefix for XForms and the system attempts
-     *     to set the 'xforms:bind' attribute, this method will also try to set
-     *     the value for the 'xf:bind' attribute (if the checkAttrNSURI
-     *     parameter is true).
-     *
-     *     If you want to force a specific namespace URI to be used you can
-     *     call the companion method TP.elementSetAttributeInNS().
-     * @param {Element} anElement The element to set the attribute on.
-     * @param {String} attributeName The attribute to set.
-     * @param {String} attributeValue The attribute value.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
-     * @example Set the value of the attribute on an XML element:
-     *     <code>
-     *          xmlDoc = TP.documentFromString(
-     *          '<foo xmlns="http://www.foo.com"
-     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
-     *         goo="moo">Hi there</foo>');
-     *          <samp>[object XMLDocument]</samp>
-     *          // Simple attribute set
-     *          TP.elementSetAttribute(xmlDoc.documentElement,
-     *          'goo',
-     *          'boo');
-     *          <samp>undefined</samp>
-     *          TP.nodeAsString(xmlDoc);
-     *          <samp>&lt;foo xmlns="http://www.foo.com"
-     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="theBinder"
-     *         goo="boo"&gt;Hi there&lt;/foo&gt;</samp>
-     *          // Prefixed attribute set
-     *          TP.elementSetAttribute(xmlDoc.documentElement,
-     *          'xf:bind',
-     *          'anotherBinder');
-     *          <samp>undefined</samp>
-     *          TP.nodeAsString(xmlDoc);
-     *          <samp>&lt;foo xmlns="http://www.foo.com"
-     *         xmlns:xf="http://www.w3.org/2002/xforms" xf:bind="anotherBinder"
-     *         goo="boo"&gt;Hi there&lt;/foo&gt;</samp>
-     *          // Alternate prefix attribute set (need
-     *          // checkAttrNSURI flag)
-     *          TP.elementSetAttribute(xmlDoc.documentElement,
-     *          'xforms:bind',
-     *          'yetAnotherBinder',
-     *          true);
-     *          <samp>undefined</samp>
-     *          TP.nodeAsString(xmlDoc);
-     *          <samp>&lt;foo xmlns="http://www.foo.com"
-     *         xmlns:xf="http://www.w3.org/2002/xforms"
-     *         xf:bind="yetAnotherBinder" goo="boo"&gt;Hi
-     *         there&lt;/foo&gt;</samp>
-     *     </code>
-     * @example Set the value of the attribute on an HTML element:
-     *     <code>
-     *          // Simple attribute set
-     *          TP.elementSetAttribute(TP.documentGetBody(document),
-     *          'foo',
-     *          'baz');
-     *          <samp>undefined</samp>
-     *          TP.elementGetAttribute(TP.documentGetBody(document), 'foo');
-     *          <samp>baz</samp>
-     *
-     *          // Specialized attribute access
-     *          TP.elementSetAttribute(document.documentElement,
-     *          'class',
-     *          'foo');
-     *          <samp>undefined</samp>
-     *          TP.elementGetAttribute(document.documentElement,
-     *          'class');
-     *          <samp>foo</samp>
-     *     </code>
-     * @exception TP.sig.InvalidElement Raised when an invalid element is
-     *     provided to the method.
-     * @exception TP.sig.InvalidName Raised when the supplied attribute name is
-     *     empty.
-     */
-
-    //  For this version of 'TP.elementSetAttribute', we just return the
-    //  result of calling the private method. Versions loaded later in the
-    //  kernel will provide more sophisticated versions of this method.
-    return TP.$elementSetAttribute(anElement, attributeName, attributeValue,
-                                    checkAttrNSURI);
 });
 
 //  ------------------------------------------------------------------------
@@ -4291,10 +4141,10 @@ function(anElement, attributeHash, checkAttrNSURI) {
      *     TP.core.Hash.
      * @param {Element} anElement The element to set the attributes on.
      * @param {TP.core.Hash} attributeHash The attributes to set.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @example Set the attributes on an HTML element using the supplied hash:
      *     <code>
      *          TP.elementSetAttributes(TP.documentGetBody(document),
@@ -6895,8 +6745,12 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
      * @param {Node} aNode The document or element to query.
      * @param {String} aPath The path to traverse in locating a value.
      * @param {String} aPathType One of the 'path type' constants:
-     *     TP.CSS_PATH_TYPE TP.XPATH_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE TP.XTENSION_POINTER_PATH_TYPE.
+     *     TP.XPATH_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
+     *     TP.CSS_PATH_TYPE
+     *     TP.BARENAME_PATH_TYPE
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
      * @param {Boolean} retryWithDocument Whether or not we should retry with
@@ -6941,7 +6795,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
     }
 
     //  If the path type wasn't supplied, compute it.
-    thePathType = TP.ifInvalid(aPathType, TP.getMarkupPathType(aPath));
+    thePathType = TP.ifInvalid(aPathType, TP.getAccessPathType(aPath));
 
     switch (thePathType) {
         case TP.XPATH_PATH_TYPE:
@@ -6966,6 +6820,7 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
             return result;
 
         case TP.XPOINTER_PATH_TYPE:
+        case TP.ELEMENT_PATH_TYPE:
 
             //  #xpointer(...), #xpath1(...) or #element(...) schemes
             return TP.nodeEvaluateXPointer(aNode, aPath, autoCollapse);
@@ -8865,10 +8720,10 @@ function(aNode, attrName, attrValue, checkAttrNSURI) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} attrName The attribute to test for.
      * @param {Object} attrValue The optional attribute value to check.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually check for the attribute in that namespace. Default is false
-     *     (to keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @example TODO:
      * @returns {Element} An element ancestor of the node.
      * @exception TP.sig.InvalidParameter Raised when a node that isn't of type
@@ -12753,8 +12608,8 @@ function(aNode, aNamespaceURI, includeDescendants) {
 
     /**
      * @method nodeGetNSPrefixes
-     * @summary Returns an Array of namespace prefixes for aNamespaceURI in the
-     *     supplied node.
+     * @summary Returns an Array of namespace prefixes for aNamespaceURI on or
+     *     in the supplied node.
      * @description The default call searches only the local attributes on the
      *     node. Passing true to includeDescendants will cause the entire node's
      *     content to be searched for prefixes.

@@ -485,10 +485,10 @@ function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
      * @param {String} attrName The attribute name value to find, with optional
      *     NS: prefix.
      * @param {String} attrValue The attribute value to add.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      */
@@ -512,9 +512,10 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      *     suitable for TP.byId().
      * @param {String} attrName The attribute name value to find, with optional
      *     NS: prefix.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, looking via URI
-     *     rather than just prefix. Default is false (to keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {String} The attribute value, if found or null if the element
@@ -539,10 +540,10 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      *     suitable for TP.byId().
      * @param {String} attrName The attribute name value to find, with optional
      *     NS: prefix.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually check for the attribute in that namespace. Default is false
-     *     (to keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      * @returns {Boolean} True if the attribute exists.
@@ -566,10 +567,10 @@ function(elemOrId, attrName, checkAttrNSURI, nodeContext) {
      *     suitable for TP.byId().
      * @param {String} attrName The attribute name value to remove, with
      *     optional NS: prefix.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      */
@@ -594,10 +595,10 @@ function(elemOrId, attrName, oldValue, newValue, checkAttrNSURI, nodeContext) {
      *     NS: prefix.
      * @param {String} oldValue The attribute value to find.
      * @param {String} newValue The attribute value to set.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      */
@@ -622,10 +623,10 @@ function(elemOrId, attrName, attrValue, checkAttrNSURI, nodeContext) {
      * @param {String} attrName The attribute name value to set, with optional
      *     NS: prefix.
      * @param {String} attrValue The attribute value to set.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @param {Object} nodeContext A context in which to resolve element IDs.
      *     Default is the current canvas.
      */

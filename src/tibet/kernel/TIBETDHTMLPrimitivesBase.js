@@ -1665,7 +1665,7 @@ function(anElement, aClassName) {
         TP.elementRemoveAttribute(anElement, 'class');
     } else {
         //  NB: We use native 'setAttribute' call here, or we'll recurse
-        //  into TP.$elementSetAttribute()
+        //  into TP.elementSetAttribute()
         anElement.setAttribute('class', aClassName);
     }
 

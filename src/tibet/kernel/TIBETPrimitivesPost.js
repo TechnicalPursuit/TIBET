@@ -4896,21 +4896,23 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getMarkupPathType',
+TP.definePrimitive('getAccessPathType',
 function(aPath) {
 
     /**
-     * @method getMarkupPathType
+     * @method getAccessPathType
      * @summary Obtains the 'path type' of the supplied path. This allows TIBET
      *     to distinguish between different markup query languages.
      * @param {String} aPath The path to obtain the type of.
      * @returns {String} One of the 'path type' constants:
      *     TP.TIBET_PATH_TYPE
+     *     TP.JSON_PATH_TYPE
      *     TP.CSS_PATH_TYPE
      *     TP.XPATH_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE
-     *     TP.XTENSION_POINTER_PATH_TYPE
      *     TP.BARENAME_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
      */
 
     var path;
@@ -4941,11 +4943,6 @@ function(aPath) {
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
 
-    //  First, test to see if we've just been given an 'access path'.
-    if (TP.regex.TIBET_PATH.test(path)) {
-        return TP.TIBET_PATH_TYPE;
-    }
-
     //  We try to determine the path type based on discriminating characters
     //  and regular expression forms but since there's a lot of overlap
     //  between the legal characters for both CSS and XPath paths we will
@@ -4960,7 +4957,17 @@ function(aPath) {
 
     //  regular xpointer, either xpointer(), xpath1() or element() scheme
     if (TP.regex.XPOINTER.test(path)) {
-        return TP.XPOINTER_PATH_TYPE;
+
+        //  If we're handed an '#element(...)' pointer, then we know what kind
+        //  of path it is (or should be, anyway)
+
+        //  NB: We do *not* check against TP.regex.ELEMENT_PATH here, since it
+        //  matches all IDs ("#"), attributes ("@"), etc.
+        if (TP.regex.ELEMENT_POINTER.test(path)) {
+            return TP.ELEMENT_PATH_TYPE;
+        } else {
+            return TP.XPATH_PATH_TYPE;
+        }
     }
 
     //  extended xpointer, perhaps explicit css() scheme (TIBET-only)
@@ -4970,6 +4977,32 @@ function(aPath) {
 
     //  strip any id/fragment prefix
     path = path.charAt(0) === '#' ? path.slice(1) : path;
+
+    //  If the path is just '.', then that's the shortcut to just return a TIBET
+    //  path
+    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  A TIBET path - simple or complex
+    if (TP.regex.TIBET_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  A JSON path
+    if (TP.regex.JSON_PATH.test(path)) {
+        return TP.JSON_PATH_TYPE;
+    }
+
+    //  If there is no 'path punctuation' (only JS identifer characters), or
+    //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
+    //  path'.
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.JS_IDENTIFIER.test(path) ||
+        TP.regex.ONLY_NUM.test(path) ||
+        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
 
     //  XPath is typically ./elem, //elem, @attr, or ./elem[predicate], all
     //  of which are going to include a slash (other than 'standalone' attr
@@ -5022,11 +5055,13 @@ function(aPath) {
      *     current return values:
      *
      *     TP.TIBET_PATH_TYPE               ->      'tibet'
+     *     TP.JSON_PATH_TYPE                ->      'json'
      *     TP.CSS_PATH_TYPE                 ->      'css'
      *     TP.XPATH_PATH_TYPE               ->      'xpath1'
-     *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
-     *     TP.XTENSION_POINTER_PATH_TYPE    ->      'css'
      *     TP.BARENAME_PATH_TYPE            ->      ''
+     *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
+     *     TP.ELEMENT_PATH_TYPE             ->      'element'
+     *     TP.XTENSION_POINTER_PATH_TYPE    ->      'css'
      *
      *     Note that if the path consists only of word characters that a value
      *     of 'tibet' will be returned.
@@ -5047,20 +5082,25 @@ function(aPath) {
         return 'tibet';
     }
 
-    pathType = TP.getMarkupPathType(aPath);
+    pathType = TP.getAccessPathType(aPath);
 
     switch (pathType) {
         case TP.TIBET_PATH_TYPE:
             return 'tibet';
+        case TP.JSON_PATH_TYPE:
+            return 'json';
         case TP.CSS_PATH_TYPE:
-        case TP.XTENSION_POINTER_PATH_TYPE:
             return 'css';
         case TP.XPATH_PATH_TYPE:
             return 'xpath1';
-        case TP.XPOINTER_PATH_TYPE:
-            return 'xpointer';
         case TP.BARENAME_PATH_TYPE:
             return '';
+        case TP.XPOINTER_PATH_TYPE:
+            return 'xpointer';
+        case TP.ELEMENT_PATH_TYPE:
+            return 'element';
+        case TP.XTENSION_POINTER_PATH_TYPE:
+            return 'css';
         default:
             return '';
     }

@@ -878,7 +878,9 @@ function(anObject, includeFacetChecks) {
      */
 
     var anObj,
-        str;
+        str,
+
+        isJSON;
 
     if (TP.notValid(anObj = anObject.get('data'))) {
         anObj = anObject;
@@ -887,12 +889,13 @@ function(anObject, includeFacetChecks) {
     //  First, check to make sure that it's even valid JSON. If it is, then call
     //  next method to check facets, etc.
     str = TP.js2json(anObj);
+    isJSON = TP.isJSONString(str);
 
-    if (TP.isValid(TP.json2js(str)) && TP.notFalse(includeFacetChecks)) {
+    if (isJSON && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
-    return false;
+    return isJSON;
 });
 
 //  ------------------------------------------------------------------------
@@ -1259,7 +1262,9 @@ function(anObject, includeFacetChecks) {
      */
 
     var anObj,
-        str;
+        str,
+
+        isNode;
 
     if (TP.notValid(anObj = anObject.get('data'))) {
         anObj = anObject;
@@ -1268,12 +1273,13 @@ function(anObject, includeFacetChecks) {
     //  First, check to make sure that it's even valid XML. If it is, then call
     //  next method to check facets, etc.
     str = TP.str(anObj);
+    isNode = TP.isNode(TP.node(str));
 
-    if (TP.isNode(TP.node(str)) && TP.notFalse(includeFacetChecks)) {
+    if (isNode && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
-    return false;
+    return isNode;
 });
 
 //  ------------------------------------------------------------------------
@@ -4304,6 +4310,14 @@ function(addressPart) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  Whether or not the receiver 'created structure' on it's latest run. This is
+//  reset after each 'setter run' of the path.
+TP.core.SimpleTIBETPath.Inst.defineAttribute('$createdStructure');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -4480,6 +4494,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         op = TP.UPDATE;
     } else {
         op = TP.CREATE;
+        //  Make sure to let this path know that we created structure - this
+        //  makes a difference when signaling change if we're being used as part
+        //  of an over 'complex' TIBET path.
+        this.set('$createdStructure', true);
     }
 
     //  If the old value is equal to the value that we're setting, then there
@@ -4740,10 +4758,6 @@ function(aPath, config) {
 //  expressions.
 TP.core.ComplexTIBETPath.Inst.defineAttribute('$transformedPath');
 
-//  Whether or not the receiver 'created structure' on it's latest run. This is
-//  reset after each 'setter run' of the path.
-TP.core.ComplexTIBETPath.Inst.defineAttribute('$createdStructure');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -4913,15 +4927,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     this.set('$createdStructure', false);
 
-    this.preSetAccess(targetObj);
-
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
     //  NB: We have to do this *after* the preSetAccess call so that change
     //  path data structures are set up properly.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
-    if (traversalLevel === 1) {
+    if (traversalLevel === 0) {
 
         if (TP.regex.HAS_ACP.test(srcPath)) {
             //  Grab the arguments and slice the first three off (since they're
@@ -4941,15 +4953,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  by this path and to avoid a lot of unnecessary signaling.
         if (this.checkValueEquality(oldVal, attributeValue)) {
 
-            //  We need to restore the change path data structures before
-            //  exiting.
-            this.postSetAccess(targetObj);
             return oldVal;
         }
     }
 
     //  Note here how we always do the set with a 'false' and then send a
     //  'changed' message later with additional information.
+
+    this.preSetAccess(targetObj);
 
     if (TP.isArray(targetObj)) {
         retVal = this.$executeArraySet(targetObj, attributeValue, false);
@@ -5001,9 +5012,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         //  Empty the changed addresses now that we've sent the signal.
         TP.core.AccessPath.$getChangedAddresses().empty();
-    }
 
-    this.set('$createdStructure', false);
+        //  Flip this back off for the next run.
+        this.set('$createdStructure', false);
+    }
 
     return retVal;
 });
@@ -5474,7 +5486,9 @@ function(targetObj, attributeValue, shouldSignal) {
         queryParts,
 
         attrIsNumber,
-        firstSimplePath;
+        firstSimplePath,
+
+        setPath;
 
     path = this.get('$transformedPath');
 
@@ -5721,9 +5735,17 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake)),
-                         val,
-                         false);
+        setPath = TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake));
+        targetObj.set(setPath, val, false);
+
+        //  If the setter path created structure, we flip our value of that flag
+        //  to 'true' to 'propagate it up' the setter chain and rest the setter
+        //  path's value back to 'false' for future runs. Note that we only do
+        //  this is the setter path's value is 'true'.
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
     }
 
     if (TP.notValid(val) || !TP.isReferenceType(val)) {
@@ -5736,10 +5758,19 @@ function(targetObj, attributeValue, shouldSignal) {
     if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
         thisType.startChangedAddress(head);
 
+        setPath = TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake));
+
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake)),
-                attributeValue,
-                false);
+        val.set(setPath, attributeValue, false);
+
+        //  If the setter path created structure, we flip our value of that flag
+        //  to 'true' to 'propagate it up' the setter chain and rest the setter
+        //  path's value back to 'false' for future runs. Note that we only do
+        //  this is the setter path's value is 'true'.
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
 
         thisType.endChangedAddress();
 
@@ -5783,7 +5814,9 @@ function(targetObj, attributeValue, shouldSignal) {
         queryParts,
 
         attrIsNumber,
-        firstSimplePath;
+        firstSimplePath,
+
+        setPath;
 
     path = this.get('$transformedPath');
 
@@ -5919,9 +5952,13 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake)),
-                         val,
-                         false);
+        setPath = TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake));
+        targetObj.set(setPath, val, false);
+
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
     }
 
     if (TP.notValid(val) || !TP.isReferenceType(val)) {
@@ -5934,10 +5971,15 @@ function(targetObj, attributeValue, shouldSignal) {
     if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
         thisType.startChangedAddress(head);
 
+        setPath = TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake));
+
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake)),
-                attributeValue,
-                false);
+        val.set(setPath, attributeValue, false);
+
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
 
         thisType.endChangedAddress();
 
@@ -6973,11 +7015,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
@@ -7211,11 +7249,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
@@ -7282,12 +7316,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.BARENAME_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 

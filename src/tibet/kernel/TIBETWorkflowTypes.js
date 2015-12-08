@@ -4886,7 +4886,8 @@ function(aRequest) {
         request.fail('Handler not callable');
     } else {
         //  TODO: Need to handle when a Promise might be returned here for true
-        //  asynchronicity.
+        //  asynchronicity. Also, can't this 'apply()' just be a regular
+        //  invocation?
         result = handler.apply(request, TP.ac(request));
         request.complete(result);
     }
