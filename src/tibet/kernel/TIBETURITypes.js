@@ -2025,8 +2025,6 @@ function() {
      * @returns {Number} The fragment weight.
      */
 
-    /* TODO: For now, we just return 1, since that the same as a barename, until
-     * we finish the uriSplitFragment method
     var frag,
 
         results;
@@ -2041,10 +2039,8 @@ function() {
     if (TP.isValid(results = TP.uriSplitFragment(frag))) {
         return results.getSize();
     }
-    return 0;
-    */
 
-    return 1;
+    return 0;
 });
 
 //  ------------------------------------------------------------------------

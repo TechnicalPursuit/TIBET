@@ -2216,6 +2216,89 @@ function(aURI) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('uriSplitFragment',
+function(aFragment, aScheme) {
+
+    /**
+     * @method uriSplitFragment
+     * @summary
+     * @param {String} aFragment The pointer fragment. Note that this may
+     *     contain an XPointer and, if the path contains one as well and they
+     *     don't match, the path will be returned unchanged.
+     * @returns {Array}
+     */
+
+    var pathFragment,
+
+        fragmentScheme,
+        fragmentExpr,
+
+        results;
+
+    if (TP.isEmpty(aFragment)) {
+        return TP.ac(aFragment);
+    }
+
+    //  If the fragment is '.', that a self-reference. Just return the main
+    //  path.
+    if (aFragment === '.') {
+        return TP.ac(aFragment);
+    }
+
+    pathFragment = aFragment;
+
+    //  See if the path fragment contains an XPointer. If so, grab it's
+    //  scheme and expression.
+    if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(pathFragment))) {
+        fragmentScheme = results.at(1);
+        fragmentExpr = results.at(2);
+    } else {
+        //  If we were supplied a scheme, try to use it with the path
+        if (TP.notEmpty(aScheme)) {
+            if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(
+                                        aScheme + '(' + pathFragment + ')'))) {
+                fragmentScheme = results.at(1);
+                fragmentExpr = results.at(2);
+            }
+        }
+    }
+
+    //  Couldn't compute result
+    if (TP.isEmpty(results)) {
+        //  We do not process barename XPointers any further - just return the
+        //  barename.
+        if (TP.regex.BARENAME.test('#' + pathFragment)) {
+            return TP.ac(pathFragment);
+        }
+    }
+
+    //  No fragment expression? There is no fragment.
+    if (TP.isEmpty(fragmentExpr)) {
+        return null;
+    }
+
+    //  Couldn't slice out a scheme? Try the supplied one.
+    if (TP.isEmpty(fragmentScheme)) {
+        fragmentScheme = aScheme;
+    }
+
+    //  Probably a barename
+    if (TP.isEmpty(fragmentScheme)) {
+        if (TP.regex.BARENAME.test('#' + fragmentExpr)) {
+            return TP.ac(fragmentExpr);
+        }
+    }
+
+    //  Go ahead and grab the path parts.
+    if (TP.notEmpty(fragmentExpr)) {
+        return TP.getAccessPathParts(fragmentExpr, fragmentScheme);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
 //  FILE NAME
 //  ------------------------------------------------------------------------
 
