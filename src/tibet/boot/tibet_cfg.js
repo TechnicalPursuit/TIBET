@@ -1235,7 +1235,7 @@
     TP.sys.setcfg('tds.cookie.key', 'T1B3TS3SS10N');   // change this too :)
 
     TP.sys.setcfg('tds.log.count', 5);
-    TP.sys.setcfg('tds.log.file', '~app_log/tds.log');
+    TP.sys.setcfg('tds.log.file', '~app_log/tds-{{env}}.log');
     TP.sys.setcfg('tds.log.format', 'dev');
     TP.sys.setcfg('tds.log.level', 'info');
     TP.sys.setcfg('tds.log.routes', false);

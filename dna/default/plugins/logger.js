@@ -41,9 +41,15 @@
             logcolor = true;
         }
         logcount = TDS.cfg('tds.log.count') || 5;
-        logfile = TDS.expandPath(TDS.cfg('tds.log.file')) || './log/tds.log';
         logformat = TDS.cfg('tds.log.format') || 'dev';
         logsize = TDS.cfg('tds.log.size') || 5242880;
+
+        //  Log file names can include the environment if desired.
+        logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
+            './log/tds-{{env}}.log';
+        if (/{{env}}/.test(logfile)) {
+            logfile = logfile.replace(/{{env}}/g, options.env);
+        }
 
         logger = new winston.Logger({
             transports: [

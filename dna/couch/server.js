@@ -102,7 +102,7 @@
 
     //  Shared options which allow modules to essentially share values like the
     //  logger, authentication handler, etc.
-    options = {app: app, argv: argv};
+    options = {app: app, argv: argv, env: env};
 
     require('./plugins/body-parser')(options);
 
