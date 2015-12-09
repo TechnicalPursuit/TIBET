@@ -45,10 +45,12 @@
         logsize = TDS.cfg('tds.log.size') || 5242880;
 
         //  Log file names can include the environment if desired.
+        //  NOTE the escaping here is due to handlebars processing during
+        //  the `tibet clone` command. They disappear in the final output.
         logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
-            './log/tds-{{env}}.log';
-        if (/{{env}}/.test(logfile)) {
-            logfile = logfile.replace(/{{env}}/g, options.env);
+            './log/tds-\{{env}}.log';
+        if (/\{{env}}/.test(logfile)) {
+            logfile = logfile.replace(/\{{env}}/g, options.env);
         }
 
         logger = new winston.Logger({
