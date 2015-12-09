@@ -482,7 +482,22 @@ function() {
             //  Signal actual start. The default handler on Application will
             //  invoke the start() method in response to this signal.
             TP.signal('TP.sys', 'AppStart');
+        } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
+
+            //  No hook file in the boot screen so we initialize manually.
+            bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+            if (TP.boot.$isValid(bootframe)) {
+                TP.boot.initializeCanvas(
+                    bootframe.getContentWindow().getNativeWindow());
+            }
+
+            //  Prep the UI for full console mode.
+            if (TP.isValid(bootframe)) {
+                bootframe.getContentDocument().getBody().addClass(
+                    'full_console');
+            }
         }
+
     });
 
     request.atPut(TP.ONFAIL, function(req) {
@@ -509,24 +524,12 @@ function() {
 
     if (!inPhantom && !TP.sys.hasFeature('sherpa') && hasBootToggle) {
 
-        //  No hook file in the boot screen so we initialize manually.
-        bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
-        if (TP.boot.$isValid(bootframe)) {
-            TP.boot.initializeCanvas(
-                bootframe.getContentWindow().getNativeWindow());
-        }
-
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.
         toggleKey = TP.sys.cfg('boot.toggle_key');
 
         if (!toggleKey.startsWith('TP.sig.')) {
             toggleKey = 'TP.sig.' + toggleKey;
-        }
-
-        //  Prep the UI for full console mode.
-        if (TP.isValid(bootframe)) {
-            bootframe.getContentDocument().getBody().addClass('full_console');
         }
 
         /* eslint-disable no-wrap-func,no-extra-parens */
