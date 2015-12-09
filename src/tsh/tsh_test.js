@@ -100,6 +100,7 @@ function(aRequest) {
     karma = TP.ifInvalid(
             TP.extern.karma, {
                 info: TP.NOOP,
+                error: TP.NOOP,
                 results: TP.NOOP,
                 complete: TP.NOOP
             });
