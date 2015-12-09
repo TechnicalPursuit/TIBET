@@ -2695,7 +2695,6 @@ TP.sig.KeyException.defineSubtype('DuplicateKey');
 
 TP.sig.Signal.defineSubtype('InvocationSignal');
 
-TP.sig.InvocationSignal.defineSubtype('InvokeNext');
 TP.sig.InvocationSignal.defineSubtype('InvokeComplete');
 
 TP.sig.ERROR.defineSubtype('InvokeFailed');

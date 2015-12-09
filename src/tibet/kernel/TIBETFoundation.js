@@ -8804,10 +8804,11 @@ function(aThis, anArgArray, whenError, stopOnError) {
      * @method invokeAsync
      * @summary Runs the functions contained in the receiver asynchronously
      *     using the argument list provided. An easy way to run a list of
-     *     functions as if they were a series of synchronous operations when
-     *     they need to run asynchronously (usually so they can flush output to
-     *     the screen). The array will signal InvokeComplete when all items have
+     *     functions so they can provide rendering output between each
+     *     item. The array will signal InvokeComplete when all items have
      *     been processed. Results/errors can be found in the signal.
+     *     NOTE this is _not_ using Promises and the functions in the list
+     *     should be synchronous under normal circumstances.
      * @param {Object} aThis An object to use as the this reference for the
      *     apply call.
      * @param {arguments} anArgArray An array or arguments object containing the
@@ -8845,7 +8846,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
                                 TP.ec(e, 'Invocation failed'));
                         }
                     } finally {
-                        arr.signal('TP.sig.InvokeNext');
+                        runner();
                     }
                 };
             });
@@ -8865,7 +8866,6 @@ function(aThis, anArgArray, whenError, stopOnError) {
         }
     };
 
-    runner.observe(arr, 'TP.sig.InvokeNext');
     runner();
 
     return;
