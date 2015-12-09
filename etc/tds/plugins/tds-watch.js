@@ -186,6 +186,13 @@
                 pattern = /\.git/;
             }
 
+            //  TODO: let URI parameters override the watch root.
+            //  Expand out the path we'll be watching.
+            root = path.resolve(TDS.expandPath(
+                TDS.getcfg('tds.watch.root')));
+
+            logger.debug('TDS FileWatch plugin observing: ' + root);
+
             watcher = chokidar.watch(root, {
                 ignored: pattern,
                 cwd: root,
@@ -226,11 +233,6 @@
             }
 
             req.socket.setTimeout(Infinity);
-
-            //  TODO: let URI parameters override the watch root.
-            //  Expand out the path we'll be watching.
-            root = path.resolve(TDS.expandPath(
-                TDS.getcfg('tds.watch.root')));
 
             //  Write out the headers and hold on to the event writer
             //  returned by that method. We'll invoke that function from

@@ -797,6 +797,8 @@
                 pattern = /\.git|\.svn/;
             }
 
+            logger.debug('TDS CouchDB plugin observing: ' + root);
+
             //  Configure a watcher for our root, including any ignore
             //  patterns etc.
             watcher = chokidar.watch(root, {
