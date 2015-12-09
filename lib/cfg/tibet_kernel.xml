@@ -243,7 +243,8 @@
     <!--    KERNEL STAGE 6, FINALIZATION -->
     <script src="TIBETFinalization.js"/>
 
-    <script src="~lib_dat/uri_map.js"/>
+    <script src="~lib_dat/TP.core.URI.default_urimap.js"/>
+    <script src="~lib_dat/TP.core.UIElementNode.default_keymap.js"/>
 
 </config>
 

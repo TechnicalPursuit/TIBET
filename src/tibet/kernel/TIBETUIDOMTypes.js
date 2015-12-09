@@ -35,11 +35,8 @@ TP.core.UIElementNode.isAbstract(true);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  The URI pointings to the XML document holding the key bindings
-TP.core.UIElementNode.Type.defineAttribute('keyBindingsURI');
-
-//  The XML document holding the key bindings
-TP.core.UIElementNode.Type.defineAttribute('keyBindingsMap');
+//  The map of keys to signals for any keybindings for this type.
+TP.core.UIElementNode.Type.defineAttribute('keybindings');
 
 //  The TP.core.UIElementNode that focus is moving to, based on TIBET
 //  calculations.
@@ -264,48 +261,55 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('getKeyBindingsMap',
-function() {
+TP.core.UIElementNode.Type.defineMethod('getKeybinding',
+function(keyname) {
 
     /**
-     * @method getKeyBindingsMap
-     * @summary Returns this type's 'key bindings' map or it's supertype's
-     *     if this type does not have a map.
-     * @description This method returns a map that maps keynames (as
-     *     computed by the standard TIBET keyname computation) to signal names.
-     *     If a matching signal name is found in the map, that signal is fired
-     *     with the currently focused element as the target.
-     * @returns {XMLDocument|null} The key bindings map or null.
+     * @method getKeybinding
+     * @summary Returns a unique binding for a TIBET keyname by seaching the
+     *     receiver's type inheritance chain for a matching binding.
+     * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
+     * @return {String} A signal name if a matching binding is found.
      */
 
-    var bindingsXML;
+    var map,
+        sigName,
+        ancestor;
 
-    //  If we found the map, we're good to go.
-    if (TP.isXMLDocument(bindingsXML = this.$get('keyBindingsMap'))) {
-        return bindingsXML;
-    }
-
-    //  For speed purposes, the 'loadKeyBindings' routine will have placed a
-    //  value of TP.NOT_FOUND into the key bindings XML the first time it tried
-    //  to load the map and couldn't find it.
-    if (bindingsXML !== TP.NOT_FOUND) {
-
-        //  Try to load the bindings and, if we got a map, we're good to go.
-
-        this.loadKeyBindings();
-
-        if (TP.isXMLDocument(bindingsXML = this.$get('keyBindingsMap'))) {
-            return bindingsXML;
+    map = this.getKeybindings();
+    if (TP.isValid(map)) {
+        sigName = map.at(keyname);
+        if (TP.notEmpty(sigName)) {
+            return sigName;
         }
     }
 
-    //  If we couldn't find a map in any case, call up to our supertype. This
-    //  allows keymaps to be shared down the inheritance chain.
-    if (this !== TP.core.UIElementNode) {
-        return this.getSupertype().getKeyBindingsMap();
+    ancestor = this.getSupertype();
+    if (TP.canInvoke(ancestor, 'getKeybinding')) {
+        return ancestor.getKeybinding(keyname);
     }
 
-    return null;
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('getKeybindings',
+function() {
+
+    /**
+     * @method getKeybindings
+     * @summary Returns the receiving type's unique keybinding map. This is a
+     *     hash containing the specific bindings made for this particular type.
+     *     Note that you cannot use this map to see all available mappings since
+     *     it does not attempt to capture data from supertype maps. Use
+     *     canHandleKey and/or getKeybinding to check for specific signal
+     *     mappings for a key since those methods will iterate up through the
+     *     supertype maps in an attempt to find a viable map entry.
+     * @returns {TP.core.Hash|null} The key bindings map or null.
+     */
+
+    return this.$get('keybindings');
 });
 
 //  ------------------------------------------------------------------------
@@ -507,17 +511,10 @@ function(aTargetElem, anEvent) {
      */
 
     var evtTargetTPElem,
-
         keyname,
-
         activateSignal,
-
         bindingsType,
-        bindingsMap,
-        bindingEntry,
-
         sigName,
-
         focusedTPElem;
 
     if (!TP.isElement(aTargetElem)) {
@@ -560,36 +557,27 @@ function(aTargetElem, anEvent) {
         //  from the target TP.core.Element.
         if (TP.isType(bindingsType = evtTargetTPElem.getType())) {
 
-            //  Grab the bindings type bindings map and try to see if there is
-            //  an entry for the particular keyname
-            bindingsMap = bindingsType.getKeyBindingsMap();
+            //  Query for a signal name via the getKeybinding method. This call
+            //  will look up through the supertype chain for the first match.
+            sigName = bindingsType.getKeybinding(keyname);
+            if (TP.isEmpty(sigName)) {
+                return this;
+            }
 
-            if (TP.isXMLDocument(bindingsMap)) {
-                bindingEntry = bindingsMap.querySelector(
-                                        '*[id="' + keyname + '"]');
-
-                //  If there's an entry for this key binding, then try to get
-                //  the signal name it has.
-                if (TP.isElement(bindingEntry)) {
-
-                    sigName = TP.elementGetAttribute(bindingEntry, 'signal');
-
-                    //  If the signal name is a real TIBET type, then go ahead
-                    //  and signal using the name, using the currently focused
-                    //  TP.core.Element as the 'target' of this signal.
-                    if (TP.isType(TP.sys.require(sigName))) {
-                        focusedTPElem = evtTargetTPElem.getFocusedElement(true);
-                        focusedTPElem.signal(sigName);
-                    } else {
-                        //  Otherwise, it should just be sent as a keyboard
-                        //  event. We found a map entry for it, but there was no
-                        //  real type.
-                        evtTargetTPElem.signal(sigName,
-                                                null,
-                                                TP.DOM_FIRING,
-                                                'TP.sig.' + keyname);
-                    }
-                }
+            //  If the signal name is a real TIBET type, then go ahead
+            //  and signal using the name, using the currently focused
+            //  TP.core.Element as the 'target' of this signal.
+            if (TP.isType(TP.sys.require(sigName))) {
+                focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                focusedTPElem.signal(sigName);
+            } else {
+                //  Otherwise, it should just be sent as a keyboard
+                //  event. We found a map entry for it, but there was no
+                //  real type.
+                evtTargetTPElem.signal(sigName,
+                                        null,
+                                        TP.DOM_FIRING,
+                                        'TP.sig.' + keyname);
             }
         }
     }
@@ -932,42 +920,30 @@ function(aTargetElem, nodesRemoved) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('loadKeyBindings',
-function() {
+TP.core.UIElementNode.Type.defineMethod('registerKeybinding',
+function(keyname, signal) {
 
     /**
-     * @method loadKeyBindings
-     * @summary Loads the XML keyboard bindings for this type.
-     * @exception TP.sig.InvalidKeymap When the XML key bindings file can't be
-     *     loaded.
-     * @returns {TP.core.UIElementNode} The receiver.
+     * @method registerKeybinding
+     * @summary Registers a unique binding to a TIBET keyname. The binding is
+     *     essentially a signal name to be fired when the matching key or
+     *     sequence is triggered.
+     * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
+     * @param {String|TP.sig.Signal} signal The name of the signal to be fired.
      */
 
-    var url,
-        resp,
-        xml;
+    var map,
+        name;
 
-    url = this.getResourceURI('keybindings', TP.ietf.Mime.XML);
-    if (TP.notValid(url)) {
-        // Mark the type slot so we don't try again. The load failed.
-        this.set('keyBindingsMap', TP.NOT_FOUND);
-        return this;
+    name = signal.getSignalName();
+
+    map = this.getKeybindings();
+    if (TP.notValid(map)) {
+        map = TP.hc();
+        this.$set('keybindings', map, false);
     }
 
-    //  NB: We assume 'async' of false here.
-    resp = url.getNativeNode(TP.hc('async', false));
-    if (TP.notValid(xml = resp.get('result'))) {
-
-        // Mark the type slot so we don't try again. The load failed.
-        this.set('keyBindingsMap', TP.NOT_FOUND);
-
-        return this.raise('TP.sig.InvalidKeymap');
-    }
-
-    this.set('keyBindingsURI', url);
-
-    //  cache the XML for speed in other lookups
-    this.set('keyBindingsMap', xml);
+    map.atPut(keyname, name);
 
     return this;
 });
@@ -1180,22 +1156,25 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('canHandleKey',
-function(anEvent) {
+function(anEventOrKeyname) {
 
     /**
      * @method canHandleKey
      * @summary Whether or not the receiver can be handle the key that
      *     generated the supplied event.
-     * @param {Event} anEvent The native event containing the key information.
+     * @param {Event|String} anEventOrKeyname The native event containing the
+     *     key information or an actual key name.
      * @returns {Boolean} Whether or not the receiver can handle the key.
      */
 
     var keyname,
+        bindingsType;
 
-        bindingsType,
-        bindingsMap;
-
-    keyname = TP.eventGetDOMSignalName(anEvent);
+    if (TP.isString(anEventOrKeyname)) {
+        keyname = anEventOrKeyname;
+    } else {
+        keyname = TP.eventGetDOMSignalName(anEventOrKeyname);
+    }
 
     switch (keyname) {
 
@@ -1207,23 +1186,13 @@ function(anEvent) {
             return true;
 
         default:
-            //  Look in the external keybindings map. If there's an entry there,
+            //  Look in the keybindings map. If there's an entry there,
             //  then we handle the key.
 
             //  We compute the 'bindings' type (where we might find key
             //  bindings) from the receiver.
             if (TP.isType(bindingsType = this.getType())) {
-
-                //  Grab the bindings type bindings map and try to see if there
-                //  is an entry for the particular keyname
-                bindingsMap = bindingsType.getKeyBindingsMap();
-
-                //  If there's an entry for this key binding, then we handle
-                //  this key in some form.
-                if (TP.isXMLDocument(bindingsMap)) {
-                    return TP.isElement(
-                        bindingsMap.querySelector('*[id="' + keyname + '"]'));
-                }
+                return TP.notEmpty(bindingsType.getKeybinding(keyname));
             }
     }
 

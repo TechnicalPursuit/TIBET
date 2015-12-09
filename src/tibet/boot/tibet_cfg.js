@@ -1112,18 +1112,6 @@
     //  associate permission "keys" with TP.core.User instances.
     TP.sys.setcfg('path.keyring_file', '~lib_dat/keyrings.xml');
 
-    //  where is the default location for the localization string file? this
-    //  path should be an absolute path using either a / or ~ prefix to
-    //  reference libroot or approot respectively. this can be set in the
-    //  boot script/tibet.xml files using the 'strings' parameter.
-    TP.sys.setcfg('path.string_file', '~lib_dat/strings.tmx');
-
-    //  where is the default location for the uri mappings? this path should be
-    //  an absolute path using either a / or ~ prefix to reference libroot or
-    //  approot respectively. this can be set in the boot script/tibet.xml files
-    //  using the 'uris' parameter. A sample is in ~lib_dat/uris.xml.
-    TP.sys.setcfg('path.uri_file', '~lib_dat/uris.xml');
-
     //  where is the default vCard file containing application vcards? this file
     //  is used (by default) as a simple way to create a small set of vcards
     //  that can be used across users. The vcard information relates users to
