@@ -8650,6 +8650,8 @@ function(aPath, forceNative) {
 
 TP.core.JSONContent.defineSubtype('w3.DTDInfo');
 
+TP.w3.DTDInfo.Type.defineAttribute('schemaInfo');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -8662,35 +8664,12 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var dtdInfoURI,
-        dtdInfo;
+    var dtdInfo;
 
-    //  Set this up so that it observes the 'AppWillStart' signal and tries to
-    //  load 2000ms after it gets that signal. This avoids a large pause at
-    //  app startup.
-    this.observe(
-        TP.sys,
-        'TP.sig.AppWillStart',
-        function(aSignal) {
-
-            var resp;
-
-            this.ignore(TP.sys, aSignal.getSignalName());
-
-            (function() {
-
-                //  Load the DTD information for HTML 4.01 Strict
-                dtdInfoURI = TP.uc('~lib_schema/html401_strict.json');
-                resp = dtdInfoURI.getResource(
-                            TP.hc('async', false, 'contentHandler', this));
-                dtdInfo = resp.get('result');
-
-                if (TP.isValid(dtdInfo)) {
-                    TP.w3.DocType.HTML_401_STRICT.set('dtdInfo', dtdInfo);
-                }
-
-            }.bind(this)).fork(2000);
-        }.bind(this));
+    dtdInfo = this.$get('schemaInfo');
+    if (TP.isValid(dtdInfo)) {
+        TP.w3.DocType.HTML_401_STRICT.set('dtdInfo', this.construct(dtdInfo));
+    }
 
     return;
 });

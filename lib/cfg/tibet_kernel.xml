@@ -245,6 +245,7 @@
 
     <script src="~lib_dat/TP.core.URI.default_urimap.js"/>
     <script src="~lib_dat/TP.core.UIElementNode.default_keymap.js"/>
+    <script src="~lib_schema/html401_strict.js"/>
 
 </config>
 
