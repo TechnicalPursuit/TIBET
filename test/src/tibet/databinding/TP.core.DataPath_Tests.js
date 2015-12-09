@@ -1980,6 +1980,817 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts TIBET Paths',
+function() {
+
+    var path,
+        parts;
+
+    this.it('Simple TIBET path', function(test, options) {
+        path = TP.apc('foo');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo'));
+
+        path = TP.apc('1');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('1'));
+
+        path = TP.apc('.');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.'));
+    });
+
+    this.it('Complex TIBET path', function(test, options) {
+        path = TP.apc('foo.hi');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'hi'));
+
+        path = TP.apc('foo.hi.boo');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'hi', 'boo'));
+
+        path = TP.apc('2.1');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('2', '1'));
+
+        path = TP.apc('2.1.2');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('2', '1', '2'));
+
+        path = TP.apc('foo.hi[boo,moo]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'hi[boo,moo]'));
+
+        path = TP.apc('foo.hi[boo,moo].gar');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'hi[boo,moo]', 'gar'));
+
+        path = TP.apc('2[1,2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('2[1,2]'));
+
+        path = TP.apc('[0:2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[0:2]'));
+
+        path = TP.apc('[:2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[:2]'));
+
+        path = TP.apc('[2:]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[2:]'));
+
+        path = TP.apc('[:-2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[:-2]'));
+
+        path = TP.apc('[2:-1]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[2:-1]'));
+
+        path = TP.apc('[1:6:2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[1:6:2]'));
+
+        path = TP.apc('[6:1:-2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[6:1:-2]'));
+
+        path = TP.apc('foo.1');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '1'));
+
+        path = TP.apc('[0,2].fname');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('[0,2]', 'fname'));
+
+        path = TP.apc('0.aliases[1:2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('0', 'aliases[1:2]'));
+
+        path = TP.apc('0.aliases[:-1]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('0', 'aliases[:-1]'));
+
+        path = TP.apc('3.1[1:4]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('3', '1[1:4]'));
+    });
+})
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts Simple XML Paths',
+function() {
+
+    var path,
+        parts;
+
+    this.it('Simple XML path', function(test, options) {
+        path = TP.apc('@foo');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('@foo'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts XPath Paths',
+function() {
+
+    var path,
+        parts;
+
+    this.it('XPath path', function(test, options) {
+        path = TP.apc('/author');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('author'));
+
+        path = TP.apc('./author');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.', 'author'));
+
+        path = TP.apc('/author/lname');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('author', 'lname'));
+
+        path = TP.apc('/author/lname|/author/fname');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('author', 'lname', 'author', 'fname'));
+
+        path = TP.apc('/author/lname/@foo');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('author', 'lname', '@foo'));
+
+        path = TP.apc('/author/lname/@foo|/author/fname/@baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('author', 'lname', '@foo', 'author', 'fname', '@baz'));
+
+        path = TP.apc('//*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('', '*'));
+
+        path = TP.apc('//author');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('', 'author'));
+
+        path = TP.apc('.//author');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.', '', 'author'));
+
+        path = TP.apc('book[/bookstore/@specialty=@style]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('book[/bookstore/@specialty=@style]'));
+
+        path = TP.apc('author/*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('author', '*'));
+
+        path = TP.apc('author/first-name');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('author', 'first-name'));
+
+        path = TP.apc('bookstore//title');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('bookstore', '', 'title'));
+
+        path = TP.apc('bookstore/*/title');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('bookstore', '*', 'title'));
+
+        path = TP.apc('*/*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('*', '*'));
+
+        path = TP.apc('/bookstore//book/excerpt//author');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('bookstore', '', 'book', 'excerpt', '', 'author'));
+
+        path = TP.apc('./*[@foo]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.', '*[@foo]'));
+
+        path = TP.apc('./@foo');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.', '@foo'));
+
+        path = TP.apc('bookstore/@foo');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('bookstore', '@foo'));
+
+        path = TP.apc('bookstore/@foo/bar');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('bookstore', '@foo', 'bar'));
+
+        path = TP.apc('./bookstore[name][2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.', 'bookstore[name][2]'));
+
+        path = TP.apc('@*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('@*'));
+
+        path = TP.apc('@foo:*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('@foo:*'));
+
+        path = TP.apc('*/bar[@foo]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('*', 'bar[@foo]'));
+
+        path = TP.apc('/goo/bar[@foo]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('goo', 'bar[@foo]'));
+
+        path = TP.apc('/goo/bar[@foo="baz"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('goo', 'bar[@foo="baz"]'));
+
+        path = TP.apc('//foo[text()=../../following-sibling::*//foo/text()]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('', 'foo[text()=../../following-sibling::*//foo/text()]'));
+
+        path = TP.apc('./foo:*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.', 'foo:*'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts CSS Paths',
+function() {
+
+    var path,
+        parts;
+
+    this.it('CSSPath path', function(test, options) {
+        path = TP.apc('*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('*'));
+
+        /*
+        Won't work because of 'barename path' check (although it produces the
+        same result)
+
+        path = TP.apc('#id');
+        test.assert.isKindOf(path, TP.core.CSSPath);
+        */
+
+        /*
+        Won't work because of 'TIBET path' check
+
+        path = TP.apc('mytag');
+        test.assert.isKindOf(path, TP.core.CSSPath);
+        */
+
+        path = TP.apc('.myclass');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.myclass'));
+
+        /*
+        Won't work because of 'barename path' check (although it produces the
+        same result)
+
+        path = TP.apc('#id.myclass');
+        test.assert.isKindOf(path, TP.core.CSSPath);
+        */
+
+        /*
+        Won't work because of 'TIBET path' check
+
+        path = TP.apc('mytag.myclass');
+        test.assert.isKindOf(path, TP.core.CSSPath);
+        */
+
+        path = TP.apc('mytag mytag');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag', 'mytag'));
+
+        path = TP.apc('myns|*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('myns|*'));
+
+        path = TP.apc('myns|mytag');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('myns|mytag'));
+
+        path = TP.apc('.myclass .myclass');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.myclass', '.myclass'));
+
+        path = TP.apc('.myclass.myclass');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('.myclass.myclass'));
+
+        path = TP.apc('mytag:visited');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag:visited'));
+
+        path = TP.apc('mytag + mysibling');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag', 'mysibling'));
+
+        path = TP.apc('myparent > mytag');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('myparent', 'mytag'));
+
+        path = TP.apc('mytag ~ mysibling');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag', 'mysibling'));
+
+        path = TP.apc('mytag[myattr]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr]'));
+
+        path = TP.apc('mytag[myattr="myval"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr="myval"]'));
+
+        path = TP.apc('mytag[myattr*="myval"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr*="myval"]'));
+
+        path = TP.apc('mytag[myattr^="myval"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr^="myval"]'));
+
+        path = TP.apc('mytag[myattr$="myval"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr$="myval"]'));
+
+        path = TP.apc('mytag[myattr~="myval"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr~="myval"]'));
+
+        path = TP.apc('mytag[myattr|="myval"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr|="myval"]'));
+
+        path = TP.apc('mytag:not([myattr])');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag:not([myattr])'));
+
+        path = TP.apc('mytag[myattr="myval"][myattr^="myval"]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('mytag[myattr="myval"][myattr^="myval"]'));
+
+        path = TP.apc('myparent > *, #myid');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('myparent', '*', '#myid'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts JSON Paths',
+function() {
+
+    var path,
+        parts;
+
+    this.it('JSON path', function(test, options) {
+
+        path = TP.apc('$.store.book[*].author');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', 'store', 'book[*]', 'author'));
+
+        path = TP.apc('$..author');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'author'));
+
+        path = TP.apc('$.store.*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', 'store', '*'));
+
+        path = TP.apc('$.store..price');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', 'store', '', 'price'));
+
+        path = TP.apc('$.store..price.^');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', 'store', '', 'price', '^'));
+
+        path = TP.apc('$..book[2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[2]'));
+
+        path = TP.apc('$..book[(@.length-1)]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[(@.length-1)]'));
+
+        path = TP.apc('$..book[:-1]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[:-1]'));
+
+        path = TP.apc('$..book[:2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[:2]'));
+
+        path = TP.apc('$..book[1:2]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[1:2]'));
+
+        path = TP.apc('$..book[-2:]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[-2:]'));
+
+        path = TP.apc('$..book[2:]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[2:]'));
+
+        path = TP.apc('$..book[?(@.isbn)]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[?(@.isbn)]'));
+
+        path = TP.apc('$..book[?(@.price < 10)]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[?(@.price < 10)]'));
+
+        path = TP.apc('$..book[?(@.isbn && @.price < 10)]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[?(@.isbn && @.price < 10)]'));
+
+        path = TP.apc('$..book[?(@.isbn || @.price < 10)]');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', 'book[?(@.isbn || @.price < 10)]'));
+
+        path = TP.apc('$..*');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', '', '*'));
+
+        path = TP.apc('$.');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$'));
+
+        path = TP.apc('$.store');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', 'store'));
+
+        path = TP.apc('$.children[0].^');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', 'children[0]', '^'));
+
+        path = TP.apc('$.store.book[*].reviews[?(@.nyt == @.cst)].^.title');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('$', 'store', 'book[*]', 'reviews[?(@.nyt == @.cst)]', '^', 'title'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.Type.describe('TP.core.AccessPath getPathParts composite Paths',
+function() {
+
+    var path,
+        parts;
+
+    this.it('Composite path with TIBET Simple Paths', function(test, options) {
+        path = TP.apc('foo.(bar).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'bar', 'baz'));
+
+        path = TP.apc('(bar).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('bar', 'baz'));
+
+        path = TP.apc('foo.(bar)');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'bar'));
+    });
+
+    this.it('Composite path with TIBET Simple paths and embedded TIBET Complex Paths', function(test, options) {
+        path = TP.apc('foo.(foo.hi).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'foo', 'hi', 'baz'));
+
+        path = TP.apc('foo.(2.1).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '2', '1', 'baz'));
+
+        path = TP.apc('foo.(foo.hi[boo,moo]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'foo', 'hi[boo,moo]', 'baz'));
+
+        path = TP.apc('foo.(foo.hi[boo,moo].gar).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'foo', 'hi[boo,moo]', 'gar', 'baz'));
+
+        path = TP.apc('foo.(2[1,2]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '2[1,2]', 'baz'));
+
+        path = TP.apc('foo.([0:2]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '[0:2]', 'baz'));
+
+        path = TP.apc('foo.([0:]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '[0:]', 'baz'));
+
+        path = TP.apc('foo.([:2]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '[:2]', 'baz'));
+
+        path = TP.apc('foo.([-1:]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '[-1:]', 'baz'));
+
+        path = TP.apc('foo.([:-1]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '[:-1]', 'baz'));
+
+        path = TP.apc('foo.([0:2].fname).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '[0:2]', 'fname', 'baz'));
+
+        path = TP.apc('foo.(0.aliases[:-1]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '0', 'aliases[:-1]', 'baz'));
+    });
+
+    this.it('Composite path with TIBET Simple paths and embedded XPath Paths', function(test, options) {
+        path = TP.apc('foo.(/author).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'author', 'baz'));
+
+        path = TP.apc('foo.(./author).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.', 'author', 'baz'));
+
+        path = TP.apc('foo.(/author/lname).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'author', 'lname', 'baz'));
+
+        path = TP.apc('foo.(/author/lname|author/fname).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'author', 'lname', 'author', 'fname', 'baz'));
+
+        path = TP.apc('foo.(/author/lname@foo).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'author', 'lname', '@foo', 'baz'));
+
+        path = TP.apc('foo.(/author/lname@foo|/author/fname@foo).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'author', 'lname', '@foo', 'author', 'fname', '@foo', 'baz'));
+
+        path = TP.apc('foo.(//*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '', '*', 'baz'));
+
+        path = TP.apc('foo.(//author).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '', 'author', 'baz'));
+
+        path = TP.apc('foo.(.//author).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.', '', 'author', 'baz'));
+
+        path = TP.apc('foo.(book[/bookstore/@specialty=@style]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'book[/bookstore/@specialty=@style]', 'baz'));
+
+        path = TP.apc('foo.(author/*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'author', '*', 'baz'));
+
+        path = TP.apc('foo.(author/first-name).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'author', 'first-name', 'baz'));
+
+        path = TP.apc('foo.(bookstore//title).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'bookstore', '', 'title', 'baz'));
+
+        path = TP.apc('foo.(bookstore/*/title).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'bookstore', '*', 'title', 'baz'));
+
+        path = TP.apc('foo.(*/*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '*', '*', 'baz'));
+
+        path = TP.apc('foo.(/bookstore//book/excerpt//author).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'bookstore', '', 'book', 'excerpt', '', 'author', 'baz'));
+
+        path = TP.apc('foo.(./*[@foo]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.', '*[@foo]', 'baz'));
+
+        path = TP.apc('foo.(./@foo).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.', '@foo', 'baz'));
+
+        path = TP.apc('foo.(bookstore/@foo).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'bookstore', '@foo', 'baz'));
+
+        path = TP.apc('foo.(bookstore/@foo/bar).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'bookstore', '@foo', 'bar', 'baz'));
+
+        path = TP.apc('foo.(./bookstore[name][2]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.', 'bookstore[name][2]', 'baz'));
+
+        path = TP.apc('foo.(@*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '@*', 'baz'));
+
+        path = TP.apc('foo.(@foo:*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '@foo:*', 'baz'));
+
+        path = TP.apc('foo.(*/bar[@foo]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '*', 'bar[@foo]', 'baz'));
+
+        path = TP.apc('foo.(/goo/bar[@foo]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'goo', 'bar[@foo]', 'baz'));
+
+        path = TP.apc('foo.(/goo/bar[@foo="baz"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'goo', 'bar[@foo="baz"]', 'baz'));
+
+        path = TP.apc('foo.(//foo[text()=../../following-sibling::*//foo/text()]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '', 'foo[text()=../../following-sibling::*//foo/text()]', 'baz'));
+
+        path = TP.apc('foo.(./foo:*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.', 'foo:*', 'baz'));
+    });
+
+    this.it('Composite path with TIBET Simple paths and embedded CSS Paths', function(test, options) {
+        path = TP.apc('foo.(.myclass).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.myclass', 'baz'));
+
+        path = TP.apc('foo.(mytag mytag).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag', 'mytag', 'baz'));
+
+        path = TP.apc('foo.(myns|mytag).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'myns|mytag', 'baz'));
+
+        path = TP.apc('foo.(.myclass .myclass).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.myclass', '.myclass', 'baz'));
+
+        path = TP.apc('foo.(.myclass.myclass).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '.myclass.myclass', 'baz'));
+
+        path = TP.apc('foo.(mytag:visited).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag:visited', 'baz'));
+
+        path = TP.apc('foo.(mytag + mysibling).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag', 'mysibling', 'baz'));
+
+        path = TP.apc('foo.(myparent > mytag).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'myparent', 'mytag', 'baz'));
+
+        path = TP.apc('foo.(mytag ~ mysibling).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag', 'mysibling', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr]', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr="myval"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr="myval"]', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr*="myval"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr*="myval"]', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr^="myval"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr^="myval"]', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr$="myval"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr$="myval"]', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr~="myval"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr~="myval"]', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr|="myval"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr|="myval"]', 'baz'));
+
+        path = TP.apc('foo.(mytag:not([myattr])).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag:not([myattr])', 'baz'));
+
+        path = TP.apc('foo.(mytag[myattr="myval"][myattr^="myval"]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'mytag[myattr="myval"][myattr^="myval"]', 'baz'));
+
+        path = TP.apc('foo.(myparent > *, #myid).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', 'myparent', '*', '#myid', 'baz'));
+    });
+
+    this.it('Composite path with TIBET Simple paths and embedded JSON Paths', function(test, options) {
+        path = TP.apc('foo.($.store.book[*].author).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'store', 'book[*]', 'author', 'baz'));
+
+        path = TP.apc('foo.($..author).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'author', 'baz'));
+
+        path = TP.apc('foo.($.store.*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'store', '*', 'baz'));
+
+        path = TP.apc('foo.($.store..price).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'store', '', 'price', 'baz'));
+
+        path = TP.apc('foo.($.store..price.^).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'store', '', 'price', '^', 'baz'));
+
+        path = TP.apc('foo.($..book[2]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[2]', 'baz'));
+
+        path = TP.apc('foo.($..book[(@.length-1)]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[(@.length-1)]', 'baz'));
+
+        path = TP.apc('foo.($..book[:-1]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[:-1]', 'baz'));
+
+        path = TP.apc('foo.($..book[:2]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[:2]', 'baz'));
+
+        path = TP.apc('foo.($..book[1:2]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[1:2]', 'baz'));
+
+        path = TP.apc('foo.($..book[-2:]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[-2:]', 'baz'));
+
+        path = TP.apc('foo.($..book[2:]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[2:]', 'baz'));
+
+        path = TP.apc('foo.($..book[?(@.isbn)]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[?(@.isbn)]', 'baz'));
+
+        path = TP.apc('foo.($..book[?(@.price < 10)]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[?(@.price < 10)]', 'baz'));
+
+        path = TP.apc('foo.($..book[?(@.isbn && @.price < 10)]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[?(@.isbn && @.price < 10)]', 'baz'));
+
+        path = TP.apc('foo.($..book[?(@.isbn || @.price < 10)]).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', 'book[?(@.isbn || @.price < 10)]', 'baz'));
+
+        path = TP.apc('foo.($..*).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', '', '*', 'baz'));
+
+        path = TP.apc('foo.($).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'baz'));
+
+        path = TP.apc('foo.($.store).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'store', 'baz'));
+
+        path = TP.apc('foo.($.children[0].^).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'children[0]', '^', 'baz'));
+
+        path = TP.apc('foo.($.store.book[*].reviews[?(@.nyt == @.cst)].^.title).baz');
+        parts = path.getPathParts();
+        test.assert.isEqualTo(parts, TP.ac('foo', '$', 'store', 'book[*]', 'reviews[?(@.nyt == @.cst)]', '^', 'title', 'baz'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ComplexTIBETPath.Inst.describe('TP.core.ComplexTIBETPath Inst simple value Hash traversal',
 function() {
 

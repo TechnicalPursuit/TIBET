@@ -2163,6 +2163,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Inst.defineMethod('processFinalValue',
 function(aReturnValue, targetObj) {
 
@@ -2853,6 +2867,34 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     retVal = retVal.set(paths.last(), attributeValue, shouldSignal);
 
     return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompositePath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    var paths,
+
+        parts,
+        i;
+
+    //  Iterate over this object's subpaths and concatenate together the Arrays
+    //  produced by getting the path parts of each subpath.
+    paths = this.get('paths');
+
+    parts = paths.at(0).getPathParts();
+    for (i = 1; i < paths.getSize(); i++) {
+        parts = parts.concat(paths.at(i).getPathParts());
+    }
+
+    return parts;
 });
 
 //  ========================================================================
@@ -3792,6 +3834,20 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'json');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONPath.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
@@ -4601,6 +4657,20 @@ function() {
 
     //  For simple paths, our whole path is the first simple path.
     return this.get('srcPath');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SimpleTIBETPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'tibet');
 });
 
 //  ------------------------------------------------------------------------
@@ -7027,6 +7097,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XMLPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'xpointer');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLPath.Inst.defineMethod('$updateOpsBecomeDeleteInsertOps',
 function(aNode, prevNode) {
 
@@ -7254,6 +7338,20 @@ function() {
      */
 
     return TP.CSS_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CSSPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'css');
 });
 
 //  ========================================================================
