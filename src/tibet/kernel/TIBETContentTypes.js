@@ -2710,13 +2710,13 @@ function(aPath, config) {
 
     this.callNextMethod('value', config);
 
-    //  Split along '.(' or ').' and then convert the results by stripping off
-    //  any extraneous '(' or ')' (which will sometimes occur on the 'start' or
-    //  'end' values).
-    pathStrs = aPath.split(/(\.\(|\)\.)/).convert(
-                    function(item) {
-                        return item.strip(/^\(/).strip(/\)$/);
-                    });
+    //  Split along '.(' or ').'
+    pathStrs = aPath.split(/(\.\(|\)\.)/);
+
+    //  Strip any leading parenthesis from the first item and any trailing
+    //  parenthesis from the last item.
+    pathStrs.atPut(0, pathStrs.first().strip(/^\(/));
+    pathStrs.atPut(pathStrs.getSize() - 1, pathStrs.last().strip(/\)$/));
 
     //  Create the set of subpaths that we will use by iterating over the path
     //  strings that we extracted. Note that the 'odd' positions will contain
