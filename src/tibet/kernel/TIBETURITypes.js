@@ -137,7 +137,15 @@ function(a, b) {
     } else if (aMatch.length < bMatch.length) {
         return 1;
     } else {
-        //  Second criteria is length of the full match string.
+        //  Second criteria is length of the full match string...but we exempt
+        //  the '/.*/' pattern from this consideration since it's a universal
+        //  match that should only trigger as a last resort.
+        if (a.last().at('pattern').toString() === '/.*/') {
+            return 1;
+        } else if (b.last().at('pattern').toString() === '/.*/') {
+            return -1;
+        }
+
         if (aMatch.first().length > bMatch.first().length) {
             return -1;
         } else if (aMatch.first().length < bMatch.first().length) {
@@ -8516,7 +8524,15 @@ function(a, b) {
     } else if (aMatch.length < bMatch.length) {
         return 1;
     } else {
-        //  Second criteria is length of the full match string.
+        //  Second criteria is length of the full match string...but we exempt
+        //  the '/.*/' pattern from this consideration since it's a universal
+        //  match that should only trigger as a last resort.
+        if (a.last().at('pattern').toString() === '/.*/') {
+            return 1;
+        } else if (b.last().at('pattern').toString() === '/.*/') {
+            return -1;
+        }
+
         if (aMatch.first().length > bMatch.first().length) {
             return -1;
         } else if (aMatch.first().length < bMatch.first().length) {
