@@ -512,17 +512,13 @@ function(aPath) {
 
             //  NOTE we resolve these variables from the config data
             if (TP.isString(value = TP.sys.cfg('path.' + variable))) {
-                //  one issue here is that we may have a variable value
-                //  that starts with or ends with a '/' since they're
-                //  parts of paths, but we don't want to alter that
-                //  aspect of the current path so we want to trim them
-                //  off if found
-                if (value.indexOf('/') === 0) {
-                    value = value.slice(1);
-                }
-
-                if (value.last() === '/') {
-                    value = value.slice(0, -1);
+                //  If we're replacing something of the form ~variable/stuff we
+                //  don't want to get something of the form value//stuff back so
+                //  we trim off any trailing '/' on the value.
+                if (path !== '~' + variable) {
+                    if (value.charAt(value.length - 1) === '/') {
+                        value = value.slice(0, -1);
+                    }
                 }
 
                 //  patch the original path for testing
@@ -1344,11 +1340,24 @@ function(firstPath, secondPath) {
         first = first.slice(0, first.lastIndexOf('/'));
     }
 
-    //  join what's left, watching out for existing separators.
-    if (second.charAt(0) !== '/' && second.charAt(0) !== '#') {
-        val = first + '/' + second;
+    //  join the resulting chunks while paying attention to separator(s).
+    if (first.charAt(first.length - 1) === '/') {
+        if (second.charAt(0) === '/') {
+            val = first + second.slice(1);
+        } else if (second.charAt(0) === '#') {
+            val = first.slice(-1) + second;
+        } else {
+            val = first + second;
+        }
     } else {
-        val = first + second;
+        //  First does not end in '/'...
+        if (second.charAt(0) === '/') {
+            val = first + second;
+        } else if (second.charAt(0) === '#') {
+            val = first + second;
+        } else {
+            val = first + '/' + second;
+        }
     }
 
     return val;
@@ -1973,16 +1982,13 @@ function(aPath, resourceOnly) {
         variable = arr.at(1);
 
         if (TP.isString(value = TP.sys.cfg('path.' + variable))) {
-            //  one issue here is that we may have a variable value that
-            //  starts with or ends with a '/' since they're parts of paths,
-            //  but we don't want to alter that aspect of the current path
-            //  so we want to trim them off if found
-            if (value.indexOf('/') === 0) {
-                value = value.slice(1);
-            }
-
-            if (value.last() === '/') {
-                value = value.slice(0, -1);
+            //  If we're replacing something of the form ~variable/stuff we
+            //  don't want to get something of the form value//stuff back so
+            //  we trim off any trailing '/' on the value.
+            if (path !== '~' + variable) {
+                if (value.charAt(value.length - 1) === '/') {
+                    value = value.slice(0, -1);
+                }
             }
 
             path = aPath.replace('~' + variable, value);
@@ -1992,6 +1998,15 @@ function(aPath, resourceOnly) {
             }
         } else if (TP.isType(type = TP.sys.getTypeByName(variable))) {
             value = TP.objectGetSourceCollectionPath(type);
+
+            //  If we're replacing something of the form ~variable/stuff we
+            //  don't want to get something of the form value//stuff back so
+            //  we trim off any trailing '/' on the value.
+            if (path !== '~' + variable) {
+                if (value.charAt(value.length - 1) === '/') {
+                    value = value.slice(0, -1);
+                }
+            }
 
             path = aPath.replace('~' + variable, value);
             if (path !== aPath) {

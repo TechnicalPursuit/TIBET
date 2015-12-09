@@ -2174,13 +2174,13 @@ TP.boot.$uriExpandPath = function(aPath) {
             value = TP.sys.cfg('path.' + variable);
 
             if (typeof value === 'string') {
-                //  one issue here is that we may have a variable value
-                //  that starts with or ends with a '/' since they're
-                //  parts of paths, but we don't want to alter that
-                //  aspect of the current path so we want to trim them
-                //  off if found
-                if (value.indexOf('/') === 0) {
-                    value = value.slice(1);
+                //  If we're replacing something of the form ~variable/stuff we
+                //  don't want to get something of the form value//stuff back so
+                //  we trim off any trailing '/' on the value.
+                if (path !== '~' + variable) {
+                    if (value.charAt(value.length - 1) === '/') {
+                        value = value.slice(0, -1);
+                    }
                 }
 
                 //  patch the original path for testing
@@ -2195,7 +2195,7 @@ TP.boot.$uriExpandPath = function(aPath) {
         }
     }
 
-    if (path.lastIndexOf('/') === path.length - 1) {
+    if (path.charAt(path.length - 1) === '/') {
         path = path.slice(0, -1);
     }
 
@@ -2520,11 +2520,24 @@ TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
         first = first.slice(0, first.lastIndexOf('/'));
     }
 
-    //  join what's left, applying separator as needed
-    if (second.charAt(0) !== '/') {
-        val = first + '/' + second;
+    //  join the resulting chunks while paying attention to separator(s).
+    if (first.charAt(first.length - 1) === '/') {
+        if (second.charAt(0) === '/') {
+            val = first + second.slice(1);
+        } else if (second.charAt(0) === '#') {
+            val = first.slice(-1) + second;
+        } else {
+            val = first + second;
+        }
     } else {
-        val = first + second;
+        //  First does not end in '/'...
+        if (second.charAt(0) === '/') {
+            val = first + second;
+        } else if (second.charAt(0) === '#') {
+            val = first + second;
+        } else {
+            val = first + '/' + second;
+        }
     }
 
     return val;
@@ -8259,14 +8272,14 @@ TP.boot.$getAppRoot = function() {
         //  often invoked via CLI calls that augement the URI with app_root.
         params = TP.boot.$uriFragmentParameters(path);
         if (params['path.app_root']) {
-            TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
+            TP.boot.$$approot = TP.boot.$uriCollapsePath(
                 TP.boot.$uriJoinPaths(TP.boot.$$apphead,
                     params['path.app_root']));
             return TP.boot.$$approot;
         }
 
         pub = TP.sys.getcfg('boot.tibet_pub');
-        TP.boot.$$approot = '~/' + TP.boot.$uriCollapsePath(
+        TP.boot.$$approot = TP.boot.$uriCollapsePath(
             TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
         return TP.boot.$$approot;
     }
