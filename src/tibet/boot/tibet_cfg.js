@@ -545,8 +545,8 @@
     //  what is the current keyboard? only need to set if not U.S. English
     //  NOTE that this sets the _type_. A second parameter using the typename
     //  plus a .xml extension (TP.core.USAscii101Keyboard.xml for example) is
-    //  used to point to that type's keyboard mapping file (which is in ~lib_dat
-    //  by default).
+    //  used to point to that type's keyboard mapping file (which is in
+    //  ~lib_dat by default).
     TP.sys.setcfg('tibet.keyboard', null);
 
     //  what is the currently active locale (in xml:lang format)
@@ -1110,13 +1110,13 @@
     //  where is the keyring file? this file is used (by default) as the source
     //  for application keyrings used by TP.core.Role and TP.core.Unit types to
     //  associate permission "keys" with TP.core.User instances.
-    TP.sys.setcfg('path.keyring_file', '~lib_dat/keyrings.xml');
+    TP.sys.setcfg('path.keyring_file', '~app_dat/keyrings.xml');
 
     //  where is the default vCard file containing application vcards? this file
     //  is used (by default) as a simple way to create a small set of vcards
     //  that can be used across users. The vcard information relates users to
     //  roles, linking permissions assigned to those roles to a particular user.
-    TP.sys.setcfg('path.vcard_file', '~lib_dat/vcards.xml');
+    TP.sys.setcfg('path.vcard_file', '~app_dat/vcards.xml');
 
 
     //  ---
