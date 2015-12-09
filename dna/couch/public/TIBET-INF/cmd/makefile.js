@@ -145,6 +145,10 @@
             sh.rm('-rf', './build/*');
         }
 
+        if (sh.test('-d', './log')) {
+            sh.rm('-rf', './log/*');
+        }
+
         targets.clean.resolve();
     };
 
