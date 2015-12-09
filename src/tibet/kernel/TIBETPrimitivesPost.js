@@ -5044,6 +5044,213 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('getAccessPathParts',
+function(aPath, aScheme) {
+
+    /**
+     * @method getAccessPathParts
+     * @summary Returns the parts of the supplied path.
+     * @param {String} aPath The path to obtain the parts from.
+     * @param {String} [aScheme] An optional scheme that indicates the type of
+     *     the supplied path. If this is not supplied, the system attempts to
+     *     compute the scheme.
+     * @returns {Array} An Array of path parts.
+     */
+
+    var scheme,
+
+        splitter,
+        stripper,
+
+        predicateExprs,
+        path,
+
+        results;
+
+    //  Need at least a path to test.
+    if (TP.isEmpty(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidPath',
+                        'Unable to get parts of empty path.');
+    }
+
+    //  If a schema wasn't supplied, try to compute one.
+    scheme = TP.ifInvalid(aScheme, TP.getPointerScheme(aPath));
+
+    switch (scheme) {
+
+        case 'css':
+
+            splitter = /( +|\s*[+>~](?:!=)\s*|,)/;
+            stripper = /^(\s*| +|\s*[+>~]\s*|,)$/;
+
+            //  Split along separators, etc.
+            results = aPath.split(splitter);
+
+            //  Strip out anything that would be empty or separator characters.
+            results = results.filter(
+                        function(item, index) {
+                            return !stripper.test(item);
+                        });
+
+            break;
+
+        case 'tibet':
+        case 'json':
+
+            if (aPath === '.') {
+                return TP.ac('.');
+            }
+
+            //  Capture all predicate expressions to avoid processing
+            //  separators, etc. within predicates.
+            predicateExprs = TP.ac();
+            path = TP.stringTokenizeUsingDelimiters(
+                        aPath,
+                        '[',
+                        ']',
+                        predicateExprs,
+                        '__PRED__',
+                        '__PRED__');
+
+            splitter = /(\.\.|\.|\w+)/;
+            stripper = /^(\s*|\.)$/;
+
+            //  Split along separators, etc.
+            results = path.split(splitter);
+
+            //  Iterate over the results, encoding certain values in certain
+            //  ways, and putting the captured predicates back into what is now
+            //  individual parts of the path.
+            results = results.map(
+                    function(item) {
+
+                        if (item === '') {
+                            return '';
+                        }
+
+                        if (item === '..') {
+                            return '__DOUBLE_PERIOD__';
+                        }
+
+                        if (item.indexOf('__PRED__') !== TP.NOT_FOUND) {
+
+                            return TP.stringUntokenizeUsingDelimiters(
+                                    item,
+                                    '[',
+                                    ']',
+                                    predicateExprs,
+                                    '__PRED__',
+                                    '__PRED__');
+                        }
+
+                        return item;
+                    });
+
+            //  Strip out anything that would be empty or separator characters.
+            results = results.filter(
+                        function(item, index) {
+                            return !stripper.test(item);
+                        });
+
+            //  If there were any 'double period' constructs, convert them to an
+            //  empty String
+            results = results.map(
+                    function(item) {
+
+                        if (item === '__DOUBLE_PERIOD__') {
+                            return '';
+                        }
+
+                        return item;
+                    });
+
+            break;
+
+        case 'xpath1':
+        case 'xpointer':
+
+            if (aPath === '/') {
+                return TP.ac('/');
+            }
+
+            //  Capture all predicate expressions to avoid processing
+            //  separators, etc. within predicates.
+            predicateExprs = TP.ac();
+            path = TP.stringTokenizeUsingDelimiters(
+                        aPath,
+                        '[',
+                        ']',
+                        predicateExprs,
+                        '__PRED__',
+                        '__PRED__');
+
+            splitter = /(\/\/|\/|@?[A-Za-z0-9_:.-]+\*?|\||\*\w+)/;
+            stripper = /^(\s*|\/|\|)$/;
+
+            //  Split along separators, etc.
+            results = path.split(splitter);
+
+            //  Iterate over the results, encoding certain values in certain
+            //  ways, and putting the captured predicates back into what is now
+            //  individual parts of the path.
+            results = results.map(
+                    function(item) {
+
+                        if (item === '') {
+                            return '';
+                        }
+
+                        if (item === '//') {
+                            return '__DOUBLE_SLASH__';
+                        }
+
+                        if (item.indexOf('__PRED__') !== TP.NOT_FOUND) {
+
+                            return TP.stringUntokenizeUsingDelimiters(
+                                    item,
+                                    '[',
+                                    ']',
+                                    predicateExprs,
+                                    '__PRED__',
+                                    '__PRED__');
+                        }
+
+                        return item;
+                    });
+
+            //  Strip out anything that would be empty or separator characters.
+            results = results.filter(
+                        function(item, index) {
+                            return !stripper.test(item);
+                        });
+
+            //  If there were any 'double slash' constructs, convert them to an
+            //  empty String
+            results = results.map(
+                    function(item) {
+
+                        if (item === '__DOUBLE_SLASH__') {
+                            return '';
+                        }
+
+                        return item;
+                    });
+
+            break;
+
+        default:
+            splitter = null;
+    }
+
+    if (TP.isRegExp(splitter)) {
+        return results;
+    }
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getPointerScheme',
 function(aPath) {
 
