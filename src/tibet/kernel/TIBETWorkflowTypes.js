@@ -412,6 +412,10 @@ function(anID) {
 //  strictly required except for signal-based invocation
 TP.core.Resource.Inst.defineAttribute('registered', false);
 
+//  Current access keys, which are essentially cached from the current vCard
+//  and updated if the vCard data for the resource is altered.
+TP.core.Resource.Inst.defineAttribute('accessKeys');
+
 //  the current vCard associated with this resource, and indirectly the
 //  resulting role and unit types
 TP.core.Resource.Inst.defineAttribute('vCard');
@@ -486,11 +490,18 @@ function() {
     var keys,
         vcard;
 
+    keys = this.$get('accessKeys');
+    if (TP.isValid(keys)) {
+        return keys;
+    }
+
     if (TP.isValid(vcard = this.getVCard())) {
         keys = vcard.getAccessKeys();
     } else {
         keys = TP.ac();
     }
+
+    this.$set('accessKeys', keys);
 
     return keys;
 });
@@ -534,13 +545,13 @@ function() {
      *     in hierarchy order, so the first unit is actually the least specific
      *     one. For that reason we return the last unit in line as the primary
      *     (most-specific) unit.
-     * @returns {TP.core.Role} A subtype of TP.core.Role.
+     * @returns {TP.core.Unit} A subtype of TP.core.Unit.
      */
 
     var vcard;
 
     if (TP.isValid(vcard = this.getVCard())) {
-        return vcard.getRoles().last();
+        return vcard.getUnits().last();
     }
 
     return;
@@ -558,6 +569,46 @@ function() {
      */
 
     return this.getID();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Resource.Inst.defineMethod('getRoles',
+function() {
+
+    /**
+     * @method getRoles
+     * @summary Returns the list of roles in the receiver's vCard, if any.
+     * @returns {Array.<TP.core.Role>} An array of TP.core.Role instances.
+     */
+
+    var vcard;
+
+    if (TP.isValid(vcard = this.getVCard())) {
+        return vcard.getRoles();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Resource.Inst.defineMethod('getUnits',
+function() {
+
+    /**
+     * @method getUnits
+     * @summary Returns the list of units in the receiver's vCard, if any.
+     * @returns {Array.<TP.core.Unit>} An array of TP.core.Unit instances.
+     */
+
+    var vcard;
+
+    if (TP.isValid(vcard = this.getVCard())) {
+        return vcard.getUnits().last();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -959,6 +1010,10 @@ function(aVCard) {
      */
 
     this.$set('vCard', aVCard);
+
+    //  Clear the access key cache. It will be refreshed if the getAccessKeys
+    //  call is made again.
+    this.$set('accessKeys', null);
 
     //  altering the vCard may alter role and unit which affect uri filters
     TP.sys.setcfg('tibet.uriprofile', null);
@@ -3702,8 +3757,8 @@ function(keyRingName) {
 
     /**
      * @method addKeyRing
-     * @summary Adds a key ring to the receiver, granting it the permissions
-     *     defined by the keys contained in the key ring. Note that this
+     * @summary Adds a keyring to the receiver, granting it the permissions
+     *     defined by the keys contained in the keyring. Note that this
      *     operation is typically done via an initialize method which defines
      *     the permissions related to each group type.
      * @description When defining different permission group types one of the
@@ -3712,7 +3767,7 @@ function(keyRingName) {
      *     don't have to exist at the time of the assignment -- allowing
      *     definitions to be made with less overhead. The individual keyrings
      *     will be loaded the first time a request is made for the actual keys.
-     * @param {String} keyRingName The name of the key ring.
+     * @param {String} keyRingName The name of the keyring.
      * @returns {TP.core.Resource} The receiver.
      */
 
@@ -3722,7 +3777,7 @@ function(keyRingName) {
     ring = TP.tibet.keyring.getInstanceById(keyRingName);
     if (TP.notValid(ring)) {
         return this.raise('TP.sig.InvalidParameter',
-                            'Key ring: \'' + keyRingName + '\' not found.');
+            'Keyring: \'' + keyRingName + '\' not found.');
     }
 
     rings = this.$get('keyrings');
@@ -3777,6 +3832,21 @@ function() {
     return keys;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.PermissionGroup.Type.defineMethod('getKeyrings',
+function() {
+
+    /**
+     * @method getKeyrings
+     * @summary Returns the list of keyring instances associated with the
+     *     receiver.
+     * @return {Array.<TP.tibet.keyring>} The array of keyrings.
+     */
+
+    return this.$get('keyrings');
+});
+
 //  ========================================================================
 //  TP.core.Role
 //  ========================================================================
@@ -3808,8 +3878,7 @@ function() {
      * @summary Initializes the type, defining the baseline keyrings.
      */
 
-    //  Initialize a key ring for the current user.
-    this.addKeyRing(TP.sys.cfg('project.user_role'));
+    this.addKeyRing('Public');
 
     return;
 });
@@ -4116,8 +4185,10 @@ function() {
     var realUser;
 
     if (TP.notValid(realUser = this.$get('realUser'))) {
-        //  Construct the default user.
-        TP.core.User.construct(TP.sys.cfg('project.user_name'));
+
+        //  TODO:   should check session store and/or cookie information to see
+        //  if a login sequence has provided us with a username.
+        TP.core.User.construct(TP.sys.cfg('user.default_name'));
 
         realUser = this.$get('realUser');
     }
@@ -4224,17 +4295,18 @@ function(resourceID) {
 
     var vCard;
 
-    //  construct the instance from the root down
     this.callNextMethod();
-
-    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
-
-    if (TP.isValid(vCard)) {
-        this.setVCard(vCard);
-    }
 
     this.set('remoteSubscriptions', TP.hc());
     this.set('credentials', TP.hc());
+
+    //  We do this last so any changes that we may want to add which trigger
+    //  based on the current vCard will occur and override anything we defaulted
+    //  to in the prior portion of this method.
+    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
+    if (TP.isValid(vCard)) {
+        this.setVCard(vCard);
+    }
 
     return this;
 });

@@ -390,18 +390,36 @@
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
     TP.sys.setcfg('project.app_type', null);
 
-    //  the user name for the project. The default value is 'demo'. Note that
-    //  there *MUST* be a corresponding vCard in the system that matches this
-    //  user name in order for TIBET to work properly. Note that this must be
-    //  kept in sync with 'project.user_role' and it's setting in the vCard.
-    TP.sys.setcfg('project.user_name', 'demo');
 
-    //  the role name for the user of the project. The default value is
-    //  'Public', which is the role of the default user 'demo' above (as defined
-    //  in the corresponding vCard for 'demo'). Note that this must be kept in
-    //  sync with 'project.user_name' and it's setting in the vCard.
-    TP.sys.setcfg('project.user_role', 'Public');
+    //  ---
+    //  users and roles (and vcards and keyrings)
+    //  ---
 
+    //  Default values used to drive the DEFAULT templates for vCard and keyring
+    //  data (which are used by the default User instance creation machinery).
+    TP.sys.setcfg('user.default_name', 'Guest');
+    TP.sys.setcfg('user.default_role', 'Public');
+    TP.sys.setcfg('user.default_org', 'Public');
+    TP.sys.setcfg('user.default_unit', 'Public');
+    TP.sys.setcfg('user.default_keyring', 'Public');
+
+    //  What route should be used to load application keyrings? Note that by
+    //  default there is no path here. A typical value if you want to make use
+    //  of keyrings would be `~app_dat/keyrings.xml` to mirror the library path.
+    TP.sys.setcfg('path.app_keyrings', null);
+
+    //  What route should be used to load application vcards? Note that by
+    //  default there is no path here. A typical value if you want to make use
+    //  of vCards would be `~app_dat/vcards.xml` to mirror the library path.
+    TP.sys.setcfg('path.app_vcards', null);
+
+    //  What route should be used to load library keyrings? The default is
+    //  provided as support for service vcards which are necessary.
+    TP.sys.setcfg('path.lib_keyrings', '~lib_dat/keyrings.xml');
+
+    //  the default location for TIBET's service vcard data. This file is always
+    //  loaded to ensure that the various services have appropriate vcard data.
+    TP.sys.setcfg('path.lib_vcards', '~lib_dat/vcards.xml');
 
     //  ---
     //  ui page initialization files
@@ -436,6 +454,7 @@
     } else {
         TP.sys.setcfg('tibet.uibuffer', null);
     }
+
 
     //  ---
     //  logging
@@ -1102,21 +1121,6 @@
                                                 //  checks
     TP.sys.setcfg('os.exec_interval', 300); //  5*60 or 5 minute job time
                                                 //  max
-
-    //  ---
-    //  resources
-    //  ---
-
-    //  where is the keyring file? this file is used (by default) as the source
-    //  for application keyrings used by TP.core.Role and TP.core.Unit types to
-    //  associate permission "keys" with TP.core.User instances.
-    TP.sys.setcfg('path.keyring_file', '~app_dat/keyrings.xml');
-
-    //  where is the default vCard file containing application vcards? this file
-    //  is used (by default) as a simple way to create a small set of vcards
-    //  that can be used across users. The vcard information relates users to
-    //  roles, linking permissions assigned to those roles to a particular user.
-    TP.sys.setcfg('path.vcard_file', '~app_dat/vcards.xml');
 
 
     //  ---

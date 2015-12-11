@@ -71,6 +71,7 @@
     "jxon": "TechnicalPursuit/jxon",
     "karma": "^0.13.11",
     "less": "TechnicalPursuit/less.js",
+    "marked-man": "^0.1.5",
     "mime-types": "^2.1.4",
     "minimist": "*",
     "mocha": "*",
