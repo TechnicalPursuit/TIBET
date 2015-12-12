@@ -12,15 +12,17 @@
 
     <div id="LOGIN-SPLASH">
         <div id="LOGIN-FORM">
-        <form action="/login" method="post">
+        <form id="login" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" autofocus="autofocus"/>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password"/>
-            <button type="submit">Login</button>
+            <button onclick="login()">Login</button>
         </form>
         </div>
     </div>
 </div>
 
 </div>
+
+<script src="./TIBET-INF/tibet/lib/src/tibet_login.js"></script>

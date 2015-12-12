@@ -10889,6 +10889,8 @@ TP.boot.launch = function(options) {
      * @returns {Window} The window the application launched in.
      */
 
+    var hash;
+
     //  Start logging...
     TP.boot.$stdout('TIBET Boot System (TBS) ' + TP.boot.$version,
                     TP.SYSTEM);
@@ -10901,6 +10903,17 @@ TP.boot.launch = function(options) {
     if (TP.$$nested_loader) {
         delete TP.$$nested_loader;
         return;
+    }
+
+    //  If we're booting in response to a login page sequence we may have had
+    //  client-side fragment information tucked away. Check for that and restore
+    //  it if we find any (and clear it for any future processing).
+    if (window.sessionStorage) {
+        hash = window.sessionStorage.getItem('TIBET.boot.fragment');
+        if (hash) {
+            window.sessionStorage.removeItem('TIBET.boot.fragment');
+            top.location.hash = hash;
+        }
     }
 
     TP.boot.$$launchOptions = options;

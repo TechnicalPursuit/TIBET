@@ -391,6 +391,7 @@ targets.rollup_sprintf = function(make) {
     //  (ss) commented out. Devtools lies about initiator when map file is
     //  present saying code loaded because of sprintf. Yeah right. 404 is less
     //  of an issue than failing to let you see the true source of file loads.
+    //
     //  NOTE we copy the map file since it'll 404 on us otherwise. And don't use
     //  tpi in the name, the lookup ends up explicit to the original name.
     //sh.exec('cp -f ./dist/sprintf.min.js.map ../../deps/sprintf.min.js.map');
@@ -460,18 +461,11 @@ targets.build_tibet = function(make) {
 
     targets.rollup_loader().then(
         targets.rollup_hook).then(
+        targets.rollup_login).then(
         targets.rollup_base).then(
         targets.rollup_full).then(
         targets.rollup_developer).then(
         function() {
-            var npmdir;
-
-            //  Sprintf has a map file that will throw 404s in development if we
-            //  don't copy it into the library location.
-            npmdir = path.join(__dirname, 'node_modules');
-            sh.cd(path.join(npmdir, 'sprintf-js'));
-            sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
-
             targets.build_tibet.resolve();
         },
         function() {
@@ -557,6 +551,38 @@ targets.rollup_hook = function(make) {
     },
     function() {
         targets.rollup_hook.reject();
+    });
+};
+
+/**
+ */
+targets.rollup_login = function(make) {
+    helpers.rollup(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'login',
+        phase: 'one',
+        dir: './lib/src',
+        prefix: 'tibet_',
+        headers: false,
+        minify: false,
+        zip: true
+    }).then(function() {
+        return helpers.rollup(make, {
+            pkg: '~lib_cfg/TIBET.xml',
+            config: 'login',
+            phase: 'one',
+            dir: './lib/src',
+            prefix: 'tibet_',
+            headers: false,
+            minify: true,
+            zip: true
+        });
+    }).then(
+    function() {
+        targets.rollup_login.resolve();
+    },
+    function() {
+        targets.rollup_login.reject();
     });
 };
 

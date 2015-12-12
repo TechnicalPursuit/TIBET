@@ -21,6 +21,11 @@ build file content, one of the benefits of TIBET's boot system.
     <script src="~lib_src/tibet/boot/tibet_loader_post.js" />
 </config>
 
+<config id="login">
+    <script src="~lib_src/tibet/kernel/copyright.js" no-minify="true"/>
+    <script src="~lib_src/tibet/boot/tibet_login.js" />
+</config>
+
 <config id="hook">
     <script src="~lib_src/tibet/kernel/copyright.js" no-minify="true"/>
     <script src="~lib_src/tibet/boot/tibet_hook.js" />
