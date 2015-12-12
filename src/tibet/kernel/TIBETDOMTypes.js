@@ -2556,7 +2556,9 @@ function(aContentObject, aRequest) {
     //  collection of input, we've got to convert it into a collection of scalar
     //  values rather than a collection of more complex objects
     if (this.isScalarValued()) {
-        if (TP.isNode(input)) {
+        if (TP.isString(input)) {
+            value = input;
+        } else if (TP.isNode(input)) {
             value = TP.val(input);
         } else if (TP.isNodeList(input)) {
             //  Since we're scalar-valued we want NodeLists to be converted to
