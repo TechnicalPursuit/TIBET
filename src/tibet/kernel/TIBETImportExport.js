@@ -65,56 +65,7 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
      *     during the import process.
      */
 
-    var sync,
-        reload,
-
-        file;
-
-    sync = TP.ifInvalid(loadSync, true);
-    reload = TP.ifInvalid(shouldReload, false);
-
-    //  only work on string type references
-    if (!TP.isString(aPackageName)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  process the URI reference into something explicit for the package
-    //  load primitive to use
-    if (TP.regex.VIRTUAL_URI_PREFIX.test(aPackageName)) {
-        //  if we have what looks like a TIBET URI then we resolve that out
-        //  to the true location here
-        file = TP.uriExpandPath(aPackageName);
-    } else if (!TP.regex.HAS_COLON.test(aPackageName)) {
-        //  if the package name includes a scheme separator we presume it's a
-        //  full path reference, otherwise we build it up ourselves...
-
-        //  look for the cfg path and build up package file name. note that
-        //  this leverages some knowledge that the path will result in a
-        //  TIBET uri instance...
-        file = TP.uriExpandPath('~lib_cfg/' + aPackageName + '.xml');
-    } else {
-        file = aPackageName;
-    }
-
-    if (!reload) {
-        if (TP.sys.hasPackage(file, aTarget)) {
-            TP.ifInfo() ?
-                TP.info('Skipping package: ' + aPackageName + ' target: ' +
-                        (TP.notValid(aTarget) ? 'default' : aTarget) +
-                        ' import. ' + 'Target \'' +
-                        aTarget + '\' already imported.') : 0;
-
-            return 0;
-        }
-    }
-
-    TP.ifInfo() ?
-        TP.info('Importing package: ' + aPackageName +
-                ' target: ' + (TP.notValid(aTarget) ? 'default' : aTarget) +
-                ' from file: ' + file) : 0;
-
-    //  NOTE the TP.boot reference here, which means boot code must exist
-    return TP.boot.$importPackage(file, aTarget, aBaseDir, sync);
+    TP.todo('Implement TP.sys.importPackage');
 });
 
 //  ------------------------------------------------------------------------
@@ -136,13 +87,7 @@ function(aNamespaceURI, aPackageName) {
      *     during the import process.
      */
 
-    var prefix,
-        package;
-
-    package = TP.ifEmpty(aPackageName, 'TNS');
-    prefix = TP.w3.Xmlns.get('info').at(aNamespaceURI).at('prefix');
-
-    return TP.sys.importPackage(package, prefix);
+    TP.todo('Implement TP.sys.importNamespace');
 });
 
 //  ------------------------------------------------------------------------
