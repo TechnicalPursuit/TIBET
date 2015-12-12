@@ -387,10 +387,14 @@ targets.rollup_sprintf = function(make) {
     sh.exec('grunt uglify');
     sh.exec('cp -f ./src/sprintf.js ../../deps/sprintf-tpi.js');
     sh.exec('cp -f ./dist/sprintf.min.js ../../deps/sprintf-tpi.min.js');
+
+    //  (ss) commented out. Devtools lies about initiator when map file is
+    //  present saying code loaded because of sprintf. Yeah right. 404 is less
+    //  of an issue than failing to let you see the true source of file loads.
     //  NOTE we copy the map file since it'll 404 on us otherwise. And don't use
     //  tpi in the name, the lookup ends up explicit to the original name.
-    sh.exec('cp -f ./dist/sprintf.min.js.map ../../deps/sprintf.min.js.map');
-    sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
+    //sh.exec('cp -f ./dist/sprintf.min.js.map ../../deps/sprintf.min.js.map');
+    //sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
 
     targets.rollup_sprintf.resolve();
 };
