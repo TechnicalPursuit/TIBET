@@ -170,9 +170,7 @@
                         escaper(item);
                 }, '');
 
-                //  TODO:   expand on this to support .svn or perhaps
-                //  all dot files etc.
-                pattern += '|\\.git';
+                pattern += '|\\.git|\\.svn';
 
                 try {
                     pattern = new RegExp(pattern);
@@ -181,9 +179,7 @@
                         e.message);
                 }
             } else {
-                //  TODO:   expand on this to support .svn or perhaps
-                //  all dot files etc.
-                pattern = /\.git/;
+                pattern = /\.git|\.svn/;
             }
 
             //  TODO: let URI parameters override the watch root.

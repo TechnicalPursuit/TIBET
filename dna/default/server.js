@@ -174,7 +174,13 @@
         process.env.PORT ||
         1407;   //  registered TIBET Data Server port.
 
+    //  If running via Passenger (a good choice for serious production work)
+    //  we need to start the server with slightly different logic.
+    if (typeof PhusionPassenger !== 'undefined') {
+        http.createServer(app).listen('passenger');
+    } else {
     http.createServer(app).listen(port);
+    }
 
     env = argv.env;
     project = TDS.cfg('npm.name') || '';

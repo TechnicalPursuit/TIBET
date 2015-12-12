@@ -40,22 +40,38 @@ TP.core.ElementNode.defineSubtype('vcard_temp:vCard');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineConstant('template',
+/**
+ * Flag signifying whether the path.lib_vcards data has been loaded.
+ * @type {Boolean}
+ */
+TP.vcard_temp.vCard.Type.defineAttribute('loaded', false);
+
+/**
+ * The dictionary of registered vcards.
+ * @type {TP.core.Hash}
+ */
+TP.vcard_temp.vCard.Type.defineAttribute('vcards', TP.hc());
+
+/**
+ * The default Guest vCard, which has no permission keys by default.
+ * @type {Element}
+ */
+TP.vcard_temp.vCard.Type.defineConstant('DEFAULT',
     TP.elementFromString(TP.join(
         '<vCard>',
             '<VERSION>1.1</VERSION>',
-            '<FN>fullname</FN>',
-            '<N>name</N>',
-            '<ROLE>role;role;role</ROLE>',
+            '<FN>', TP.sys.cfg('user.default_name'), '</FN>',
+            '<N>', TP.sys.cfg('user.default_name'), '</N>',
+            '<ROLE>', TP.sys.cfg('user.default_role'), '</ROLE>',
             '<ORG>',
-                '<ORGNAME>org</ORGNAME>',
-                '<ORGUNIT>unit;unit;unit</ORGUNIT>',
+                '<ORGNAME>', TP.sys.cfg('user.default_org'), '</ORGNAME>',
+                '<ORGUNIT>', TP.sys.cfg('user.default_unit'), '</ORGUNIT>',
             '</ORG>',
-        '</vCard>')
-    ));
+        '</vCard>')));
+
 
 //  ------------------------------------------------------------------------
-//  Type Methods
+//  Types Methods
 //  ------------------------------------------------------------------------
 
 TP.vcard_temp.vCard.Type.defineMethod('getInstanceById',
@@ -63,136 +79,165 @@ function(anID) {
 
     /**
      * @method getInstanceById
-     * @summary Returns the vCard instance whose FN entry matches the ID
-     *     provided. NOTE that the FN data doesn't have to match the ID of the
-     *     TP.core.User you'll associate it with, allowing you to reuse commonly
-     *     named vCard instances across numerous users.
-     * @description This method defaults to loading the shared vCard data
-     *     normally found at ~app_dat/vcards.xml. When your needs are simple
-     *     this is probably adequate, but in more complex applications you
-     *     probably want to override this method and replace it with one that
-     *     calls a web service to return a single TP.vcard_temp.vCard element
-     *     with the requested ID/FN.
-     * @returns {TP.vcard_temp.vCard} A vCard element wrapper.
+     * @summary Returns the vCard instance whose FN value matches the ID
+     *     provided. If the ID matches that of the user.default_name value and
+     *     the vCard isn't found a default version will be created.
+     * @returns {vcard_temp.vCard} A vCard element wrapper.
      */
 
-    var xml,
-        elem;
+    var path,
+        fname,
+        url,
+        node,
+        vcards,
+        inst;
 
-    xml = this.getVCardXML();
-    if (TP.notValid(xml)) {
-        return this.raise('TP.sig.InvalidXML',
-                                    'Unable to acquire vCard XML');
+    if (!TP.vcard_temp.vCard.get('loaded')) {
+        path = TP.sys.cfg('path.lib_vcards');
+        if (TP.notEmpty(path)) {
+            try {
+                fname = TP.uriExpandPath(TP.sys.cfg('path.lib_vcards'));
+                if (TP.isURI(url = TP.uc(fname))) {
+                    //  NOTE: We do *not* use 'url.getNativeNode()' here
+                    //  since it causes a recursion when it tries to
+                    //  instantiate a TP.core.RESTService which then tries
+                    //  to configure itself from a vCard which then leads us
+                    //  back here...
+                    //  Note that this is a *synchronous* load.
+                    node = TP.$fileLoad(url.getLocation(), TP.hc('resultType', TP.DOM));
+                    if (TP.isDocument(node)) {
+                        TP.vcard_temp.vCard.initVCards(node);
+                    }
+                }
+            } catch (e) {
+                TP.ifError() ? TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
+            }
+        }
+        TP.vcard_temp.vCard.$set('loaded', true);
     }
 
-    elem = TP.nodeEvaluateXPath(
-                xml,
-                TP.join('//$def:FN[text()="', anID, '"]/..'),
-                TP.FIRST_NODE);
+    //  NOTE the access to the top-level type here, not 'this'.
+    vcards = TP.vcard_temp.vCard.get('vcards');
 
-    if (TP.notValid(elem)) {
-        //  ignore missing vcard entries
-        return;
+    inst = vcards.at(anID);
+    if (TP.isValid(inst)) {
+        return inst;
     }
 
-    return this.construct(elem);
+    //  Due to startup sequencing we may need to create the default instance on
+    //  demand. Role/Unit initializers trigger a call to this method.
+    if (anID === TP.sys.cfg('user.default_name')) {
+        inst = this.construct(this.DEFAULT);
+    }
+
+    return inst;
+});
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.vcard_temp.vCard.Type.defineMethod('initVCards',
+function(aDocument) {
+
+    /**
+     * @method initVCards
+     * @summary Initializes instances of vCard based on vCard elements found
+     *     in the document provided. This method is usually invoked after a call
+     *     to loadVCards to acquire a vCard-containing document.
+     * @param {Document} aDocument A TIBET vCards document. See the
+     *     documentation on TIBET vCard files for more information.
+     * @return {Array.<TP.vcard_temp.vCard>} An array of vCard instances.
+     */
+
+    var vcards,
+        type,
+        list;
+
+    if (!TP.isDocument(aDocument)) {
+        return this.raise('InvalidDocument', aDocument);
+    }
+
+    type = TP.vcard_temp.vCard;
+
+    vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vCard', TP.NODESET);
+    list = vcards.collect(function(elem) {
+        return type.construct(elem);
+    });
+
+    return list;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('getVCardXML',
-function(forceRefresh) {
+TP.vcard_temp.vCard.Type.defineMethod('loadVCards',
+function(aURI) {
 
     /**
-     * @method getVCardXML
-     * @summary Returns the vCard XML containing the application's set of
-     *     vCards. This method is typically used by applications that don't
-     *     required a large number of unique vCard entries.
-     * @description The vCard data file location can be altered by setting the
-     *     environment parameter 'vcards', or by altering the tibet.vcard_file
-     *     parameter. This URI is then loaded to provide the application vCard
-     *     XML data.
-     *
-     *     NOTE that this call is only used by the getInstanceById call for
-     *     vCard instances, so you can avoid the file-level approach by
-     *     overriding that method and invoking a web service or using other
-     *     means to locate a vCard by ID.
-     * @param {Boolean} forceRefresh True will force the file content to be
-     *     reloaded.
-     * @returns {XMLDocument} An XML document containing vCard data. The root
-     *     element is a vCards element, while each vCard is a vCard element
-     *     conforming to the XMPP XEP-0054 specification.
+     * @method loadVCards
+     * @summary Loads vCard data from the URI provided, or from the default
+     *     vcard path if one is defined. The resulting document can then be
+     *     passed to initVCards() which will construct instances for each of
+     *     the vCard elements found in the document.
+     * @return {TP.sig.Response} A TIBET Response object (which is
+     *     Promise-compatible) which will resolve on completion.
      */
 
-    var node,
-        flag,
-        fname,
-        url;
+    var url,
+        fname;
 
-    if (TP.ifInvalid(forceRefresh, false)) {
-        TP.sys.$vcardXML = null;
+    if (TP.notValid(aURI)) {
+        //  If we don't have a viable setting for application vcards we don't
+        //  have a path configured and should just return quietly.
+        url = TP.sys.cfg('path.app_vcards');
+        if (TP.isEmpty(url)) {
+            return;
+        }
     }
 
-    if (TP.isNode(node = TP.sys.$vcardXML)) {
-        return node;
+    //  If we got a URI or path of some kind it's time to validate it and create
+    //  the URI instance needed to perform the data load.
+    if (!TP.isKindOf(url, TP.core.URI)) {
+        fname = TP.uriExpandPath(url);
+        if (!TP.isURI(url = TP.uc(fname))) {
+            return this.raise('InvalidURI', aURI);
+        }
     }
 
-    flag = TP.sys.shouldLogRaise();
-    TP.sys.shouldLogRaise(false);
+    return url.getResource(TP.hc('resultType', TP.DOM));
+});
 
-    try {
-        try {
-            if (TP.notEmpty(fname = TP.sys.cfg('path.vcard_file'))) {
-                fname = TP.uriExpandPath(fname);
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vCard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(),
-                                        TP.hc('resultType', TP.DOM));
-                }
-            }
-        } catch (e) {
-            TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
-        }
+//  ------------------------------------------------------------------------
 
-        try {
-            if (TP.notValid(node)) {
-                fname = TP.uriExpandPath(TP.sys.cfg('tibet.vcard_file'));
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vCard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(),
-                                        TP.hc('resultType', TP.DOM));
-                }
-            }
-        } catch (e) {
-            TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
-        }
+TP.vcard_temp.vCard.Type.defineMethod('registerVCard',
+function(aVCard) {
 
-        if (TP.notValid(node)) {
-            node = TP.documentFromString(
-                        '<vCards xmlns="vcard-temp"></vCards>');
-        }
+    /**
+     * @method registerVCard
+     * @summary Registers a single vCard with the vCard type. This method is
+     *     invoked automatically during vcard instance creation so you don't
+     *     normally need to call it yourself.
+     * @param {TP.vcard_temp.vCard} aVCard The vcard instance to register.
+     * @return {TP.vcard_temp.vCard} The registered vcard instance.
+     */
 
-        TP.sys.$vcardXML = node;
-    } catch (e) {
-        TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
-    } finally {
-        TP.sys.shouldLogRaise(flag);
+    var id,
+        keys;
+
+    if (!TP.canInvoke(aVCard, 'get')) {
+        return this.raise('InvalidVCard', aVCard);
     }
 
-    return node;
+    id = aVCard.get('fullname');
+    if (TP.isEmpty(id)) {
+        return this.raise('InvalidVCard', aVCard);
+    }
+
+    //  NOTE the access to the top-level type here, not 'this'.
+    keys = TP.vcard_temp.vCard.get('vcards');
+    keys.atPut(id, aVCard);
+
+    return aVCard;
 });
 
 //  ------------------------------------------------------------------------
@@ -302,6 +347,32 @@ TP.vcard_temp.vCard.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.vcard_temp.vCard.Inst.defineMethod('init',
+function(aVCard) {
+
+    /**
+     * @method  init
+     * @summary Creates a new vCard instance from the input data provided.
+     *     Note that if the inbound vCard has an FN matching one already
+     *     registered the new vcard will override the existing one.
+     * @param {Element} aVCard The vCard element to wrap in an instance.
+     * @return {TP.vcard_temp.vCard} The newly created vCard instance.
+     */
+
+    this.callNextMethod();
+
+    //  Must have an ID to be a viable instance.
+    if (TP.isEmpty(this.get('fullname'))) {
+        return this.raise('InvalidVCard', aVCard);
+    }
+
+    TP.vcard_temp.vCard.registerVCard(this);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.vcard_temp.vCard.Inst.defineMethod('getAccessKeys',
@@ -472,17 +543,22 @@ function() {
 /**
  * @type {TP.tibet.keyring}
  * @summary A keyring is a container for one or more keys, strings that
- *     represent individual permissions within an application.
+ *     represent individual permissions within an application. Obviously this
+ *     isn't a security feature, it's designed more with allowing easy CSS
+ *     and functionality switching based on user role assignments, helping to
+ *     ease development of applications that have role-specific UI features.
+ *     Data security is presumed to be managed at the server as appropriate.
  * @description To help manage permissions in the most flexible way possible
  *     TIBET uses the concept of keys, strings you define to have some meaning
  *     relative to permissions in your application. These keys can be grouped
- *     within keyrings, which can be nested to keep things easier to maintain in
- *     large systems.
+ *     within keyrings, which can be nested to keep things easier to maintain.
  *
- *     When a user logs in you assign that user a vCard which defines the
- *     user's organization-qualified role and unit affiliations. The role and
- *     unit definitions found in the vCard provide one or more keyrings to their
- *     associated user(s), granting members their permissions.
+ *     After a user logs in you can supply a vCard which defines the user's
+ *     organization-qualified role and unit affiliations. The role and unit
+ *     definitions found in the vCard provide one or more keyrings to their
+ *     associated user(s), granting members their permissions. The permission
+ *     strings are added to TIBET's UICANVAS body element for help in driving
+ *     CSS rules which alter UI based on a user's particular role/unit.
  *
  *     See the keyrings.xml sample file for specific markup examples.
  */
@@ -490,6 +566,32 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.defineSubtype('tibet:keyring');
+
+//  ------------------------------------------------------------------------
+//  Types Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * The dictionary of registered keyrings.
+ * @type {TP.core.Hash}
+ */
+TP.tibet.keyring.Type.defineAttribute('keyrings', TP.hc());
+
+/**
+ * Flag signifying whether the path.lib_keyrings data has been loaded.
+ * @type {Boolean}
+ */
+TP.tibet.keyring.Type.defineAttribute('loaded', false);
+
+/**
+ * The default Public keyring, which has no permission keys by default.
+ * @type {Element}
+ */
+TP.tibet.keyring.Type.defineConstant('DEFAULT',
+TP.elementFromString(TP.join(
+    '<keyring xmlns="http://www.technicalpursuit.com/1999/tibet" id="',
+    TP.sys.cfg('user.default_keyring'),
+    '"></keyring>')));
 
 //  ------------------------------------------------------------------------
 //  Types Methods
@@ -501,125 +603,200 @@ function(anID) {
     /**
      * @method getInstanceById
      * @summary Returns the keyring instance whose id attribute matches the ID
-     *     provided.
-     * @description This method defaults to loading the shared keyring data
-     *     normally found at ~app_dat/keyrings.xml. When your needs are simple
-     *     this is probably adequate, but in more complex applications you
-     *     probably want to override this method and replace it with one that
-     *     calls a web service to return a single keyring element with the
-     *     requested ID.
+     *     provided. If the ID matches that of the user.default_keys value and
+     *     the keyring isn't found a default version will be created.
      * @returns {tibet:keyring} A keyring element wrapper.
      */
 
-    var xml,
-        elem;
+    var path,
+        fname,
+        url,
+        node,
+        keyrings,
+        inst;
 
-    xml = this.getKeyringXML();
-    if (TP.notValid(xml)) {
-        return this.raise('TP.sig.InvalidXML',
-                                    'Unable to acquire keyring XML');
+    if (!TP.tibet.keyring.get('loaded')) {
+        path = TP.sys.cfg('path.lib_keyrings');
+        if (TP.notEmpty(path)) {
+            try {
+                fname = TP.uriExpandPath(TP.sys.cfg('path.lib_keyrings'));
+                if (TP.isURI(url = TP.uc(fname))) {
+                    //  NOTE: We do *not* use 'url.getNativeNode()' here
+                    //  since it causes a recursion when it tries to
+                    //  instantiate a TP.core.RESTService which then tries
+                    //  to configure itself from a vCard which then leads us
+                    //  back here...
+                    //  Note that this is a *synchronous* load.
+                    node = TP.$fileLoad(url.getLocation(), TP.hc('resultType', TP.DOM));
+                    if (TP.isDocument(node)) {
+                        TP.tibet.keyring.initKeyrings(node);
+                    }
+                }
+            } catch (e) {
+                TP.ifError() ? TP.error(TP.ec(e, 'Error loading keyrings.')) : 0;
+            }
+        }
+        TP.tibet.keyring.$set('loaded', true);
     }
 
-    elem = TP.nodeGetElementById(xml, anID);
-    if (TP.notValid(elem)) {
-        return; //  ignore missing keyring entries
+    //  NOTE the access to the top-level type here, not 'this'.
+    keyrings = TP.tibet.keyring.get('keyrings');
+
+    inst = keyrings.at(anID);
+    if (TP.isValid(inst)) {
+        return inst;
     }
 
-    return this.construct(elem);
+    //  Due to startup sequencing we may need to create the default instance on
+    //  demand. Role/Unit initializers trigger a call to this method.
+    if (anID === TP.sys.cfg('user.default_keyring')) {
+        inst = this.construct(this.DEFAULT);
+    }
+
+    return inst;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.keyring.Type.defineMethod('getKeyringXML',
-function(forceRefresh) {
+TP.tibet.keyring.Type.defineMethod('initKeyrings',
+function(aDocument) {
 
     /**
-     * @method getKeyringXML
-     * @summary Returns the keyring XML containing the application's set of
-     *     keyrings. This method is typically used by applications that don't
-     *     required a large number of unique keyring entries.
-     * @description The keyring data file location can be altered by setting the
-     *     environment parameter 'keyrings', or by altering the
-     *     path.keyring_file setting. This URI is then loaded to provide the
-     *     application keyring XML data.
-     *
-     *     NOTE that this call is only used by the getInstanceById call for
-     *     keyring instances, so you can avoid the file-level approach by
-     *     overriding that method and invoking a web service or using other
-     *     means to locate a keyring by ID.
-     * @param {Boolean} forceRefresh True will force the file content to be
-     *     reloaded.
-     * @returns {XMLDocument} An XML document containing vCard data. The root
-     *     element is a vCards element, while each vCard is a vCard element
-     *     conforming to the XMPP XEP-0054 specification.
+     * @method initKeyrings
+     * @summary Initializes instances of keyring based on keyring elements found
+     *     in the document provided. This method is usually invoked after a call
+     *     to loadKeyrings to acquire a keyrings document.
+     * @param {Document} aDocument A TIBET keyrings document. See the
+     *     documentation on TIBET Keyring files for more information.
+     * @return {Array.<TP.tibet.keyring>} An array of keyring instances created.
      */
 
-    var node,
-        flag,
-        fname,
-        url;
+    var keyrings,
+        type,
+        list;
 
-    if (TP.ifInvalid(forceRefresh, false)) {
-        TP.sys.$keyringXML = null;
+    if (!TP.isDocument(aDocument)) {
+        return this.raise('InvalidDocument', aDocument);
     }
 
-    if (TP.isNode(node = TP.sys.$keyringXML)) {
-        return node;
+    type = TP.tibet.keyring;
+
+    keyrings = TP.nodeEvaluateXPath(aDocument, '//$def:keyring', TP.NODESET);
+    list = keyrings.collect(function(elem) {
+        if (TP.isEmpty(TP.elementGetAttribute(elem, 'id'))) {
+            return;
+        }
+        return type.construct(elem);
+    });
+
+    return list.compact();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.keyring.Type.defineMethod('loadKeyrings',
+function(aURI) {
+
+    /**
+     * @method loadKeyrings
+     * @summary Loads keyring data from the URI provided, or from the default
+     *     keyring path if one is defined. The resulting document can then be
+     *     passed to initKeyrings() which will construct instances for each of
+     *     the keyring elements found in the document.
+     * @return {TP.sig.Response} A TIBET Response object (which is
+     *     Promise-compatible) which will resolve on completion.
+     */
+
+    var url,
+        fname;
+
+    if (TP.notValid(aURI)) {
+        //  If we don't have a viable setting for application keyrings we don't
+        //  have a path configured and should just return quietly.
+        url = TP.sys.cfg('path.app_keyrings');
+        if (TP.isEmpty(url)) {
+            return;
+        }
     }
 
-    flag = TP.sys.shouldLogRaise();
-    TP.sys.shouldLogRaise(false);
-
-    try {
-        try {
-            if (TP.notEmpty(fname = TP.sys.cfg('tibet.keyrings'))) {
-                fname = TP.uriExpandPath(fname);
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since this gets loaded very early in the startup
-                    //  process. Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(),
-                                        TP.hc('resultType', TP.DOM));
-                }
-            }
-        } catch (e) {
-            TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading keyrings.')) : 0;
+    //  If we got a URI or path of some kind it's time to validate it and create
+    //  the URI instance needed to perform the data load.
+    if (!TP.isKindOf(url, TP.core.URI)) {
+        fname = TP.uriExpandPath(url);
+        if (!TP.isURI(url = TP.uc(fname))) {
+            return this.raise('InvalidURI', aURI);
         }
-
-        try {
-            if (TP.notValid(node)) {
-                fname = TP.uriExpandPath(
-                            TP.sys.cfg('path.keyring_file'));
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since this gets loaded very early in the startup
-                    //  process. Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(),
-                                        TP.hc('resultType', TP.DOM));
-                }
-            }
-        } catch (e) {
-            TP.ifError() ?
-                        TP.error(TP.ec(e, 'Error loading keyrings.')) : 0;
-        }
-
-        if (TP.notValid(node)) {
-            node = TP.documentFromString(
-                    TP.join('<keyrings xmlns="', TP.w3.Xmlns.TIBET, '">',
-                            '</keyrings>'));
-        }
-
-        TP.sys.$keyringXML = node;
-    } finally {
-        TP.sys.shouldLogRaise(flag);
     }
 
-    return node;
+    return url.getResource(TP.hc('resultType', TP.DOM));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.keyring.Type.defineMethod('registerKeyring',
+function(aKeyring) {
+
+    /**
+     * @method registerKeyring
+     * @summary Registers a single keyring with the keyring type. This method is
+     *     invoked automatically during keyring instance creation so you don't
+     *     normally need to call it yourself.
+     * @param {TP.tibet.keyring} aKeyring The keyring instance to register.
+     * @return {TP.tibet.keyring} The registered keyring instance.
+     */
+
+    var id,
+        keys;
+
+    if (!TP.canInvoke(aKeyring, 'getID')) {
+        return this.raise('InvalidKeyring', aKeyring);
+    }
+
+    id = aKeyring.getID();
+    if (TP.isEmpty(id)) {
+        //  Might be a ref to another one (which we ignore).
+        if (TP.isEmpty(aKeyring.getNativeNode().getAttribute('ref'))) {
+            return this.raise('InvalidKeyring', aKeyring);
+        } else {
+            return;
+        }
+    }
+
+    //  NOTE the access to the top-level type here, not 'this'.
+    keys = TP.tibet.keyring.get('keyrings');
+    keys.atPut(id, aKeyring);
+
+    return aKeyring;
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.tibet.keyring.Inst.defineMethod('init',
+function(aKeyring) {
+
+    /**
+     * @method  init
+     * @summary Creates a new keyring instance from the input data provided.
+     *     Note that if the inbound keyring has an ID matching one already
+     *     registered the new keyring will override the existing one.
+     * @param {Element} aKeyring The keyring element to wrap in an instance.
+     * @return {TP.tibet.keyring} The newly created keyring instance.
+     */
+
+    this.callNextMethod();
+
+    //  Must have an ID to be a viable instance.
+    if (TP.isEmpty(this.getID())) {
+        return this.raise('InvalidKeyring', aKeyring);
+    }
+
+    TP.tibet.keyring.registerKeyring(this);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.tibet.keyring.Inst.defineMethod('getAccessKeys',
@@ -711,6 +888,20 @@ function() {
         });
 
     return arr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.keyring.Inst.defineMethod('getID',
+function() {
+
+    /**
+     * @method getID
+     * @summary Returns the receiver's ID, the unique keyring ID it uses.
+     * @returns {String} The ID value.
+     */
+
+    return TP.elementGetAttribute(this.getNativeNode(), 'id');
 });
 
 //  ------------------------------------------------------------------------
@@ -1082,7 +1273,6 @@ function(aNode, aProcessor, aRequest) {
         type,
 
         result,
-        resultType,
 
         subPhases,
         subProcessor,

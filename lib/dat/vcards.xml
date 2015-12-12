@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<vCards xmlns="vcard-temp">
+
+    <!-- Server configuration vCards - like many you will find in XMPP/Jabber.
+
+    NB: We've added some custom keys to vCard support in TIBET. These
+    are used for vCard entries that point to server resources including:
+
+    X-USERNAME      <key value>     Used as the 'username'
+                      for servers that require login information.
+    X-PASSWORD      <key value>     Used as the 'password'
+                      for servers that require login information.
+    X-AUTH        [BASIC|DIGEST]    What kind of authentication
+                      the server uses to authenticate users. If this is known
+                      beforehand, TIBET can perform the authentication itself to
+                      avoid the initial roundtrip to the server to determine
+                      authentication schemes.
+    X-SECRET-KEY    <key value>     Used as the 'secret key'
+                        for servers that require login information. This
+                        complements the standard vCard 'KEY' key which is
+                        the public key for these types of servers.
+    X-IS-WEBDAV     [true|false]    Whether or not the server is
+                        capable of processing WebDAV queries.
+    X-XMPP-CONN-TYPE  [BINDING|POLLING] Used for XMPP servers.
+                        Indicates whether the connection to the server
+                        will use XMPP 'binding' or 'polling' (deprecated)
+                        support.
+    -->
+
+    <!-- An XMPP server set up on 'localhost' and using an XMPP 'binding'
+    (XEP-124) connection -->
+    <vCard xmlns="vcard-temp">
+        <VERSION>1.1</VERSION>
+        <FN>XMPPServiceDefault</FN>
+        <N>localhost</N>
+        <DESC>The default Jabber server</DESC>
+        <URL>http://localhost:5280/http-bind/</URL>
+        <X-XMPP-CONN-TYPE>BINDING</X-XMPP-CONN-TYPE>
+    </vCard>
+
+    <!-- The Amazon S3 server's vCard -->
+    <vCard xmlns="vcard-temp">
+        <VERSION>1.1</VERSION>
+        <FN>AmazonS3ServiceDefault</FN>
+        <DESC>The Amazon S3 Service</DESC>
+
+        <!-- Note no trailing slash here! -->
+        <URL>http://s3.amazonaws.com</URL>
+
+        <!-- The keys aren't supplied here ;-) -->
+        <!-- Your Amazon key (prompt for it) -->
+        <KEY>{USER}</KEY>
+        <!-- Your Amazon secret key (prompt for it) -->
+        <X-SECRET-KEY>{USER}</X-SECRET-KEY>
+    </vCard>
+
+    <!-- The WebDAV test server's vCard -->
+    <vCard xmlns="vcard-temp">
+        <VERSION>1.1</VERSION>
+        <FN>WebDAVServiceDefault</FN>
+        <DESC>The WebDAV test Service</DESC>
+        <URL>http://localhost:1407/tds/webdav/</URL>
+        <X-IS-WEBDAV>true</X-IS-WEBDAV>
+    </vCard>
+
+</vCards>
+

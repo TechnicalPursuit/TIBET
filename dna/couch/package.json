@@ -25,7 +25,7 @@
     "serve-static": "*",
     "shelljs": "TechnicalPursuit/shelljs",
     "tibet": "*",
-    "winston": "*"
+    "winston": "TechnicalPursuit/winston"
   },
   "devDependencies": {},
   "engines": {
