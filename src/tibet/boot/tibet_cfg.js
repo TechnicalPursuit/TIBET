@@ -395,6 +395,10 @@
     //  users and roles (and vcards and keyrings)
     //  ---
 
+    //  What cookie name should be used to communicate username after a
+    //  successful login to the TDS (or other similarly-instrumented server)?
+    TP.sys.setcfg('user.cookie', 'username');
+
     //  Default values used to drive the DEFAULT templates for vCard and keyring
     //  data (which are used by the default User instance creation machinery).
     TP.sys.setcfg('user.default_name', 'Guest');
@@ -1224,7 +1228,10 @@
 
     TP.sys.setcfg('tds.cli.uri', '/tds/cli');
 
-    TP.sys.setcfg('tds.cookie.key', 'T1B3TS3SS10N');   // change this too :)
+    TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   // change this too :)
+    TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   // change this too :)
+
+    TP.sys.setcfg('tds.https', false);
 
     TP.sys.setcfg('tds.log.count', 5);
     TP.sys.setcfg('tds.log.file', '~app_log/tds-{{env}}.log');

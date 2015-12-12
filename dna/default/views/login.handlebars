@@ -14,7 +14,9 @@
         <div id="LOGIN-FORM">
         <form id="login" method="post">
             <label for="username">Username:</label>
-            <input type="text" id="username" name="username" autofocus="autofocus"/>
+            <input type="text" id="username" name="username"
+                value="{{username}}"
+                autofocus="autofocus"/>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password"/>
             <button onclick="login()">Login</button>

@@ -35,8 +35,8 @@
         TDS = app.TDS;
 
         //  NOTE:   this must be initialized before any session is.
-        cookieKey = TDS.cfg('tds.cookie.key') || 'T1B3TC00K13';
-        app.use(cookieParser(sessionKey));
+        cookieKey = TDS.cfg('tds.cookie.key1') || 'T1B3TC00K13';
+        app.use(cookieParser(cookieKey));
 
         //  Require in the session store, allowing it to be separately
         //  configured for MemoryStore, Redis, Couch, etc.

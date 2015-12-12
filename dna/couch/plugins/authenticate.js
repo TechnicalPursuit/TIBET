@@ -12,9 +12,14 @@
 
     'use strict';
 
-    var passport;
+    var Cookies,
+        Keygrip,
+        passport;
 
+    Cookies = require('cookies');
+    Keygrip = require('keygrip');
     passport = require('passport');
+
 
     module.exports = function(options) {
         var app,
@@ -154,9 +159,28 @@
          *
          */
         app.get('/login', parsers.urlencoded, function(req, res, next) {
+            var user,
+                cookies,
+                keys,
+                user;
+
+            //  Read any username cookie from the client and use it to
+            //  pre-populate the login field. Keys must match those used
+            //  during the post /login process to read correctly.
+            keys = new Keygrip([
+                TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
+            ]);
+            cookies = new Cookies(req, res, keys);
+            user = cookies.get(TDS.cfg('user.cookie'), {
+                signed: true
+            }) || '';
+
             //  Not parallel, login page only and require validation
             //  in the '/login' route to return index.html to boot.
-            res.render('login');
+            res.render('login', {
+                title: appname,
+                username: user
+            });
         });
 
 
@@ -166,6 +190,8 @@
         app.post('/login', parsers.json, parsers.urlencoded, function(req, res, next) {
 
             passport.authenticate(name, function(err, user, info) {
+                var keys,
+                    cookies;
 
                 if (err) {
                     return res.redirect('/login');
@@ -174,6 +200,21 @@
                 if (!user) {
                     return res.redirect('/login');
                 }
+
+                //  TIBET leverages the current username as a way to determine
+                //  which vCard information (and hence which roles, orgs, units)
+                //  should be applied in the client. Set a cookie here the
+                //  client can access when login is successful.
+                keys = new Keygrip([
+                    TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
+                ]);
+                cookies = new Cookies(req, res, keys);
+                cookies.set(TDS.cfg('user.cookie'), user.id, {
+                    maxAge: 600000,
+                    signed: true,
+                    secure: TDS.cfg('tds.https'),
+                    httpOnly: false     //  NOTE we explicitly read from JS.
+                });
 
                 //  Passport requires that if we're using a custom
                 //  callback function we need to invoke req.login ourselves.

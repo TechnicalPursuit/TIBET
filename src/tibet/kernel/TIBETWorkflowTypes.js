@@ -4182,13 +4182,14 @@ function() {
      * @returns {TP.core.User} The current real user instance.
      */
 
-    var realUser;
+    var realUser,
+        cookieUser;
 
     if (TP.notValid(realUser = this.$get('realUser'))) {
 
-        //  TODO:   should check session store and/or cookie information to see
-        //  if a login sequence has provided us with a username.
-        TP.core.User.construct(TP.sys.cfg('user.default_name'));
+        cookieUser = TP.core.Cookie.getCookie(TP.sys.cfg('user.cookie'));
+        TP.core.User.construct(
+            TP.ifEmpty(cookieUser, TP.sys.cfg('user.default_name')));
 
         realUser = this.$get('realUser');
     }
