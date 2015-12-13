@@ -1,7 +1,8 @@
 /**
- * @overview Connect/Express middleware supporting the various aspects of TDS
- *     (TIBET Data Server) functionality. Primary goals of the TDS are to
- *     provide focused REST data access and support TIBET development.
+ * @overview Functionality specific to supporting live-sourcing of changes
+ *     on the file system with active TIBET clients. TIBET clients which access
+ *     the TDS watcher can receive server-sent events (SSEs) when a file in the
+ *     watched directory structure is altered.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -30,7 +31,6 @@
             escaper,
             eventName,
             ignore,
-            interval,
             loggedIn,
             logger,
             path,
@@ -73,10 +73,9 @@
 
         //  Helper function to start an SSE connection.
         startSSE = function(channel) {
-            logger.info('Opening SSE channel for file watcher.');
+            logger.info('Opening SSE notification channel to ' + channel.ip);
 
             try {
-
                 //  Write the proper SSE headers to establish the connection.
                 //  Note that the charset here is important...without it some
                 //  versions of Chrome (and maybe other browsers) will throw
@@ -88,23 +87,26 @@
                     Connection: 'keep-alive'
                 });
                 channel.write('\n');
+                channel.flush();
 
                 //  Respond to notifications that we're closed on the client
                 //  side by shutting down the connection on our end
                 channel.on('close', function() {
-                    logger.info('Closing SSE channel for file watcher.');
-                    clearInterval(interval);
+                    var index;
 
-                    //  If we have multiple consumers of the watcher don't close
-                    //  it, just decrement that count.
-                    if (typeof watcher.consumers === 'number') {
-                        watcher.consumers -= 1;
-                        if (watcher.consumers === 0) {
-                            watcher.close();
-                        }
-                    } else {
-                        watcher.close();
-                    }
+                    logger.info('Closing SSE notification channel to ' +
+                        channel.ip);
+
+                    //  Shut down the interval that sends a heartbeat signal.
+                    clearInterval(channel.sse.interval);
+
+                    //  Remove the transmission function from the list the
+                    //  watcher maintains.
+                    index = watcher.channels.indexOf(channel.sse);
+                    watcher.channels.splice(index, 1);
+
+                    logger.info('TDS FileWatch connection count updated to ' +
+                        watcher.channels.length);
                 });
 
                 //  Return a function with a persistent handle to the original
@@ -134,16 +136,19 @@
 
             } catch (e) {
                 logger.info('SSE channel error: ' + e.message);
-
-                //  TODO:   something else?
                 return function() {};
             }
         };
+
+        //  ---
+        //  Watcher
+        //  ---
 
         //  Configure a watcher for our root, including any ignore patterns etc.
         if (options.watcher) {
             watcher = options.watcher;
             watcher.consumers += 1;
+            watcher.channels = [];
 
             logger.debug('TDS FileWatch plugin sharing file watcher.');
 
@@ -197,6 +202,7 @@
                 persistent: true
             });
             watcher.consumers = 1;
+            watcher.channels = [];
             options.watcher = watcher;
         }
 
@@ -204,15 +210,14 @@
         eventName = TDS.getcfg('tds.watch.event');
 
         watcher.on('change', function(file) {
-            if (watcher.sendSSE) {
-                watcher.sendSSE(eventName, {
+            watcher.channels.forEach(function(sse) {
+                sse(eventName, {
                     path: file,
                     event: 'change',
                     details: {}
                 });
-            }
+            });
         });
-
 
         //  ---
         //  Middleware
@@ -221,33 +226,50 @@
         //  The actual middleware. This is our entry point to activating the SSE
         //  connection in response to an inbound request on our watcher url.
         TDS.watch = function(req, res, next) {
+            var sse;
+
+            logger.info('Processing file watch request from ' + req.ip);
 
             //  Confirm this is an SSE request. Otherwise pass it through.
             if (!req.headers.accept ||
                     req.headers.accept !== 'text/event-stream') {
+                logger.error(
+                    'Request does not accept text/event-stream. Ingoring.');
                 return next();
             }
 
+            //  Don't let the socket time out if at all possible.
             req.socket.setTimeout(Infinity);
 
-            //  Write out the headers and hold on to the event writer
-            //  returned by that method. We'll invoke that function from
-            //  within our watch handler on file changes.
-            watcher.sendSSE = startSSE(res);
+            //  Capture data from the request we want available for logging in
+            //  the channel tranmission function.
+            res.ip = req.ip
+
+            //  Construct the function which we'll invoke to send data down the
+            //  connection to the original response (and socket).
+            sse = startSSE(res);
+
+            //  Associate the transmission function with the response (what it
+            //  thinks of as the 'channel' from our startSSE function).
+            res.sse = sse;
+
+            //  Add the new transmission function to our list of channels.
+            watcher.channels.push(sse);
+
+            logger.info('TDS FileWatch connection count updated to ' +
+                watcher.channels.length);
 
             //  Set up a simple SSE pulse to keep proxy servers happy. If
             //  not set otherwise we'll use ten seconds.
-            interval = setInterval(function() {
-                watcher.sendSSE('sse-heartbeat', {});
-            }, TDS.getcfg('tds.watch.heartbeat') || 10000);
+            sse.interval = setInterval(function() {
+                this('sse-heartbeat', {});
+            }.bind(sse), TDS.getcfg('tds.watch.heartbeat') || 10000);
         };
 
         //  ---
         //  Routes
         //  ---
 
-        //  TODO:   really don't want to activate with every invocation of this
-        //  route...want to set it up once and stop there.
         app.get(TDS.cfg('tds.watch.uri'), loggedIn, TDS.watch);
     };
 

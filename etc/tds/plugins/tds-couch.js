@@ -828,7 +828,8 @@
                     break;
                 case 'error':
                     if (/EMFILE/.test(data)) {
-                        logger.error('Too many files open. Try increasing ulimit.');
+                        logger.error(
+                            'Too many files open. Try increasing ulimit.');
                         return;
                     } else {
                         logger.error(data);
