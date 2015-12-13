@@ -180,6 +180,9 @@
     //  how deep under lib_root is the tibet_loader file?
     TP.sys.setcfg('boot.loader_offset', '../../..');
 
+    //  karma will launch via TIBET-INF/tibet/lib/src/tibet_loader so 5 levels
+    TP.sys.setcfg('boot.karma_offset', '../../../../..');
+
     //  how far from lib_root is the phantom loader?
     TP.sys.setcfg('boot.phantom_offset', '../../..');
 

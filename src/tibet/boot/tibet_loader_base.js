@@ -8138,6 +8138,7 @@ TP.boot.$getAppHead = function() {
      */
 
     var path,
+        node,
         offset,
         head,
         parts,
@@ -8159,6 +8160,31 @@ TP.boot.$getAppHead = function() {
     //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
     path = path.split(/[#?]/)[0];
+
+    //  A bit of a hack but no clear way around this. Karma will run its own web
+    //  server and include a segment like '/base' for some reason. We have to
+    //  adjust for that if we appear to be loading in a Karma environment. The
+    //  only reasonably consistent way is to leverage the node containing the
+    //  boot script itself, and process the path to that file to compute this.
+    if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
+
+        node = TP.sys.getLaunchNode(TP.sys.getLaunchDocument());
+        if (TP.boot.$isValid(node)) {
+            path = node.getAttribute('src');
+        }
+        //  Combine current path with the src path in case of relative path
+        //  specification (common) and we should end up with a workable
+        //  offset.
+        if (TP.boot.$notEmpty(path)) {
+            path = TP.boot.$uriJoinPaths(path,
+                TP.sys.cfg('boot.karma_offset'));
+        }
+
+        TP.boot.$$apphead = TP.boot.$uriJoinPaths(
+            TP.sys.cfg('boot.karma_root'), path);
+
+        return TP.boot.$$apphead;
+    }
 
     //  PhantomJS launches are unique in that they leverage a page that resides
     //  in the library (usually under node_modules) and therefore one that will
@@ -8212,14 +8238,6 @@ TP.boot.$getAppHead = function() {
     path = parts.join('/');
 
     TP.boot.$$apphead = path;
-
-    //  A bit of a hack but no clear way around this. Karma will run its own web
-    //  server and include a segment like '/base' for some reason. We have to
-    //  adjust for that if we appear to be loading in a Karma environment.
-    if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
-        TP.boot.$$apphead = TP.boot.$uriJoinPaths(path,
-            TP.sys.cfg('boot.karma_root'));
-    }
 
     return TP.boot.$$apphead;
 };
