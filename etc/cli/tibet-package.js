@@ -1378,7 +1378,8 @@
 
         keys = Object.keys(this.cfg);
         keys.forEach(function(aKey) {
-            if (aKey.indexOf(name) === 0) {
+            //  Test both underscore and dotted formats (just in case)
+            if (aKey.indexOf(property) === 0 || aKey.indexOf(name) === 0) {
                 cfg[aKey] = pkg.cfg[aKey];
             }
         });
