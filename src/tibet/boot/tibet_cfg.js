@@ -180,9 +180,6 @@
     //  how deep under lib_root is the tibet_loader file?
     TP.sys.setcfg('boot.loader_offset', '../../..');
 
-    //  karma will launch via TIBET-INF/tibet/lib/src/tibet_loader so 5 levels
-    TP.sys.setcfg('boot.karma_offset', '../../../../..');
-
     //  how far from lib_root is the phantom loader?
     TP.sys.setcfg('boot.phantom_offset', '../../..');
 
@@ -1503,11 +1500,18 @@
     //  this isn't set some computations of lib/app paths may fail.
     TP.sys.setcfg('boot.karma_root', 'base');
 
+    //  karma will launch via TIBET-INF/tibet/lib/src/tibet_loader so 5 levels
+    TP.sys.setcfg('boot.karma_offset', '../../../../..');
+
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
     TP.sys.setcfg('karma.boot.profile', 'app#contributor');
     TP.sys.setcfg('karma.boot.unminified', false);
     TP.sys.setcfg('karma.boot.unpackaged', false);
+
+    //  Path and file name of the load script to be used to launch TIBET.
+    TP.sys.setcfg('karma.load_path', 'TIBET-INF/tibet/lib/src');
+    TP.sys.setcfg('karma.load_script', 'tibet_loader.min.js');
 
     //  The test script to run including the :test prefix.
     TP.sys.setcfg('karma.script', ':test');
@@ -1516,8 +1520,6 @@
     TP.sys.setcfg('karma.proxy', 9877);
 
     TP.sys.setcfg('karma.timeout', 15000);
-
-    TP.sys.setcfg('karma.loader', 'tibet_loader.min.js');
 
     //  What slot on the launch window should we check for Karma?
     TP.sys.setcfg('karma.slot', '__karma__');
