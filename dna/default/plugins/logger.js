@@ -26,7 +26,8 @@
     winston = require('winston');
 
     module.exports = function(options) {
-        var app;
+        var app,
+            config;
 
         app = options.app;
         if (!app) {
@@ -43,6 +44,17 @@
         logcount = TDS.cfg('tds.log.count') || 5;
         logformat = TDS.cfg('tds.log.format') || 'dev';
         logsize = TDS.cfg('tds.log.size') || 5242880;
+
+        //  If colors are turned on then we need to collect our values from
+        //  config and get ready to update the logger instance color values.
+        if (logcolor) {
+            config = TDS.cfg('tds.color');
+            Object.keys(config).forEach(function(key) {
+                config[key.split('.')[2]] = config[key];
+                delete config[key];
+            });
+            winston.config.addColors(config);
+        }
 
         //  Log file names can include the environment if desired.
         //  NOTE the escaping here is due to handlebars processing during

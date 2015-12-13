@@ -1228,6 +1228,23 @@
 
     TP.sys.setcfg('tds.cli.uri', '/tds/cli');
 
+    //  The combined names from cli, npm, and syslog from winston.
+    TP.sys.setcfg('tds.color.emerg', 'red');
+    TP.sys.setcfg('tds.color.crit', 'red');
+    TP.sys.setcfg('tds.color.error', 'red');
+    TP.sys.setcfg('tds.color.warning', 'yellow');   //  cli color vs. syslog
+    TP.sys.setcfg('tds.color.warn', 'yellow');
+    TP.sys.setcfg('tds.color.alert', 'yellow');
+    TP.sys.setcfg('tds.color.notice', 'yellow');
+    TP.sys.setcfg('tds.color.help', 'cyan');
+    TP.sys.setcfg('tds.color.data', 'grey');
+    TP.sys.setcfg('tds.color.info', 'green');
+    TP.sys.setcfg('tds.color.debug', 'green');  //  blue is hard to read.
+    TP.sys.setcfg('tds.color.prompt', 'grey');
+    TP.sys.setcfg('tds.color.verbose', 'cyan');
+    TP.sys.setcfg('tds.color.input', 'grey');
+    TP.sys.setcfg('tds.color.silly', 'magenta');
+
     TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   // change this too :)
     TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   // change this too :)
 
