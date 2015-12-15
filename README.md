@@ -47,7 +47,7 @@ from Technical Pursuit Inc., the company behind TIBET since 1999.
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
-#### New to TIBET? Start with the <a href="TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
+#### New to TIBET? Start with the <a href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
 
 ---
 
