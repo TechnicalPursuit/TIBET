@@ -28,7 +28,7 @@
  *      silent      Silence normal logging. Defaults to the value set for 'all'.
  *                  If 'all' is true we default this to true to suppress
  *                  warnings about duplicate assets.
- *      phase       Package phase? Default depends on context (app vs. lib).
+ *      phase       Package phase? Default depends on context (app vs. lib)
  *
  * OTHER OPTIONS:
  *
@@ -102,7 +102,7 @@ Cmd.prototype.HELP =
 '--exclude    a space-separated list of asset tags to include.\n\n' +
 
 '--nodes      output asset nodes rather than asset paths.\n' +
-'--phase      boot phase subset to process <all | one | two>.\n\n' +
+'--phase      boot phase subset to process <all | one | two | app | lib>.\n\n' +
 
 '--images     include all image assets.\n' +
 '--scripts    include all JavaScript source-containing assets.\n' +
@@ -195,10 +195,12 @@ Cmd.prototype.configurePackageOptions = function(options) {
     // runs will quietly filter out all their content nodes.
     this.pkgOpts.boot = this.pkgOpts.boot || {};
     switch (this.options.phase) {
+        case 'lib':
         case 'one':
             this.pkgOpts.boot.phase_one = true;
             this.pkgOpts.boot.phase_two = false;
             break;
+        case 'app':
         case 'two':
             this.pkgOpts.boot.phase_one = false;
             this.pkgOpts.boot.phase_two = true;
