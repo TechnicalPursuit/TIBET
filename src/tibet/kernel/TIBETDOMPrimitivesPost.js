@@ -7438,6 +7438,61 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeGetCommonAncestor',
+function(firstNode, varargs) {
+
+    /**
+     * @method nodeGetCommonAncestor
+     * @summary Returns the common ancestor of the supplied Nodes.
+     * @description This is derived from code by 'Andy E':
+     *     http://jsfiddle.net/AndyE/3FaRr/1/
+     * @param {Node} firstNode The first DOM node to operate on.
+     * @param {Array} varargs The rest of DOM nodes to operate on.
+     * @returns {Node} The common ancestor of the supplied Nodes.
+     * @exception TP.sig.InvalidNode Raised when the first node provided to the
+     *     method is invalid.
+     * @exception TP.sig.InvalidParameter Raised when no more nodes are supplied
+     *     to the method.
+     */
+
+    var i,
+        method,
+        test,
+        nodes,
+
+        startNode;
+
+    if (!TP.isNode(firstNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    if (TP.notValid(varargs)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    method = 'contains' in firstNode ? 'contains' : 'compareDocumentPosition';
+    test = method === 'contains' ? 1 : 0x0010;
+    nodes = Array.prototype.slice.call(arguments, 1);
+
+    startNode = firstNode;
+
+    rocking:
+        /* eslint-disable no-extra-parens */
+        while ((startNode = startNode.parentNode)) {
+        /* eslint-enable no-extra-parens */
+            i = nodes.length;
+            while (i--) {
+                if ((startNode[method](nodes[i]) & test) !== test)
+                    continue rocking;
+            }
+            return startNode;
+        }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeGetChildNodes',
 function(aNode) {
 
