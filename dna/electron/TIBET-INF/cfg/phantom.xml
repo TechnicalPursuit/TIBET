@@ -8,14 +8,12 @@
 
 <config id="phantom">
     <config ref="properties"/>
-    <script src="~lib_build/tibet_developer.min.js" if="boot.phase_one"/>
-    <package src="~app_cfg/{{appname}}.xml" config="test"/>
+    <package src="~app_cfg/app.xml" config="test"/>
 </config>
 
 <config id="reflection">
     <config ref="properties"/>
-    <script src="~lib_build/tibet_developer.js" if="boot.phase_one"/>
-    <package src="~app_cfg/{{appname}}.xml" config="test"/>
+    <package src="~app_cfg/app.xml" config="test"/>
 </config>
 
 </package>
