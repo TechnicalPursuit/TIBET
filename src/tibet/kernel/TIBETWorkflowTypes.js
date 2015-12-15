@@ -6340,7 +6340,10 @@ function(aSignal) {
         }
 
         //  Activate any remote watch logic to enable live-sourcing if flagged.
-        TP.core.RemoteURLWatchHandler.activateWatchers();
+        if (TP.sys.cfg('boot.context') !== 'phantomjs' &&
+                !TP.sys.hasFeature('karma')) {
+            TP.core.RemoteURLWatchHandler.activateWatchers();
+        }
 
         //  Signal that everything is ready and that the application did start.
         this.signal('TP.sig.AppDidStart');
