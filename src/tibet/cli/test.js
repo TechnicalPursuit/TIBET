@@ -95,7 +95,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap'],
-        'string': ['target', 'suite', 'cases'],
+        'string': ['target', 'suite', 'cases', 'context'],
         'default': {
             tap: true
         }
@@ -164,6 +164,7 @@ Cmd.prototype.getProfile = function() {
 Cmd.prototype.getScript = function() {
 
     var target,
+        context,
         prefix,
         ignore;
 
@@ -186,9 +187,13 @@ Cmd.prototype.getScript = function() {
 
     if (CLI.notEmpty(this.options.suite)) {
         target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
-    } else if (target === prefix) {
-        target += ' -all';
     }
+
+    context = this.options.context;
+    if (CLI.isEmpty(context)) {
+        context = CLI.inLibrary() ? 'lib' : 'app';
+    }
+    target = target.trim() + ' -context=\'' + context + '\'';
 
     if (this.options.selftest) {
         target += ' -ignore_only';

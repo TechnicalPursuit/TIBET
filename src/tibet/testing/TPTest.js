@@ -81,6 +81,7 @@ function(options) {
         inherit,
         obj,
         filter,
+        context,
         pattern;
 
     //  Ensure we have a consistent Hash for parameter lookups later on.
@@ -138,52 +139,44 @@ function(options) {
 
         suites = suites.filter(
                     function(suite) {
-                        var name;
+                        var name,
+                            path;
 
                         name = suite.getSuiteName();
+                        path = TP.objectGetSourcePath(suite) ||
+                            TP.objectGetLoadPath(suite);
 
                         if (pattern) {
-                            return pattern.match(name);
+                            return pattern.match(name) ||
+                                pattern.match(path);
                         } else {
-                            return name === filter;
+                            return name === filter ||
+                                path === filter;
                         }
                     });
     }
 
     //  ---
-    //  case filter
+    //  context filter
     //  ---
 
-    //  clear pattern so we don't reuse from above.
-    pattern = null;
+    context = params.at('context') || 'app';
+    if (context !== 'all') {
 
-    filter = params.at('cases');
-    if (TP.notEmpty(filter)) {
+        suites = suites.filter(function(suite) {
+            var path;
 
-        filter = filter.unquoted();
-        if (/^\/.+\/([ig]*)$/.test(filter)) {
-            pattern = RegExp.construct(filter);
-        }
+            path = TP.objectGetSourcePath(suite) ||
+                TP.objectGetLoadPath(suite);
 
-        suites = suites.filter(
-                    function(suite) {
-                        var cases;
-
-                        cases = suite.getCaseList(params);
-                        cases = cases.filter(
-                                    function(casey) {
-                                        var name;
-
-                                        name = casey.getCaseName();
-                                        if (pattern) {
-                                            return pattern.match(name);
-                                        } else {
-                                            return name === filter;
-                                        }
-                                    });
-
-                        return TP.notEmpty(cases);
-                    });
+            switch (context) {
+                case 'lib':
+                    return path && path.indexOf('~lib') === 0;
+                case 'app':     //  fall through
+                default:
+                    return path && path.indexOf('~app') === 0;
+            }
+        });
     }
 
     return suites;
@@ -828,6 +821,18 @@ TP.test.Suite.Inst.defineAttribute('$currentPromise');
  */
 TP.test.Suite.Inst.defineAttribute('$capturingSignals');
 
+/**
+ * What actual file location did this suite get loaded from?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.LOAD_PATH);
+
+/**
+ * What is the original source location for this suite?
+ * @type {String}
+ */
+TP.test.Suite.Inst.defineAttribute(TP.SOURCE_PATH);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1241,14 +1246,19 @@ function(options) {
 
         cases = cases.filter(
                     function(casey) {
-                        var name;
+                        var name,
+                            path;
 
                         name = casey.getCaseName();
+                        path = TP.objectGetSourcePath(casey) ||
+                            TP.objectGetLoadPath(casey);
 
                         if (pattern) {
-                            return pattern.match(name);
+                            return pattern.match(name) ||
+                                pattern.match(path);
                         } else {
-                            return name === filter;
+                            return name === filter ||
+                                path === filter;
                         }
                     });
     }
@@ -1334,6 +1344,10 @@ function(target, suiteName, suiteFunc) {
     if (TP.sys.getTypeByName('TP.gui.Driver')) {
         this.$get('drivers').atPut('gui', TP.gui.Driver.construct());
     }
+
+    //  Track load information to support context/file test filtering.
+    this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
+    this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
 
     return this;
 });
@@ -2201,6 +2215,19 @@ TP.test.Case.Inst.defineAttribute('$rejector');
  */
 TP.test.Case.Inst.defineAttribute('$executedAssertion');
 
+/**
+ * What actual file location did this test case get loaded from?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.LOAD_PATH);
+
+/**
+ * What is the original source location for this test case?
+ * @type {String}
+ */
+TP.test.Case.Inst.defineAttribute(TP.SOURCE_PATH);
+
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -2457,6 +2484,13 @@ function(suite, caseName, caseFunc) {
 
     this.$set('caseName', caseName);
     this.$set('caseFunc', caseFunc);
+
+    //  Track load information to support context/file test filtering. NOTE that
+    //  we use the suite path information here because until the suite actually
+    //  invokes the suite function the 'it' calls are not run and hence the case
+    //  won't reflect where it was truly defined.
+    this.$set(TP.LOAD_PATH, suite[TP.LOAD_PATH]);
+    this.$set(TP.SOURCE_PATH, suite[TP.SOURCE_PATH]);
 
     return this;
 });

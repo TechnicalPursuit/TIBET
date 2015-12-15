@@ -46,6 +46,7 @@ function(aRequest) {
         total,
         suiteName,
         cases,
+        context,
         msg,
         obj;
 
@@ -92,8 +93,15 @@ function(aRequest) {
         cases = cases.unquoted();
     }
 
+    context = shell.getArgument(aRequest, 'tsh:context', 'app');
+    if (TP.notEmpty(context)) {
+        context = context.unquoted();
+    }
+
     options = TP.hc('ignore_only', ignore_only,
                     'ignore_skip', ignore_skip,
+                    'context', context,
+                    'target', target,
                     'suite', suiteName,
                     'cases', cases);
 
@@ -109,7 +117,7 @@ function(aRequest) {
 
         //  If the CLI drove this, or the Sherpa/TDC, there should be an
         //  explicit -all. The karma-tibet bridge doesn't do that however.
-        if (shell.getArgument(aRequest, 'tsh:all', false) ||
+        if (TP.sys.cfg('boot.context') === 'phantomjs' ||
                 TP.sys.hasFeature('karma')) {
 
             total = runner.getCases(options).getSize();
