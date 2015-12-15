@@ -354,6 +354,12 @@ function(name) {
     realType.Inst = realType[TP.INSTC].prototype;
     realType.Inst[TP.OWNER] = realType;
 
+    //  map over load path information or the Inst and Type won't have them.
+    realType.Type[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
+    realType.Type[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+    realType.Inst[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
+    realType.Inst[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+
     //  make sure we've got arrays to hold subtypes and add our new child
     this[TP.SUBTYPE_NAMES] = this[TP.SUBTYPE_NAMES] || TP.ac();
     this[TP.SUBTYPE_NAMES].push(wholeName);
