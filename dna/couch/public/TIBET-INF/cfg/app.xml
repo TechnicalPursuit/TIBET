@@ -25,7 +25,6 @@
 
 <config id="test">
     <config ref="developer"/>
-    <package src="{{appname}}.xml" config="tests"/>
 </config>
 
 </package>
