@@ -7456,8 +7456,6 @@ function(firstNode, varargs) {
      */
 
     var i,
-        method,
-        test,
         nodes,
 
         startNode;
@@ -7470,8 +7468,6 @@ function(firstNode, varargs) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    method = 'contains' in firstNode ? 'contains' : 'compareDocumentPosition';
-    test = method === 'contains' ? 1 : 0x0010;
     nodes = Array.prototype.slice.call(arguments, 1);
 
     startNode = firstNode;
@@ -7482,8 +7478,10 @@ function(firstNode, varargs) {
         /* eslint-enable no-extra-parens */
             i = nodes.length;
             while (i--) {
-                if ((startNode[method](nodes[i]) & test) !== test)
+                if ((startNode.compareDocumentPosition(nodes[i]) & 0x0010) !==
+                                                                    0x0010) {
                     continue rocking;
+                }
             }
             return startNode;
         }
