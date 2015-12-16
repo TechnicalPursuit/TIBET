@@ -6132,13 +6132,14 @@ function(aNode) {
 
     //  IE11 has a bug when normalizing nodes with dashes ('-') in them
     //  https://connect.microsoft.com/IE/feedback/details/832750
-    if (TP.sys.isUA('IE')) {
+    if (TP.sys.isUA('IE') && aNode.textContent.indexOf('-') !== TP.NOT_FOUND) {
         normalizeFunc = function(node) {
             if (!node) {
                 return;
             }
-            if (node.nodeType === 3) {
-                while (node.nextSibling && node.nextSibling.nodeType === 3) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                while (node.nextSibling &&
+                        node.nextSibling.nodeType === Node.TEXT_NODE) {
                     node.nodeValue += node.nextSibling.nodeValue;
                     node.parentNode.removeChild(node.nextSibling);
                 }
