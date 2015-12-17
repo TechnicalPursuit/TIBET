@@ -25,9 +25,11 @@
         }
 
         loc = root.location.toString();
-        hash = loc.slice(loc.indexOf('#') + 1);
-        if (hash) {
-            top.sessionStorage.setItem('TIBET.boot.fragment', hash);
+        if (loc.indexOf('#') !== -1) {
+            hash = loc.slice(loc.indexOf('#') + 1);
+            if (hash) {
+                top.sessionStorage.setItem('TIBET.boot.fragment', hash);
+            }
         }
 
         form.submit('/login');
