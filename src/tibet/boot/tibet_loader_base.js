@@ -8296,7 +8296,14 @@ TP.boot.$getAppRoot = function() {
             return TP.boot.$$approot;
         }
 
-        pub = TP.sys.getcfg('boot.tibet_pub');
+        if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
+            pub = TP.boot.$uriJoinPaths(
+                TP.sys.cfg('boot.karma_root'),
+                TP.sys.getcfg('boot.tibet_pub'));
+        } else {
+            pub = TP.sys.getcfg('boot.tibet_pub');
+        }
+
         TP.boot.$$approot = TP.boot.$uriCollapsePath(
             TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
         return TP.boot.$$approot;

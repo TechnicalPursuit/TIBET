@@ -1498,7 +1498,7 @@
 
     //  What path prefix do we expect during initial startup under Karma. If
     //  this isn't set some computations of lib/app paths may fail.
-    TP.sys.setcfg('boot.karma_root', 'base');
+    TP.sys.setcfg('boot.karma_root', '/base');
 
     //  karma will launch via TIBET-INF/tibet/lib/src/tibet_loader so 5 levels
     TP.sys.setcfg('boot.karma_offset', '../../../../..');
