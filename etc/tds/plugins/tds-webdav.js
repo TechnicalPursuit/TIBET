@@ -63,6 +63,9 @@
         jsDAV = require('jsDAV/lib/jsdav');
         jsDAV_CORS = require('jsDAV/lib/DAV/plugins/cors');
 
+        //  Ensure we have default option slotting for this plugin.
+        options.tds_webdav = options.tds_webdav || {};
+
         node = path.resolve(TDS.expandPath(TDS.getcfg('tds.webdav.root')));
 
         //  NB: The mount is set to '/' because it is already relative to the

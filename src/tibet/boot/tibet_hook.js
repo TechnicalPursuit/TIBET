@@ -229,7 +229,9 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
             };
 
             //  if the boot is paused it's because we got here late, so
-            //  it's up to us to trigger the final stage
+            //  it's up to us to trigger the final stage. if the boot is still
+            //  in progress it's up to the loader to detect we've set the
+            //  $$phase_two flag and continue the boot process.
             if (TP.boot.$$stage === 'import_paused') {
                 TP.boot.bootPhaseTwo();
             }

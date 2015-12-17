@@ -62,6 +62,8 @@
             nano,
             path,
             pattern,
+            processDesignChange,
+            processDocumentChange,
             pushpos,
             pushrev,
             Promise,
@@ -105,6 +107,9 @@
         //  ---
         //  Variables
         //  ---
+
+        //  Ensure we have default option slotting for this plugin.
+        options.tds_couch = options.tds_couch || {};
 
         readFile = Promise.promisify(fs.readFile);
         //writeFile = Promise.promisify(fs.writeFile);
@@ -235,35 +240,13 @@
 
 
         /**
-         * Filters potential changes feed entries before triggering on(change).
-         * @param {Object} doc The CouchDB document to potentially filter.
-         */
-        feed.filter = function(doc) {
-            var ok;
-
-            //  TODO:   how do we make this slice of functionality pluggable?
-
-            //  TODO:   remove limitation on only _design doc files.
-            ok = doc._id === doc_name;
-
-            if (!ok) {
-                logger.info('filtering: ' + beautify(JSON.stringify(doc)));
-            }
-
-            return ok;
-        };
-
-
-        /**
-         * Responds to change notifications from the CouchDB changes feed. The
-         * data is checked against the last known change and the delta is
-         * computed to determine a set of added, removed, renamed, and updated
-         * attachments which may need attention. The resulting changes are then
-         * made to the local file system to maintain synchronization between the
-         * file system and CouchDB.
+         * Handles change notifications specific to the project's design
+         * document. This focuses largely on adjusting the file system to
+         * properly reflect the state of the CouchDB database (or at least
+         * invoking the applyChanges call to do that as needed).
          * @param {Object} change The follow() library change descriptor.
          */
-        feed.on('change', function(change) {
+        processDesignChange = function(change) {
             var list,
                 atts,
                 baserev,
@@ -327,10 +310,75 @@
                     //  Output that we saw the change, but we know about it,
                     //  probably because it's coming back in response to a file
                     //  system change we pushed to CouchDB a moment ago.
-                    logger.info('CouchDB change: cyclic update notification.');
+                    logger.debug('CouchDB change: cyclic update notification.');
                 }
             }
-        })
+        };
+
+
+        /**
+         * Handles document changes in the CouchDB change feed which are NOT
+         * related to the project's design document.
+         * @param {Object} change The follow() library change descriptor.
+         */
+        processDocumentChange = options.tds_couch.change || function(change) {
+            //logger.debug('CouchDB change:\n' +
+             //   beautify(JSON.stringify(change)));
+
+            //  Delegate task processing to the TDS TaskRunner if available.
+            if (TDS.taskrunner) {
+                process.nextTick(function() {
+                    TDS.taskrunner(change.doc);
+                });
+            }
+            return;
+        };
+
+
+        /**
+         * Filters potential changes feed entries before triggering on(change).
+         * @param {Object} doc The CouchDB document to potentially filter.
+         */
+        feed.filter = options.tds_couch.filter || function(doc) {
+            var filter,
+                regex,
+                result;
+
+            filter = TDS.cfg('couch.watch.filter');
+            if (filter) {
+                regex = new RegExp(escaper(filter));
+                if (regex) {
+                    result = regex.test(doc._id);
+                    if (!result) {
+                        logger.debug('Filtering change: ' +
+                            beautify(JSON.stringify(doc)));
+                    }
+                    return result;
+                }
+            }
+
+            return true;
+        };
+
+
+        /**
+         * Responds to change notifications from the CouchDB changes feed. The
+         * data is checked against the last known change and the delta is
+         * computed to determine a set of added, removed, renamed, and updated
+         * attachments which may need attention. The resulting changes are then
+         * made to the local file system to maintain synchronization between the
+         * file system and CouchDB.
+         * @param {Object} change The follow() library change descriptor.
+         */
+        feed.on('change', function(change) {
+            var design;
+
+            design = change.doc._id === doc_name;
+            if (design) {
+                return processDesignChange(change);
+            }
+            return processDocumentChange(change);
+        });
 
 
         /**

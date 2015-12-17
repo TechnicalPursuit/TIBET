@@ -63,6 +63,8 @@
         }
         logger.debug('Activating TDS CLI plugin.');
 
+        //  Ensure we have default option slotting for this plugin.
+        options.tds_cli = options.tds_cli || {};
 
         //  ---
         //  Middleware

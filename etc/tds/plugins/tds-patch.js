@@ -59,6 +59,8 @@
 
         path = require('path');
 
+        //  Ensure we have default option slotting for this plugin.
+        options.tds_patch = options.tds_patch || {};
 
         //  ---
         //  Middleware

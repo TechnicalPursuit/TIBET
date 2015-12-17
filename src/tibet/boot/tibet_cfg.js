@@ -1213,6 +1213,8 @@
     TP.sys.setcfg('couch.port', '5984');
     TP.sys.setcfg('couch.scheme', 'http');
 
+    TP.sys.setcfg('couch.watch.filter', '*');
+
     TP.sys.setcfg('couch.watch.empty', '\n');
     TP.sys.setcfg('couch.watch.feed', 'continuous');
     TP.sys.setcfg('couch.watch.heartbeat', 500);
@@ -1280,6 +1282,7 @@
     TP.sys.setcfg('tds.use.couch', false);
     TP.sys.setcfg('tds.use.patch', false);
     TP.sys.setcfg('tds.use.pouch', false);
+    TP.sys.setcfg('tds.use.tasks', false);
     TP.sys.setcfg('tds.use.watch', false);
     TP.sys.setcfg('tds.use.webdav', false);
 
