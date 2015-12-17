@@ -190,10 +190,13 @@ function(aRequest) {
                 karma.info({total: total});
 
                 //  Type first, then Inst, then Local
+                TP.sys.logTest('# Running Type tests for ' + target);
                 obj.Type.runTestSuites(options).then(
                         function() {
+                            TP.sys.logTest('# Running Inst tests for ' + target);
                             return obj.Inst.runTestSuites(options);
                         }).then(function() {
+                            TP.sys.logTest('# Running Local tests for ' + target);
                             return obj.runTestSuites(options);
                         }).then(function(result) {
                             // TODO: should we pass non-null results?
@@ -216,6 +219,7 @@ function(aRequest) {
         total = runner.getCases(params).getSize();
         karma.info({total: total});
 
+        TP.sys.logTest('# Running Local tests for ' + target);
         obj.runTestSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?
