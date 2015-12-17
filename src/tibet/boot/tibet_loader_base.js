@@ -9546,20 +9546,22 @@ TP.boot.$$importComplete = function() {
 
                     TP.boot.$stdout('', TP.SYSTEM);
 
-                    //  NOTE that this is a possible cul-de-sac since if
-                    //  no phase two page ever loads we'll just sit.
-                    //  TODO: trigger a boot timer here to force a timeout
-
                     //  basically the question is simply what happens last,
                     //  either we finish with phase one after the phase two
                     //  page has loaded, or we finish before it. if we
                     //  finish after it arrives we can just keep right on
                     //  moving, but we want to call the function in that
                     //  frame to ensure that the page initializes
-                    win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
+                    if (TP.sys.cfg('boot.use_login') &&
+                            TP.sys.cfg('boot.parallel')) {
+                        //  Parallel login means the window updated will be the
+                        //  boot/splash screen, not the typical uiroot screen.
+                        win = TP.sys.getWindowById(TP.sys.cfg('boot.uiboot'));
+                    } else {
+                        win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
+                    }
 
                     if (win) {
-
                         if (win.$$phase_two === true ||
                             window.$$phase_two === true) {
                             //  if the page didn't find TIBET the function
