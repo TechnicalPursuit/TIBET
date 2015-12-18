@@ -24,7 +24,6 @@
      */
     module.exports = function(options) {
         var app,
-            beautify,
             files,
             loggedIn,
             logger,
@@ -57,7 +56,6 @@
         //  Requires
         //  ---
 
-        beautify = require('js-beautify');
         path = require('path');
         sh = require('shelljs');
 
@@ -91,7 +89,7 @@
             }
 
             logger.debug('TDS TaskRunner processing request: ' +
-                beautify(JSON.stringify(job)));
+                TDS.beautify(JSON.stringify(job)));
 
             //  Query for the specification for the form_id in question.
 
@@ -118,7 +116,7 @@
                 }
 
                 //logger.debug('View result: ' +
-                 //   beautify(JSON.stringify(body)));
+                 //   TDS.beautify(JSON.stringify(body)));
 
                 //  Body here should include 'rows'. We want the item in that
                 //  list of type "spec".

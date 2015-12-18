@@ -1,7 +1,6 @@
 /**
- * @overview Connect/Express middleware supporting the various aspects of TDS
- *     (TIBET Data Server) functionality. Primary goals of the TDS are to
- *     provide focused REST data access and support TIBET development.
+ * @overview Supports WebDAV functionality for the TDS by leveraging the jsDAV
+ *     add-on module. This allows you to use the TDS as a WebDAV server.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL

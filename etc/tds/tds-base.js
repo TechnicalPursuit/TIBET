@@ -11,8 +11,11 @@
 
     'use strict';
 
-    var Package,
+    var beautify,
+        Package,
         TDS;
+
+    beautify = require('js-beautify');
 
     // Load the CLI's package support to help with option/configuration data.
     Package = require('../cli/tibet-package');
@@ -42,6 +45,13 @@
      * @type {Package} A TIBET CLI package instance.
      */
     TDS._package = null;
+
+    /**
+     * A common handle to the js-beautify routine for pretty-printing JSON to
+     * the console or via the logger.
+     * @type {Function}
+     */
+    TDS.beautify = beautify;
 
     /**
      * Expands virtual paths using configuration data loaded from TIBET.

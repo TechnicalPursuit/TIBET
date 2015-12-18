@@ -31,7 +31,6 @@
         var app,
             applyChanges,
             baseline,
-            beautify,
             chokidar,
             couchAttachmentName,
             couchDigest,
@@ -93,7 +92,6 @@
         //  Requires
         //  ---
 
-        beautify = require('js-beautify');
         chokidar = require('chokidar');
         crypto = require('crypto');
         follow = require('follow');
@@ -207,7 +205,7 @@
             //  since that implies changes aren't inherently irreversible.
 
             //logger.debug('CouchDB changes:\n' +
-            //  beautify(JSON.stringify(list)));
+            //  TDS.beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
                 //var fullpath;
@@ -260,7 +258,7 @@
                 baseline = change;
             } else {
                 //logger.debug('CouchDB change:\n' +
-                //    beautify(JSON.stringify(change)));
+                //    TDS.beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
                 basepos = baserev.slice(0, baserev.indexOf('-'));
@@ -323,7 +321,7 @@
          */
         processDocumentChange = options.tds_couch.change || function(change) {
             //logger.debug('CouchDB change:\n' +
-             //   beautify(JSON.stringify(change)));
+             //   TDS.beautify(JSON.stringify(change)));
 
             //  Delegate task processing to the TDS TaskRunner if available.
             if (TDS.taskrunner) {
@@ -351,7 +349,7 @@
                     result = regex.test(doc._id);
                     if (!result) {
                         logger.debug('Filtering change: ' +
-                            beautify(JSON.stringify(doc)));
+                            TDS.beautify(JSON.stringify(doc)));
                     }
                     return result;
                 }
@@ -498,7 +496,7 @@
                         rev,
                         fullpath;
 
-                    //logger.debug(beautify(JSON.stringify(response)));
+                    //logger.debug(TDS.beautify(JSON.stringify(response)));
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -552,7 +550,7 @@
                                         return;
                                     }
 
-                                    logger.info(beautify(JSON.stringify(body)));
+                                    logger.info(TDS.beautify(JSON.stringify(body)));
 
                                     //  Track last pushed revision.
                                     pushrev = body.rev;
@@ -601,7 +599,7 @@
                         att,
                         fullpath;
 
-                    //logger.debug(beautify(JSON.stringify(response)));
+                    //logger.debug(TDS.beautify(JSON.stringify(response)));
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -675,7 +673,7 @@
                                     return;
                                 }
 
-                                logger.info(beautify(JSON.stringify(body)));
+                                logger.info(TDS.beautify(JSON.stringify(body)));
 
                                 //  Track last pushed revision.
                                 pushrev = body.rev;
@@ -719,7 +717,7 @@
                     var doc,
                         rev;
 
-                    //logger.debug(beautify(JSON.stringify(response)));
+                    //logger.debug(TDS.beautify(JSON.stringify(response)));
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -752,7 +750,7 @@
                                 }
 
                                 logger.info('deleted ' + file);
-                                //logger.info(beautify(JSON.stringify(body)));
+                                //logger.info(TDS.beautify(JSON.stringify(body)));
 
                                 //  Track last pushed revision.
                                 pushrev = body.rev;

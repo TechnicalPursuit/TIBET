@@ -1,5 +1,7 @@
 /**
- * @overview
+ * @overview Functionality specific to integrating the TDS with the TIBET CLI.
+ *     This is normally disabled but when enabled it allows the Sherpa to access
+ *     commands in the TIBET CLI to create new tags and perform other tasks.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
