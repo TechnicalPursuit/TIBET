@@ -72,7 +72,7 @@ function(aRequest) {
                         'tsh:target',
                         shell.getArgument(aRequest, 'ARG0'));
 
-    if (TP.notEmpty(target)) {
+    if (TP.isString(target)) {
         target = target.unquoted();
     }
 
@@ -84,17 +84,17 @@ function(aRequest) {
     if (suiteName === true) {
         //  Only a single dash...syntax glitch...
         suiteName = '';
-    } else if (TP.notEmpty(suiteName)) {
+    } else if (TP.isString(suiteName)) {
         suiteName = suiteName.unquoted();
     }
 
     cases = shell.getArgument(aRequest, 'tsh:cases', null);
-    if (TP.notEmpty(cases)) {
+    if (TP.isString(cases)) {
         cases = cases.unquoted();
     }
 
     context = shell.getArgument(aRequest, 'tsh:context', 'app');
-    if (TP.notEmpty(context)) {
+    if (TP.isString(context)) {
         context = context.unquoted();
     }
 
