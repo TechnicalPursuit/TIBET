@@ -6132,13 +6132,14 @@ function(aNode) {
 
     //  IE11 has a bug when normalizing nodes with dashes ('-') in them
     //  https://connect.microsoft.com/IE/feedback/details/832750
-    if (TP.sys.isUA('IE')) {
+    if (TP.sys.isUA('IE') && aNode.textContent.indexOf('-') !== TP.NOT_FOUND) {
         normalizeFunc = function(node) {
             if (!node) {
                 return;
             }
-            if (node.nodeType === 3) {
-                while (node.nextSibling && node.nextSibling.nodeType === 3) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                while (node.nextSibling &&
+                        node.nextSibling.nodeType === Node.TEXT_NODE) {
                     node.nodeValue += node.nextSibling.nodeValue;
                     node.parentNode.removeChild(node.nextSibling);
                 }
@@ -7434,6 +7435,59 @@ function(aNode) {
     }
 
     return arr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetCommonAncestor',
+function(firstNode, varargs) {
+
+    /**
+     * @method nodeGetCommonAncestor
+     * @summary Returns the common ancestor of the supplied Nodes.
+     * @description This is derived from code by 'Andy E':
+     *     http://jsfiddle.net/AndyE/3FaRr/1/
+     * @param {Node} firstNode The first DOM node to operate on.
+     * @param {Array} varargs The rest of DOM nodes to operate on.
+     * @returns {Node} The common ancestor of the supplied Nodes.
+     * @exception TP.sig.InvalidNode Raised when the first node provided to the
+     *     method is invalid.
+     * @exception TP.sig.InvalidParameter Raised when no more nodes are supplied
+     *     to the method.
+     */
+
+    var i,
+        nodes,
+
+        startNode;
+
+    if (!TP.isNode(firstNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    if (TP.notValid(varargs)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    nodes = Array.prototype.slice.call(arguments, 1);
+
+    startNode = firstNode;
+
+    rocking:
+        /* eslint-disable no-extra-parens */
+        while ((startNode = startNode.parentNode)) {
+        /* eslint-enable no-extra-parens */
+            i = nodes.length;
+            while (i--) {
+                if ((startNode.compareDocumentPosition(nodes[i]) & 0x0010) !==
+                                                                    0x0010) {
+                    continue rocking;
+                }
+            }
+            return startNode;
+        }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------

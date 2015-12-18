@@ -2521,7 +2521,7 @@ function(onlyShallow) {
 
     secondaryURIs = this.getSubURIs(true);
 
-    if (onlyShallow) {
+    if (TP.notEmpty(secondaryURIs) && onlyShallow) {
 
         //  Group the secondary URIs by their 'fragment weight'. We want only
         //  the ones in the group with the lowest weight.

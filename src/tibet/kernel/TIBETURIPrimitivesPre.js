@@ -2222,11 +2222,16 @@ function(aFragment, aScheme) {
 
     /**
      * @method uriSplitFragment
-     * @summary
+     * @summary Splits the supplied fragment into parts, according to the
+     *     XPointer scheme of the fragment, if present, or a supplied XPointer
+     *     scheme. See the TP.getAccessPathParts() method for more information
+     *     on what may be returned from this method.
      * @param {String} aFragment The pointer fragment. Note that this may
      *     contain an XPointer and, if the path contains one as well and they
      *     don't match, the path will be returned unchanged.
-     * @returns {Array}
+     * @param {String} [aScheme] An optional XPointer scheme to use when it
+     *     cannot be determined from the supplied fragment.
+     * @returns {Array} The fragment split into its constituent parts.
      */
 
     var pathFragment,
@@ -2240,8 +2245,7 @@ function(aFragment, aScheme) {
         return TP.ac(aFragment);
     }
 
-    //  If the fragment is '.', that a self-reference. Just return the main
-    //  path.
+    //  If the fragment is '.', that a self-reference. Just return it.
     if (aFragment === '.') {
         return TP.ac(aFragment);
     }
