@@ -1567,8 +1567,10 @@
     TP.sys.setcfg('uri.template_fallback', true);
     TP.sys.setcfg('uri.keybindings_fallback', false);
 
-    //  the default type used to handle URI load/save operations.
-    TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');
+    //  the default types used to handle URI load/save operations.
+    TP.sys.setcfg('uri.handler.default', 'TP.core.URLHandler');
+    TP.sys.setcfg('uri.handler.file', 'TP.core.FileURLHandler');
+    TP.sys.setcfg('uri.handler.http', 'TP.core.HTTPURLHandler');
 
     //  the default type used to handle URI rewriting decisions.
     TP.sys.setcfg('uri.rewriter', 'TP.core.URIRewriter');

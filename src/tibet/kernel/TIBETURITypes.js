@@ -128,8 +128,8 @@ function(a, b) {
     var aMatch,
         bMatch;
 
-    aMatch = a.first();
-    bMatch = b.first();
+    aMatch = a[0];
+    bMatch = b[0];
 
     //  First criteria is number of parts matches.
     if (aMatch.length > bMatch.length) {
@@ -140,15 +140,15 @@ function(a, b) {
         //  Second criteria is length of the full match string...but we exempt
         //  the '/.*/' pattern from this consideration since it's a universal
         //  match that should only trigger as a last resort.
-        if (a.last().at('pattern').toString() === '/.*/') {
+        if (a[1].at(a[2]).toString() === '/.*/') {
             return 1;
-        } else if (b.last().at('pattern').toString() === '/.*/') {
+        } else if (b[1].at(b[2]).toString() === '/.*/') {
             return -1;
         }
 
-        if (aMatch.first().length > bMatch.first().length) {
+        if (aMatch[0].length > bMatch[0].length) {
             return -1;
-        } else if (aMatch.first().length < bMatch.first().length) {
+        } else if (aMatch[0].length < bMatch[0].length) {
             return 1;
         } else {
             //  All else being equal last definition wins.
@@ -169,9 +169,6 @@ TP.core.URI.Type.defineConstant('SCHEME');
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
-
-//  default catalog for URI rewrite/mapping operations
-TP.core.URI.Type.defineAttribute('uriCatalog');
 
 //  most URI access is synchronous (javascript:, file:, urn:, etc) so we
 //  start with that here and override for http:, localdb:, jsonp:, etc.
@@ -691,7 +688,7 @@ function(aURI, aRequest) {
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. This is
-     *     typically the type defined by TP.sys.cfg('uri.handler') which
+     *     typically the type defined by TP.sys.cfg('uri.handler.default') which
      *     defaults to TP.core.URIHandler.
      * @param {TP.core.URI|String} aURI The URI to obtain the default handler
      *     for.
@@ -705,10 +702,10 @@ function(aURI, aRequest) {
         type;
 
     //  default handler is mapped in the configuration settings
-    tname = TP.sys.cfg('uri.handler');
+    tname = TP.sys.cfg('uri.handler.default');
     if (TP.isEmpty(tname)) {
         this.raise('TP.sig.InvalidConfiguration',
-                    'uri.handler has no type name specified.');
+                    'uri.handler.default has no type name specified.');
 
         //  always return at least our default type
         return TP.core.URIHandler;
@@ -788,6 +785,8 @@ function(aURI) {
             match;
 
         pattern = TP.sys.cfg(key);
+        mapname = key.slice(0, key.lastIndexOf('.'));
+
         if (TP.isString(pattern)) {
             //  special case here. if the string is a virtual path we expand it
             //  and match the value for the URI. if it's identical we call that
@@ -805,7 +804,7 @@ function(aURI) {
         if (regex) {
             match = regex.match(str);
             if (TP.notEmpty(match)) {
-                matches.push(TP.ac(match, key));
+                matches.push(TP.ac(match, TP.sys.cfg(mapname), key));
             }
         }
 
@@ -815,7 +814,6 @@ function(aURI) {
     //  If the search found a pattern value that expanded to an exact file match
     //  that one "wins" and we need to return that configuration block.
     if (TP.notEmpty(exact)) {
-        mapname = mapname.slice(0, mapname.lastIndexOf('.'));
         map = TP.sys.cfg(mapname);
 
         //  Adjust keys since the caller won't know pattern prefix etc.
@@ -837,14 +835,10 @@ function(aURI) {
     }
 
     //  Sort based on criteria for a best fit (more segments, longest match).
-    matches = matches.sort(TP.core.URI.Type.BEST_URIMAP_SORT);
-
-    //  Capture the name of the mapping that owns the pattern.
-    mapname = matches.first().last();
-    mapname = mapname.slice(0, mapname.lastIndexOf('.'));
+    matches = matches.sort(TP.core.URI.BEST_URIMAP_SORT);
 
     //  Get the entire set of keys for that mapping entry.
-    map = TP.sys.cfg(mapname);
+    map = matches.first().at(1);
 
     //  Adjust keys since the caller won't know pattern prefix etc.
     map.getKeys().forEach(function(key) {
@@ -1737,8 +1731,8 @@ function(aRequest) {
     /**
      * @method $getDefaultHandler
      * @summary Returns the default handler for a URI and request pair. This is
-     *     typically the type defined by TP.sys.cfg('uri.handler'), which
-     *     defaults to TP.core.URIHandler.
+     *     typically the type defined by TP.sys.cfg('uri.handler.default'),
+     *     which defaults to TP.core.URIHandler.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the handler assignment.
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
@@ -5848,7 +5842,21 @@ function(aURI, aRequest) {
      *     subtype type object or a type object conforming to that interface.
      */
 
-    return TP.core.HTTPURLHandler;
+    var tname;
+
+    tname = TP.sys.cfg('uri.handler.http');
+    if (TP.isEmpty(tname)) {
+        return TP.core.HTTPURLHandler;
+    }
+
+    type = TP.sys.require(tname);
+    if (TP.notValid(type)) {
+        this.raise('TP.sig.TypeNotFound', tname);
+
+        return TP.core.HTTPURLHandler;
+    }
+
+    return type;
 });
 
 //  ------------------------------------------------------------------------
@@ -6092,7 +6100,21 @@ function(aURI, aRequest) {
      *     subtype type object or a type object conforming to that interface.
      */
 
-    return TP.core.FileURLHandler;
+    var tname;
+
+    tname = TP.sys.cfg('uri.handler.file');
+    if (TP.isEmpty(tname)) {
+        return TP.core.FileURLHandler;
+    }
+
+    type = TP.sys.require(tname);
+    if (TP.notValid(type)) {
+        this.raise('TP.sig.TypeNotFound', tname);
+
+        return TP.core.FileURLHandler;
+    }
+
+    return type;
 });
 
 //  ------------------------------------------------------------------------
