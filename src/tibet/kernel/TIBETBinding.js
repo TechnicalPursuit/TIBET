@@ -575,537 +575,11 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceAttributeName, sourceFacetName);
 });
 
-//  ========================================================================
-//  MARKUP BINDING
-//  ========================================================================
-
 //  ------------------------------------------------------------------------
-//  TP.core.DocumentNode
 //  ------------------------------------------------------------------------
-
 //  ------------------------------------------------------------------------
-//  Instance Attributes
 //  ------------------------------------------------------------------------
-
-TP.core.DocumentNode.Inst.defineAttribute('changeRegistry');
-
 //  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.DocumentNode.Inst.defineMethod('registerChangeLocationsFor',
-function(bindingAttachLocations, attachPointTPElem) {
-
-    var changeRegistry,
-        j,
-
-        attachLoc,
-        primaryURI,
-        attachPointElems;
-
-    if (TP.notValid(changeRegistry = this.get('changeRegistry'))) {
-        changeRegistry = TP.hc();
-        this.set('changeRegistry', changeRegistry);
-    }
-
-    bindingAttachLocations.unique();
-
-    for (j = 0; j < bindingAttachLocations.getSize(); j++) {
-        attachLoc = bindingAttachLocations.at(j);
-
-        primaryURI = TP.uc(attachLoc).getPrimaryURI();
-
-        if (!changeRegistry.hasKey(attachLoc)) {
-            this.observe(TP.uc(primaryURI), 'FacetChange');
-            attachPointElems = TP.ac();
-            changeRegistry.atPut(attachLoc, attachPointElems);
-        } else {
-            attachPointElems = changeRegistry.at(attachLoc);
-        }
-
-        if (attachPointElems.indexOf(attachPointTPElem) === TP.NOT_FOUND) {
-            attachPointElems.push(attachPointTPElem);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DocumentNode.Inst.defineHandler('FacetChange',
-function(aSignal) {
-
-    /**
-     * @method handleFacetChange
-     * @summary
-     * @param {Change} aSignal The signal instance which triggered this handler.
-     */
-
-    var changedPaths,
-        changedPathsKeys,
-
-        changedURIs,
-
-        changeRegistry,
-
-        primarySource,
-        primaryLoc,
-
-        len,
-        i,
-
-        key,
-
-        changedPath,
-        len2,
-        k,
-
-        changeRegistryKeys,
-        registryPath,
-
-        changedURI,
-
-        initialVal,
-
-        changedLoc,
-
-        bindingAttachPoints,
-        j,
-
-        signalFlag;
-
-    //console.profile('bind test');
-
-    var start = Date.now();
-
-    signalFlag = TP.sys.shouldSignalDOMLoaded();
-    TP.sys.shouldSignalDOMLoaded(false);
-
-    primarySource = aSignal.getOrigin().getResource().get('result');
-    primaryLoc = aSignal.getOrigin().getLocation();
-
-    changeRegistry = this.get('changeRegistry');
-
-    if (TP.isValid(changedPaths = aSignal.at(TP.CHANGE_PATHS))) {
-
-        changedPathsKeys = changedPaths.getKeys();
-        len = changedPathsKeys.getSize();
-        for (i = 0; i < len; i++) {
-
-            changedPath = changedPathsKeys.at(i);
-
-            changeRegistryKeys = changeRegistry.getKeys();
-            len2 = changeRegistryKeys.getSize();
-
-            for (k = 0; k < len2; k++) {
-
-                changedURI = TP.uc(changeRegistryKeys.at(k));
-                registryPath = changedURI.getFragmentExpr();
-
-                if (registryPath.startsWith(changedPath) ||
-                    registryPath === '.') {
-
-                    initialVal = changedURI.getResource().get('value');
-                    bindingAttachPoints = changeRegistry.at(
-                                            changeRegistryKeys.at(k));
-                    for (j = 0; j < bindingAttachPoints.getSize(); j++) {
-                        bindingAttachPoints.at(j).refreshFrom(
-                            changedURI, primarySource, aSignal, initialVal);
-                    }
-
-                }
-            }
-        }
-    } else if (TP.isValid(
-                changedURIs = aSignal.getOrigin().getSecondaryURIs())) {
-
-        //  If we got all of the sub URIs, then we need to filter for URIs that
-        //  have ACP_FORMATs or ACP_VARIABLES and throw them out. They're not
-        //  useful and they cause problems.
-        changedURIs = changedURIs.reject(
-            function(aURI) {
-                var loc;
-
-                loc = aURI.getLocation();
-                return TP.regex.ACP_FORMAT.test(loc) ||
-                        TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(loc);
-            });
-
-        len = changedURIs.getSize();
-        for (i = 0; i < len; i++) {
-
-            changedURI = changedURIs.at(i);
-            initialVal = changedURI.getResource().get('value');
-            changedLoc = changedURI.getLocation();
-
-            bindingAttachPoints = changeRegistry.at(changedLoc);
-
-            if (TP.notEmpty(bindingAttachPoints)) {
-
-                for (j = 0; j < bindingAttachPoints.getSize(); j++) {
-                    bindingAttachPoints.at(j).refreshFrom(
-                            changedURI, primarySource, aSignal, initialVal);
-                }
-            }
-        }
-    }
-
-    TP.sys.shouldSignalDOMLoaded(signalFlag);
-
-    var end = Date.now();
-
-    TP.totalInitialGetTime += (end - start);
-
-    //console.profileEnd();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-//  TP.core.ElementNode
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-//  The attributes for this element type that are considered to 'bidi
-//  attributes' that can not only be bound to data source but be bound *back* to
-//  the data source so that when they are changed by the user, they update the
-//  data source.
-TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineAttribute('bindInfos');
-
-TP.core.ElementNode.Inst.defineAttribute('bindRegistry');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('refreshFrom',
-function(aURI, aPrimarySource, aSignal, aValue) {
-
-    var elem,
-
-        isScoped,
-        scopeVals,
-        scopePath,
-
-        val,
-
-        bindRegistry,
-        keys,
-
-        fragment,
-
-        i,
-        j,
-        entries,
-
-        fullGetterPath,
-
-        targetElem,
-        transformFunc,
-        finalVal;
-
-    //  If we have a 'bind:scope' or 'bind:repeat', then we're a binding attach
-    //  point and we refresh differently.
-    elem = this.getNativeNode();
-
-    if (TP.elementHasAttribute(elem, 'bind:scope', true) ||
-        TP.elementHasAttribute(elem, 'bind:repeat', true)) {
-        scopeVals = this.getBindingScopeValues();
-        //scopePath = TP.uriJoinFragments.apply(TP, scopeVals);
-        isScoped = true;
-    } else {
-        isScoped = false;
-    }
-
-    bindRegistry = this.getBindingRegistry();
-
-    if (TP.isEmpty(bindRegistry)) {
-        this.setFacet(aSignal.at('aspect'),
-                        aSignal.at('facet'),
-                        aValue,
-                        false);
-
-        return this;
-    }
-
-    keys = bindRegistry.getKeys();
-
-    for (i = 0; i < keys.getSize(); i++) {
-
-        fragment = keys.at(i);
-
-        entries = bindRegistry.at(fragment);
-
-        if (isScoped) {
-            //  If it starts with a '$_.', then 'val' should point to the whole
-            //  value and we need to slice the '$_.' off of the fragment for the
-            //  'interest registration "get"' below.
-            if (/^\$_\./.test(fragment)) {
-                val = aValue;
-                fragment = fragment.slice(3);
-            } else {
-                val = aValue.get(fragment);
-            }
-
-            //fullGetterPath = TP.uriJoinFragments(scopePath, fragment);
-            fullGetterPath = TP.uriJoinFragments.apply(TP, scopeVals.concat(fragment));
-            aPrimarySource.get(fullGetterPath);
-
-        } else {
-            val = aValue;
-        }
-
-        for (j = 0; j < entries.getSize(); j++) {
-            targetElem = entries.at(j).at('target');
-
-            if (TP.isCallable(transformFunc =
-                                entries.at(j).at('transformFunc'))) {
-                finalVal = transformFunc(aSignal.getSource(), val);
-            } else {
-                finalVal = val;
-            }
-
-            targetElem.setFacet('value',
-                                aSignal.at('facet'),
-                                finalVal,
-                                false);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('getBindingAttachPoint',
-function() {
-
-    var bindingScopeElem;
-
-    bindingScopeElem = TP.nodeDetectAncestor(
-            this.getNativeNode(),
-            function(aParentNode) {
-                return TP.elementHasAttribute(aParentNode, 'bind:scope', true);
-            });
-
-    if (TP.isElement(bindingScopeElem)) {
-        return TP.wrap(bindingScopeElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('isScopingElement',
-function() {
-
-    var elem;
-
-    elem = this.getNativeNode();
-
-    return TP.elementHasAttribute(elem, 'bind:scope', true) ||
-            TP.elementHasAttribute(elem, 'bind:repeat', true);
-
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('getBindingRegistry',
-function() {
-
-    var bindRegistry;
-
-    if (TP.notValid(bindRegistry = this.get('bindRegistry'))) {
-        bindRegistry = TP.hc();
-        this.set('bindRegistry', bindRegistry);
-    }
-
-    return bindRegistry;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('registerBindingAt',
-function(anEntry, bindingAttachLocations) {
-
-    var bindRegistry,
-
-        exprs,
-        i,
-        dataExpr,
-
-        entries,
-
-        scopeVals,
-        scopePath,
-
-        dataLoc;
-
-    bindRegistry = this.getBindingRegistry();
-
-    exprs = anEntry.at('dataExprs');
-
-    for (i = 0; i < exprs.getSize(); i++) {
-
-        dataExpr = exprs.at(i);
-
-        if (!TP.isArray(entries = bindRegistry.at(dataExpr))) {
-            entries = TP.ac();
-            bindRegistry.atPut(dataExpr, entries);
-        }
-
-        entries.push(anEntry);
-
-        //  If the data expression is a fully formed URI, then use the primary
-        //  URI of that to register for changes
-        if (TP.isURI(dataExpr)) {
-            dataLoc = TP.uc(dataExpr).getLocation();
-        } else if (TP.notEmpty(scopeVals = this.getBindingScopeValues())) {
-            scopePath = TP.uriJoinFragments.apply(TP, scopeVals);
-            dataLoc = TP.uc(scopePath).getLocation();
-        }
-
-        if (TP.isValid(dataLoc)) {
-            bindingAttachLocations.push(dataLoc);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
-function(attributeName, wantsFullScope) {
-
-    /**
-     * @method getBindingInfoFrom
-     * @summary Gets binding information from the attribute named by the
-     *     supplied attribute name on the receiver.
-     * @param {String} attributeName The *local* name of the attribute to obtain
-     *     the binding information from.
-     * @param {Boolean} [wantsFullScope=false] Whether or not to return 'fully
-     *     scoped values'.
-     * @returns {TP.core.Hash} A hash of binding information keyed by the
-     *     binding target name.
-     */
-
-    var elem,
-
-        attrVal,
-
-        entryStr,
-        bindEntries,
-
-        keys,
-        key,
-
-        len,
-        i,
-
-        fullyExpandedVal,
-
-        entry,
-        hadBrackets,
-        preEntry,
-        postEntry,
-
-        sigilIndex,
-        formatExpr;
-
-    elem = this.getNativeNode();
-
-    //  If there is no value for the specified attribute on the receiver, then
-    //  just return an empty hash here - there is no reason to compute a bind
-    //  scope chain for an element that doesn't have any binding.
-    if (TP.isEmpty(attrVal = TP.elementGetAttribute(
-                                elem, 'bind:' + attributeName, true))) {
-        return TP.hc();
-    }
-
-    //  Otherwise, parse out each name: value pair.
-
-    //  First, try to get the attribute as a JSON string. This allows for
-    //  attribute values like:
-    //
-    //      {value: urn:tibet:fluffy}
-    //
-    //      which are converted to:
-    //
-    //      {"value": "urn:tibet:fluffy"}
-    entryStr = TP.reformatJSToJSON(attrVal);
-
-    //  If we couldn't get a JSON String, try to default it to
-    //  {"value":"..."}
-    if (!TP.isJSONString(entryStr)) {
-        entryStr = '{"value":"' + attrVal + '"}';
-    }
-
-    //  Try to parse the entry string into a TP.core.Hash.
-    bindEntries = TP.json2js(entryStr);
-
-    if (TP.isEmpty(bindEntries)) {
-        return this.raise('TP.sig.InvalidBinding',
-                            'Source Element: ' + TP.str(elem) +
-                            ' Generated bindings: ' + entryStr);
-    }
-
-    if (TP.notTrue(wantsFullScope)) {
-        return bindEntries;
-    }
-
-    keys = bindEntries.getKeys();
-
-    len = bindEntries.getSize();
-    for (i = 0; i < len; i++) {
-        key = keys.at(i);
-
-        entry = bindEntries.at(key);
-
-        TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
-        hadBrackets = TP.regex.BINDING_STATEMENT_EXTRACT.test(entry);
-        formatExpr = null;
-
-        if (hadBrackets) {
-            preEntry = entry.slice(0, entry.indexOf('[['));
-            postEntry = entry.slice(entry.indexOf(']]') + 2);
-            entry = entry.slice(entry.indexOf('[[') + 2, entry.indexOf(']]'));
-        }
-
-        if (TP.regex.ACP_FORMAT.test(entry)) {
-            sigilIndex = entry.indexOf('.%');
-            formatExpr = entry.slice(sigilIndex);
-            entry = entry.slice(0, sigilIndex).trim();
-        }
-
-        fullyExpandedVal = entry;
-
-        if (TP.notEmpty(formatExpr)) {
-            fullyExpandedVal += formatExpr;
-        }
-
-        if (hadBrackets) {
-            fullyExpandedVal =
-                preEntry + '[[' + fullyExpandedVal + ']]' + postEntry;
-        }
-
-        bindEntries.atPut(key, fullyExpandedVal);
-    }
-
-    return bindEntries;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('getBindingScopeValues',
@@ -1126,6 +600,10 @@ function() {
 
         scopeVals;
 
+    if (TP.notEmpty(scopeVals = this.get('scopeValues'))) {
+        return scopeVals;
+    }
+
     elem = this.getNativeNode();
 
     scopeVals = TP.ac();
@@ -1134,7 +612,7 @@ function() {
     //  itself. This will be used to qualify any expressions on the element
     //  itself.
     if (TP.notEmpty(localScopeNode = TP.elementGetAttributeNodesInNS(
-                            elem, '*:scope', TP.w3.Xmlns.BIND))) {
+                            elem, /\w+:(scope|repeat)/, TP.w3.Xmlns.BIND))) {
         scopeVals.push(localScopeNode[0].value);
     }
 
@@ -1175,210 +653,80 @@ function() {
     //  significant' to be first.
     scopeVals.reverse();
 
+    this.set('scopeValues', scopeVals);
+
     return scopeVals;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('addBindingEntriesFromBindAttr',
-function(bindingAttrName, bindingDirection, bidiAttrs, bindingAttachLocations,
-            bindingAttachPoint) {
-
-    var info,
-        keys,
-        len,
-        i,
-
-        attrName,
-        attrExpr,
-        transformExpr,
-
-        transformInfo,
-        transformFunc,
-        dataLocs,
-
-        direction;
-
-    info = this.getBindingInfoFrom(bindingAttrName, true);
-    keys = info.getKeys();
-    len = keys.getSize();
-
-    for (i = 0; i < len; i++) {
-
-        attrName = keys.at(i);
-        attrExpr = info.at(attrName);
-
-        transformExpr = null;
-
-        TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
-        if (TP.regex.BINDING_STATEMENT_EXTRACT.test(attrExpr)) {
-            transformExpr = attrExpr;
-        } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrExpr)) {
-            transformExpr = '[[' + attrExpr + ']]';
-        } else if (TP.regex.ACP_FORMAT.test(attrExpr)) {
-            transformExpr = '[[' + attrExpr + ']]';
-        }
-
-        if (TP.isValid(transformExpr)) {
-            transformInfo = this.computeTransformationFunction(transformExpr);
-
-            transformFunc = transformInfo.first();
-            dataLocs = transformInfo.last();
-        } else {
-            dataLocs = TP.ac(attrExpr);
-        }
-
-        if (bindingDirection === TP.IO &&
-            bidiAttrs.indexOf(attrName) === TP.NOT_FOUND) {
-            direction = TP.IN;
-        } else {
-            direction = bindingDirection;
-        }
-
-        bindingAttachPoint.registerBindingAt(
-                    TP.hc('target', this,
-                            'targetAttrName', attrName,
-                            'sourceAttrName', 'value',
-                            'sourceFacet', 'value',
-                            'direction', direction,
-                            'transformFunc', transformFunc,
-                            'dataExprs', dataLocs),
-                    bindingAttachLocations);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('addBindingEntriesFromInlineAttr',
-function(attrNode, bidiAttrs, bindingAttachLocations, bindingAttachPoint) {
-
-    var attrExpr,
-        transformExpr,
-
-        transformInfo,
-        transformFunc,
-        dataLocs;
-
-    if (bidiAttrs.indexOf(attrNode.name) === TP.NOT_FOUND) {
-        return;
-    }
-
-    attrExpr = attrNode.value;
-
-    transformExpr = null;
-
-    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
-    if (TP.regex.BINDING_STATEMENT_EXTRACT.test(attrExpr)) {
-        transformExpr = attrExpr;
-    } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrExpr)) {
-        transformExpr = '[[' + attrExpr + ']]';
-    } else if (TP.regex.ACP_FORMAT.test(attrExpr)) {
-        transformExpr = '[[' + attrExpr + ']]';
-    }
-
-    if (TP.isValid(transformExpr)) {
-        transformInfo = this.computeTransformationFunction(transformExpr);
-
-        transformFunc = transformInfo.first();
-        dataLocs = transformInfo.last();
-    } else {
-        dataLocs = TP.ac(attrExpr);
-    }
-
-    bindingAttachPoint.registerBindingAt(
-                TP.hc('target', this,
-                        'targetAttrName', attrNode.name,
-                        'sourceAttrName', 'value',
-                        'sourceFacet', 'value',
-                        'direction', TP.IO,
-                        'transformFunc', transformFunc,
-                        'dataExprs', dataLocs),
-                bindingAttachLocations);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('rebuild',
-function(aSignalOrHash) {
+TP.core.ElementNode.Inst.defineMethod('$regenerateRepeat',
+function(aCollection) {
 
     var elem,
 
-        bindingAttachPoint,
+        repeatContent,
 
-        bindingAttachLocations,
-        bidiAttrs,
+        bodyFragment,
 
-        j,
+        mgmtElement,
 
-        attrNode;
+        startIndex,
+        endIndex,
+
+        i,
+
+        newNode;
+
+    if (TP.notValid(aCollection)) {
+        return;
+    }
 
     elem = this.getNativeNode();
 
-    var start = Date.now();
+    //  This will be a DocumentFragment that we stuffed away when the receiver
+    //  was rebuilt.
+    repeatContent = this.get('repeatContent');
 
-    //  If this is a 'bind:scope' or 'bind:repeat', then we just return
-    if (this.isScopingElement()) {
-        return this;
+    bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
+
+    startIndex = 0;
+    endIndex = aCollection.getSize();
+
+    //  Iterate over the resource and build out a chunk of markup for each
+    //  item in the resource.
+    for (i = startIndex; i < endIndex; i++) {
+
+        //  Make sure to clone the content.
+        newNode = TP.nodeCloneNode(repeatContent);
+
+        //  Append this new chunk of markup to the document fragment we're
+        //  building up and then loop to the top to do it again.
+        bodyFragment.appendChild(newNode);
     }
 
-    bindingAttachPoint = this.getBindingAttachPoint();
+    //  Append a 'management element' under ourself to manage things like awaken
+    mgmtElement = TP.documentConstructElement(this.getNativeDocument(),
+                                                'span',
+                                                TP.w3.Xmlns.XHTML);
+    TP.elementSetAttribute(mgmtElement, 'tibet:nomutationtracking', true, true);
 
-    bindingAttachLocations = TP.ac();
+    //  Append the management element under the receiver element
+    mgmtElement = TP.nodeAppendChild(elem, mgmtElement, false);
 
-    //  Obtain the names of any attributes that allow bi-directional
-    //  binding. For TP.IO, we'll check these against the attribute name
-    //  that the author wants to bind to double check that the attribute can
-    //  be bound in both directions.
-    bidiAttrs = this.getType().get('bidiAttrs');
 
-    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
-        this.addBindingEntriesFromBindAttr(
-                        'io', TP.IO, bidiAttrs,
-                        bindingAttachLocations,
-                        bindingAttachPoint);
-    } else if (TP.elementHasAttribute(elem, 'bind:in', true)) {
-        this.addBindingEntriesFromBindAttr(
-                        'in', TP.IN, bidiAttrs,
-                        bindingAttachLocations,
-                        bindingAttachPoint);
-    } else {
+    //  Finally, append the whole fragment under the receiver element
+    TP.nodeAppendChild(mgmtElement, bodyFragment, false);
 
-        for (j = 0; j < elem.attributes.length; j++) {
-            attrNode = elem.attributes[j];
-            if (attrNode.namespaceURI !== TP.w3.Xmlns.BIND &&
-                attrNode.value.indexOf('[[') !== TP.NOT_FOUND) {
-                this.addBindingEntriesFromInlineAttr(
-                        attrNode, bidiAttrs,
-                        bindingAttachLocations,
-                        bindingAttachPoint);
-            }
-        }
-    }
+    //  Bubble any xmlns attributes upward to avoid markup clutter.
+    TP.elementBubbleXMLNSAttributes(mgmtElement);
 
-    if (TP.isEmpty(bindingAttachLocations)) {
-        return this;
-    }
+    TP.nodeAwakenContent(mgmtElement);
 
-    this.getDocument().registerChangeLocationsFor(
-                bindingAttachLocations,
-                bindingAttachPoint);
-
-    end = Date.now();
-
-    TP.totalRebuildTime += (end - start);
+    this.defineAttribute('generatedContent');
+    this.set('generatedContent', true);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('$regenerateRepeat',
-function(aSource) {
-
 });
 
 //  ------------------------------------------------------------------------
@@ -1393,8 +741,6 @@ function(aSignalOrHash) {
 
         childrenFragment;
 
-    debugger;
-
     bindingAttachPoint = this.getBindingAttachPoint();
 
     bindingAttachLocations = TP.ac();
@@ -1408,12 +754,9 @@ function(aSignalOrHash) {
         return this;
     }
 
-    this.getDocument().registerChangeLocationsFor(
+    this.getDocument().registerChangeNotificationsFor(
                 bindingAttachLocations,
                 bindingAttachPoint);
-
-    this.empty();
-
 
     //  If there is no children content already captured, then capture it.
     if (TP.notValid(childrenFragment = this.get('repeatContent'))) {
@@ -1431,6 +774,265 @@ function(aSignalOrHash) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
+
+//  ========================================================================
+//  MARKUP BINDING
+//  ========================================================================
+
+//  ------------------------------------------------------------------------
+//  TP.core.DocumentNode
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineHandler('FacetChange',
+function(aSignal) {
+
+    /**
+     * @method handleFacetChange
+     * @summary
+     * @param {Change} aSignal The signal instance which triggered this handler.
+     */
+
+    var signalFlag,
+
+        primarySource,
+
+        doc,
+
+        query,
+        elems,
+
+        boundAttrNodes,
+        i,
+        j,
+
+        attrs,
+
+        tpDocElem,
+
+        changedPrimaryLoc,
+        changedPathKeys,
+        len,
+        len2,
+
+        attrName,
+
+        searchPath,
+
+        matcher,
+
+        pathParts,
+
+        changedPaths,
+
+        changedPath,
+
+        initialVal,
+
+        ownerTPElem,
+        attrVal;
+
+    signalFlag = TP.sys.shouldSignalDOMLoaded();
+    TP.sys.shouldSignalDOMLoaded(false);
+
+    primarySource = aSignal.getOrigin().getResource().get('result');
+
+    //  Make sure that we have an info registry - this is used to cache binding
+    //  information to avoid recomputation for common expressions.
+    doc = this.getNativeNode();
+    if (TP.notValid(doc[TP.BIND_INFO_REGISTRY])) {
+        doc[TP.BIND_INFO_REGISTRY] = TP.hc();
+    }
+
+    //  Query for all elements containing namespaced attributes of 'io', 'in',
+    //  'scope' or repeat. This is the most sophisticated 'namespace like' query
+    //  we can give the native querySelectorAll() call since it doesn't really
+    //  recognize namespaces... we'll fix that later.
+    query = '*[*|io]' + ', ' +
+            '*[*|in]' + ', ' +
+            '*[*|scope]' + ', ' +
+            '*[*|repeat]';
+
+    elems = TP.ac(doc.documentElement.querySelectorAll(query));
+
+    tpDocElem = this.getDocumentElement();
+
+    changedPrimaryLoc = aSignal.getOrigin().getPrimaryURI().getLocation();
+
+    if (TP.isValid(changedPaths = aSignal.at(TP.CHANGE_PATHS))) {
+
+        var startUpdate = Date.now();
+
+        boundAttrNodes = TP.ac();
+        for (i = 0; i < elems.length; i++) {
+            attrs = elems[i].attributes;
+
+            for (j = 0; j < attrs.length; j++) {
+
+                attrVal = attrs[j].value;
+
+                if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
+                    boundAttrNodes.push(attrs[j])
+                }
+            }
+        }
+
+        //  Iterate over all of the changed paths
+
+        changedPathKeys = changedPaths.getKeys();
+        len = changedPathKeys.getSize();
+
+        for (i = 0; i < len; i++) {
+
+            //  TODO: Probably need to go after all of the changed path values
+            //  rather than the key
+            changedPath = changedPathKeys.at(i);
+
+            //  Build a matcher to search for the full path
+            searchPath = TP.uriJoinFragments(changedPrimaryLoc, changedPath);
+            matcher = TP.rc(TP.regExpEscape(searchPath));
+
+            //  If the searchPath matched any of the attributes, then all we have
+            //  to do is update the leaf.
+            len2 = boundAttrNodes.getSize();
+            for (j = 0; j < len2; j++) {
+                attrName = boundAttrNodes.at(j).localName;
+                attrVal = boundAttrNodes.at(j).value;
+
+                if ((attrName === 'io' || attrName === 'in') &&
+                    matcher.test(attrVal)) {
+
+                    ownerTPElem = TP.wrap(boundAttrNodes.at(j).ownerElement);
+
+                    ownerTPElem.refreshLeaf(
+                            primarySource, aSignal, primarySource,
+                            boundAttrNodes.at(j));
+                }
+            }
+
+            //  Now look for ones that have partial paths
+
+            pathParts = TP.getAccessPathParts(changedPath);
+
+            //  Unshift the primary location onto the front.
+            pathParts.unshift(changedPrimaryLoc);
+
+            initialVal = primarySource.get('value');
+            tpDocElem.refreshBranches(
+                    primarySource, aSignal, elems, initialVal, pathParts);
+        }
+
+        //  Refresh all bindings that mention the primary URI as part of their
+        //  binding expression.
+
+        var endUpdate = Date.now();
+        TP.totalUpdateTime += (endUpdate - startUpdate);
+
+    } else {
+
+        var startSetup = Date.now();
+
+        boundAttrNodes = TP.ac();
+        for (i = 0; i < elems.length; i++) {
+            attrs = elems[i].attributes;
+
+            for (j = 0; j < attrs.length; j++) {
+
+                attrVal = attrs[j].value;
+
+                if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
+                    (attrVal.indexOf(changedPrimaryLoc) !== TP.NOT_FOUND ||
+                    TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
+                    boundAttrNodes.push(attrs[j])
+                }
+            }
+        }
+
+        len = boundAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+
+            attrName = boundAttrNodes.at(i).localName;
+
+            ownerTPElem = TP.wrap(boundAttrNodes.at(i).ownerElement);
+
+            if (attrName === 'io' || attrName === 'in') {
+                ownerTPElem.refreshLeaf(primarySource, aSignal,
+                                        primarySource, boundAttrNodes[i]);
+            }
+        }
+
+        tpDocElem.refreshBranches(
+            primarySource, aSignal, elems, primarySource.get('value'), null);
+
+        var endSetup = Date.now();
+        TP.totalSetupTime += (endSetup - startSetup);
+    }
+
+    TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  TP.core.ElementNode
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  The attributes for this element type that are considered to 'bidi
+//  attributes' that can not only be bound to data source but be bound *back* to
+//  the data source so that when they are changed by the user, they update the
+//  data source.
+TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineAttribute('scopeValues');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getTextNodesMatching',
+function(aMatchFunc) {
+
+    var iterator,
+        matchingTextNodes,
+        textNode;
+
+    var startTextQuery = Date.now();
+
+    iterator = this.getDocument().getNativeNode().createNodeIterator(
+                this.getNativeNode(), NodeFilter.SHOW_TEXT, null, false);
+
+    matchingTextNodes = TP.ac();
+    textNode = iterator.nextNode();
+    while (textNode) {
+        if (aMatchFunc(textNode)) {
+            matchingTextNodes.push(textNode);
+        }
+        textNode = iterator.nextNode();
+    }
+
+    var endTextQuery = Date.now();
+    TP.totalTextQueryTime += (endTextQuery - startTextQuery);
+
+    return matchingTextNodes;
 });
 
 //  ------------------------------------------------------------------------
@@ -1550,10 +1152,10 @@ function(attrValue) {
     //  Function that will transform the data before returning it.
     if (!isSimpleExpr) {
 
-        transformFunc = function(source, val) {
+        transformFunc = function(
+                            source, val, targetTPElem, repeatSource, index) {
             var wrappedVal,
 
-                index,
                 params,
 
                 repeatResourceResult,
@@ -1563,21 +1165,17 @@ function(attrValue) {
 
             wrappedVal = TP.wrap(val);
 
-            if (TP.isNumber(index = transformFunc.$$repeatIndex)) {
+            if (TP.isNumber(index)) {
 
-                //  NB: We assume 'async' of false here.
-                repeatResourceResult =
-                    transformFunc.$$repeatInputURI.getResource().get('result');
-
-                last = repeatResourceResult.getSize() - 1;
+                last = repeatSource.getSize() - 1;
 
                 //  Iterating context
                 params = TP.hc(
                     '$REQUEST', null,
                     '$TP', TP,
                     '$APP', APP,
-                    '$TAG', this,
-                    '$TARGET', this.getDocument(),
+                    '$TAG', targetTPElem,
+                    '$TARGET', targetTPElem.getDocument(),
                     '$_', wrappedVal,
                     '$INPUT', repeatResourceResult,
                     '$INDEX', index,
@@ -1593,8 +1191,8 @@ function(attrValue) {
                     '$REQUEST', null,
                     '$TP', TP,
                     '$APP', APP,
-                    '$TAG', this,
-                    '$TARGET', this.getDocument(),
+                    '$TAG', targetTPElem,
+                    '$TARGET', targetTPElem.getDocument(),
                     '$_', wrappedVal,
                     '$INPUT', val);
             }
@@ -1624,6 +1222,455 @@ function(attrValue) {
     }
 
     return TP.ac(transformFunc, referencedExprs);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
+function(attributeValue) {
+
+    /**
+     * @method getBindingInfoFrom
+     * @summary Gets binding information from the attribute named by the
+     *     supplied attribute name on the receiver.
+     * @returns {TP.core.Hash} A hash of binding information keyed by the
+     *     binding target name.
+     */
+
+    var elem,
+        doc,
+
+        attrVal,
+
+        entryStr,
+        bindEntries,
+
+        keys,
+        key,
+
+        len,
+        i,
+
+        fullyExpandedVal,
+
+        entry,
+        hadBrackets,
+        preEntry,
+        postEntry,
+
+        sigilIndex,
+        formatExpr,
+
+        transformInfo,
+        transformFunc,
+        dataLocs;
+
+    elem = this.getNativeNode();
+    doc = TP.nodeGetDocument(elem);
+
+    attrVal = attributeValue;
+
+    if (doc[TP.BIND_INFO_REGISTRY].hasKey(attrVal)) {
+        return doc[TP.BIND_INFO_REGISTRY].at(attrVal);
+    }
+
+    //  Otherwise, parse out each name: value pair.
+
+    //  First, try to get the attribute as a JSON string. This allows for
+    //  attribute values like:
+    //
+    //      {value: urn:tibet:fluffy}
+    //
+    //      which are converted to:
+    //
+    //      {"value": "urn:tibet:fluffy"}
+    entryStr = TP.reformatJSToJSON(attrVal);
+
+    //  If we couldn't get a JSON String, try to default it to {"value":"..."}
+    if (!TP.isJSONString(entryStr)) {
+        entryStr = '{"value":"' + attrVal + '"}';
+    }
+
+    //  Try to parse the entry string into a TP.core.Hash.
+    bindEntries = TP.json2js(entryStr);
+
+    if (TP.isEmpty(bindEntries)) {
+        return this.raise('TP.sig.InvalidBinding',
+                            'Source Element: ' + TP.str(elem) +
+                            ' Generated bindings: ' + entryStr);
+    }
+
+    keys = bindEntries.getKeys();
+
+    len = bindEntries.getSize();
+    for (i = 0; i < len; i++) {
+        key = keys.at(i);
+
+        entry = bindEntries.at(key);
+
+        TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
+        hadBrackets = TP.regex.BINDING_STATEMENT_EXTRACT.test(entry);
+
+        if (hadBrackets) {
+            formatExpr = null;
+
+            preEntry = entry.slice(0, entry.indexOf('[['));
+            postEntry = entry.slice(entry.indexOf(']]') + 2);
+            entry = entry.slice(entry.indexOf('[[') + 2, entry.indexOf(']]'));
+
+            if (TP.regex.ACP_FORMAT.test(entry)) {
+                sigilIndex = entry.indexOf('.%');
+                formatExpr = entry.slice(sigilIndex);
+                entry = entry.slice(0, sigilIndex).trim();
+            }
+
+            fullyExpandedVal = entry;
+
+            if (TP.notEmpty(formatExpr)) {
+                fullyExpandedVal += formatExpr;
+            }
+
+            fullyExpandedVal =
+                preEntry + '[[' + fullyExpandedVal + ']]' + postEntry;
+        } else {
+            fullyExpandedVal = entry;
+        }
+
+        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullyExpandedVal) ||
+            TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
+
+            transformInfo = this.computeTransformationFunction(
+                                                    fullyExpandedVal);
+
+            //  The Function object that does the transformation.
+            transformFunc = transformInfo.first();
+
+            //  The referenced expressions
+            dataLocs = transformInfo.last();
+        } else {
+            dataLocs = TP.ac(entry);
+        }
+
+        bindEntries.atPut(key, TP.hc('targetAttrName', key,
+                                        'transformFunc', transformFunc,
+                                        'dataExprs', dataLocs))
+    }
+
+    doc[TP.BIND_INFO_REGISTRY].atPut(attrVal, bindEntries);
+
+    return bindEntries;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('isScopingElement',
+function() {
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    return TP.elementHasAttribute(elem, 'bind:scope', true) ||
+            TP.elementHasAttribute(elem, 'bind:repeat', true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refreshLeaf',
+function(primarySource, aSignal, initialVal, bindingAttr) {
+
+    var facet,
+
+        aspect,
+
+        entry,
+
+        exprs,
+        expr,
+
+        attrValue,
+
+        info,
+        infoKeys,
+        len,
+        i,
+
+        transformFunc,
+        finalVal;
+
+    var start = Date.now();
+
+    if (TP.notValid(initialVal)) {
+        return this;
+    }
+
+    facet = aSignal.at('facet');
+
+    attrValue = bindingAttr.value;
+    info = this.getBindingInfoFrom(attrValue);
+
+    infoKeys = info.getKeys();
+    len = infoKeys.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        aspect = infoKeys.at(i);
+        entry = info.at(aspect);
+
+        if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
+
+            finalVal = transformFunc(
+                            aSignal.getSource(),
+                            initialVal,
+                            this,
+                            null,
+                            null);
+        } else {
+            exprs = entry.at('dataExprs');
+
+            if (TP.notEmpty(exprs)) {
+
+                //  This should only have one expression. If it has more than
+                //  one, then we need to raise an exception.
+                if (exprs.getSize() > 1) {
+                    //  TODO: Raise
+                    continue;
+                }
+
+                expr = exprs.at(0);
+
+                if (TP.isURI(expr)) {
+                    expr = TP.uc(expr).getFragmentExpr();
+                }
+
+                finalVal = initialVal.get(expr);
+            }
+        }
+
+        if (aspect === 'value') {
+            this.setValue(finalVal, false);
+        } else {
+            this.setFacet(aspect, facet, finalVal, false);
+        }
+    }
+
+    var end = Date.now();
+    TP.totalInitialGetTime += (end - start);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refreshBranches',
+function(primarySource, aSignal, elems, initialVal, pathParts) {
+
+    var elem,
+
+        subscopes,
+
+        nextElems,
+
+        boundAttrNodes,
+        attrs,
+        i,
+        j,
+
+        ownerElem,
+
+        searchParts,
+
+        partsNegativeSlice,
+
+        searchPath,
+
+        branchMatcher,
+        leafMatcher,
+
+        len,
+
+        boundAttr,
+        attrName,
+        attrVal,
+
+        ownerTPElem,
+        expr,
+        branchVal,
+
+        remainderParts,
+
+        boundWrapper;
+
+    elem = this.getNativeNode();
+
+    var startQuery = Date.now();
+
+    subscopes = TP.ac(elem.querySelectorAll('*[*|scope]'));
+
+    subscopes = subscopes.filter(
+            function(aSubscope) {
+
+                var k;
+
+                for (k = 0; k < subscopes.length; k++) {
+                    if (subscopes[k] !== aSubscope &&
+                        subscopes[k].contains(aSubscope)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+    nextElems = elems.filter(
+            function(anElem) {
+
+                var k;
+
+                if (anElem === elem) {
+                    return false;
+                }
+
+                if (elem.contains(anElem)) {
+                    for (k = 0; k < subscopes.length; k++) {
+                        if (subscopes[k].contains(anElem)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+                return false;
+            });
+
+    nextElems = nextElems.concat(subscopes);
+
+    boundAttrNodes = TP.ac();
+    for (i = 0; i < nextElems.length; i++) {
+        attrs = nextElems[i].attributes;
+
+        for (j = 0; j < attrs.length; j++) {
+
+            //  Make sure the attribute is in the binding namespace
+            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
+                boundAttrNodes.push(attrs[j])
+            }
+        }
+    }
+
+    var endQuery = Date.now();
+    TP.totalBranchQueryTime += (endQuery - startQuery);
+
+    if (TP.isEmpty(pathParts)) {
+
+        len = boundAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+            boundAttr = boundAttrNodes.at(i);
+
+            attrName = boundAttr.localName;
+            attrVal = boundAttr.value;
+
+            ownerElem = boundAttr.ownerElement;
+
+            //  Nested scope?
+            if (boundAttr.localName === 'scope') {
+
+                expr = attrVal;
+
+                if (TP.isURI(expr)) {
+                    expr = TP.uc(expr).getFragmentExpr();
+                }
+
+                branchVal = initialVal.get(expr);
+
+                TP.wrap(ownerElem).refreshBranches(
+                            primarySource, aSignal, elems, branchVal, null);
+            } else {
+
+                //  TODO: Different types of wrappers depending on full name of
+                //  element (ns:tagname)
+
+                if (!boundWrapper) {
+                    boundWrapper = TP.wrap(ownerElem);
+                } else {
+                    //  NB: Primitive and fast way to set native node
+                    boundWrapper.$set('node', ownerElem, false);
+                }
+
+                boundWrapper.refreshLeaf(
+                            primarySource, aSignal, initialVal, boundAttr);
+            }
+        }
+
+    } else {
+
+        searchParts = pathParts;
+
+        partsNegativeSlice = 0;
+
+        //  Work in reverse order, trying to find the 'most specific'
+        //  branching elements.
+        while (TP.notEmpty(searchParts)) {
+
+            //  Build a matcher to search for the search path
+            searchPath = TP.uriJoinFragments.apply(TP, searchParts);
+
+            branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+            leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+
+            len = boundAttrNodes.getSize();
+            for (j = 0; j < len; j++) {
+                boundAttr = boundAttrNodes.at(j);
+
+                attrName = boundAttr.localName;
+                attrVal = boundAttr.value;
+
+                if ((attrName === 'scope' || attrName === 'repeat') &&
+                    branchMatcher.test(attrVal)) {
+
+                    ownerTPElem = TP.wrap(boundAttr.ownerElement);
+
+                    expr = attrVal;
+
+                    if (TP.isURI(expr)) {
+                        expr = TP.uc(expr).getFragmentExpr();
+                    }
+
+                    branchVal = initialVal.get(expr);
+
+                    remainderParts = pathParts.slice(partsNegativeSlice);
+
+                    ownerTPElem.refreshBranches(
+                            primarySource,
+                            aSignal,
+                            elems,
+                            branchVal,
+                            remainderParts);
+                } else if (!TP.isURI(attrVal) && leafMatcher.test(attrVal)) {
+
+                    //  TODO: Different types of wrappers depending on full name
+                    //  of element (ns:tagname)
+
+                    if (!boundWrapper) {
+                        boundWrapper =
+                            TP.wrap(boundAttrNodes.at(j).ownerElement);
+                    } else {
+                        //  NB: Primitive and fast way to set native node
+                        boundWrapper.$set(
+                            'node', boundAttrNodes.at(j).ownerElement, false);
+                    }
+
+                    boundWrapper.refreshLeaf(primarySource, aSignal, initialVal,
+                                                boundAttrNodes.at(j));
+                }
+            }
+
+            partsNegativeSlice--;
+            searchParts = pathParts.slice(0, partsNegativeSlice);
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
