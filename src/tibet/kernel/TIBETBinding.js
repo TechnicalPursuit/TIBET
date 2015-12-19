@@ -847,6 +847,7 @@ function(aSignal) {
     TP.sys.shouldSignalDOMLoaded(false);
 
     primarySource = aSignal.getOrigin().getResource().get('result');
+    initialVal = primarySource.get('value');
 
     //  Make sure that we have an info registry - this is used to cache binding
     //  information to avoid recomputation for common expressions.
@@ -870,23 +871,25 @@ function(aSignal) {
 
     changedPrimaryLoc = aSignal.getOrigin().getPrimaryURI().getLocation();
 
+    boundAttrNodes = TP.ac();
+    for (i = 0; i < elems.length; i++) {
+        attrs = elems[i].attributes;
+
+        for (j = 0; j < attrs.length; j++) {
+
+            attrVal = attrs[j].value;
+
+            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
+                (attrVal.indexOf(changedPrimaryLoc) !== TP.NOT_FOUND ||
+                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
+                boundAttrNodes.push(attrs[j])
+            }
+        }
+    }
+
     if (TP.isValid(changedPaths = aSignal.at(TP.CHANGE_PATHS))) {
 
         var startUpdate = Date.now();
-
-        boundAttrNodes = TP.ac();
-        for (i = 0; i < elems.length; i++) {
-            attrs = elems[i].attributes;
-
-            for (j = 0; j < attrs.length; j++) {
-
-                attrVal = attrs[j].value;
-
-                if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
-                    boundAttrNodes.push(attrs[j])
-                }
-            }
-        }
 
         //  Iterate over all of the changed paths
 
@@ -916,7 +919,7 @@ function(aSignal) {
                     ownerTPElem = TP.wrap(boundAttrNodes.at(j).ownerElement);
 
                     ownerTPElem.refreshLeaf(
-                            primarySource, aSignal, primarySource,
+                            primarySource, aSignal, initialVal,
                             boundAttrNodes.at(j));
                 }
             }
@@ -928,7 +931,6 @@ function(aSignal) {
             //  Unshift the primary location onto the front.
             pathParts.unshift(changedPrimaryLoc);
 
-            initialVal = primarySource.get('value');
             tpDocElem.refreshBranches(
                     primarySource, aSignal, elems, initialVal, pathParts);
         }
@@ -943,22 +945,6 @@ function(aSignal) {
 
         var startSetup = Date.now();
 
-        boundAttrNodes = TP.ac();
-        for (i = 0; i < elems.length; i++) {
-            attrs = elems[i].attributes;
-
-            for (j = 0; j < attrs.length; j++) {
-
-                attrVal = attrs[j].value;
-
-                if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
-                    (attrVal.indexOf(changedPrimaryLoc) !== TP.NOT_FOUND ||
-                    TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
-                    boundAttrNodes.push(attrs[j])
-                }
-            }
-        }
-
         len = boundAttrNodes.getSize();
         for (i = 0; i < len; i++) {
 
@@ -968,12 +954,12 @@ function(aSignal) {
 
             if (attrName === 'io' || attrName === 'in') {
                 ownerTPElem.refreshLeaf(primarySource, aSignal,
-                                        primarySource, boundAttrNodes[i]);
+                                        initialVal, boundAttrNodes[i]);
             }
         }
 
         tpDocElem.refreshBranches(
-            primarySource, aSignal, elems, primarySource.get('value'), null);
+            primarySource, aSignal, elems, initialVal, null);
 
         var endSetup = Date.now();
         TP.totalSetupTime += (endSetup - startSetup);
@@ -1376,6 +1362,225 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('refreshBranches',
+function(primarySource, aSignal, elems, initialVal, pathParts) {
+
+    var elem,
+
+        subscopes,
+
+        nextElems,
+
+        boundAttrNodes,
+        attrs,
+        i,
+        j,
+
+        ownerElem,
+
+        searchParts,
+
+        partsNegativeSlice,
+
+        searchPath,
+
+        branchMatcher,
+        leafMatcher,
+
+        ownerWrappers,
+
+        len,
+
+        boundAttr,
+        attrName,
+        attrVal,
+
+        ownerTPElem,
+        expr,
+        branchVal,
+
+        remainderParts;
+
+    elem = this.getNativeNode();
+
+    var startQuery = Date.now();
+
+    subscopes = TP.ac(elem.querySelectorAll('*[*|scope]'));
+
+    subscopes = subscopes.filter(
+            function(aSubscope) {
+
+                var k;
+
+                for (k = 0; k < subscopes.length; k++) {
+                    if (subscopes[k] !== aSubscope &&
+                        subscopes[k].contains(aSubscope)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+    nextElems = elems.filter(
+            function(anElem) {
+
+                var k;
+
+                if (anElem === elem) {
+                    return false;
+                }
+
+                if (elem.contains(anElem)) {
+                    for (k = 0; k < subscopes.length; k++) {
+                        if (subscopes[k].contains(anElem)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+                return false;
+            });
+
+    nextElems = nextElems.concat(subscopes);
+
+    boundAttrNodes = TP.ac();
+    for (i = 0; i < nextElems.length; i++) {
+        attrs = nextElems[i].attributes;
+
+        for (j = 0; j < attrs.length; j++) {
+
+            //  Make sure the attribute is in the binding namespace
+            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
+                boundAttrNodes.push(attrs[j])
+            }
+        }
+    }
+
+    ownerWrappers = TP.hc();
+
+    var endQuery = Date.now();
+    TP.totalBranchQueryTime += (endQuery - startQuery);
+
+    if (TP.isEmpty(pathParts)) {
+
+        len = boundAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+            boundAttr = boundAttrNodes.at(i);
+
+            attrName = boundAttr.localName;
+            attrVal = boundAttr.value;
+
+            ownerElem = boundAttr.ownerElement;
+
+            //  Nested scope?
+            if (boundAttr.localName === 'scope') {
+
+                expr = attrVal;
+
+                if (TP.isURI(expr)) {
+                    expr = TP.uc(expr).getFragmentExpr();
+                }
+
+                branchVal = initialVal.get(expr);
+
+                TP.wrap(ownerElem).refreshBranches(
+                            primarySource, aSignal, elems, branchVal, null);
+            } else {
+
+                //  There are different types of wrappers depending on full tag
+                //  name of element (ns:tagname)
+
+                if (TP.notValid(
+                        ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
+                    ownerTPElem = TP.core.ElementNode.construct(ownerElem);
+                    ownerWrappers.atPut(ownerElem.tagName, ownerTPElem);
+                }
+
+                //  NB: Primitive and fast way to set native node
+                ownerTPElem.$set('node', ownerElem, false);
+
+                ownerTPElem.refreshLeaf(
+                            primarySource, aSignal, initialVal, boundAttr);
+            }
+        }
+
+    } else {
+
+        searchParts = pathParts;
+
+        partsNegativeSlice = 0;
+
+        //  Work in reverse order, trying to find the 'most specific'
+        //  branching elements.
+        while (TP.notEmpty(searchParts)) {
+
+            //  Build a matcher to search for the search path
+            searchPath = TP.uriJoinFragments.apply(TP, searchParts);
+
+            branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+            leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+
+            len = boundAttrNodes.getSize();
+            for (j = 0; j < len; j++) {
+                boundAttr = boundAttrNodes.at(j);
+
+                attrName = boundAttr.localName;
+                attrVal = boundAttr.value;
+
+                ownerElem = boundAttr.ownerElement;
+
+                if ((attrName === 'scope' || attrName === 'repeat') &&
+                    branchMatcher.test(attrVal)) {
+
+                    ownerTPElem = TP.wrap(ownerElem);
+
+                    expr = attrVal;
+
+                    if (TP.isURI(expr)) {
+                        expr = TP.uc(expr).getFragmentExpr();
+                    }
+
+                    branchVal = initialVal.get(expr);
+
+                    remainderParts = pathParts.slice(partsNegativeSlice);
+
+                    ownerTPElem.refreshBranches(
+                            primarySource,
+                            aSignal,
+                            elems,
+                            branchVal,
+                            remainderParts);
+                } else if (!TP.isURI(attrVal) && leafMatcher.test(attrVal)) {
+
+                    //  TODO: Different types of wrappers depending on full name
+                    //  of element (ns:tagname)
+
+                    if (TP.notValid(
+                        ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
+                        ownerTPElem = TP.core.ElementNode.construct(ownerElem);
+                        ownerWrappers.atPut(ownerElem.tagName, ownerTPElem);
+                    }
+
+                    //  NB: Primitive and fast way to set native node
+                    ownerTPElem.$set('node', ownerElem, false);
+
+                    ownerTPElem.refreshLeaf(
+                                primarySource, aSignal, initialVal, boundAttr);
+                }
+            }
+
+            partsNegativeSlice--;
+            searchParts = pathParts.slice(0, partsNegativeSlice);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('refreshLeaf',
 function(primarySource, aSignal, initialVal, bindingAttr) {
 
@@ -1452,223 +1657,11 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
         } else {
             this.setFacet(aspect, facet, finalVal, false);
         }
+        //this.getNativeNode().value = finalVal;
     }
 
     var end = Date.now();
     TP.totalInitialGetTime += (end - start);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, pathParts) {
-
-    var elem,
-
-        subscopes,
-
-        nextElems,
-
-        boundAttrNodes,
-        attrs,
-        i,
-        j,
-
-        ownerElem,
-
-        searchParts,
-
-        partsNegativeSlice,
-
-        searchPath,
-
-        branchMatcher,
-        leafMatcher,
-
-        len,
-
-        boundAttr,
-        attrName,
-        attrVal,
-
-        ownerTPElem,
-        expr,
-        branchVal,
-
-        remainderParts,
-
-        boundWrapper;
-
-    elem = this.getNativeNode();
-
-    var startQuery = Date.now();
-
-    subscopes = TP.ac(elem.querySelectorAll('*[*|scope]'));
-
-    subscopes = subscopes.filter(
-            function(aSubscope) {
-
-                var k;
-
-                for (k = 0; k < subscopes.length; k++) {
-                    if (subscopes[k] !== aSubscope &&
-                        subscopes[k].contains(aSubscope)) {
-                        return false;
-                    }
-                }
-
-                return true;
-            });
-
-    nextElems = elems.filter(
-            function(anElem) {
-
-                var k;
-
-                if (anElem === elem) {
-                    return false;
-                }
-
-                if (elem.contains(anElem)) {
-                    for (k = 0; k < subscopes.length; k++) {
-                        if (subscopes[k].contains(anElem)) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-                return false;
-            });
-
-    nextElems = nextElems.concat(subscopes);
-
-    boundAttrNodes = TP.ac();
-    for (i = 0; i < nextElems.length; i++) {
-        attrs = nextElems[i].attributes;
-
-        for (j = 0; j < attrs.length; j++) {
-
-            //  Make sure the attribute is in the binding namespace
-            if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
-                boundAttrNodes.push(attrs[j])
-            }
-        }
-    }
-
-    var endQuery = Date.now();
-    TP.totalBranchQueryTime += (endQuery - startQuery);
-
-    if (TP.isEmpty(pathParts)) {
-
-        len = boundAttrNodes.getSize();
-        for (i = 0; i < len; i++) {
-            boundAttr = boundAttrNodes.at(i);
-
-            attrName = boundAttr.localName;
-            attrVal = boundAttr.value;
-
-            ownerElem = boundAttr.ownerElement;
-
-            //  Nested scope?
-            if (boundAttr.localName === 'scope') {
-
-                expr = attrVal;
-
-                if (TP.isURI(expr)) {
-                    expr = TP.uc(expr).getFragmentExpr();
-                }
-
-                branchVal = initialVal.get(expr);
-
-                TP.wrap(ownerElem).refreshBranches(
-                            primarySource, aSignal, elems, branchVal, null);
-            } else {
-
-                //  TODO: Different types of wrappers depending on full name of
-                //  element (ns:tagname)
-
-                if (!boundWrapper) {
-                    boundWrapper = TP.wrap(ownerElem);
-                } else {
-                    //  NB: Primitive and fast way to set native node
-                    boundWrapper.$set('node', ownerElem, false);
-                }
-
-                boundWrapper.refreshLeaf(
-                            primarySource, aSignal, initialVal, boundAttr);
-            }
-        }
-
-    } else {
-
-        searchParts = pathParts;
-
-        partsNegativeSlice = 0;
-
-        //  Work in reverse order, trying to find the 'most specific'
-        //  branching elements.
-        while (TP.notEmpty(searchParts)) {
-
-            //  Build a matcher to search for the search path
-            searchPath = TP.uriJoinFragments.apply(TP, searchParts);
-
-            branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
-            leafMatcher = TP.rc(TP.regExpEscape(searchPath));
-
-            len = boundAttrNodes.getSize();
-            for (j = 0; j < len; j++) {
-                boundAttr = boundAttrNodes.at(j);
-
-                attrName = boundAttr.localName;
-                attrVal = boundAttr.value;
-
-                if ((attrName === 'scope' || attrName === 'repeat') &&
-                    branchMatcher.test(attrVal)) {
-
-                    ownerTPElem = TP.wrap(boundAttr.ownerElement);
-
-                    expr = attrVal;
-
-                    if (TP.isURI(expr)) {
-                        expr = TP.uc(expr).getFragmentExpr();
-                    }
-
-                    branchVal = initialVal.get(expr);
-
-                    remainderParts = pathParts.slice(partsNegativeSlice);
-
-                    ownerTPElem.refreshBranches(
-                            primarySource,
-                            aSignal,
-                            elems,
-                            branchVal,
-                            remainderParts);
-                } else if (!TP.isURI(attrVal) && leafMatcher.test(attrVal)) {
-
-                    //  TODO: Different types of wrappers depending on full name
-                    //  of element (ns:tagname)
-
-                    if (!boundWrapper) {
-                        boundWrapper =
-                            TP.wrap(boundAttrNodes.at(j).ownerElement);
-                    } else {
-                        //  NB: Primitive and fast way to set native node
-                        boundWrapper.$set(
-                            'node', boundAttrNodes.at(j).ownerElement, false);
-                    }
-
-                    boundWrapper.refreshLeaf(primarySource, aSignal, initialVal,
-                                                boundAttrNodes.at(j));
-                }
-            }
-
-            partsNegativeSlice--;
-            searchParts = pathParts.slice(0, partsNegativeSlice);
-        }
-    }
 
     return this;
 });
