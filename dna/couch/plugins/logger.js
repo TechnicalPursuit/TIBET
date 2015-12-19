@@ -27,7 +27,8 @@
 
     module.exports = function(options) {
         var app,
-            config;
+            config,
+            filter;
 
         app = options.app;
         if (!app) {
@@ -87,6 +88,18 @@
             exitOnError: false
         }),
 
+        //  Make sure we have a default function in place if no other is set.
+        TDS.logger_filter = TDS.logger_filter || function(req, res) {
+            var url;
+
+            url = TDS.getcfg('tds.watch.uri');
+
+            // Don't log repeated calls to the watcher URL.
+            if (req.path.indexOf(url) !== -1) {
+                return true;
+            }
+        };
+
         //  Additional trimming here to help support blending morgan and winston
         //  and not ending up with too many newlines in the output stream.
         logger.stream = {
@@ -103,7 +116,7 @@
 
         //  Merge in morgan request logger and direct it to the winston stream.
         app.use(morgan(logformat, {
-            skip: TDS.logFilter,
+            skip: TDS.logger_filter,
             stream: logger.stream
         }));
 
