@@ -104,11 +104,15 @@
     //  logger, authentication handler, etc.
     options = {app: app, argv: argv, env: env};
 
+    require('./plugins/preload')(options);
+
     require('./plugins/body-parser')(options);
 
     require('./plugins/logger')(options);
 
     require('./plugins/compression')(options);
+
+    require('./plugins/reconfig')(options);
 
     require('./plugins/public-static')(options);
 

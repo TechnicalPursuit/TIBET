@@ -72,7 +72,7 @@ function(aRequest) {
                         'tsh:target',
                         shell.getArgument(aRequest, 'ARG0'));
 
-    if (TP.notEmpty(target)) {
+    if (TP.isString(target)) {
         target = target.unquoted();
     }
 
@@ -84,17 +84,17 @@ function(aRequest) {
     if (suiteName === true) {
         //  Only a single dash...syntax glitch...
         suiteName = '';
-    } else if (TP.notEmpty(suiteName)) {
+    } else if (TP.isString(suiteName)) {
         suiteName = suiteName.unquoted();
     }
 
     cases = shell.getArgument(aRequest, 'tsh:cases', null);
-    if (TP.notEmpty(cases)) {
+    if (TP.isString(cases)) {
         cases = cases.unquoted();
     }
 
     context = shell.getArgument(aRequest, 'tsh:context', 'app');
-    if (TP.notEmpty(context)) {
+    if (TP.isString(context)) {
         context = context.unquoted();
     }
 
@@ -190,10 +190,13 @@ function(aRequest) {
                 karma.info({total: total});
 
                 //  Type first, then Inst, then Local
+                TP.sys.logTest('# Running Type tests for ' + target);
                 obj.Type.runTestSuites(options).then(
                         function() {
+                            TP.sys.logTest('# Running Inst tests for ' + target);
                             return obj.Inst.runTestSuites(options);
                         }).then(function() {
+                            TP.sys.logTest('# Running Local tests for ' + target);
                             return obj.runTestSuites(options);
                         }).then(function(result) {
                             // TODO: should we pass non-null results?
@@ -216,6 +219,7 @@ function(aRequest) {
         total = runner.getCases(params).getSize();
         karma.info({total: total});
 
+        TP.sys.logTest('# Running Local tests for ' + target);
         obj.runTestSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?

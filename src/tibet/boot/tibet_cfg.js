@@ -1213,6 +1213,8 @@
     TP.sys.setcfg('couch.port', '5984');
     TP.sys.setcfg('couch.scheme', 'http');
 
+    TP.sys.setcfg('couch.watch.filter', '*');
+
     TP.sys.setcfg('couch.watch.empty', '\n');
     TP.sys.setcfg('couch.watch.feed', 'continuous');
     TP.sys.setcfg('couch.watch.heartbeat', 500);
@@ -1280,6 +1282,7 @@
     TP.sys.setcfg('tds.use.couch', false);
     TP.sys.setcfg('tds.use.patch', false);
     TP.sys.setcfg('tds.use.pouch', false);
+    TP.sys.setcfg('tds.use.tasks', false);
     TP.sys.setcfg('tds.use.watch', false);
     TP.sys.setcfg('tds.use.webdav', false);
 
@@ -1498,7 +1501,7 @@
 
     //  What path prefix do we expect during initial startup under Karma. If
     //  this isn't set some computations of lib/app paths may fail.
-    TP.sys.setcfg('boot.karma_root', 'base');
+    TP.sys.setcfg('boot.karma_root', '/base');
 
     //  karma will launch via TIBET-INF/tibet/lib/src/tibet_loader so 5 levels
     TP.sys.setcfg('boot.karma_offset', '../../../../..');
@@ -1564,8 +1567,10 @@
     TP.sys.setcfg('uri.template_fallback', true);
     TP.sys.setcfg('uri.keybindings_fallback', false);
 
-    //  the default type used to handle URI load/save operations.
-    TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');
+    //  the default types used to handle URI load/save operations.
+    TP.sys.setcfg('uri.handler.default', 'TP.core.URLHandler');
+    TP.sys.setcfg('uri.handler.file', 'TP.core.FileURLHandler');
+    TP.sys.setcfg('uri.handler.http', 'TP.core.HTTPURLHandler');
 
     //  the default type used to handle URI rewriting decisions.
     TP.sys.setcfg('uri.rewriter', 'TP.core.URIRewriter');

@@ -1,7 +1,7 @@
 /**
- * @overview Connect/Express middleware supporting the various aspects of TDS
- *     (TIBET Data Server) functionality. Primary goals of the TDS are to
- *     provide focused REST data access and support TIBET development.
+ * @overview Supports sending standard diff/patch formatted files to the server.
+ *     This is normally disabled but when enabled it allows the Sherpa to send
+ *     client-side edits to the server for integration with on-file source code.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -59,6 +59,8 @@
 
         path = require('path');
 
+        //  Ensure we have default option slotting for this plugin.
+        options.tds_patch = options.tds_patch || {};
 
         //  ---
         //  Middleware

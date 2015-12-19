@@ -67,6 +67,9 @@
         path = require('path');
         chokidar = require('chokidar');
 
+        //  Ensure we have default option slotting for this plugin.
+        options.tds_watch = options.tds_watch || {};
+
         //  ---
         //  Helpers
         //  ---
