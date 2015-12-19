@@ -174,7 +174,7 @@
         feedopts = {
             db: db_url + '/' + db_name,
         //    feed: TDS.getcfg('couch.watch.feed') || 'continuous',
-            heartbeat: TDS.getcfg('couch.watch.heartbeat') || 500,
+            heartbeat: TDS.getcfg('couch.watch.heartbeat') || 500
         //    inactivity_ms: TDS.getcfg('couch.watch.inactivity_ms') || null,
         //    initial_retry_delay: TDS.getcfg('couch.watch.initial_retry_delay') || 1000,
         //    max_retry_seconds: TDS.getcfg('couch.watch.max_retry_seconds') || 360,

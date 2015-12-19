@@ -5012,12 +5012,7 @@ function(aRequest) {
         dat,
         dom,
         tname,
-
-        path,
-        entry,
-        key,
         map,
-        item,
 
         resource,
         handler,
@@ -5535,8 +5530,7 @@ function() {
     //  Force a reload.
     uri = this;
     this.getResource().then(function(resource) {
-        var doc,
-            scripts,
+        var scripts,
             loaded,
             missing;
 
@@ -5842,7 +5836,8 @@ function(aURI, aRequest) {
      *     subtype type object or a type object conforming to that interface.
      */
 
-    var tname;
+    var tname,
+        type;
 
     tname = TP.sys.cfg('uri.handler.http');
     if (TP.isEmpty(tname)) {
@@ -6100,7 +6095,8 @@ function(aURI, aRequest) {
      *     subtype type object or a type object conforming to that interface.
      */
 
-    var tname;
+    var tname,
+        type;
 
     tname = TP.sys.cfg('uri.handler.file');
     if (TP.isEmpty(tname)) {

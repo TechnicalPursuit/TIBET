@@ -111,7 +111,7 @@
 
                 if (err) {
                     //  TODO: Job status update?
-                    console.log('View error: ' + err);
+                    logger.debug('View error: ' + err);
                     return;
                 }
 

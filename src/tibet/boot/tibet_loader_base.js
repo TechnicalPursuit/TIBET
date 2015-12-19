@@ -8139,7 +8139,6 @@ TP.boot.$getAppHead = function() {
 
     var path,
         node,
-        offset,
         head,
         parts,
         keys,
