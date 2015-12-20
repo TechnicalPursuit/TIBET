@@ -14,6 +14,11 @@
 
     'use strict';
 
+    /**
+     *
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
             TDS;
@@ -28,6 +33,28 @@
         if (!app) {
             throw new Error('No application instance provided.');
         }
+        console.log('TDS preload.');
+
+        //  ---
+        //  TDS Logger (Sample)
+        //  ---
+
+        /**
+         * Provides a useful 'skip' function for the Express logger. This will
+         * filter out a lot of logging overhead that might otherwise occur when
+         * the TDS is being accessed.
+         * @returns {Boolean} true to skip logging the current request.
+         */
+        TDS.logger_filter = function(req, res) {
+            var url;
+
+            url = TDS.getcfg('tds.watch.uri');
+
+            // Don't log repeated calls to the watcher URL.
+            if (req.path.indexOf(url) !== -1) {
+                return true;
+            }
+        };
 
         //  ---
         //  TDS CouchDB Hook Functions (Sample)

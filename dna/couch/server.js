@@ -183,7 +183,7 @@
     if (typeof PhusionPassenger !== 'undefined') {
         http.createServer(app).listen('passenger');
     } else {
-    http.createServer(app).listen(port);
+        http.createServer(app).listen(port);
     }
 
     env = argv.env;

@@ -409,6 +409,12 @@ Cmd.prototype.executeForEach = function(list) {
                     return;
                 }
 
+                // Skip minified files regardless of their type.
+                if (src.match(/__(.+)__/)) {
+                    cmd.verbose('skipping template file: ' + src);
+                    return;
+                }
+
                 ext = src.slice(src.lastIndexOf('.') + 1);
                 if (ext === 'css') {
                     files.css.push(src);
@@ -479,7 +485,7 @@ Cmd.prototype.getScannedAssetList = function() {
 
     list = sh.find(dir).filter(function(fname) {
         return !sh.test('-d', fname) &&
-            !fname.match(/node_modules/);
+            !fname.match(/node_modules|.git|.svn/);
     });
 
     return list;

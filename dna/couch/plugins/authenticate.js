@@ -33,6 +33,7 @@
         if (!app) {
             throw new Error('No application instance provided.');
         }
+        logger.debug('Activating TDS authenticate plugin.');
 
         parsers = options.parsers;
         TDS = app.TDS;
@@ -161,8 +162,7 @@
         app.get('/login', parsers.urlencoded, function(req, res, next) {
             var user,
                 cookies,
-                keys,
-                user;
+                keys;
 
             //  Read any username cookie from the client and use it to
             //  pre-populate the login field. Keys must match those used

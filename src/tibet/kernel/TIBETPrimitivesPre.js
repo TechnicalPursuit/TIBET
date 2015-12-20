@@ -1820,25 +1820,25 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
             if (/^handle/.test(iname)) {
                 // if (TP.notValid(TP.sys.$$meta_handlers.at(iname))) {
-                    TP.sys.$$meta_handlers.atPut(iname, iname);
+                TP.sys.$$meta_handlers.atPut(iname, iname);
                 //}
             }
 
             // if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
-                TP.sys.$$meta_methods.atPut(gname, anItem);
+            TP.sys.$$meta_methods.atPut(gname, anItem);
 
-                //  owners are keyed by name and point to a vertical-bar
-                //  separated list of one or more type names. these are
-                //  tracked for all types so the inferencer can do type
-                //  conversion checks regardless of whether the type is part
-                //  of the kernel or not
-                owners = TP.sys.$$meta_owners.at(iname);
-                if (!owners) {
-                    TP.sys.$$meta_owners.atPut(iname, tname);
-                } else {
-                    TP.sys.$$meta_owners.atPut(iname,
-                        owners += TP.JOIN + tname);
-                }
+            //  owners are keyed by name and point to a vertical-bar
+            //  separated list of one or more type names. these are
+            //  tracked for all types so the inferencer can do type
+            //  conversion checks regardless of whether the type is part
+            //  of the kernel or not
+            owners = TP.sys.$$meta_owners.at(iname);
+            if (!owners) {
+                TP.sys.$$meta_owners.atPut(iname, tname);
+            } else {
+                TP.sys.$$meta_owners.atPut(iname,
+                    owners += TP.JOIN + tname);
+            }
             //}
 
             break;
