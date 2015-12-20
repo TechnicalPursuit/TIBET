@@ -95,7 +95,11 @@
         name = TDS.cfg('tds.auth.strategy') || 'tds';
         strategy = require('./auth-' + name)(options);
 
-        passport.use(strategy.name, strategy);
+        //  Reconfigure name after loading so things like 'tds' strategies can
+        //  tell passport to consider them 'local' for the authenticate call.
+        name = strategy.name;
+
+        passport.use(name, strategy);
 
 
         //  ---
