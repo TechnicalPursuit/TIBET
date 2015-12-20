@@ -26,14 +26,14 @@ html,body,iframe {
 <iframe id="UIROOT" frameborder="0"
     src="./TIBET-INF/boot/xhtml/blank.xhtml"></iframe>
 
-{{#if parallel}}
+\{{#if parallel}}
 <!-- Direct splash/boot page to the login route when parallel booting. -->
 <iframe id="UIBOOT" frameborder="0" src="/login"></iframe>
-{{else}}
+\{{else}}
 <!-- Use default progress display when not using parallel booting. -->
 <iframe id="UIBOOT" frameborder="0"
     src="./TIBET-INF/boot/xhtml/UIBOOT.xhtml"></iframe>
-{{/if}}
+\{{/if}}
 
 <script src="./TIBET-INF/tibet/lib/src/tibet_loader.js"></script>
 
@@ -42,13 +42,13 @@ html,body,iframe {
 function init() {
     if (window['TP'] && TP.boot) {
 
-        {{#if parallel}}
+        \{{#if parallel}}
             //  If parallel booting we leave tibet.json values intact.
             TP.boot.launch();
-        {{else}}
+        \{{else}}
             //  Force parallel off from server side to support reload.
             TP.boot.launch({boot: { parallel: false}});
-        {{/if}}
+        \{{/if}}
         return;
     }
 
