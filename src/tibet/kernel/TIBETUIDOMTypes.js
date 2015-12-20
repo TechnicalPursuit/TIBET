@@ -605,7 +605,9 @@ function(aTargetElem, anEvent) {
 
         keyname,
 
-        deactivateSignal;
+        deactivateSignal,
+
+        incrementalVal;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -630,6 +632,16 @@ function(aTargetElem, anEvent) {
                 //  native event
                 anEvent.preventDefault();
             }
+        }
+    } else if (evtTargetTPElem.isBoundElement()) {
+        //  If the target is a bound element, then we should check to see if it
+        //  wants incremental value updates.
+        incrementalVal = evtTargetTPElem.getAttribute('ui:incremental');
+
+        //  There are 3 possible values for 'ui:incremental' - 'control',
+        //  'model' and 'both. We handle 'model' and 'both' here.
+        if (incrementalVal === 'model' || incrementalVal === 'both') {
+            evtTargetTPElem.setBoundValue(evtTargetTPElem.getDisplayValue());
         }
     }
 
