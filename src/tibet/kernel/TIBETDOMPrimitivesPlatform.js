@@ -148,7 +148,7 @@ TP.hc(
 
         var activeXDoc,
 
-            activeXBindingAttrs,
+            inlineBindingAttrs,
             i,
 
             srcAttr,
@@ -170,14 +170,14 @@ TP.hc(
         //  expressions. Note how *do not* look for any that are in the
         //  TP.w3.Xmlns.BIND namespace, which means any 'bind:*' attributes
         //  themselves.
-        activeXBindingAttrs = activeXDoc.selectNodes(
+        inlineBindingAttrs = activeXDoc.selectNodes(
                 '//*/@*[contains(., "[[") and ' +
                 'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]');
 
         //  Loop over any found and desugar them into 'bind:io' attributes.
-        for (i = 0; i < activeXBindingAttrs.length; i++) {
+        for (i = 0; i < inlineBindingAttrs.length; i++) {
 
-            srcAttr = activeXBindingAttrs[i];
+            srcAttr = inlineBindingAttrs[i];
 
             //  Grab the Element node that owns this Attribute node.
             ownerElem = srcAttr.selectSingleNode('..');
@@ -193,13 +193,10 @@ TP.hc(
             for (j = 0; j < ownerElem.attributes.length; j++) {
                 ownerElemAttr = ownerElem.attributes[j];
 
-                /* eslint-disable no-extra-parens */
-                if (ownerElemAttr.name === 'bind:io' ||
-                    (ownerElemAttr.name === 'io' &&
-                     ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND)) {
+                if (ownerElemAttr.localname === 'io' &&
+                     ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
                     bindAttr = ownerElemAttr;
                 }
-                /* eslint-enable no-extra-parens */
             }
 
             //  Make sure that we don't (re)process bind:io attributes
