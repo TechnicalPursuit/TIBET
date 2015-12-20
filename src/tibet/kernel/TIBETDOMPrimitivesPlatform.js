@@ -123,8 +123,123 @@ TP.hc(
          *     converted to 'bind:io' attributes.
          */
 
-        //  TODO: Do conversion
-        return inputStr;
+        var parser,
+            workingDoc,
+
+            result,
+
+            inlineBindingAttrs,
+            node,
+
+            i,
+
+            srcAttr,
+
+            ownerElem,
+            j,
+
+            ownerElemAttr,
+            val,
+            bindAttr,
+
+            outputStr;
+
+        //  Use the 'old ActiveX way' to parse the document - this parser
+        //  does *not* strip "invalid" constructs from the markup.
+        parser = new DOMParser();
+
+        workingDoc = parser.parseFromString(inputStr, TP.XML_ENCODED);
+
+        //  Look for any attributes that contain '[[' - these are binding
+        //  expressions. Note how *do not* look for any that are in the
+        //  TP.w3.Xmlns.BIND namespace, which means any 'bind:*' attributes
+        //  themselves.
+        result = workingDoc.evaluate(
+                '//*/@*[contains(., "[[") and ' +
+                'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]',
+                workingDoc,
+                null,
+                XPathResult.ANY_TYPE,
+                null);
+
+        inlineBindingAttrs = TP.ac();
+        while (TP.isNode(node = result.iterateNext())) {
+            inlineBindingAttrs.push(node);
+        }
+
+        for (i = 0; i < inlineBindingAttrs.length; i++) {
+
+            srcAttr = inlineBindingAttrs[i];
+
+            //  Grab the Element node that owns this Attribute node.
+            ownerElem = srcAttr.ownerElement;
+
+            //  Initally set the bindAttr to null
+            bindAttr = null;
+
+            //  Loop over all of the attributes of the owner Element,
+            //  looking to see if they're named 'bind:io' or if they're
+            //  named 'io' with a namespaceURI of TP.w3.Xmlns.BIND. This
+            //  means that we have an existing bind:io attribute that we
+            //  should just add to.
+            for (j = 0; j < ownerElem.attributes.length; j++) {
+                ownerElemAttr = ownerElem.attributes[j];
+
+                if (ownerElemAttr.localname === 'io' &&
+                     ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
+                    bindAttr = ownerElemAttr;
+                }
+            }
+
+            //  Make sure that we don't (re)process bind:io attributes
+            if (bindAttr === srcAttr) {
+                continue;
+            }
+
+            val = srcAttr.nodeValue;
+
+            //  If the expression starts and ends exactly (modulo
+            //  whitespace) with '[[' and ']]', and it doesn't contain a
+            //  '%', then it doesn't need quoting.
+            if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val) &&
+                !TP.regex.HAS_PERCENT.test(val)) {
+                //  Trim off whitespace
+                val = TP.trim(val);
+
+                //  Slice off the leading and trailing '[[' and ']]'
+                val = val.slice(2, -2);
+            } else {
+                val = val.quoted('\'');
+            }
+
+            //  There was no existing bind:io attribute - build one and set
+            //  it's value.
+            if (!TP.isAttributeNode(bindAttr)) {
+                ownerElem.setAttributeNS(
+                        TP.w3.Xmlns.BIND,
+                        'bind:io',
+                        '{' + srcAttr.name + ': ' + val + '}');
+            } else {
+                //  Already have a bind:io attribute - add to it.
+                bindAttr.nodeValue =
+                    bindAttr.nodeValue.slice(
+                        0, bindAttr.nodeValue.lastIndexOf('}')) +
+                    '; ' +
+                    srcAttr.name +
+                    ': ' +
+                    val +
+                    '}';
+            }
+
+            //  Remove the original Attribute node containing the '[[...]]'
+            //  expression.
+            ownerElem.removeAttributeNode(srcAttr);
+        }
+
+        //  Turn it back into a String.
+        outputStr = (new XMLSerializer()).serializeToString(workingDoc);
+
+        return outputStr;
     },
     'trident',
     function(inputStr) {
