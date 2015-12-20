@@ -33,8 +33,10 @@
 
         //  Should be more configurable. This is just a placeholder for now.
         app.use(helmet.contentSecurityPolicy({
-            reportUri: '/',
-            reportOnly: true
+            directives: {
+                reportUri: '/',
+                reportOnly: true
+            }
         }));
 
         //  Should be more configurable. These are disabled by default.
