@@ -1457,6 +1457,11 @@ function(aTargetElem, anEvent) {
     var tpElem;
 
     tpElem = TP.wrap(aTargetElem);
+
+    if (tpElem.isBoundElement()) {
+        tpElem.setBoundValue(tpElem.getDisplayValue());
+    }
+
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
     }
@@ -2636,6 +2641,11 @@ function(aTargetElem, anEvent) {
     var tpElem;
 
     tpElem = TP.wrap(aTargetElem);
+
+    if (tpElem.isBoundElement()) {
+        tpElem.setBoundValue(tpElem.getDisplayValue());
+    }
+
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
     }
@@ -3022,6 +3032,11 @@ function(aTargetElem, anEvent) {
     var tpElem;
 
     tpElem = TP.wrap(aTargetElem);
+
+    if (tpElem.isBoundElement()) {
+        tpElem.setBoundValue(tpElem.getDisplayValue());
+    }
+
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
     }

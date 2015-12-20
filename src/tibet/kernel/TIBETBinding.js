@@ -1349,6 +1349,31 @@ function(attributeValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('isBoundElement',
+function() {
+
+    /**
+     * @method isBoundElement
+     * @summary Whether or not the receiver is a bound element.
+     * @returns {Boolean} Whether or not the receiver is bound.
+     */
+
+    var bindAttrNodes;
+
+    //  We look for either 'in', 'out', 'io' here to determine if the receiver
+    //  is bound. The 'scope' attribute doesn't indicate that it is bound.
+    bindAttrNodes = TP.elementGetAttributeNodesInNS(
+            this.getNativeNode(), /.*:(in|out|io)/, TP.w3.Xmlns.BIND);
+
+    if (TP.notEmpty(bindAttrNodes)) {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('isScopingElement',
 function() {
 
@@ -1657,11 +1682,106 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
         } else {
             this.setFacet(aspect, facet, finalVal, false);
         }
-        //this.getNativeNode().value = finalVal;
     }
 
     var end = Date.now();
     TP.totalInitialGetTime += (end - start);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setBoundValue',
+function(aValue) {
+
+    var scopeVals,
+        bindingInfo,
+
+        bidiAttrs;
+
+    scopeVals = this.getBindingScopeValues();
+
+    bindingInfo = this.getBindingInfoFrom(this.getAttribute('bind:io'));
+
+    bidiAttrs = this.getType().get('bidiAttrs');
+
+    bindingInfo.perform(
+        function(bindEntry) {
+
+            var attrName,
+
+                bindVal,
+
+                dataExprs,
+                i,
+                dataExpr,
+
+                allVals,
+                fullyExpandedVal,
+
+                wholeURI,
+                primaryURI,
+
+                frag;
+
+            attrName = bindEntry.first();
+
+            //  If the attribute isn't one of the bidi attributes, then we can
+            //  just exit here (i.e. its not an attribute that we can 'set' from
+            //  the UI)
+            if (!bidiAttrs.contains(attrName)) {
+                return;
+            }
+
+            bindVal = bindEntry.last();
+
+            dataExprs = bindVal.at('dataExprs');
+
+            for (i = 0; i < dataExprs.getSize(); i++) {
+                dataExpr = dataExprs.at(i);
+
+                if (TP.notEmpty(scopeVals)) {
+                    //  Concatenate the binding value onto the scope values
+                    //  array (thereby creating a new Array) and use it to
+                    //  join all of the values together.
+                    allVals = scopeVals.concat(dataExpr);
+                    fullyExpandedVal =
+                        TP.uriJoinFragments.apply(TP, allVals);
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURI(fullyExpandedVal)) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        return TP.BREAK;
+                    }
+
+                    wholeURI = TP.uc(fullyExpandedVal);
+                } else {
+                    //  Scope values is empty - this is (hopefully) a fully
+                    //  qualified binding expression.
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURI(dataExpr = TP.trim(dataExpr))) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        return TP.BREAK;
+                    }
+
+                    wholeURI = TP.uc(dataExpr);
+                }
+
+                primaryURI = wholeURI.getPrimaryURI();
+                frag = wholeURI.getFragmentExpr();
+
+                primaryURI.getResource().get('result').set(
+                                                TP.apc(frag), aValue);
+            }
+        });
 
     return this;
 });
