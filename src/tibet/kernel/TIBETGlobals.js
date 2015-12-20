@@ -2514,6 +2514,7 @@ TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
                                             '(' + '[^;]+' + ');?',
                                         'g'); // needs reset
 
+TP.regex.BINDING_STATEMENT_DETECT = /\[\[(.+?)\]\]/;
 TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
 
 
