@@ -99,6 +99,279 @@ TP.hc(
 //  DOCUMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$documentFixupInlineBindingAttrs',
+TP.hc(
+    'test',
+    TP.sys.getBrowserUI,
+    TP.DEFAULT,
+    function(inputStr) {
+
+        /**
+         * @method $documentFixupInlineBindingAttrs
+         * @summary Converts any inline binding expressions:
+         *     value="[[foo.bar]]")
+         *     to 'bind:io' attributes:
+         *     bind:io="{value: foo}".
+         *     This is done because a) it makes the bind machinery simpler and
+         *     more efficient to search for bindings that are normalized like
+         *     this and b) some browsers (like IE) don't like attribute values
+         *     that it considers to be 'invalid' for some attributes (like the
+         *     'style' attribute) and will strip them out.
+         * @param {String} inputStr The markup String to convert inline binding
+         *     expressions in.
+         * @returns {String} A markup String that has inline binding expressions
+         *     converted to 'bind:io' attributes.
+         */
+
+        var parser,
+            workingDoc,
+
+            result,
+
+            inlineBindingAttrs,
+            node,
+
+            i,
+
+            srcAttr,
+
+            ownerElem,
+            j,
+
+            ownerElemAttr,
+            val,
+            bindAttr,
+
+            outputStr;
+
+        //  Use the 'old ActiveX way' to parse the document - this parser
+        //  does *not* strip "invalid" constructs from the markup.
+        parser = new DOMParser();
+
+        workingDoc = parser.parseFromString(inputStr, TP.XML_ENCODED);
+
+        //  Look for any attributes that contain '[[' - these are binding
+        //  expressions. Note how *do not* look for any that are in the
+        //  TP.w3.Xmlns.BIND namespace, which means any 'bind:*' attributes
+        //  themselves.
+        result = workingDoc.evaluate(
+                '//*/@*[contains(., "[[") and ' +
+                'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]',
+                workingDoc,
+                null,
+                XPathResult.ANY_TYPE,
+                null);
+
+        inlineBindingAttrs = TP.ac();
+        while (TP.isNode(node = result.iterateNext())) {
+            inlineBindingAttrs.push(node);
+        }
+
+        for (i = 0; i < inlineBindingAttrs.length; i++) {
+
+            srcAttr = inlineBindingAttrs[i];
+
+            //  Grab the Element node that owns this Attribute node.
+            ownerElem = srcAttr.ownerElement;
+
+            //  Initally set the bindAttr to null
+            bindAttr = null;
+
+            //  Loop over all of the attributes of the owner Element,
+            //  looking to see if they're named 'bind:io' or if they're
+            //  named 'io' with a namespaceURI of TP.w3.Xmlns.BIND. This
+            //  means that we have an existing bind:io attribute that we
+            //  should just add to.
+            for (j = 0; j < ownerElem.attributes.length; j++) {
+                ownerElemAttr = ownerElem.attributes[j];
+
+                if (ownerElemAttr.localname === 'io' &&
+                     ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
+                    bindAttr = ownerElemAttr;
+                }
+            }
+
+            //  Make sure that we don't (re)process bind:io attributes
+            if (bindAttr === srcAttr) {
+                continue;
+            }
+
+            val = srcAttr.nodeValue;
+
+            //  If the expression starts and ends exactly (modulo
+            //  whitespace) with '[[' and ']]', and it doesn't contain a
+            //  '%', then it doesn't need quoting.
+            if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val) &&
+                !TP.regex.HAS_PERCENT.test(val)) {
+                //  Trim off whitespace
+                val = TP.trim(val);
+
+                //  Slice off the leading and trailing '[[' and ']]'
+                val = val.slice(2, -2);
+            } else {
+                val = val.quoted('\'');
+            }
+
+            //  There was no existing bind:io attribute - build one and set
+            //  it's value.
+            if (!TP.isAttributeNode(bindAttr)) {
+                ownerElem.setAttributeNS(
+                        TP.w3.Xmlns.BIND,
+                        'bind:io',
+                        '{' + srcAttr.name + ': ' + val + '}');
+            } else {
+                //  Already have a bind:io attribute - add to it.
+                bindAttr.nodeValue =
+                    bindAttr.nodeValue.slice(
+                        0, bindAttr.nodeValue.lastIndexOf('}')) +
+                    '; ' +
+                    srcAttr.name +
+                    ': ' +
+                    val +
+                    '}';
+            }
+
+            //  Remove the original Attribute node containing the '[[...]]'
+            //  expression.
+            ownerElem.removeAttributeNode(srcAttr);
+        }
+
+        //  Turn it back into a String.
+        outputStr = (new XMLSerializer()).serializeToString(workingDoc);
+
+        return outputStr;
+    },
+    'trident',
+    function(inputStr) {
+
+        /**
+         * @method $documentFixupInlineBindingAttrs
+         * @summary Converts any inline binding expressions:
+         *     value="[[foo.bar]]")
+         *     to 'bind:io' attributes:
+         *     bind:io="{value: foo}".
+         *     This is done because a) it makes the bind machinery simpler and
+         *     more efficient to search for bindings that are normalized like
+         *     this and b) some browsers (like IE) don't like attribute values
+         *     that it considers to be 'invalid' for some attributes (like the
+         *     'style' attribute) and will strip them out.
+         * @param {String} inputStr The markup String to convert inline binding
+         *     expressions in.
+         * @returns {String} A markup String that has inline binding expressions
+         *     converted to 'bind:io' attributes.
+         */
+
+        var activeXDoc,
+
+            inlineBindingAttrs,
+            i,
+
+            srcAttr,
+
+            ownerElem,
+            j,
+
+            ownerElemAttr,
+            val,
+            bindAttr,
+
+            outputStr;
+
+        //  Use the 'old ActiveX way' to parse the document - this parser
+        //  does *not* strip "invalid" constructs from the markup.
+        activeXDoc = TP.boot.$documentFromStringIE(inputStr);
+
+        //  Look for any attributes that contain '[[' - these are binding
+        //  expressions. Note how *do not* look for any that are in the
+        //  TP.w3.Xmlns.BIND namespace, which means any 'bind:*' attributes
+        //  themselves.
+        inlineBindingAttrs = activeXDoc.selectNodes(
+                '//*/@*[contains(., "[[") and ' +
+                'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]');
+
+        //  Loop over any found and desugar them into 'bind:io' attributes.
+        for (i = 0; i < inlineBindingAttrs.length; i++) {
+
+            srcAttr = inlineBindingAttrs[i];
+
+            //  Grab the Element node that owns this Attribute node.
+            ownerElem = srcAttr.selectSingleNode('..');
+
+            //  Initally set the bindAttr to null
+            bindAttr = null;
+
+            //  Loop over all of the attributes of the owner Element,
+            //  looking to see if they're named 'bind:io' or if they're
+            //  named 'io' with a namespaceURI of TP.w3.Xmlns.BIND. This
+            //  means that we have an existing bind:io attribute that we
+            //  should just add to.
+            for (j = 0; j < ownerElem.attributes.length; j++) {
+                ownerElemAttr = ownerElem.attributes[j];
+
+                if (ownerElemAttr.localname === 'io' &&
+                     ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND) {
+                    bindAttr = ownerElemAttr;
+                }
+            }
+
+            //  Make sure that we don't (re)process bind:io attributes
+            if (bindAttr === srcAttr) {
+                continue;
+            }
+
+            val = srcAttr.nodeValue;
+
+            //  If the expression starts and ends exactly (modulo
+            //  whitespace) with '[[' and ']]', and it doesn't contain a
+            //  '%', then it doesn't need quoting.
+            if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val) &&
+                !TP.regex.HAS_PERCENT.test(val)) {
+                //  Trim off whitespace
+                val = TP.trim(val);
+
+                //  Slice off the leading and trailing '[[' and ']]'
+                val = val.slice(2, -2);
+            } else {
+                val = val.quoted('\'');
+            }
+
+            //  There was no existing bind:io attribute - build one and set
+            //  it's value.
+            if (!TP.isAttributeNode(bindAttr)) {
+                bindAttr = activeXDoc.createNode(
+                                        Node.ATTRIBUTE_NODE,
+                                        'bind:io',
+                                        TP.w3.Xmlns.BIND);
+
+                ownerElem.setAttributeNode(bindAttr);
+
+                bindAttr.nodeValue = '{' + srcAttr.name + ': ' + val + '}';
+            } else {
+                //  Already have a bind:io attribute - add to it.
+                bindAttr.nodeValue =
+                    bindAttr.nodeValue.slice(
+                        0, bindAttr.nodeValue.lastIndexOf('}')) +
+                    '; ' +
+                    srcAttr.name +
+                    ': ' +
+                    val +
+                    '}';
+            }
+
+            //  Remove the original Attribute node containing the '[[...]]'
+            //  expression.
+            ownerElem.removeAttributeNode(srcAttr);
+        }
+
+        //  Turn it back into a String.
+        outputStr = activeXDoc.xml;
+
+        return outputStr;
+    }
+));
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentFromString',
 TP.hc(
     'test',
@@ -165,8 +438,6 @@ TP.hc(
             return;
         }
 
-        parser = new DOMParser();
-
         //  If the caller has specified a default namespace, use it here. Even
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
@@ -188,6 +459,14 @@ TP.hc(
                 TP.regex.ALL_ELEM_MARKUP,
                 str + '>$&</root>');
         }
+
+        //  Detect things like binding expressions here and massage the DOM to
+        //  create (or add to an existing) bind:io attribute.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+            str = TP.$documentFixupInlineBindingAttrs(str);
+        }
+
+        parser = new DOMParser();
 
         xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
 
@@ -286,18 +565,6 @@ TP.hc(
 
             activeXDoc,
 
-            activeXBindingAttrs,
-            i,
-
-            srcAttr,
-
-            ownerElem,
-            j,
-
-            ownerElemAttr,
-            val,
-            bindAttr,
-
             activeXBody,
             regularBody;
 
@@ -341,102 +608,11 @@ TP.hc(
 
         //  Unfortunately, the DOMParser in IE decides to 'help' us by not
         //  allowing certain constructs (like binding expressions) in certain
-        //  attributes (like 'style') if we're parsing XHTML. Therefore, we try
-        //  to detect things like binding expressions here and use 'another
-        //  way'.
-        TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
-        if (TP.regex.BINDING_STATEMENT_EXTRACT.test(str)) {
-            //  Use the 'old ActiveX way' to parse the document - this parser
-            //  does *not* strip "invalid" constructs from the markup.
-            activeXDoc = TP.boot.$documentFromStringIE(str);
-
-            //  Look for any attributes that contain '[[' - these are binding
-            //  expressions. Note how *do not* look for any that are in the
-            //  TP.w3.Xmlns.BIND namespace, which means any 'bind:*' attributes
-            //  themselves.
-            activeXBindingAttrs = activeXDoc.selectNodes(
-                    '//*/@*[contains(., "[[") and ' +
-                    'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"]');
-
-            //  Loop over any found and desugar them into 'bind:io' attributes.
-            for (i = 0; i < activeXBindingAttrs.length; i++) {
-
-                srcAttr = activeXBindingAttrs[i];
-
-                //  Grab the Element node that owns this Attribute node.
-                ownerElem = srcAttr.selectSingleNode('..');
-
-                //  Initally set the bindAttr to null
-                bindAttr = null;
-
-                //  Loop over all of the attributes of the owner Element,
-                //  looking to see if they're named 'bind:io' or if they're
-                //  named 'io' with a namespaceURI of TP.w3.Xmlns.BIND. This
-                //  means that we have an existing bind:io attribute that we
-                //  should just add to.
-                for (j = 0; j < ownerElem.attributes.length; j++) {
-                    ownerElemAttr = ownerElem.attributes[j];
-
-                    /* eslint-disable no-extra-parens */
-                    if (ownerElemAttr.name === 'bind:io' ||
-                        (ownerElemAttr.name === 'io' &&
-                         ownerElemAttr.namespaceURI === TP.w3.Xmlns.BIND)) {
-                        bindAttr = ownerElemAttr;
-                    }
-                    /* eslint-enable no-extra-parens */
-                }
-
-                //  Make sure that we don't (re)process bind:io attributes
-                if (bindAttr === srcAttr) {
-                    continue;
-                }
-
-                val = srcAttr.nodeValue;
-
-                //  If the expression starts and ends exactly (modulo
-                //  whitespace) with '[[' and ']]', and it doesn't contain a
-                //  '%', then it doesn't need quoting.
-                if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val) &&
-                    !TP.regex.HAS_PERCENT.test(val)) {
-                    //  Trim off whitespace
-                    val = TP.trim(val);
-
-                    //  Slice off the leading and trailing '[[' and ']]'
-                    val = val.slice(2, -2);
-                } else {
-                    val = val.quoted('\'');
-                }
-
-                //  There was no existing bind:io attribute - build one and set
-                //  it's value.
-                if (!TP.isAttributeNode(bindAttr)) {
-                    bindAttr = activeXDoc.createNode(
-                                            Node.ATTRIBUTE_NODE,
-                                            'bind:io',
-                                            TP.w3.Xmlns.BIND);
-
-                    ownerElem.setAttributeNode(bindAttr);
-
-                    bindAttr.nodeValue = '{' + srcAttr.name + ': ' + val + '}';
-                } else {
-                    //  Already have a bind:io attribute - add to it.
-                    bindAttr.nodeValue =
-                        bindAttr.nodeValue.slice(
-                            0, bindAttr.nodeValue.lastIndexOf('}')) +
-                        '; ' +
-                        srcAttr.name +
-                        ': ' +
-                        val +
-                        '}';
-                }
-
-                //  Remove the original Attribute node containing the '[[...]]'
-                //  expression.
-                ownerElem.removeAttributeNode(srcAttr);
-            }
-
-            //  Turn it back into a String.
-            str = activeXDoc.xml;
+        //  attributes (like 'style') if we're parsing XHTML. Therefore, we
+        //  detect things like binding expressions here and massage the DOM to
+        //  create (or add to an existing) bind:io attribute.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+            str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
         parser = new DOMParser();
@@ -536,8 +712,6 @@ TP.hc(
             return;
         }
 
-        parser = new DOMParser();
-
         //  If the caller has specified a default namespace, use it here. Even
         //  if this is the empty String, that's ok - it means they wanted an
         //  empty default namespace.
@@ -559,6 +733,14 @@ TP.hc(
                 TP.regex.ALL_ELEM_MARKUP,
                 str + '>$&</root>');
         }
+
+        //  Detect things like binding expressions here and massage the DOM to
+        //  create (or add to an existing) bind:io attribute.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+            str = TP.$documentFixupInlineBindingAttrs(str);
+        }
+
+        parser = new DOMParser();
 
         xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
 
