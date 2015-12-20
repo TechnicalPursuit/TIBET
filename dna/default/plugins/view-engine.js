@@ -9,25 +9,46 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var handlebars;
-
-    handlebars = require('express-handlebars');
-
+    /**
+     * Configures the server's view engine. By default this is handlebars.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var app;
+        var app,
+            handlebars,
+            logger;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
+
+        logger.debug('Integrating TDS view engine.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        handlebars = require('express-handlebars');
+
+        //  ---
+        //  Initialization
+        //  ---
+
         app.set('views', './views');
         app.engine('handlebars', handlebars({defaultLayout: 'main'}));
         app.set('view engine', 'handlebars');
     };
 
-}());
+}(this));

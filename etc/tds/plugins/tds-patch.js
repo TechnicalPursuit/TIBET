@@ -9,7 +9,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
@@ -51,7 +51,7 @@
         if (TDS.cfg('tds.use.patch') !== true) {
             return;
         }
-        logger.debug('Activating TDS FilePatch plugin.');
+        logger.debug('Integrating TDS FilePatch interface.');
 
         //  ---
         //  Requires
@@ -187,5 +187,5 @@
         app.patch(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
     };
 
-}());
+}(this));
 

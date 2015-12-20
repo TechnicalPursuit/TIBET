@@ -7,17 +7,36 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
+    /**
+     * Installs a generic error handler for 404 errors that will render the
+     * current 404.* view using the current view engine.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var app;
+        var app,
+            logger;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
+
+        logger = options.logger;
+
+        logger.debug('Integrating TDS 404 error handler.');
+
+        //  ---
+        //  Middleware
+        //  ---
 
         //  Serve a general 404 if no other handler too care of the request.
         app.get('/*', function(req, res, next) {
@@ -26,4 +45,4 @@
         });
     };
 
-}());
+}(this));

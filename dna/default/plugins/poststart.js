@@ -7,19 +7,39 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
+    /**
+     * Perform any post-startup processing. This runs after all operations which
+     * are part of starting the TDS have finished (including listening on the
+     * port which is defined for the server).
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var app;
+        var app,
+            logger;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
+
+        logger.debug('Executing TDS post-start hook.');
+
+        //  ---
+        //  Middleware
+        //  ---
+
         //  Put your post-start logic here.
     };
 
-}());
+}(this));

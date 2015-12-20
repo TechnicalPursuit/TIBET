@@ -1,6 +1,8 @@
 /**
- * @overview Simple TDS-configuration based strategy for Passport
- *     authentication. This is the default authentication module.
+ * @overview Simple strategy for Passport authentication that relies on tds.json
+ *     for storage of hashed passwords. This is the default authentication
+ *     module since it doesn't require installation of other components but it's
+ *     clearly not something you should rely on for anything beyond development.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -8,31 +10,52 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var crypto,
-        LocalStrategy,
-        Promise;
-
-    crypto = require('crypto');
-    LocalStrategy = require('passport-local');
-    Promise = require('bluebird').Promise;
-
+    /**
+     * Defines a simple Passport strategy and helper function which take a
+     * username and password and attempt to authenticate against current tds
+     * configuration data. Not recommended for production obviously.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var authenticate,
+        var app,
+            authenticate,
+            crypto,
+            LocalStrategy,
+            logger,
+            Promise,
             strategy,
-            TDS,
-            app;
+            TDS;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
         TDS = app.TDS;
 
+        logger.debug('Integrating TDS auth-tds strategy.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        crypto = require('crypto');
+        LocalStrategy = require('passport-local');
+        Promise = require('bluebird').Promise;
+
+        //  ---
+        //  Middleware
+        //  ---
 
         /**
          *
@@ -108,8 +131,11 @@
             });
         });
 
+        //  ---
+        //  Sharing
+        //  ---
 
         return strategy;
     };
 
-}());
+}(this));

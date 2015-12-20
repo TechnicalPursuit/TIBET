@@ -10,7 +10,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
@@ -39,6 +39,8 @@
         logger = options.logger;
         TDS = app.TDS;
 
+        logger.debug('Integrating TDS configuration writer.');
+
         //  ---
         //  Requires
         //  ---
@@ -46,11 +48,14 @@
         fs = require('fs');
         path = require('path');
 
+        //  ---
+        //  Variables
+        //  ---
+
         //  Ensure we have default option slotting for this plugin.
         options.tds_reconfig = options.tds_reconfig || {};
 
         fullpath = path.resolve(TDS.expandPath('~app/tibet.json'));
-
 
         //  ---
         //  Middleware
@@ -93,5 +98,5 @@
         app.use('/tibet.json', TDS.reconfig);
     };
 
-}());
+}(this));
 

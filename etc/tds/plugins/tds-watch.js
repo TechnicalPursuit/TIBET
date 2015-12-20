@@ -10,7 +10,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
@@ -58,7 +58,7 @@
         if (TDS.cfg('tds.use.watch') !== true) {
             return;
         }
-        logger.debug('Activating TDS FileWatch plugin.');
+        logger.debug('Integrating TDS FileWatch interface.');
 
         //  ---
         //  Requires
@@ -153,11 +153,11 @@
             watcher.consumers += 1;
             watcher.channels = [];
 
-            logger.debug('TDS FileWatch plugin sharing file watcher.');
+            logger.debug('TDS FileWatch interface sharing file watcher.');
 
         } else {
 
-            logger.debug('TDS FileWatch plugin creating file watcher.');
+            logger.debug('TDS FileWatch interface creating file watcher.');
 
             //  Helper function for escaping regex metacharacters. NOTE
             //  that we need to take "ignore format" things like path/*
@@ -195,7 +195,7 @@
             root = path.resolve(TDS.expandPath(
                 TDS.getcfg('tds.watch.root')));
 
-            logger.debug('TDS FileWatch plugin observing: ' + root);
+            logger.debug('TDS FileWatch interface observing: ' + root);
 
             watcher = chokidar.watch(root, {
                 ignored: pattern,
@@ -276,5 +276,5 @@
         app.get(TDS.cfg('tds.watch.uri'), loggedIn, TDS.watch);
     };
 
-}());
+}(this));
 

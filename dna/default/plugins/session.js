@@ -8,30 +8,52 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var cookieKey,          // Key for cookie configuration.
-        cookieParser,       // Express cookie parser.
-        secretKey,          // Secrete key value.
-        session,            // Express session management.
-        store;              // Session store.
-
-    cookieParser = require('cookie-parser');
-    session = require('express-session');
-
+    /**
+     * Creates the basic session infrastructure for the server. The value of the
+     * tds.session.store variable is used with a '-store' suffix to find and
+     * load the module responsible for constructing the session store object.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
+            cookieKey,          // Key for cookie configuration.
+            cookieParser,       // Express cookie parser.
+            logger,
             name,
+            secretKey,          // Secrete key value.
+            session,            // Express session management.
+            store,              // Session store.
             TDS;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
         TDS = app.TDS;
+
+        logger.debug('Integrating TDS session management.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        cookieParser = require('cookie-parser');
+        session = require('express-session');
+
+        //  ---
+        //  Variables
+        //  ---
 
         //  NOTE:   this must be initialized before any session is.
         cookieKey = TDS.cfg('tds.cookie.key1') || 'T1B3TC00K13';
@@ -44,6 +66,10 @@
 
         secretKey = TDS.cfg('tds.secret.key') || 'ThisIsNotSecureChangeIt';
 
+        //  ---
+        //  Middleware
+        //  ---
+
         //  Configure a simple memory session by default.
         app.use(session({
             secret: secretKey,
@@ -55,7 +81,6 @@
                 httpOnly: true
             }
         }));
-
     };
 
-}());
+}(this));

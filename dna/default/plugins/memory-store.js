@@ -7,17 +7,48 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var MemoryStore,
-        session;
-
-    session = require('express-session');
-    MemoryStore = session.MemoryStore;
-
+    /**
+     * Creates an empty Express MemoryStore instance for use in temporary
+     * session management. Not intended for production use!
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
+        var app,
+            logger,
+            MemoryStore,
+            session;
+
+        //  ---
+        //  Config Check
+        //  ---
+
+        app = options.app;
+        if (!app) {
+            throw new Error('No application instance provided.');
+        }
+
+        logger = options.logger;
+
+        logger.debug('Integrating TDS session store (memory).');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        session = require('express-session');
+
+        //  ---
+        //  Initialization
+        //  ---
+
+        MemoryStore = session.MemoryStore;
+
         return new MemoryStore();
-    }
-}())
+    };
+
+}(this))

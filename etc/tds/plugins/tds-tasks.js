@@ -9,7 +9,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
@@ -50,7 +50,7 @@
         if (TDS.cfg('tds.use.tasks') !== true) {
             return;
         }
-        logger.debug('Activating TDS TaskRunner plugin.');
+        logger.debug('Integrating TDS TaskRunner interface.');
 
         //  ---
         //  Requires
@@ -183,4 +183,4 @@
         }
     };
 
-}());
+}(this));

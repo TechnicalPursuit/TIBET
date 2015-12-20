@@ -7,32 +7,62 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+/* eslint-disable no-console */
+
+(function(root) {
 
     'use strict';
 
-    var logcolor,           // Should console log be colorized.
-        logcount,           // The app log file count.
-        logfile,            // The app log file.
-        logformat,          // The morgan format to log with.
-        logsize,            // The app log file size per file.
-        logger,             // The app logger instance.
-        morgan,             // Express request logger.
-        TDS,
-        winston;            // Appender-supported logging.
-
-    TDS = require('tibet/etc/tds/tds-base');
-    morgan = require('morgan');
-    winston = require('winston');
-
+    /**
+     * Configures the winston and morgan loggers to cooperate and log both to
+     * the console and to a configurable log file (normally tds-{env} in the
+     * project's log directory). The resulting logger instance is added to the
+     * TDS variable for use by all remaining plugins.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
-            config;
+            config,
+            level,
+            logcolor,           // Should console log be colorized.
+            logcount,           // The app log file count.
+            logfile,            // The app log file.
+            logformat,          // The morgan format to log with.
+            logger,             // The app logger instance.
+            logsize,            // The app log file size per file.
+            morgan,             // Express request logger.
+            TDS,
+            winston;            // Appender-supported logging.
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
+
+        TDS = app.TDS;
+
+        //  NOTE this plugin _is_ the logger so our only option here is to
+        //  use the console for output meaning we must level check ourselves.
+        level = TDS.cfg('tds.log.level') || 'info';
+        if (level === 'debug') {
+            console.log('debug: Integrating TDS logger.');
+        }
+
+        //  ---
+        //  Requires
+        //  ---
+
+        morgan = require('morgan');
+        winston = require('winston');
+
+        //  ---
+        //  Variables
+        //  ---
 
         winston.emitErrs = true;
         winston.level = TDS.cfg('tds.log.level') || 'info';
@@ -65,6 +95,10 @@
             logfile = logfile.replace(/\{{env}}/g, options.env);
         }
 
+        //  ---
+        //  Initialization
+        //  ---
+
         logger = new winston.Logger({
             transports: [
                 new winston.transports.File({
@@ -87,6 +121,18 @@
             exitOnError: false
         }),
 
+        //  Make sure we have a default function in place if no other is set.
+        TDS.logger_filter = TDS.logger_filter || function(req, res) {
+            var url;
+
+            url = TDS.getcfg('tds.watch.uri');
+
+            // Don't log repeated calls to the watcher URL.
+            if (req.path.indexOf(url) !== -1) {
+                return true;
+            }
+        };
+
         //  Additional trimming here to help support blending morgan and winston
         //  and not ending up with too many newlines in the output stream.
         logger.stream = {
@@ -101,13 +147,23 @@
             }
         };
 
+        //  ---
+        //  Routes
+        //  ---
+
         //  Merge in morgan request logger and direct it to the winston stream.
         app.use(morgan(logformat, {
-            skip: TDS.logFilter,
+            skip: TDS.logger_filter,
             stream: logger.stream
         }));
 
+        //  ---
+        //  Sharing
+        //  ---
+
         options.logger = logger;
+
+        return options.logger;
     };
 
-}());
+}(this));

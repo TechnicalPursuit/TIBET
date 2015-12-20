@@ -9,7 +9,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
@@ -63,7 +63,7 @@
         if (TDS.cfg('tds.use.cli') !== true) {
             return;
         }
-        logger.debug('Activating TDS CLI plugin.');
+        logger.debug('Integrating TDS CLI interface.');
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_cli = options.tds_cli || {};
@@ -133,5 +133,5 @@
         app.post(TDS.cfg('tds.cli.uri'), loggedIn, TDS.cli);
     };
 
-}());
+}(this));
 

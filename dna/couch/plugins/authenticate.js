@@ -8,35 +8,51 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var Cookies,
-        Keygrip,
-        passport;
-
-    Cookies = require('cookies');
-    Keygrip = require('keygrip');
-    passport = require('passport');
-
-
+    /**
+     * Defines top-level Passport authentication logic. The options provided
+     * are expected to provide both a json and urlencoded parser in the
+     * 'parsers' key, which is typically configured by the body-parser plugin.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
             appname,
+            Cookies,
+            Keygrip,
+            logger,
             name,
             parsers,
+            passport,
             strategy,
             TDS;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
-        logger.debug('Activating TDS authenticate plugin.');
 
+        logger = options.logger;
         parsers = options.parsers;
         TDS = app.TDS;
+
+        logger.debug('Integrating TDS authentication.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        Cookies = require('cookies');
+        Keygrip = require('keygrip');
+        passport = require('passport');
 
         //  ---
         //  Initialization
@@ -76,7 +92,7 @@
 
         appname = TDS.cfg('project.name') || TDS.cfg('npm.name');
 
-        name = TDS.cfg('tds.auth.strategy') || 'local';
+        name = TDS.cfg('tds.auth.strategy') || 'tds';
         strategy = require('./auth-' + name)(options);
 
         passport.use(strategy.name, strategy);
@@ -269,7 +285,7 @@
 
 
         //  ---
-        //  Middleware Helper
+        //  Sharing
         //  ---
 
         /**
@@ -285,4 +301,4 @@
         };
     };
 
-}());
+}(this));

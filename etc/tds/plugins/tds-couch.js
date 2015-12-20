@@ -10,7 +10,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
@@ -86,7 +86,7 @@
         if (TDS.cfg('tds.use.couch') !== true) {
             return;
         }
-        logger.debug('Activating TDS CouchDB plugin.');
+        logger.debug('Integrating TDS CouchDB interface.');
 
         //  ---
         //  Requires
@@ -806,11 +806,11 @@
             watcher = options.watcher;
             watcher.consumers += 1;
 
-            logger.debug('TDS CouchDB plugin sharing file watcher.');
+            logger.debug('TDS CouchDB interface sharing file watcher.');
 
         } else {
 
-            logger.debug('TDS CouchDB plugin creating file watcher.');
+            logger.debug('TDS CouchDB interface creating file watcher.');
 
             /**
              * Helper function for escaping regex metacharacters for patterns.
@@ -843,7 +843,7 @@
                 pattern = /\.git|\.svn/;
             }
 
-            logger.debug('TDS CouchDB plugin observing: ' + root);
+            logger.debug('TDS CouchDB interface observing: ' + root);
 
             //  Configure a watcher for our root, including any ignore
             //  patterns etc.
@@ -888,5 +888,5 @@
         });
     };
 
-}());
+}(this));
 

@@ -8,30 +8,70 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var requireDir,
-        routes;
-
-    requireDir = require('require-dir');
-    routes = requireDir('../routes');
-
+    /**
+     * Loads any routes found in the project routes directory. These load after
+     * any mock routes in the mocks directory so they may not always be reached.
+     * NOTE that routes whose file name starts with 'public' and a separator
+     * such as dot, underscore, or dash will be loaded without requiring the
+     * loggedIn helper in the middleware pipeline.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
-            parsers;
+            loggedIn,
+            logger,
+            parsers,
+            requireDir,
+            routes;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
+        loggedIn = options.loggedIn;
+
+        logger.debug('Integrating TDS pluggable routes.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        requireDir = require('require-dir');
+        routes = requireDir('../routes');
+
+        //  ---
+        //  Variables
+        //  ---
+
         parsers = options.parsers;
 
+        //  ---
+        //  Routes
+        //  ---
+
         Object.keys(routes).forEach(function(route) {
-            app.use('/', parsers.json, parsers.urlencoded, routes[route]);
+
+            //  If the route name (file name) starts with public then we skip
+            //  having the loggedIn middleware in the pipeline for the route.
+            if (route.indexOf('public[_.-]') === 0) {
+                app.use('/', parsers.json, parsers.urlencoded, routes[route]);
+            } else {
+                //  NOTE the use of the loggedIn helper here. All routes loaded in
+                //  this fashion are assumed to require a login to access them.
+                app.use('/', parsers.json, parsers.urlencoded, loggedIn, routes[route]);
+            }
         });
     };
 
-}());
+}(this));

@@ -8,7 +8,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
@@ -52,7 +52,7 @@
         if (TDS.cfg('tds.use.webdav') !== true) {
             return;
         }
-        logger.debug('Activating TDS WebDAV plugin.');
+        logger.debug('Integrating TDS WebDAV interface.');
 
         //  ---
         //  Requires
@@ -97,5 +97,5 @@
         app.use(TDS.cfg('tds.webdav.uri'), loggedIn, TDS.webdav);
     };
 
-}());
+}(this));
 

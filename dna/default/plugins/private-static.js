@@ -8,18 +8,21 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var express;
-
-    express = require('express');
-
+    /**
+     * Configures the routes used for static file serving which require a login.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
             appRoot,
+            express,
             loggedIn,
+            logger,
             TDS;
 
         app = options.app;
@@ -28,14 +31,32 @@
         }
 
         loggedIn = options.loggedIn;
+        logger = options.logger;
         TDS = app.TDS;
+
+        logger.debug('Integrating TDS private static routes.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        express = require('express');
+
+        //  ---
+        //  Variables
+        //  ---
 
         //  Get the application root. This will limit the scope of the files we
         //  serve and provide a root for accessing application resources.
         appRoot = TDS.expandPath(TDS.getAppRoot());
 
+        //  ---
+        //  Routes
+        //  ---
+
+        //  Get the application root. This will limit the scope of the files we
         //  Force logins for any remaining paths under application root.
         app.use('/', loggedIn, express.static(appRoot));
     };
 
-}());
+}(this));

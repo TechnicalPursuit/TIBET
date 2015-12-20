@@ -8,28 +8,55 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var requireDir;
-
-    requireDir = require('require-dir');
-
+    /**
+     * Loads all plugins found in the TIBET library's TDS plugins directory.
+     * Each plugin will check whether it should activate by testing one or more
+     * configuration flags of the form 'tds.use.*'. See the individual plugins
+     * for more information.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
         var app,
+            logger,
             path,
             plugins,
+            requireDir,
             TDS;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
         TDS = app.TDS;
 
+        logger.debug('Integrating TDS library components.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        requireDir = require('require-dir');
+
+        //  ---
+        //  Variables
+        //  ---
+
         path = TDS.expandPath('~lib/etc/tds/plugins');
+
+        //  ---
+        //  Loading
+        //  ---
 
         //  Load all TDS plugins and invoke their exported configuration
         //  function(s). It's up to each plugin to check TDS config values
@@ -42,4 +69,4 @@
         return;
     };
 
-}());
+}(this));

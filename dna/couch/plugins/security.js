@@ -8,21 +8,38 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var helmet;
-
-    helmet = require('helmet');
-
+    /**
+     * Installs the helmet modules considered the defaults for basic security.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var app;
+        var app,
+            helmet,
+            logger;
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
+
+        logger = options.logger;
+
+        logger.debug('Integrating TDS security layer.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        helmet = require('helmet');
+
+        //  ---
+        //  Middleware
+        //  ---
 
         app.use(helmet.hidePoweredBy());
         app.use(helmet.ieNoOpen());
@@ -45,6 +62,14 @@
 
         //  TODO:   is this necessary or does helmet handle this?
         //app.use(csurf());
+
+        //  ---
+        //  Sharing
+        //  ---
+
+        options.helmet = helmet;
+
+        return options.helmet;
     };
 
-}());
+}(this));

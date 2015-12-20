@@ -8,17 +8,36 @@
  */
 
 /* eslint-disable no-console */
-(function() {
+(function(root) {
 
     'use strict';
 
+    /**
+     * Installs a generic error handler for server errors that will render the
+     * current 500.* view using the current view engine.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var app;
+        var app,
+            logger;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
+
+        logger = options.logger;
+
+        logger.debug('Integrating TDS server error handler.');
+
+        //  ---
+        //  Middleware
+        //  ---
 
         //  Internal server error handler. Just render the 500 template.
         app.use(function(err, req, res, next) {
@@ -27,4 +46,4 @@
         });
     };
 
-}());
+}(this));

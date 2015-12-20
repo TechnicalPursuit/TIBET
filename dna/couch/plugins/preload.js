@@ -10,17 +10,20 @@
  */
 
 /* eslint-disable no-console */
-(function() {
+
+(function(root) {
 
     'use strict';
 
     /**
-     *
+     * Runs any pre-load logic defined for the server. The default
+     * implementation defines a logger_filter routine for trimming log output.
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
+            level,
             TDS;
 
         //  ---
@@ -28,15 +31,21 @@
         //  ---
 
         app = options.app;
-        TDS = app.TDS;
-
         if (!app) {
             throw new Error('No application instance provided.');
         }
-        console.log('TDS preload.');
+
+        TDS = app.TDS;
+
+        //  NOTE this plugin loads prior to the logger so our only option is to
+        //  use the console for output meaning we must level check ourselves.
+        level = TDS.cfg('tds.log.level') || 'info';
+        if (level === 'debug') {
+            console.log('debug: Executing TDS preload hook.');
+        }
 
         //  ---
-        //  TDS Logger (Sample)
+        //  TDS Logger Options
         //  ---
 
         /**
@@ -57,7 +66,7 @@
         };
 
         //  ---
-        //  TDS CouchDB Hook Functions (Sample)
+        //  TDS CouchDB Options (Sample)
         //  ---
 
         /**
@@ -70,18 +79,6 @@
             return true;
         };
         */
-
-        /**
-         * Sample tds-couch change handler override. The default will use the
-         * TDS's TaskRunner to run simple workflows if tds.use.tasks is true.
-         */
-        /*
-        options.tds_couch = options.tds_couch || {};
-        options.tds_couch.change = function(change) {
-            //console.log('CouchDB change:\n' +
-             //   TDS.beautify(JSON.stringify(change)));
-        };
-        */
     };
 
-}());
+}(this));

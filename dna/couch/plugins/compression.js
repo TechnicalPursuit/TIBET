@@ -7,23 +7,46 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
-    var compression;
-
-    compression = require('compression');
-
+    /**
+     * Configures a JSON and urlencoded body parser instance and applies them to
+     * the options object for use by later plugins. The authentication plugin is
+     * a good example of a parser consumer.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var app;
+        var app,
+            compression,
+            logger;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
+
+        logger.debug('Integrating TDS compression.');
+
+        //  ---
+        //  Requires
+        //  ---
+
+        compression = require('compression');
+
+        //  ---
+        //  Middleware
+        //  ---
+
         app.use(compression());
     };
 
-}());
+}(this));

@@ -1226,7 +1226,7 @@
     TP.sys.setcfg('couch.watch.root', '~app');
     TP.sys.setcfg('couch.watch.since', 'now');
 
-    TP.sys.setcfg('tds.auth.strategy', 'local');
+    TP.sys.setcfg('tds.auth.strategy', 'tds');
 
     TP.sys.setcfg('tds.cli.uri', '/tds/cli');
 
@@ -1268,6 +1268,7 @@
     //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
     TP.sys.setcfg('tds.port', null);
 
+    TP.sys.setcfg('tds.pouch.name', 'tds');
     TP.sys.setcfg('tds.pouch.prefix', './pouch/');
     TP.sys.setcfg('tds.pouch.route', '/db');
 
@@ -1280,6 +1281,7 @@
 
     TP.sys.setcfg('tds.use.cli', false);
     TP.sys.setcfg('tds.use.couch', false);
+    TP.sys.setcfg('tds.use.mocks', false);
     TP.sys.setcfg('tds.use.patch', false);
     TP.sys.setcfg('tds.use.pouch', false);
     TP.sys.setcfg('tds.use.tasks', false);

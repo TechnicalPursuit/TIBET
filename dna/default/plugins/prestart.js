@@ -7,19 +7,40 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-(function() {
+(function(root) {
 
     'use strict';
 
+    /**
+     * Perform any pre-start processing. This runs after all plugins have loaded
+     * but before the server has started to listen for incoming connections.
+     * Also the server has not yet read the port number or other data needed for
+     * the listening setup.
+     * @param {Object} options Configuration options shared across TDS modules.
+     * @returns {Function} A function which will configure/activate the plugin.
+     */
     module.exports = function(options) {
-        var app;
+        var app,
+            logger;
+
+        //  ---
+        //  Config Check
+        //  ---
 
         app = options.app;
         if (!app) {
             throw new Error('No application instance provided.');
         }
 
+        logger = options.logger;
+
+        logger.debug('Executing TDS pre-start hook.');
+
+        //  ---
+        //  Middleware
+        //  ---
+
         //  Put your pre-start logic here.
     };
 
-}());
+}(this));
