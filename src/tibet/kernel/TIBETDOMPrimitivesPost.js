@@ -2255,7 +2255,10 @@ function(anElement, attributeName, checkAttrNSURI) {
 
         //  Note here that we use only the *local* attribute name as specified
         //  by the 'getAttributeNS' spec.
-        return anElement.getAttributeNS(nsURI, parts.at(2));
+        if (TP.notValid(retVal =
+                        anElement.getAttributeNS(nsURI, parts.at(2)))) {
+            return '';
+        }
     }
 
     return retVal;
