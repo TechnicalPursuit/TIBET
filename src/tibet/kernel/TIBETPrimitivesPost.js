@@ -4795,6 +4795,8 @@ function(anObject) {
     //  the UI
     if (TP.isElement(anObject)) {
         if (TP.isValid(anObject[TP.WRAPPER])) {
+            //  Make sure the wrapper has this node as its native node.
+            anObject[TP.WRAPPER].$set('node', anObject, false);
             return anObject[TP.WRAPPER];
         }
         return TP.core.ElementNode.construct(anObject);
