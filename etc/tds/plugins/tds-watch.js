@@ -35,10 +35,10 @@
             logger,
             path,
             pattern,
-            root,
             startSSE,
             TDS,
-            watcher;
+            watcher,
+            watchRoot;
 
         //  ---
         //  Config Check
@@ -192,14 +192,14 @@
 
             //  TODO: let URI parameters override the watch root.
             //  Expand out the path we'll be watching.
-            root = path.resolve(TDS.expandPath(
+            watchRoot = path.resolve(TDS.expandPath(
                 TDS.getcfg('tds.watch.root')));
 
-            logger.debug('TDS FileWatch interface observing: ' + root);
+            logger.debug('TDS FileWatch interface observing: ' + watchRoot);
 
-            watcher = chokidar.watch(root, {
+            watcher = chokidar.watch(watchRoot, {
                 ignored: pattern,
-                cwd: root,
+                cwd: watchRoot,
                 ignoreInitial: true,
                 ignorePermissionErrors: true,
                 persistent: true

@@ -14,10 +14,6 @@
 
     'use strict';
 
-    //  ---
-    //  CouchDB Integration
-    //  ---
-
     /**
      * Watches the CouchDB changes feed and file system, sharing information
      * about changes between the two data sets. This allows you to use
@@ -30,6 +26,7 @@
     module.exports = function(options) {
         var app,
             applyChanges,
+            appRoot,
             baseline,
             chokidar,
             couchAttachmentName,
@@ -64,10 +61,9 @@
             processDesignChange,
             processDocumentChange,
             pushpos,
-            pushrev,
+            //pushrev,
             Promise,
             readFile,
-            root,
             TDS,
             watcher,
             //writeFile,
@@ -188,7 +184,7 @@
         //  Most paths that come from CouchDB won't have a root value which
         //  should normally default to wherever the application has set app root
         //  (often below the tibet_pub directory location).
-        root = path.resolve(TDS.expandPath('~app'));
+        appRoot = path.resolve(TDS.expandPath('~app'));
 
 
         /**
@@ -210,7 +206,7 @@
             list.forEach(function(item) {
                 //var fullpath;
 
-                //fullpath = path.join(root, item.name);
+                //fullpath = path.join(appRoot, item.name);
 
                 logger.info('CouchDB item: ' + JSON.stringify(item));
 
@@ -418,8 +414,8 @@
         couchAttachmentName = function(file, base) {
             var name;
 
-            //  NOTE the dependency here on 'root' if base isn't passed.
-            name = file.replace(base || root, '');
+            //  NOTE the dependency here on appRoot if base isn't passed.
+            name = file.replace(base || appRoot, '');
             if (name.charAt(0) === '/') {
                 name = name.slice(1);
             }
@@ -481,7 +477,7 @@
         dbAdd = function(file, quiet) {
             var name;
 
-            name = couchAttachmentName(file, root);
+            name = couchAttachmentName(file, appRoot);
 
             if (!quiet) {
                 logger.info('Host FS change: insert ' + name);
@@ -523,7 +519,7 @@
                         return;
                     }
 
-                    fullpath = path.join(root, file);
+                    fullpath = path.join(appRoot, file);
 
                     readFile(fullpath).then(function(data) {
                         var type,
@@ -553,7 +549,7 @@
                                     logger.info(TDS.beautify(JSON.stringify(body)));
 
                                     //  Track last pushed revision.
-                                    pushrev = body.rev;
+                                    //pushrev = body.rev;
                                     pushpos = 1 *
                                         body.rev.slice(0, body.rev.indexOf('-'));
 
@@ -578,7 +574,7 @@
         dbUpdate = function(file, quiet) {
             var name;
 
-            name = couchAttachmentName(file, root);
+            name = couchAttachmentName(file, appRoot);
 
             if (!quiet) {
                 logger.info('Host FS change: update ' + name);
@@ -631,7 +627,7 @@
                     }
 
                     //  Read the file content in preparation for a push.
-                    fullpath = path.join(root, file);
+                    fullpath = path.join(appRoot, file);
                     readFile(fullpath).then(
                     function(data) {
                         var type,
@@ -676,7 +672,7 @@
                                 logger.info(TDS.beautify(JSON.stringify(body)));
 
                                 //  Track last pushed revision.
-                                pushrev = body.rev;
+                                //pushrev = body.rev;
                                 pushpos = 1 *
                                     body.rev.slice(0, body.rev.indexOf('-'));
 
@@ -703,7 +699,7 @@
         dbRemove = function(file, quiet) {
             var name;
 
-            name = couchAttachmentName(file, root);
+            name = couchAttachmentName(file, appRoot);
 
             if (!quiet) {
                 logger.info('Host FS change: remove ' + name);
@@ -753,7 +749,7 @@
                                 //logger.info(TDS.beautify(JSON.stringify(body)));
 
                                 //  Track last pushed revision.
-                                pushrev = body.rev;
+                                //pushrev = body.rev;
                                 pushpos = 1 *
                                     body.rev.slice(0, body.rev.indexOf('-'));
 
@@ -843,13 +839,13 @@
                 pattern = /\.git|\.svn/;
             }
 
-            logger.debug('TDS CouchDB interface observing: ' + root);
+            logger.debug('TDS CouchDB interface observing: ' + appRoot);
 
             //  Configure a watcher for our root, including any ignore
             //  patterns etc.
-            watcher = chokidar.watch(root, {
+            watcher = chokidar.watch(appRoot, {
                 ignored: pattern,
-                cwd: root,
+                cwd: appRoot,
                 ignoreInitial: true,
                 ignorePermissionErrors: true,
                 persistent: true

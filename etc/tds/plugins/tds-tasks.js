@@ -25,13 +25,12 @@
     module.exports = function(options) {
         var app,
             files,
-            loggedIn,
+            //loggedIn,
             logger,
             name,
             path,
             sh,
             taskdir,
-            tasks,
             TDS;
 
         //  ---
@@ -43,7 +42,7 @@
             throw new Error('No application instance provided.');
         }
 
-        loggedIn = options.loggedIn;
+        //loggedIn = options.loggedIn;
         logger = options.logger;
         TDS = app.TDS;
 

@@ -73,7 +73,7 @@
                 target,
                 text,
                 content,
-                root,
+                patchRoot,
                 url,
                 diff,
                 fs,
@@ -125,9 +125,10 @@
                 return err(400, 'Unable to resolve patch target url.');
             }
 
-            root = path.resolve(TDS.expandPath(TDS.getcfg('tds.patch.root')));
+            patchRoot = path.resolve(TDS.expandPath(
+                TDS.getcfg('tds.patch.root')));
 
-            if (url.indexOf(root) !== 0) {
+            if (url.indexOf(patchRoot) !== 0) {
                 return err(403, 'Patch target outside patch directory.');
             }
 

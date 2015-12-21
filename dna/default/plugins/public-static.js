@@ -22,9 +22,9 @@
         var app,
             appRoot,
             express,
+            fullpath,
             logger,
             path,
-            root,
             TDS;
 
         //  ---
@@ -64,17 +64,17 @@
         //  been no code loaded yet, and by the initial startup sequence in the
         //  case of the TIBET library which simply avoids a ton of
         //  deserialization of the user object to confirm login.
-        root = path.join(appRoot, 'TIBET-INF');
-        app.use('/TIBET-INF', express.static(root));
+        fullpath = path.join(appRoot, 'TIBET-INF');
+        app.use('/TIBET-INF', express.static(fullpath));
 
-        root = path.join(appRoot, 'tibet.json');
-        app.use('/tibet.json', express.static(root));
+        fullpath = path.join(appRoot, 'tibet.json');
+        app.use('/tibet.json', express.static(fullpath));
 
-        root = path.join(appRoot, 'styles');
-        app.use('/styles', express.static(root));
+        fullpath = path.join(appRoot, 'styles');
+        app.use('/styles', express.static(fullpath));
 
-        root = path.join(appRoot, 'media');
-        app.use('/media', express.static(root));
+        fullpath = path.join(appRoot, 'media');
+        app.use('/media', express.static(fullpath));
     };
 
 }(this));

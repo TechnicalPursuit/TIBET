@@ -1849,37 +1849,37 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             //if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
-                TP.sys.$$meta_attributes.atPut(gname, anItem);
+            TP.sys.$$meta_attributes.atPut(gname, anItem);
 
-                //  If the item has a 'value' slot and the value there responds
-                //  to 'isAccessPath' and is, in fact, an access path, then we
-                //  register it in TP.sys.$$meta_pathinfo. This acts as a
-                //  'reverse index' of access paths to aspect names.
-                if (anItem.value &&
-                    anItem.value.isAccessPath &&
-                    anItem.value.isAccessPath()) {
+            //  If the item has a 'value' slot and the value there responds
+            //  to 'isAccessPath' and is, in fact, an access path, then we
+            //  register it in TP.sys.$$meta_pathinfo. This acts as a
+            //  'reverse index' of access paths to aspect names.
+            if (anItem.value &&
+                anItem.value.isAccessPath &&
+                anItem.value.isAccessPath()) {
 
-                    //  Note here how we pass 'false' for the 'non verbose'
-                    //  String representation of the path (that is, the version
-                    //  that was actually authored by the user).
-                    itemkey = anItem.value.asString(false);
+                //  Note here how we pass 'false' for the 'non verbose'
+                //  String representation of the path (that is, the version
+                //  that was actually authored by the user).
+                itemkey = anItem.value.asString(false);
 
-                    pathinfo = TP.sys.$$meta_pathinfo.at(
-                                            tname + '_' + itemTrack);
-                    if (!pathinfo) {
-                        pathinfo = {};
+                pathinfo = TP.sys.$$meta_pathinfo.at(
+                                        tname + '_' + itemTrack);
+                if (!pathinfo) {
+                    pathinfo = {};
 
-                        TP.sys.$$meta_pathinfo.atPut(
-                                            tname + '_' + itemTrack,
-                                            pathinfo);
-                    }
-
-                    if (!pathinfo[itemkey]) {
-                        pathinfo[itemkey] = [];
-                    }
-
-                    pathinfo[itemkey].push(iname);
+                    TP.sys.$$meta_pathinfo.atPut(
+                                        tname + '_' + itemTrack,
+                                        pathinfo);
                 }
+
+                if (!pathinfo[itemkey]) {
+                    pathinfo[itemkey] = [];
+                }
+
+                pathinfo[itemkey].push(iname);
+            }
             //}
 
             break;
@@ -1887,18 +1887,18 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         case TP.SUBTYPE:
 
             //  don't overlay information we've already collected
-//            if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
-                TP.sys.$$meta_types.atPut(iname, anItem);
- //           }
+//          if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
+            TP.sys.$$meta_types.atPut(iname, anItem);
+ //         }
 
             break;
 
         case TP.NAMESPACE:
 
             //  don't overlay information we've already collected
-//            if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
-                TP.sys.$$meta_namespaces.atPut(iname, anItem);
- //           }
+//          if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
+            TP.sys.$$meta_namespaces.atPut(iname, anItem);
+ //         }
 
             break;
 
