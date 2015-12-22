@@ -849,12 +849,7 @@ function(aSignal) {
     primarySource = aSignal.getOrigin().getResource().get('result');
     initialVal = primarySource.get('value');
 
-    //  Make sure that we have an info registry - this is used to cache binding
-    //  information to avoid recomputation for common expressions.
     doc = this.getNativeNode();
-    if (TP.notValid(doc[TP.BIND_INFO_REGISTRY])) {
-        doc[TP.BIND_INFO_REGISTRY] = TP.hc();
-    }
 
     //  Query for all elements containing namespaced attributes of 'io', 'in',
     //  'scope' or repeat. This is the most sophisticated 'namespace like' query
@@ -891,52 +886,20 @@ function(aSignal) {
 
         var startUpdate = Date.now();
 
-        //  Iterate over all of the changed paths
+        //  TODO: Probably need to go after all of the changed path values
+        //  rather than the key
 
-        changedPathKeys = changedPaths.getKeys();
-        len = changedPathKeys.getSize();
+        changedPath = aSignal.at('aspect');
 
-        for (i = 0; i < len; i++) {
+        //  Start by refreshing all bindings that mention the primary URI as
+        //  part of their binding expression.
+        pathParts = TP.getAccessPathParts(changedPath);
 
-            //  TODO: Probably need to go after all of the changed path values
-            //  rather than the key
-            changedPath = changedPathKeys.at(i);
+        //  Unshift the primary location onto the front.
+        pathParts.unshift(changedPrimaryLoc);
 
-            //  Build a matcher to search for the full path
-            searchPath = TP.uriJoinFragments(changedPrimaryLoc, changedPath);
-            matcher = TP.rc(TP.regExpEscape(searchPath));
-
-            //  If the searchPath matched any of the attributes, then all we have
-            //  to do is update the leaf.
-            len2 = boundAttrNodes.getSize();
-            for (j = 0; j < len2; j++) {
-                attrName = boundAttrNodes.at(j).localName;
-                attrVal = boundAttrNodes.at(j).value;
-
-                if ((attrName === 'io' || attrName === 'in') &&
-                    matcher.test(attrVal)) {
-
-                    ownerTPElem = TP.wrap(boundAttrNodes.at(j).ownerElement);
-
-                    ownerTPElem.refreshLeaf(
-                            primarySource, aSignal, initialVal,
-                            boundAttrNodes.at(j));
-                }
-            }
-
-            //  Now look for ones that have partial paths
-
-            pathParts = TP.getAccessPathParts(changedPath);
-
-            //  Unshift the primary location onto the front.
-            pathParts.unshift(changedPrimaryLoc);
-
-            tpDocElem.refreshBranches(
-                    primarySource, aSignal, elems, initialVal, pathParts);
-        }
-
-        //  Refresh all bindings that mention the primary URI as part of their
-        //  binding expression.
+        tpDocElem.refreshBranches(
+                primarySource, aSignal, elems, initialVal, pathParts);
 
         var endUpdate = Date.now();
         TP.totalUpdateTime += (endUpdate - startUpdate);
@@ -945,21 +908,9 @@ function(aSignal) {
 
         var startSetup = Date.now();
 
-        len = boundAttrNodes.getSize();
-        for (i = 0; i < len; i++) {
-
-            attrName = boundAttrNodes.at(i).localName;
-
-            ownerTPElem = TP.wrap(boundAttrNodes.at(i).ownerElement);
-
-            if (attrName === 'io' || attrName === 'in') {
-                ownerTPElem.refreshLeaf(primarySource, aSignal,
-                                        initialVal, boundAttrNodes[i]);
-            }
-        }
-
+        //  Refresh all bindings
         tpDocElem.refreshBranches(
-            primarySource, aSignal, elems, initialVal, null);
+                primarySource, aSignal, elems, initialVal, null);
 
         var endSetup = Date.now();
         TP.totalSetupTime += (endSetup - startSetup);
@@ -985,45 +936,10 @@ function(aSignal) {
 TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineAttribute('scopeValues');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('getTextNodesMatching',
-function(aMatchFunc) {
-
-    var iterator,
-        matchingTextNodes,
-        textNode;
-
-    var startTextQuery = Date.now();
-
-    iterator = this.getDocument().getNativeNode().createNodeIterator(
-                this.getNativeNode(), NodeFilter.SHOW_TEXT, null, false);
-
-    matchingTextNodes = TP.ac();
-    textNode = iterator.nextNode();
-    while (textNode) {
-        if (aMatchFunc(textNode)) {
-            matchingTextNodes.push(textNode);
-        }
-        textNode = iterator.nextNode();
-    }
-
-    var endTextQuery = Date.now();
-    TP.totalTextQueryTime += (endTextQuery - startTextQuery);
-
-    return matchingTextNodes;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('computeTransformationFunction',
+TP.core.ElementNode.Type.defineMethod('computeTransformationFunction',
 function(attrValue) {
 
     var finalExpr,
@@ -1094,7 +1010,8 @@ function(attrValue) {
             //  run the 'transform' call, because the expression is going to
             //  expect to run against the core source object itself. We then
             //  reset the expression to execute to be just the fragment text.
-            if (TP.isURI(valueExpr)) {
+            if (TP.regex.URI_STRICT.test(valueExpr) &&
+                TP.regex.SCHEME.test(valueExpr)) {
 
                 //  Grab the primary URI from a URI computed from the value
                 //  expression and append a '#tibet(.)' on it (which will
@@ -1192,7 +1109,7 @@ function(attrValue) {
             }
 
             return retVal;
-        }.bind(this);
+        };
 
         transformFunc.$$templateFunc = finalExpr.compile();
 
@@ -1212,8 +1129,8 @@ function(attrValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
-function(attributeValue) {
+TP.core.ElementNode.Type.defineMethod('computeBindingInfo',
+function(targetElement, attributeValue) {
 
     /**
      * @method getBindingInfoFrom
@@ -1223,10 +1140,7 @@ function(attributeValue) {
      *     binding target name.
      */
 
-    var elem,
-        doc,
-
-        attrVal,
+    var attrVal,
 
         entryStr,
         bindEntries,
@@ -1237,7 +1151,7 @@ function(attributeValue) {
         len,
         i,
 
-        fullyExpandedVal,
+        fullExpr,
 
         entry,
         hadBrackets,
@@ -1251,14 +1165,7 @@ function(attributeValue) {
         transformFunc,
         dataLocs;
 
-    elem = this.getNativeNode();
-    doc = TP.nodeGetDocument(elem);
-
     attrVal = attributeValue;
-
-    if (doc[TP.BIND_INFO_REGISTRY].hasKey(attrVal)) {
-        return doc[TP.BIND_INFO_REGISTRY].at(attrVal);
-    }
 
     //  Otherwise, parse out each name: value pair.
 
@@ -1282,7 +1189,7 @@ function(attributeValue) {
 
     if (TP.isEmpty(bindEntries)) {
         return this.raise('TP.sig.InvalidBinding',
-                            'Source Element: ' + TP.str(elem) +
+                            'Source Element: ' + TP.str(targetElement) +
                             ' Generated bindings: ' + entryStr);
     }
 
@@ -1294,8 +1201,7 @@ function(attributeValue) {
 
         entry = bindEntries.at(key);
 
-        TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
-        hadBrackets = TP.regex.BINDING_STATEMENT_EXTRACT.test(entry);
+        hadBrackets = TP.regex.BINDING_STATEMENT_DETECT.test(entry);
 
         if (hadBrackets) {
             formatExpr = null;
@@ -1310,23 +1216,31 @@ function(attributeValue) {
                 entry = entry.slice(0, sigilIndex).trim();
             }
 
-            fullyExpandedVal = entry;
+            fullExpr = entry;
 
             if (TP.notEmpty(formatExpr)) {
-                fullyExpandedVal += formatExpr;
+                fullExpr += formatExpr;
             }
 
-            fullyExpandedVal =
-                preEntry + '[[' + fullyExpandedVal + ']]' + postEntry;
+            fullExpr =
+                preEntry + '[[' + fullExpr + ']]' + postEntry;
+
+            //  Sometimes the expression is quoted to allow whitespace in the
+            //  *value* portion of the 'JSON-y' structure that we use to define
+            //  bindings, but we don't want surrounding quotes here - strip them
+            //  off.
+            fullExpr = fullExpr.unquoted();
         } else {
-            fullyExpandedVal = entry;
+            fullExpr = entry;
         }
 
-        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullyExpandedVal) ||
-            TP.regex.ACP_FORMAT.test(fullyExpandedVal)) {
+        if (hadBrackets &&
+            (!/^\s*\[\[/.test(fullExpr) || !/\]\]\s*$/.test(fullExpr) ||
+            TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullExpr) ||
+            TP.regex.ACP_FORMAT.test(fullExpr))) {
 
             transformInfo = this.computeTransformationFunction(
-                                                    fullyExpandedVal);
+                                                    fullExpr);
 
             //  The Function object that does the transformation.
             transformFunc = transformInfo.first();
@@ -1342,7 +1256,81 @@ function(attributeValue) {
                                         'dataExprs', dataLocs))
     }
 
-    doc[TP.BIND_INFO_REGISTRY].atPut(attrVal, bindEntries);
+    return bindEntries;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineAttribute('scopeValues');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getTextNodesMatching',
+function(aMatchFunc) {
+
+    var iterator,
+        matchingTextNodes,
+        textNode;
+
+    var startTextQuery = Date.now();
+
+    iterator = this.getDocument().getNativeNode().createNodeIterator(
+                this.getNativeNode(), NodeFilter.SHOW_TEXT, null, false);
+
+    matchingTextNodes = TP.ac();
+    textNode = iterator.nextNode();
+    while (textNode) {
+        if (aMatchFunc(textNode)) {
+            matchingTextNodes.push(textNode);
+        }
+        textNode = iterator.nextNode();
+    }
+
+    var endTextQuery = Date.now();
+    TP.totalTextQueryTime += (endTextQuery - startTextQuery);
+
+    return matchingTextNodes;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
+function(attributeValue) {
+
+    /**
+     * @method getBindingInfoFrom
+     * @summary Gets binding information from the attribute named by the
+     *     supplied attribute name on the receiver.
+     * @returns {TP.core.Hash} A hash of binding information keyed by the
+     *     binding target name.
+     */
+
+    var elem,
+        doc,
+
+        registry,
+
+        bindEntries;
+
+    elem = this.getNativeNode();
+    doc = TP.nodeGetDocument(this.getNativeNode());
+
+    if (TP.notValid(registry = doc[TP.BIND_INFO_REGISTRY])) {
+        registry = TP.hc();
+        doc[TP.BIND_INFO_REGISTRY] = registry;
+    }
+
+    if (registry.hasKey(attributeValue)) {
+        return registry.at(attributeValue);
+    }
+
+    bindEntries = this.getType().computeBindingInfo(elem, attributeValue);
+
+    registry.atPut(attributeValue, bindEntries);
 
     return bindEntries;
 });
@@ -1500,15 +1488,20 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
             ownerElem = boundAttr.ownerElement;
 
             //  Nested scope?
-            if (boundAttr.localName === 'scope') {
+            if (attrName === 'scope' || attrName === 'repeat') {
 
                 expr = attrVal;
 
-                if (TP.isURI(expr)) {
+                if (TP.regex.URI_STRICT.test(expr) &&
+                    TP.regex.SCHEME.test(expr)) {
                     expr = TP.uc(expr).getFragmentExpr();
                 }
 
-                branchVal = initialVal.get(expr);
+                if (TP.notEmpty(expr)) {
+                    branchVal = initialVal.get(expr);
+                } else {
+                    branchVal = initialVal;
+                }
 
                 TP.wrap(ownerElem).refreshBranches(
                             primarySource, aSignal, elems, branchVal, null);
@@ -1544,7 +1537,7 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
             //  Build a matcher to search for the search path
             searchPath = TP.uriJoinFragments.apply(TP, searchParts);
 
-            branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+            branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath));
             leafMatcher = TP.rc(TP.regExpEscape(searchPath));
 
             len = boundAttrNodes.getSize();
@@ -1563,11 +1556,16 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
 
                     expr = attrVal;
 
-                    if (TP.isURI(expr)) {
+                    if (TP.regex.URI_STRICT.test(expr) &&
+                        TP.regex.SCHEME.test(expr)) {
                         expr = TP.uc(expr).getFragmentExpr();
                     }
 
-                    branchVal = initialVal.get(expr);
+                    if (TP.notEmpty(expr)) {
+                        branchVal = initialVal.get(expr);
+                    } else {
+                        branchVal = initialVal;
+                    }
 
                     remainderParts = pathParts.slice(partsNegativeSlice);
 
@@ -1577,7 +1575,7 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
                             elems,
                             branchVal,
                             remainderParts);
-                } else if (!TP.isURI(attrVal) && leafMatcher.test(attrVal)) {
+                } else if (leafMatcher.test(attrVal)) {
 
                     //  TODO: Different types of wrappers depending on full name
                     //  of element (ns:tagname)
@@ -1647,34 +1645,39 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
         aspect = infoKeys.at(i);
         entry = info.at(aspect);
 
+        exprs = entry.at('dataExprs');
+
+        if (TP.notEmpty(exprs)) {
+
+            //  This should only have one expression. If it has more than
+            //  one, then we need to raise an exception.
+            if (exprs.getSize() > 1) {
+                //  TODO: Raise
+                continue;
+            }
+
+            expr = exprs.at(0);
+
+            if (TP.regex.URI_STRICT.test(expr) &&
+                TP.regex.SCHEME.test(expr)) {
+                expr = TP.uc(expr).getFragmentExpr();
+            }
+
+            finalVal = initialVal.get(expr);
+            if (TP.notValid(finalVal) &&
+                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
+                finalVal = initialVal;
+            }
+        }
+
         if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
 
             finalVal = transformFunc(
                             aSignal.getSource(),
-                            initialVal,
+                            finalVal,
                             this,
                             null,
                             null);
-        } else {
-            exprs = entry.at('dataExprs');
-
-            if (TP.notEmpty(exprs)) {
-
-                //  This should only have one expression. If it has more than
-                //  one, then we need to raise an exception.
-                if (exprs.getSize() > 1) {
-                    //  TODO: Raise
-                    continue;
-                }
-
-                expr = exprs.at(0);
-
-                if (TP.isURI(expr)) {
-                    expr = TP.uc(expr).getFragmentExpr();
-                }
-
-                finalVal = initialVal.get(expr);
-            }
         }
 
         if (aspect === 'value') {
@@ -1718,7 +1721,7 @@ function(aValue) {
                 dataExpr,
 
                 allVals,
-                fullyExpandedVal,
+                fullExpr,
 
                 wholeURI,
                 primaryURI,
@@ -1746,19 +1749,18 @@ function(aValue) {
                     //  array (thereby creating a new Array) and use it to
                     //  join all of the values together.
                     allVals = scopeVals.concat(dataExpr);
-                    fullyExpandedVal =
-                        TP.uriJoinFragments.apply(TP, allVals);
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
 
                     //  If we weren't able to compute a real URI from the
                     //  fully expanded URI value, then raise an exception
                     //  and return here.
-                    if (!TP.isURI(fullyExpandedVal)) {
+                    if (!TP.regex.URI_STRICT.test(fullExpr)) {
                         this.raise('TP.sig.InvalidURI');
 
                         return TP.BREAK;
                     }
 
-                    wholeURI = TP.uc(fullyExpandedVal);
+                    wholeURI = TP.uc(fullExpr);
                 } else {
                     //  Scope values is empty - this is (hopefully) a fully
                     //  qualified binding expression.
@@ -1766,7 +1768,7 @@ function(aValue) {
                     //  If we weren't able to compute a real URI from the
                     //  fully expanded URI value, then raise an exception
                     //  and return here.
-                    if (!TP.isURI(dataExpr = TP.trim(dataExpr))) {
+                    if (!TP.regex.URI_STRICT.test(dataExpr = TP.trim(dataExpr))) {
                         this.raise('TP.sig.InvalidURI');
 
                         return TP.BREAK;
