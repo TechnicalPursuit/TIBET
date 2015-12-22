@@ -198,18 +198,17 @@ TP.hc(
 
             val = srcAttr.nodeValue;
 
-            //  If the expression starts and ends exactly (modulo
-            //  whitespace) with '[[' and ']]', and it doesn't contain a
-            //  '%', then it doesn't need quoting.
+            //  If the expression starts and ends exactly (modulo whitespace)
+            //  with '[[' and ']]', and it doesn't contain ACP variables or
+            //  formatting expressions, then we can trim off the '[[' and ']]'.
             if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val) &&
-                !TP.regex.HAS_PERCENT.test(val)) {
+                !TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(val) &&
+                !TP.regex.ACP_FORMAT.test(val)) {
                 //  Trim off whitespace
                 val = TP.trim(val);
 
                 //  Slice off the leading and trailing '[[' and ']]'
                 val = val.slice(2, -2);
-            } else {
-                val = val.quoted('\'');
             }
 
             //  There was no existing bind:io attribute - build one and set
@@ -321,18 +320,17 @@ TP.hc(
 
             val = srcAttr.nodeValue;
 
-            //  If the expression starts and ends exactly (modulo
-            //  whitespace) with '[[' and ']]', and it doesn't contain a
-            //  '%', then it doesn't need quoting.
+            //  If the expression starts and ends exactly (modulo whitespace)
+            //  with '[[' and ']]', and it doesn't contain ACP variables or
+            //  formatting expressions, then we can trim off the '[[' and ']]'.
             if (/^\s*\[\[/.test(val) && /\]\]\s*$/.test(val) &&
-                !TP.regex.HAS_PERCENT.test(val)) {
+                !TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(val) &&
+                !TP.regex.ACP_FORMAT.test(val)) {
                 //  Trim off whitespace
                 val = TP.trim(val);
 
                 //  Slice off the leading and trailing '[[' and ']]'
                 val = val.slice(2, -2);
-            } else {
-                val = val.quoted('\'');
             }
 
             //  There was no existing bind:io attribute - build one and set
