@@ -7710,8 +7710,6 @@ function(aMutationRecord) {
 
         args,
 
-        stopAncestor,
-
         addedNodes,
         removedNodes,
 
@@ -7770,22 +7768,39 @@ function(aMutationRecord) {
 
         case 'childList':
 
-            stopAncestor = TP.nodeDetectAncestor(
-                    targetNode,
-                    function(anAncestor) {
-                        return TP.elementHasAttribute(
-                                    anAncestor,
-                                    'tibet:nomutationtracking',
-                                    true);
-                    });
-
-            if (TP.isElement(stopAncestor)) {
-                break;
-            }
-
             if (!TP.isEmpty(aMutationRecord.addedNodes) &&
-                    !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
+                !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
                 addedNodes = TP.ac(addedNodes);
+
+                //  Need to check the nodes individually for mutation tracking
+                //  stoppage.
+                addedNodes = addedNodes.filter(
+                        function(aNode) {
+                            var stopAncestor;
+
+                            if (TP.isElement(aNode) &&
+                                TP.elementHasAttribute(
+                                        aNode,
+                                        'tibet:nomutationtracking',
+                                        true)) {
+                                return false;
+                            }
+
+                            stopAncestor = TP.nodeDetectAncestor(
+                                aNode,
+                                function(anAncestor) {
+                                    return TP.elementHasAttribute(
+                                            anAncestor,
+                                            'tibet:nomutationtracking',
+                                            true);
+                                });
+
+                            if (TP.isElement(stopAncestor)) {
+                                return false;
+                            }
+
+                            return true;
+                        });
             }
 
             if (TP.notEmpty(addedNodes)) {
@@ -7797,8 +7812,38 @@ function(aMutationRecord) {
             }
 
             if (!TP.isEmpty(aMutationRecord.removedNodes) &&
-                    !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
+                !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
                 removedNodes = TP.ac(removedNodes);
+
+                //  Need to check the nodes individually for mutation tracking
+                //  stoppage.
+                removedNodes = removedNodes.filter(
+                        function(aNode) {
+                            var stopAncestor;
+
+                            if (TP.isElement(aNode) &&
+                                TP.elementHasAttribute(
+                                        aNode,
+                                        'tibet:nomutationtracking',
+                                        true)) {
+                                return false;
+                            }
+
+                            stopAncestor = TP.nodeDetectAncestor(
+                                aNode,
+                                function(anAncestor) {
+                                    return TP.elementHasAttribute(
+                                            anAncestor,
+                                            'tibet:nomutationtracking',
+                                            true);
+                                });
+
+                            if (TP.isElement(stopAncestor)) {
+                                return false;
+                            }
+
+                            return true;
+                        });
             }
 
             if (TP.notEmpty(removedNodes)) {
