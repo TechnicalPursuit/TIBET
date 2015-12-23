@@ -3679,8 +3679,6 @@ function() {
 
     this.it('repeat binding with text fields - JSON data source', function(test, options) {
 
-        var loadURI;
-
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSON.xhtml');
 
         test.getDriver().setLocation(loadURI);
