@@ -792,6 +792,12 @@ function(aSignalOrHash) {
 //  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineAttribute('$observedURIs');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -807,41 +813,32 @@ function(aSignal) {
     var signalFlag,
 
         primarySource,
+        initialVal,
 
         doc,
 
         query,
         elems,
 
-        boundAttrNodes,
-        i,
-        j,
-
-        attrs,
-
         tpDocElem,
 
         changedPrimaryLoc,
-        changedPathKeys,
+
+        boundAttrNodes,
+        i,
+        attrs,
+        j,
+        attrVal,
+
+        changedPath,
+        pathParts,
+
+        matcher,
         len,
-        len2,
 
         attrName,
 
-        searchPath,
-
-        matcher,
-
-        pathParts,
-
-        changedPaths,
-
-        changedPath,
-
-        initialVal,
-
-        ownerTPElem,
-        attrVal;
+        ownerTPElem;
 
     signalFlag = TP.sys.shouldSignalDOMLoaded();
     TP.sys.shouldSignalDOMLoaded(false);
@@ -864,7 +861,7 @@ function(aSignal) {
 
     tpDocElem = this.getDocumentElement();
 
-    changedPrimaryLoc = aSignal.getOrigin().getPrimaryURI().getLocation();
+    changedPrimaryLoc = aSignal.getOrigin().getPrimaryHref();
 
     boundAttrNodes = TP.ac();
     for (i = 0; i < elems.length; i++) {
@@ -882,7 +879,7 @@ function(aSignal) {
         }
     }
 
-    if (TP.isValid(changedPaths = aSignal.at(TP.CHANGE_PATHS))) {
+    if (TP.isValid(aSignal.at(TP.CHANGE_PATHS))) {
 
         var startUpdate = Date.now();
 
@@ -907,6 +904,28 @@ function(aSignal) {
     } else {
 
         var startSetup = Date.now();
+
+        //  Refresh all 'absolute' leafs
+
+        matcher = TP.rc(TP.regExpEscape(changedPrimaryLoc));
+
+        len = boundAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+
+            attrName = boundAttrNodes.at(i).localName;
+
+            ownerTPElem = TP.wrap(boundAttrNodes.at(i).ownerElement);
+
+            if (attrName === 'io' || attrName === 'in') {
+
+                attrVal = boundAttrNodes.at(i).value;
+
+                if (matcher.test(attrVal)) {
+                    ownerTPElem.refreshLeaf(primarySource, aSignal,
+                                            initialVal, boundAttrNodes[i]);
+                }
+            }
+        }
 
         //  Refresh all bindings
         tpDocElem.refreshBranches(
@@ -1402,6 +1421,8 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
 
         ownerWrappers,
 
+        primaryHrefMatcher,
+
         len,
 
         boundAttr,
@@ -1409,7 +1430,7 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
         attrVal,
 
         ownerTPElem,
-        expr,
+        branchURI,
         branchVal,
 
         remainderParts;
@@ -1478,6 +1499,9 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
 
     if (TP.isEmpty(pathParts)) {
 
+        primaryHrefMatcher =
+            TP.rc(TP.regExpEscape(aSignal.getOrigin().getPrimaryHref()));
+
         len = boundAttrNodes.getSize();
         for (i = 0; i < len; i++) {
             boundAttr = boundAttrNodes.at(i);
@@ -1490,17 +1514,22 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
             //  Nested scope?
             if (attrName === 'scope' || attrName === 'repeat') {
 
-                expr = attrVal;
-
-                if (TP.regex.URI_STRICT.test(expr) &&
-                    TP.regex.SCHEME.test(expr)) {
-                    expr = TP.uc(expr).getFragmentExpr();
+                if (TP.regex.URI_STRICT.test(attrVal) &&
+                    TP.regex.SCHEME.test(attrVal) &&
+                    !primaryHrefMatcher.test(attrVal)) {
+                    continue;
                 }
 
-                if (TP.notEmpty(expr)) {
-                    branchVal = initialVal.get(expr);
+                if (TP.regex.URI_STRICT.test(attrVal) &&
+                    TP.regex.SCHEME.test(attrVal)) {
+                    branchURI = TP.uc(attrVal);
+                    if (branchURI.hasFragment()) {
+                        branchVal = branchURI.getResource().get('result');
+                    } else {
+                        branchVal = initialVal;
+                    }
                 } else {
-                    branchVal = initialVal;
+                    branchVal = initialVal.get(attrVal);
                 }
 
                 TP.wrap(ownerElem).refreshBranches(
@@ -1537,7 +1566,16 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
             //  Build a matcher to search for the search path
             searchPath = TP.uriJoinFragments.apply(TP, searchParts);
 
-            branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath));
+            //  If the search path contains a complete URL, then we build the
+            //  branch matcher directly from that.
+            if (TP.regex.URI_STRICT.test(searchPath) &&
+                TP.regex.SCHEME.test(searchPath)) {
+                branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath));
+            } else {
+                branchMatcher =
+                    TP.rc('^(#[()a-zA-Z0-9]+)?' + TP.regExpEscape(searchPath));
+            }
+
             leafMatcher = TP.rc(TP.regExpEscape(searchPath));
 
             len = boundAttrNodes.getSize();
@@ -1554,17 +1592,16 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
 
                     ownerTPElem = TP.wrap(ownerElem);
 
-                    expr = attrVal;
-
-                    if (TP.regex.URI_STRICT.test(expr) &&
-                        TP.regex.SCHEME.test(expr)) {
-                        expr = TP.uc(expr).getFragmentExpr();
-                    }
-
-                    if (TP.notEmpty(expr)) {
-                        branchVal = initialVal.get(expr);
+                    if (TP.regex.URI_STRICT.test(attrVal) &&
+                        TP.regex.SCHEME.test(attrVal)) {
+                        branchURI = TP.uc(attrVal);
+                        if (branchURI.hasFragment()) {
+                            branchVal = branchURI.getResource().get('result');
+                        } else {
+                            branchVal = initialVal;
+                        }
                     } else {
-                        branchVal = initialVal;
+                        branchVal = initialVal.get(attrVal);
                     }
 
                     remainderParts = pathParts.slice(partsNegativeSlice);
@@ -1620,6 +1657,9 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
 
         info,
         infoKeys,
+
+        primaryLocation,
+
         len,
         i,
 
@@ -1638,8 +1678,15 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
     info = this.getBindingInfoFrom(attrValue);
 
     infoKeys = info.getKeys();
-    len = infoKeys.getSize();
 
+    //  So, for now, we don't support mixed scoped and absolute references to
+    //  resources that are not the ones that we're scoped for. So, since we
+    //  already update absolute references in the main change method, we filter
+    //  for absolute references that are not ones that we are currently part of
+    //  the update chain for.
+    primaryLocation = aSignal.getOrigin().getPrimaryHref();
+
+    len = infoKeys.getSize();
     for (i = 0; i < len; i++) {
 
         aspect = infoKeys.at(i);
@@ -1658,16 +1705,25 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
 
             expr = exprs.at(0);
 
-            if (TP.regex.URI_STRICT.test(expr) &&
-                TP.regex.SCHEME.test(expr)) {
-                expr = TP.uc(expr).getFragmentExpr();
+            if (TP.regex.URI_STRICT.test(expr) && TP.regex.SCHEME.test(expr)) {
+
+                if (expr.startsWith(primaryLocation)) {
+                    finalVal = TP.uc(expr).getResource().get('result');
+                } else {
+                    continue;
+                }
+            } else {
+                finalVal = initialVal.get(expr);
             }
 
-            finalVal = initialVal.get(expr);
             if (TP.notValid(finalVal) &&
                 TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
                 finalVal = initialVal;
             }
+        }
+
+        if (TP.notValid(finalVal)) {
+            continue;
         }
 
         if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
