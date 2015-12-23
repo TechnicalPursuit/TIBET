@@ -2415,12 +2415,16 @@ function(cm, options) {
     var completions,
 
         consoleGUI,
-        editorObj;
+        editorObj,
+
+        backgroundElem;
 
     completions = this.supplyCompletions(cm, options);
 
     consoleGUI = this.get('$consoleGUI');
     editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    backgroundElem = this.get('$popupContainer');
 
     TP.extern.CodeMirror.on(
         completions,
@@ -2454,6 +2458,26 @@ function(cm, options) {
                 }
             }
         });
+
+    TP.extern.CodeMirror.on(
+        completions,
+        'shown',
+        function(completion) {
+            var hintsElem;
+
+            //  Make sure to mark the hints element with a 'nomutationtracking'
+            //  flag to avoid a lot of extra mutation signaling.
+            hintsElem = TP.byCSSPath('.CodeMirror-hints',
+                                        backgroundElem,
+                                        true,
+                                        false);
+
+            if (TP.isElement(hintsElem)) {
+                TP.elementSetAttribute(
+                    hintsElem, 'tibet:nomutationtracking', true, true);
+            }
+
+        }.bind(this));
 
     TP.extern.CodeMirror.on(
         completions,
