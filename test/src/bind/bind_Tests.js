@@ -8028,38 +8028,9 @@ function() {
 
     //  ---
 
-    this.it('fully qualified expressions - XML data source', function(test, options) {
+    this.it('standalone expressions - XML data source', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsXML.xhtml');
-
-        this.getDriver().setLocation(loadURI);
-
-        test.then(
-            function() {
-
-                var fields;
-
-                fields = TP.byCSSPath('span[bind|in]');
-
-                test.assert.isEqualTo(
-                    fields.at(0).getValue(),
-                    'Joe');
-
-                test.assert.isEqualTo(
-                    fields.at(1).getValue(),
-                    'Smith');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
-    });
-
-    //  ---
-
-    this.it('fully qualified expressions - JSON data source', function(test, options) {
-
-        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindStandaloneExpressionsXML.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -8077,6 +8048,14 @@ function() {
                 test.assert.isEqualTo(
                     fields.at(1).getValue(),
                     'Smith');
+
+                test.assert.isEqualTo(
+                    fields.at(2).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(3).getValue(),
+                    'Smith');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8086,9 +8065,9 @@ function() {
 
     //  ---
 
-    this.it('fully qualified expressions - JavaScript Object data source', function(test, options) {
+    this.it('standalone expressions - JSON data source', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindStandaloneExpressionsJSON.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -8105,6 +8084,51 @@ function() {
 
                 test.assert.isEqualTo(
                     fields.at(1).getValue(),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    fields.at(2).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(3).getValue(),
+                    'Smith');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('standalone expressions - JavaScript Object data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindStandaloneExpressionsJSObj.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var fields;
+
+                fields = TP.byCSSPath('span[bind|in]');
+
+                test.assert.isEqualTo(
+                    fields.at(0).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(1).getValue(),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    fields.at(2).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(3).getValue(),
                     'Smith');
             },
             function(error) {
