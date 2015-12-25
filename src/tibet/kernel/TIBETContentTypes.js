@@ -282,7 +282,7 @@ function(data) {
 
     this.callNextMethod();
 
-    this.set('data', data);
+    this.set('data', data, false);
 
     return this;
 });
