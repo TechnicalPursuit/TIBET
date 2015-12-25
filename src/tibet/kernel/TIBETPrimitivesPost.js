@@ -5322,6 +5322,93 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('joinAccessPathParts',
+function(pathParts, aPathType) {
+
+    /**
+     * @method joinAccessPathParts
+     * @summary Returns the 'pointer scheme' given a path.
+     * @description Depending on the type of path supplied, this method will use
+     *     the proper 'joining character' to join together the supplied path
+     *     parts. These are the various joining character values:
+     *
+     *     TP.TIBET_PATH_TYPE               ->      '.'
+     *     TP.JSON_PATH_TYPE                ->      '.'
+     *     TP.CSS_PATH_TYPE                 ->      ' '
+     *     TP.XPATH_PATH_TYPE               ->      '/'
+     *     TP.XPOINTER_PATH_TYPE            ->      '/'
+     *
+     * @param {Array} pathParts The path parts to join together.
+     * @param {String} aPathType The type of path to join the parts together as.
+     * @returns {String} The path obtained by joining the path parts together
+     *     using the computed join character.
+     */
+
+    var result,
+
+        len,
+        i,
+        part,
+
+        joinChar;
+
+    //  Need at least one path part.
+    if (TP.isEmpty(pathParts)) {
+        return TP.raise(this, 'TP.sig.InvalidPath',
+                        'Unable to join empty path parts.');
+    }
+
+    if (TP.notValid(aPathType)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Initially, the result is the first part.
+    result = pathParts.at(0);
+
+    //  Loop over the remaining parts and append them, using a computed joining
+    //  character.
+    len = pathParts.getSize();
+    for (i = 1; i < len; i++) {
+        part = pathParts.at(i);
+
+        switch (aPathType) {
+            case TP.CSS_PATH_TYPE:
+                joinChar = ' ';
+                break;
+
+            case TP.TIBET_PATH_TYPE:
+            case TP.JSON_PATH_TYPE:
+                if (part.charAt(0) === '[') {
+                    joinChar = '';
+                } else {
+                    joinChar = '.';
+                }
+
+                break;
+
+            case TP.XPATH_PATH_TYPE:
+            case TP.XPOINTER_PATH_TYPE:
+                if (part.charAt(0) === '[') {
+                    joinChar = '';
+                } else {
+                    joinChar = '/';
+                }
+
+                break;
+
+            default:
+                joinChar = '';
+        }
+
+        //  Do the concatentation.
+        result += joinChar + part;
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('prefixAssignmentStatements',
 function(prefixStr, aScriptStr) {
 
