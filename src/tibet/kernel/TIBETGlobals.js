@@ -2536,6 +2536,7 @@ TP.regex.WHITESPACE = /\s+/;
 TP.regex.ONLY_WORD = /^\w+$/;
 TP.regex.ONLY_NUM = /^\d+$/;
 TP.regex.ONLY_PERIOD = /^\.$/;
+TP.regex.ONLY_DOLLAR = /^\$$/;
 
 TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 

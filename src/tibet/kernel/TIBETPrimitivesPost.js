@@ -5291,6 +5291,11 @@ function(aPath) {
         return 'tibet';
     }
 
+    //  If the path only contains a dollar character, is 'json'.
+    if (TP.regex.ONLY_DOLLAR.test(aPath)) {
+        return 'json';
+    }
+
     pathType = TP.getAccessPathType(aPath);
 
     switch (pathType) {
