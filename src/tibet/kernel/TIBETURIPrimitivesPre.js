@@ -27,6 +27,32 @@
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isURIString',
+function(anObject, schemeOptional) {
+
+    /**
+     * @method isURIString
+     * @summary Returns true if the supplied String matches the URI format.
+     * @param {Object} anObject The object to test.
+     * @param {Boolean} schemeOptional Whether or not the URI scheme is optional
+     *     in the String being tested.
+     * @returns {Boolean} True if the object appears to match a URI-formatted
+     *     String.
+     */
+
+    if (!TP.isString(anObject)) {
+        return false;
+    }
+
+    if (schemeOptional) {
+        return TP.regex.URI_STRICT.test(anObject);
+    }
+
+    return TP.regex.SCHEME.test(anObject) && TP.regex.URI_STRICT.test(anObject);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('uriAddUniqueQuery',
 function(aPath) {
 
