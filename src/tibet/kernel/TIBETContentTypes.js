@@ -1632,7 +1632,7 @@ function(aPath) {
 
     //  If we're handed a '#json(...)' pointer, then we know what kind of
     //  path it is (or should be, anyway)
-    if (TP.regex.JSON_POINTER.test(path) || TP.regex.JSON_PATH.test(path)) {
+    if (TP.regex.JSON_POINTER.test(path)) {
         return TP.core.JSONPath;
     }
 
@@ -1686,6 +1686,17 @@ function(aPath) {
         return TP.core.SimpleXMLPath;
     }
 
+    //  Other kinds of XML paths
+    if (TP.regex.XPATH_PATH.test(path) ||
+        TP.regex.HAS_SLASH.test(path)) {
+        return TP.core.XPathPath;
+    }
+
+    //  JSON Paths
+    if (TP.regex.JSON_PATH.test(path)) {
+        return TP.core.JSONPath;
+    }
+
     //  If there is no 'path punctuation' (only JS identifer characters), or
     //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
     //  path'.
@@ -1700,11 +1711,6 @@ function(aPath) {
     //  path to deal with it.
     if (TP.regex.TIBET_PATH.test(path)) {
         return TP.core.ComplexTIBETPath;
-    }
-
-    if (TP.regex.XPATH_PATH.test(path) ||
-        TP.regex.HAS_SLASH.test(path)) {
-        return TP.core.XPathPath;
     }
 
     return TP.core.CSSPath;
