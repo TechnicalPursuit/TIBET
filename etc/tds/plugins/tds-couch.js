@@ -34,6 +34,7 @@
             crypto,
             db,
             dbAdd,
+            dbError,
             dbGet,
             dbRemove,
             //dbRename,
@@ -381,12 +382,14 @@
          * @param {Error} err The error that triggered this handler.
          */
         feed.on('error', function(err) {
+            var str;
             //  A common problem, especially on Macs, is an error due to running
             //  out of open file handles. Try to help clarify that one here.
-            if (/EMFILE/.test(err)) {
+            str = JSON.stringify(err);
+            if (/EMFILE/.test(str)) {
                 logger.error('Too many files open. Try increasing ulimit.');
             } else {
-                logger.error(err);
+                dbError(err);
             }
 
             return true;
@@ -457,7 +460,8 @@
                 if (encoding === 'gzip') {
                     zipper(data, function(err2, zipped) {
                         if (err2) {
-                            reject(err2);
+                            dbError(err2);
+                            reject();
                             return;
                         }
                         resolve(compute(zipped));
@@ -514,7 +518,8 @@
                             },
                             function(err) {
                                 inserting = false;
-                                reject(err);
+                                dbError(err);
+                                reject();
                             });
                         return;
                     }
@@ -541,8 +546,8 @@
                                 function(err, body) {
 
                                     if (err) {
-                                        logger.error('err: ' + err);
-                                        reject(err);
+                                        dbError(err);
+                                        reject();
                                         return;
                                     }
 
@@ -557,7 +562,8 @@
                                 });
                     },
                     function(err) {
-                        reject(err);
+                        dbError(err);
+                        reject();
                     });
                 });
             });
@@ -616,12 +622,13 @@
                                     resolve(result);
                                 },
                                 function(err) {
-                                    reject(err);
+                                    dbError(err);
+                                    reject();
                                 });
                             return;
                         } else {
                             logger.warn('Unable to find attachment: ' + name);
-                            reject('No attachment');
+                            reject();
                             return;
                         }
                     }
@@ -664,8 +671,8 @@
                                     type, {rev: rev},
                             function(err, body) {
                                 if (err) {
-                                    logger.error('err: ' + err);
-                                    reject(err);
+                                    dbError(err);
+                                    reject();
                                     return;
                                 }
 
@@ -680,15 +687,25 @@
                             });
                         },
                         function(err) {
-                            logger.error(err);
-                            reject(err);
+                            dbError(err);
+                            reject();
                         });
                     },
                     function(err) {
-                        logger.error(err);
-                        reject(err);
+                        dbError(err);
+                        reject();
                     });
+                },
+                function(err) {
+                    dbError(err);
+                    reject();
                 });
+            }).catch(function(err) {
+                //  NOTE:   the chain of err handlers above and void here mean
+                //  this is probably structured completely wrong...but it
+                //  "works" in that we get the messaging we want, and none that
+                //  we don't...so we'll need to come back and restructure later.
+                void 0;
             });
         };
 
@@ -740,8 +757,8 @@
                             function(err, body) {
 
                                 if (err) {
-                                    logger.error('err: ' + err);
-                                    reject(err);
+                                    dbError(err);
+                                    reject();
                                     return;
                                 }
 
@@ -770,6 +787,18 @@
         */
 
 
+        /**
+         * Common error logging routine to avoid duplication.
+         */
+        dbError = function(err) {
+            if (/ECONNREFUSED/.test(JSON.stringify(err))) {
+                logger.error('CouchDB connection refused. Check DB at URL: ' +
+                    db_url);
+            } else {
+                logger.error(TDS.beautify(JSON.stringify(err)));
+            }
+        };
+
         //  ---
         //  Activation
         //  ---
@@ -780,7 +809,12 @@
         //  confirmation and other potential processing.
         require('nano')(db_url).relax({db: '_config'}, function(err, dat) {
             if (err) {
-                logger.error(err);
+                dbError(err);
+                db_config = {
+                    attachments: {
+                        compression_level: 8    //  default
+                    }
+                };
                 return;
             }
 
@@ -791,7 +825,7 @@
         try {
             feed.follow();
         } catch (e) {
-            logger.error(e.message);
+            dbError(e);
         }
 
         //  FS-To-Couch
@@ -869,14 +903,7 @@
                     dbRemove(data);
                     break;
                 case 'error':
-                    if (/EMFILE/.test(data)) {
-                        logger.error(
-                            'Too many files open. Try increasing ulimit.');
-                        return;
-                    } else {
-                        logger.error(data);
-                        return;
-                    }
+                    dbError(data);
                     break;
                 default:
                     break;

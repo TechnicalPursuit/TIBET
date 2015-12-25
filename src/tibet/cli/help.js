@@ -19,13 +19,14 @@
 'use strict';
 
 var CLI,
+    opener,
     path,
     sh,
     Parent,
     Cmd;
 
-
 CLI = require('./_cli');
+opener = require('opener');
 path = require('path');
 sh = require('shelljs');
 
@@ -68,6 +69,7 @@ Cmd.prototype.HELP =
 'You can alternatively get usage data via the --usage flag on each command\n' +
 'or complete help output by using the --help flag on the target command.\n';
 
+
 /**
  * The command usage string.
  * @type {string}
@@ -78,28 +80,6 @@ Cmd.prototype.USAGE = 'tibet help [command]';
 //  ---
 //  Instance Methods
 //  ---
-
-/**
- * Processes requests of the form 'tibet --help', 'tibet help --help', or
- * 'tibet --help <command>'. Each variant has a different target (tibet, help,
- * or command respectively).
- * @returns {Number} A return code. Non-zero indicates an error.
- */
-Cmd.prototype.help = function() {
-
-    // The 'tibet --help' command will end up here, but it's not really a
-    // request for help on the help command.
-
-    if (this.options._[0] !== 'help') {
-        return this.execute();
-    }
-
-    this.usage();
-    this.info(this.HELP + '\n');
-
-    return 0;
-};
-
 
 /**
  * Processes requests of the form 'tibet --usage', 'tibet help --usage', and
@@ -135,11 +115,15 @@ Cmd.prototype.execute = function() {
     // If specific command was given delegate to the command type.
     command = this.options._ && this.options._[1];
     if (command) {
-        if (command === 'help') {
-            // Help on help? Easy
-            return this.help();
-        }
         return this.executeForCommand(command);
+    } else if (this.options._ && this.options._[0]) {
+        //  When using 'tibet {cmd} --help' we rewrite such that
+        //  you don't see two items in the command line, just the
+        //  command to get help on.
+        command = this.options._ && this.options._[0];
+        if (command !== 'help') {
+            return this.executeForCommand(command);
+        }
     }
 
     this.info('\nUsage: tibet <command> <options>');
@@ -222,31 +206,86 @@ Cmd.prototype.execute = function() {
  * @returns {Number} A return code.
  */
 Cmd.prototype.executeForCommand = function(command) {
-    var file,
-        CmdType,
-        cmd;
+    var child,
+        config,
+        env,
+        htmldir,
+        htmlpath,
+        list,
+        manpath,
+        pattern,
+        proc,
+        viewer;
 
     if (command.charAt(0) === '_') {
         this.error('Help not available for private commands.');
         return 1;
     }
 
-    file = path.join(__dirname, command + '.js');
-    if (!sh.test('-f', file)) {
-        // check for custom commands which might offer help.
-        if (CLI.inProject(Cmd) || CLI.inLibrary()) {
-            file = path.join(CLI.expandPath('~app_cmd'), command + '.js');
+    //  Default to browser if we can't find 'man', regardless of setting.
+
+    viewer = CLI.cfg('cli.help.viewer');
+    switch (viewer) {
+        case 'man':
+            if (!sh.which('man')) {
+                viewer = 'browser';
+            }
+            break;
+        case 'browser':
+            break;
+        default:
+            if (sh.which('man')) {
+                viewer = 'man';
+            } else {
+                viewer = 'browser';
+            }
+            break;
+    }
+
+    if (viewer === 'browser') {
+        //  All html files live in the same directory, but we need to identify a
+        //  specific section for the topic/page.
+        htmldir = path.join(CLI.expandPath('~lib'), 'doc', 'html');
+        list = sh.ls(htmldir);
+        pattern = new RegExp('^' + command + '\\.' + '(\\d)\\.html');
+        list.some(function(file) {
+            if (pattern.test(file)) {
+                htmlpath = file;
+                return true;
+            }
+            return false;
+        });
+
+        if (htmlpath) {
+            opener(path.join(htmldir, htmlpath));
+        } else {
+            CLI.warn('Help not found for ' + command);
         }
+        return 0;
     }
 
-    if (!sh.test('-f', file)) {
-        this.error('Command \'' + command + '\' not found.');
-        return 1;
-    }
+    //  Capture the environment so we can adjust MANPATH or the man command
+    //  won't be searching where we think it should :)
+    env = {};
+    Object.keys(process.env).forEach(function(key) {
+        env[key] = process.env[key];
+    });
 
-    CmdType = require(file);
-    cmd = new CmdType();
-    cmd.help();
+    //  Point the environment to our library man location.
+    manpath = path.join(CLI.expandPath('~lib'), 'doc', 'man');
+    env.MANPATH = manpath;
+
+    config = {
+        env: env,
+        stdio: 'inherit',
+        stderr: 'inherit'
+    };
+    proc = require('child_process');
+    child = proc.spawn('man', [command], config);
+    child.on('close', function() {
+        return 0;
+    })
+
     return 0;
 };
 
