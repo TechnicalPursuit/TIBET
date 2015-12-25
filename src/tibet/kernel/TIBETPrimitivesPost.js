@@ -4898,154 +4898,6 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getAccessPathType',
-function(aPath) {
-
-    /**
-     * @method getAccessPathType
-     * @summary Obtains the 'path type' of the supplied path. This allows TIBET
-     *     to distinguish between different markup query languages.
-     * @param {String} aPath The path to obtain the type of.
-     * @returns {String} One of the 'path type' constants:
-     *     TP.TIBET_PATH_TYPE
-     *     TP.JSON_PATH_TYPE
-     *     TP.CSS_PATH_TYPE
-     *     TP.XPATH_PATH_TYPE
-     *     TP.BARENAME_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE
-     *     TP.ELEMENT_PATH_TYPE
-     *     TP.XTENSION_POINTER_PATH_TYPE
-     */
-
-    var path;
-
-    //  Need at least a path to test.
-    if (TP.isEmpty(path = aPath)) {
-        return TP.raise(this, 'TP.sig.InvalidPath',
-                        'Unable to get type of empty path.');
-    }
-
-    //  Note that we only allow numeric ACP expressions in paths
-    if (TP.regex.HAS_ACP.test(path)) {
-
-        //  Strip out any numeric expressions and recheck
-        TP.regex.ACP_NUMERIC.lastIndex = 0;
-        path = path.replace(TP.regex.ACP_NUMERIC, TP.DEFAULT);
-
-        //  If it still has ACP expressions, then it's an invalid path
-        if (TP.regex.HAS_ACP.test(path)) {
-            return this.raise('TP.sig.InvalidPath');
-        }
-
-        //  Now, so as to not change the overall meaning of the path, go back to
-        //  the original path and substitute '0's - remember that we're only
-        //  doing path type detection here, so we're not changing the meaning of
-        //  the path.
-        TP.regex.ACP_NUMERIC.lastIndex = 0;
-        path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
-    }
-
-    //  We try to determine the path type based on discriminating characters
-    //  and regular expression forms but since there's a lot of overlap
-    //  between the legal characters for both CSS and XPath paths we will
-    //  default to CSS path when no clear distinction can be made.
-
-    //  An xpointer barename would indicate an XPath (barenames cannot contain
-    //  parentheses), but we cannot evaluate that directly (by itself, '#foo'
-    //  isn't a real XPath), so we return TP.BARENAME_PATH_TYPE
-    if (TP.regex.BARENAME.test(path)) {
-        return TP.BARENAME_PATH_TYPE;
-    }
-
-    //  regular xpointer, either xpointer(), xpath1() or element() scheme
-    if (TP.regex.XPOINTER.test(path)) {
-
-        //  If we're handed an '#element(...)' pointer, then we know what kind
-        //  of path it is (or should be, anyway)
-
-        //  NB: We do *not* check against TP.regex.ELEMENT_PATH here, since it
-        //  matches all IDs ("#"), attributes ("@"), etc.
-        if (TP.regex.ELEMENT_POINTER.test(path)) {
-            return TP.ELEMENT_PATH_TYPE;
-        } else {
-            return TP.XPATH_PATH_TYPE;
-        }
-    }
-
-    //  extended xpointer, perhaps explicit css() scheme (TIBET-only)
-    if (TP.regex.XTENSION_POINTER.test(path)) {
-        return TP.XTENSION_POINTER_PATH_TYPE;
-    }
-
-    //  strip any id/fragment prefix
-    path = path.charAt(0) === '#' ? path.slice(1) : path;
-
-    //  If the path is just '.', then that's the shortcut to just return a TIBET
-    //  path
-    if (TP.regex.ONLY_PERIOD.test(aPath)) {
-        return TP.TIBET_PATH_TYPE;
-    }
-
-    //  A TIBET path - simple or complex
-    if (TP.regex.TIBET_PATH.test(path)) {
-        return TP.TIBET_PATH_TYPE;
-    }
-
-    //  A JSON path
-    if (TP.regex.JSON_PATH.test(path)) {
-        return TP.JSON_PATH_TYPE;
-    }
-
-    //  If there is no 'path punctuation' (only JS identifer characters), or
-    //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
-    //  path'.
-    //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.JS_IDENTIFIER.test(path) ||
-        TP.regex.ONLY_NUM.test(path) ||
-        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
-        return TP.TIBET_PATH_TYPE;
-    }
-
-    //  XPath is typically ./elem, //elem, @attr, or ./elem[predicate], all
-    //  of which are going to include a slash (other than 'standalone' attr
-    //  expressions which start with a '@'). These can be completely
-    //  disambiguated with CSS.
-    //  So check for:
-    //      An attribute path (one that starts with '@')
-    //  OR
-    //      Some form of XPath that starts with a '/', a '.', a name
-    //      followed by a '(' or one of the full XPath 'axis' names followed
-    //      by a '::'
-    //  OR
-    //      Some form of XPath that has a '/'
-    if (TP.regex.ATTRIBUTE.test(path) ||
-        TP.regex.XPATH_PATH.test(path) ||
-        TP.regex.HAS_SLASH.test(path)) {
-        return TP.XPATH_PATH_TYPE;
-    }
-
-    //  So far its not either an XPath or a TIBET Xtension path. So there
-    //  are various overlaps between CSS and XPath that we now have to take
-    //  into account:
-    //
-    //      CSS         XPath
-    //      ---         -----
-    //
-    //      span        span
-    //      #myElem     #myElem
-    //      *           *
-    //
-    //  Thankfully, these constructs have the exact same meaning in both
-    //  selection languages. Therefore, we return a CSS path type since that
-    //  call is faster.
-
-    //  Additionally, we're now out of things to check, so we just punt to
-    //  this type.
-    return TP.CSS_PATH_TYPE;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('getAccessPathParts',
 function(aPath, aScheme) {
 
@@ -5249,6 +5101,154 @@ function(aPath, aScheme) {
     }
 
     return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getAccessPathType',
+function(aPath) {
+
+    /**
+     * @method getAccessPathType
+     * @summary Obtains the 'path type' of the supplied path. This allows TIBET
+     *     to distinguish between different markup query languages.
+     * @param {String} aPath The path to obtain the type of.
+     * @returns {String} One of the 'path type' constants:
+     *     TP.TIBET_PATH_TYPE
+     *     TP.JSON_PATH_TYPE
+     *     TP.CSS_PATH_TYPE
+     *     TP.XPATH_PATH_TYPE
+     *     TP.BARENAME_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
+     */
+
+    var path;
+
+    //  Need at least a path to test.
+    if (TP.isEmpty(path = aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidPath',
+                        'Unable to get type of empty path.');
+    }
+
+    //  Note that we only allow numeric ACP expressions in paths
+    if (TP.regex.HAS_ACP.test(path)) {
+
+        //  Strip out any numeric expressions and recheck
+        TP.regex.ACP_NUMERIC.lastIndex = 0;
+        path = path.replace(TP.regex.ACP_NUMERIC, TP.DEFAULT);
+
+        //  If it still has ACP expressions, then it's an invalid path
+        if (TP.regex.HAS_ACP.test(path)) {
+            return this.raise('TP.sig.InvalidPath');
+        }
+
+        //  Now, so as to not change the overall meaning of the path, go back to
+        //  the original path and substitute '0's - remember that we're only
+        //  doing path type detection here, so we're not changing the meaning of
+        //  the path.
+        TP.regex.ACP_NUMERIC.lastIndex = 0;
+        path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
+    }
+
+    //  We try to determine the path type based on discriminating characters
+    //  and regular expression forms but since there's a lot of overlap
+    //  between the legal characters for both CSS and XPath paths we will
+    //  default to CSS path when no clear distinction can be made.
+
+    //  An xpointer barename would indicate an XPath (barenames cannot contain
+    //  parentheses), but we cannot evaluate that directly (by itself, '#foo'
+    //  isn't a real XPath), so we return TP.BARENAME_PATH_TYPE
+    if (TP.regex.BARENAME.test(path)) {
+        return TP.BARENAME_PATH_TYPE;
+    }
+
+    //  regular xpointer, either xpointer(), xpath1() or element() scheme
+    if (TP.regex.XPOINTER.test(path)) {
+
+        //  If we're handed an '#element(...)' pointer, then we know what kind
+        //  of path it is (or should be, anyway)
+
+        //  NB: We do *not* check against TP.regex.ELEMENT_PATH here, since it
+        //  matches all IDs ("#"), attributes ("@"), etc.
+        if (TP.regex.ELEMENT_POINTER.test(path)) {
+            return TP.ELEMENT_PATH_TYPE;
+        } else {
+            return TP.XPATH_PATH_TYPE;
+        }
+    }
+
+    //  extended xpointer, perhaps explicit css() scheme (TIBET-only)
+    if (TP.regex.XTENSION_POINTER.test(path)) {
+        return TP.XTENSION_POINTER_PATH_TYPE;
+    }
+
+    //  strip any id/fragment prefix
+    path = path.charAt(0) === '#' ? path.slice(1) : path;
+
+    //  If the path is just '.', then that's the shortcut to just return a TIBET
+    //  path
+    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  XPath is typically ./elem, //elem, @attr, or ./elem[predicate], all
+    //  of which are going to include a slash (other than 'standalone' attr
+    //  expressions which start with a '@'). These can be completely
+    //  disambiguated with CSS.
+    //  So check for:
+    //      An attribute path (one that starts with '@')
+    //  OR
+    //      Some form of XPath that starts with a '/', a '.', a name
+    //      followed by a '(' or one of the full XPath 'axis' names followed
+    //      by a '::'
+    //  OR
+    //      Some form of XPath that has a '/'
+    if (TP.regex.ATTRIBUTE.test(path) ||
+        TP.regex.XPATH_PATH.test(path) ||
+        TP.regex.HAS_SLASH.test(path)) {
+        return TP.XPATH_PATH_TYPE;
+    }
+
+    //  A JSON path
+    if (TP.regex.JSON_PATH.test(path)) {
+        return TP.JSON_PATH_TYPE;
+    }
+
+    //  A TIBET path - simple or complex
+    if (TP.regex.TIBET_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  If there is no 'path punctuation' (only JS identifer characters), or
+    //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
+    //  path'.
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.JS_IDENTIFIER.test(path) ||
+        TP.regex.ONLY_NUM.test(path) ||
+        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  So far its not either an XPath or a TIBET Xtension path. So there
+    //  are various overlaps between CSS and XPath that we now have to take
+    //  into account:
+    //
+    //      CSS         XPath
+    //      ---         -----
+    //
+    //      span        span
+    //      #myElem     #myElem
+    //      *           *
+    //
+    //  Thankfully, these constructs have the exact same meaning in both
+    //  selection languages. Therefore, we return a CSS path type since that
+    //  call is faster.
+
+    //  Additionally, we're now out of things to check, so we just punt to
+    //  this type.
+    return TP.CSS_PATH_TYPE;
 });
 
 //  ------------------------------------------------------------------------
