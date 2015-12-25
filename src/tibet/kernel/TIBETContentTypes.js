@@ -8381,6 +8381,20 @@ function(aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XPathPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.XPATH_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XPathPath.Inst.defineMethod('getShouldMakeStructures',
 function() {
 
