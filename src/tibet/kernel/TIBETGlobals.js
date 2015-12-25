@@ -2752,7 +2752,7 @@ TP.regex.MULTI_VALUED = / /;
 //  ---
 
 //  A RegExp that will escape Strings for use as RegExps :)
-TP.regex.REGEX_ESCAPE = /([-[\]{}()*+?.\\^$|,#\s]{1})/g;    //  needs reset
+TP.regex.REGEX_ESCAPE = /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;    //  needs reset
 TP.regex.REGEX_LITERAL_STRING = /^\/(.+)\/[gimy]*$/;
 
 //  ---
