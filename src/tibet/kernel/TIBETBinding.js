@@ -830,8 +830,7 @@ function(aSignal) {
         j,
         attrVal,
 
-        changedPath,
-        pathParts,
+        changedPaths,
 
         matcher,
         len,
@@ -844,7 +843,7 @@ function(aSignal) {
     TP.sys.shouldSignalDOMLoaded(false);
 
     primarySource = aSignal.getOrigin().getResource().get('result');
-    initialVal = primarySource.get('value');
+    initialVal = primarySource;
 
     doc = this.getNativeNode();
 
@@ -879,24 +878,74 @@ function(aSignal) {
         }
     }
 
-    if (TP.isValid(aSignal.at(TP.CHANGE_PATHS))) {
+    if (TP.isValid(changedPaths = aSignal.at(TP.CHANGE_PATHS))) {
 
         var startUpdate = Date.now();
 
-        //  TODO: Probably need to go after all of the changed path values
-        //  rather than the key
+        var changedAddressEntries;
 
-        changedPath = aSignal.at('aspect');
+        //  Group the changed paths by the address that changed for the
+        //  currently processing action.
+        changedAddressEntries = changedPaths.groupBy(
+                function(item) {
+                    return item.last().at(aSignal.get('action'));
+                });
 
-        //  Start by refreshing all bindings that mention the primary URI as
-        //  part of their binding expression.
-        pathParts = TP.getAccessPathParts(changedPath);
+        //  changedAddressEntries will now look like:
 
-        //  Unshift the primary location onto the front.
-        pathParts.unshift(changedPrimaryLoc);
+        //
+        //  [
+        //      <address>  ,  [
+        //                      [ path , <changeRecords> ]
+        //                  ]
+        //  ]
 
-        tpDocElem.refreshBranches(
-                primarySource, aSignal, elems, initialVal, pathParts);
+        changedAddressEntries.perform(
+                function(anEntry) {
+
+                    var changeRecords,
+                        changedPath,
+                        pathParts,
+                        pathType;
+
+                    changeRecords = anEntry.last();
+
+                    //  Sort the change records (which is itself an Array of
+                    //  pairs of paths and their change records) so that the
+                    //  longest path is first.
+                    changeRecords.sort(
+                            function(a, b) {
+
+                                //  The 'first()' of each of these is the path
+                                //  itself.
+                                return b.first().length - a.first().length;
+                            });
+
+                    //  Grab the path of the first change record - that will be
+                    //  the longest path of all of change records that represent
+                    //  the *same* change.
+                    changedPath = changeRecords.first().first();
+
+                    pathParts = TP.getAccessPathParts(changedPath);
+                    pathType = TP.getAccessPathType(changedPath);
+
+                    if (pathType === TP.XPATH_PATH_TYPE &&
+                        changedPath.startsWith('/')) {
+                        pathParts.atPut(0, '/' + pathParts.at(0));
+                    } else if (pathType === TP.TIBET_PATH_TYPE) {
+                        initialVal = initialVal.get('value');
+                    }
+
+                    pathParts.unshift(
+                            '#' + TP.getPointerScheme(changedPath) + '()');
+
+                    //  Unshift the primary location onto the front.
+                    pathParts.unshift(changedPrimaryLoc);
+
+                    tpDocElem.refreshBranches(
+                        primarySource, aSignal, elems, initialVal,
+                        pathType, pathParts);
+                });
 
         var endUpdate = Date.now();
         TP.totalUpdateTime += (endUpdate - startUpdate);
@@ -929,7 +978,7 @@ function(aSignal) {
 
         //  Refresh all bindings
         tpDocElem.refreshBranches(
-                primarySource, aSignal, elems, initialVal, null);
+                primarySource, aSignal, elems, initialVal, null, null);
 
         var endSetup = Date.now();
         TP.totalSetupTime += (endSetup - startSetup);
@@ -1029,8 +1078,7 @@ function(attrValue) {
             //  run the 'transform' call, because the expression is going to
             //  expect to run against the core source object itself. We then
             //  reset the expression to execute to be just the fragment text.
-            if (TP.regex.URI_STRICT.test(valueExpr) &&
-                TP.regex.SCHEME.test(valueExpr)) {
+            if (TP.isURIString(valueExpr)) {
 
                 //  Grab the primary URI from a URI computed from the value
                 //  expression and append a '#tibet(.)' on it (which will
@@ -1395,7 +1443,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, pathParts) {
+function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
     var elem,
 
@@ -1409,6 +1457,8 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
         j,
 
         ownerElem,
+
+        isScopingElement,
 
         searchParts,
 
@@ -1432,6 +1482,10 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
         ownerTPElem,
         branchURI,
         branchVal,
+
+        pathType,
+
+        jsonContent,
 
         remainderParts;
 
@@ -1514,14 +1568,12 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
             //  Nested scope?
             if (attrName === 'scope' || attrName === 'repeat') {
 
-                if (TP.regex.URI_STRICT.test(attrVal) &&
-                    TP.regex.SCHEME.test(attrVal) &&
+                if (TP.isURIString(attrVal) &&
                     !primaryHrefMatcher.test(attrVal)) {
                     continue;
                 }
 
-                if (TP.regex.URI_STRICT.test(attrVal) &&
-                    TP.regex.SCHEME.test(attrVal)) {
+                if (TP.isURIString(attrVal)) {
                     branchURI = TP.uc(attrVal);
                     if (branchURI.hasFragment()) {
                         branchVal = branchURI.getResource().get('result');
@@ -1529,11 +1581,30 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
                         branchVal = initialVal;
                     }
                 } else {
-                    branchVal = initialVal.get(attrVal);
+                    if (TP.isXMLNode(initialVal)) {
+                        branchVal = TP.wrap(initialVal).get(TP.xpc(attrVal));
+                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                    } else if (TP.isKindOf(initialVal, TP.core.Node)) {
+                        branchVal = initialVal.get(TP.xpc(attrVal));
+                        pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                    } else if (TP.regex.JSON_POINTER.test(attrVal) ||
+                                TP.regex.JSON_PATH.test(attrVal)) {
+                        if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
+                            branchVal = TP.jpc(attrVal).executeGet(initialVal);
+                        } else {
+                            jsonContent = TP.core.JSONContent.construct(initialVal);
+                            branchVal = TP.jpc(attrVal).executeGet(jsonContent);
+                        }
+                        pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
+                    } else {
+                        branchVal = initialVal.get(attrVal);
+                    }
                 }
 
+                pathType = TP.ifInvalid(pathType, aPathType);
+
                 TP.wrap(ownerElem).refreshBranches(
-                            primarySource, aSignal, elems, branchVal, null);
+                    primarySource, aSignal, elems, branchVal, pathType, null);
             } else {
 
                 //  There are different types of wrappers depending on full tag
@@ -1549,7 +1620,7 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
                 ownerTPElem.$set('node', ownerElem, false);
 
                 ownerTPElem.refreshLeaf(
-                            primarySource, aSignal, initialVal, boundAttr);
+                    primarySource, aSignal, initialVal, boundAttr, aPathType);
             }
         }
 
@@ -1563,17 +1634,30 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
         //  branching elements.
         while (TP.notEmpty(searchParts)) {
 
-            //  Build a matcher to search for the search path
-            searchPath = TP.uriJoinFragments.apply(TP, searchParts);
+            if (searchParts.getSize() > 1) {
+                if (TP.isURIString(searchParts.first())) {
+                    //  Has a full URL
+                    searchPath = TP.uriJoinFragments.apply(TP, searchParts);
+                } else if (searchParts.first().startsWith('#')) {
+                    //  Starts with XPointer scheme
+                    searchPath = TP.uriJoinFragments.apply(TP, searchParts);
+                } else {
+                    searchPath = TP.joinAccessPathParts(searchParts, aPathType);
+                }
+            } else {
+                searchPath = searchParts.first();
+            }
 
             //  If the search path contains a complete URL, then we build the
             //  branch matcher directly from that.
-            if (TP.regex.URI_STRICT.test(searchPath) &&
-                TP.regex.SCHEME.test(searchPath)) {
-                branchMatcher = TP.rc('^' + TP.regExpEscape(searchPath));
+            if (TP.isURIString(searchPath) || searchPath.startsWith('#')) {
+                branchMatcher =
+                    TP.rc('^' + TP.regExpEscape(searchPath) + '$');
             } else {
                 branchMatcher =
-                    TP.rc('^(#[()a-zA-Z0-9]+)?' + TP.regExpEscape(searchPath));
+                    TP.rc('^(#[()a-zA-Z0-9]+)?' +
+                            TP.regExpEscape(searchPath) +
+                            '$');
             }
 
             leafMatcher = TP.rc(TP.regExpEscape(searchPath));
@@ -1587,13 +1671,13 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
 
                 ownerElem = boundAttr.ownerElement;
 
-                if ((attrName === 'scope' || attrName === 'repeat') &&
-                    branchMatcher.test(attrVal)) {
+                isScopingElement = attrName === 'scope' || attrName === 'repeat';
+
+                if (isScopingElement && branchMatcher.test(attrVal)) {
 
                     ownerTPElem = TP.wrap(ownerElem);
 
-                    if (TP.regex.URI_STRICT.test(attrVal) &&
-                        TP.regex.SCHEME.test(attrVal)) {
+                    if (TP.isURIString(attrVal)) {
                         branchURI = TP.uc(attrVal);
                         if (branchURI.hasFragment()) {
                             branchVal = branchURI.getResource().get('result');
@@ -1601,18 +1685,39 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
                             branchVal = initialVal;
                         }
                     } else {
-                        branchVal = initialVal.get(attrVal);
+                        if (TP.isXMLNode(initialVal)) {
+                            branchVal = TP.wrap(initialVal).get(TP.xpc(attrVal));
+                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                        } else if (TP.isKindOf(initialVal, TP.core.Node)) {
+                            branchVal = initialVal.get(TP.xpc(attrVal));
+                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                        } else if (TP.regex.JSON_POINTER.test(attrVal) ||
+                                    TP.regex.JSON_PATH.test(attrVal)) {
+                            if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
+                                branchVal = TP.jpc(attrVal).executeGet(initialVal);
+                            } else {
+                                jsonContent = TP.core.JSONContent.construct(initialVal);
+                                branchVal = TP.jpc(attrVal).executeGet(jsonContent);
+                            }
+                            pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
+                        } else {
+                            branchVal = initialVal.get(attrVal);
+                            pathType = TP.ifInvalid(aPathType, TP.TIBET_PATH_TYPE);
+                        }
                     }
 
                     remainderParts = pathParts.slice(partsNegativeSlice);
+
+                    pathType = TP.ifInvalid(pathType, aPathType);
 
                     ownerTPElem.refreshBranches(
                             primarySource,
                             aSignal,
                             elems,
                             branchVal,
+                            pathType,
                             remainderParts);
-                } else if (leafMatcher.test(attrVal)) {
+                } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
                     //  TODO: Different types of wrappers depending on full name
                     //  of element (ns:tagname)
@@ -1627,7 +1732,7 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
                     ownerTPElem.$set('node', ownerElem, false);
 
                     ownerTPElem.refreshLeaf(
-                                primarySource, aSignal, initialVal, boundAttr);
+                        primarySource, aSignal, initialVal, boundAttr, aPathType);
                 }
             }
 
@@ -1642,7 +1747,7 @@ function(primarySource, aSignal, elems, initialVal, pathParts) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('refreshLeaf',
-function(primarySource, aSignal, initialVal, bindingAttr) {
+function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
     var facet,
 
@@ -1652,6 +1757,10 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
 
         exprs,
         expr,
+
+        pathType,
+
+        path,
 
         attrValue,
 
@@ -1664,7 +1773,9 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
         i,
 
         transformFunc,
-        finalVal;
+        finalVal,
+
+        jsonContent;
 
     var start = Date.now();
 
@@ -1703,17 +1814,99 @@ function(primarySource, aSignal, initialVal, bindingAttr) {
                 continue;
             }
 
+            pathType = aPathType;
+
+            if (TP.isValid(pathType)) {
+
+                switch (pathType) {
+                    case TP.XPATH_PATH_TYPE:
+
+                        if (TP.isXMLNode(initialVal) ||
+                            TP.isKindOf(initialVal, TP.core.Node)) {
+                            //  empty
+                        } else {
+                            pathType = null;
+                        }
+
+                        break;
+
+                    case TP.JSON_PATH_TYPE:
+                        if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
+                            //  empty
+                        } else {
+                            pathType = null;
+                        }
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
             expr = exprs.at(0);
 
-            if (TP.regex.URI_STRICT.test(expr) && TP.regex.SCHEME.test(expr)) {
+            if (TP.isURIString(expr)) {
 
                 if (expr.startsWith(primaryLocation)) {
                     finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     continue;
                 }
+            } else if (TP.isValid(pathType)) {
+
+                switch (pathType) {
+                    case TP.XPATH_PATH_TYPE:
+                        path = TP.xpc(expr);
+
+                        if (TP.isXMLNode(initialVal)) {
+                            finalVal = path.executeGet(TP.wrap(initialVal));
+                        } else if (TP.isKindOf(initialVal, TP.core.Node)) {
+                            finalVal = path.executeGet(initialVal);
+                        }
+                        break;
+
+                    case TP.JSON_PATH_TYPE:
+
+                        if (!/^\$\./.test(expr)) {
+                            expr = '$.' + expr;
+                        }
+
+                        path = TP.jpc(expr);
+
+                        //  Because of the check above, initialVal has to be a
+                        //  JSONContent object here.
+                        finalVal = path.executeGet(initialVal);
+
+                        break;
+
+                    case TP.TIBET_PATH_TYPE:
+                        path = TP.tpc(expr);
+
+                        finalVal = path.executeGet(initialVal);
+                        break;
+
+                    default:
+                        finalVal = initialVal.get(expr);
+                        break;
+                }
+
             } else {
-                finalVal = initialVal.get(expr);
+                if (TP.isXMLNode(initialVal)) {
+                    finalVal = TP.wrap(initialVal).get(TP.xpc(expr));
+                } else if (TP.isKindOf(initialVal, TP.core.Node)) {
+                    finalVal = initialVal.get(TP.xpc(expr));
+                } else if (TP.regex.JSON_POINTER.test(expr) ||
+                            TP.regex.JSON_PATH.test(expr)) {
+                    if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
+                        finalVal = TP.jpc(expr).executeGet(initialVal);
+                    } else {
+                        jsonContent = TP.core.JSONContent.construct(initialVal);
+                        finalVal = TP.jpc(expr).executeGet(jsonContent);
+                    }
+                } else {
+                    finalVal = initialVal.get(expr);
+                }
             }
 
             if (TP.notValid(finalVal) &&
@@ -1810,7 +2003,7 @@ function(aValue) {
                     //  If we weren't able to compute a real URI from the
                     //  fully expanded URI value, then raise an exception
                     //  and return here.
-                    if (!TP.regex.URI_STRICT.test(fullExpr)) {
+                    if (!TP.isURIString(fullExpr)) {
                         this.raise('TP.sig.InvalidURI');
 
                         return TP.BREAK;
@@ -1824,7 +2017,7 @@ function(aValue) {
                     //  If we weren't able to compute a real URI from the
                     //  fully expanded URI value, then raise an exception
                     //  and return here.
-                    if (!TP.regex.URI_STRICT.test(dataExpr = TP.trim(dataExpr))) {
+                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
                         this.raise('TP.sig.InvalidURI');
 
                         return TP.BREAK;
