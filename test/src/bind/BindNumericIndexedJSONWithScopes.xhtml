@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe"},
@@ -36,7 +36,7 @@
     <br/>
     <br/>
 
-    <span bind:scope="urn:tibet:test_person">
+    <span bind:scope="urn:tibet:test_people">
 
         <span bind:scope="#json($.people[0])">
             First record:<br/>

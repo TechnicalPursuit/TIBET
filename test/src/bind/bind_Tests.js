@@ -3210,26 +3210,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3319,26 +3303,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3428,26 +3396,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3537,26 +3489,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3646,26 +3582,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3755,26 +3675,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
