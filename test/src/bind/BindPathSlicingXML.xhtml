@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <tibet:data name="urn:tibet:test_people">
+        <people xmlns="">
+            <person>
+                <lastname>Smith</lastname>
+                <firstname>Joe</firstname>
+            </person>
+            <person>
+                <lastname>Jones</lastname>
+                <firstname>John</firstname>
+            </person>
+        </people>
+    </tibet:data>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+    <h2>Path Slicing XML</h2><br/>
+    <br/>
+    <br/>
+    This test sets up 'bindings' to text fields from the &lt;tibet:data&gt; tag containing XML data, embedded in this document. It does so using various 'slices' of the path, thereby testing all of the various ways a path can be joined.
+    <br/>
+    <br/>
+    Scoped - left-hand scheme
+    <br/>
+    <span bind:scope="urn:tibet:test_people#xpath1(/people/person[1])">
+        First name (bind:io): <textarea id="firstNameField1" bind:io="{value: firstname}" tabindex="0"></textarea>
+    </span>
+
+    <br/>
+    <br/>
+    Scoped - right-hand scheme
+    <br/>
+    <span bind:scope="urn:tibet:test_people">
+        First name (bind:io): <textarea id="firstNameField2" bind:io="{value: #xpath1(/people/person[1]/firstname)}" tabindex="0"></textarea>
+    </span>
+
+    <br/>
+    <br/>
+    Scoped - two-level-descent - empty scheme
+    <br/>
+    <span bind:scope="urn:tibet:test_people">
+        <span bind:scope="#xpath1()">
+        First name (bind:io): <textarea id="firstNameField3" bind:io="{value: /people/person[1]/firstname}" tabindex="0"></textarea>
+        </span>
+    </span>
+
+    <br/>
+    <br/>
+    Scoped - two-level-descent - left-hand short part:
+    <br/>
+    <span bind:scope="urn:tibet:test_people">
+        <span bind:scope="#xpath1(/people)">
+        First name (bind:io): <textarea id="firstNameField4" bind:io="{value: person[1]/firstname}" tabindex="0"></textarea>
+        </span>
+    </span>
+
+    <br/>
+    <br/>
+    Scoped - two-level-descent - right-hand short part:
+    <br/>
+    <span bind:scope="urn:tibet:test_people">
+        <span bind:scope="#xpath1(/people/person[1])">
+        First name (bind:io): <textarea id="firstNameField5" bind:io="{value: firstname}" tabindex="0"></textarea>
+        </span>
+    </span>
+
+</body>
+</html>

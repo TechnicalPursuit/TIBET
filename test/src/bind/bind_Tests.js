@@ -205,6 +205,619 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.bind.XMLNS.Type.describe('bind: bind path slicing',
+function() {
+
+    var unloadURI,
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('path slicing - XML data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPathSlicingXML.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    firstNameField1,
+                    firstNameField2,
+                    firstNameField3,
+                    firstNameField4,
+                    firstNameField5;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                firstNameField1 = TP.byId('firstNameField1', windowContext);
+                firstNameField2 = TP.byId('firstNameField2', windowContext);
+                firstNameField3 = TP.byId('firstNameField3', windowContext);
+                firstNameField4 = TP.byId('firstNameField4', windowContext);
+                firstNameField5 = TP.byId('firstNameField5', windowContext);
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                test.assert.isEqualTo(firstNameField1.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField2.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField3.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField4.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField5.get('value'), 'Joe');
+
+                //  Change the content via 'user' interaction
+
+                //  Field #1
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField1.clearValue();
+                    }).
+                    sendKeys('Johnny', firstNameField1).
+                    sendEvent(TP.hc('type', 'change'), firstNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Johnny');
+                    });
+
+                //  Field #2
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField2.clearValue();
+                    }).
+                    sendKeys('Jimmy', firstNameField2).
+                    sendEvent(TP.hc('type', 'change'), firstNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jimmy');
+                    });
+
+                //  Field #3
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField3.clearValue();
+                    }).
+                    sendKeys('Jerry', firstNameField3).
+                    sendEvent(TP.hc('type', 'change'), firstNameField3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jerry');
+                    });
+
+                //  Field #4
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField4.clearValue();
+                    }).
+                    sendKeys('Jacob', firstNameField4).
+                    sendEvent(TP.hc('type', 'change'), firstNameField4).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jacob');
+                    });
+
+                //  Field #5
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField5.clearValue();
+                    }).
+                    sendKeys('Justin', firstNameField5).
+                    sendEvent(TP.hc('type', 'change'), firstNameField5).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Justin');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('path slicing - JSON data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPathSlicingJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    firstNameField1,
+                    firstNameField2,
+                    firstNameField3,
+                    firstNameField4,
+                    firstNameField5;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                firstNameField1 = TP.byId('firstNameField1', windowContext);
+                firstNameField2 = TP.byId('firstNameField2', windowContext);
+                firstNameField3 = TP.byId('firstNameField3', windowContext);
+                firstNameField4 = TP.byId('firstNameField4', windowContext);
+                firstNameField5 = TP.byId('firstNameField5', windowContext);
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                test.assert.isEqualTo(firstNameField1.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField2.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField3.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField4.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField5.get('value'), 'Joe');
+
+                //  Change the content via 'user' interaction
+
+                //  Field #1
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField1.clearValue();
+                    }).
+                    sendKeys('Johnny', firstNameField1).
+                    sendEvent(TP.hc('type', 'change'), firstNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Johnny');
+                    });
+
+                //  Field #2
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField2.clearValue();
+                    }).
+                    sendKeys('Jimmy', firstNameField2).
+                    sendEvent(TP.hc('type', 'change'), firstNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jimmy');
+                    });
+
+                //  Field #3
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField3.clearValue();
+                    }).
+                    sendKeys('Jerry', firstNameField3).
+                    sendEvent(TP.hc('type', 'change'), firstNameField3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jerry');
+                    });
+
+                //  Field #4
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField4.clearValue();
+                    }).
+                    sendKeys('Jacob', firstNameField4).
+                    sendEvent(TP.hc('type', 'change'), firstNameField4).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jacob');
+                    });
+
+                //  Field #5
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField5.clearValue();
+                    }).
+                    sendKeys('Justin', firstNameField5).
+                    sendEvent(TP.hc('type', 'change'), firstNameField5).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Justin');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('path slicing - JavaScript Object data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPathSlicingJSObj.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    firstNameField1,
+                    firstNameField2,
+                    firstNameField3,
+                    firstNameField4,
+                    firstNameField5;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                firstNameField1 = TP.byId('firstNameField1', windowContext);
+                firstNameField2 = TP.byId('firstNameField2', windowContext);
+                firstNameField3 = TP.byId('firstNameField3', windowContext);
+                firstNameField4 = TP.byId('firstNameField4', windowContext);
+                firstNameField5 = TP.byId('firstNameField5', windowContext);
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                test.assert.isEqualTo(firstNameField1.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField2.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField3.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField4.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField5.get('value'), 'Joe');
+
+                //  Change the content via 'user' interaction
+
+                //  Field #1
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField1.clearValue();
+                    }).
+                    sendKeys('Johnny', firstNameField1).
+                    sendEvent(TP.hc('type', 'change'), firstNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Johnny');
+                    });
+
+                //  Field #2
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField2.clearValue();
+                    }).
+                    sendKeys('Jimmy', firstNameField2).
+                    sendEvent(TP.hc('type', 'change'), firstNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jimmy');
+                    });
+
+                //  Field #3
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField3.clearValue();
+                    }).
+                    sendKeys('Jerry', firstNameField3).
+                    sendEvent(TP.hc('type', 'change'), firstNameField3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jerry');
+                    });
+
+                //  Field #4
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField4.clearValue();
+                    }).
+                    sendKeys('Jacob', firstNameField4).
+                    sendEvent(TP.hc('type', 'change'), firstNameField4).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jacob');
+                    });
+
+                //  Field #5
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField5.clearValue();
+                    }).
+                    sendKeys('Justin', firstNameField5).
+                    sendEvent(TP.hc('type', 'change'), firstNameField5).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Justin');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
 TP.bind.XMLNS.Type.describe('bind: simple binds',
 function() {
 
