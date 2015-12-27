@@ -880,14 +880,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -954,14 +946,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -1138,14 +1122,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1294,7 +1270,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1321,14 +1297,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1477,7 +1445,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1504,14 +1472,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1660,7 +1620,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1681,14 +1641,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -1757,14 +1709,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1913,7 +1857,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1940,14 +1884,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -2096,7 +2032,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -2123,14 +2059,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -2279,7 +2207,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -2306,14 +2234,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -2462,7 +2382,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -2483,14 +2403,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -2558,14 +2470,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -2742,14 +2646,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -2898,7 +2794,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -2925,14 +2821,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -3081,7 +2969,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -3108,14 +2996,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -3264,7 +3144,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 }).timeout(45000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
