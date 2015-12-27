@@ -3032,7 +3032,7 @@ function(srcPath, templateArgs) {
 
         token = pathTokens.at(i);
 
-        //  JSONPath root operator standalone
+        //  JSONPath root operator
         if (token === '$') {
 
             xmlStr += '//*';
@@ -3661,9 +3661,9 @@ function(targetObj, varargs) {
 
     srcPath = this.get('srcPath');
 
-    //  If the path is empty or just '.', then that's the shortcut to just
+    //  If the path is empty or just '$', then that's the shortcut to just
     //  return the target object itself.
-    if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
+    if (TP.isEmpty(srcPath) || srcPath === '$') {
         return target;
     }
 
