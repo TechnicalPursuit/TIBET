@@ -5640,6 +5640,14 @@ function() {
      * @returns {Boolean} True when single valued.
      */
 
+    //  If this element has a 'tibet:isSingleValued' attribute, then we return
+    //  the value of that. This allows 'instance level' programming of a
+    //  particular element.
+    if (TP.elementHasAttribute(
+            this.getNativeNode(), 'tibet:isSingleValued', true)) {
+        return true;
+    }
+
     return false;
 });
 
@@ -5655,6 +5663,14 @@ function() {
      *     for more information.
      * @returns {Boolean} True when scalar valued.
      */
+
+    //  If this element has a 'tibet:isScalarValued' attribute, then we return
+    //  the value of that. This allows 'instance level' programming of a
+    //  particular element.
+    if (TP.elementHasAttribute(
+            this.getNativeNode(), 'tibet:isScalarValued', true)) {
+        return true;
+    }
 
     return false;
 });
