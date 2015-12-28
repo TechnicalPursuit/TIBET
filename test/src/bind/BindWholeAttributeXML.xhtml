@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <people xmlns="">
             <person>
                 <lastname>Smith</lastname>
@@ -48,7 +48,7 @@
 	<br/>
 
 	<label for="colorField">Color: </label>
-    Joe's Favorite Color: <input type="text" id="colorField" value="[[urn:tibet:test_person#xpath1(/people/person[1]/color)]]" tabindex="0"/><br/>
+    Joe's Favorite Color: <input type="text" id="colorField" value="[[urn:tibet:test_people#xpath1(/people/person[1]/color)]]" tabindex="0"/><br/>
 
 </body>
 </html>

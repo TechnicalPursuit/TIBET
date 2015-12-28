@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <people xmlns="">
             <person>
                 <lastname>Smith</lastname>
@@ -54,7 +54,7 @@
     <label for="colorField">Color: </label>
 
     <!-- Set up a span to define the binding scope -->
-    <span bind:scope="urn:tibet:test_person#xpath1(/people/person[3])">
+    <span bind:scope="urn:tibet:test_people#xpath1(/people/person[3])">
 
         Billy's Favorite Color: <input type="text" id="colorField" value="[[color]]" tabindex="0"/><br/>
 

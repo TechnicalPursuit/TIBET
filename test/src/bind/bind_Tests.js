@@ -6072,7 +6072,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6127,7 +6127,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6182,7 +6182,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6237,7 +6237,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6293,7 +6293,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6364,7 +6364,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6436,7 +6436,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6507,7 +6507,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6577,7 +6577,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6632,7 +6632,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6687,7 +6687,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6742,7 +6742,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6798,7 +6798,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6869,7 +6869,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6941,7 +6941,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7012,7 +7012,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7082,7 +7082,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7137,7 +7137,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7192,7 +7192,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7247,7 +7247,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -7303,7 +7303,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7374,7 +7374,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7446,7 +7446,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7517,7 +7517,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);

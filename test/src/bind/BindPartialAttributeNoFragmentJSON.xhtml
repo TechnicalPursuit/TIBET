@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe", "color": "red"},
@@ -38,7 +38,7 @@
     <br/>
 
     <!-- Set up a span to define the binding scope -->
-    <span bind:scope="urn:tibet:test_person">
+    <span bind:scope="urn:tibet:test_people">
 
         <label for="colorField">Color: </label>
         John's Favorite Color: <input type="text" id="colorField" value="[[#json($.people[1].color)]]" tabindex="0"/><br/>
