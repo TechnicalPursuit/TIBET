@@ -4847,20 +4847,29 @@ function(aPath, config) {
      *     instance.
      */
 
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.TIBET_POINTER.test(aPath)) {
+        path = TP.regex.TIBET_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
     //  If there is no 'path punctuation' (only JS identifer characters), or
     //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
     //  path'.
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.JS_IDENTIFIER.test(aPath) ||
-        TP.regex.ONLY_NUM.test(aPath) ||
-        TP.regex.SIMPLE_NUMERIC_PATH.test(aPath)) {
+    if (TP.regex.JS_IDENTIFIER.test(path) ||
+        TP.regex.ONLY_NUM.test(path) ||
+        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
         return TP.core.SimpleTIBETPath.construct.apply(
                         TP.core.SimpleTIBETPath, arguments);
     }
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
-    if (TP.regex.TIBET_PATH.test(aPath)) {
+    if (TP.regex.TIBET_PATH.test(path)) {
         return TP.core.ComplexTIBETPath.construct.apply(
                             TP.core.ComplexTIBETPath, arguments);
     }
@@ -4878,6 +4887,31 @@ TP.core.ComplexTIBETPath.Inst.defineAttribute('$transformedPath');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ComplexTIBETPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.core.Hash} config The configuration for this path.
+     * @returns {TP.core.ComplexTIBETPath} The receiver.
+     */
+
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.TIBET_POINTER.test(aPath)) {
+        path = TP.regex.TIBET_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
+    return this.callNextMethod(path, config);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.ComplexTIBETPath.Inst.defineMethod('checkValueEquality',
