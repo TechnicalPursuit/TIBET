@@ -1954,6 +1954,30 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @method setFacet
+     * @summary Sets the value of the named facet of the named aspect to the
+     *     value provided.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {TP.html.inputCheckable} The receiver.
+     */
+
+    if (aspectName === 'checked') {
+        return this.setValue(facetValue, shouldSignal);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('$setVisualToggle',
 function(aToggleValue) {
 
