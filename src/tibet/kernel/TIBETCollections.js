@@ -5800,7 +5800,8 @@ function(attributeName, attributeValue, shouldSignal) {
         sigFlag = this.shouldSignalChange();
     }
 
-    if (sigFlag) {
+    //  if its defined, we want to know (true or false)
+    if (TP.isDefined(sigFlag)) {
         oldFlag = this.shouldSignalChange();
 
         this.shouldSignalChange(sigFlag);
