@@ -209,6 +209,11 @@ TP.hc(
 
                 //  Slice off the leading and trailing '[[' and ']]'
                 val = val.slice(2, -2);
+            } else if (!/^\s*\[\[/.test(val) || !/\]\]\s*$/.test(val)) {
+                //  If the expression doesn't end exactly (modulo whitespace) at
+                //  either the start or end, then we quote the entire
+                //  expression.
+                val = val.quoted('\'');
             }
 
             //  There was no existing bind:io attribute - build one and set
@@ -331,6 +336,11 @@ TP.hc(
 
                 //  Slice off the leading and trailing '[[' and ']]'
                 val = val.slice(2, -2);
+            } else if (!/^\s*\[\[/.test(val) || !/\]\]\s*$/.test(val)) {
+                //  If the expression doesn't end exactly (modulo whitespace) at
+                //  either the start or end, then we quote the entire
+                //  expression.
+                val = val.quoted('\'');
             }
 
             //  There was no existing bind:io attribute - build one and set
