@@ -1079,6 +1079,11 @@ TP.AT_TARGET = 'Targeting';
 TP.CAPTURING = 'Capturing';
 TP.BUBBLING = 'Bubbling';
 
+//  Signal batching
+TP.START_SIGNAL_BATCH = 'startbatch';
+TP.SIGNAL_BATCH = 'batch';
+TP.END_SIGNAL_BATCH = 'endbatch';
+
 //  ---
 //  requests
 //  ---

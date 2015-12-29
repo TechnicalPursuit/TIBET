@@ -2465,6 +2465,8 @@ function(targetObj) {
         changedAddresses,
         changedPaths,
 
+        signalNameForAction,
+
         pathKeys,
         keysLen,
         i,
@@ -2474,12 +2476,13 @@ function(targetObj) {
 
         pathEntry,
         actions,
+        description,
+        batchID,
 
         pathAction,
         pathAddresses,
 
         sigName,
-        description,
 
         aliasesLen,
         k,
@@ -2609,6 +2612,31 @@ function(targetObj) {
             }
         });
 
+    //  Define a Function to compute a signal name from an action
+    signalNameForAction = function(anAction) {
+
+        switch (anAction) {
+            case TP.CREATE:
+            case TP.INSERT:
+            case TP.APPEND:
+
+                //  CREATE, INSERT or APPEND means an 'insertion structural
+                //  change' in the data.
+                return 'TP.sig.StructureInsert';
+
+            case TP.DELETE:
+
+                //  DELETE means a 'deletion structural change' in the data.
+                return 'TP.sig.StructureDelete';
+
+            case TP.UPDATE:
+            default:
+
+                //  UPDATE means just a value changed.
+                return 'TP.sig.ValueChange';
+        }
+    };
+
     //  Now, process all of the changed paths and send changed signals. The
     //  signal type sent will be based on their action.
 
@@ -2629,45 +2657,52 @@ function(targetObj) {
         //  that changed them (TP.CREATE, TP.DELETE or TP.UPDATE)
         actions = pathEntry.getKeys();
 
+        description = TP.hc(
+                        'target', targetObj,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths);
+
+        //  This method supports 'batching' of signals. Some receivers (like
+        //  TIBET's markup-based binding machinery) only want to update when the
+        //  end of a 'batch' of signals is received. Therefore, we mark our
+        //  signals with a unique 'batch ID'.
+        //  For the first signal in the batch, we stamp in the unique batch ID
+        //  under the TP.START_SIGNAL_BATCH key in the signal's payload and,
+        //  conversely under the TP.END_SIGNAL_BATCH key for the last signal in
+        //  the batch. All signals carry the batch ID under the TP.SIGNAL_BATCH
+        //  key.
+
+        //  First signal... generate and stamp in the batch ID under both
+        //  TP.START_SIGNAL_BATCH and TP.SIGNAL_BATCH. We'll clear
+        //  TP.START_SIGNAL_BATCH below, after the signal is sent.
+        if (i === 0) {
+            batchID = TP.genID('SIGNAL_BATCH');
+            description.atPut(TP.START_SIGNAL_BATCH, batchID);
+
+            description.atPut(TP.SIGNAL_BATCH, batchID);
+        }
+
+        //  Last signal... stamp in the batch ID under TP.END_SIGNAL_BATCH
+        if (i === keysLen - 1) {
+            description.atPut(TP.END_SIGNAL_BATCH, batchID);
+        }
+
         for (j = 0; j < actions.getSize(); j++) {
 
             pathAction = actions.at(j);
+            description.atPut('action', pathAction);
+
             pathAddresses = pathEntry.at(pathAction);
+            description.atPut('addresses', pathAddresses);
 
-            switch (pathAction) {
-                case TP.CREATE:
-                case TP.INSERT:
-                case TP.APPEND:
-
-                    //  CREATE, INSERT or APPEND means an 'insertion structural
-                    //  change' in the data.
-                    sigName = 'TP.sig.StructureInsert';
-                    break;
-
-                case TP.DELETE:
-
-                    //  DELETE means a 'deletion structural change' in the data.
-                    sigName = 'TP.sig.StructureDelete';
-                    break;
-
-                case TP.UPDATE:
-                default:
-
-                    //  UPDATE means just a value changed.
-                    sigName = 'TP.sig.ValueChange';
-            }
+            //  Compute the signal name based on the action.
+            sigName = signalNameForAction(pathAction);
 
             //  If we found any path aliases, then loop over them and dispatch
-            //  using their aspect name.
+            //  individual signals using their aspect name.
             if (TP.isValid(pathAspectAliases)) {
-                aliasesLen = pathAspectAliases.getSize();
 
-                description = TP.hc(
-                                'addresses', pathAddresses,
-                                'action', pathAction,
-                                'target', targetObj,
-                                'facet', 'value',
-                                TP.CHANGE_PATHS, changedPaths);
+                aliasesLen = pathAspectAliases.getSize();
 
                 for (k = 0; k < aliasesLen; k++) {
                     aspectName = pathAspectAliases.at(k);
@@ -2691,17 +2726,16 @@ function(targetObj) {
                                 TP.INHERITANCE_FIRING, sigName);
                 }
             } else {
-                //  Otherwise send the generic signal.
-                description = TP.hc(
-                                'aspect', pathKeys.at(i),
-                                'addresses', pathAddresses,
-                                'action', pathAction,
-                                'target', targetObj,
-                                'facet', 'value',
-                                TP.CHANGE_PATHS, changedPaths);
+
+                description.atPut('aspect', pathKeys.at(i));
 
                 TP.signal(targetObj, sigName, description);
             }
+        }
+
+        //  First signal... remove the batch ID under TP.START_SIGNAL_BATCH
+        if (i === 0) {
+            description.removeKey(TP.START_SIGNAL_BATCH);
         }
     }
 
