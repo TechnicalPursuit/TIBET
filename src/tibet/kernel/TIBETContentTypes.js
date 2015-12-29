@@ -2183,6 +2183,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Inst.defineMethod('processFinalValue',
 function(aReturnValue, targetObj) {
 
@@ -3854,6 +3868,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.JSON_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONPath.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
@@ -4677,6 +4705,20 @@ function() {
      */
 
     return TP.getAccessPathParts(this.get('srcPath'), 'tibet');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SimpleTIBETPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.TIBET_PATH_TYPE;
 });
 
 //  ------------------------------------------------------------------------
