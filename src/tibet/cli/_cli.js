@@ -920,6 +920,7 @@ CLI.handleError = function(e, phase, command) {
 CLI.run = function(config) {
 
     var command,        // the first non-option argument, the command name.
+        topic,          // when using help this is the original command name.
         cmdPath;        // the command path (for use with require())
 
     // Typically contains npm config data under a 'npm' key and a slot for TIBET
@@ -951,6 +952,15 @@ CLI.run = function(config) {
     if (command.charAt(0) === '_') {
         this.error('Cannot directly run private command: ' + command);
         process.exit(1);
+    }
+
+    //  ---
+    //  Help check
+    //  ---
+
+    if (this.options.help) {
+        this.runHelp(command);
+        return;
     }
 
     //  ---
@@ -1078,6 +1088,15 @@ CLI.runFallback = function(command) {
 
     this.error('Command not found: ' + command + '.');
     process.exit(1);
+};
+
+
+/**
+ * Executes the help command with the topic provided.
+ * @param {string} topic The help topic to display, if available.
+ */
+CLI.runHelp = function(topic) {
+    this.runCommand('help', path.join(__dirname, 'help.js'));
 };
 
 

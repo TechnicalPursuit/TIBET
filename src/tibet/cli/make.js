@@ -301,7 +301,7 @@ Cmd.prototype.prepTargets = function(targets) {
                         targets[name].resolve = function(obj) {
                             clearTimeout(timer);
                             cmd.debug('resolving ' + name + '...');
-                            func.$$active = false;
+                            targets[name].$$active = false;
                             resolver(obj);
                         };
 
@@ -310,10 +310,12 @@ Cmd.prototype.prepTargets = function(targets) {
                         targets[name].reject = function(err) {
                             clearTimeout(timer);
                             cmd.debug('rejecting ' + name + '...');
+                            /*
                             if (err !== void 0) {
                                 cmd.error('' + err);
                             }
-                            func.$$active = false;
+                            */
+                            targets[name].$$active = false;
                             rejector(err);
                         };
 

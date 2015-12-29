@@ -13,10 +13,6 @@
 
     'use strict';
 
-    //  ---
-    //  Formsanity Task Runner
-    //  ---
-
     /**
      *
      * @param {Object} options Configuration options shared across TDS modules.
@@ -57,6 +53,10 @@
 
         path = require('path');
         sh = require('shelljs');
+
+        //  ---
+        //  Variables
+        //  ---
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_tasks = options.tds_tasks || {};

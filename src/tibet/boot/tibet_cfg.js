@@ -712,6 +712,13 @@
     TP.sys.setcfg('api.lint_keys', false);
 
     //  ---
+    //  cli
+    //  ---
+
+    //  what method (browser or man page) should we try for help display?
+    TP.sys.setcfg('cli.help.viewer', 'man');
+
+    //  ---
     //  content mgmt
     //  ---
 
@@ -1284,6 +1291,7 @@
     TP.sys.setcfg('tds.use.mocks', false);
     TP.sys.setcfg('tds.use.patch', false);
     TP.sys.setcfg('tds.use.pouch', false);
+    TP.sys.setcfg('tds.use.proxy', false);
     TP.sys.setcfg('tds.use.tasks', false);
     TP.sys.setcfg('tds.use.watch', false);
     TP.sys.setcfg('tds.use.webdav', false);
