@@ -2925,7 +2925,7 @@ TP.regex.TIBET_POINTER = /tibet\((.*)\)/;
 //      - be a period ('.') or a word character followed by brackets containing
 //          a number.
 TP.regex.TIBET_PATH =
-    /^(\$|_)?\w+[\.]{1}\w+|\[\w+(,\w+)+\]|\[-?\d*:-?\d*(:-?\d*)?\]|(^|\.|\w)\[-?\d+\]/;
+    /^(\$|_)?\w+[\.]{1}\w+|([^\/])*\[\w+(,\w+)+\]([^\/])*|([^\/])*\[-?\d*:-?\d*(:-?\d*)?\]([^\/])*|(^|\.|\w)\[-?\d+\]/;
 
 TP.regex.TIBET_PATH_CHAR = /[\.:,]+/;
 TP.regex.TIBET_PATH_TEMPLATE = /(^|\s+)(\w[\w\.:,]*)(\s+|$)/g; //  needs reset
