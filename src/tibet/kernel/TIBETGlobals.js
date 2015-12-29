@@ -2887,6 +2887,7 @@ TP.ELEMENT_PATH_TYPE = 6;
 TP.XTENSION_POINTER_PATH_TYPE = 7;
 
 TP.CHANGE_PATHS = 'paths';
+TP.CHANGE_URIS = 'uris';
 
 //  ---
 //  path detection and values

@@ -2678,10 +2678,12 @@ function(aSignal) {
      *     method is invoked when it changes. The supplied signal could have a
      *     TP.CHANGE_PATHS property in its payload, which is an Array of path
      *     Strings that referenced the resource at some point. If this property
-     *     is present, those paths are compared against any fragments of 'sub
-     *     URIs' of the receiver and, if a match is made, a Change is signaled
-     *     with that sub URI. In either case, this URI will signal an overall
-     *     Change from itself for the 'whole resource'.
+     *     is present, those paths are compared against any fragments of
+     *     'secondary URIs' of the receiver and, if a match is made, that
+     *     secondary URI is added to a list of changed URIs kept under the
+     *     TP.CHANGE_URIS property in the payload.
+     *     Whether or not the signal has a TP.CHANGE_PATHS property, this URI
+     *     will signal Change from itself.
      * @param {TP.sig.Change} aSignal The signal indicating a change has
      *     happened in the resource.
      * @returns {TP.core.URI} The receiver.
@@ -2689,9 +2691,11 @@ function(aSignal) {
 
     var resource,
 
-        subURIs,
+        secondaryURIs,
 
         path,
+
+        changedURIs,
 
         i,
 
@@ -2703,49 +2707,40 @@ function(aSignal) {
     resource = this.getResource().get('result');
 
     //  If TP.CHANGE_PATHS were supplied in the signal, filter them against any
-    //  'sub URI's of the receiver and signal a change from those URIs.
+    //  'secondary URI's of the receiver and add those sub URIs to the payload
+    //  of the signal.
 
-    //  SubURIs are URIs that have the same primary resource as us, but also
-    //  have a fragment, indicating that they also have a secondary resource
-    //  pointed to by the fragment.
-    subURIs = this.getSecondaryURIs();
+    //  Secondary URIs are URIs that have the same primary resource as us, but
+    //  also have a fragment, indicating that they also have a secondary
+    //  resource pointed to by the fragment.
+    secondaryURIs = this.getSecondaryURIs();
 
     if (TP.notEmpty(aSignal.at(TP.CHANGE_PATHS))) {
 
-        if (TP.notEmpty(subURIs)) {
+        if (TP.notEmpty(secondaryURIs)) {
 
             path = aSignal.at('aspect');
 
-            //  Note that we change the 'aspect' here to 'value' - because the
-            //  'entire value' of the subURI itself has changed. We also include
-            //  a 'path' for convenience, so that observers can use that against
-            //  the primary URI to obtain this URI's value, if they wish.
-            aSignal.atPut('aspect', 'value');
-            aSignal.atPut('path', path);
+            changedURIs = TP.ac();
 
-            for (i = 0; i < subURIs.getSize(); i++) {
+            for (i = 0; i < secondaryURIs.getSize(); i++) {
 
-                fragText = subURIs.at(i).getFragmentExpr();
+                fragText = secondaryURIs.at(i).getFragmentExpr();
 
                 //  If the fragment without the 'pointer indicator' matches the
-                //  path, then signal from the subURI. Note here that we just
-                //  reuse the signal name and payload.
+                //  path, then push the secondary URI onto our list of changed
+                //  URIs.
                 if (fragText === path) {
-
-                    subURIs.at(i).signal(
-                            aSignal.getSignalName(),
-                            aSignal.getPayload());
+                    changedURIs.push(secondaryURIs.at(i));
                 }
             }
 
-            //  Put the signal back to what it was before we mucked with it
-            //  above.
-            aSignal.removeKey('path');
-            aSignal.atPut('aspect', path);
+            //  Add the list of changed URIs to the signal.
+            aSignal.atPut(TP.CHANGE_URIS, changedURIs);
         }
 
-        //  Now that any of the appropriate subURIs have signaled from
-        //  themselves, we signal from ourself.
+        //  Now we signal from ourself with the whole payload, which now
+        //  includes the list of changed URIs.
         this.signal(aSignal.getSignalName(),
                     aSignal.getPayload(),
                     TP.INHERITANCE_FIRING,
@@ -2753,10 +2748,10 @@ function(aSignal) {
 
     } else {
 
-        //  If we didn't have any paths, then just signal from our subURIs (if
-        //  we have any) and ourself.
+        //  If we didn't have any paths, then just signal from our secondary
+        //  URIs (if we have any) and ourself.
 
-        if (TP.notEmpty(subURIs)) {
+        if (TP.notEmpty(secondaryURIs)) {
 
             //  Note that we change the 'aspect' here to 'value' (after
             //  capturing the original aspect used by the primary URI) -
@@ -2769,9 +2764,9 @@ function(aSignal) {
 
             aSignal.atPut('target', resource);
 
-            for (i = 0; i < subURIs.getSize(); i++) {
+            for (i = 0; i < secondaryURIs.getSize(); i++) {
 
-                path = subURIs.at(i).getFragmentExpr();
+                path = secondaryURIs.at(i).getFragmentExpr();
 
                 //  If the path is just a JS identifier, then this is probably a
                 //  'tibet(...)' pointer. If that does not match the primary
@@ -2784,7 +2779,7 @@ function(aSignal) {
 
                 aSignal.atPut('path', path);
 
-                subURIs.at(i).signal(
+                secondaryURIs.at(i).signal(
                         aSignal.getSignalName(),
                         aSignal.getPayload(),
                         TP.INHERITANCE_FIRING,
