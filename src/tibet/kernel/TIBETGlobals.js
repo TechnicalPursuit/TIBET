@@ -766,6 +766,7 @@ TP.IS_XML = 'tp_isXML';
 TP.SRC_LOCATION = 'tp_sourcelocation';
 TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
+TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
 
 //  meta owners and their target objects
 

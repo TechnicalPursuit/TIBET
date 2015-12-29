@@ -788,6 +788,18 @@ function(aSignalOrHash) {
 //  ========================================================================
 
 //  ------------------------------------------------------------------------
+
+TP.totalSetupTime = 0;
+
+TP.totalBranchQueryTime = 0;
+TP.totalInlineQueryTime = 0;
+TP.totalTextQueryTime = 0;
+
+TP.totalUpdateTime = 0;
+
+TP.totalInitialGetTime = 0;
+
+//  ------------------------------------------------------------------------
 //  TP.core.DocumentNode
 //  ------------------------------------------------------------------------
 
@@ -795,6 +807,7 @@ function(aSignalOrHash) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineAttribute('$signalingBatchID');
 TP.core.DocumentNode.Inst.defineAttribute('$observedURIs');
 
 //  ------------------------------------------------------------------------
@@ -810,7 +823,12 @@ function(aSignal) {
      * @param {Change} aSignal The signal instance which triggered this handler.
      */
 
-    var signalFlag,
+    var changedPaths,
+
+        ourBatchID,
+        signalBatchID,
+
+        signalFlag,
 
         primarySource,
         initialVal,
@@ -830,14 +848,47 @@ function(aSignal) {
         j,
         attrVal,
 
-        changedPaths,
-
         matcher,
         len,
 
         attrName,
 
         ownerTPElem;
+
+    changedPaths = aSignal.at(TP.CHANGE_PATHS);
+
+    if (TP.isValid(changedPaths)) {
+        if (TP.notValid(ourBatchID = this.get('$signalingBatchID'))) {
+
+            //  If there's already a TP.END_SIGNAL_BATCH id before we've even
+            //  set our cached batch ID, then there must've only been one path
+            //  so we go ahead and process the signal.
+            if (TP.isValid(signalBatchID = aSignal.at(TP.END_SIGNAL_BATCH))) {
+                //  empty
+            } else {
+                if (TP.isValid(
+                        signalBatchID = aSignal.at(TP.START_SIGNAL_BATCH))) {
+                    this.set('$signalingBatchID', signalBatchID);
+                }
+
+                //  At the start of a batch (or a batchID wasn't provided). In
+                //  either case, don't update - just return
+                return;
+            }
+        } else if (TP.isValid(signalBatchID = aSignal.at(TP.END_SIGNAL_BATCH))) {
+            if (ourBatchID !== signalBatchID) {
+                //  The batch is ending, but it didn't match our cached batch ID
+                //  then return
+                return;
+            }
+
+            //  Otherwise, we clear our cached batch ID proceed ahead.
+            this.set('$signalingBatchID', null);
+        } else {
+            //  This wasn't the end of the batch - return.
+            return;
+        }
+    }
 
     signalFlag = TP.sys.shouldSignalDOMLoaded();
     TP.sys.shouldSignalDOMLoaded(false);
@@ -878,7 +929,7 @@ function(aSignal) {
         }
     }
 
-    if (TP.isValid(changedPaths = aSignal.at(TP.CHANGE_PATHS))) {
+    if (TP.isValid(changedPaths)) {
 
         var startUpdate = Date.now();
 
@@ -1610,6 +1661,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                 //  There are different types of wrappers depending on full tag
                 //  name of element (ns:tagname)
 
+                /*
                 if (TP.notValid(
                         ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
                     ownerTPElem = TP.core.ElementNode.construct(ownerElem);
@@ -1618,6 +1670,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
                 //  NB: Primitive and fast way to set native node
                 ownerTPElem.$set('node', ownerElem, false);
+                */
+
+                ownerTPElem = TP.wrap(ownerElem);
 
                 ownerTPElem.refreshLeaf(
                     primarySource, aSignal, initialVal, boundAttr, aPathType);
@@ -1719,9 +1774,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                             remainderParts);
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
-                    //  TODO: Different types of wrappers depending on full name
-                    //  of element (ns:tagname)
-
+                    /*
                     if (TP.notValid(
                         ownerTPElem = ownerWrappers.at(ownerElem.tagName))) {
                         ownerTPElem = TP.core.ElementNode.construct(ownerElem);
@@ -1730,6 +1783,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
                     //  NB: Primitive and fast way to set native node
                     ownerTPElem.$set('node', ownerElem, false);
+                    */
+
+                    ownerTPElem = TP.wrap(ownerElem);
 
                     ownerTPElem.refreshLeaf(
                         primarySource, aSignal, initialVal, boundAttr, aPathType);
@@ -1921,6 +1977,18 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
         if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
 
+            //  If finalVal is a single-valued Array, try to collapse it for
+            //  better results
+            if (TP.isArray(finalVal)) {
+                finalVal = TP.collapse(finalVal);
+            }
+
+            //  If finalVal is a Node, try to get it's value (i.e. for Elements,
+            //  it's text content) for better results
+            if (TP.isNode(finalVal)) {
+                finalVal = TP.val(finalVal);
+            }
+
             finalVal = transformFunc(
                             aSignal.getSource(),
                             finalVal,
@@ -1945,16 +2013,13 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('setBoundValue',
-function(aValue) {
+function(aValue, scopeVals, bindingInfoValue) {
 
-    var scopeVals,
-        bindingInfo,
+    var bindingInfo,
 
         bidiAttrs;
 
-    scopeVals = this.getBindingScopeValues();
-
-    bindingInfo = this.getBindingInfoFrom(this.getAttribute('bind:io'));
+    bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
 
     bidiAttrs = this.getType().get('bidiAttrs');
 
