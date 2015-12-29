@@ -2521,6 +2521,7 @@ TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
 
 TP.regex.BINDING_STATEMENT_DETECT = /\[\[(.+?)\]\]/;
 TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
+TP.regex.BINDING_ATTR_VALUE_DETECT = /\s*\{\s*\w+\s*:/;
 
 
 TP.regex.TSH_VARSUB = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/;
