@@ -2204,34 +2204,81 @@ function(aNode) {
      */
 
     var query,
-        queriedNodes;
+        boundElements,
 
-    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
-    //  context node for evaluating an XPath expression.
+        boundTextNodes,
+
+        allBoundNodes,
+        commonAncestor;
+
+    //  According to DOM Level 3, we can't use DocumentFragments as the context
+    //  node for evaluating a CSS expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  We're only interested in:
-    //      - elements that are in the 'bind:' namespace
-    //      - elements that have attributes in the 'bind:' namespace (or have
-    //          the '[[...]]' sugar)
-    //      - text nodes with [[...]] as their content (or part of their
-    //          content)
-    query = 'descendant-or-self::*' +
-            '[' +
-            'namespace-uri() = "' + TP.w3.Xmlns.BIND + '"' +
-            ' or ' +
-            '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '"]' +
-            ' or ' +
-            '@*[contains(., "[[")]' +
-            ']' +
-            ' | ' +
-            './/text()[contains(., "[[")]';
+    //  If this wasn't another type of collection node (i.e. Document or
+    //  Element), then just return an empty Array here.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
 
-    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+    //  Query for any attributes named 'io', 'in', 'scope' or 'repeat', no
+    //  matter what namespace they're in. Note that this is about as
+    //  sophisticated as we can get with namespaces using the querySelectorAll()
+    //  call in most browsers. It is extremely fast, which is why we use it and
+    //  then filter more later, but it's query capabilities around namespaces is
+    //  quite pathetic.
+    query = '*[*|io],' +
+            '*[*|in],' +
+            '*[*|scope],' +
+            '*[*|repeat]';
 
-    return queriedNodes;
+    boundElements = TP.ac(aNode.querySelectorAll(query));
+
+    //  Since querySelectorAll always queries from the Document even though we
+    //  messaged the Element (yet another limitation... sigh...) we have to
+    //  filter further based on containment.
+    boundElements = boundElements.filter(
+            function(anElem) {
+                return aNode.contains(anElem);
+            });
+
+    //  Grab any standalone text nodes that have binding expressions.
+    boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
+            function(aTextNode) {
+                return TP.regex.BINDING_STATEMENT_DETECT.test(
+                                                aTextNode.textContent);
+            });
+
+    //  If any node under the context node matches, then we need to find a
+    //  common ancestor for the nodes that matched.
+
+    //  Start by making a set of all bound nodes, Elements or Text nodes.
+    allBoundNodes = boundElements.concat(boundTextNodes);
+
+    //  If there is more than 1, then find the common ancestor and return an
+    //  Array with that Element.
+    if (allBoundNodes.getSize() > 1) {
+        commonAncestor = TP.nodeGetCommonAncestor.apply(TP, allBoundNodes);
+
+        return TP.ac(commonAncestor);
+    } else if (allBoundNodes.getSize() === 1) {
+
+        //  Otherwise, if its just 1 then if there are no bound *Elements*, it
+        //  must be a single Text node. Return an Array with that Text node's
+        //  parent node (i.e. the Element surrounding it).
+        if (boundElements.getSize() === 0) {
+            return TP.ac(boundTextNodes.first().parentNode);
+        } else {
+
+            //  Otherwise, the bound elements Array already has what we want.
+            return boundElements;
+        }
+    }
+
+    //  No binding Elements or Text nodes found.
+    return TP.ac();
 });
 
 //  ========================================================================
@@ -2535,28 +2582,81 @@ function(aNode) {
      */
 
     var query,
-        queriedNodes;
+        boundElements,
 
-    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
-    //  context node for evaluating an XPath expression.
+        boundTextNodes,
+
+        allBoundNodes,
+        commonAncestor;
+
+    //  According to DOM Level 3, we can't use DocumentFragments as the context
+    //  node for evaluating a CSS expression.
     if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
         return this.raise('TP.sig.InvalidNode');
     }
 
-    //  We're only interested in elements that either are in the 'bind:'
-    //  namespace or have attributes in the 'bind:' namespace
-    query = 'descendant-or-self::*' +
-            '[' +
-            'namespace-uri() = "' + TP.w3.Xmlns.BIND + '"' +
-            ' or ' +
-            '@*[namespace-uri() = "' + TP.w3.Xmlns.BIND + '"]' +
-            ' or ' +
-            '@*[starts-with(., "[[")]' +
-            ']';
+    //  If this wasn't another type of collection node (i.e. Document or
+    //  Element), then just return an empty Array here.
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.ac();
+    }
 
-    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+    //  Query for any attributes named 'io', 'in', 'scope' or 'repeat', no
+    //  matter what namespace they're in. Note that this is about as
+    //  sophisticated as we can get with namespaces using the querySelectorAll()
+    //  call in most browsers. It is extremely fast, which is why we use it and
+    //  then filter more later, but it's query capabilities around namespaces is
+    //  quite pathetic.
+    query = '*[*|io],' +
+            '*[*|in],' +
+            '*[*|scope],' +
+            '*[*|repeat]';
 
-    return queriedNodes;
+    boundElements = TP.ac(aNode.querySelectorAll(query));
+
+    //  Since querySelectorAll always queries from the Document even though we
+    //  messaged the Element (yet another limitation... sigh...) we have to
+    //  filter further based on containment.
+    boundElements = boundElements.filter(
+            function(anElem) {
+                return aNode.contains(anElem);
+            });
+
+    //  Grab any standalone text nodes that have binding expressions.
+    boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
+            function(aTextNode) {
+                return TP.regex.BINDING_STATEMENT_DETECT.test(
+                                                aTextNode.textContent);
+            });
+
+    //  If any node under the context node matches, then we need to find a
+    //  common ancestor for the nodes that matched.
+
+    //  Start by making a set of all bound nodes, Elements or Text nodes.
+    allBoundNodes = boundElements.concat(boundTextNodes);
+
+    //  If there is more than 1, then find the common ancestor and return an
+    //  Array with that Element.
+    if (allBoundNodes.getSize() > 1) {
+        commonAncestor = TP.nodeGetCommonAncestor.apply(TP, allBoundNodes);
+
+        return TP.ac(commonAncestor);
+    } else if (allBoundNodes.getSize() === 1) {
+
+        //  Otherwise, if its just 1 then if there are no bound *Elements*, it
+        //  must be a single Text node. Return an Array with that Text node's
+        //  parent node (i.e. the Element surrounding it).
+        if (boundElements.getSize() === 0) {
+            return TP.ac(boundTextNodes.first().parentNode);
+        } else {
+
+            //  Otherwise, the bound elements Array already has what we want.
+            return boundElements;
+        }
+    }
+
+    //  No binding Elements or Text nodes found.
+    return TP.ac();
 });
 
 //  ========================================================================
