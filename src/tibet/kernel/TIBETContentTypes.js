@@ -2794,7 +2794,8 @@ function(targetObj, varargs) {
 
     var paths,
         i,
-        retVal;
+        retVal,
+        nextPath;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -2817,8 +2818,17 @@ function(targetObj, varargs) {
             retVal = TP.wrap(retVal);
         }
 
+        nextPath = paths.at(i);
+
+        //  If the path is a JSON path, but the content isn't a JSONContent,
+        //  convert it so that the path runs correctly.
+        if (nextPath.getPathType() === TP.JSON_PATH_TYPE &&
+            !TP.isKindOf(retVal, TP.core.JSONContent)) {
+            retVal = TP.core.JSONContent.construct(retVal);
+        }
+
         //  Execute the 'get()' and reassign the return value.
-        retVal = retVal.get(paths.at(i));
+        retVal = retVal.get(nextPath);
 
         //  If the return value is a callable Function, then call it and
         //  reassign the return value to the result.
