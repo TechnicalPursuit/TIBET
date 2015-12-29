@@ -1443,32 +1443,6 @@ function(aNodeOrId) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.input.Type.defineMethod('onchange',
-function(aTargetElem, anEvent) {
-
-    /**
-     * @method onchange
-     * @param {HTMLElement} aTargetElem The target element computed for this
-     *     signal.
-     * @param {Event} anEvent The native event that was triggered.
-     * @returns {TP.html.input} The receiver.
-     */
-
-    var tpElem;
-
-    tpElem = TP.wrap(aTargetElem);
-
-    if (tpElem.isBoundElement()) {
-        tpElem.setBoundValue(tpElem.getDisplayValue());
-    }
-
-    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
-        tpElem.changed('value', TP.UPDATE);
-    }
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.input.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
@@ -2627,32 +2601,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.html.select.Type.defineMethod('onchange',
-function(aTargetElem, anEvent) {
-
-    /**
-     * @method onchange
-     * @param {HTMLElement} aTargetElem The target element computed for this
-     *     signal.
-     * @param {Event} anEvent The native event that was triggered.
-     * @returns {TP.html.select} The receiver.
-     */
-
-    var tpElem;
-
-    tpElem = TP.wrap(aTargetElem);
-
-    if (tpElem.isBoundElement()) {
-        tpElem.setBoundValue(tpElem.getDisplayValue());
-    }
-
-    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
-        tpElem.changed('value', TP.UPDATE);
-    }
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.select.Inst.defineMethod('getDisplayValue',
 function() {
 
@@ -3014,32 +2962,6 @@ function() {
      */
 
     return this.getNativeNode().value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.textarea.Type.defineMethod('onchange',
-function(aTargetElem, anEvent) {
-
-    /**
-     * @method onchange
-     * @param {HTMLElement} aTargetElem The target element computed for this
-     *     signal.
-     * @param {Event} anEvent The native event that was triggered.
-     * @returns {TP.html.textarea} The receiver.
-     */
-
-    var tpElem;
-
-    tpElem = TP.wrap(aTargetElem);
-
-    if (tpElem.isBoundElement()) {
-        tpElem.setBoundValue(tpElem.getDisplayValue());
-    }
-
-    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
-        tpElem.changed('value', TP.UPDATE);
-    }
 });
 
 //  ------------------------------------------------------------------------
