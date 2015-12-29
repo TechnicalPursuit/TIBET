@@ -232,7 +232,7 @@
 
     <script src="TIBETWorkflowDOMTypes.js"/>
 
-    <script src="TIBETDataBinding.js"/>
+    <script src="TIBETBinding.js"/>
     <script src="TIBETCoreTags.js"/>
 
     <!-- We don't activate this during boot in any case -->
