@@ -676,7 +676,12 @@ function(src, ops, tsh, exp, alias, args) {
                     //  you can type http://www.tibet.com and not lose the
                     //  tail as a comment. the one caveat is that we rely on a
                     //  strict list of schemes and only support those here.
-                    if (tsh && (c === ':' && TP.$is_scheme(str) || startsURI)) {
+
+                    //  TODO: The 'URI shouldn't end with a '}' is a hack here.
+                    //  Need a more proper way to determine a URI's end.
+                    if (tsh &&
+                        c !== '}' &&
+                        (c === ':' && TP.$is_scheme(str) || startsURI)) {
 
                         //  if we get into a paren, note it... that means
                         //  this is an XPointer of some sort, which means it
