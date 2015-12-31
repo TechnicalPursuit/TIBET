@@ -1,0 +1,135 @@
+.TH "TIBET\-APROPOS" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-apropos\fR \- list objects/methods related to one or more terms
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet apropros <terms> [\-\-comments] [\-\-limit=N] [\-\-no\-ignorecase]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Runs the TSH \fB:apropos\fP command to find methods related to one or more topics\.
+.P
+This is a good command to use when you know what you'd like to do conceptually
+.br
+but are unsure of what options TIBET may offer to support your goals\. You can
+.br
+combine this command with \fBtibet reflect\fP to first get a list of potential
+.br
+options and then get detailed information on apropos methods via \fBreflect\fP\|\.
+.P
+By default this command searches method names for matches to search terms\.
+.br
+The terms provided can be simple strings or a JavaScript\-style RegExp literal\.
+.br
+If a method name matches a term it is always included in the output regardless
+.br
+of any other flag settings\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-comments\fP :
+.br
+Search comment text in addition to the method name\. This will greatly expand
+.br
+the set of returned values depending on the term in question\.
+.IP \(bu 2
+\fB\-\-limit\fP :
+.br
+Set a minimum match count for success\. Items which don't match the search
+.br
+term at least \fB\-\-limit\fP number of times will be discarded\. The default value is
+.br
+2\.
+.IP \(bu 2
+\fB\-\-no\-ignorecase\fP :
+.br
+Use a case\-sensitive search\. Searches are normally case\-insensitive to
+.br
+improve the chances you will find appropriate suggestions in the result list\.
+
+.RE
+.SH EXAMPLES
+.SS Search for methods whose name matches a regular expression:
+.P
+.RS 2
+.nf
+$ tibet apropos '/nodeGetFirst/'
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+\- by name
+
+TP_Primitive_nodeGetFirstAncestorByAttribute
+TP_Primitive_nodeGetFirstAncestorByTagName
+TP_Primitive_nodeGetFirstChildByType
+TP_Primitive_nodeGetFirstChildContentNode
+TP_Primitive_nodeGetFirstChildElement
+TP_Primitive_nodeGetFirstDescendantByType
+TP_Primitive_nodeGetFirstElementByAttribute
+TP_Primitive_nodeGetFirstElementByTagName
+TP_Primitive_nodeGetFirstElementChildByAttribute
+TP_Primitive_nodeGetFirstElementChildByTagName
+TP_Primitive_nodeGetFirstSiblingElement
+.fi
+.RE
+.SS Search for methods whose name includes a particular string:
+.P
+.RS 2
+.nf
+$ tibet apropos clip
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+\- by name
+
+TP_Primitive_elementSetClipRect (8)
+TP_Primitive_elementGetClipRect (7)
+.fi
+.RE
+.SS Expand that search to include method comment text:
+.P
+.RS 2
+.nf
+$ tibet apropos clip \-\-comments \-\-limit 1
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+\- by name
+
+TP_Primitive_elementSetClipRect (8)
+TP_Primitive_elementGetClipRect (7)
+
+\- by comment
+.fi
+.RE
+.SS Expand that search to include method comments and only 1 match:
+.P
+.RS 2
+.nf
+$ tibet apropos clip \-\-comments \-\-limit 1
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+\- by name
+
+TP_Primitive_elementSetClipRect (8)
+TP_Primitive_elementGetClipRect (7)
+
+\- by comment
+
+TP\.core\.MultiTransition_Inst_step (1)
+TP\.xctrls\.clipbox_Inst_setDisplayValue (1)
+TP_Primitive_elementWrapToContent (1)
+.fi
+.RE
+.SH ENVIRONMENT
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+reflect(1)
+
+.RE
+

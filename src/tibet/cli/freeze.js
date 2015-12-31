@@ -55,52 +55,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Freezes the current application\'s TIBET library in ~app_inf.\n\n' +
-
-'By default ~app_inf refers to TIBET-INF, the default location for\n' +
-'package data, custom commands, etc. TIBET is configured to allow\n' +
-'a version of TIBET to be frozen into TIBET-INF/tibet rather than\n' +
-'in node_modules/tibet to support deployments where the use of the\n' +
-'node_modules directory would be unnecessary or excessive.\n\n' +
-
-'Flags allow you to control the scope of what is frozen. Since the\n' +
-'freeze command is only concerned with the TIBET library these flags\n' +
-'focus on whether you want minified TIBET bundles, all TIBET bundles,\n' +
-'raw source for dynamic development, or some combination of those.\n\n' +
-
-'The --tibet parameter takes a bundle name minus any tibet_ prefix\n' +
-'For example, \'--tibet full\' will freeze the tibet_full bundle.\n' +
-'This flag defaults to the value \'base\' so tibet_base is frozen.\n\n' +
-
-'The --link flag will attempt to use symbolic links rather than a\n' +
-'full recursive copy. This is useful if you are working with a live\n' +
-'TIBET installation and need a frozen structure to boot properly but\n' +
-'do not want to have your library code truly frozen for development.\n\n' +
-
-'The --minify flag controls whether you freeze minified source code\n' +
-'and is used in conjunction with the --tibet flag to filter bundles.\n' +
-'The default value is true, so only minified code is frozen by default.\n\n' +
-
-'The --zipped flag controls whether zipped copies are preserved or\n' +
-'pruned. This flag works after any minify processing so if you set both\n' +
-'minify and zipped you will retain .min.js.gz files.\n\n' +
-
-'The --all flag overrides any filtering of bundle content and preserves\n' +
-'all bundles of TIBET source found in the ~lib_build directory.\n\n' +
-
-'The --raw flag causes the current TIBET source tree to be copied into\n' +
-'the target directory. This option supports dynamic development with\n' +
-'TIBET source code but does have a performance impact.\n\n';
-
-'Using \ttibet freeze\' without parameters will freeze the current copy\n' +
-'of tibet_base.min.js along with the load and hook files needed to boot.\n\n';
-
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */

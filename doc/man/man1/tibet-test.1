@@ -1,0 +1,44 @@
+.TH "TIBET\-TEST" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-test\fR \- runs unit/functional tests on your application
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet test [<target>]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Runs unit, functional, and/or integration tests on your application\.
+.P
+CLI\-initiated tests are run in the context of phantomjs and support
+.br
+the use of the full TIBET test harness and UI driver feature set\.
+.P
+The default operation makes use of ~app_test/phantom\.xml as the
+.br
+boot\.profile (which controls what code is loaded) and a TSH shell
+.br
+command of ':test' which will run all test suites in the profile\.
+.P
+You can specify a particular test target object or test suite to
+.br
+run as the first argument to the command\. If you need to specify
+.br
+both a target and suite use \-\-target and \-\-suite respectively\.
+.P
+You can limit testing to a particular case or set of cases by using
+.br
+the \-\-cases parameter\. Both \-\-suite and \-\-cases accept either a string
+.br
+or a regular expression in JavaScript syntax such as \-\-cases="/foo/i"\.
+.P
+Output is to the terminal in colorized TAP format by default\.
+.br
+Future versions will support additional test output formatters\.
+.P
+You can use the built\-in debugging facilities of PhantomJS by
+.br
+specifying \-\-remote\-debug\-port and a port number\.
+

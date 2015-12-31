@@ -1,0 +1,34 @@
+.TH "TIBET\-USER" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-user\fR \- adds/updates user configuration data
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet user <username> <password>
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Manages and/or displays current TIBET user configuration data\.
+.P
+The TIBET Data Server (TDS) uses a simple default authentication model
+.br
+which relies on usernames and hashed passwords stored in the tds\.json
+.br
+file loaded by the server when it starts\. While this is clearly not a
+.br
+production\-capable approach it does allow you to experiment with logins\.
+.P
+This command lets you list, add, or update user data stored in tds\.json
+.br
+such that the resulting data will work properly with default authenticate
+.br
+logic from the TDS plugin catalog\.
+.P
+NOTE that if you use this command to set values it will rewrite tds\.json
+.br
+by using the beautify npm module to process the stringified JSON content\.
+.br
+As a result your file may not retain its appearance after updates\.
+

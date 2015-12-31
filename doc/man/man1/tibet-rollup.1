@@ -1,0 +1,30 @@
+.TH "TIBET\-ROLLUP" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-rollup\fR \- concatenates a package#config's resources
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet rollup
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Creates a minified and concatenated version of a package#config\.
+.P
+Output from this command is written to stdout for use in redirection\.
+.br
+By default the output is not minified, but it does it contain filename
+.br
+data (aka 'headers') to assist TIBET by providing file load metadata\.
+.P
+You can minify output via the \-\-minify flag, and turn off headers via
+.br
+\-\-no\-headers should you choose\. Normally these flags are managed by one
+.br
+or more makefile\.js targets used to build library or app\-level bundles\.
+.br
+See https://github\.com/estools/escodegen/wiki/API for minify options\.
+.P
+<package\-opts> refers to options for the 'tibet package' command\.
+

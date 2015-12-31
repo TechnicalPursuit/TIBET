@@ -1,0 +1,62 @@
+.TH "TIBET\-CLONE" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-clone\fR \- clones a project from a template directory
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet clone <target> [\-\-list] [\-\-force] [\-\-name <appname>] [\-\-dna <template>]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Clones a template directory, considered the \fBdna\fP, to create a new project\.
+.P
+\fB<target>\fP is required and must be a valid directory name to clone to\.
+.P
+By default the target will be the new project's appname unless otherwise
+.br
+specified\. You can use \fB\|\.\fP to clone to the current directory HOWEVER no checks
+.br
+are currently done to prevent potential data loss\. Be careful!
+.P
+NOTE this command is currently being re\-evaluated and will likely become a
+.br
+front\-end for Yeoman functionality in a future release\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-list\fP :
+.br
+Output a list of available dna options\. No project is created if you use
+.br
+this option\.
+.IP \(bu 2
+\fB\-\-force\fP :
+.br
+Required if you use \fB\|\.\fP as a simple reminder to be careful\. You can also
+.br
+use \fB\-\-force\fP with existing directories but \fIno checks are done\fR to avoid
+.br
+overwriting existing files\.
+.IP \(bu 2
+\fB\-\-name\fP :
+.br
+Lets you rename from the directory name to an alternative name\. This lets
+.br
+the directory and appname vary\. This is common when cloning to existing
+.br
+directories or poorly named ones like those required for GitHub Pages
+.br
+repositories\.
+.IP \(bu 2
+\fB\-\-dna\fP :
+.br
+Lets you clone any valid template in TIBET's \fBdna\fP directory or a
+.br
+directory of your choosing\. This latter option lets you create your own reusable
+.br
+custom application templates\.
+
+.RE
+

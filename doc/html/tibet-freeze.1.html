@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-freeze</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-freeze</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-freeze-1-freezes-the-current-project-s-tibet-library">tibet-freeze(1) -- freezes the current project&#39;s TIBET library</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet freeze [--tibet &lt;bundle&gt;] [--minify] [--all] [--raw] [--zipped]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Freezes the current application&#39;s TIBET library in <code>~app_inf</code>.</p>
+<p>By default <code>~app_inf</code> refers to <code>TIBET-INF</code>, the default location for<br>package data, custom commands, etc. TIBET is configured to allow<br>a version of TIBET to be frozen into <code>TIBET-INF/tibet</code> rather than<br>in <code>node_modules/tibet</code> to support deployments where the use of the<br><code>node_modules</code> directory would be unnecessary or excessive.</p>
+<p>Flags allow you to control the scope of what is frozen. Since the<br>freeze command is only concerned with the TIBET library these flags<br>focus on whether you want minified TIBET bundles, all TIBET bundles,<br>raw source for dynamic development, or some combination of those.</p>
+<p>Using <code>tibet freeze</code> without parameters will freeze the current copy<br>of <code>tibet_base.min.js</code> along with the load and hook files needed to boot.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--tibet</code> :<br>Takes a bundle name minus any <code>tibet_</code> prefix For example, <code>--tibet full</code><br>will freeze the <code>tibet_full</code> bundle. This flag defaults to the value <code>base</code> so<br><code>tibet_base</code> is frozen.</p>
+</li>
+<li><p><code>--link</code> :<br>Attempt to use symbolic links rather than a full recursive copy. This is<br>useful if you are working with a live TIBET installation and need a frozen<br>structure to boot properly but do not want to have your library code truly<br>frozen for development.</p>
+</li>
+<li><p><code>--minify</code> :<br>Controls whether you freeze minified source code and is used in conjunction<br>with the <code>--tibet</code> flag to filter bundles. The default value is true, so only<br>minified code is frozen by default.</p>
+</li>
+<li><p><code>--zipped</code> :<br>Controls whether zipped copies are preserved or pruned. This flag works<br>after any minify processing so if you set both minify and zipped you will retain<br><code>.min.js.gz</code> files.</p>
+</li>
+<li><p><code>--all</code> :<br>Overrides any filtering of bundle content and preserves all bundles of TIBET<br>source found in the <code>~lib_build</code> directory.</p>
+</li>
+<li><p><code>--raw</code> :<br>Causes the current TIBET source tree to be copied into the target directory.<br>This option supports dynamic development with TIBET source code but does have a<br>performance impact.</p>
+</li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

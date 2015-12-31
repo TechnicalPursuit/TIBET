@@ -1,0 +1,30 @@
+.TH "TIBET\-TSH" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-tsh\fR \- runs a TIBET Shell (TSH) expression
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet tsh <command> [<phantomtsh_args>]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Runs the TIBET phantomtsh script runner to execute a TSH script\.
+.P
+The script to execute is presumed to be the first argument, quoted as
+.br
+needed to ensure that it can be captured as a single string to pass to
+.br
+the TIBET Shell\. For example: tibet tsh ':echo "Hello World!"'\.
+.br
+You can also use the \-\-script argument to provide the TSH script\.
+.P
+<phantomtsh\\_args> refers to the various flags and paramters you can
+.br
+provide to TIBET's phantomtsh\.js script\. To see phantomtsh\.js help
+.br
+use 'phantomjs ${TIBET_HOME}/etc/phantom/phantomtsh\.js \-\-help
+.br
+where ${TIBET_HOME} refers to your TIBET installation directory\.
+

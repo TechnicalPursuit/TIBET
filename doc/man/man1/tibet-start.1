@@ -1,0 +1,38 @@
+.TH "TIBET\-START" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-start\fR \- starts the project's TIBET Data Server
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet start
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Starts the project's TIBET Data Server, if available\.
+.P
+Many TIBET dna templates provide a simple Node\.js\-based server\. If
+.br
+the current project contains either a server\.js file or can invoke
+.br
+\|'npm start' this command will try to start that server\.
+.P
+The optional \-\-env parameter lets you specify an environment setting
+.br
+such as \fBdevelopment\fP or \fBproduction\fP\|\. The default is development\.
+.br
+The current setting is announced in the server startup banner
+.P
+The \-\-tds\.port parameter lets you specify a port other than
+.br
+the registered TIBET Data Server port (which is port 1407)\.
+.P
+If your server includes TDS features you can optionally add
+.br
+command\-line parameters to provide the various modules of the TDS
+.br
+with config data\. All values for the tds are supported\. See the
+.br
+output of \fBtibet config tds\fP for a list of current options\.
+

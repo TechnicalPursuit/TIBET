@@ -57,16 +57,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Displays the current version of TIBET. Also available as the\n' +
-'--version flag on the \'tibet\' command (tibet --version).\n\n' +
-'Use --check to request this command to check whether a newer\n' +
-'version of TIBET has been published.\n';
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */

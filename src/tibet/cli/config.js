@@ -53,41 +53,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 //  Instance Attributes
 //  ---
 
-/**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Manages and/or displays the current TIBET configuration data.\n\n' +
-
-'The config command can output one or more configuration values to the\n' +
-'console based on current configuration data for your application or\n' +
-'update a particular value to a string, number or boolean value.\n\n' +
-
-'You can view the entire configuration list by leaving off any specific\n' +
-'value. You can view all values for a particular prefix by listing just\n' +
-'the prefix. You can view a specific value by naming that value directly.\n\n' +
-
-'You can dump virtual paths by quoting them as in: \'~app\' or \'~lib\'.\n\n' +
-
-'For set operations you can specify an optional environment value. In the\n' +
-'current implementation this applies only to TDS settings (tds.* values).\n\n' +
-
-'Configuration data can also be updated by adding an \'=\' and value to\n' +
-'a properly defined property name.\n\n' +
-
-'Examples:\n\n' +
-
-'tibet config -> list all configuration values.\n' +
-'tibet config \'~\' -> list all path values.\n' +
-'tibet config boot -> list all boot.* values.\n' +
-'tibet config boot.level -> list a single value.\n' +
-'tibet config foo.bar=true -> set foo.bar to true.\n\n' +
-
-'NOTE that if you use this command to set values it will rewrite tibet.json\n' +
-'by using the beautify npm module to process the stringified JSON content.\n' +
-'As a result your file may not retain its appearance after updates.\n';
-
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {

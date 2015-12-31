@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-lint</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-lint</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-lint-1-runs-various-lint-tools-on-package-files">tibet-lint(1) -- runs various lint tools on package files</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet lint [&lt;filter&gt;] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Runs a variety of lint tools on files specified in a TIBET package.</p>
+<p>The optional <code>filter</code> argument provides a string or regular expression<br>used to filter file names. If the filter begins and ends with / it is<br>treated as a regular expression for purposes of file filtering.</p>
+<p>[package-opts] refers to valid options for a TIBET Package object.<br>These include --package, --config, --phase, --assets, etc.<br>The package#config defaults to <code>~app_cfg/app.xml</code> and its default<br>config (usually #base) so your typical configuration is linted.<br>See help on the <code>tibet package</code> command for more information.</p>
+<p>[eslint-opts] refers to --esconfig, --esrules, and --esignore which<br>let you configure eslint to meet your specific needs. The linter will<br>automatically take advantage of a <code>.eslintrc</code> file in your project.</p>
+<p>[csslint-opts] refers to --cssconfig which allows you to specify a<br><code>.csslintrc</code> file whose content should be used. The lint command<br>relies on <code>.csslintrc</code> as used by the csslint command line. The default<br>file is the one in your project, followed by the TIBET library version.</p>
+<p>All of the linters can be disabled individually by using a <code>--no-</code> prefix.<br>For example: --no-csslint --no-eslint --no-jsonlint --no-xmllint will turn<br>off all the currently supported linters.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--scan</code> :<br>Tells the linter to scan the directory tree and ignore any package#config<br>specification. Without this flag only files found in the project package files<br>will be linted, making it easy to lint only those files your project actually<br>makes direct use of.</p>
+</li>
+<li><p><code>--quiet</code> :<br>Tells the linter to suppress warnings if possible.</p>
+</li>
+<li><p><code>--stop</code> :<br>Tells the linter to stop after the first file with errors.</p>
+</li>
+</ul>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./doclint.1.html">doclint(1)</a></li>
+<li><a class="crossref" href="./package.1.html">package(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

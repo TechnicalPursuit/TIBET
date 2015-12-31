@@ -60,17 +60,6 @@ Cmd.NAME = 'help';
 
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Displays usage and help for a specific command, or the \'tibet\' command\n\n' +
-
-'You can alternatively get usage data via the --usage flag on each command\n' +
-'or complete help output by using the --help flag on the target command.\n';
-
-
-/**
  * The command usage string.
  * @type {string}
  */
@@ -281,7 +270,7 @@ Cmd.prototype.executeForCommand = function(command) {
         stderr: 'inherit'
     };
     proc = require('child_process');
-    child = proc.spawn('man', [command], config);
+    child = proc.spawn('man', ['tibet-' + command], config);
     child.on('close', function() {
         return 0;
     })

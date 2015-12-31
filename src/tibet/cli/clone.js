@@ -60,33 +60,6 @@ Cmd.prototype.DNA_ROOT = '../../../../dna/';
 
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Clones a TIBET application template from a supplied \'dna\' directory.\n\n' +
-
-'<target> is required and must be a valid directory name to clone to.\n' +
-'By default the target will be the appname unless otherwise specified.\n' +
-'You can use \'.\' to clone to the current directory HOWEVER no checks\n' +
-'are currently done to prevent potential data loss. Be careful!\n\n' +
-
-'The --force option is required if you use \'.\' as a simple reminder\n' +
-'to be careful. You can also use --force with existing directories.\n\n' +
-
-'The --list option will output a list of available dna options.\n\n' +
-
-'The optional --name parameter lets you rename from the directory name\n' +
-'to an alternative name. This lets the directory and appname vary. This\n' +
-'is common when cloning to existing directories or poorly named ones\n' +
-'like those required for GitHub Pages repositories.\n\n' +
-
-'The optional --dna parameter lets you clone any valid template in\n' +
-'TIBET\'s `dna` directory or a directory of your choosing. This latter\n' +
-'option lets you create your own reusable custom application templates.\n';
-
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */
