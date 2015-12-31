@@ -185,7 +185,7 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
             if (cmd.options.headers) {
-                pkg.log('TP.boot.$srcPath = \'' + virtual + '\';');
+                pkg.log('TP.boot.$$srcPath = \'' + virtual + '\';');
             }
 
             if (cmd.options.debug !== true) {
@@ -195,7 +195,7 @@ Cmd.prototype.executeForEach = function(list) {
         } else {
 
             if (cmd.options.headers) {
-                pkg.log('TP.boot.$srcPath = \'\';');
+                pkg.log('TP.boot.$$srcPath = \'\';');
             }
 
             if (cmd.options.debug !== true) {

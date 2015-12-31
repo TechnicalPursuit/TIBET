@@ -81,10 +81,10 @@ TP.TYPE_LOCAL_TRACK = 'TypeLocal';
 
 //  load metadata constants
 
-TP.LOAD_PATH = '$loadPath';
-TP.SOURCE_PATH = '$srcPath';
-TP.LOAD_PACKAGE = '$loadPackage';
-TP.LOAD_CONFIG = '$loadConfig';
+TP.LOAD_PATH = '$$loadPath';
+TP.SOURCE_PATH = '$$srcPath';
+TP.LOAD_PACKAGE = '$$loadPackage';
+TP.LOAD_CONFIG = '$$loadConfig';
 
 TP.LOAD_PACKAGE_ATTR = 'load_package';
 TP.LOAD_CONFIG_ATTR = 'load_config';

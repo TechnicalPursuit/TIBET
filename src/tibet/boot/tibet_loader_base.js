@@ -9357,12 +9357,12 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
     //  load the source the 'DOM way' so we get commented source
     elem = TP.boot.$$scriptTemplate.cloneNode(true);
-    TP.boot.$loadNode = elem;
+    TP.boot.$$loadNode = elem;
 
     //  ensure we keep track of the proper package/config information
-    TP.boot.$loadNode.setAttribute('load_package',
+    TP.boot.$$loadNode.setAttribute('load_package',
                                     TP.sys.cfg('load.package', ''));
-    TP.boot.$loadNode.setAttribute('load_config',
+    TP.boot.$$loadNode.setAttribute('load_config',
                                     TP.sys.cfg('load.config', ''));
 
     scriptDoc = TP.boot.$isValid(targetDoc) ?
@@ -9387,8 +9387,8 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     //  url reference
     TP.boot.$$onerrorURL = scriptUrl;
 
-    TP.boot.$srcPath = scriptUrl;
-    TP.boot.$loadPath = scriptUrl;
+    TP.boot.$$srcPath = scriptUrl;
+    TP.boot.$$loadPath = scriptUrl;
 
     try {
         //  first, check to see if we already have a 'script' node with a
@@ -9411,8 +9411,8 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
         $ERROR = e;
     } finally {
 
-        TP.boot.$srcPath = null;
-        TP.boot.$loadPath = null;
+        TP.boot.$$srcPath = null;
+        TP.boot.$$loadPath = null;
 
         //  appends with source code that has syntax errors or other issues
         //  won't trigger Error conditions we can catch, but they will hit
@@ -9422,7 +9422,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
                 throw $ERROR;
             }
         } else if (!result || $STATUS !== 0) {
-            TP.boot.$loadNode = null;
+            TP.boot.$$loadNode = null;
 
             if (shouldThrow === true) {
                 if (scriptUrl === 'inline') {
@@ -9642,11 +9642,11 @@ TP.boot.$importComponents = function(loadSync) {
         logpath,
         source;
 
-    TP.boot.$loadNode = null;
-    TP.boot.$loadPath = null;
-    TP.boot.$srcPath = null;
-    TP.boot.$loadPackage = null;
-    TP.boot.$loadConfig = null;
+    TP.boot.$$loadNode = null;
+    TP.boot.$$loadPath = null;
+    TP.boot.$$srcPath = null;
+    TP.boot.$$loadPackage = null;
+    TP.boot.$$loadConfig = null;
 
     if (TP.boot.shouldStop()) {
         return;
@@ -9769,21 +9769,21 @@ TP.boot.$importComponents = function(loadSync) {
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
-            TP.boot.$loadPath = srcpath;
+            TP.boot.$$loadPath = srcpath;
             TP.boot.$$loadpaths.push(srcpath);
-            TP.boot.$srcPath = TP.boot.$uriInTIBETFormat(srcpath);
+            TP.boot.$$srcPath = TP.boot.$uriInTIBETFormat(srcpath);
         } else {
-            TP.boot.$loadPath = null;
-            TP.boot.$srcPath = null;
+            TP.boot.$$loadPath = null;
+            TP.boot.$$srcPath = null;
         }
 
-        TP.boot.$loadPackage = nd.getAttribute('load_package') || '';
-        TP.boot.$loadConfig = nd.getAttribute('load_config') || '';
+        TP.boot.$$loadPackage = nd.getAttribute('load_package') || '';
+        TP.boot.$$loadConfig = nd.getAttribute('load_config') || '';
 
         //  set the configuration values so the sourceImport call will have
         //  the information from the current node being processed
-        TP.sys.setcfg('load.package', TP.boot.$loadPackage);
-        TP.sys.setcfg('load.config', TP.boot.$loadConfig);
+        TP.sys.setcfg('load.package', TP.boot.$$loadPackage);
+        TP.sys.setcfg('load.config', TP.boot.$$loadConfig);
 
         //  In some sense the rest of this is all about getting the source code
         //  to import, either inlined, or from the original location, in either
@@ -9801,14 +9801,14 @@ TP.boot.$importComponents = function(loadSync) {
             if (TP.sys.cfg('import.use_dom')) {
                 elem = TP.boot.$$scriptTemplate.cloneNode(true);
 
-                elem.setAttribute('load_package', TP.boot.$loadPackage);
-                elem.setAttribute('load_config', TP.boot.$loadConfig);
+                elem.setAttribute('load_package', TP.boot.$$loadPackage);
+                elem.setAttribute('load_config', TP.boot.$$loadConfig);
 
-                TP.boot.$loadNode = elem;
+                TP.boot.$$loadNode = elem;
 
                 callback = function(event) {
 
-                    TP.boot.$loadNode = null;
+                    TP.boot.$$loadNode = null;
 
                     TP.boot.$$bootindex += 1;
                     TP.boot.$displayProgress();
@@ -9823,14 +9823,14 @@ TP.boot.$importComponents = function(loadSync) {
                 elem.onload = callback;
 
                 if (TP.sys.cfg('import.check_404')) {
-                    if (!TP.boot.$uriExists(TP.boot.$loadPath)) {
+                    if (!TP.boot.$uriExists(TP.boot.$$loadPath)) {
                         TP.boot.$stderr('404 (Not Found): ' +
-                            TP.boot.$loadPath);
+                            TP.boot.$$loadPath);
                         return;
                     }
                 }
 
-                elem.setAttribute('src', TP.boot.$loadPath);
+                elem.setAttribute('src', TP.boot.$$loadPath);
 
                 //  append it into the 'head' element so that it starts the
                 //  loading process. If there is an error, it will be
@@ -9841,7 +9841,7 @@ TP.boot.$importComponents = function(loadSync) {
                 return;
             }
 
-            source = TP.boot.$uriLoad(TP.boot.$loadPath, TP.TEXT, 'source');
+            source = TP.boot.$uriLoad(TP.boot.$$loadPath, TP.TEXT, 'source');
         } else {
             source = '';
 
@@ -9861,9 +9861,9 @@ TP.boot.$importComponents = function(loadSync) {
 
         //  if we were handling inline code then we can import it directly now.
         try {
-            TP.boot.$sourceImport(source, null, TP.boot.$loadPath);
+            TP.boot.$sourceImport(source, null, TP.boot.$$loadPath);
         } finally {
-            TP.boot.$loadNode = null;
+            TP.boot.$$loadNode = null;
         }
 
     } else if (tn === 'tibet_image') {
