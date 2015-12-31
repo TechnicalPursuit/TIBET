@@ -117,19 +117,24 @@ function(anObject) {
 Function.Inst.defineMethod('getSherpaHierarchyInfo',
 function() {
 
-    var superNames,
-        info;
+    var info,
+
+        owner,
+        superNames;
 
     info = TP.ac();
 
     if (TP.isMethod(this)) {
-        superNames = this[TP.OWNER].getSupertypeNames().copy();
-        superNames.reverse().perform(
-            function(item) {
-                info.push(TP.ac('type', item));
-            });
 
-        info.push(TP.ac('type', this[TP.OWNER].getName()));
+        if (!TP.isNamespace(owner = this[TP.OWNER])) {
+            superNames = owner.getSupertypeNames().copy();
+            superNames.reverse().perform(
+                function(item) {
+                    info.push(TP.ac('type', item));
+                });
+        }
+
+        info.push(TP.ac('type', owner.getName()));
         info.push(TP.ac('method', this[TP.DISPLAY]));
     }
 
