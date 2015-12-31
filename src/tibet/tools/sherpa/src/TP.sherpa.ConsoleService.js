@@ -250,7 +250,9 @@ function() {
         triggerSignal = aSignal.getPayload().at('trigger');
         triggerEvent = triggerSignal.getEvent();
 
-        if (normalResponder.isCommandEvent(triggerEvent)) {
+        if (triggerSignal.getSignalName() ===
+                'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up' ||
+            normalResponder.isCommandEvent(triggerEvent)) {
             normalResponder.executeTriggerSignalHandler(triggerSignal);
         }
 
