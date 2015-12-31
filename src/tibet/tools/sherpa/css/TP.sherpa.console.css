@@ -48,7 +48,7 @@ sherpa|console[pclass|hidden] {
 
 sherpa|console > xctrls|codeeditor {
 
-    border-radius: 3px;
+    /*border-radius: 3px;*/
 }
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
@@ -70,13 +70,50 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     margin-right: 6px;
 
+    line-height: 12px;
+}
+
+#sherpaPrompt > .text {
+
+    position: relative;
+    bottom: 0px;
+    left: 2px;
+
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-size: 12px;
 
-    line-height: 12px;
-
     white-space: nowrap;
     color: orange;
+}
+
+#sherpaPrompt > .indicator {
+
+    display: none;
+
+    position: absolute;
+
+    top: -4px;
+
+    width: 3px;
+    height: 3px;
+
+    border-radius: 1px;
+}
+
+#sherpaPrompt > [name="eval"].indicator {
+
+    top: 3px;
+    left: 0px;
+
+    background-color: #D64141;
+}
+
+#sherpaPrompt > [name="autocomplete"].indicator {
+
+    top: 8px;
+    left: 0px;
+
+    background-color: #BFEBBF;
 }
 
 #SherpaConsoleOutput {

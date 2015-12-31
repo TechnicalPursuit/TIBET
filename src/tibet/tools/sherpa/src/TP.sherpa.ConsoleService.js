@@ -2173,7 +2173,12 @@ function(aSignal) {
      * @method didEnter
      */
 
-    this.get('$consoleGUI').transitionToSeparateEvalMarker();
+    var consoleGUI;
+
+    consoleGUI = this.get('$consoleGUI');
+
+    consoleGUI.transitionToSeparateEvalMarker();
+    consoleGUI.togglePromptIndicator('eval', true);
 
     return this;
 });
@@ -2187,7 +2192,12 @@ function(aSignal) {
      * @method didExit
      */
 
-    this.get('$consoleGUI').teardownEvalMark();
+    var consoleGUI;
+
+    consoleGUI = this.get('$consoleGUI');
+    consoleGUI.togglePromptIndicator('eval', false);
+
+    consoleGUI.teardownEvalMark();
 
     return this;
 });
@@ -2372,6 +2382,8 @@ function(aSignal) {
 
     this.set('$changeHandler', handler);
 
+    consoleGUI.togglePromptIndicator('autocomplete', true);
+
     return this;
 });
 
@@ -2401,6 +2413,8 @@ function(aSignal) {
         this.get('$changeHandler'));
 
     this.set('$changeHandler', null);
+
+    consoleGUI.togglePromptIndicator('autocomplete', false);
 
     return this;
 });
