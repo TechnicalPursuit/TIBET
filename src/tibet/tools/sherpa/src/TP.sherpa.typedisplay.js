@@ -110,10 +110,7 @@ function() {
             return d;
         });
 
-    TP.nodeAppendChild(
-            TP.unwrap(this.get('list')),
-            wrapper,
-            false);
+    this.get('list').setRawContent(wrapper, false);
 
     return this;
 });
