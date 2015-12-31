@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-init</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-init</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-init-1-initialize-a-tibet-project">tibet-init(1) -- initialize a TIBET project</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet init [--link]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Initializes a TIBET project, linking and installing dependencies.</p>
+<p>This command must be run prior to most activity within a TIBET<br>project. Many of the TIBET cli commands will fail to run until<br>you have run a <code>tibet init</code> command.</p>
+<p>The optional <code>--link</code> parameter will use <code>npm link tibet</code> to link<br>TIBET into the project rather than attempting to install it via<br>the current npm package.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><code>--link</code> :<br>Useful/necessary when you are working with a copy of TIBET cloned from the<br>public repository. For <code>--link</code> to work properly you need to have a local TIBET<br>repository and you need to have run <code>npm link .</code> in that repository prior to<br>tibet init.</li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

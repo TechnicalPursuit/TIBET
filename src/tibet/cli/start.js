@@ -53,29 +53,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Starts the current TIBET project data server, if available.\n\n' +
-
-'Many TIBET dna templates provide a simple Node.js-based server. If\n' +
-'the current project contains either a server.js file or can invoke\n' +
-'\'npm start\' this command will try to start that server.\n\n' +
-
-'The optional --env parameter lets you specify an environment setting\n' +
-'such as `development` or `production`. The default is development.\n' +
-'The current setting is announced in the server startup banner\n\n' +
-
-'The --tds.port parameter lets you specify a port other than\n' +
-'the registered TIBET Data Server port (which is port 1407).\n\n' +
-
-'If your server includes TDS features you can optionally add\n' +
-'command-line parameters to provide the various modules of the TDS\n' +
-'with config data. All values for the tds are supported. See the\n' +
-'output of `tibet config tds` for a list of current options.\n\n';
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */

@@ -56,26 +56,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
 //  Instance Attributes
 //  ---
 
-/**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Manages and/or displays current TIBET user configuration data.\n\n' +
-
-'The TIBET Data Server (TDS) uses a simple default authentication model\n' +
-'which relies on usernames and hashed passwords stored in the tds.json\n' +
-'file loaded by the server when it starts. While this is clearly not a\n' +
-'production-capable approach it does allow you to experiment with logins.\n\n' +
-
-'This command lets you list, add, or update user data stored in tds.json\n' +
-'such that the resulting data will work properly with default authenticate\n' +
-'logic from the TDS plugin catalog.\n\n' +
-
-'NOTE that if you use this command to set values it will rewrite tds.json\n' +
-'by using the beautify npm module to process the stringified JSON content.\n' +
-'As a result your file may not retain its appearance after updates.\n';
-
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {

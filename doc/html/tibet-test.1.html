@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-test</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-test</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-test-1-runs-unit-functional-tests-on-your-application">tibet-test(1) -- runs unit/functional tests on your application</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet test [&lt;target&gt;]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Runs unit, functional, and/or integration tests on your application.</p>
+<p>CLI-initiated tests are run in the context of phantomjs and support<br>the use of the full TIBET test harness and UI driver feature set.</p>
+<p>The default operation makes use of ~app_test/phantom.xml as the<br>boot.profile (which controls what code is loaded) and a TSH shell<br>command of &#39;:test&#39; which will run all test suites in the profile.</p>
+<p>You can specify a particular test target object or test suite to<br>run as the first argument to the command. If you need to specify<br>both a target and suite use --target and --suite respectively.</p>
+<p>You can limit testing to a particular case or set of cases by using<br>the --cases parameter. Both --suite and --cases accept either a string<br>or a regular expression in JavaScript syntax such as --cases=&quot;/foo/i&quot;.</p>
+<p>Output is to the terminal in colorized TAP format by default.<br>Future versions will support additional test output formatters.</p>
+<p>You can use the built-in debugging facilities of PhantomJS by<br>specifying --remote-debug-port and a port number.</p>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

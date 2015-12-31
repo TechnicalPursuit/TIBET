@@ -1,0 +1,57 @@
+.TH "TIBET\-CONTEXT" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-context\fR \- outputs current context information to stdout
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet context
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Displays information about the current project including values for the library
+.br
+root, application root, current project name, etc\.
+.SH EXAMPLES
+.SS In the TIBET library
+.P
+.RS 2
+.nf
+$ tibet context
+{
+    "name": "tibet",
+    "version": "v5\.0\.0\-dev\.7",
+    "in_library": true,
+    "in_project": false,
+    "~": "~/dev/TPI/TIBET",
+    "~app": "~/dev/TPI/TIBET",
+    "~lib": "~/dev/TPI/TIBET",
+    "boot": {
+        "package": "~lib_cfg/TIBET\.xml",
+        "configs": ["base", "developer", "full", "test"]
+    }
+}
+.fi
+.RE
+.SS In a TIBET project
+.P
+.RS 2
+.nf
+$ tibet context
+{
+    "name": "d2d",
+    "version": "0\.1\.0",
+    "in_library": false,
+    "in_project": true,
+    "~": "~/tmp/d2d",
+    "~app": "~/public",
+    "~lib": "~app/TIBET\-INF/tibet",
+    "boot": {
+        "package": "~app_cfg/app\.xml",
+        "configs": ["base", "contributor", "developer", "full", "test"]
+    }
+}
+.fi
+.RE
+

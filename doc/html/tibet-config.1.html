@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-config</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-config</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-config-1-manages-and-displays-tibet-configuration-data">tibet-config(1) -- manages and displays TIBET configuration data</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet config [property[=value]] [--env &lt;env&gt;]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>The config command can output one or more configuration values to the<br>console based on current configuration data for your application or<br>update a particular value to a string, number or boolean value.</p>
+<p>You can view the entire configuration list by leaving off any specific<br>value. You can view all values for a particular prefix by listing just<br>the prefix. You can view a specific value by naming that value directly.</p>
+<p>You can dump virtual paths by quoting them as in: <code>&#39;~app&#39;</code> or <code>&#39;~lib&#39;</code> as needed<br>by whichever native shell you may be using.</p>
+<p>For set operations you can specify an optional environment value. In the<br>current implementation this applies only to TDS settings (tds.* values).</p>
+<p>NOTE that if you use this command to set values it will rewrite <code>tibet.json</code><br>by using the beautify npm module to process the stringified JSON content.<br>As a result your file may not retain its appearance after updates.</p>
+<p>Configuration data can also be updated by adding an <code>=</code> and value to<br>a properly defined property name.</p>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="list-all-configuration-values-">List all configuration values:</h3>
+<pre><code>tibet config
+</code></pre><h3 id="list-all-path-values-">List all path values:</h3>
+<pre><code>tibet config &#39;~&#39;
+</code></pre><h3 id="list-all-boot-values-">List all boot.* values:</h3>
+<pre><code>tibet config boot
+</code></pre><h3 id="list-a-single-value-">List a single value:</h3>
+<pre><code>tibet config boot.level
+</code></pre><h3 id="set-a-value-foo-bar-to-true-here-">Set a value (foo.bar to true here):</h3>
+<pre><code>tibet config foo.bar=true
+</code></pre>
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

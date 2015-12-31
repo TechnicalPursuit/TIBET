@@ -51,13 +51,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Outputs quick getting started information for new TIBET users.\n';
-
-/**
  * The command usage string.
  * @type {string}
  */

@@ -53,26 +53,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Thaws (un-freezes) the current application\'s TIBET library in ~app_inf.\n\n' +
-
-'By default ~app_inf refers to TIBET-INF, the default location for\n' +
-'package data, custom commands, etc. TIBET is configured to allow\n' +
-'a version of TIBET to be frozen into TIBET-INF/tibet rather than\n' +
-'in node_modules/tibet to support deployments where the use of the\n' +
-'node_modules directory would be unnecessary or excessive.\n\n' +
-
-'The thaw command removes any ~app_inf/tibet content and returns the\n' +
-'setting for lib_root to its default value of ~/node_modules/tibet.\n\n' +
-
-'Since it is inherently destructive this command requires --force to\n' +
-'actually run.';
-
-
-/**
  * The command usage string.
  * @type {string}
  */

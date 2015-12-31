@@ -1,0 +1,40 @@
+.TH "TIBET\-INIT" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-init\fR \- initialize a TIBET project
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet init [\-\-link]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Initializes a TIBET project, linking and installing dependencies\.
+.P
+This command must be run prior to most activity within a TIBET
+.br
+project\. Many of the TIBET cli commands will fail to run until
+.br
+you have run a \fBtibet init\fP command\.
+.P
+The optional \fB\-\-link\fP parameter will use \fBnpm link tibet\fP to link
+.br
+TIBET into the project rather than attempting to install it via
+.br
+the current npm package\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-link\fP :
+.br
+Useful/necessary when you are working with a copy of TIBET cloned from the
+.br
+public repository\. For \fB\-\-link\fP to work properly you need to have a local TIBET
+.br
+repository and you need to have run \fBnpm link \.\fP in that repository prior to
+.br
+tibet init\.
+
+.RE
+

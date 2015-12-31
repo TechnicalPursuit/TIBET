@@ -58,30 +58,6 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 //  ---
 
 /**
- * The command help string.
- * @type {String}
- */
-Cmd.prototype.HELP =
-'Runs the TSH :doclint command to validate method comment content.\n\n' +
-
-'The doclint command uses TIBET reflection to find all methods in your\n' +
-'application and check their comment text for conformance to JSDoc3 and\n' +
-'TIBET comment standards. This check can be a part of an overall quality\n' +
-'pass which includes running `tibet lint` and `tibet test` on your code.\n\n' +
-
-'If you provide an optional string parameter it will be used as a filter\n' +
-'for filenames. Using a string which begins and ends with / will cause the\n' +
-'pattern to be treated as a regular expression for testing purposes.\n\n' +
-
-'Note that because it uses method reflection, not file lists, to drive\n' +
-'the checks when this command outputs file counts they represent the\n' +
-'number of unique files containing matching methods, not a full list\n' +
-'of project files. This can be disconcerting at first if you are used\n' +
-'to listings which are built by file-driven tools.' +
-
-'\n';
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */

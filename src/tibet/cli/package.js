@@ -83,33 +83,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Outputs a list of package assets either as asset nodes or asset paths.\n\n' +
-
-'This command is a useful way to view the files which a `tibet rollup` or\n' +
-'`tibet lint` command will process. The best way to get a sense of this\n' +
-'command is to run it with various options, of which there are many:\n\n' +
-
-'--package    the file path to the package to process.\n' +
-'--config     the name of an individual config to process.\n' +
-'--all        process all config tags in the package recursively.\n' +
-'--missing    output a list of missing assets of all types.\n\n' +
-
-'--include    a space-separated list of asset tags to include.\n' +
-'--exclude    a space-separated list of asset tags to include.\n\n' +
-
-'--nodes      output asset nodes rather than asset paths.\n' +
-'--phase      boot phase subset to process <all | one | two | app | lib>.\n\n' +
-
-'--images     include all image assets.\n' +
-'--scripts    include all JavaScript source-containing assets.\n' +
-'--styles     include all CSS containing assets.\n';
-
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */

@@ -159,6 +159,8 @@ targets.build_docs = function(make) {
         //  Verify Directories
         //  ---
 
+        make.log('generating current documentation...');
+
         rootpath = path.join(CLI.expandPath('~'), 'doc');
         srcpath = path.join(rootpath, 'markdown');
 
@@ -209,7 +211,6 @@ targets.build_docs = function(make) {
                 sh.mkdir(destdir);
             }
 
-            make.log('Generating html page for ' + params.topic);
             result = nodecli.exec('marked-man', '--breaks', '--format html',
                 srcfile, {silent: true});
 
@@ -255,7 +256,6 @@ targets.build_docs = function(make) {
                 sh.mkdir(destdir);
             }
 
-            make.log('Generating man page for ' + params.topic);
             result = nodecli.exec('marked-man', '--breaks', '--roff',
                 srcfile, {silent: true});
 

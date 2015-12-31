@@ -71,50 +71,6 @@ Cmd.TEMPLATE_FILE = '~lib/src/tibet/kernel/TIBETVersionTemplate.js';
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Performs the steps necessary to tag a release of the TIBET library.\n\n' +
-
-'The release process consists of several steps to sanity check the\n' +
-'current repository followed by a number of steps which work to build\n' +
-'a releasable version, tag it, commit it, and merge/push it to master.\n\n' +
-
-'Before proceeding this command will:\n\n' +
-
-'Verify the current branch is develop.\n' +
-'Verify the branch is not dirty. [--dirty (dev-only)]\n' +
-'Verify the branch is up-to-date. [--local]\n\n' +
-
-'IFF all the prior checks pass:\n\n' +
-
-'Run `tibet build_all` to build distro. [--no-build]\n' +
-'Run the version update template.\n' +
-'Update TIBET\'s package.json file.\n\n' +
-'Run `tibet checkup` to lint/test. [--no-check]\n' +
-
-'IFF all that runs and passes testing it:\n\n' +
-
-'Commits the changes which resulted.\n' +
-'Tags the develop branch with {tag}-develop.\n' +
-'Pushes those changes to origin/develop.\n\n' +
-
-'IFF that all worked successfully it:\n\n' +
-
-'Checks out the master branch.\n' +
-'Merges in the develop branch.\n' +
-'Commits the changes to master.\n' +
-'Tags the commit with the release tag.\n' +
-'Pushes the commit and related tag.\n\n' +
-
-'Once that is complete it:\n\n' +
-
-'Writes out latest.js content to be used in the technicalpursuit.com repo.\n' +
-'Writes out instructions on the final manual steps to do to publish TIBET.\n';
-
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */

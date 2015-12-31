@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-start</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-start</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-start-1-starts-the-project-s-tibet-data-server">tibet-start(1) -- starts the project&#39;s TIBET Data Server</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet start
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Starts the project&#39;s TIBET Data Server, if available.</p>
+<p>Many TIBET dna templates provide a simple Node.js-based server. If<br>the current project contains either a server.js file or can invoke<br>&#39;npm start&#39; this command will try to start that server.</p>
+<p>The optional --env parameter lets you specify an environment setting<br>such as <code>development</code> or <code>production</code>. The default is development.<br>The current setting is announced in the server startup banner</p>
+<p>The --tds.port parameter lets you specify a port other than<br>the registered TIBET Data Server port (which is port 1407).</p>
+<p>If your server includes TDS features you can optionally add<br>command-line parameters to provide the various modules of the TDS<br>with config data. All values for the tds are supported. See the<br>output of <code>tibet config tds</code> for a list of current options.</p>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

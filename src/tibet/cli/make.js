@@ -57,26 +57,6 @@ Cmd.TIMEOUT = 60000;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Runs a target function in a TIBET \'makefile.js\' file via a JS Promise.\n\n' +
-
-'This command supports lightweight commands in the form of functions, much\n' +
-'like Grunt or Gulp. There\'s no dependency checking or true \'make\'-like \n' +
-'functionality but the makefile.js code does leverage JavaScript Promises to\n' +
-'coordinate tasks and their interactions, particularly when calling tasks\n' +
-'within tasks and when dealing with asynchronous tasks. This makes it a bit\n' +
-'more predictable and consistent than some other task management options.\n\n' +
-
-'--list can be used to list the available makefile.js targets you can run.\n\n' +
-
-'--timeout <ms> gives you a way to provide a millisecond timeout value in\n' +
-'which each task must complete successfully. The default is 15 seconds.\n';
-
-
-/**
  * The command usage string.
  * @type {string}
  */

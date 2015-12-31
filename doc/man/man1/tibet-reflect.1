@@ -1,0 +1,55 @@
+.TH "TIBET\-REFLECT" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-reflect\fR \- reflects on TIBET objects and methods
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet reflect [target] [\-\-interface <interface>]
+    [\-\-filter <filter>] [\-\-types] [\-\-methods] [\-\-owners] [\-\-slots]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Runs the TSH :reflect command to show object or system reflection data\.
+.P
+You can list all of TIBET's types via \fBtibet reflect \-\-types\fP or list all
+.br
+methods via \fBtibet reflect \-\-methods\fP\|\. You can combine these flags along
+.br
+with \-\-slots to create collections of results\. Without a target object this
+.br
+approach lets you view a wide range of content from the TIBET system\.
+.P
+The [target] parameter can be any object reference TIBET can resolve
+.br
+using TIBET's getObjectById() function\. That means any namespace, type,
+.br
+method, or publicly registed object such as window or a TIBET URI\.
+.P
+For objects which support it the \-\-interface option lets you restrict
+.br
+the results to a specific interface of the object\. The values here must
+.br
+be found in the TP\.SLOT_FILTERS object as used by TP\.interface()\. Some
+.br
+interesting options are \fBknown\fP, \fBpublic\fP, and \fBunique\fP\|\.
+.P
+Note that not all flags will work for every target object type\. Namespace
+.br
+objects don't support \-\-owners for example\. When a flag is ignored it is
+.br
+not typically reported since working combinations are so target\-dependant\.
+.br
+The best thing to do is experiment a little and see what reflect finds\.
+.P
+The \-\-filter option allows you to refine your result data by checking the
+.br
+keys returned against either a regular expression or string\. The filter value
+.br
+is always used as a RegExp if one can be created from the string\. Full RegExp
+.br
+syntax is possible to the extent your shell will allow it\. For example, using
+.br
+\fB\-\-filter '/example/i'\fP will filter for example in a case\-insensitive fashion\.
+

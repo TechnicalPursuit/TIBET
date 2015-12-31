@@ -1,0 +1,38 @@
+.TH "TIBET\-MAKE" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-make\fR \- runs a TIBET makefile\.js target
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet make <target>
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Runs a target function in a TIBET \fBmakefile\.js\fP file via a JS Promise\.
+.P
+This command supports lightweight commands in the form of functions, much
+.br
+like Grunt or Gulp\. There's no dependency checking or true 'make'\-like
+.br
+functionality but \fBmakefile\.js\fP code does leverage JavaScript Promises to
+.br
+coordinate tasks and their interactions, particularly when calling tasks
+.br
+within tasks and when dealing with asynchronous tasks\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-list\fP :
+.br
+Used to list the available \fBmakefile\.js\fP targets you can run\.
+.IP \(bu 2
+\fB\-\-timeout <ms>\fP :
+.br
+Gives you a way to provide a millisecond timeout value in which each task
+.br
+must complete successfully\. The default is 15 seconds (15000)\.
+
+.RE
+

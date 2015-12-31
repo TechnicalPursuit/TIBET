@@ -1,0 +1,38 @@
+.TH "TIBET\-DOCLINT" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-doclint\fR \- validates method comment content
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet doclint [<filter>]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Runs the TSH \fB:doclint\fP command to validate method comment content\.
+.P
+The doclint command uses TIBET reflection to find all methods in your
+.br
+application and check their comment text for conformance to JSDoc3 and
+.br
+TIBET comment standards\. This check can be a part of an overall quality
+.br
+pass which includes running \fBtibet lint\fP and \fBtibet test\fP on your code\.
+.P
+If you provide an optional string parameter it will be used as a filter
+.br
+for filenames\. Using a string which begins and ends with / will cause the
+.br
+pattern to be treated as a regular expression for testing purposes\.
+.P
+Note that because it uses method reflection, not file lists, to drive
+.br
+the checks when this command outputs file counts they represent the
+.br
+number of unique files containing matching methods, not a full list
+.br
+of project files\. This can be disconcerting at first if you are used
+.br
+to listings which are built by file\-driven tools\.
+
