@@ -1,4 +1,5 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
 sherpa|elementeditor {
@@ -61,13 +62,13 @@ sherpa|elementeditor > .foot > button {
     background-color: transparent;
 }
 
-sherpa|elementeditor > xctrls|codeeditor > .CodeMirror {
+sherpa|elementeditor xctrls|codeeditor > .CodeMirror {
 
     font-size: 12px;
     height: 100%;
 }
 
-sherpa|elementeditor > xctrls|codeeditor > .CodeMirror-scroll {
+sherpa|elementeditor xctrls|codeeditor > .CodeMirror-scroll {
 
     overflow-x: auto;
     overflow-y: auto;
