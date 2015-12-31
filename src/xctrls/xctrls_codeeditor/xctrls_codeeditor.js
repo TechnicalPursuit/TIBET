@@ -142,6 +142,11 @@ function(aNode, aURI) {
 
     this.$set('$editorObj', editorObj);
 
+    //  Make sure and flag the native node to not track mutations. This is a
+    //  huge performance win when dealing with CodeMirror.
+    TP.elementSetAttribute(
+        this.getNativeNode(), 'tibet:nomutationtracking', true, true);
+
     return this;
 });
 
