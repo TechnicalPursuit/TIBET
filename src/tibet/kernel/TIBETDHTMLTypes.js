@@ -703,7 +703,7 @@ function(aSignal) {
      *     machine to get further input. The original triggering signal (most
      *     likely a keyboard-related signal) will be in this signal's payload
      *     under the key 'trigger'.
-     * @returns {TP.core.KeyResponder} The receiver.
+     * @returns {TP.core.DragResponder} The receiver.
      */
 
     //  At this level, this type only handles subtypes of TP.sig.DOMDragMove and
@@ -1413,6 +1413,14 @@ function(aSignal) {
     TP.elementSetAttribute(actionElem, 'pclass:moving', 'true', true);
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.MoveResponder.Inst.defineHandler('MovingInput',
+function(aSignal) {
+
+    return this.executeTriggerSignalHandler(aSignal.getPayload().at('trigger'));
 });
 
 //  ------------------------------------------------------------------------
