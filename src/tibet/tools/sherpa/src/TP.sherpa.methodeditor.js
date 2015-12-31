@@ -155,7 +155,7 @@ function() {
 
     /* eslint-disable no-extra-parens */
     (function() {
-        editor.$get('$editorObj').refresh();
+        editor.refreshEditor();
     }).fork(200);
     /* eslint-enable no-extra-parens */
 

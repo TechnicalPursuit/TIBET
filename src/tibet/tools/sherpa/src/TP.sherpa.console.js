@@ -297,7 +297,7 @@ function() {
     var consoleInput;
 
     if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-        consoleInput.$get('$editorObj').refresh();
+        consoleInput.refreshEditor();
     }
 
     this.adjustInputSize();
