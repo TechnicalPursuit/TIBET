@@ -176,6 +176,25 @@ function() {
 
     //  ---
 
+    data = TP.hc('name', 'Subtypes');
+
+    rawData = this.getSubtypeNames(true);
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var childData;
+
+                childData = TP.hc('name', item);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
     data = TP.hc('name', 'Inherited Methods');
 
     rawData = this.getInterface('known_inherited_methods').sort();
