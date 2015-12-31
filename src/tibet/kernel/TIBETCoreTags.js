@@ -99,8 +99,8 @@ function(aRequest) {
         return;
     }
 
-    // NOTE that we produce output which prompts for overriding and providing a
-    // proper implementation here.
+    //  NOTE that we produce output which prompts for overriding and providing a
+    //  proper implementation here.
     newElem = TP.xhtmlnode(
         '<a onclick="alert(\'Update the ' + this.getID() +
             '.Type tagCompile method.\')" href="#" tibet:tag="' +
