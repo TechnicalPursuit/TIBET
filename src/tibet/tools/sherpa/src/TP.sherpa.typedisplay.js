@@ -20,7 +20,7 @@ TP.sherpa.typedisplay.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.typedisplay.Inst.defineAttribute(
         'list',
-        {value: TP.cpc('> .typelist', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .infolist', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
