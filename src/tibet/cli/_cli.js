@@ -828,6 +828,24 @@ CLI.lpad = function(obj, length, padChar) {
     return str;
 };
 
+
+/**
+ * Outputs a standard error message and exits. This function is typically called
+ * by commands that require project initialization to run properly.
+ */
+CLI.notInitialized = function() {
+    this.error('Project not initialized. Run `tibet init [--link]` first.');
+    process.exit(1);
+};
+
+
+/**
+ * A common prompting interface accessible via CLI.prompt or Cmd.prompt. (See
+ * _cmd.js for the mapping).
+ */
+CLI.prompt = prompt;
+
+
 /**
  * Returns a new String representing the obj with a trailing number of padChar
  * characters according to the supplied length.
@@ -855,21 +873,70 @@ CLI.rpad = function(obj, length, padChar) {
 
 
 /**
- * Outputs a standard error message and exits. This function is typically called
- * by commands that require project initialization to run properly.
+ * Parses a string and attempts to produce a workable regular expression which
+ * would match that string. This is primarily used to take input parameters of
+ * the form /foo/gi etc. (Javascript source code format) and produce RegExp's.
+ * @param {String} aString The input string to produce a regex from.
+ * @return {RegExp} The matching regular expression, if one can be built.
  */
-CLI.notInitialized = function() {
-    this.error('Project not initialized. Run `tibet init [--link]` first.');
-    process.exit(1);
+CLI.stringAsRegExp = function(aString) {
+    var str,
+        fallback,
+        attrs,
+        tail;
+
+    escape = /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;
+
+    str = CLI.unquote(aString);
+    if (str.charAt(0) !== '/' || str.lastIndexOf('/') === 0) {
+        try {
+            return new RegExp(str.replace(escape, '\\$1'));
+        } catch (e) {
+            return;
+        }
+    }
+
+    attrs = '';
+    tail = str.slice(str.lastIndexOf('/') + 1);
+    if (CLI.notEmpty(tail)) {
+        attrs += tail;
+    }
+    fallback = str;
+    str = str.slice(1, str.lastIndexOf('/'));
+
+    try {
+        return new RegExp(str.replace(escape, '\\$1'), attrs);
+    } catch (e) {
+        return new RegExp(fallback.replace(escape, '\\$1'));
+    }
 };
 
 
 /**
- * A common prompting interface accessible via CLI.prompt or Cmd.prompt. (See
- * _cmd.js for the mapping).
+ * Returns the input string with any single or double quotes removed. This is
+ * often used to get the true string value of a quoted parameter.
+ * @param {String} aString The string to unquote.
+ * @return {String} The unquoted string.
  */
-CLI.prompt = prompt;
+CLI.unquote = function(aString) {
+    var str;
 
+    str = '' + aString;
+
+    if (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"') {
+        str = str.slice(1, -1);
+
+        return str.replace(/\\"/g, '"');
+    }
+
+    if (str.charAt(0) === '\'' && str.charAt(str.length - 1) === '\'') {
+        str = str.slice(1, -1);
+
+        return str.replace(/\\'/g, '\'');
+    }
+
+    return str;
+};
 
 //  ---
 //  Command Execution
@@ -1123,6 +1190,7 @@ CLI.runViaGrunt = function(command) {
     str = process.argv.slice(2).join(' ');
     this.debug('spawning: ' + str);
 
+    //  TODO:   replace with shelljs-nodecli
     //child = require('child_process').spawn('./node_modules/.bin/grunt',
     child = require('child_process').spawn('grunt',
         process.argv.slice(2),
@@ -1171,6 +1239,8 @@ CLI.runViaGulp = function(command) {
     str = process.argv.slice(2).join(' ');
     this.debug('spawning: ' + str);
 
+    //  TODO:   replace with shelljs-nodecli
+    //child = require('child_process').spawn('./node_modules/.bin/gulp',
     child = require('child_process').spawn('gulp',
         process.argv.slice(2),
         {cwd: cmd.getAppHead()}
