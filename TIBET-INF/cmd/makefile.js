@@ -25,7 +25,7 @@ hb = require('handlebars');
 sh = require('shelljs');
 path = require('path');
 nodecli = require('shelljs-nodecli');
-helpers = require('./src/tibet/cli/_make_helpers');
+helpers = require('../../src/tibet/cli/_make_helpers');
 
 //  ---
 //  'build' targets

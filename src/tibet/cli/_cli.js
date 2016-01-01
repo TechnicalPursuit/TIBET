@@ -598,7 +598,7 @@ CLI.getMakeTargets = function() {
     if (this.inProject()) {
         prefix = '~app_cmd';
     } else if (this.inLibrary()) {
-        prefix = '~';
+        prefix = '~lib_inf/cmd';
     }
 
     fullpath = this.expandPath(path.join(prefix, this.MAKE_FILE));
@@ -951,6 +951,13 @@ CLI.run = function(config) {
     // Don't run commands that are prefixed, they're considered 'cli internals'.
     if (command.charAt(0) === '_') {
         this.error('Cannot directly run private command: ' + command);
+        process.exit(1);
+    }
+
+    //  The makefile often resides in the command location, but we don't want to
+    //  try to run it like a command.
+    if (command + '.js' === CLI.MAKE_FILE) {
+        this.error('Cannot directly run TIBET makefile.');
         process.exit(1);
     }
 
