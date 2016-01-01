@@ -62,23 +62,6 @@ Cmd.DEFAULT_RUNNER = '~lib_etc/phantom/phantomtsh.js';
 //  ---
 
 /**
- * The command help string.
- * @type {String}
- */
-Cmd.prototype.HELP =
-'Runs the TIBET phantomtsh script runner to execute a TSH script.\n\n' +
-
-'The script to execute is presumed to be the first argument, quoted as\n' +
-'needed to ensure that it can be captured as a single string to pass to\n' +
-'the TIBET Shell. For example: tibet tsh \':echo "Hello World!"\'.\n' +
-'You can also use the --script argument to provide the TSH script.\n\n' +
-
-'<phantomtsh_args] refers to the various flags and paramters you can\n' +
-'provide to TIBET\'s phantomtsh.js script. To see phantomtsh.js help\n' +
-'use \'phantomjs ${TIBET_HOME}/etc/phantom/phantomtsh.js --help\n' +
-'where ${TIBET_HOME} refers to your TIBET installation directory.\n';
-
-/**
  * Command argument parsing options. Note that most of these are based on the
  * values suitable for the phantomtsh.js script so they can be parsed properly
  * for passing to that routine.
@@ -223,6 +206,10 @@ Cmd.prototype.execute = function() {
         arglist.unshift('--remote-debugger-port=' +
                         this.options['remote-debug-port']);
     }
+
+    // Push app root value since Phantom can't properly determine that based on
+    // where it loads (app vs. lib, tibet_pub or not, etc).
+    arglist.push('--app-root=\'' + CLI.expandPath('~app') + '\'');
 
     this.debug('phantomjs ' + arglist.join(' '));
 

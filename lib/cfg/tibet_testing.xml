@@ -49,6 +49,7 @@
     <config ref="templating"/>
     <config ref="data"/>
     <config ref="databinding"/>
+    <config ref="dom"/>
     <config ref="focusing"/>
     <config ref="logging"/>
     <config ref="formatting"/>
@@ -118,6 +119,10 @@
 <config id="databinding">
     <script src="~lib_test/src/tibet/databinding/TP.core.DataPath_Tests.js" />
     <script src="~lib_test/src/tibet/databinding/TP.core.DataObservation_Tests.js" />
+</config>
+
+<config id="dom">
+    <script src="~lib_test/src/tibet/dom/TP.Element_Tests.js" />
 </config>
 
 <config id="focusing">
@@ -200,6 +205,7 @@
 
 <config id="uri">
     <script src="~lib_test/src/tibet/uri/TP.URI_Tests.js" />
+    <script src="~lib_test/src/tibet/uri/TP.URI_Map_Tests.js" />
     <script src="~lib_test/src/tibet/uri/TP.core.URI_Tests.js" />
 </config>
 

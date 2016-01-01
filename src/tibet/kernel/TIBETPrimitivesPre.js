@@ -218,8 +218,7 @@ TP.canInvoke = function(anObj, anInterface) {
         i,
         len;
 
-    if (anObj === undefined || anObj === null ||
-            anInterface === undefined || anInterface === null) {
+    if (anObj === undefined || anObj === null) {
         return false;
     }
 
@@ -227,8 +226,11 @@ TP.canInvoke = function(anObj, anInterface) {
     //  because this method (with a String parameter) gets called so much.
     if (anInterface.charAt !== undefined) {
         obj = anObj[anInterface];
+        //  NOTE: On some platforms, if obj is a '[native code]' function,
+        //  'instanceof Function' will return false. This is the only consistent
+        //  test for whether something can truly respond.
         /* eslint-disable no-extra-parens */
-        return (obj !== undefined && obj.apply && obj.$$dnu !== true);
+        return (obj !== undefined && obj.apply && !obj.$$dnu);
         /* eslint-enable no-extra-parens */
     } else if (TP.isArray(anInterface)) {
         len = anInterface.length;
@@ -1818,25 +1820,25 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
             if (/^handle/.test(iname)) {
                 // if (TP.notValid(TP.sys.$$meta_handlers.at(iname))) {
-                    TP.sys.$$meta_handlers.atPut(iname, iname);
+                TP.sys.$$meta_handlers.atPut(iname, iname);
                 //}
             }
 
             // if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
-                TP.sys.$$meta_methods.atPut(gname, anItem);
+            TP.sys.$$meta_methods.atPut(gname, anItem);
 
-                //  owners are keyed by name and point to a vertical-bar
-                //  separated list of one or more type names. these are
-                //  tracked for all types so the inferencer can do type
-                //  conversion checks regardless of whether the type is part
-                //  of the kernel or not
-                owners = TP.sys.$$meta_owners.at(iname);
-                if (!owners) {
-                    TP.sys.$$meta_owners.atPut(iname, tname);
-                } else {
-                    TP.sys.$$meta_owners.atPut(iname,
-                        owners += TP.JOIN + tname);
-                }
+            //  owners are keyed by name and point to a vertical-bar
+            //  separated list of one or more type names. these are
+            //  tracked for all types so the inferencer can do type
+            //  conversion checks regardless of whether the type is part
+            //  of the kernel or not
+            owners = TP.sys.$$meta_owners.at(iname);
+            if (!owners) {
+                TP.sys.$$meta_owners.atPut(iname, tname);
+            } else {
+                TP.sys.$$meta_owners.atPut(iname,
+                    owners += TP.JOIN + tname);
+            }
             //}
 
             break;
@@ -1847,37 +1849,37 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             //if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
-                TP.sys.$$meta_attributes.atPut(gname, anItem);
+            TP.sys.$$meta_attributes.atPut(gname, anItem);
 
-                //  If the item has a 'value' slot and the value there responds
-                //  to 'isAccessPath' and is, in fact, an access path, then we
-                //  register it in TP.sys.$$meta_pathinfo. This acts as a
-                //  'reverse index' of access paths to aspect names.
-                if (anItem.value &&
-                    anItem.value.isAccessPath &&
-                    anItem.value.isAccessPath()) {
+            //  If the item has a 'value' slot and the value there responds
+            //  to 'isAccessPath' and is, in fact, an access path, then we
+            //  register it in TP.sys.$$meta_pathinfo. This acts as a
+            //  'reverse index' of access paths to aspect names.
+            if (anItem.value &&
+                anItem.value.isAccessPath &&
+                anItem.value.isAccessPath()) {
 
-                    //  Note here how we pass 'false' for the 'non verbose'
-                    //  String representation of the path (that is, the version
-                    //  that was actually authored by the user).
-                    itemkey = anItem.value.asString(false);
+                //  Note here how we pass 'false' for the 'non verbose'
+                //  String representation of the path (that is, the version
+                //  that was actually authored by the user).
+                itemkey = anItem.value.asString(false);
 
-                    pathinfo = TP.sys.$$meta_pathinfo.at(
-                                            tname + '_' + itemTrack);
-                    if (!pathinfo) {
-                        pathinfo = {};
+                pathinfo = TP.sys.$$meta_pathinfo.at(
+                                        tname + '_' + itemTrack);
+                if (!pathinfo) {
+                    pathinfo = {};
 
-                        TP.sys.$$meta_pathinfo.atPut(
-                                            tname + '_' + itemTrack,
-                                            pathinfo);
-                    }
-
-                    if (!pathinfo[itemkey]) {
-                        pathinfo[itemkey] = [];
-                    }
-
-                    pathinfo[itemkey].push(iname);
+                    TP.sys.$$meta_pathinfo.atPut(
+                                        tname + '_' + itemTrack,
+                                        pathinfo);
                 }
+
+                if (!pathinfo[itemkey]) {
+                    pathinfo[itemkey] = [];
+                }
+
+                pathinfo[itemkey].push(iname);
+            }
             //}
 
             break;
@@ -1885,18 +1887,18 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         case TP.SUBTYPE:
 
             //  don't overlay information we've already collected
-//            if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
-                TP.sys.$$meta_types.atPut(iname, anItem);
- //           }
+//          if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
+            TP.sys.$$meta_types.atPut(iname, anItem);
+ //         }
 
             break;
 
         case TP.NAMESPACE:
 
             //  don't overlay information we've already collected
-//            if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
-                TP.sys.$$meta_namespaces.atPut(iname, anItem);
- //           }
+//          if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
+            TP.sys.$$meta_namespaces.atPut(iname, anItem);
+ //         }
 
             break;
 
@@ -5952,6 +5954,102 @@ function(aVal) {
 });
 
 //  ------------------------------------------------------------------------
+//  SOURCE LANGUAGE
+//  ------------------------------------------------------------------------
+
+/*
+When doing localization you need to know two languages, the one you've got,
+and the one you want to translate to. The one you've got is what TIBET
+refers to as the "source language". This is normally U.S. English since
+that's the language typically used when authoring source code. But if you
+want to author your applications in German or French for example, you can
+alter the source language so that TIBET will start there when doing its
+translations.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getSourceLanguage',
+function() {
+
+    /**
+     * @method getSourceLanguage
+     * @summary Returns the current source 'lang', the language most source
+     *     strings will be in.
+     * @description This value is typically en-us, but can be changed to adapt
+     *     to local coding preferences. The source language is used as the key
+     *     during localization lookups.
+     * @example Get TIBET's current 'source language':
+     *     <code>
+     *          TP.sys.getSourceLanguage();
+     *          <samp>en-us</samp>
+     *     </code>
+     * @returns {String} The current value for source language. The default is
+     *     'en-us'.
+     */
+
+    return TP.sys.cfg('tibet.sourcelang',
+                        TP.sys.env('tibet.xmllang', 'en-us'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getTargetLanguage',
+function() {
+
+    /**
+     * @method getTargetLanguage
+     * @summary Returns the target 'lang', the user's targeted language
+     *     setting.
+     * @description This method leverages TP.core.Locale data whenever possible,
+     *     otherwise the boot property for userlang is used. When translations
+     *     are performed this is the language being targeted using the current
+     *     source language as the key.
+     * @example Get TIBET's current 'target language':
+     *     <code>
+     *          TP.sys.getTargetLanguage();
+     *          <samp>en-us</samp>
+     *     </code>
+     * @returns {String} The current target language key. The default is
+     *     'en-us'.
+     */
+
+    //  leverage the TP.core.Locale type if we've loaded it at this point
+    if (TP.isType(TP.sys.require('TP.core.Locale'))) {
+        return TP.ifInvalid(TP.sys.getLocale().getISOKey(), 'en-us');
+    }
+
+    return TP.sys.cfg('tibet.sourcelang',
+                        TP.sys.env('tibet.xmllang', 'en-us'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('setSourceLanguage',
+function(aLangCode) {
+
+    /**
+     * @method getSourceLanguage
+     * @summary Returns the current source 'lang', the language most source
+     *     strings will be in.
+     * @description This is typically en-us, but can be changed to adapt to
+     *     local coding preferences. The source language is used as the key
+     *     during localization lookups.
+     * @example Set TIBET's current 'source language':
+     *     <code>
+     *          TP.sys.setSourceLanguage('en-gb');
+     *          <samp>en-gb</samp>
+     *     </code>
+     * @returns {String} The current value for source language. The default is
+     *     'en-us'.
+     */
+
+    return TP.sys.setcfg(
+        'tibet.sourcelang',
+        TP.ifInvalid(aLangCode, TP.sys.env('tibet.xmllang', 'en-us')));
+});
+
+//  ------------------------------------------------------------------------
 //  STRING PROCESSING
 //  ------------------------------------------------------------------------
 
@@ -5965,28 +6063,43 @@ function(varargs) {
      *     localized. All arguments used in constructing Strings using TP.sc()
      *     are subject to localization based on the current source and target
      *     locale information. See TP.core.Locale for more information. The
-     *     simple version uses TP.msg.at() to look up any mapped values.
+     *     simple version uses TP.msg[key] to look up any mapped values.
      * @param {Object} varargs A variable list of 0 to N values to build
-     *     the String from.
+     *     the String from. Multiple chunks are joined with a single space.
      * @returns {String} A new instance.
      */
 
     var arr,
-        str;
+        str,
+        result,
+        len,
+        i,
+        key;
 
     switch (arguments.length) {
         case 0:
             return '';
         case 1:
             str = '' + varargs;
-            break;
+            if (TP.owns(TP.msg, str)) {
+                return TP.msg[str];
+            }
+            return str;
         default:
+            result = TP.ac();
             arr = TP.ac(arguments);
-            str = arr.join(' ');
-            break;
+            len = arr.length;
+            for (i = 0; i < len; i++) {
+                key = arr[i];
+                if (TP.owns(TP.msg, key)) {
+                    result.push(TP.msg[key]);
+                } else {
+                    result.push(key);
+                }
+            }
+            return result.join(' ');
     }
 
-    return TP.msg.at(str) || str;
 });
 
 //  ------------------------------------------------------------------------
@@ -6123,7 +6236,7 @@ function(aMessage, aTarget) {
         if (TP.isElement(elem)) {
             //  Note how we pass 'null' here for the 'loaded function' and
             //  'false' to not awaken the content.
-            TP.htmlElementSetContent(elem, msg, null, false);
+            TP.elementSetContent(elem, msg, null, false);
         }
     } else if (TP.isWindow(aTarget)) {
         aTarget.top.status = msg;
@@ -8401,12 +8514,13 @@ function(anObj) {
         return false;
     }
 
-    //  If the document doesn't have a Window, then its not HTML
+    //  If the document doesn't have a Window, then its not HTML, but go ahead
+    //  and stamp the markers in anyway.
     if (TP.notValid(TP.nodeGetWindow(anObj))) {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = anObj.documentElement.namespaceURI ===
                                     'http://www.w3.org/1999/xhtml';
-        return !anObj[TP.IS_XHTML];
+        return false;
     }
 
     if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
@@ -11950,102 +12064,6 @@ function(aStatusCode) {
     }
 
     return $STATUS;
-});
-
-//  ------------------------------------------------------------------------
-//  SOURCE LANGUAGE
-//  ------------------------------------------------------------------------
-
-/*
-When doing localization you need to know two languages, the one you've got,
-and the one you want to translate to. The one you've got is what TIBET
-refers to as the "source language". This is normally U.S. English since
-that's the language typically used when authoring source code. But if you
-want to author your applications in German or French for example, you can
-alter the source language so that TIBET will start there when doing its
-translations.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getSourceLanguage',
-function() {
-
-    /**
-     * @method getSourceLanguage
-     * @summary Returns the current source 'lang', the language most source
-     *     strings will be in.
-     * @description This value is typically en-us, but can be changed to adapt
-     *     to local coding preferences. The source language is used as the key
-     *     during localization lookups.
-     * @example Get TIBET's current 'source language':
-     *     <code>
-     *          TP.sys.getSourceLanguage();
-     *          <samp>en-us</samp>
-     *     </code>
-     * @returns {String} The current value for source language. The default is
-     *     'en-us'.
-     */
-
-    return TP.sys.cfg('tibet.sourcelang',
-                        TP.sys.env('tibet.xmllang', 'en-us'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getTargetLanguage',
-function() {
-
-    /**
-     * @method getTargetLanguage
-     * @summary Returns the target 'lang', the user's targeted language
-     *     setting.
-     * @description This method leverages TP.core.Locale data whenever possible,
-     *     otherwise the boot property for userlang is used. When translations
-     *     are performed this is the language being targeted using the current
-     *     source language as the key.
-     * @example Get TIBET's current 'target language':
-     *     <code>
-     *          TP.sys.getTargetLanguage();
-     *          <samp>en-us</samp>
-     *     </code>
-     * @returns {String} The current target language key. The default is
-     *     'en-us'.
-     */
-
-    //  leverage the TP.core.Locale type if we've loaded it at this point
-    if (TP.isType(TP.sys.require('TP.core.Locale'))) {
-        return TP.ifInvalid(TP.sys.getLocale().getISOKey(), 'en-us');
-    }
-
-    return TP.sys.cfg('tibet.sourcelang',
-                        TP.sys.env('tibet.xmllang', 'en-us'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('setSourceLanguage',
-function(aLangCode) {
-
-    /**
-     * @method getSourceLanguage
-     * @summary Returns the current source 'lang', the language most source
-     *     strings will be in.
-     * @description This is typically en-us, but can be changed to adapt to
-     *     local coding preferences. The source language is used as the key
-     *     during localization lookups.
-     * @example Set TIBET's current 'source language':
-     *     <code>
-     *          TP.sys.setSourceLanguage('en-gb');
-     *          <samp>en-gb</samp>
-     *     </code>
-     * @returns {String} The current value for source language. The default is
-     *     'en-us'.
-     */
-
-    return TP.sys.setcfg(
-        'tibet.sourcelang',
-        TP.ifInvalid(aLangCode, TP.sys.env('tibet.xmllang', 'en-us')));
 });
 
 //  ------------------------------------------------------------------------

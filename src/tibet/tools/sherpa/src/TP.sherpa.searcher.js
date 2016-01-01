@@ -212,7 +212,7 @@ function(aSignal) {
     searcherTile.toggle('hidden');
     searcherContent.toggle('hidden');
 
-    consoleGUI.clearInput();
+    this.get('$consoleService').clearConsole(true);
 
     return this;
 });

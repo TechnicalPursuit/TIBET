@@ -883,6 +883,8 @@ function(aRequest) {
      * @description This method populates the following variables into a hash
      *     that it returns, useful for executing substitutions.
      *
+     *          $TP         ->  The TP root.
+     *          $APP        ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
      *          $TAG        ->  The TP.core.ElementNode that contains this text
      *                          node.
@@ -954,6 +956,8 @@ function(aRequest) {
 
     info = TP.hc(
         '$REQUEST', aRequest,
+        '$TP', TP,
+        '$APP', APP,
         '$TAG', TP.wrap(parentNode),
         '$TARGET', aRequest.at('target'),
         '$SOURCE', TP.wrap(source),
@@ -979,6 +983,8 @@ function(aRequest) {
      *     text content of the node and supplies the following variables to the
      *     substitutions expressions:
      *
+     *          $TP         ->  The TP root.
+     *          $APP        ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
      *          $TAG        ->  The TP.core.ElementNode that contains this text
      *                          node.
@@ -1755,25 +1761,19 @@ function() {
      */
 
     var node,
-        doc,
-        win;
+        doc;
 
     //  we're after the real document, not the document of some clone, so
     //  we preserve changes here
     node = this.getNativeNode();
+
     doc = TP.nodeGetDocument(node);
     if (!TP.isDocument(doc)) {
         return this.raise('TP.sig.InvalidDocument',
                             'Unable to determine node\'s document.');
     }
 
-    win = TP.nodeGetWindow(doc);
-    if (TP.notValid(win)) {
-        //  document isn't visible so there's no TP.core.Window for it
-        return TP.core.Document.construct(doc);
-    }
-
-    return TP.core.Window.construct(win).getDocument();
+    return TP.wrap(doc);
 });
 
 //  ------------------------------------------------------------------------
@@ -2556,7 +2556,9 @@ function(aContentObject, aRequest) {
     //  collection of input, we've got to convert it into a collection of scalar
     //  values rather than a collection of more complex objects
     if (this.isScalarValued()) {
-        if (TP.isNode(input)) {
+        if (TP.isString(input)) {
+            value = input;
+        } else if (TP.isNode(input)) {
             value = TP.val(input);
         } else if (TP.isNodeList(input)) {
             //  Since we're scalar-valued we want NodeLists to be converted to
@@ -3991,6 +3993,9 @@ TP.core.CollectionNode.Type.defineAttribute('namespace', null);
 //  other data is available
 TP.core.CollectionNode.Type.defineAttribute('tagname', null);
 
+//  a registry of 'original nodes' that were authored.
+TP.core.CollectionNode.Type.defineAttribute('originals');
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -4001,6 +4006,154 @@ TP.core.CollectionNode.Type.defineAttribute('tagname', null);
 TP.core.CollectionNode.Inst.defineAttribute('$alreadyTransforming');
 
 TP.core.CollectionNode.Inst.defineAttribute('preppedReps');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Type.defineMethod('refreshInstances',
+function(aDocument) {
+
+    /**
+     * @method refreshInstances
+     * @summary Refreshes instances on the supplied Document or the current
+     *     uicanvas if aDocument isn't supplied.
+     * @description This method attempts to obtain the node as it was originally
+     *     authored, recompile and re-awaken it.
+     * @param {Document} aDocument The native document containing instances of
+     *     this node to refresh instances of. This defaults to the document of
+     *     the current uicanvas.
+     */
+
+    var originals,
+
+        cssQuery,
+        doc,
+        instances;
+
+    //  Grab our 'originals' registry. This is where we store clones of the
+    //  original node.
+    if (!TP.isValid(originals = this.get('originals'))) {
+        return;
+    }
+
+    //  Compute the CSS query path, indicating that we want a path that will
+    //  find both 'deep elements' (i.e. elements even under other elements of
+    //  this same type) and compiled representations of this element.
+    cssQuery = this.getQueryPath(true, true);
+
+    //  Default the document to the uicanvas's document. Note the 'true' here to
+    //  get the native document.
+    doc = TP.ifInvalid(aDocument, TP.sys.uidoc(true));
+
+    //  Find any instances that are currently drawn on the document.
+    instances = TP.byCSSPath(cssQuery, doc);
+
+    //  Iterate over the instances that were found.
+    instances.forEach(
+                function(aTPNode) {
+                    var authoredNode;
+
+                    //  Grab the originally authored representation of the node.
+                    authoredNode = originals.at(aTPNode.getLocalID());
+
+                    if (TP.isNode(authoredNode)) {
+                        authoredNode = TP.nodeCloneNode(authoredNode);
+
+                        //  Compile and awaken the content, supplying the
+                        //  authored node as the 'alternate element' to compile.
+                        aTPNode.compile(null, true, authoredNode);
+                        aTPNode.awaken();
+                    }
+                });
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Type.defineMethod('$tagCompileAndRegister',
+function(aRequest) {
+
+    /**
+     * @method $tagCompileAndRegister
+     * @summary A private method that is used by the tag processing system to
+     *      store off a copy of the original collection node if the system is
+     *      configured to do. It then calls the authored 'tagCompile' method.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The new element.
+     */
+
+    var elem,
+        result,
+
+        originals,
+        localID;
+
+    elem = aRequest.at('node');
+
+    //  Make sure that we can invoke 'tagCompile' on ourself - if not, just
+    //  exit.
+    if (!TP.canInvoke(this, 'tagCompile')) {
+        return elem;
+    }
+
+    result = this.tagCompile(aRequest);
+
+    //  We didn't get a valid Node or Array back - log an Error
+    if (!TP.isNode(result) && !TP.isArray(result)) {
+        TP.ifError() ?
+            TP.error(this.getTypeName() +
+                ' compile returned invalid replacement for: ' + TP.str(elem)) : 0;
+    }
+
+    //  If we got a collection node back, register a reference to a clone of the
+    //  original element (if the 'content.retain_originals' cfg flag is on).
+    if (TP.isCollectionNode(result)) {
+        if (result !== elem && TP.sys.cfg('content.retain_originals')) {
+
+            //  Make sure to create the type-level (each type - not shared)
+            //  originals registry. This will hold clones of the original nodes
+            //  shared by type.
+            if (!TP.isValid(originals = this.get('originals'))) {
+                originals = TP.hc();
+                this.set('originals', originals);
+            }
+
+            //  If the result defined an ID, then we use that - note how we pass
+            //  'false' to *not* assign an ID
+            localID = TP.lid(result, false);
+
+            if (TP.isEmpty(localID)) {
+                //  The result didn't have an ID - compute one. This will be our
+                //  key into the registry.
+                localID = TP.lid(elem, true);
+            } else {
+                //  The result had an ID - we need to make sure that original
+                //  elem has a matching one.
+                TP.elementSetAttribute(elem, 'id', localID, true);
+            }
+
+            //  If the registry doesn't have it, then register the original.
+            //  Note that this is one-time only so that we don't overwrite what
+            //  the author originally intended with subsequent renderings.
+            if (!originals.hasKey(localID)) {
+                originals.atPut(localID, TP.nodeCloneNode(elem));
+            }
+
+            //  Make sure to *always* set the ID on the result - this is
+            //  important so that we can find the copy in the registry more than
+            //  once.
+            TP.elementSetAttribute(result, 'id', localID, true);
+        }
+    } else if (TP.isArray(result)) {
+        //  TODO: We don't currently handle setting the original element on an
+        //  Array of returned elements - might not be possible.
+    }
+
+    return result;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -4589,7 +4742,16 @@ function(attributeName, attributeValue, shouldSignal) {
     //  ensure that environments which don't preserve the concept of a
     //  namespace URI consistently (html) won't end up with two attributes
     //  of the same name but different namespace URIs
-    attr = node.getAttributeNode(attributeName);
+
+    if (TP.regex.HAS_COLON.test(attributeName)) {
+        //  Note here the usage of our own call which will attempt to divine
+        //  the namespace URI if the checkAttrNSURIs flag is true.
+        attr = TP.$elementGetPrefixedAttributeNode(node,
+                                                    attributeName,
+                                                    true);
+    } else {
+        attr = node.getAttributeNode(attributeName);
+    }
 
     //  NB: Use this construct this way for better performance
     if (TP.notValid(flag = shouldSignal)) {
@@ -5478,6 +5640,14 @@ function() {
      * @returns {Boolean} True when single valued.
      */
 
+    //  If this element has a 'tibet:isSingleValued' attribute, then we return
+    //  the value of that. This allows 'instance level' programming of a
+    //  particular element.
+    if (TP.elementHasAttribute(
+            this.getNativeNode(), 'tibet:isSingleValued', true)) {
+        return true;
+    }
+
     return false;
 });
 
@@ -5493,6 +5663,14 @@ function() {
      *     for more information.
      * @returns {Boolean} True when scalar valued.
      */
+
+    //  If this element has a 'tibet:isScalarValued' attribute, then we return
+    //  the value of that. This allows 'instance level' programming of a
+    //  particular element.
+    if (TP.elementHasAttribute(
+            this.getNativeNode(), 'tibet:isScalarValued', true)) {
+        return true;
+    }
 
     return false;
 });
@@ -11204,6 +11382,10 @@ function(aNode) {
     //  Process the tree of markup
     processor.processTree(aNode);
 
+    //  Flag the node as having been awakened. This state is checked by mutation
+    //  handlers etc. to avoid duplicate effort.
+    aNode.$$awakened = true;
+
     return;
 });
 
@@ -11416,17 +11598,23 @@ function(aRequest) {
 
             if (obsAttrs.contains(attrName)) {
 
-                //  If we can create a valid URI from the value we find there,
-                //  ignore it for changes and tell it to unwatch its handler for
-                //  change notifications.
+                if (TP.notEmpty(val =
+                        TP.elementGetAttribute(elem, attrName, true))) {
 
-                uri = TP.uc(val);
-                if (TP.isURI(uri)) {
-                    tpElem.ignore(uri, 'TP.sig.ValueChange');
-                    uri.unwatch();
+                    //  If we can create a valid URI from the value we find
+                    //  there, ignore it for changes and tell it to unwatch its
+                    //  handler for change notifications.
+
+                    uri = TP.uc(val);
+                    if (TP.isURI(uri)) {
+                        tpElem.ignore(uri, 'TP.sig.ValueChange');
+
+                        //  NOTE: we DO NOT unwatch() the URI since other
+                        //  elements may be observing it.
+                    }
+
+                    obsAttrs.splice(obsAttrs.indexOf(attrName), 1);
                 }
-
-                obsAttrs.splice(obsAttrs.indexOf(attrName), 1);
             }
         }
 
@@ -11543,10 +11731,10 @@ function(attributeName, attributeValue, checkAttrNSURI) {
      *     space-separated portion of the attribute's value.
      * @param {String} attributeName The attribute to set.
      * @param {String} attributeValue The attribute value.
-     * @param {Boolean} checkAttrNSURI True will cause this method to be more
-     *     rigorous in its checks for prefixed attributes, and will use calls to
-     *     actually set the attribute into that namespace. Default is false (to
-     *     keep things faster).
+     * @param {Boolean} [checkAttrNSURI=false] True will cause this method to be
+     *     more rigorous in its checks for prefixed attributes, looking via
+     *     internal TIBET mechanisms in addition to the standard platform
+     *     mechanism. The default is false (to keep things faster).
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -11565,8 +11753,7 @@ function(attributeName, attributeValue, checkAttrNSURI) {
 
     oldValue = TP.elementGetAttribute(natNode, attributeName, checkAttrNSURI);
 
-    retVal = TP.elementAddAttributeValue(natNode,
-                                            attributeName, attributeValue,
+    retVal = TP.elementAddAttributeValue(natNode, attributeName, attributeValue,
                                             checkAttrNSURI);
 
     newValue = TP.elementGetAttribute(natNode, attributeName, checkAttrNSURI);
@@ -12462,7 +12649,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue(aValue);
 
-    this.setContent(newValue);
+    if (TP.isString(newValue)) {
+        this.setTextContent(newValue, shouldSignal);
+    } else {
+        this.setContent(newValue);
+    }
 
     //  signal as needed
 
@@ -15407,6 +15598,7 @@ function(aRequest) {
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} The new element.
      */
 
     var elem;
@@ -15417,7 +15609,7 @@ function(aRequest) {
     elem = aRequest.at('node');
     TP.elementAddClass(elem, 'tibet-action');
 
-    return;
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -15889,6 +16081,7 @@ function(aRequest) {
      *     markup DOM.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} The new element.
      */
 
     var elem;
@@ -15899,8 +16092,7 @@ function(aRequest) {
     elem = aRequest.at('node');
     TP.elementAddClass(elem, 'tibet-info');
 
-    return;
-
+    return elem;
 });
 
 //  ========================================================================
@@ -16583,10 +16775,10 @@ function(aRequest) {
 
     //  If the element already has a TP.GENERATOR, then it had to be placed here
     //  by some template in an earlier iteration. If the generator was ourself,
-    //  return nothing, thereby causing elem to be untouched.
+    //  return the original element.
     if (TP.notEmpty(genName = elem[TP.GENERATOR]) &&
         genName === this.getCanonicalName()) {
-        return;
+        return elem;
     }
 
     wantsTemplateWrapper = TP.ifInvalid(this.get('wantsTemplateWrapper'),

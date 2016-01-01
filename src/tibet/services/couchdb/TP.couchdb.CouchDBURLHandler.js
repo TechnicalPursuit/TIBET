@@ -55,13 +55,13 @@ function(aURI) {
      *     changes.
      * @param {TP.core.URI} aURI The URI representing the resource to be
      *     watched.
-     * @returns {TP.sig.RemoteURLChangeSignal} The type that will be
+     * @returns {TP.sig.RemoteURLChange} The type that will be
      *     instantiated to construct new signals that notify observers that the
      *     *remote* version of the supplied URI's resource has changed. At this
      *     level, this returns the common supertype of all such signals.
      */
 
-    return TP.sig.CouchDBChangeSignal;
+    return TP.sig.CouchDBChange;
 });
 
 //  ------------------------------------------------------------------------
@@ -130,13 +130,13 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineHandler('CouchDBChangeSignal',
+TP.couchdb.CouchDBURLHandler.Type.defineHandler('CouchDBChange',
 function(aSignal) {
 
     /**
-     * @method handleCouchDBChangeSignal
+     * @method handleCouchDBChange
      * @summary Handles when a TDS-managed resource has changed.
-     * @param {TP.sig.CouchDBChangeSignal} aSignal The signal indicating that a
+     * @param {TP.sig.CouchDBChange} aSignal The signal indicating that a
      *     TDS-managed resource has changed.
      * @returns {TP.couchdb.CouchDBURLHandler} The receiver.
      */
@@ -350,10 +350,10 @@ function(targetURI, aRequest) {
 });
 
 //  =======================================================================
-//  TP.sig.CouchDBChangeSignal
+//  TP.sig.CouchDBChange
 //  ========================================================================
 
-TP.sig.RemoteURLChangeSignal.defineSubtype('CouchDBChangeSignal');
+TP.sig.RemoteURLChange.defineSubtype('CouchDBChange');
 
 //  ------------------------------------------------------------------------
 //  end

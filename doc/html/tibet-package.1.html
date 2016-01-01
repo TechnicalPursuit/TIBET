@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-package</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-package</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-package-1-list-package-assets-either-as-asset-paths-or-nodes">tibet-package(1) -- list package assets either as asset paths or nodes</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet package [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--all]
+    [--missing] [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]
+    [--scripts] [--styles] --[images] [--phase &lt;phase&gt;] [--nodes]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Outputs a list of package assets either as asset nodes or asset paths.</p>
+<p>This command is a useful way to view the files which a <code>tibet rollup</code> or<br><code>tibet lint</code> command will process. The best way to get a sense of this<br>command is to run it with various options, of which there are many:</p>
+<p>--package    the file path to the package to process.<br>--config     the name of an individual config to process.<br>--all        process all config tags in the package recursively.<br>--missing    output a list of missing assets of all types.</p>
+<p>--include    a space-separated list of asset tags to include.<br>--exclude    a space-separated list of asset tags to include.</p>
+<p>--nodes      output asset nodes rather than asset paths.<br>--phase      boot phase subset to process &lt;all | one | two | app | lib&gt;.</p>
+<p>--images     include all image assets.<br>--scripts    include all JavaScript source-containing assets.<br>--styles     include all CSS containing assets.</p>
+<h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./lint.1.html">lint(1)</a></li>
+<li><a class="crossref" href="./rollup.1.html">rollup(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

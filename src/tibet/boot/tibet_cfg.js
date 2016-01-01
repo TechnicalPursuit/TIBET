@@ -59,7 +59,7 @@
 
     //  when using a login page do we boot in parallel, meaning we start loading
     //  the tibet code (phase one) in parallel or wait until login succeeds?
-    TP.sys.setcfg('boot.parallel', true);
+    TP.sys.setcfg('boot.parallel', false);
 
     //  should we skip loading path.tibet_file? default is false to load the
     //  boot.boostrap JSON file (tibet.json by default). turning this off means
@@ -167,6 +167,7 @@
     TP.sys.setcfg('boot.tibet_dir', 'node_modules');
     TP.sys.setcfg('boot.tibet_lib', 'tibet');
     TP.sys.setcfg('boot.tibet_inf', 'TIBET-INF');
+    TP.sys.setcfg('boot.tibet_pub', 'public');
 
     //  The file here is used as our source for project configuration data. If
     //  you don't want this loaded set boot.no_tibet_file to true.
@@ -174,16 +175,16 @@
 
     //  text pattern matching the load file used to check script tags during lib
     //  root computation if no other method is specified.
-    TP.sys.setcfg('boot.tibetload', 'tibet_loader');
+    TP.sys.setcfg('boot.tibet_loader', 'tibet_loader');
+
     //  how deep under lib_root is the tibet_loader file?
-    TP.sys.setcfg('boot.loadoffset', '../../..');
+    TP.sys.setcfg('boot.loader_offset', '../../..');
+
+    //  how far from lib_root is the phantom loader?
+    TP.sys.setcfg('boot.phantom_offset', '../../..');
 
     // Ensure we use the tibet_dir approach to computing root paths.
     TP.sys.setcfg('boot.rootcomp', 'tibet_dir');
-
-    //  What path prefix do we expect during initial startup under Karma. If
-    //  this isn't set some computations of lib/app paths may fail.
-    TP.sys.setcfg('boot.karma_root', 'base');
 
     //  ---
     //  package/config setup
@@ -389,18 +390,40 @@
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
     TP.sys.setcfg('project.app_type', null);
 
-    //  the user name for the project. The default value is 'demo'. Note that
-    //  there *MUST* be a corresponding vCard in the system that matches this
-    //  user name in order for TIBET to work properly. Note that this must be
-    //  kept in sync with 'project.user_role' and it's setting in the vCard.
-    TP.sys.setcfg('project.user_name', 'demo');
 
-    //  the role name for the user of the project. The default value is
-    //  'Public', which is the role of the default user 'demo' above (as defined
-    //  in the corresponding vCard for 'demo'). Note that this must be kept in
-    //  sync with 'project.user_name' and it's setting in the vCard.
-    TP.sys.setcfg('project.user_role', 'Public');
+    //  ---
+    //  users and roles (and vcards and keyrings)
+    //  ---
 
+    //  What cookie name should be used to communicate username after a
+    //  successful login to the TDS (or other similarly-instrumented server)?
+    TP.sys.setcfg('user.cookie', 'username');
+
+    //  Default values used to drive the DEFAULT templates for vCard and keyring
+    //  data (which are used by the default User instance creation machinery).
+    TP.sys.setcfg('user.default_name', 'Guest');
+    TP.sys.setcfg('user.default_role', 'Public');
+    TP.sys.setcfg('user.default_org', 'Public');
+    TP.sys.setcfg('user.default_unit', 'Public');
+    TP.sys.setcfg('user.default_keyring', 'Public');
+
+    //  What route should be used to load application keyrings? Note that by
+    //  default there is no path here. A typical value if you want to make use
+    //  of keyrings would be `~app_dat/keyrings.xml` to mirror the library path.
+    TP.sys.setcfg('path.app_keyrings', null);
+
+    //  What route should be used to load application vcards? Note that by
+    //  default there is no path here. A typical value if you want to make use
+    //  of vCards would be `~app_dat/vcards.xml` to mirror the library path.
+    TP.sys.setcfg('path.app_vcards', null);
+
+    //  What route should be used to load library keyrings? The default is
+    //  provided as support for service vcards which are necessary.
+    TP.sys.setcfg('path.lib_keyrings', '~lib_dat/keyrings.xml');
+
+    //  the default location for TIBET's service vcard data. This file is always
+    //  loaded to ensure that the various services have appropriate vcard data.
+    TP.sys.setcfg('path.lib_vcards', '~lib_dat/vcards.xml');
 
     //  ---
     //  ui page initialization files
@@ -435,6 +458,7 @@
     } else {
         TP.sys.setcfg('tibet.uibuffer', null);
     }
+
 
     //  ---
     //  logging
@@ -544,8 +568,8 @@
     //  what is the current keyboard? only need to set if not U.S. English
     //  NOTE that this sets the _type_. A second parameter using the typename
     //  plus a .xml extension (TP.core.USAscii101Keyboard.xml for example) is
-    //  used to point to that type's keyboard mapping file (which is in ~lib_dat
-    //  by default).
+    //  used to point to that type's keyboard mapping file (which is in
+    //  ~lib_dat by default).
     TP.sys.setcfg('tibet.keyboard', null);
 
     //  what is the currently active locale (in xml:lang format)
@@ -586,6 +610,8 @@
     TP.sys.setcfg('path.tibet_lib', 'tibet');   // npm install name here.
     TP.sys.setcfg('path.tibet_file', '~app/tibet.json');
     TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
+
+    TP.sys.setcfg('path.tds_file', '~/tds.json');
 
     TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));
     TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
@@ -659,7 +685,7 @@
     //  app-only virtual paths
     TP.sys.setcfg('path.app_cache', '~app_tmp/cache');
     TP.sys.setcfg('path.app_change', '~app_src/changes');
-    TP.sys.setcfg('path.app_log', '~app_inf/logs');
+    TP.sys.setcfg('path.app_log', '~/log');
     TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
     TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
@@ -686,6 +712,13 @@
     TP.sys.setcfg('api.lint_keys', false);
 
     //  ---
+    //  cli
+    //  ---
+
+    //  what method (browser or man page) should we try for help display?
+    TP.sys.setcfg('cli.help.viewer', 'man');
+
+    //  ---
     //  content mgmt
     //  ---
 
@@ -696,6 +729,10 @@
     //  limit DOM traversal routines to a maximum number of elements to process
     //  unless overridden.
     TP.sys.setcfg('content.max_traversal', 2500);
+
+    //  should the tag processing system retain the original nodes? By default
+    //  this is true, but can be switched off for production.
+    TP.sys.setcfg('content.retain_originals', true);
 
     //  should content objects cache their generated reps on the filesystem
     //  (and then use them)? you can use caches during development but during
@@ -1096,33 +1133,6 @@
     TP.sys.setcfg('os.exec_interval', 300); //  5*60 or 5 minute job time
                                                 //  max
 
-    //  ---
-    //  resources
-    //  ---
-
-    //  where is the keyring file? this file is used (by default) as the source
-    //  for application keyrings used by TP.core.Role and TP.core.Unit types to
-    //  associate permission "keys" with TP.core.User instances.
-    TP.sys.setcfg('path.keyring_file', '~lib_dat/keyrings.xml');
-
-    //  where is the default location for the localization string file? this
-    //  path should be an absolute path using either a / or ~ prefix to
-    //  reference libroot or approot respectively. this can be set in the
-    //  boot script/tibet.xml files using the 'strings' parameter.
-    TP.sys.setcfg('path.string_file', '~lib_dat/strings.tmx');
-
-    //  where is the default location for the uri mappings? this path should be
-    //  an absolute path using either a / or ~ prefix to reference libroot or
-    //  approot respectively. this can be set in the boot script/tibet.xml files
-    //  using the 'uris' parameter. A sample is in ~lib_dat/uris.xml.
-    TP.sys.setcfg('path.uri_file', '~lib_dat/uris.xml');
-
-    //  where is the default vCard file containing application vcards? this file
-    //  is used (by default) as a simple way to create a small set of vcards
-    //  that can be used across users. The vcard information relates users to
-    //  roles, linking permissions assigned to those roles to a particular user.
-    TP.sys.setcfg('path.vcard_file', '~lib_dat/vcards.xml');
-
 
     //  ---
     //  tdc processing
@@ -1192,12 +1202,71 @@
     //  machinery to manually replace 'tibet:root' with the app's app tag.
     TP.sys.setcfg('path.sherpa_screen_0', '~boot_xhtml/home.xhtml');
 
+    //  ---
+    //  SSE support
+    //  ---
+
+    //  How many errors on SSE connection before UnstableConnection exception?
+    TP.sys.setcfg('sse.max_errors', 10);
 
     //  ---
     //  tds support
     //  ---
 
+    TP.sys.setcfg('couch.app.root', 'public');
+    TP.sys.setcfg('couch.app_name', 'app');
+    TP.sys.setcfg('couch.db_name', null);
+    TP.sys.setcfg('couch.host', '127.0.0.1');
+    TP.sys.setcfg('couch.port', '5984');
+    TP.sys.setcfg('couch.scheme', 'http');
+
+    TP.sys.setcfg('couch.watch.filter', '*');
+
+    TP.sys.setcfg('couch.watch.empty', '\n');
+    TP.sys.setcfg('couch.watch.feed', 'continuous');
+    TP.sys.setcfg('couch.watch.heartbeat', 500);
+    TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
+    TP.sys.setcfg('couch.watch.inactivity_ms', null);
+    TP.sys.setcfg('couch.watch.initial_retry_delay', 1000);
+    TP.sys.setcfg('couch.watch.max_retry_seconds', 360);
+    TP.sys.setcfg('couch.watch.response_grace_time', 5000);
+    TP.sys.setcfg('couch.watch.root', '~app');
+    TP.sys.setcfg('couch.watch.since', 'now');
+
+    TP.sys.setcfg('tds.auth.strategy', 'tds');
+
     TP.sys.setcfg('tds.cli.uri', '/tds/cli');
+
+    //  The combined names from cli, npm, and syslog from winston.
+    TP.sys.setcfg('tds.color.emerg', 'red');
+    TP.sys.setcfg('tds.color.crit', 'red');
+    TP.sys.setcfg('tds.color.error', 'red');
+    TP.sys.setcfg('tds.color.warning', 'yellow');   //  cli color vs. syslog
+    TP.sys.setcfg('tds.color.warn', 'yellow');
+    TP.sys.setcfg('tds.color.alert', 'yellow');
+    TP.sys.setcfg('tds.color.notice', 'yellow');
+    TP.sys.setcfg('tds.color.help', 'cyan');
+    TP.sys.setcfg('tds.color.data', 'grey');
+    TP.sys.setcfg('tds.color.info', 'green');
+    TP.sys.setcfg('tds.color.debug', 'green');  //  blue is hard to read.
+    TP.sys.setcfg('tds.color.prompt', 'grey');
+    TP.sys.setcfg('tds.color.verbose', 'cyan');
+    TP.sys.setcfg('tds.color.input', 'grey');
+    TP.sys.setcfg('tds.color.silly', 'magenta');
+
+    TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   // change this too :)
+    TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   // change this too :)
+
+    TP.sys.setcfg('tds.https', false);
+
+    TP.sys.setcfg('tds.log.count', 5);
+    TP.sys.setcfg('tds.log.file', '~app_log/tds-{{env}}.log');
+    TP.sys.setcfg('tds.log.format', 'dev');
+    TP.sys.setcfg('tds.log.level', 'info');
+    TP.sys.setcfg('tds.log.routes', false);
+    TP.sys.setcfg('tds.log.size', 5242880); // 5MB
+
+    TP.sys.setcfg('tds.max_bodysize', '5mb');
 
     TP.sys.setcfg('tds.patch.root', '~');
     TP.sys.setcfg('tds.patch.uri', '/tds/patch');
@@ -1205,28 +1274,37 @@
     //  NOTE we do _not_ default this here so env.PORT etc can be used when the
     //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
     TP.sys.setcfg('tds.port', null);
-    TP.sys.setcfg('tds.secret', 'change this in your TIBET config');
 
-    TP.sys.setcfg('tds.404', 'NotFound');
-    TP.sys.setcfg('tds.500', 'ServerError');
+    TP.sys.setcfg('tds.pouch.name', 'tds');
+    TP.sys.setcfg('tds.pouch.prefix', './pouch/');
+    TP.sys.setcfg('tds.pouch.route', '/db');
+
+    TP.sys.setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
+
+    TP.sys.setcfg('tds.session.key', 'T1B3TS3SS10N');   // change this too :)
+    TP.sys.setcfg('tds.session.store', 'memory');
+
+    TP.sys.setcfg('tds.stop_onerror', true);
 
     TP.sys.setcfg('tds.use.cli', false);
-    TP.sys.setcfg('tds.use.patcher', false);
-    TP.sys.setcfg('tds.use.watcher', false);
+    TP.sys.setcfg('tds.use.couch', false);
+    TP.sys.setcfg('tds.use.mocks', false);
+    TP.sys.setcfg('tds.use.patch', false);
+    TP.sys.setcfg('tds.use.pouch', false);
+    TP.sys.setcfg('tds.use.proxy', false);
+    TP.sys.setcfg('tds.use.tasks', false);
+    TP.sys.setcfg('tds.use.watch', false);
     TP.sys.setcfg('tds.use.webdav', false);
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
-    TP.sys.setcfg('tds.watch.ignore', null);
+    TP.sys.setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('tds.watch.root', '~app');
-    TP.sys.setcfg('tds.watch.uri', '/tds/watcher');
+    TP.sys.setcfg('tds.watch.uri', '/tds/watch');
 
-    TP.sys.setcfg('tds.webdav.root', '~app_src');
+    TP.sys.setcfg('tds.webdav.mount', '/');
+    TP.sys.setcfg('tds.webdav.root', '~app');
     TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
-
-    TP.sys.setcfg('couch.app.root', 'attachments');
-    TP.sys.setcfg('couch.watch.ignore', null);
-    TP.sys.setcfg('couch.watch.root', '~app');
 
     //  ---
     //  tsh processing
@@ -1424,25 +1502,29 @@
     //  what CSS theme should we use? default is none.
     TP.sys.setcfg('tibet.theme', null);
 
-    //  the application login page. when booting in two-phase mode with logins
-    //  turned on this page is displayed in the uicanvas while the root page
-    //  loads the TIBET target (kernel + any other TIBET code you configure) in
-    //  the code frame. when booting in a single phase this page replaces the
-    //  index file and booting has to be restarted by the page returned from
-    //  your server on successful login.
-    TP.sys.setcfg('path.index_page', '~/index.html');
-
-    TP.sys.setcfg('path.login_page', '~boot_xhtml/login.xhtml');
+    //  what path should be opened by the 'start' command in the CLI?
+    TP.sys.setcfg('path.start_page', '~app/index.html');
 
     //  ---
     //  karma integration
     //  ---
 
+    //  What path prefix do we expect during initial startup under Karma. If
+    //  this isn't set some computations of lib/app paths may fail.
+    TP.sys.setcfg('boot.karma_root', '/base');
+
+    //  karma will launch via TIBET-INF/tibet/lib/src/tibet_loader so 5 levels
+    TP.sys.setcfg('boot.karma_offset', '../../../../..');
+
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
-    TP.sys.setcfg('karma.boot.profile', 'standard#contributor');
+    TP.sys.setcfg('karma.boot.profile', 'app#contributor');
     TP.sys.setcfg('karma.boot.unminified', false);
     TP.sys.setcfg('karma.boot.unpackaged', false);
+
+    //  Path and file name of the load script to be used to launch TIBET.
+    TP.sys.setcfg('karma.load_path', 'TIBET-INF/tibet/lib/src');
+    TP.sys.setcfg('karma.load_script', 'tibet_loader.min.js');
 
     //  The test script to run including the :test prefix.
     TP.sys.setcfg('karma.script', ':test');
@@ -1451,8 +1533,6 @@
     TP.sys.setcfg('karma.proxy', 9877);
 
     TP.sys.setcfg('karma.timeout', 15000);
-
-    TP.sys.setcfg('karma.loader', 'tibet_loader.min.js');
 
     //  What slot on the launch window should we check for Karma?
     TP.sys.setcfg('karma.slot', '__karma__');
@@ -1497,8 +1577,10 @@
     TP.sys.setcfg('uri.template_fallback', true);
     TP.sys.setcfg('uri.keybindings_fallback', false);
 
-    //  the default type used to handle URI load/save operations.
-    TP.sys.setcfg('uri.handler', 'TP.core.URIHandler');
+    //  the default types used to handle URI load/save operations.
+    TP.sys.setcfg('uri.handler.default', 'TP.core.URLHandler');
+    TP.sys.setcfg('uri.handler.file', 'TP.core.FileURLHandler');
+    TP.sys.setcfg('uri.handler.http', 'TP.core.HTTPURLHandler');
 
     //  the default type used to handle URI rewriting decisions.
     TP.sys.setcfg('uri.rewriter', 'TP.core.URIRewriter');
@@ -1513,7 +1595,7 @@
     TP.sys.setcfg('uri.remote_watch', true);
 
     //  remote resources that we should try to watch.
-    TP.sys.setcfg('uri.remote_watch_sources', ['~app_src', '~app_styles']);
+    TP.sys.setcfg('uri.remote_watch_sources', ['~app_src', '~app_styles', '~app_cfg']);
 
     //  should we process the queue of remote resource changes?
     TP.sys.setcfg('uri.process_remote_changes', false);

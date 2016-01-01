@@ -28,7 +28,7 @@
  *      silent      Silence normal logging. Defaults to the value set for 'all'.
  *                  If 'all' is true we default this to true to suppress
  *                  warnings about duplicate assets.
- *      phase       Package phase? Default depends on context (app vs. lib).
+ *      phase       Package phase? Default depends on context (app vs. lib)
  *
  * OTHER OPTIONS:
  *
@@ -81,33 +81,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 //  ---
 //  Instance Attributes
 //  ---
-
-/**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Outputs a list of package assets either as asset nodes or asset paths.\n\n' +
-
-'This command is a useful way to view the files which a `tibet rollup` or\n' +
-'`tibet lint` command will process. The best way to get a sense of this\n' +
-'command is to run it with various options, of which there are many:\n\n' +
-
-'--package    the file path to the package to process.\n' +
-'--config     the name of an individual config to process.\n' +
-'--all        process all config tags in the package recursively.\n' +
-'--missing    output a list of missing assets of all types.\n\n' +
-
-'--include    a space-separated list of asset tags to include.\n' +
-'--exclude    a space-separated list of asset tags to include.\n\n' +
-
-'--nodes      output asset nodes rather than asset paths.\n' +
-'--phase      boot phase subset to process <all | one | two>.\n\n' +
-
-'--images     include all image assets.\n' +
-'--scripts    include all JavaScript source-containing assets.\n' +
-'--styles     include all CSS containing assets.\n';
-
 
 /**
  * Command argument parsing options.
@@ -195,10 +168,12 @@ Cmd.prototype.configurePackageOptions = function(options) {
     // runs will quietly filter out all their content nodes.
     this.pkgOpts.boot = this.pkgOpts.boot || {};
     switch (this.options.phase) {
+        case 'lib':
         case 'one':
             this.pkgOpts.boot.phase_one = true;
             this.pkgOpts.boot.phase_two = false;
             break;
+        case 'app':
         case 'two':
             this.pkgOpts.boot.phase_one = false;
             this.pkgOpts.boot.phase_two = true;

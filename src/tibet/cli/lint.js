@@ -67,46 +67,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Runs a variety of lint tools on files specified in a package#config.\n\n' +
-
-'--scan tells the linter to scan the directory tree and ignore any\n' +
-'package#config specification. Without this flag only files found\n' +
-'in the project package files will be linted, making it easy to lint\n' +
-'only those files your project actually makes direct use of.\n\n' +
-
-'--quiet tells the linter to suppress warnings if possible.\n\n' +
-
-'--stop tells the linter to stop after the first file with errors.\n\n' +
-
-'The optional <filter> argument provides a string or regular expression\n' +
-'used to filter file names. If the filter begins and ends with / it is\n' +
-'treated as a regular expression for purposes of file filtering.\n\n' +
-
-'[package-opts] refers to valid options for a TIBET Package object.\n' +
-'These include --package, --config, --phase, --assets, etc.\n' +
-'The package#config defaults to ~app_cfg/app.xml and its default\n' +
-'config (usually #base) so your typical configuration is linted.\n' +
-'See help on the \'tibet package\' command for more information.\n\n' +
-
-'[eslint-opts] refers to --esconfig, --esrules, and --esignore which\n' +
-'let you configure eslint to meet your specific needs. The linter will\n' +
-'automatically take advantage of a .eslintrc file in your project.\n\n' +
-
-'[csslint-opts] refers to --cssconfig which allows you to specify a\n' +
-'specific .csslintrc file whose content should be used. The lint command\n' +
-'relies on .csslintrc as used by the csslint command line. The default\n' +
-'file is the one in your project, followed by the TIBET library version.\n\n' +
-
-'All of the linters can be disabled individually by using a --no- prefix.\n' +
-'For example: --no-csslint --no-eslint --no-jsonlint --no-xmllint will turn\n' +
-'off all the currently supported linters.\n\n';
-
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */
@@ -409,6 +369,12 @@ Cmd.prototype.executeForEach = function(list) {
                     return;
                 }
 
+                // Skip minified files regardless of their type.
+                if (src.match(/__(.+)__/)) {
+                    cmd.verbose('skipping template file: ' + src);
+                    return;
+                }
+
                 ext = src.slice(src.lastIndexOf('.') + 1);
                 if (ext === 'css') {
                     files.css.push(src);
@@ -479,7 +445,7 @@ Cmd.prototype.getScannedAssetList = function() {
 
     list = sh.find(dir).filter(function(fname) {
         return !sh.test('-d', fname) &&
-            !fname.match(/node_modules/);
+            !fname.match(/node_modules|.git|.svn/);
     });
 
     return list;

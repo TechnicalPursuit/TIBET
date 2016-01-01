@@ -1,0 +1,52 @@
+.TH "TIBET\-PACKAGE" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-package\fR \- list package assets either as asset paths or nodes
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet package [\-\-package <package>] [\-\-config <cfg>] [\-\-all]
+    [\-\-missing] [\-\-include <asset names>] [\-\-exclude <asset names>]
+    [\-\-scripts] [\-\-styles] \-\-[images] [\-\-phase <phase>] [\-\-nodes]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Outputs a list of package assets either as asset nodes or asset paths\.
+.P
+This command is a useful way to view the files which a \fBtibet rollup\fP or
+.br
+\fBtibet lint\fP command will process\. The best way to get a sense of this
+.br
+command is to run it with various options, of which there are many:
+.P
+\-\-package    the file path to the package to process\.
+.br
+\-\-config     the name of an individual config to process\.
+.br
+\-\-all        process all config tags in the package recursively\.
+.br
+\-\-missing    output a list of missing assets of all types\.
+.P
+\-\-include    a space\-separated list of asset tags to include\.
+.br
+\-\-exclude    a space\-separated list of asset tags to include\.
+.P
+\-\-nodes      output asset nodes rather than asset paths\.
+.br
+\-\-phase      boot phase subset to process <all | one | two | app | lib>\|\.
+.P
+\-\-images     include all image assets\.
+.br
+\-\-scripts    include all JavaScript source\-containing assets\.
+.br
+\-\-styles     include all CSS containing assets\.
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+lint(1)
+.IP \(bu 2
+rollup(1)
+
+.RE
+

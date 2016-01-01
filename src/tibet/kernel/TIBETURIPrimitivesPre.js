@@ -27,6 +27,32 @@
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isURIString',
+function(anObject, schemeOptional) {
+
+    /**
+     * @method isURIString
+     * @summary Returns true if the supplied String matches the URI format.
+     * @param {Object} anObject The object to test.
+     * @param {Boolean} schemeOptional Whether or not the URI scheme is optional
+     *     in the String being tested.
+     * @returns {Boolean} True if the object appears to match a URI-formatted
+     *     String.
+     */
+
+    if (!TP.isString(anObject)) {
+        return false;
+    }
+
+    if (schemeOptional) {
+        return TP.regex.URI_STRICT.test(anObject);
+    }
+
+    return TP.regex.SCHEME.test(anObject) && TP.regex.URI_STRICT.test(anObject);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('uriAddUniqueQuery',
 function(aPath) {
 
@@ -512,17 +538,13 @@ function(aPath) {
 
             //  NOTE we resolve these variables from the config data
             if (TP.isString(value = TP.sys.cfg('path.' + variable))) {
-                //  one issue here is that we may have a variable value
-                //  that starts with or ends with a '/' since they're
-                //  parts of paths, but we don't want to alter that
-                //  aspect of the current path so we want to trim them
-                //  off if found
-                if (value.indexOf('/') === 0) {
-                    value = value.slice(1);
-                }
-
-                if (value.last() === '/') {
-                    value = value.slice(0, -1);
+                //  If we're replacing something of the form ~variable/stuff we
+                //  don't want to get something of the form value//stuff back so
+                //  we trim off any trailing '/' on the value.
+                if (path !== '~' + variable) {
+                    if (value.charAt(value.length - 1) === '/') {
+                        value = value.slice(0, -1);
+                    }
                 }
 
                 //  patch the original path for testing
@@ -1177,9 +1199,6 @@ function(aPath, aFragment) {
                 break;
 
             case 'tibet':
-                joinChar = '.';
-                break;
-
             case 'json':
                 if (expr.charAt(0) === '[') {
                     joinChar = '';
@@ -1338,16 +1357,33 @@ function(firstPath, secondPath) {
     }
 
     //  while we're being told to 'back up' the path, do so
-    while (second.indexOf('../') === 0) {
-        second = second.slice(3, second.getSize());
+    while (second.indexOf('..') === 0) {
+        if (second.charAt(2) === '/') {
+            second = second.slice(3, second.getSize());
+        } else {
+            second = second.slice(2, second.getSize());
+        }
         first = first.slice(0, first.lastIndexOf('/'));
     }
 
-    //  join what's left, watching out for existing separators.
-    if (second.charAt(0) !== '/' && second.charAt(0) !== '#') {
-        val = first + '/' + second;
+    //  join the resulting chunks while paying attention to separator(s).
+    if (first.charAt(first.length - 1) === '/') {
+        if (second.charAt(0) === '/') {
+            val = first + second.slice(1);
+        } else if (second.charAt(0) === '#') {
+            val = first.slice(-1) + second;
+        } else {
+            val = first + second;
+        }
     } else {
-        val = first + second;
+        //  First does not end in '/'...
+        if (second.charAt(0) === '/') {
+            val = first + second;
+        } else if (second.charAt(0) === '#') {
+            val = first + second;
+        } else {
+            val = first + '/' + second;
+        }
     }
 
     return val;
@@ -1972,16 +2008,13 @@ function(aPath, resourceOnly) {
         variable = arr.at(1);
 
         if (TP.isString(value = TP.sys.cfg('path.' + variable))) {
-            //  one issue here is that we may have a variable value that
-            //  starts with or ends with a '/' since they're parts of paths,
-            //  but we don't want to alter that aspect of the current path
-            //  so we want to trim them off if found
-            if (value.indexOf('/') === 0) {
-                value = value.slice(1);
-            }
-
-            if (value.last() === '/') {
-                value = value.slice(0, -1);
+            //  If we're replacing something of the form ~variable/stuff we
+            //  don't want to get something of the form value//stuff back so
+            //  we trim off any trailing '/' on the value.
+            if (path !== '~' + variable) {
+                if (value.charAt(value.length - 1) === '/') {
+                    value = value.slice(0, -1);
+                }
             }
 
             path = aPath.replace('~' + variable, value);
@@ -1991,6 +2024,15 @@ function(aPath, resourceOnly) {
             }
         } else if (TP.isType(type = TP.sys.getTypeByName(variable))) {
             value = TP.objectGetSourceCollectionPath(type);
+
+            //  If we're replacing something of the form ~variable/stuff we
+            //  don't want to get something of the form value//stuff back so
+            //  we trim off any trailing '/' on the value.
+            if (path !== '~' + variable) {
+                if (value.charAt(value.length - 1) === '/') {
+                    value = value.slice(0, -1);
+                }
+            }
 
             path = aPath.replace('~' + variable, value);
             if (path !== aPath) {
@@ -2197,6 +2239,93 @@ function(aURI) {
     }
 
     return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('uriSplitFragment',
+function(aFragment, aScheme) {
+
+    /**
+     * @method uriSplitFragment
+     * @summary Splits the supplied fragment into parts, according to the
+     *     XPointer scheme of the fragment, if present, or a supplied XPointer
+     *     scheme. See the TP.getAccessPathParts() method for more information
+     *     on what may be returned from this method.
+     * @param {String} aFragment The pointer fragment. Note that this may
+     *     contain an XPointer and, if the path contains one as well and they
+     *     don't match, the path will be returned unchanged.
+     * @param {String} [aScheme] An optional XPointer scheme to use when it
+     *     cannot be determined from the supplied fragment.
+     * @returns {Array} The fragment split into its constituent parts.
+     */
+
+    var pathFragment,
+
+        fragmentScheme,
+        fragmentExpr,
+
+        results;
+
+    if (TP.isEmpty(aFragment)) {
+        return TP.ac(aFragment);
+    }
+
+    //  If the fragment is '.', that a self-reference. Just return it.
+    if (aFragment === '.') {
+        return TP.ac(aFragment);
+    }
+
+    pathFragment = aFragment;
+
+    //  See if the path fragment contains an XPointer. If so, grab it's
+    //  scheme and expression.
+    if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(pathFragment))) {
+        fragmentScheme = results.at(1);
+        fragmentExpr = results.at(2);
+    } else {
+        //  If we were supplied a scheme, try to use it with the path
+        if (TP.notEmpty(aScheme)) {
+            if (TP.notEmpty(results = TP.regex.ANY_POINTER.match(
+                                        aScheme + '(' + pathFragment + ')'))) {
+                fragmentScheme = results.at(1);
+                fragmentExpr = results.at(2);
+            }
+        }
+    }
+
+    //  Couldn't compute result
+    if (TP.isEmpty(results)) {
+        //  We do not process barename XPointers any further - just return the
+        //  barename.
+        if (TP.regex.BARENAME.test('#' + pathFragment)) {
+            return TP.ac(pathFragment);
+        }
+    }
+
+    //  No fragment expression? There is no fragment.
+    if (TP.isEmpty(fragmentExpr)) {
+        return null;
+    }
+
+    //  Couldn't slice out a scheme? Try the supplied one.
+    if (TP.isEmpty(fragmentScheme)) {
+        fragmentScheme = aScheme;
+    }
+
+    //  Probably a barename
+    if (TP.isEmpty(fragmentScheme)) {
+        if (TP.regex.BARENAME.test('#' + fragmentExpr)) {
+            return TP.ac(fragmentExpr);
+        }
+    }
+
+    //  Go ahead and grab the path parts.
+    if (TP.notEmpty(fragmentExpr)) {
+        return TP.getAccessPathParts(fragmentExpr, fragmentScheme);
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------

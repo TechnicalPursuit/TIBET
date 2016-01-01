@@ -1,5 +1,5 @@
 {
-    "//" : "TIBET project file. Set configuration parameters here.",
+    "//": "TIBET project file. Set configuration parameters here.",
     "boot": {
         "package": "~lib_cfg/TIBET.xml"
     },
@@ -10,5 +10,10 @@
     },
     "tds": {
         "port": 1111
+    },
+    "cli": {
+        "help": {
+            "viewer": "man"
+        }
     }
 }

@@ -78,9 +78,14 @@ function() {
         loadRequest.atPut(
             TP.ONLOAD,
             function(evt) {
-                //  Once the home page loads we need to signal the UI is
-                //  "ready" so the remaining startup logic can proceed.
+                //  Signal we are starting. This provides a hook for extensions
+                //  etc. to tap into the startup sequence before routing or
+                //  other behaviors but after we're sure the UI is finalized.
                 TP.signal('TP.sys', 'AppWillStart');
+
+                //  Signal actual start. The default handler on Application will
+                //  invoke the start() method in response to this signal.
+                TP.signal('TP.sys', 'AppStart');
             });
 
         //  We *MUST* use this technique to load up the iframes - just setting

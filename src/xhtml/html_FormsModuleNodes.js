@@ -1443,27 +1443,6 @@ function(aNodeOrId) {
 
 //  ------------------------------------------------------------------------
 
-TP.html.input.Type.defineMethod('onchange',
-function(aTargetElem, anEvent) {
-
-    /**
-     * @method onchange
-     * @param {HTMLElement} aTargetElem The target element computed for this
-     *     signal.
-     * @param {Event} anEvent The native event that was triggered.
-     * @returns {TP.html.input} The receiver.
-     */
-
-    var tpElem;
-
-    tpElem = TP.wrap(aTargetElem);
-    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
-        tpElem.changed('value', TP.UPDATE);
-    }
-});
-
-//  ------------------------------------------------------------------------
-
 TP.html.input.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
@@ -1612,6 +1591,87 @@ TP.html.inputCheckable.Inst.resolveTraits(
 TP.html.inputCheckable.isAbstract(true);
 
 TP.html.inputCheckable.Type.set('bidiAttrs', TP.ac('checked'));
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Type.defineMethod('onclick',
+function(aTargetElem, anEvent) {
+
+    /**
+     * @method onclick
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @param {Event} anEvent The native event that was triggered.
+     * @returns {TP.html.inputCheckable} The receiver.
+     */
+
+    var tpElem,
+
+        valueTPElems,
+
+        len,
+        i,
+
+        item,
+        bindAttrNodes,
+
+        bindInfoTPElem;
+
+    tpElem = TP.wrap(aTargetElem);
+
+    //  If the element is bound, then update its bound value.
+    if (tpElem.isBoundElement()) {
+
+        //  Since a checkable can have 1...n 'value elements', any one of them
+        //  can have the binding information we need. Look for the first one
+        //  that does.
+
+        if (TP.notValid(valueTPElems = tpElem.getValueElements())) {
+            return this.raise('TP.sig.InvalidValueElements');
+        }
+
+        len = valueTPElems.getSize();
+        for (i = 0; i < len; i++) {
+
+            item = valueTPElems.at(i);
+
+            //  We look for either 'in', 'out', 'io' here to determine if the
+            //  receiver is bound.
+            bindAttrNodes = TP.elementGetAttributeNodesInNS(
+                                item.getNativeNode(),
+                                /.*:(in|out|io)/,
+                                TP.w3.Xmlns.BIND);
+
+            //  If we found binding attribute nodes, then this is the value
+            //  element we're looking for. Capture it and exit.
+            if (TP.notEmpty(bindAttrNodes)) {
+                bindInfoTPElem = item;
+                break;
+            }
+        }
+
+        if (TP.notValid(bindInfoTPElem)) {
+            return this.raise('TP.sig.InvalidBinding',
+                                'Couldn\'t find binding info for: ' +
+                                TP.str(tpElem));
+        }
+
+        //  Set our bound value, but using the binding information found on one
+        //  of our 'value elements' (which might be the targeted element, but
+        //  might not be).
+        tpElem.setBoundValue(tpElem.getDisplayValue(),
+                                bindInfoTPElem.getBindingScopeValues(),
+                                bindInfoTPElem.getAttribute('bind:io'));
+    }
+
+    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
+        tpElem.changed('value', TP.UPDATE);
+    }
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1848,6 +1908,76 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('isBoundElement',
+function() {
+
+    /**
+     * @method isBoundElement
+     * @summary Whether or not the receiver is a bound element.
+     * @returns {Boolean} Whether or not the receiver is bound.
+     */
+
+    var valueTPElems,
+
+        len,
+        i,
+
+        item,
+        bindAttrNodes;
+
+    //  Since a checkable can have 1...n 'value elements', any one of them can
+    //  have the binding information we're trying to detect.
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        //  We look for either 'in', 'out', 'io' here to determine if the
+        //  receiver is bound.
+        bindAttrNodes = TP.elementGetAttributeNodesInNS(
+                item.getNativeNode(), /.*:(in|out|io)/, TP.w3.Xmlns.BIND);
+
+        //  If we found binding attribute nodes, then the receiver, along with
+        //  whatever value elements its a member of, are bound. Return true.
+        if (TP.notEmpty(bindAttrNodes)) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.inputCheckable.Inst.defineMethod('setFacet',
+function(aspectName, facetName, facetValue, shouldSignal) {
+
+    /**
+     * @method setFacet
+     * @summary Sets the value of the named facet of the named aspect to the
+     *     value provided.
+     * @param {String} aspectName The name of the aspect to set.
+     * @param {String} facetName The name of the facet to set.
+     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {TP.html.inputCheckable} The receiver.
+     */
+
+    if (aspectName === 'checked') {
+        return this.setValue(facetValue, shouldSignal);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('$setVisualToggle',
 function(aToggleValue) {
 
@@ -1886,6 +2016,40 @@ TP.html.inputSelectable.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.backstop(TP.ac('select'), TP.html.inputSelectable.getInstPrototype());
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.inputSelectable.Type.defineMethod('onchange',
+function(aTargetElem, anEvent) {
+
+    /**
+     * @method onchange
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @param {Event} anEvent The native event that was triggered.
+     * @returns {TP.html.inputSelectable} The receiver.
+     */
+
+    var tpElem;
+
+    tpElem = TP.wrap(aTargetElem);
+
+    //  If the element is bound, then update its bound value.
+    if (tpElem.isBoundElement()) {
+
+        tpElem.setBoundValue(tpElem.getDisplayValue(),
+                                tpElem.getBindingScopeValues(),
+                                tpElem.getAttribute('bind:io'));
+    }
+
+    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
+        tpElem.changed('value', TP.UPDATE);
+    }
+
+    return this;
+});
 
 //  ========================================================================
 //  TP.html.inputButton
@@ -2562,6 +2726,37 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.select.Type.defineMethod('onchange',
+function(aTargetElem, anEvent) {
+
+    /**
+     * @method onchange
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @param {Event} anEvent The native event that was triggered.
+     * @returns {TP.html.select} The receiver.
+     */
+
+    var tpElem;
+
+    tpElem = TP.wrap(aTargetElem);
+
+    //  If the element is bound, then update its bound value.
+    if (tpElem.isBoundElement()) {
+        tpElem.setBoundValue(tpElem.getDisplayValue(),
+                                tpElem.getBindingScopeValues(),
+                                tpElem.getAttribute('bind:io'));
+    }
+
+    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
+        tpElem.changed('value', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.select.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
@@ -2618,27 +2813,6 @@ function() {
     this.getNativeNode().selectedIndex = -1;
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.html.select.Type.defineMethod('onchange',
-function(aTargetElem, anEvent) {
-
-    /**
-     * @method onchange
-     * @param {HTMLElement} aTargetElem The target element computed for this
-     *     signal.
-     * @param {Event} anEvent The native event that was triggered.
-     * @returns {TP.html.select} The receiver.
-     */
-
-    var tpElem;
-
-    tpElem = TP.wrap(aTargetElem);
-    if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
-        tpElem.changed('value', TP.UPDATE);
-    }
 });
 
 //  ------------------------------------------------------------------------
@@ -2993,19 +3167,7 @@ TP.html.textarea.Type.set('booleanAttrs',
 TP.backstop(TP.ac('select'), TP.html.textarea.getInstPrototype());
 
 //  ------------------------------------------------------------------------
-
-TP.html.textarea.Inst.defineMethod('getDisplayValue',
-function() {
-
-    /**
-     * @method getDisplayValue
-     * @summary Returns the value of the receiver.
-     * @returns {String} The receiver's formatted input value.
-     */
-
-    return this.getNativeNode().value;
-});
-
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.html.textarea.Type.defineMethod('onchange',
@@ -3022,9 +3184,35 @@ function(aTargetElem, anEvent) {
     var tpElem;
 
     tpElem = TP.wrap(aTargetElem);
+
+    //  If the element is bound, then update its bound value.
+    if (tpElem.isBoundElement()) {
+        tpElem.setBoundValue(tpElem.getDisplayValue(),
+                                tpElem.getBindingScopeValues(),
+                                tpElem.getAttribute('bind:io'));
+    }
+
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.textarea.Inst.defineMethod('getDisplayValue',
+function() {
+
+    /**
+     * @method getDisplayValue
+     * @summary Returns the value of the receiver.
+     * @returns {String} The receiver's formatted input value.
+     */
+
+    return this.getNativeNode().value;
 });
 
 //  ------------------------------------------------------------------------

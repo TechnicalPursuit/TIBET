@@ -1,0 +1,35 @@
+.TH "TIBET\-ECHO" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-echo\fR \- echo command line arguments to stdout
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet echo [<args>]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+This command can be used as a template for your own custom commands or
+.br
+to help view how arguments are being parsed\.
+.SH EXAMPLES
+.P
+.RS 2
+.nf
+$ tibet echo 'I am a string' \-\-param=foo
+
+Options:
+{
+    "_": ["echo", "I am a string"],
+    "color": true,
+    "help": false,
+    "usage": false,
+    "debug": false,
+    "stack": false,
+    "verbose": false,
+    "param": "foo"
+}
+.fi
+.RE
+

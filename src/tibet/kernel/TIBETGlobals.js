@@ -81,10 +81,10 @@ TP.TYPE_LOCAL_TRACK = 'TypeLocal';
 
 //  load metadata constants
 
-TP.LOAD_PATH = '$loadPath';
-TP.SOURCE_PATH = '$srcPath';
-TP.LOAD_PACKAGE = '$loadPackage';
-TP.LOAD_CONFIG = '$loadConfig';
+TP.LOAD_PATH = '$$loadPath';
+TP.SOURCE_PATH = '$$srcPath';
+TP.LOAD_PACKAGE = '$$loadPackage';
+TP.LOAD_CONFIG = '$$loadConfig';
 
 TP.LOAD_PACKAGE_ATTR = 'load_package';
 TP.LOAD_CONFIG_ATTR = 'load_config';
@@ -766,6 +766,7 @@ TP.IS_XML = 'tp_isXML';
 TP.SRC_LOCATION = 'tp_sourcelocation';
 TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
+TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
 
 //  meta owners and their target objects
 
@@ -1078,6 +1079,11 @@ TP.INHERITANCE_FIRING = 'INHERITANCE_FIRING';
 TP.AT_TARGET = 'Targeting';
 TP.CAPTURING = 'Capturing';
 TP.BUBBLING = 'Bubbling';
+
+//  Signal batching
+TP.START_SIGNAL_BATCH = 'startbatch';
+TP.SIGNAL_BATCH = 'batch';
+TP.END_SIGNAL_BATCH = 'endbatch';
 
 //  ---
 //  requests
@@ -1792,23 +1798,16 @@ TP.RETURN_TOSTRING = function() { return this.toString(); };
 //  STRING LOCALIZATION / MAPPING
 //  ------------------------------------------------------------------------
 
-TP.defineNamespace('TP.msg');
+//  Define a placeholder for string constant lookup. The idea is that each
+//  TP.core.Locale can place sprintf-capable (or constant) strings here upon
+//  activation so code can simply refer to TP.msg.{{STRING_NAME}} in code.
+TP.msg = {};
 
-TP.msg.$lookups = Object.create(null);
+//  ------------------------------------------------------------------------
+//  DATASET LOOKUP
+//  ------------------------------------------------------------------------
 
-if (Object.defineProperty) {
-    Object.defineProperty(TP.msg, 'at', {
-        value: function(aKey) {return this.$lookups[aKey]; },
-        enumerable: true
-    });
-    Object.defineProperty(TP.msg, 'atPut', {
-        value: function(aKey, aValue) {this.$lookups[aKey] = aValue; },
-        enumerable: true
-    });
-} else {
-    TP.msg.at = function(aKey) {return this.$lookups[aKey]; };
-    TP.msg.atPut = function(aKey, aValue) {this.$lookups[aKey] = aValue; };
-}
+TP.defineNamespace('TP.dat');
 
 //  ------------------------------------------------------------------------
 //  SORT FUNCTIONS
@@ -2063,12 +2062,12 @@ TP.sort.TABINDEX_ORDER = function(a, b) {
     //  Neither 'a' or 'b' has a tabindex value. Leave the elements in
     //  document order.
     if (isNaN(aVal) && isNaN(bVal)) {
-        return 0;
+        return TP.sort.DOCUMENT_ORDER(a, b);
     } else if (isNaN(aVal) && !isNaN(bVal)) {
         //  'a' has no tabindex value and 'b's is either -1 or 0. Leave
         //  elements in document order.
         if (bVal <= 0) {
-            return 0;
+            return TP.sort.DOCUMENT_ORDER(a, b);
         }
 
         //  'b' has a real, positive integer tabindex - it should come
@@ -2078,7 +2077,7 @@ TP.sort.TABINDEX_ORDER = function(a, b) {
         //  'b' has no tabindex value and 'a's is either -1 or 0. Leave
         //  elements in document order.
         if (aVal <= 0) {
-            return 0;
+            return TP.sort.DOCUMENT_ORDER(a, b);
         }
 
         //  'a' has a real, positive integer tabindex - it should come
@@ -2087,7 +2086,7 @@ TP.sort.TABINDEX_ORDER = function(a, b) {
     } else if (aVal <= 0 && bVal <= 0) {
         //  Both 'a' and 'b' have a tabindex value that is either -1 or
         //  0. Leave elements in document order.
-        return 0;
+        return TP.sort.DOCUMENT_ORDER(a, b);
     } else if (aVal <= 0 && bVal > 0) {
         //  'a' has a tabindex value of either -1 or 0 and 'b' has a
         //  real, positive integer tabindex - it should come before 'a'
@@ -2521,7 +2520,9 @@ TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
                                             '(' + '[^;]+' + ');?',
                                         'g'); // needs reset
 
+TP.regex.BINDING_STATEMENT_DETECT = /\[\[(.+?)\]\]/;
 TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
+TP.regex.BINDING_ATTR_VALUE_DETECT = /\s*\{\s*\w+\s*:/;
 
 
 TP.regex.TSH_VARSUB = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/;
@@ -2542,6 +2543,7 @@ TP.regex.WHITESPACE = /\s+/;
 TP.regex.ONLY_WORD = /^\w+$/;
 TP.regex.ONLY_NUM = /^\d+$/;
 TP.regex.ONLY_PERIOD = /^\.$/;
+TP.regex.ONLY_DOLLAR = /^\$$/;
 
 TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 
@@ -2757,7 +2759,7 @@ TP.regex.MULTI_VALUED = / /;
 //  ---
 
 //  A RegExp that will escape Strings for use as RegExps :)
-TP.regex.REGEX_ESCAPE = /([-[\]{}()*+?.\\^$|,#\s]{1})/g;    //  needs reset
+TP.regex.REGEX_ESCAPE = /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;    //  needs reset
 TP.regex.REGEX_LITERAL_STRING = /^\/(.+)\/[gimy]*$/;
 
 //  ---
@@ -2878,13 +2880,16 @@ TP.regex.XMLNS_ATTR = /xmlns[:=]/;
 //  ---
 
 TP.TIBET_PATH_TYPE = 0;
-TP.CSS_PATH_TYPE = 1;
-TP.XPATH_PATH_TYPE = 2;
-TP.XPOINTER_PATH_TYPE = 3;
-TP.XTENSION_POINTER_PATH_TYPE = 4;
-TP.BARENAME_PATH_TYPE = 5;
+TP.JSON_PATH_TYPE = 1;
+TP.CSS_PATH_TYPE = 2;
+TP.XPATH_PATH_TYPE = 3;
+TP.BARENAME_PATH_TYPE = 4;
+TP.XPOINTER_PATH_TYPE = 5;
+TP.ELEMENT_PATH_TYPE = 6;
+TP.XTENSION_POINTER_PATH_TYPE = 7;
 
 TP.CHANGE_PATHS = 'paths';
+TP.CHANGE_URIS = 'uris';
 
 //  ---
 //  path detection and values
@@ -2920,11 +2925,15 @@ TP.regex.JSON_PATH = /^\$\.+/;
 
 TP.regex.TIBET_POINTER = /tibet\((.*)\)/;
 
-//  Forms of TIBETan access paths can include words separated by periods ('.'),
-//  brackets ('[]') with either string or numeric indexes and brackets with
-//  numeric ranges (or just a colon ':' signifying the whole range).
+//  Forms of TIBETan access paths can either
+//      - be words separated by periods ('.'),
+//      - be brackets ('[]') with either string or numeric indexes
+//      - be brackets with numeric ranges (or just a colon ':' signifying the
+//          whole range).
+//      - be a period ('.') or a word character followed by brackets containing
+//          a number.
 TP.regex.TIBET_PATH =
-    /^(\$|_)?\w+[\.]{1}\w+|\[\w+(,\w+)+\]|\[-?\d*:-?\d*(:-?\d*)?\]/;
+    /^(\$|_)?\w+[\.]{1}\w+|([^\/])*\[\w+(,\w+)+\]([^\/])*|([^\/])*\[-?\d*:-?\d*(:-?\d*)?\]([^\/])*|(^|\.|\w)\[-?\d+\]/;
 
 TP.regex.TIBET_PATH_CHAR = /[\.:,]+/;
 TP.regex.TIBET_PATH_TEMPLATE = /(^|\s+)(\w[\w\.:,]*)(\s+|$)/g; //  needs reset

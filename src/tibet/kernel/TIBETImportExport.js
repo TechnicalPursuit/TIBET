@@ -23,107 +23,6 @@ simply save it from the development environment and you're ready to go.
 */
 
 //  ------------------------------------------------------------------------
-//  XML CATALOG / STORED METADATA
-//  ------------------------------------------------------------------------
-
-/*
-Included in this section are a number of methods which work with the
-XMLCatalog standard from OASIS to assist with mapping URIs to various
-locations based on current user, runtime state, etc.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getURIXML',
-function(forceRefresh) {
-
-    /**
-     * @method getURIXML
-     * @summary Returns a DOM reference to the XML Catalog file used to store
-     *     URI mappings for the current application.
-     * @summary At runtime TIBET will use data in this file to assist with
-     *     URI lookup, caching, loading, and storage. This file is typically
-     *     named uris.xml but that name can be altered in the tibet.xml file
-     *     using the 'uris' boot parameter. You can also change it using the
-     *     parameter path.uri_file. Either approach should resolve to a URI
-     *     which can be passed to the TP.core.URI type for lookup. Note that
-     *     this file should be in the form required by the XML Catalog standard.
-     * @param {Boolean} forceRefresh True if the current cached copy should be
-     *     cleared and the data reloaded from its source file. Defaults to
-     *     false.
-     * @returns {Node} The XML content containing the URI map.
-     */
-
-    var node,
-        flag,
-        fname,
-        url;
-
-    if (TP.isTrue(forceRefresh)) {
-        TP.sys.$uriXML = null;
-    }
-
-    //  we cache the node for performance
-    if (TP.isNode(node = TP.sys.$uriXML)) {
-        return TP.isEmpty(node) ? null : node;
-    }
-
-    //  turn off notification for a moment
-    flag = TP.sys.shouldLogRaise();
-    TP.sys.shouldLogRaise(false);
-
-    try {
-        //  first choice is whatever the boot system parameter tells us
-        if (TP.notEmpty(fname = TP.sys.cfg('tibet.uris'))) {
-            try {
-                fname = TP.uriExpandPath(fname);
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since this gets loaded very early in the startup
-                    //  process. Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(),
-                                        TP.hc('resultType', TP.DOM));
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading the TIBET URIs.')) : 0;
-            }
-        }
-
-        if (TP.notValid(node)) {
-            try {
-                fname = TP.uriExpandPath(TP.sys.cfg('path.uri_file'));
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since this gets loaded very early in the startup
-                    //  process. Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(),
-                                        TP.hc('resultType', TP.DOM));
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading the TIBET URIs file.')) :
-                    0;
-            }
-
-            if (TP.notValid(node)) {
-                node = TP.documentFromString(
-                    '<xcat:catalog xmlns:xcat="' +
-                    'urn:oasis:names:tc:entity:xmlns:xml:catalog' +
-                    '"></xcat:catalog>');
-            }
-        }
-
-        TP.sys.$uriXML = node;
-    } finally {
-        //  restore notification state
-        TP.sys.shouldLogRaise(flag);
-    }
-
-    return node;
-});
-
-//  ------------------------------------------------------------------------
 //  AUTOLOADING METHODS
 //  ------------------------------------------------------------------------
 
@@ -166,56 +65,7 @@ function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
      *     during the import process.
      */
 
-    var sync,
-        reload,
-
-        file;
-
-    sync = TP.ifInvalid(loadSync, true);
-    reload = TP.ifInvalid(shouldReload, false);
-
-    //  only work on string type references
-    if (!TP.isString(aPackageName)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  process the URI reference into something explicit for the package
-    //  load primitive to use
-    if (TP.regex.VIRTUAL_URI_PREFIX.test(aPackageName)) {
-        //  if we have what looks like a TIBET URI then we resolve that out
-        //  to the true location here
-        file = TP.uriExpandPath(aPackageName);
-    } else if (!TP.regex.HAS_COLON.test(aPackageName)) {
-        //  if the package name includes a scheme separator we presume it's a
-        //  full path reference, otherwise we build it up ourselves...
-
-        //  look for the cfg path and build up package file name. note that
-        //  this leverages some knowledge that the path will result in a
-        //  TIBET uri instance...
-        file = TP.uriExpandPath('~lib_cfg/' + aPackageName + '.xml');
-    } else {
-        file = aPackageName;
-    }
-
-    if (!reload) {
-        if (TP.sys.hasPackage(file, aTarget)) {
-            TP.ifInfo() ?
-                TP.info('Skipping package: ' + aPackageName + ' target: ' +
-                        (TP.notValid(aTarget) ? 'default' : aTarget) +
-                        ' import. ' + 'Target \'' +
-                        aTarget + '\' already imported.') : 0;
-
-            return 0;
-        }
-    }
-
-    TP.ifInfo() ?
-        TP.info('Importing package: ' + aPackageName +
-                ' target: ' + (TP.notValid(aTarget) ? 'default' : aTarget) +
-                ' from file: ' + file) : 0;
-
-    //  NOTE the TP.boot reference here, which means boot code must exist
-    return TP.boot.$importPackage(file, aTarget, aBaseDir, sync);
+    TP.todo('Implement TP.sys.importPackage');
 });
 
 //  ------------------------------------------------------------------------
@@ -237,13 +87,7 @@ function(aNamespaceURI, aPackageName) {
      *     during the import process.
      */
 
-    var prefix,
-        package;
-
-    package = TP.ifEmpty(aPackageName, 'TNS');
-    prefix = TP.w3.Xmlns.get('info').at(aNamespaceURI).at('prefix');
-
-    return TP.sys.importPackage(package, prefix);
+    TP.todo('Implement TP.sys.importNamespace');
 });
 
 //  ------------------------------------------------------------------------

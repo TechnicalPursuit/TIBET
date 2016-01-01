@@ -44,50 +44,7 @@ TP.core.CustomTag.Inst.resolveTraits(
         TP.core.UIElementNode);
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-//  A dictionary of element IDs and their 'authored representations'.
-TP.core.CustomTag.Type.defineAttribute('$authoredReps');
-
-//  ------------------------------------------------------------------------
 //  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Type.defineMethod('registerAuthored',
-function(anElement) {
-
-    /**
-     * @method registerAuthored
-     * @summary Registers the authored version of the element under it's local
-     *     ID for use by the change notification system to process updates.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     * @returns {TP.core.CustomTag} The receiver.
-     */
-
-    var theID,
-        origDict;
-
-    if (!TP.isElement(anElement)) {
-        return this.raise('TP.sig.InvalidElement');
-    }
-
-    //  Grab the local ID, assigning it if necessary.
-    theID = TP.lid(anElement, true);
-
-    //  Allocate the dictionary of the 'authored representations' of elements
-    if (TP.isValid(origDict = this.get('$authoredReps'))) {
-        if (!origDict.hasKey(theID)) {
-            origDict.atPut(theID, TP.nodeCloneNode(anElement));
-        }
-    } else {
-        this.set('$authoredReps', TP.hc(theID, TP.nodeCloneNode(anElement)));
-    }
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.CustomTag.Type.defineHandler('ValueChange',
@@ -102,39 +59,9 @@ function(aSignal) {
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      */
 
-    var cssQuery,
-        instances,
-        authoredReps;
-
-    //  Compute the CSS query path, indicating that we want a path that will
-    //  find both 'deep elements' (i.e. elements even under other elements of
-    //  this same type) and compiled representations of this element.
-    cssQuery = this.getQueryPath(true, true);
-
-    //  Find any instances that are currently drawn on the UI canvas.
-    instances = TP.byCSSPath(cssQuery, TP.sys.uidoc(true));
-
-    //  Grab the 'authored representations' of the receiver - that is, the
-    //  representations as the author originally wrote them (or updated them -
-    //  but not any compiled or transformation representations of what they
-    //  became).
-    authoredReps = this.get('$authoredReps');
-
-    //  Iterate over the instances that were found.
-    instances.forEach(
-                function(aTPElem) {
-                    var authoredElem;
-
-                    //  Grab the authored representation of the element.
-                    authoredElem = authoredReps.at(aTPElem.getLocalID());
-
-                    //  Compile and awaken the content, supplying the authored
-                    //  element as the 'alternate element' to compile.
-                    aTPElem.compile(null, true, authoredElem);
-                    aTPElem.awaken();
-                });
-
-    return;
+    if (TP.canInvoke(this, 'refreshInstances')) {
+        this.refreshInstances();
+    }
 });
 
 //  ========================================================================
@@ -162,6 +89,7 @@ function(aRequest) {
      * @summary Convert instances of the tag into their HTML representation.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
+     * @returns {Element} The new element.
      */
 
     var elem,
@@ -171,20 +99,18 @@ function(aRequest) {
         return;
     }
 
-    //  Register the 'originally authored' representation of the Element.
-    this.registerAuthored(elem);
-
-    // NOTE that we produce output which prompts for overriding and providing a
-    // proper implementation here.
+    //  NOTE that we produce output which prompts for overriding and providing a
+    //  proper implementation here.
     newElem = TP.xhtmlnode(
-        '<a onclick="alert(\'Update tagCompile!\')" href="#" tibet:tag="' +
+        '<a onclick="alert(\'Update the ' + this.getID() +
+            '.Type tagCompile method.\')" href="#" tibet:tag="' +
             this.getCanonicalName() + '">' +
             '&lt;' + this.getCanonicalName() + '/&gt;' +
             '</a>');
 
-    TP.elementReplaceWith(elem, newElem);
-
-    return;
+    //  Note here how we return the *result* of this method due to node
+    //  importing, etc.
+    return TP.elementReplaceWith(elem, newElem);
 });
 
 //  ========================================================================
@@ -206,10 +132,6 @@ TP.core.TemplatedTag.addTraits(TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
-//  ------------------------------------------------------------------------
-
-//  A Boolean denoting whether or not we're registered for updates coming from
-//  our template URI.
 TP.core.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
 
 //  ------------------------------------------------------------------------
@@ -261,32 +183,6 @@ function(nodeSpec, varargs) {
     }
 
     return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TemplatedTag.Type.defineMethod('tagCompile',
-function(aRequest) {
-
-    /**
-     * @method tagCompile
-     * @summary Convert instances of the tag into a format suitable for
-     *     inclusion in a markup DOM.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    //  Register the 'originally authored' representation of the Element.
-    this.registerAuthored(elem);
-
-    //  Call up to continue processing.
-    return this.callNextMethod();
 });
 
 //  ========================================================================
@@ -345,7 +241,7 @@ function(aRequest) {
      *     environment is set to 'development' or not.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input for the shell.
-     * @returns {null}
+     * @returns {Element} The new element.
      */
 
     var elem,
@@ -394,9 +290,9 @@ function(aRequest) {
         '</p>' +
     '</div>');
 
-    TP.elementReplaceWith(elem, newElem);
-
-    return;
+    //  Note here how we return the *result* of this method due to node
+    //  importing, etc.
+    return TP.elementReplaceWith(elem, newElem);
 });
 
 //  ========================================================================
@@ -532,9 +428,16 @@ function(aRequest) {
     request = TP.request();
     request.atPut(TP.ONLOAD,
                 function(aDocument) {
-                    //  Once the home page loads we need to signal the UI is
-                    //  "ready" so the remaining startup logic can proceed.
+                    //  Signal we are starting. This provides a hook for
+                    //  extensions etc. to tap into the startup sequence before
+                    //  routing or other behaviors but after we're sure the UI
+                    //  is finalized.
                     TP.signal('TP.sys', 'AppWillStart');
+
+                    //  Signal actual start. The default handler on Application
+                    //  will invoke the start() method in response to this
+                    //  signal.
+                    TP.signal('TP.sys', 'AppStart');
                 });
 
     //  NOTE that on older versions of Safari this could trigger crashes due to
@@ -569,14 +472,14 @@ function(aRequest) {
     var elem,
         newElem;
 
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
     //  If the Sherpa is configured to be on (and we've actually loaded the
     //  Sherpa code), then turn the receiver into a 'tibet:sherpa' tag.
     if (TP.sys.hasFeature('sherpa')) {
-
-        //  Make sure that we have an element to work from.
-        if (!TP.isElement(elem = aRequest.at('node'))) {
-            return;
-        }
 
         newElem = TP.elementBecome(elem, 'tibet:sherpa');
 
@@ -587,7 +490,7 @@ function(aRequest) {
         return newElem;
     }
 
-    return;
+    return elem;
 });
 
 //  ------------------------------------------------------------------------

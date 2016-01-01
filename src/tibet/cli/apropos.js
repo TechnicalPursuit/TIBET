@@ -58,43 +58,6 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 //  ---
 
 /**
- * The command help string.
- * @type {String}
- */
-Cmd.prototype.HELP =
-'Runs the TSH :apropos command to find methods related to one or more topics.\n\n' +
-
-'By default this command searches method names for matches to search terms.\n' +
-'The terms provided can be simple strings or the foundation for a RegExp. If\n' +
-'a method name matches a term it is always included in the output regardless\n' +
-'of any other flag settings.\n\n' +
-
-'Use the --comments to search comment text in addition to the method name.\n\n' +
-
-'When searching comment text the --limit flag can be used to set a minimum\n' +
-'match count for success. Items which don\'t match the search term at least\n' +
-'--limit number of times will be discarded.\n\n' +
-
-'You can use a case-sensitive search by using --no-ignorecase. Searches are\n' +
-'normally case-insensitive to improve the chances you will find appropriate\n' +
-'suggestions in the result list.\n\n' +
-
-'For example\n\n' +
-'tibet apropos clip --comments --limit 1\n' +
-'# Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT\n' +
-'# TIBET loaded in 3516 ms. Starting execution.\n' +
-'# - by name\n' +
-'#\n' +
-'# TP_Primitive_elementSetClipRect (8)\n' +
-'# TP_Primitive_elementGetClipRect (7)\n' +
-'#\n' +
-'# - by comment\n' +
-'#\n' +
-'# TP.core.MultiTransition_Inst_step (1)\n' +
-'# TP.xctrls.clipbox_Inst_setDisplayValue (1)\n' +
-'# TP_Primitive_elementWrapToContent (1)\n';
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */
@@ -118,7 +81,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet apropos [terms] [--limit=N] [--comments] [--no-ignorecase]';
+    'tibet apropos <terms> [--comments] [--limit=N] [--no-ignorecase]';
 
 //  ---
 //  Instance Methods
@@ -147,7 +110,7 @@ Cmd.prototype.getScript = function() {
         script;
 
     //  The options._ object holds non-qualified parameters. [0] is the
-    //  command name (tsh in this case). The rest will be the terms.
+    //  command name. The rest will be the terms.
     terms = this.options._.slice(1);
     if (CLI.isEmpty(terms)) {
         return;

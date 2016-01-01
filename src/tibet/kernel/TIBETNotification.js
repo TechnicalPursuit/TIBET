@@ -7710,8 +7710,6 @@ function(aMutationRecord) {
 
         args,
 
-        stopAncestor,
-
         addedNodes,
         removedNodes,
 
@@ -7770,22 +7768,39 @@ function(aMutationRecord) {
 
         case 'childList':
 
-            stopAncestor = TP.nodeDetectAncestor(
-                    targetNode,
-                    function(anAncestor) {
-                        return TP.elementHasAttribute(
-                                    anAncestor,
-                                    'tibet:nomutationtracking',
-                                    true);
-                    });
-
-            if (TP.isElement(stopAncestor)) {
-                break;
-            }
-
             if (!TP.isEmpty(aMutationRecord.addedNodes) &&
-                    !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
+                !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
                 addedNodes = TP.ac(addedNodes);
+
+                //  Need to check the nodes individually for mutation tracking
+                //  stoppage.
+                addedNodes = addedNodes.filter(
+                        function(aNode) {
+                            var stopAncestor;
+
+                            if (TP.isElement(aNode) &&
+                                TP.elementHasAttribute(
+                                        aNode,
+                                        'tibet:nomutationtracking',
+                                        true)) {
+                                return false;
+                            }
+
+                            stopAncestor = TP.nodeDetectAncestor(
+                                aNode,
+                                function(anAncestor) {
+                                    return TP.elementHasAttribute(
+                                            anAncestor,
+                                            'tibet:nomutationtracking',
+                                            true);
+                                });
+
+                            if (TP.isElement(stopAncestor)) {
+                                return false;
+                            }
+
+                            return true;
+                        });
             }
 
             if (TP.notEmpty(addedNodes)) {
@@ -7797,8 +7812,38 @@ function(aMutationRecord) {
             }
 
             if (!TP.isEmpty(aMutationRecord.removedNodes) &&
-                    !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
+                !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
                 removedNodes = TP.ac(removedNodes);
+
+                //  Need to check the nodes individually for mutation tracking
+                //  stoppage.
+                removedNodes = removedNodes.filter(
+                        function(aNode) {
+                            var stopAncestor;
+
+                            if (TP.isElement(aNode) &&
+                                TP.elementHasAttribute(
+                                        aNode,
+                                        'tibet:nomutationtracking',
+                                        true)) {
+                                return false;
+                            }
+
+                            stopAncestor = TP.nodeDetectAncestor(
+                                aNode,
+                                function(anAncestor) {
+                                    return TP.elementHasAttribute(
+                                            anAncestor,
+                                            'tibet:nomutationtracking',
+                                            true);
+                                });
+
+                            if (TP.isElement(stopAncestor)) {
+                                return false;
+                            }
+
+                            return true;
+                        });
             }
 
             if (TP.notEmpty(removedNodes)) {
@@ -8118,7 +8163,6 @@ function() {
     /**
      * @method closeConnection
      * @summary Closes the connection to the remote server-sent events server.
-     * @exception TP.sig.InvalidSource
      * @returns {Boolean} Whether or not the connection closed successfully.
      */
 
@@ -8126,8 +8170,8 @@ function() {
 
     //  Try to obtain the event source object.
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource');
-
+        //  NOTE we don't raise here since this is often called during shutdown
+        //  and we don't want to report on errors we can't do anything about.
         return false;
     }
 
@@ -8390,7 +8434,8 @@ function() {
      * @returns {TP.core.SSESignalSource} The receiver.
      */
 
-    var eventSource;
+    var eventSource,
+        errorCount;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
         this.raise('TP.sig.InvalidSource');
@@ -8438,11 +8483,22 @@ function() {
         }.bind(this),
         false);
 
+    errorCount = 0;
+
     //  Set up the event listener that will trigger when there is an error.
     eventSource.addEventListener(
         'error',
         function(evt) {
             var payload;
+
+            //  Too many errors.
+            if (errorCount > TP.sys.cfg('sse.max_errors')) {
+                this.raise('TP.sig.UnstableConnection');
+                this.closeConnection();
+                return;
+            }
+
+            errorCount++;
 
             //  If the readyState is set to EventSource.CLOSED, then the browser
             //  is 'failing the connection'. In this case, we signal a
@@ -8495,7 +8551,6 @@ function(signalTypes) {
      *     private EventSource objec
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
-     * @exception TP.sig.InvalidSource
      * @returns {TP.core.SSESignalSource} The receiver.
      */
 
@@ -8503,8 +8558,8 @@ function(signalTypes) {
         handlerRegistry;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
-        this.raise('TP.sig.InvalidSource');
-
+        //  NOTE we don't raise here since this is often called during shutdown
+        //  and we don't want to report on errors we can't do anything about.
         return this;
     }
 

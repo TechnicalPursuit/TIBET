@@ -56,71 +56,6 @@ Cmd.prototype.TEMPLATED_TAG_ROOT = '../templates/templatedtag/';
 Cmd.prototype.COMPILED_TAG_ROOT = '../templates/compiledtag/';
 
 
-/**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Creates a new TIBET tag using the supplied tag name and parameters.\n\n' +
-
-'Tag names can supply one, two or three \'parts\', separated by \'.\' or\n' +
-'\':\'. If three parts are supplied, they are used as the root namespace,\n' +
-'the tag type namespace and the tag name, respectively. If two parts are\n' +
-'supplied, they are used for the tag type namespace and the tag name and\n' +
-'the root namespace is defaulted to either \'APP\' or \'TP\', depending\n' +
-'on whether this command is being executed in an application project or\n' +
-'the TIBET library. If one part is supplied, and this command is being\n' +
-'executed in an application project, the tag type namespace is defaulted\n' +
-'to the application project name and the root namespace is defaulted as\n' +
-'it is when two parts are supplied. It is not a valid operation to execute\n' +
-'this command with one part when executed inside of the TIBET library.\n\n' +
-
-'The --package optional parameter is used to determine the cfg package\n' +
-'file that will be updated with entries to load the new tag type and\n' +
-'configure it. If this parameter is not supplied, the default for a tag\n' +
-'being created in a project is \'~app_cfg/app.xml\' and for a tag being\n' +
-'created in the TIBET library is \'lib_cfg/lib_namespaces.xml\'.\n\n' +
-
-'The --config optional parameter is used as the name of the \'config\'\n' +
-'package in the cfg package file that the new tag will be made a part of.\n' +
-'If this parameter is not supplied, the default for a tag being created\n' +
-'in a project is \'app_img\' and for a tag being created in the TIBET\n' +
-'library is the same as the tag namespace name.\n\n' +
-
-'The --dir optional parameter is used as the destination directory for\n' +
-'the newly created source code files representing the tag. If this\n' +
-'parameter is not supplied, the default for a tag being created in a\n' +
-'project is \'~app_src/tags\' and for a tag being created in the TIBET\n' +
-'library is \'~lib_src/{{tag_nsname}}\'.\n\n' +
-
-'The --compiled optional flag is used to determine whether to create a\n' +
-'\'templated\' tag or a \'compiled\' tag. A templated tag uses an\n' +
-'external template (by default an .xhtml file) to render itself into\n' +
-'an application, whereas a compiled tag overrides the \'tagCompile\'\n' +
-'and manually manipulates the browser\'s DOM. The default for this\n' +
-'flag is false.\n\n' +
-
-'The --template optional parameter is used to configure the system\'s\n' +
-'\'cfg\' parameter that points to this tag type\'s template. If this\n' +
-'parameter is not supplied, this defaults to null as, if the tag is\n' +
-'a templated (i.e. not compiled) one, the system will automatically\n' +
-'associated a same named .xhtml file with the tag\'s template (this\n' +
-'parameter is not used for compiled tags at all). It will assume that\n' +
-'this file is in the same directory as the tag\'s source .js file.\n' +
-'Supply a value here if the template file you wish to use for the\n' +
-'tag is in a different directory, is of a different name or is of a\n' +
-'different type (i.e. a .svg file). This is highly recommended to\n' +
-'use a virtual URI here (i.e. a URI with a leading \'~\').\n\n' +
-
-'The --style optional parameter is used to configure the system\'s\n' +
-'\'cfg\' parameter that points to this tag type\'s style file. If this\n' +
-'parameter is not supplied, this defaults to "NO_RESULT as, by default\n' +
-'tags do not have associated style (i.e. they are style-less by default)\n' +
-'Supply a value here if the tag you are defining has CSS or LESS style\n' +
-'associated with it. This is highly recommended to use a virtual URI\n' +
-' here (i.e. a URI with a leading \'~\').\n\n';
-
-
 /*
  * The defaults for various parameters are as follows
  *
@@ -130,12 +65,12 @@ Cmd.prototype.HELP =
  * nsname           appname                 cannot default
  * tagname          cannot default          cannot default
  *
- * package          '~app_cfg/app.xml'      '~lib_cfg/lib_namespaces.xml'
+ * package          '~app_cfg/{{appname}}.xml'   '~lib_cfg/lib_namespaces.xml'
  * config           'app_img'               '<nsname>'
  * dir              '~app_src/tags'        '~lib_src/<nsname>'
  * compiled         false                   false
  * template         ''                      ''
- * style            'NO_RESULT'             'NO_RESULT'
+ * style            '~app_src/tags/.'      '~lib/styles'
 */
 
 /**
@@ -150,8 +85,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'string': ['package', 'config', 'dir', 'template', 'style'],
         'default': {
             compiled: false,
-            template: '',
-            style: 'NO_RESULT'
+            template: ''
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -163,7 +97,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet tag [[<root>.]<namespace>:]<tagname> [--package <pkgname>] [--config <cfgname>] [--dir <dirname>] [--compiled] [--template <uri>] [--style <uri>]';
+    'tibet tag [[<root>.]<namespace>:]<tagname> [--package <pkgname>] [--config <cfgname>] [--dir <dirname>] [--compiled] [--template <uri>] [--style <uri>|NO_RESULT]';
 
 
 //  ---
@@ -235,7 +169,7 @@ Cmd.prototype.configureOptions = function() {
 
     if (!(opts.pkgname = this.options.package)) {
         opts.pkgname = inProj ?
-                        '~app_cfg/app.xml' :
+                        '~app_cfg/' + CLI.getcfg('npm.name') + '.xml' :
                         '~lib_cfg/lib_namespaces.xml';
     } else {
         delete opts.package;
@@ -544,10 +478,7 @@ Cmd.prototype.execute = function() {
     cmd = this;
 
     if (CLI.inProject()) {
-        //  Compute the appname first - it is used when configuring our opts, etc.
-        appname = CLI.expandPath('~app');
-        appname = appname.slice(appname.lastIndexOf('/') + 1);
-        //console.log('appname: ' + appname);
+        appname = CLI.cfg('npm.name');
     } else {
         //  outside of a project, appname means nothing.
         appname = null;
@@ -598,7 +529,7 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    //  NOTE: a trailing slash says to copy source content, not source directory.
+    //  NOTE: trailing slash says to copy source content, not source directory.
     sh.cp('-r', src + '/', target);
     err = sh.error();
     if (err) {
@@ -625,6 +556,12 @@ Cmd.prototype.execute = function() {
         if (/__nsroot__/.test(file)) {
 
             cmd.verbose('Processing file: ' + file);
+            if (opts.style && path.extname(file) === '.css') {
+                cmd.verbose('Removing unused style: ' + file);
+                sh.rm('-f', file);
+                return;
+            }
+
             try {
                 data = fs.readFileSync(file, {encoding: 'utf8'});
                 if (!data) {

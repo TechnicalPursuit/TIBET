@@ -412,6 +412,10 @@ function(anID) {
 //  strictly required except for signal-based invocation
 TP.core.Resource.Inst.defineAttribute('registered', false);
 
+//  Current access keys, which are essentially cached from the current vCard
+//  and updated if the vCard data for the resource is altered.
+TP.core.Resource.Inst.defineAttribute('accessKeys');
+
 //  the current vCard associated with this resource, and indirectly the
 //  resulting role and unit types
 TP.core.Resource.Inst.defineAttribute('vCard');
@@ -486,11 +490,18 @@ function() {
     var keys,
         vcard;
 
+    keys = this.$get('accessKeys');
+    if (TP.isValid(keys)) {
+        return keys;
+    }
+
     if (TP.isValid(vcard = this.getVCard())) {
         keys = vcard.getAccessKeys();
     } else {
         keys = TP.ac();
     }
+
+    this.$set('accessKeys', keys);
 
     return keys;
 });
@@ -534,13 +545,13 @@ function() {
      *     in hierarchy order, so the first unit is actually the least specific
      *     one. For that reason we return the last unit in line as the primary
      *     (most-specific) unit.
-     * @returns {TP.core.Role} A subtype of TP.core.Role.
+     * @returns {TP.core.Unit} A subtype of TP.core.Unit.
      */
 
     var vcard;
 
     if (TP.isValid(vcard = this.getVCard())) {
-        return vcard.getRoles().last();
+        return vcard.getUnits().last();
     }
 
     return;
@@ -558,6 +569,46 @@ function() {
      */
 
     return this.getID();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Resource.Inst.defineMethod('getRoles',
+function() {
+
+    /**
+     * @method getRoles
+     * @summary Returns the list of roles in the receiver's vCard, if any.
+     * @returns {Array.<TP.core.Role>} An array of TP.core.Role instances.
+     */
+
+    var vcard;
+
+    if (TP.isValid(vcard = this.getVCard())) {
+        return vcard.getRoles();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Resource.Inst.defineMethod('getUnits',
+function() {
+
+    /**
+     * @method getUnits
+     * @summary Returns the list of units in the receiver's vCard, if any.
+     * @returns {Array.<TP.core.Unit>} An array of TP.core.Unit instances.
+     */
+
+    var vcard;
+
+    if (TP.isValid(vcard = this.getVCard())) {
+        return vcard.getUnits().last();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -959,6 +1010,10 @@ function(aVCard) {
      */
 
     this.$set('vCard', aVCard);
+
+    //  Clear the access key cache. It will be refreshed if the getAccessKeys
+    //  call is made again.
+    this.$set('accessKeys', null);
 
     //  altering the vCard may alter role and unit which affect uri filters
     TP.sys.setcfg('tibet.uriprofile', null);
@@ -3702,8 +3757,8 @@ function(keyRingName) {
 
     /**
      * @method addKeyRing
-     * @summary Adds a key ring to the receiver, granting it the permissions
-     *     defined by the keys contained in the key ring. Note that this
+     * @summary Adds a keyring to the receiver, granting it the permissions
+     *     defined by the keys contained in the keyring. Note that this
      *     operation is typically done via an initialize method which defines
      *     the permissions related to each group type.
      * @description When defining different permission group types one of the
@@ -3712,7 +3767,7 @@ function(keyRingName) {
      *     don't have to exist at the time of the assignment -- allowing
      *     definitions to be made with less overhead. The individual keyrings
      *     will be loaded the first time a request is made for the actual keys.
-     * @param {String} keyRingName The name of the key ring.
+     * @param {String} keyRingName The name of the keyring.
      * @returns {TP.core.Resource} The receiver.
      */
 
@@ -3722,7 +3777,7 @@ function(keyRingName) {
     ring = TP.tibet.keyring.getInstanceById(keyRingName);
     if (TP.notValid(ring)) {
         return this.raise('TP.sig.InvalidParameter',
-                            'Key ring: \'' + keyRingName + '\' not found.');
+            'Keyring: \'' + keyRingName + '\' not found.');
     }
 
     rings = this.$get('keyrings');
@@ -3777,6 +3832,21 @@ function() {
     return keys;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.PermissionGroup.Type.defineMethod('getKeyrings',
+function() {
+
+    /**
+     * @method getKeyrings
+     * @summary Returns the list of keyring instances associated with the
+     *     receiver.
+     * @return {Array.<TP.tibet.keyring>} The array of keyrings.
+     */
+
+    return this.$get('keyrings');
+});
+
 //  ========================================================================
 //  TP.core.Role
 //  ========================================================================
@@ -3808,8 +3878,7 @@ function() {
      * @summary Initializes the type, defining the baseline keyrings.
      */
 
-    //  Initialize a key ring for the current user.
-    this.addKeyRing(TP.sys.cfg('project.user_role'));
+    this.addKeyRing('Public');
 
     return;
 });
@@ -4113,11 +4182,14 @@ function() {
      * @returns {TP.core.User} The current real user instance.
      */
 
-    var realUser;
+    var realUser,
+        cookieUser;
 
     if (TP.notValid(realUser = this.$get('realUser'))) {
-        //  Construct the default user.
-        TP.core.User.construct(TP.sys.cfg('project.user_name'));
+
+        cookieUser = TP.core.Cookie.getCookie(TP.sys.cfg('user.cookie'));
+        TP.core.User.construct(
+            TP.ifEmpty(cookieUser, TP.sys.cfg('user.default_name')));
 
         realUser = this.$get('realUser');
     }
@@ -4224,17 +4296,18 @@ function(resourceID) {
 
     var vCard;
 
-    //  construct the instance from the root down
     this.callNextMethod();
-
-    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
-
-    if (TP.isValid(vCard)) {
-        this.setVCard(vCard);
-    }
 
     this.set('remoteSubscriptions', TP.hc());
     this.set('credentials', TP.hc());
+
+    //  We do this last so any changes that we may want to add which trigger
+    //  based on the current vCard will occur and override anything we defaulted
+    //  to in the prior portion of this method.
+    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
+    if (TP.isValid(vCard)) {
+        this.setVCard(vCard);
+    }
 
     return this;
 });
@@ -4886,7 +4959,8 @@ function(aRequest) {
         request.fail('Handler not callable');
     } else {
         //  TODO: Need to handle when a Promise might be returned here for true
-        //  asynchronicity.
+        //  asynchronicity. Also, can't this 'apply()' just be a regular
+        //  invocation?
         result = handler.apply(request, TP.ac(request));
         request.complete(result);
     }
@@ -6212,8 +6286,8 @@ function(aSignal) {
      * @method start
      * @summary Starts the application, performing any initialization necessary
      *     for startup.
-     * @param {TP.sig.AppWillStart} aSignal The "will start" signal that
-     *     triggered our startup sequence.
+     * @param {TP.sig.AppStart} aSignal The  start signal that triggered out
+     *     startup sequence.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -6232,11 +6306,6 @@ function(aSignal) {
                 rootWin.focus();
             }
         }
-
-        //  Signal that we are starting. This provides a hook point for
-        //  extensions etc. to tap into the startup sequence before routing or
-        //  other behaviors but after we're sure the UI has been finalized.
-        this.signal('TP.sig.AppStart');
 
         //  Note that we check and clear sessionStorage here to avoid having any
         //  values set by a bookmark or reload operation on a hooked file from
@@ -6270,6 +6339,12 @@ function(aSignal) {
             TP.sys.hasStarted(true);
         }
 
+        //  Activate any remote watch logic to enable live-sourcing if flagged.
+        if (TP.sys.cfg('boot.context') !== 'phantomjs' &&
+                !TP.sys.hasFeature('karma')) {
+            TP.core.RemoteURLWatchHandler.activateWatchers();
+        }
+
         //  Signal that everything is ready and that the application did start.
         this.signal('TP.sig.AppDidStart');
 
@@ -6282,14 +6357,14 @@ function(aSignal) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.core.Application.Inst.defineHandler('AppWillStart',
+TP.core.Application.Inst.defineHandler('AppStart',
 function(aSignal) {
 
     /**
-     * @method handleAppWillStart
+     * @method handleAppStart
      * @summary A handler that is called when the system has loaded everything
      *     and is ready to activate your TIBET application.
-     * @param {TP.sig.AppWillStart} aSignal The startup signal.
+     * @param {TP.sig.AppStart} aSignal The startup signal.
      * @returns {TP.core.Application} The receiver.
      */
 
@@ -8028,6 +8103,28 @@ function() {
      */
 
     return this.getApplication().getRouter();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('setRoute',
+function(aRoute) {
+
+    /**
+     * @method setRoute
+     * @summary Updates the fragment path portion which defines the current
+     *     route in TIBET terms. Any boot parameters on the existing URL are
+     *     preserved by this call.
+     * @discussion Routes in TIBET are signified by the "fragment path" portion
+     *     of the URI which we define as the section of the URI fragment prior
+     *     to any '?' which sets off the "fragment parameters" (aka boot
+     *     parameters). Changes to this section of the URI result in a Route
+     *     signal being fired so application logic can respond to route changes.
+     * @param {String} aRoute The route information.
+     * @returns {String} The current route.
+     */
+
+    return this.getRouter().setRoute(aRoute);
 });
 
 //  ------------------------------------------------------------------------

@@ -23,7 +23,7 @@ var CLI,
     TDS;
 
 //  Bring in the TDS code so we can reference command line options.
-TDS = require('../../../etc/tds/tds-middleware');
+TDS = require('../../../etc/tds/tds-base');
 
 CLI = require('./_cli');
 
@@ -51,29 +51,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 //  ---
 //  Instance Attributes
 //  ---
-
-/**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Starts the current TIBET project data server, if available.\n\n' +
-
-'Many TIBET dna templates provide a simple Node.js-based server. If\n' +
-'the current project contains either a server.js file or can invoke\n' +
-'\'npm start\' this command will try to start that server.\n\n' +
-
-'The optional --env parameter lets you specify an environment setting\n' +
-'such as `development` or `production`. The default is development.\n' +
-'The current setting is announced in the server startup banner\n\n' +
-
-'The --tds.port parameter lets you specify a port other than\n' +
-'the registered TIBET Data Server port (which is port 1407).\n\n' +
-
-'If your server includes TDS features you can optionally add\n' +
-'command-line parameters to provide the various modules of the TDS\n' +
-'with config data. All values for the tds are supported. See the\n' +
-'output of `tibet config tds` for a list of current options.\n\n';
 
 /**
  * Command argument parsing options.
@@ -125,11 +102,20 @@ Cmd.prototype.execute = function() {
     if (!sh.test('-f', 'server.js')) {
         // If there's no server.js assume a 'noserver' template or 'couchdb'
         // template of some sort and default to opening the index.html.
-        url = CLI.expandPath(CLI.getcfg('path.index_page'));
-        msg = 'No server.js. Opening ' + url;
-        cmd.system(msg);
 
-        server = child.spawn('open', [url]);
+        //  If we see electron.js and we can find an electron binary we can
+        //  spawn it and fire up the electron engine.
+        if (sh.test('-f', 'electron.js') && sh.which('electron')) {
+            msg = 'Found electron.js. Launching Electron.';
+            cmd.system(msg);
+            server = child.spawn('electron', ['./electron.js']);
+        } else {
+            url = CLI.expandPath(CLI.getcfg('path.start_page'));
+            msg = 'No server.js. Opening ' + url;
+            cmd.system(msg);
+
+            server = child.spawn('open', [url]);
+        }
     } else {
         //  Capture the command line arguments and place server.js on the front.
         //  This essentially becomes the command line for a new 'node' command.

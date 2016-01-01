@@ -144,7 +144,7 @@ CLI.NPM_FILE = 'package.json';
  * be kept in sync with the tibet_cfg value for boot.default_package.
  * @type {string}
  */
-CLI.PACKAGE_FILE = '~app_cfg/standard.xml';
+CLI.PACKAGE_FILE = '~app_cfg/app.xml';
 
 /**
  * Command argument parsing options for minimist. The defaults handle the common
@@ -920,6 +920,7 @@ CLI.handleError = function(e, phase, command) {
 CLI.run = function(config) {
 
     var command,        // the first non-option argument, the command name.
+        topic,          // when using help this is the original command name.
         cmdPath;        // the command path (for use with require())
 
     // Typically contains npm config data under a 'npm' key and a slot for TIBET
@@ -951,6 +952,15 @@ CLI.run = function(config) {
     if (command.charAt(0) === '_') {
         this.error('Cannot directly run private command: ' + command);
         process.exit(1);
+    }
+
+    //  ---
+    //  Help check
+    //  ---
+
+    if (this.options.help) {
+        this.runHelp(command);
+        return;
     }
 
     //  ---
@@ -997,6 +1007,11 @@ CLI.runCommand = function(command, cmdPath) {
     } catch (e) {
         this.handleError(e, 'instantiating', command);
     }
+
+    //  Reparse the options now that we've been able to merge in any
+    //  command-specific ones.
+    this.options = minimist(process.argv.slice(2),
+       cmd.PARSE_OPTIONS) || {_: []};
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
@@ -1077,6 +1092,15 @@ CLI.runFallback = function(command) {
 
 
 /**
+ * Executes the help command with the topic provided.
+ * @param {string} topic The help topic to display, if available.
+ */
+CLI.runHelp = function(topic) {
+    this.runCommand('help', path.join(__dirname, 'help.js'));
+};
+
+
+/**
  * Executes a command by delegating to 'grunt' and treating the command name as
  * a grunt task name.
  * @param {string} command The command to attempt to execute.
@@ -1095,7 +1119,7 @@ CLI.runViaGrunt = function(command) {
     //child = require('child_process').spawn('./node_modules/.bin/grunt',
     child = require('child_process').spawn('grunt',
         process.argv.slice(2),
-        {cwd: this.getAppRoot()}
+        {cwd: this.getAppHead()}
     );
 
     child.stdout.on('data', function(data) {
@@ -1142,7 +1166,7 @@ CLI.runViaGulp = function(command) {
 
     child = require('child_process').spawn('gulp',
         process.argv.slice(2),
-        {cwd: cmd.getAppRoot()}
+        {cwd: cmd.getAppHead()}
     );
 
     child.stdout.on('data', function(data) {

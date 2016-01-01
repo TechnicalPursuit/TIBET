@@ -1,0 +1,94 @@
+.TH "TIBET\-CACHE" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-cache\fR \- manages a project's HTML5 application manifest
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet cache [\-\-file <cachefile>] [\-\-enable|\-\-disable|\-\-status] [\-\-missing] [\-\-develop] [\-\-rebuild] [\-\-touch]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+TIBET projects include a manifest file named \fB{appname}\.appcache\fP which is
+.br
+managed by this command\. Specific comment blocks in TIBET versions of the
+.br
+manifest file help delimit the content of the file for easier processing\.
+.P
+Content checks are done against the files in \fB~app_build\fP and \fB~lib_build\fP\|\.
+.br
+If your application caches files outside of those directories you
+.br
+must add those entries manually\. \fIThis command never removes entries\fR so
+.br
+you can feel confident both editing the cache and using this command\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-file\fP :
+.br
+Provides a way to point to an application manifest other than
+.br
+\fB{appname}\.appcache\fP\|\. You will need this if you renamed the default app manifest
+.br
+file\.
+.IP \(bu 2
+\fB\-\-enable\fP :
+.br
+Update \fBindex\.html\fP to use the proper manifest value\. When active the html
+.br
+element will have a \fBmanifest\fP attribute, otherwise it will have a \fBno\-manifest\fP
+.br
+attribute (which effectively turns off caching)\.
+.IP \(bu 2
+\fB\-\-disable\fP :
+.br
+Update \fBindex\.html\fP to have a \fBno\-manifest\fP attribute\. This attribute name
+.br
+effectively will disable the cache\. \fINOTE that if the cache was ever activated
+.br
+you must clear your browser's cache content and any browser\-specific appcache
+.br
+(chrome://appcache\-internals/) to fully disable\.\fR
+.IP \(bu 2
+\fB\-\-develop\fP :
+.br
+Update the cache such that application file content is commented out so it
+.br
+will load dynamically via the network\. Invert the flag via \fB\-\-no\-develop\fP to
+.br
+uncomment application section content to test your application running from the
+.br
+cache\. Note \fB\-\-develop\fP is on by default\.
+.IP \(bu 2
+\fB\-\-missing\fP :
+.br
+List files in the application not in the manifest\. This is a relatively
+.br
+simple scan looking for css, image, and other non\-source files which might be
+.br
+useful to cache\. For JavaScript the system presumes that only source files in
+.br
+\fB~app_build\fP should be part of the cache\.
+.IP \(bu 2
+\fB\-\-rebuild\fP :
+.br
+Refresh the app and lib sections of the manifest\. This is the only flag
+.br
+which edits the file content of the appcache itself\. If the comment delimiters
+.br
+for app and lib sections are not present this operation will fail and output an
+.br
+appropriate error message\. Use this option with a degree of caution since it
+.br
+will alter the content of your cache\.
+.IP \(bu 2
+\fB\-\-touch\fP : Update the embedded ID: {timestamp} value provided by the
+.br
+default cache template\. This effectively changes the cache content which
+.br
+should have the effect of causing your browser to refresh the cache\.
+
+.RE
+

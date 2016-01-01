@@ -1,0 +1,12 @@
+{
+    "default": {
+        "port": 1407,
+        "pouch": "pouch"
+    },
+    "development": {
+        "use": {
+            "couch": true,
+            "watch": true
+        }
+    }
+}

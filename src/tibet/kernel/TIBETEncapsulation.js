@@ -1432,7 +1432,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 RegExp.Type.defineMethod('construct',
-function(pattern, flags) {
+function(pattern, flags, silent) {
 
     /**
      * @method construct
@@ -1444,6 +1444,8 @@ function(pattern, flags) {
      *     'i' ignore case
      *     'm' match over multiple lines.
      *     'y' whether the regular expression search starts from its lastIndex
+     * @param {Boolean} [silent=false] True to turn off error logging for bad
+     *     regular expression source text.
      * @returns {RegExp} A new instance.
      */
 
@@ -1460,8 +1462,10 @@ function(pattern, flags) {
 
     parts = TP.stringRegExpComponents(pattern);
     if (TP.isEmpty(parts)) {
-        msg = TP.join('Error creating regex: ', pattern);
-        TP.ifError() ? TP.error(msg) : 0;
+        if (TP.notTrue(silent)) {
+            msg = TP.join('Error creating regex: ', pattern);
+            TP.ifError() ? TP.error(msg) : 0;
+        }
 
         return null;
     }
@@ -1477,9 +1481,10 @@ function(pattern, flags) {
     try {
         newinst = new RegExp(restr, attrs);
     } catch (e) {
-        msg = TP.join('Error creating regex: ', restr);
-
-        TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+        if (TP.notTrue(silent)) {
+            msg = TP.join('Error creating regex: ', restr);
+            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+        }
 
         return null;
     }
@@ -1491,6 +1496,10 @@ function(pattern, flags) {
 
 //  alias
 TP.defineMethodAlias(TP, 'rc', RegExp.construct);
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$sc', TP.sc);
 
 //  ------------------------------------------------------------------------
 
@@ -1506,32 +1515,36 @@ function(varargs) {
      * @returns {String} A new instance.
      */
 
-    var currentLocale,
-        newStr,
-
+    var locale,
+        result,
+        arr,
         len,
         i;
 
-    //  if we've got a string and a full kernel we can try to localize
-    if (TP.sys.hasKernel()) {
-        currentLocale = TP.sys.getLocale();
-
-        newStr = [];
-
-        len = arguments.length;
-        for (i = 0; i < len; i++) {
-            newStr.push(currentLocale.localize(arguments[i]));
-        }
-
-        //  This should cause 'toString' to be called on each item in the
-        //  Array.
-        return newStr.join('');
+    //  Use the original primitive version that leverages TP.msg lookup if we
+    //  haven't loaded enough kernel to have locale support.
+    if (!TP.sys.hasKernel()) {
+        return TP.$sc.apply(TP, arguments);
     }
 
-    newStr = TP.ac(arguments);
+    locale = TP.sys.getLocale();
 
-    //  This should cause 'toString' to be called on each item in the Array.
-    return newStr.join('');
+    switch (arguments.length) {
+        case 0:
+            return '';
+        case 1:
+            return locale.localizeString('' + varargs);
+        default:
+            result = TP.ac();
+            arr = TP.ac(arguments);
+
+            len = arr.getSize();
+            for (i = 0; i < len; i++) {
+                result.push(locale.localizeString('' + arr[i]));
+            }
+
+            return result.join(' ');
+    }
 });
 
 //  ------------------------------------------------------------------------

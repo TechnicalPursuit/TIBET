@@ -282,7 +282,7 @@ function(data) {
 
     this.callNextMethod();
 
-    this.set('data', data);
+    this.set('data', data, false);
 
     return this;
 });
@@ -864,18 +864,23 @@ function(data) {
 //  ------------------------------------------------------------------------
 
 TP.core.JSONContent.Type.defineMethod('validate',
-function(anObject) {
+function(anObject, includeFacetChecks) {
 
     /**
      * @method validate
      * @summary Returns true if the string parameter is valid
      *     TP.core.JSONContent.
      * @param {Object} anObject The object to test.
+     * @param {Boolean} [includeFacetChecks=true] Whether or not to include
+     *     'facet checks' or just do trivial checking to see if the data is even
+     *     in the correct format for this content type.
      * @returns {Boolean} True if the object can be validated.
      */
 
     var anObj,
-        str;
+        str,
+
+        isJSON;
 
     if (TP.notValid(anObj = anObject.get('data'))) {
         anObj = anObject;
@@ -884,12 +889,13 @@ function(anObject) {
     //  First, check to make sure that it's even valid JSON. If it is, then call
     //  next method to check facets, etc.
     str = TP.js2json(anObj);
+    isJSON = TP.isJSONString(str);
 
-    if (TP.isValid(TP.json2js(str))) {
+    if (isJSON && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
-    return false;
+    return isJSON;
 });
 
 //  ------------------------------------------------------------------------
@@ -1242,18 +1248,23 @@ function(data) {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLContent.Type.defineMethod('validate',
-function(anObject) {
+function(anObject, includeFacetChecks) {
 
     /**
      * @method validate
      * @summary Returns true if the string parameter is valid
      *     TP.core.XMLContent.
      * @param {Object} anObject The object to test.
+     * @param {Boolean} [includeFacetChecks=true] Whether or not to include
+     *     'facet checks' or just do trivial checking to see if the data is even
+     *     in the correct format for this content type.
      * @returns {Boolean} True if the object can be validated.
      */
 
     var anObj,
-        str;
+        str,
+
+        isNode;
 
     if (TP.notValid(anObj = anObject.get('data'))) {
         anObj = anObject;
@@ -1262,12 +1273,13 @@ function(anObject) {
     //  First, check to make sure that it's even valid XML. If it is, then call
     //  next method to check facets, etc.
     str = TP.str(anObj);
+    isNode = TP.isNode(TP.node(str));
 
-    if (TP.isNode(TP.node(str))) {
+    if (isNode && TP.notFalse(includeFacetChecks)) {
         return this.callNextMethod();
     }
 
-    return false;
+    return isNode;
 });
 
 //  ------------------------------------------------------------------------
@@ -1620,7 +1632,7 @@ function(aPath) {
 
     //  If we're handed a '#json(...)' pointer, then we know what kind of
     //  path it is (or should be, anyway)
-    if (TP.regex.JSON_POINTER.test(path) || TP.regex.JSON_PATH.test(path)) {
+    if (TP.regex.JSON_POINTER.test(path)) {
         return TP.core.JSONPath;
     }
 
@@ -1674,6 +1686,17 @@ function(aPath) {
         return TP.core.SimpleXMLPath;
     }
 
+    //  Other kinds of XML paths
+    if (TP.regex.XPATH_PATH.test(path) ||
+        TP.regex.HAS_SLASH.test(path)) {
+        return TP.core.XPathPath;
+    }
+
+    //  JSON Paths
+    if (TP.regex.JSON_PATH.test(path)) {
+        return TP.core.JSONPath;
+    }
+
     //  If there is no 'path punctuation' (only JS identifer characters), or
     //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
     //  path'.
@@ -1686,14 +1709,8 @@ function(aPath) {
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
-    //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.TIBET_PATH.test(path) || /\.\[|\]\./.test(path)) {
+    if (TP.regex.TIBET_PATH.test(path)) {
         return TP.core.ComplexTIBETPath;
-    }
-
-    if (TP.regex.XPATH_PATH.test(path) ||
-        TP.regex.HAS_SLASH.test(path)) {
-        return TP.core.XPathPath;
     }
 
     return TP.core.CSSPath;
@@ -2152,6 +2169,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AccessPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Inst.defineMethod('processFinalValue',
 function(aReturnValue, targetObj) {
 
@@ -2420,6 +2465,8 @@ function(targetObj) {
         changedAddresses,
         changedPaths,
 
+        signalNameForAction,
+
         pathKeys,
         keysLen,
         i,
@@ -2429,12 +2476,13 @@ function(targetObj) {
 
         pathEntry,
         actions,
+        description,
+        batchID,
 
         pathAction,
         pathAddresses,
 
         sigName,
-        description,
 
         aliasesLen,
         k,
@@ -2564,6 +2612,31 @@ function(targetObj) {
             }
         });
 
+    //  Define a Function to compute a signal name from an action
+    signalNameForAction = function(anAction) {
+
+        switch (anAction) {
+            case TP.CREATE:
+            case TP.INSERT:
+            case TP.APPEND:
+
+                //  CREATE, INSERT or APPEND means an 'insertion structural
+                //  change' in the data.
+                return 'TP.sig.StructureInsert';
+
+            case TP.DELETE:
+
+                //  DELETE means a 'deletion structural change' in the data.
+                return 'TP.sig.StructureDelete';
+
+            case TP.UPDATE:
+            default:
+
+                //  UPDATE means just a value changed.
+                return 'TP.sig.ValueChange';
+        }
+    };
+
     //  Now, process all of the changed paths and send changed signals. The
     //  signal type sent will be based on their action.
 
@@ -2584,45 +2657,52 @@ function(targetObj) {
         //  that changed them (TP.CREATE, TP.DELETE or TP.UPDATE)
         actions = pathEntry.getKeys();
 
+        description = TP.hc(
+                        'target', targetObj,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths);
+
+        //  This method supports 'batching' of signals. Some receivers (like
+        //  TIBET's markup-based binding machinery) only want to update when the
+        //  end of a 'batch' of signals is received. Therefore, we mark our
+        //  signals with a unique 'batch ID'.
+        //  For the first signal in the batch, we stamp in the unique batch ID
+        //  under the TP.START_SIGNAL_BATCH key in the signal's payload and,
+        //  conversely under the TP.END_SIGNAL_BATCH key for the last signal in
+        //  the batch. All signals carry the batch ID under the TP.SIGNAL_BATCH
+        //  key.
+
+        //  First signal... generate and stamp in the batch ID under both
+        //  TP.START_SIGNAL_BATCH and TP.SIGNAL_BATCH. We'll clear
+        //  TP.START_SIGNAL_BATCH below, after the signal is sent.
+        if (i === 0) {
+            batchID = TP.genID('SIGNAL_BATCH');
+            description.atPut(TP.START_SIGNAL_BATCH, batchID);
+
+            description.atPut(TP.SIGNAL_BATCH, batchID);
+        }
+
+        //  Last signal... stamp in the batch ID under TP.END_SIGNAL_BATCH
+        if (i === keysLen - 1) {
+            description.atPut(TP.END_SIGNAL_BATCH, batchID);
+        }
+
         for (j = 0; j < actions.getSize(); j++) {
 
             pathAction = actions.at(j);
+            description.atPut('action', pathAction);
+
             pathAddresses = pathEntry.at(pathAction);
+            description.atPut('addresses', pathAddresses);
 
-            switch (pathAction) {
-                case TP.CREATE:
-                case TP.INSERT:
-                case TP.APPEND:
-
-                    //  CREATE, INSERT or APPEND means an 'insertion structural
-                    //  change' in the data.
-                    sigName = 'TP.sig.StructureInsert';
-                    break;
-
-                case TP.DELETE:
-
-                    //  DELETE means a 'deletion structural change' in the data.
-                    sigName = 'TP.sig.StructureDelete';
-                    break;
-
-                case TP.UPDATE:
-                default:
-
-                    //  UPDATE means just a value changed.
-                    sigName = 'TP.sig.ValueChange';
-            }
+            //  Compute the signal name based on the action.
+            sigName = signalNameForAction(pathAction);
 
             //  If we found any path aliases, then loop over them and dispatch
-            //  using their aspect name.
+            //  individual signals using their aspect name.
             if (TP.isValid(pathAspectAliases)) {
-                aliasesLen = pathAspectAliases.getSize();
 
-                description = TP.hc(
-                                'addresses', pathAddresses,
-                                'action', pathAction,
-                                'target', targetObj,
-                                'facet', 'value',
-                                TP.CHANGE_PATHS, changedPaths);
+                aliasesLen = pathAspectAliases.getSize();
 
                 for (k = 0; k < aliasesLen; k++) {
                     aspectName = pathAspectAliases.at(k);
@@ -2646,17 +2726,16 @@ function(targetObj) {
                                 TP.INHERITANCE_FIRING, sigName);
                 }
             } else {
-                //  Otherwise send the generic signal.
-                description = TP.hc(
-                                'aspect', pathKeys.at(i),
-                                'addresses', pathAddresses,
-                                'action', pathAction,
-                                'target', targetObj,
-                                'facet', 'value',
-                                TP.CHANGE_PATHS, changedPaths);
+
+                description.atPut('aspect', pathKeys.at(i));
 
                 TP.signal(targetObj, sigName, description);
             }
+        }
+
+        //  First signal... remove the batch ID under TP.START_SIGNAL_BATCH
+        if (i === 0) {
+            description.removeKey(TP.START_SIGNAL_BATCH);
         }
     }
 
@@ -2699,13 +2778,13 @@ function(aPath, config) {
 
     this.callNextMethod('value', config);
 
-    //  Split along '.(' or ').' and then convert the results by stripping off
-    //  any extraneous '(' or ')' (which will sometimes occur on the 'start' or
-    //  'end' values).
-    pathStrs = aPath.split(/(\.\(|\)\.)/).convert(
-                    function(item) {
-                        return item.strip(/^\(/).strip(/\)$/);
-                    });
+    //  Split along '.(' or ').'
+    pathStrs = aPath.split(/(\.\(|\)\.)/);
+
+    //  Strip any leading parenthesis from the first item and any trailing
+    //  parenthesis from the last item.
+    pathStrs.atPut(0, pathStrs.first().strip(/^\(/));
+    pathStrs.atPut(pathStrs.getSize() - 1, pathStrs.last().strip(/\)$/));
 
     //  Create the set of subpaths that we will use by iterating over the path
     //  strings that we extracted. Note that the 'odd' positions will contain
@@ -2749,7 +2828,8 @@ function(targetObj, varargs) {
 
     var paths,
         i,
-        retVal;
+        retVal,
+        nextPath;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -2772,8 +2852,17 @@ function(targetObj, varargs) {
             retVal = TP.wrap(retVal);
         }
 
+        nextPath = paths.at(i);
+
+        //  If the path is a JSON path, but the content isn't a JSONContent,
+        //  convert it so that the path runs correctly.
+        if (nextPath.getPathType() === TP.JSON_PATH_TYPE &&
+            !TP.isKindOf(retVal, TP.core.JSONContent)) {
+            retVal = TP.core.JSONContent.construct(retVal);
+        }
+
         //  Execute the 'get()' and reassign the return value.
-        retVal = retVal.get(paths.at(i));
+        retVal = retVal.get(nextPath);
 
         //  If the return value is a callable Function, then call it and
         //  reassign the return value to the result.
@@ -2842,6 +2931,34 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     retVal = retVal.set(paths.last(), attributeValue, shouldSignal);
 
     return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompositePath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    var paths,
+
+        parts,
+        i;
+
+    //  Iterate over this object's subpaths and concatenate together the Arrays
+    //  produced by getting the path parts of each subpath.
+    paths = this.get('paths');
+
+    parts = paths.at(0).getPathParts();
+    for (i = 1; i < paths.getSize(); i++) {
+        parts = parts.concat(paths.at(i).getPathParts());
+    }
+
+    return parts;
 });
 
 //  ========================================================================
@@ -2973,7 +3090,7 @@ function(srcPath, templateArgs) {
 
         token = pathTokens.at(i);
 
-        //  JSONPath root operator standalone
+        //  JSONPath root operator
         if (token === '$') {
 
             xmlStr += '//*';
@@ -3602,9 +3719,9 @@ function(targetObj, varargs) {
 
     srcPath = this.get('srcPath');
 
-    //  If the path is empty or just '.', then that's the shortcut to just
+    //  If the path is empty or just '$', then that's the shortcut to just
     //  return the target object itself.
-    if (TP.isEmpty(srcPath) || TP.regex.ONLY_PERIOD.test(srcPath)) {
+    if (TP.isEmpty(srcPath) || srcPath === '$') {
         return target;
     }
 
@@ -3777,6 +3894,34 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     xmlPath.executeSet(tpXMLDoc, attributeValue, shouldSignal);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'json');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.JSONPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.JSON_PATH_TYPE;
 });
 
 //  ------------------------------------------------------------------------
@@ -4207,6 +4352,13 @@ function() {
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
+    var srcObj;
+
+    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    if (TP.owns(srcObj, '$$noPathTracking')) {
+        return this;
+    }
+
     this.get('$prefixParts').pop();
 
     return this;
@@ -4222,7 +4374,8 @@ function() {
      * @returns {String}
      */
 
-    return this.get('$prefixParts').join('.');
+    //  Note here the conversion from 'foo.[1]' to 'foo[1]'
+    return this.get('$prefixParts').join('.').replace(/\.\[/g, '[');
 });
 
 //  ------------------------------------------------------------------------
@@ -4256,24 +4409,47 @@ function(addressPart) {
      * @returns {TP.core.SimpleTIBETPath} The receiver.
      */
 
-    var prefixParts,
+    var srcObj,
+
+        prefixParts,
 
         sourceObjectID,
-        srcPath;
+        srcPath,
+
+        address;
+
+    srcObj = TP.core.SimpleTIBETPath.get('$currentSource');
+    if (TP.owns(srcObj, '$$noPathTracking')) {
+        return this;
+    }
 
     prefixParts = this.get('$prefixParts');
 
     prefixParts.push(addressPart);
 
-    sourceObjectID = TP.id(TP.core.SimpleTIBETPath.get('$currentSource'));
+    //  Note here the conversion from 'foo.[1]' to 'foo[1]'
+    address = prefixParts.join('.').replace(/\.\[/g, '[');
+
     srcPath = TP.core.SimpleTIBETPath.get('$currentPath').get('srcPath');
 
-    this.registerObservedAddress(prefixParts.join('.'),
-                                    sourceObjectID,
-                                    srcPath);
+    //  Note here the conversion from 'foo.[1]' to 'foo[1]'
+    srcPath = srcPath.replace(/\.\[/g, '[');
+
+    //  Grab the ID of the current source object
+    sourceObjectID = TP.id(srcObj);
+
+    this.registerObservedAddress(address, sourceObjectID, srcPath);
 
     return this;
 });
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  Whether or not the receiver 'created structure' on it's latest run. This is
+//  reset after each 'setter run' of the path.
+TP.core.SimpleTIBETPath.Inst.defineAttribute('$createdStructure');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -4452,6 +4628,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         op = TP.UPDATE;
     } else {
         op = TP.CREATE;
+        //  Make sure to let this path know that we created structure - this
+        //  makes a difference when signaling change if we're being used as part
+        //  of an over 'complex' TIBET path.
+        this.set('$createdStructure', true);
     }
 
     //  If the old value is equal to the value that we're setting, then there
@@ -4555,6 +4735,34 @@ function() {
 
     //  For simple paths, our whole path is the first simple path.
     return this.get('srcPath');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SimpleTIBETPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'tibet');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SimpleTIBETPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.TIBET_PATH_TYPE;
 });
 
 //  ------------------------------------------------------------------------
@@ -4683,21 +4891,29 @@ function(aPath, config) {
      *     instance.
      */
 
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.TIBET_POINTER.test(aPath)) {
+        path = TP.regex.TIBET_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
     //  If there is no 'path punctuation' (only JS identifer characters), or
     //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
     //  path'.
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.JS_IDENTIFIER.test(aPath) ||
-        TP.regex.ONLY_NUM.test(aPath) ||
-        TP.regex.SIMPLE_NUMERIC_PATH.test(aPath)) {
+    if (TP.regex.JS_IDENTIFIER.test(path) ||
+        TP.regex.ONLY_NUM.test(path) ||
+        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
         return TP.core.SimpleTIBETPath.construct.apply(
                         TP.core.SimpleTIBETPath, arguments);
     }
 
     //  Otherwise, if it has 'TIBETan' access path characters, create a TIBET
     //  path to deal with it.
-    //  TODO: This is hacky - figure out how to combine them into one RegExp.
-    if (TP.regex.TIBET_PATH.test(aPath) || /\.\[|\]\./.test(aPath)) {
+    if (TP.regex.TIBET_PATH.test(path)) {
         return TP.core.ComplexTIBETPath.construct.apply(
                             TP.core.ComplexTIBETPath, arguments);
     }
@@ -4713,12 +4929,33 @@ function(aPath, config) {
 //  expressions.
 TP.core.ComplexTIBETPath.Inst.defineAttribute('$transformedPath');
 
-//  Whether or not the receiver 'created structure' on it's latest run. This is
-//  reset after each 'setter run' of the path.
-TP.core.ComplexTIBETPath.Inst.defineAttribute('$createdStructure');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ComplexTIBETPath.Inst.defineMethod('init',
+function(aPath, config) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} aPath The String to build the instance from.
+     * @param {TP.core.Hash} config The configuration for this path.
+     * @returns {TP.core.ComplexTIBETPath} The receiver.
+     */
+
+    var path;
+
+    //  Make sure that any 'access path' scheme is stripped off
+    if (TP.regex.TIBET_POINTER.test(aPath)) {
+        path = TP.regex.TIBET_POINTER.match(aPath).at(1);
+    } else {
+        path = aPath;
+    }
+
+    return this.callNextMethod(path, config);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.ComplexTIBETPath.Inst.defineMethod('checkValueEquality',
@@ -4886,8 +5123,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     this.set('$createdStructure', false);
 
-    this.preSetAccess(targetObj);
-
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
@@ -4914,15 +5149,14 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  by this path and to avoid a lot of unnecessary signaling.
         if (this.checkValueEquality(oldVal, attributeValue)) {
 
-            //  We need to restore the change path data structures before
-            //  exiting.
-            this.postSetAccess(targetObj);
             return oldVal;
         }
     }
 
     //  Note here how we always do the set with a 'false' and then send a
     //  'changed' message later with additional information.
+
+    this.preSetAccess(targetObj);
 
     if (TP.isArray(targetObj)) {
         retVal = this.$executeArraySet(targetObj, attributeValue, false);
@@ -4974,9 +5208,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         //  Empty the changed addresses now that we've sent the signal.
         TP.core.AccessPath.$getChangedAddresses().empty();
-    }
 
-    this.set('$createdStructure', false);
+        //  Flip this back off for the next run.
+        this.set('$createdStructure', false);
+    }
 
     return retVal;
 });
@@ -5447,7 +5682,9 @@ function(targetObj, attributeValue, shouldSignal) {
         queryParts,
 
         attrIsNumber,
-        firstSimplePath;
+        firstSimplePath,
+
+        setPath;
 
     path = this.get('$transformedPath');
 
@@ -5694,9 +5931,17 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake)),
-                         val,
-                         false);
+        setPath = TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake));
+        targetObj.set(setPath, val, false);
+
+        //  If the setter path created structure, we flip our value of that flag
+        //  to 'true' to 'propagate it up' the setter chain and rest the setter
+        //  path's value back to 'false' for future runs. Note that we only do
+        //  this is the setter path's value is 'true'.
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
     }
 
     if (TP.notValid(val) || !TP.isReferenceType(val)) {
@@ -5709,10 +5954,19 @@ function(targetObj, attributeValue, shouldSignal) {
     if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
         thisType.startChangedAddress(head);
 
+        setPath = TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake));
+
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake)),
-                attributeValue,
-                false);
+        val.set(setPath, attributeValue, false);
+
+        //  If the setter path created structure, we flip our value of that flag
+        //  to 'true' to 'propagate it up' the setter chain and rest the setter
+        //  path's value back to 'false' for future runs. Note that we only do
+        //  this is the setter path's value is 'true'.
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
 
         thisType.endChangedAddress();
 
@@ -5756,7 +6010,9 @@ function(targetObj, attributeValue, shouldSignal) {
         queryParts,
 
         attrIsNumber,
-        firstSimplePath;
+        firstSimplePath,
+
+        setPath;
 
     path = this.get('$transformedPath');
 
@@ -5892,9 +6148,13 @@ function(targetObj, attributeValue, shouldSignal) {
             val.defineAttribute(firstSimplePath);
         }
 
-        targetObj.set(TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake)),
-                         val,
-                         false);
+        setPath = TP.tpc(head, TP.hc('shouldMakeStructures', shouldMake));
+        targetObj.set(setPath, val, false);
+
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
     }
 
     if (TP.notValid(val) || !TP.isReferenceType(val)) {
@@ -5907,10 +6167,15 @@ function(targetObj, attributeValue, shouldSignal) {
     if (TP.isString(tail) && TP.canInvoke(val, 'set')) {
         thisType.startChangedAddress(head);
 
+        setPath = TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake));
+
         //  This 'set' call will take care of registering the changed address.
-        val.set(TP.tpc(tail, TP.hc('shouldMakeStructures', shouldMake)),
-                attributeValue,
-                false);
+        val.set(setPath, attributeValue, false);
+
+        if (TP.isTrue(setPath.get('$createdStructure'))) {
+            this.set('$createdStructure', true);
+            setPath.set('$createdStructure', false);
+        }
 
         thisType.endChangedAddress();
 
@@ -6946,11 +7211,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
@@ -6958,6 +7219,20 @@ function() {
     //  determine the path type. Subtypes of this type can override this to
     //  specify the path type.
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'xpointer');
 });
 
 //  ------------------------------------------------------------------------
@@ -7184,15 +7459,25 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
     return TP.CSS_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CSSPath.Inst.defineMethod('getPathParts',
+function() {
+
+    /**
+     * @method getPathParts
+     * @summary Returns the receiver's parts.
+     * @returns {Array} An Array of the receiver's parts.
+     */
+
+    return TP.getAccessPathParts(this.get('srcPath'), 'css');
 });
 
 //  ========================================================================
@@ -7255,12 +7540,7 @@ function() {
 
     /**
      * @method getPathType
-     * @summary Returns the receiver's 'path type', which should be one of
-     *     these constants:
-     *          TP.XPOINTER_PATH_TYPE
-     *          TP.XTENSION_POINTER_PATH_TYPE
-     *          TP.BARENAME_PATH_TYPE
-     *          TP.CSS_PATH_TYPE
+     * @summary Returns the receiver's 'path type'.
      * @returns {String} A path type
      */
 
@@ -8221,6 +8501,20 @@ function(aNode, flagChanges) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XPathPath.Inst.defineMethod('getPathType',
+function() {
+
+    /**
+     * @method getPathType
+     * @summary Returns the receiver's 'path type'.
+     * @returns {String} A path type
+     */
+
+    return TP.XPATH_PATH_TYPE;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XPathPath.Inst.defineMethod('getShouldMakeStructures',
 function() {
 
@@ -8594,6 +8888,8 @@ function(aPath, forceNative) {
 
 TP.core.JSONContent.defineSubtype('w3.DTDInfo');
 
+TP.w3.DTDInfo.Type.defineAttribute('schemaInfo');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -8606,35 +8902,12 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var dtdInfoURI,
-        dtdInfo;
+    var dtdInfo;
 
-    //  Set this up so that it observes the 'AppWillStart' signal and tries to
-    //  load 2000ms after it gets that signal. This avoids a large pause at
-    //  app startup.
-    this.observe(
-        TP.sys,
-        'TP.sig.AppWillStart',
-        function(aSignal) {
-
-            var resp;
-
-            this.ignore(TP.sys, aSignal.getSignalName());
-
-            (function() {
-
-                //  Load the DTD information for HTML 4.01 Strict
-                dtdInfoURI = TP.uc('~lib_schema/html401_strict.json');
-                resp = dtdInfoURI.getResource(
-                            TP.hc('async', false, 'contentHandler', this));
-                dtdInfo = resp.get('result');
-
-                if (TP.isValid(dtdInfo)) {
-                    TP.w3.DocType.HTML_401_STRICT.set('dtdInfo', dtdInfo);
-                }
-
-            }.bind(this)).fork(2000);
-        }.bind(this));
+    dtdInfo = this.$get('schemaInfo');
+    if (TP.isValid(dtdInfo)) {
+        TP.w3.DocType.HTML_401_STRICT.set('dtdInfo', this.construct(dtdInfo));
+    }
 
     return;
 });

@@ -234,7 +234,8 @@ function(anElement, uriAttrNames, aPrefix, aSuffix) {
             TP.elementSetAttribute(
                         anElement,
                         uriAttrNames.at(i),
-                        thePrefix + basePath + theSuffix);
+                        TP.uriJoinPaths(TP.uriJoinPaths(
+                            thePrefix, basePath), theSuffix));
         }
     }
 

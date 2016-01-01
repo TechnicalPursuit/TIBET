@@ -13,7 +13,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.describe('local id - TP.objectLocalID() / TP.lid()',
+TP.objectLocalID.describe('local id',
 function() {
 
     var thisArg,
@@ -194,7 +194,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('global id - TP.objectGlobalID() / TP.gid()',
+TP.objectGlobalID.describe('global id',
 function() {
 
     var thisArg,
@@ -383,7 +383,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('TP.isType()',
+TP.isType.describe('type testing',
 function() {
 
     var thisArg,
@@ -554,7 +554,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('TP.isNativeType()',
+TP.isNativeType.describe('native type testing',
 function() {
 
     var thisArg,
@@ -725,7 +725,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('TP.isMemberOf()',
+TP.isMemberOf.describe('membership testing',
 function() {
 
     var thisArg,
@@ -1225,7 +1225,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('TP.isKindOf()',
+TP.isKindOf.describe('kind of testing',
 function() {
 
     var thisArg,
@@ -1644,7 +1644,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('supertype objects - TP.objectSupertypes() / TP.stypes()',
+TP.objectSupertypes.describe('supertype objects',
 function() {
 
     var thisArg,
@@ -1724,7 +1724,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('type objects - TP.objectType() / TP.type()',
+TP.objectType.describe('type objects',
 function() {
 
     var thisArg,
@@ -1795,7 +1795,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('wrapping - TP.objectWrap() / TP.wrap()',
+TP.objectWrap.describe('wrapping',
 function() {
 
     var thisArg,
@@ -1878,7 +1878,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('unwrapping - TP.objectUnwrap() / TP.unwrap()',
+TP.objectUnwrap.describe('unwrapping',
 function() {
 
     var thisArg,
@@ -1961,7 +1961,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.describe('object value - TP.objectValue() / TP.val()',
+TP.objectValue.describe('object value',
 function() {
 
     var thisArg,
@@ -2064,6 +2064,240 @@ function() {
 //  TP.validate()
 
 //  TP.isSubtypeOf()
+
+//  ------------------------------------------------------------------------
+
+TP.reformatJSToJSON.describe('conversions',
+function() {
+
+    this.it('common values', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:bar,baz:goo}');
+        correctVal = TP.json({foo:'bar',baz:'goo'});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  separating whitespace
+        val = TP.reformatJSToJSON('{ foo : bar, baz : goo }');
+        correctVal = TP.json({foo:'bar',baz:'goo'});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace
+        val = TP.reformatJSToJSON('{foo:bar,baz:{goo:moo}}');
+        correctVal = TP.json({foo:'bar',baz:{goo:'moo'}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace
+        val = TP.reformatJSToJSON('{ foo : bar, baz : { goo : moo } }');
+        correctVal = TP.json({foo:'bar',baz:{goo:'moo'}});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
+    this.it('quoted values', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'bar\',baz:\'goo\'}');
+        correctVal = TP.json({foo:'\'bar\'',baz:'\'goo\''});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  separating whitespace
+        val = TP.reformatJSToJSON('{ foo : \'bar\', baz : \'goo\' }');
+        correctVal = TP.json({foo:'\'bar\'',baz:'\'goo\''});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'bar\',baz:{goo:\'moo\'}}');
+        correctVal = TP.json({foo:'\'bar\'',baz:{goo:'\'moo\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace
+        val = TP.reformatJSToJSON('{ foo : \'bar\', baz : { goo : \'moo\' } }');
+        correctVal = TP.json({foo:'\'bar\'',baz:{goo:'\'moo\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace - value whitespace
+        val = TP.reformatJSToJSON(
+                '{foo:\'bar and baz\',baz:{goo:\'moo and too\'}}');
+        correctVal = TP.json(
+                {foo:'\'bar and baz\'',baz:{goo:'\'moo and too\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace - value whitespace
+        val = TP.reformatJSToJSON(
+                '{ foo : \'bar and baz\' , baz : { goo : \'moo and too\' } }');
+        correctVal = TP.json(
+                {foo:'\'bar and baz\'',baz:{goo:'\'moo and too\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
+    this.it('nested single quoted values', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'b\\\'ar\',baz:\'go\\\'o\'}');
+        correctVal = TP.json({foo:'\'b\'ar\'',baz:'\'go\'o\''});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  separating whitespace
+        val = TP.reformatJSToJSON('{ foo : \'b\\\'ar\', baz : \'go\\\'o\' }');
+        correctVal = TP.json({foo:'\'b\'ar\'',baz:'\'go\'o\''});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'b\\\'ar\',baz:{goo:\'mo\\\'o\'}}');
+        correctVal = TP.json({foo:'\'b\'ar\'',baz:{goo:'\'mo\'o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace
+        val = TP.reformatJSToJSON('{ foo : \'b\\\'ar\', baz : { goo : \'mo\\\'o\' } }');
+        correctVal = TP.json({foo:'\'b\'ar\'',baz:{goo:'\'mo\'o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace - value whitespace
+        val = TP.reformatJSToJSON(
+                '{foo:\'b\\\'ar and b\\\'az\',baz:{goo:\'moo\\\' and to\\\'o\'}}');
+        correctVal = TP.json(
+                {foo:'\'b\'ar and b\'az\'',baz:{goo:'\'moo\' and to\'o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace - value whitespace
+        val = TP.reformatJSToJSON(
+                '{ foo : \'b\\\'ar and b\\\'az\' , baz : { goo : \'moo\\\' and to\\\'o\' } }');
+        correctVal = TP.json(
+                {foo:'\'b\'ar and b\'az\'',baz:{goo:'\'moo\' and to\'o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
+    this.it('nested double quoted values', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'b\\"ar\',baz:\'go\\"o\'}');
+        correctVal = TP.json({foo:'\'b"ar\'',baz:'\'go"o\''});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  separating whitespace
+        val = TP.reformatJSToJSON('{ foo : \'b\\"ar\', baz : \'go\\"o\' }');
+        correctVal = TP.json({foo:'\'b"ar\'',baz:'\'go"o\''});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace
+        val = TP.reformatJSToJSON('{foo:\'b\\"ar\',baz:{goo:\'mo\\"o\'}}');
+        correctVal = TP.json({foo:'\'b"ar\'',baz:{goo:'\'mo"o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace
+        val = TP.reformatJSToJSON('{ foo : \'b\\"ar\', baz : { goo : \'mo\\"o\' } }');
+        correctVal = TP.json({foo:'\'b"ar\'',baz:{goo:'\'mo"o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace - value whitespace
+        val = TP.reformatJSToJSON(
+                '{foo:\'b\\"ar and b\\"az\',baz:{goo:\'moo\\" and to\\"o\'}}');
+        correctVal = TP.json(
+                {foo:'\'b"ar and b"az\'',baz:{goo:'\'moo" and to"o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace - value whitespace
+        val = TP.reformatJSToJSON(
+                '{ foo : \'b\\"ar and b\\"az\' , baz : { goo : \'moo\\" and to\\"o\' } }');
+        correctVal = TP.json(
+                {foo:'\'b"ar and b"az\'',baz:{goo:'\'moo" and to"o\''}});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
+    this.it('embedded \'.\' resolving to real references', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:TP.BEFORE,baz:goo}');
+        correctVal = TP.json({foo:'before',baz:'goo'});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  separating whitespace
+        val = TP.reformatJSToJSON('{ foo : TP.BEFORE, baz : goo }');
+        correctVal = TP.json({foo:'before',baz:'goo'});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace
+        val = TP.reformatJSToJSON('{foo:TP.BEFORE,baz:{goo:moo}}');
+        correctVal = TP.json({foo:'before',baz:{goo:'moo'}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace
+        val = TP.reformatJSToJSON('{ foo : TP.BEFORE, baz : { goo : moo } }');
+        correctVal = TP.json({foo:'before',baz:{goo:'moo'}});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+
+    this.it('embedded \'.\' resolving to no reference', function(test, options) {
+
+        var val,
+            correctVal;
+
+        //  no separating whitespace
+        val = TP.reformatJSToJSON('{foo:bar.moo,baz:goo}');
+        correctVal = TP.json({foo:'bar.moo',baz:'goo'});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  separating whitespace
+        val = TP.reformatJSToJSON('{ foo : bar.moo, baz : goo }');
+        correctVal = TP.json({foo:'bar.moo',baz:'goo'});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - no separating whitespace
+        val = TP.reformatJSToJSON('{foo:bar.moo,baz:{goo:moo}}');
+        correctVal = TP.json({foo:'bar.moo',baz:{goo:'moo'}});
+
+        test.assert.isEqualTo(val, correctVal);
+
+        //  nested value - separating whitespace
+        val = TP.reformatJSToJSON('{ foo : bar.moo, baz : { goo : moo } }');
+        correctVal = TP.json({foo:'bar.moo',baz:{goo:'moo'}});
+
+        test.assert.isEqualTo(val, correctVal);
+    });
+});
 
 //  ------------------------------------------------------------------------
 //  end

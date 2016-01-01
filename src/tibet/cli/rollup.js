@@ -65,25 +65,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Creates a minified and concatenated version of a package#config.\n\n' +
-
-'Output from this command is written to stdout for use in redirection.\n' +
-'By default the output is not minified, but it does it contain filename\n' +
-'data (aka \'headers\') to assist TIBET by providing file load metadata.\n\n' +
-
-'You can minify output via the --minify flag, and turn off headers via\n' +
-'--no-headers should you choose. Normally these flags are managed by one\n' +
-'or more makefile.js targets used to build library or app-level bundles.\n' +
-'See https://github.com/estools/escodegen/wiki/API for minify options.\n\n' +
-
-'<package-opts> refers to options for the \'tibet package\' command.\n';
-
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */
@@ -97,7 +78,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'default': {
             color: false,
             headers: true,
-            'package': 'standard',
+            'package': 'app',
             config: 'base'
         }
     },
@@ -185,7 +166,7 @@ Cmd.prototype.executeForEach = function(list) {
             }
 
             if (cmd.options.headers) {
-                pkg.log('TP.boot.$srcPath = \'' + virtual + '\';');
+                pkg.log('TP.boot.$$srcPath = \'' + virtual + '\';');
             }
 
             if (cmd.options.debug !== true) {
@@ -195,7 +176,7 @@ Cmd.prototype.executeForEach = function(list) {
         } else {
 
             if (cmd.options.headers) {
-                pkg.log('TP.boot.$srcPath = \'\';');
+                pkg.log('TP.boot.$$srcPath = \'\';');
             }
 
             if (cmd.options.debug !== true) {

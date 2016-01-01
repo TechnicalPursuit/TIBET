@@ -4795,6 +4795,8 @@ function(anObject) {
     //  the UI
     if (TP.isElement(anObject)) {
         if (TP.isValid(anObject[TP.WRAPPER])) {
+            //  Make sure the wrapper has this node as its native node.
+            anObject[TP.WRAPPER].$set('node', anObject, false);
             return anObject[TP.WRAPPER];
         }
         return TP.core.ElementNode.construct(anObject);
@@ -4896,21 +4898,230 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getMarkupPathType',
+TP.definePrimitive('getAccessPathParts',
+function(aPath, aScheme) {
+
+    /**
+     * @method getAccessPathParts
+     * @summary Returns the parts of the supplied path.
+     * @param {String} aPath The path to obtain the parts from.
+     * @param {String} [aScheme] An optional scheme that indicates the type of
+     *     the supplied path. If this is not supplied, the system attempts to
+     *     compute the scheme.
+     * @returns {Array} An Array of path parts.
+     */
+
+    var scheme,
+
+        splitter,
+        stripper,
+
+        predicateExprs,
+        path,
+
+        results;
+
+    //  Need at least a path to test.
+    if (TP.isEmpty(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidPath',
+                        'Unable to get parts of empty path.');
+    }
+
+    //  If a schema wasn't supplied, try to compute one.
+    scheme = TP.ifInvalid(aScheme, TP.getPointerScheme(aPath));
+
+    switch (scheme) {
+
+        case 'css':
+
+            splitter = /( +|\s*[+>~](?:!=)\s*|,)/;
+            stripper = /^(\s*| +|\s*[+>~]\s*|,)$/;
+
+            //  Split along separators, etc.
+            results = aPath.split(splitter);
+
+            //  Strip out anything that would be empty or separator characters.
+            results = results.filter(
+                        function(item, index) {
+                            return !stripper.test(item);
+                        });
+
+            break;
+
+        case 'tibet':
+        case 'json':
+
+            if (aPath === '.') {
+                return TP.ac('.');
+            }
+
+            //  Capture all predicate expressions to avoid processing
+            //  separators, etc. within predicates.
+            predicateExprs = TP.ac();
+            path = TP.stringTokenizeUsingDelimiters(
+                        aPath,
+                        '[',
+                        ']',
+                        predicateExprs,
+                        '__PRED__',
+                        '__PRED__');
+
+            splitter = /(\.\.|\.|\w+)/;
+            stripper = /^(\s*|\.)$/;
+
+            //  Split along separators, etc.
+            results = path.split(splitter);
+
+            //  Iterate over the results, encoding certain values in certain
+            //  ways, and putting the captured predicates back into what is now
+            //  individual parts of the path.
+            results = results.map(
+                    function(item) {
+
+                        if (item === '') {
+                            return '';
+                        }
+
+                        if (item === '..') {
+                            return '__DOUBLE_PERIOD__';
+                        }
+
+                        if (item.indexOf('__PRED__') !== TP.NOT_FOUND) {
+
+                            return TP.stringUntokenizeUsingDelimiters(
+                                    item,
+                                    '[',
+                                    ']',
+                                    predicateExprs,
+                                    '__PRED__',
+                                    '__PRED__');
+                        }
+
+                        return item;
+                    });
+
+            //  Strip out anything that would be empty or separator characters.
+            results = results.filter(
+                        function(item, index) {
+                            return !stripper.test(item);
+                        });
+
+            //  If there were any 'double period' constructs, convert them to an
+            //  empty String
+            results = results.map(
+                    function(item) {
+
+                        if (item === '__DOUBLE_PERIOD__') {
+                            return '';
+                        }
+
+                        return item;
+                    });
+
+            break;
+
+        case 'xpath1':
+        case 'xpointer':
+
+            if (aPath === '/') {
+                return TP.ac('/');
+            }
+
+            //  Capture all predicate expressions to avoid processing
+            //  separators, etc. within predicates.
+            predicateExprs = TP.ac();
+            path = TP.stringTokenizeUsingDelimiters(
+                        aPath,
+                        '[',
+                        ']',
+                        predicateExprs,
+                        '__PRED__',
+                        '__PRED__');
+
+            splitter = /(\/\/|\/|@?[A-Za-z0-9_:.-]+\*?|\||\*\w+)/;
+            stripper = /^(\s*|\/|\|)$/;
+
+            //  Split along separators, etc.
+            results = path.split(splitter);
+
+            //  Iterate over the results, encoding certain values in certain
+            //  ways, and putting the captured predicates back into what is now
+            //  individual parts of the path.
+            results = results.map(
+                    function(item) {
+
+                        if (item === '') {
+                            return '';
+                        }
+
+                        if (item === '//') {
+                            return '__DOUBLE_SLASH__';
+                        }
+
+                        if (item.indexOf('__PRED__') !== TP.NOT_FOUND) {
+
+                            return TP.stringUntokenizeUsingDelimiters(
+                                    item,
+                                    '[',
+                                    ']',
+                                    predicateExprs,
+                                    '__PRED__',
+                                    '__PRED__');
+                        }
+
+                        return item;
+                    });
+
+            //  Strip out anything that would be empty or separator characters.
+            results = results.filter(
+                        function(item, index) {
+                            return !stripper.test(item);
+                        });
+
+            //  If there were any 'double slash' constructs, convert them to an
+            //  empty String
+            results = results.map(
+                    function(item) {
+
+                        if (item === '__DOUBLE_SLASH__') {
+                            return '';
+                        }
+
+                        return item;
+                    });
+
+            break;
+
+        default:
+            splitter = null;
+    }
+
+    if (TP.isRegExp(splitter)) {
+        return results;
+    }
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getAccessPathType',
 function(aPath) {
 
     /**
-     * @method getMarkupPathType
+     * @method getAccessPathType
      * @summary Obtains the 'path type' of the supplied path. This allows TIBET
      *     to distinguish between different markup query languages.
      * @param {String} aPath The path to obtain the type of.
      * @returns {String} One of the 'path type' constants:
      *     TP.TIBET_PATH_TYPE
+     *     TP.JSON_PATH_TYPE
      *     TP.CSS_PATH_TYPE
      *     TP.XPATH_PATH_TYPE
-     *     TP.XPOINTER_PATH_TYPE
-     *     TP.XTENSION_POINTER_PATH_TYPE
      *     TP.BARENAME_PATH_TYPE
+     *     TP.XPOINTER_PATH_TYPE
+     *     TP.ELEMENT_PATH_TYPE
+     *     TP.XTENSION_POINTER_PATH_TYPE
      */
 
     var path;
@@ -4941,11 +5152,6 @@ function(aPath) {
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
 
-    //  First, test to see if we've just been given an 'access path'.
-    if (TP.regex.TIBET_PATH.test(path)) {
-        return TP.TIBET_PATH_TYPE;
-    }
-
     //  We try to determine the path type based on discriminating characters
     //  and regular expression forms but since there's a lot of overlap
     //  between the legal characters for both CSS and XPath paths we will
@@ -4960,7 +5166,17 @@ function(aPath) {
 
     //  regular xpointer, either xpointer(), xpath1() or element() scheme
     if (TP.regex.XPOINTER.test(path)) {
-        return TP.XPOINTER_PATH_TYPE;
+
+        //  If we're handed an '#element(...)' pointer, then we know what kind
+        //  of path it is (or should be, anyway)
+
+        //  NB: We do *not* check against TP.regex.ELEMENT_PATH here, since it
+        //  matches all IDs ("#"), attributes ("@"), etc.
+        if (TP.regex.ELEMENT_POINTER.test(path)) {
+            return TP.ELEMENT_PATH_TYPE;
+        } else {
+            return TP.XPATH_PATH_TYPE;
+        }
     }
 
     //  extended xpointer, perhaps explicit css() scheme (TIBET-only)
@@ -4970,6 +5186,12 @@ function(aPath) {
 
     //  strip any id/fragment prefix
     path = path.charAt(0) === '#' ? path.slice(1) : path;
+
+    //  If the path is just '.', then that's the shortcut to just return a TIBET
+    //  path
+    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+        return TP.TIBET_PATH_TYPE;
+    }
 
     //  XPath is typically ./elem, //elem, @attr, or ./elem[predicate], all
     //  of which are going to include a slash (other than 'standalone' attr
@@ -4987,6 +5209,26 @@ function(aPath) {
         TP.regex.XPATH_PATH.test(path) ||
         TP.regex.HAS_SLASH.test(path)) {
         return TP.XPATH_PATH_TYPE;
+    }
+
+    //  A JSON path
+    if (TP.regex.JSON_PATH.test(path)) {
+        return TP.JSON_PATH_TYPE;
+    }
+
+    //  A TIBET path - simple or complex
+    if (TP.regex.TIBET_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
+    }
+
+    //  If there is no 'path punctuation' (only JS identifer characters), or
+    //  it's a simple numeric path like '2' or '[2]', that means it's a 'simple
+    //  path'.
+    //  TODO: This is hacky - figure out how to combine them into one RegExp.
+    if (TP.regex.JS_IDENTIFIER.test(path) ||
+        TP.regex.ONLY_NUM.test(path) ||
+        TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
+        return TP.TIBET_PATH_TYPE;
     }
 
     //  So far its not either an XPath or a TIBET Xtension path. So there
@@ -5022,11 +5264,13 @@ function(aPath) {
      *     current return values:
      *
      *     TP.TIBET_PATH_TYPE               ->      'tibet'
+     *     TP.JSON_PATH_TYPE                ->      'json'
      *     TP.CSS_PATH_TYPE                 ->      'css'
      *     TP.XPATH_PATH_TYPE               ->      'xpath1'
-     *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
-     *     TP.XTENSION_POINTER_PATH_TYPE    ->      'css'
      *     TP.BARENAME_PATH_TYPE            ->      ''
+     *     TP.XPOINTER_PATH_TYPE            ->      'xpointer'
+     *     TP.ELEMENT_PATH_TYPE             ->      'element'
+     *     TP.XTENSION_POINTER_PATH_TYPE    ->      'css'
      *
      *     Note that if the path consists only of word characters that a value
      *     of 'tibet' will be returned.
@@ -5047,23 +5291,120 @@ function(aPath) {
         return 'tibet';
     }
 
-    pathType = TP.getMarkupPathType(aPath);
+    //  If the path only contains a dollar character, is 'json'.
+    if (TP.regex.ONLY_DOLLAR.test(aPath)) {
+        return 'json';
+    }
+
+    pathType = TP.getAccessPathType(aPath);
 
     switch (pathType) {
         case TP.TIBET_PATH_TYPE:
             return 'tibet';
+        case TP.JSON_PATH_TYPE:
+            return 'json';
         case TP.CSS_PATH_TYPE:
-        case TP.XTENSION_POINTER_PATH_TYPE:
             return 'css';
         case TP.XPATH_PATH_TYPE:
             return 'xpath1';
-        case TP.XPOINTER_PATH_TYPE:
-            return 'xpointer';
         case TP.BARENAME_PATH_TYPE:
             return '';
+        case TP.XPOINTER_PATH_TYPE:
+            return 'xpointer';
+        case TP.ELEMENT_PATH_TYPE:
+            return 'element';
+        case TP.XTENSION_POINTER_PATH_TYPE:
+            return 'css';
         default:
             return '';
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('joinAccessPathParts',
+function(pathParts, aPathType) {
+
+    /**
+     * @method joinAccessPathParts
+     * @summary Returns the 'pointer scheme' given a path.
+     * @description Depending on the type of path supplied, this method will use
+     *     the proper 'joining character' to join together the supplied path
+     *     parts. These are the various joining character values:
+     *
+     *     TP.TIBET_PATH_TYPE               ->      '.'
+     *     TP.JSON_PATH_TYPE                ->      '.'
+     *     TP.CSS_PATH_TYPE                 ->      ' '
+     *     TP.XPATH_PATH_TYPE               ->      '/'
+     *     TP.XPOINTER_PATH_TYPE            ->      '/'
+     *
+     * @param {Array} pathParts The path parts to join together.
+     * @param {String} aPathType The type of path to join the parts together as.
+     * @returns {String} The path obtained by joining the path parts together
+     *     using the computed join character.
+     */
+
+    var result,
+
+        len,
+        i,
+        part,
+
+        joinChar;
+
+    //  Need at least one path part.
+    if (TP.isEmpty(pathParts)) {
+        return TP.raise(this, 'TP.sig.InvalidPath',
+                        'Unable to join empty path parts.');
+    }
+
+    if (TP.notValid(aPathType)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Initially, the result is the first part.
+    result = pathParts.at(0);
+
+    //  Loop over the remaining parts and append them, using a computed joining
+    //  character.
+    len = pathParts.getSize();
+    for (i = 1; i < len; i++) {
+        part = pathParts.at(i);
+
+        switch (aPathType) {
+            case TP.CSS_PATH_TYPE:
+                joinChar = ' ';
+                break;
+
+            case TP.TIBET_PATH_TYPE:
+            case TP.JSON_PATH_TYPE:
+                if (part.charAt(0) === '[') {
+                    joinChar = '';
+                } else {
+                    joinChar = '.';
+                }
+
+                break;
+
+            case TP.XPATH_PATH_TYPE:
+            case TP.XPOINTER_PATH_TYPE:
+                if (part.charAt(0) === '[') {
+                    joinChar = '';
+                } else {
+                    joinChar = '/';
+                }
+
+                break;
+
+            default:
+                joinChar = '';
+        }
+
+        //  Do the concatentation.
+        result += joinChar + part;
+    }
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------

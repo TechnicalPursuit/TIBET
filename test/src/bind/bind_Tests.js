@@ -26,73 +26,73 @@ function() {
 
         //  Fully formed URI, no fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:foo');
 
         //  Fully formed URI, with fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo#tibet(foo)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:foo#tibet(foo)');
 
         //  Fully formed URI, no fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo, bar: urn:tibet:bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:foo');
         test.assert.hasKey(info, 'bar');
-        test.assert.isEqualTo(info.at('bar'), 'urn:tibet:bar');
+        test.assert.isEqualTo(info.at('bar').at('dataExprs').first(), 'urn:tibet:bar');
 
         //  Fully formed URI, with fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: urn:tibet:foo#tibet(foo), bar: urn:tibet:bar#tibet(bar)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:foo#tibet(foo)');
         test.assert.hasKey(info, 'bar');
-        test.assert.isEqualTo(info.at('bar'), 'urn:tibet:bar#tibet(bar)');
+        test.assert.isEqualTo(info.at('bar').at('dataExprs').first(), 'urn:tibet:bar#tibet(bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: #tibet(foo)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), '#tibet(foo)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: foo}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'foo');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: #tibet(foo), bar: #tibet(bar)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), '#tibet(foo)');
         test.assert.hasKey(info, 'bar');
-        test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(bar)');
+        test.assert.isEqualTo(info.at('bar').at('dataExprs').first(), '#tibet(bar)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo: foo, bar: bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'foo');
         test.assert.hasKey(info, 'bar');
-        test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(bar)');
+        test.assert.isEqualTo(info.at('bar').at('dataExprs').first(), 'bar');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value, split path
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{bar: bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'bar');
-        test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(foo.bar)');
+        test.assert.isEqualTo(info.at('bar').at('dataExprs').first(), 'bar');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values, split path
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{foo: foo, bar: bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'))
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'urn:tibet:foo#tibet(foo.foo)');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'foo');
         test.assert.hasKey(info, 'bar');
-        test.assert.isEqualTo(info.at('bar'), 'urn:tibet:foo#tibet(foo.bar)');
+        test.assert.isEqualTo(info.at('bar').at('dataExprs').first(), 'bar');
     });
 
     this.it('binding attribute parsing tests - namespaced attributes', function(test, options) {
@@ -104,73 +104,73 @@ function() {
 
         //  Fully formed URI, no fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), 'urn:tibet:foo');
 
         //  Fully formed URI, with fragment, single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo#tibet(foo)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), 'urn:tibet:foo#tibet(foo)');
 
         //  Fully formed URI, no fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo, bar|moo: urn:tibet:bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), 'urn:tibet:foo');
         test.assert.hasKey(info, 'bar|moo');
-        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:bar');
+        test.assert.isEqualTo(info.at('bar|moo').at('dataExprs').first(), 'urn:tibet:bar');
 
         //  Fully formed URI, with fragment, multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo|moo: urn:tibet:foo#tibet(foo), bar|moo: urn:tibet:bar#tibet(bar)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), 'urn:tibet:foo#tibet(foo)');
         test.assert.hasKey(info, 'bar|moo');
-        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:bar#tibet(bar)');
+        test.assert.isEqualTo(info.at('bar|moo').at('dataExprs').first(), 'urn:tibet:bar#tibet(bar)');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: #tibet(foo)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), '#tibet(foo)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), single value
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: foo}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), 'foo');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: #tibet(foo), bar|moo: #tibet(bar)}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), '#tibet(foo)');
         test.assert.hasKey(info, 'bar|moo');
-        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(bar)');
+        test.assert.isEqualTo(info.at('bar|moo').at('dataExprs').first(), '#tibet(bar)');
 
         //  Partially formed URI, with fragment (unspecified pointer scheme), multiple values
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo" bind:in="{foo|moo: foo, bar|moo: bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo)');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), 'foo');
         test.assert.hasKey(info, 'bar|moo');
-        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(bar)');
+        test.assert.isEqualTo(info.at('bar|moo').at('dataExprs').first(), 'bar');
 
         //  Partially formed URI, with fragment (specified pointer scheme), single value, split path
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{bar|moo: bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'bar|moo');
-        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(foo.bar)');
+        test.assert.isEqualTo(info.at('bar|moo').at('dataExprs').first(), 'bar');
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values, split path
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{foo|moo: foo, bar|moo: bar}"/>');
-        info = testMarkup.getBindingInfoFrom('in', true);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo|moo');
-        test.assert.isEqualTo(info.at('foo|moo'), 'urn:tibet:foo#tibet(foo.foo)');
+        test.assert.isEqualTo(info.at('foo|moo').at('dataExprs').first(), 'foo');
         test.assert.hasKey(info, 'bar|moo');
-        test.assert.isEqualTo(info.at('bar|moo'), 'urn:tibet:foo#tibet(foo.bar)');
+        test.assert.isEqualTo(info.at('bar|moo').at('dataExprs').first(), 'bar');
     });
 
     this.it('binding attribute parsing tests - literal content', function(test, options) {
@@ -179,30 +179,642 @@ function() {
 
         //  Literal content
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The canonical name: [[urn:tibet:test_person_xml#tibet(canonicalName)]]\'}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'The canonical name: [[urn:tibet:test_person_xml#tibet(canonicalName)]]');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:test_person_xml#tibet(canonicalName)');
 
         //  Literal with vars content
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The canonical name: [[urn:tibet:test_person_xml#tibet($TAG.canonicalName)]]\'}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'The canonical name: [[urn:tibet:test_person_xml#tibet($TAG.canonicalName)]]');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:test_person_xml#tibet(.)');
 
         //  Literal with escaped quotes content
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet(value .% upperCase)]]\'}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet(value) .% upperCase]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'The data source\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet(value .% upperCase)]]');
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:test_person_xml#tibet(value)');
 
         //  Literal with vars and escaped quotes content
-        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet($TAG.(.//lastname).value .% upperCase)]]\'}"/>');
-        info = testMarkup.getBindingInfoFrom('in', false);
+        testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:in="{foo: \'The data source\\\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet($TAG.(.//lastname).value) .% upperCase]]\'}"/>');
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
-        test.assert.isEqualTo(info.at('foo'), 'The data source\'s last name field value uppercased: [[urn:tibet:test_person_xml#tibet($TAG.(.//lastname).value .% upperCase)]]');
-
+        test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'urn:tibet:test_person_xml#tibet(.)');
     });
 });
+
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: bind path slicing',
+function() {
+
+    var unloadURI,
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+            this.getSuite().startTrackingSignals();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            this.getSuite().stopTrackingSignals();
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('path slicing - XML data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPathSlicingXML.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    firstNameField1,
+                    firstNameField2,
+                    firstNameField3,
+                    firstNameField4,
+                    firstNameField5;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                firstNameField1 = TP.byId('firstNameField1', windowContext);
+                firstNameField2 = TP.byId('firstNameField2', windowContext);
+                firstNameField3 = TP.byId('firstNameField3', windowContext);
+                firstNameField4 = TP.byId('firstNameField4', windowContext);
+                firstNameField5 = TP.byId('firstNameField5', windowContext);
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                test.assert.isEqualTo(firstNameField1.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField2.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField3.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField4.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField5.get('value'), 'Joe');
+
+                //  Change the content via 'user' interaction
+
+                //  Field #1
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField1.clearValue();
+                    }).
+                    sendKeys('Johnny', firstNameField1).
+                    sendEvent(TP.hc('type', 'change'), firstNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Johnny');
+                    });
+
+                //  Field #2
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField2.clearValue();
+                    }).
+                    sendKeys('Jimmy', firstNameField2).
+                    sendEvent(TP.hc('type', 'change'), firstNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jimmy');
+                    });
+
+                //  Field #3
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField3.clearValue();
+                    }).
+                    sendKeys('Jerry', firstNameField3).
+                    sendEvent(TP.hc('type', 'change'), firstNameField3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jerry');
+                    });
+
+                //  Field #4
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField4.clearValue();
+                    }).
+                    sendKeys('Jacob', firstNameField4).
+                    sendEvent(TP.hc('type', 'change'), firstNameField4).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jacob');
+                    });
+
+                //  Field #5
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField5.clearValue();
+                    }).
+                    sendKeys('Justin', firstNameField5).
+                    sendEvent(TP.hc('type', 'change'), firstNameField5).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Justin');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('path slicing - JSON data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPathSlicingJSON.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    firstNameField1,
+                    firstNameField2,
+                    firstNameField3,
+                    firstNameField4,
+                    firstNameField5;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                firstNameField1 = TP.byId('firstNameField1', windowContext);
+                firstNameField2 = TP.byId('firstNameField2', windowContext);
+                firstNameField3 = TP.byId('firstNameField3', windowContext);
+                firstNameField4 = TP.byId('firstNameField4', windowContext);
+                firstNameField5 = TP.byId('firstNameField5', windowContext);
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                test.assert.isEqualTo(firstNameField1.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField2.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField3.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField4.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField5.get('value'), 'Joe');
+
+                //  Change the content via 'user' interaction
+
+                //  Field #1
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField1.clearValue();
+                    }).
+                    sendKeys('Johnny', firstNameField1).
+                    sendEvent(TP.hc('type', 'change'), firstNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Johnny');
+                    });
+
+                //  Field #2
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField2.clearValue();
+                    }).
+                    sendKeys('Jimmy', firstNameField2).
+                    sendEvent(TP.hc('type', 'change'), firstNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jimmy');
+                    });
+
+                //  Field #3
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField3.clearValue();
+                    }).
+                    sendKeys('Jerry', firstNameField3).
+                    sendEvent(TP.hc('type', 'change'), firstNameField3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jerry');
+                    });
+
+                //  Field #4
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField4.clearValue();
+                    }).
+                    sendKeys('Jacob', firstNameField4).
+                    sendEvent(TP.hc('type', 'change'), firstNameField4).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jacob');
+                    });
+
+                //  Field #5
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField5.clearValue();
+                    }).
+                    sendKeys('Justin', firstNameField5).
+                    sendEvent(TP.hc('type', 'change'), firstNameField5).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Justin');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('path slicing - JavaScript Object data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindPathSlicingJSObj.xhtml');
+
+        test.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+                var windowContext,
+
+                    firstNameField1,
+                    firstNameField2,
+                    firstNameField3,
+                    firstNameField4,
+                    firstNameField5;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                firstNameField1 = TP.byId('firstNameField1', windowContext);
+                firstNameField2 = TP.byId('firstNameField2', windowContext);
+                firstNameField3 = TP.byId('firstNameField3', windowContext);
+                firstNameField4 = TP.byId('firstNameField4', windowContext);
+                firstNameField5 = TP.byId('firstNameField5', windowContext);
+
+                test.assert.didSignal(
+                        TP.uc('urn:tibet:test_people'),
+                        'TP.sig.ValueChange');
+
+                test.assert.isEqualTo(firstNameField1.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField2.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField3.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField4.get('value'), 'Joe');
+                test.assert.isEqualTo(firstNameField5.get('value'), 'Joe');
+
+                //  Change the content via 'user' interaction
+
+                //  Field #1
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField1.clearValue();
+                    }).
+                    sendKeys('Johnny', firstNameField1).
+                    sendEvent(TP.hc('type', 'change'), firstNameField1).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Johnny');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Johnny');
+                    });
+
+                //  Field #2
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField2.clearValue();
+                    }).
+                    sendKeys('Jimmy', firstNameField2).
+                    sendEvent(TP.hc('type', 'change'), firstNameField2).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jimmy');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jimmy');
+                    });
+
+                //  Field #3
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField3.clearValue();
+                    }).
+                    sendKeys('Jerry', firstNameField3).
+                    sendEvent(TP.hc('type', 'change'), firstNameField3).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Jerry');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jerry');
+                    });
+
+                //  Field #4
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField4.clearValue();
+                    }).
+                    sendKeys('Jacob', firstNameField4).
+                    sendEvent(TP.hc('type', 'change'), firstNameField4).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Jacob');
+
+                        test.assert.isEqualTo(
+                            firstNameField5.get('value'),
+                            'Jacob');
+                    });
+
+                //  Field #5
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        firstNameField5.clearValue();
+                    }).
+                    sendKeys('Justin', firstNameField5).
+                    sendEvent(TP.hc('type', 'change'), firstNameField5).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            firstNameField1.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField2.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField3.get('value'),
+                            'Justin');
+
+                        test.assert.isEqualTo(
+                            firstNameField4.get('value'),
+                            'Justin');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -267,14 +879,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -342,14 +946,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -526,14 +1122,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -682,7 +1270,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -709,14 +1297,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -865,7 +1445,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -892,14 +1472,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/person/lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1048,7 +1620,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1069,14 +1641,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -1145,14 +1709,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1301,7 +1857,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1328,14 +1884,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1484,7 +2032,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1511,14 +2059,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1667,7 +2207,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1694,14 +2234,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -1850,7 +2382,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -1871,14 +2403,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -1946,14 +2470,6 @@ function() {
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
@@ -2130,14 +2646,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -2286,7 +2794,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -2313,14 +2821,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -2469,7 +2969,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 
     //  ---
 
@@ -2496,14 +2996,6 @@ function() {
                         TP.uc('urn:tibet:test_person'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(person.lastname)'),
-                        'TP.sig.StructureChange');
-
                 modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
 
                 test.assert.isEqualTo(
@@ -2652,7 +3144,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    });
 }).timeout(45000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
@@ -2718,26 +3210,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2827,26 +3303,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[1]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person[2]/lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -2936,26 +3396,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3045,26 +3489,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3154,26 +3582,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3263,26 +3675,10 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[0].lastname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].firstname)'),
-                        'TP.sig.StructureChange');
-
-                test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people[1].lastname)'),
-                        'TP.sig.StructureChange');
-
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3679,8 +4075,6 @@ function() {
     //  ---
 
     this.it('repeat binding with text fields - JSON data source', function(test, options) {
-
-        var loadURI;
 
         loadURI = TP.uc('~lib_test/src/bind/BindRepeatJSON.xhtml');
 
@@ -5678,7 +6072,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -5733,7 +6127,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -5788,7 +6182,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -5843,7 +6237,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -5899,7 +6293,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -5970,7 +6364,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6042,7 +6436,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6113,7 +6507,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6183,7 +6577,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6238,7 +6632,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6293,7 +6687,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6348,7 +6742,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6404,7 +6798,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6475,7 +6869,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6547,7 +6941,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6618,7 +7012,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6688,7 +7082,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6743,7 +7137,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6798,7 +7192,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6853,7 +7247,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
 
@@ -6909,7 +7303,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -6980,7 +7374,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7052,7 +7446,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -7123,7 +7517,7 @@ function() {
 
                 windowContext = test.getDriver().get('windowContext');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 colorField = TP.byId('colorField', windowContext);
                 colorSpan = TP.byId('colorSpan', windowContext);
@@ -8031,38 +8425,9 @@ function() {
 
     //  ---
 
-    this.it('fully qualified expressions - XML data source', function(test, options) {
+    this.it('standalone expressions - XML data source', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsXML.xhtml');
-
-        this.getDriver().setLocation(loadURI);
-
-        test.then(
-            function() {
-
-                var fields;
-
-                fields = TP.byCSSPath('span[bind|in]');
-
-                test.assert.isEqualTo(
-                    fields.at(0).getValue(),
-                    'Joe');
-
-                test.assert.isEqualTo(
-                    fields.at(1).getValue(),
-                    'Smith');
-            },
-            function(error) {
-                test.fail(error, TP.sc('Couldn\'t get resource: ',
-                                            loadURI.getLocation()));
-            });
-    });
-
-    //  ---
-
-    this.it('fully qualified expressions - JSON data source', function(test, options) {
-
-        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSON.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindStandaloneExpressionsXML.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -8080,6 +8445,14 @@ function() {
                 test.assert.isEqualTo(
                     fields.at(1).getValue(),
                     'Smith');
+
+                test.assert.isEqualTo(
+                    fields.at(2).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(3).getValue(),
+                    'Smith');
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
@@ -8089,9 +8462,9 @@ function() {
 
     //  ---
 
-    this.it('fully qualified expressions - JavaScript Object data source', function(test, options) {
+    this.it('standalone expressions - JSON data source', function(test, options) {
 
-        loadURI = TP.uc('~lib_test/src/bind/BindFullExpressionsJSObj.xhtml');
+        loadURI = TP.uc('~lib_test/src/bind/BindStandaloneExpressionsJSON.xhtml');
 
         this.getDriver().setLocation(loadURI);
 
@@ -8108,6 +8481,51 @@ function() {
 
                 test.assert.isEqualTo(
                     fields.at(1).getValue(),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    fields.at(2).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(3).getValue(),
+                    'Smith');
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('standalone expressions - JavaScript Object data source', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindStandaloneExpressionsJSObj.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var fields;
+
+                fields = TP.byCSSPath('span[bind|in]');
+
+                test.assert.isEqualTo(
+                    fields.at(0).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(1).getValue(),
+                    'Smith');
+
+                test.assert.isEqualTo(
+                    fields.at(2).getValue(),
+                    'Joe');
+
+                test.assert.isEqualTo(
+                    fields.at(3).getValue(),
                     'Smith');
             },
             function(error) {

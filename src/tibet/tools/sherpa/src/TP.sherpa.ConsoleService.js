@@ -250,7 +250,9 @@ function() {
         triggerSignal = aSignal.getPayload().at('trigger');
         triggerEvent = triggerSignal.getEvent();
 
-        if (normalResponder.isCommandEvent(triggerEvent)) {
+        if (triggerSignal.getSignalName() ===
+                'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up' ||
+            normalResponder.isCommandEvent(triggerEvent)) {
             normalResponder.executeTriggerSignalHandler(triggerSignal);
         }
 
@@ -2171,7 +2173,12 @@ function(aSignal) {
      * @method didEnter
      */
 
-    this.get('$consoleGUI').transitionToSeparateEvalMarker();
+    var consoleGUI;
+
+    consoleGUI = this.get('$consoleGUI');
+
+    consoleGUI.transitionToSeparateEvalMarker();
+    consoleGUI.togglePromptIndicator('eval', true);
 
     return this;
 });
@@ -2185,7 +2192,12 @@ function(aSignal) {
      * @method didExit
      */
 
-    this.get('$consoleGUI').teardownEvalMark();
+    var consoleGUI;
+
+    consoleGUI = this.get('$consoleGUI');
+    consoleGUI.togglePromptIndicator('eval', false);
+
+    consoleGUI.teardownEvalMark();
 
     return this;
 });
@@ -2370,6 +2382,8 @@ function(aSignal) {
 
     this.set('$changeHandler', handler);
 
+    consoleGUI.togglePromptIndicator('autocomplete', true);
+
     return this;
 });
 
@@ -2400,6 +2414,8 @@ function(aSignal) {
 
     this.set('$changeHandler', null);
 
+    consoleGUI.togglePromptIndicator('autocomplete', false);
+
     return this;
 });
 
@@ -2415,12 +2431,16 @@ function(cm, options) {
     var completions,
 
         consoleGUI,
-        editorObj;
+        editorObj,
+
+        backgroundElem;
 
     completions = this.supplyCompletions(cm, options);
 
     consoleGUI = this.get('$consoleGUI');
     editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    backgroundElem = this.get('$popupContainer');
 
     TP.extern.CodeMirror.on(
         completions,
@@ -2454,6 +2474,26 @@ function(cm, options) {
                 }
             }
         });
+
+    TP.extern.CodeMirror.on(
+        completions,
+        'shown',
+        function(completion) {
+            var hintsElem;
+
+            //  Make sure to mark the hints element with a 'nomutationtracking'
+            //  flag to avoid a lot of extra mutation signaling.
+            hintsElem = TP.byCSSPath('.CodeMirror-hints',
+                                        backgroundElem,
+                                        true,
+                                        false);
+
+            if (TP.isElement(hintsElem)) {
+                TP.elementSetAttribute(
+                    hintsElem, 'tibet:nomutationtracking', true, true);
+            }
+
+        }.bind(this));
 
     TP.extern.CodeMirror.on(
         completions,

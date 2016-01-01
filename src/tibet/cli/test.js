@@ -59,34 +59,6 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 //  ---
 
 /**
- * The command help string.
- * @type {String}
- */
-Cmd.prototype.HELP =
-'Runs unit, functional, and/or integration tests on your application.\n\n' +
-
-'CLI-initiated tests are run in the context of phantomjs and support\n' +
-'the use of the full TIBET test harness and UI driver feature set.\n\n' +
-
-'The default operation makes use of ~app_test/phantom.xml as the\n' +
-'boot.profile (which controls what code is loaded) and a TSH shell\n' +
-'command of \':test\' which will run all test suites in the profile.\n\n' +
-
-'You can specify a particular test target object or test suite to\n' +
-'run as the first argument to the command. If you need to specify\n' +
-'both a target and suite use --target and --suite respectively.\n\n' +
-
-'You can limit testing to a particular case or set of cases by using\n' +
-'the --cases parameter. Both --suite and --cases accept either a string\n' +
-'or a regular expression in JavaScript syntax such as --cases="/foo/i".\n\n' +
-
-'Output is to the terminal in colorized TAP format by default.\n' +
-'Future versions will support additional test output formatters.\n\n' +
-
-'You can use the built-in debugging facilities of PhantomJS by\n' +
-'specifying --remote-debug-port and a port number.\n';
-
-/**
  * Command argument parsing options.
  * @type {Object}
  */
@@ -95,7 +67,7 @@ Cmd.prototype.HELP =
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap'],
-        'string': ['target', 'suite', 'cases'],
+        'string': ['target', 'suite', 'cases', 'context'],
         'default': {
             tap: true
         }
@@ -164,6 +136,7 @@ Cmd.prototype.getProfile = function() {
 Cmd.prototype.getScript = function() {
 
     var target,
+        context,
         prefix,
         ignore;
 
@@ -186,9 +159,13 @@ Cmd.prototype.getScript = function() {
 
     if (CLI.notEmpty(this.options.suite)) {
         target = target.trim() + ' -suite=\'' + this.options.suite + '\'';
-    } else if (target === prefix) {
-        target += ' -all';
     }
+
+    context = this.options.context;
+    if (CLI.isEmpty(context)) {
+        context = CLI.inLibrary() ? 'lib' : 'app';
+    }
+    target = target.trim() + ' -context=\'' + context + '\'';
 
     if (this.options.selftest) {
         target += ' -ignore_only';

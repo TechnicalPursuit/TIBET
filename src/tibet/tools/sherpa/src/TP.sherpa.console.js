@@ -297,7 +297,7 @@ function() {
     var consoleInput;
 
     if (TP.isValid(consoleInput = this.get('consoleInput'))) {
-        consoleInput.$get('$editorObj').refresh();
+        consoleInput.refreshEditor();
     }
 
     this.adjustInputSize();
@@ -665,11 +665,25 @@ function(range, cssClass, promptText) {
 
     var consoleInput,
 
+        content,
+
         doc,
         elem,
+
         marker;
 
     consoleInput = this.get('consoleInput');
+
+    content =
+            '<div name="eval" class="indicator">' +
+                '&#160;' +
+            '</div>' +
+            '<div name="autocomplete" class="indicator">' +
+                '&#160;' +
+            '</div>' +
+            '<span class="text">' +
+                TP.xmlEntitiesToLiterals(promptText) +
+            '</span>';
 
     doc = this.getNativeDocument();
 
@@ -677,7 +691,6 @@ function(range, cssClass, promptText) {
     TP.elementSetClass(elem, cssClass);
     TP.elementAddClass(elem, 'noselect');
     TP.elementSetAttribute(elem, 'id', TP.sys.cfg('sherpa.console_prompt'));
-    TP.xmlElementSetContent(elem, TP.xmlEntitiesToLiterals(promptText));
 
     marker = consoleInput.$get('$editorObj').markText(
         range.from,
@@ -698,6 +711,8 @@ function(range, cssClass, promptText) {
     //  Wire a reference to the marker back onto our output element
     elem.marker = marker;
 
+    elem.innerHTML = content;
+
     return marker;
 });
 
@@ -712,7 +727,7 @@ function(aPrompt, aCSSClass) {
      * @param {String} aPrompt The prompt to define.
      * @param {String} aCSSClass An optional CSS class name to use for display
      *     of the prompt string.
-     * @returns {TP.sherpa.cmdline} The receiver.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var cssClass,
@@ -720,16 +735,16 @@ function(aPrompt, aCSSClass) {
 
         consoleInput,
 
-        doc,
-        range,
-        marker,
-        elem,
-
         editor,
 
-        cursorRange;
+        doc,
 
-    TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
+        elem,
+        cursorRange,
+        range,
+        marker,
+
+        textElem;
 
     cssClass = TP.ifInvalid(aCSSClass, 'console_prompt');
 
@@ -737,10 +752,9 @@ function(aPrompt, aCSSClass) {
 
     consoleInput = this.get('consoleInput');
 
-    doc = this.getNativeDocument();
-
     editor = this.get('consoleInput').$get('$editorObj');
 
+    doc = this.getNativeDocument();
     if (!TP.isElement(elem = TP.byId(
                         TP.sys.cfg('sherpa.console_prompt'), doc, false))) {
 
@@ -756,13 +770,43 @@ function(aPrompt, aCSSClass) {
 
         editor.setCursor(range.to);
     } else {
-        TP.elementSetClass(elem, cssClass);
-        TP.elementAddClass(elem, 'noselect');
-        TP.htmlElementSetContent(elem, promptStr);
+        textElem = TP.byCSSPath('.text', elem, true, false);
+        TP.elementSetContent(textElem, TP.xmlEntitiesToLiterals(promptStr));
     }
 
     //  We probably resized the prompt mark - tell the editor to refresh.
     editor.refresh();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('togglePromptIndicator',
+function(indicatorName, shouldBeVisible) {
+
+    /**
+     * @method togglePromptIndicator
+     * @summary
+     * @param {String} indicatorName The indicator to toggle.
+     * @param {Boolean} shouldBeVisible
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var doc,
+        indicatorTPElem;
+
+    doc = this.getNativeDocument();
+    if (TP.notValid(indicatorTPElem = TP.byCSSPath(
+                    '*[name="' + indicatorName + '"]', doc, true))) {
+        return this;
+    }
+
+    if (shouldBeVisible) {
+        indicatorTPElem.show();
+    } else {
+        indicatorTPElem.hide();
+    }
 
     return this;
 });
@@ -779,7 +823,7 @@ function(statusOutID) {
      * @summary Clears any status information in the status bar content,
      *     resetting it to the default state.
      * @param {String} statusOutID The ID of the status readout to clear.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
+     * @returns {TP.sherpa.console} The receiver.
      */
 
     var statusTPElem;

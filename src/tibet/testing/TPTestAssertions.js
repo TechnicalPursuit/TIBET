@@ -206,7 +206,8 @@ function(anObject, aType, aComment) {
     return this.assert(
             TP.validate(anObject, aType),
             aComment,
-            TP.sc('Expected ', TP.id(anObject), ' to be a ', aType, '.'));
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to be a ', TP.name(aType), '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -236,7 +237,8 @@ function(anObject, aType, aComment) {
     return this.assert(
             TP.isKindOf(anObject, aType),
             aComment,
-            TP.sc('Expected ', TP.id(anObject), ' to be a kind of ', aType, '.'));
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to be a kind of ', TP.name(aType), '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -251,7 +253,8 @@ function(anObject, aType, aComment) {
     return this.assert(
             TP.isMemberOf(anObject, aType),
             aComment,
-            TP.sc('Expected ', TP.id(anObject), ' to be a member of ', aType, '.'));
+            TP.sc('Expected ', TP.id(anObject),
+                    ' to be a member of ', TP.name(aType), '.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -2918,11 +2921,11 @@ function(aType) {
         if (TP.isTrue(this.get('$negate'))) {
             this.set('faultStr',
                 TP.sc('Expected ', TP.id(testVal),
-                        ' to not be a kind of ', aType, '.'));
+                        ' to not be a kind of ', TP.name(aType), '.'));
         } else {
             this.set('faultStr',
                 TP.sc('Expected ', TP.id(testVal),
-                        ' to be a kind of ', aType, '.'));
+                        ' to be a kind of ', TP.name(aType), '.'));
         }
     }
 

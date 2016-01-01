@@ -70,7 +70,7 @@ function(aName) {
         re = TP.rc('.*');
     } else {
         list = aName.split(' ');
-        list.convert(
+        list = list.map(
             function(name) {
 
                 if (/\*:\*/.test(name)) {
@@ -116,8 +116,8 @@ function(aDocument) {
      *          <samp>[object DocumentFragment]</samp>
      *     </code>
      * @returns {DocumentFragment} A valid DOM DocumentFragment.
-     * @exception TP.sig.InvalidDocument Raised when an invalid Document is provided
-     *     to the method.
+     * @exception TP.sig.InvalidDocument Raised when an invalid Document is
+     *     provided to the method.
      */
 
     if (!TP.isDocument(aDocument)) {
@@ -154,8 +154,8 @@ function(aDocument) {
      *          <samp>{"docTypeName":"moo", "publicID":"", "systemID":""}</samp>
      *     </code>
      * @returns {TP.core.Hash} The document type info for this document.
-     * @exception TP.sig.InvalidXMLDocument Raised when an invalid XML document is
-     *     provided to the method.
+     * @exception TP.sig.InvalidXMLDocument Raised when an invalid XML document
+     *     is provided to the method.
      */
 
     var theDocType,
@@ -223,8 +223,8 @@ function(aDocument) {
      *          <samp>null</samp>
      *     </code>
      * @returns {String} The MIME type for this document.
-     * @exception TP.sig.InvalidDocument Raised when an invalid document is provided
-     *     to the method.
+     * @exception TP.sig.InvalidDocument Raised when an invalid document is
+     *     provided to the method.
      */
 
     var metaTags,
@@ -282,8 +282,8 @@ function(aNode, namespaceURI) {
      *     default namespace.
      * @returns {Node} A new Node (Document or Element depending on what was
      *     provided to this method) with the namespace added to it.
-     * @exception TP.sig.InvalidNode Raised when an invalid document or element is
-     *     provided to the method.
+     * @exception TP.sig.InvalidNode Raised when an invalid document or element
+     *     is provided to the method.
      * @exception TP.sig.InvalidString Raised when an invalid namespace URI is
      *     provided to the method.
      */

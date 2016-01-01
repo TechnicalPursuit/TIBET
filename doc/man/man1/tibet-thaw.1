@@ -1,0 +1,32 @@
+.TH "TIBET\-THAW" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-thaw\fR \- thaws a frozen project's TIBET library reference
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet thaw \-\-force
+.fi
+.RE
+.SH DESCRIPTION
+.P
+Thaws (un\-freezes) the current application's TIBET library in ~app_inf\.
+.P
+By default ~app_inf refers to TIBET\-INF, the default location for
+.br
+package data, custom commands, etc\. TIBET is configured to allow
+.br
+a version of TIBET to be frozen into TIBET\-INF/tibet rather than
+.br
+in node_modules/tibet to support deployments where the use of the
+.br
+node_modules directory would be unnecessary or excessive\.
+.P
+The thaw command removes any ~app_inf/tibet content and returns the
+.br
+setting for lib_root to its default value of ~/node_modules/tibet\.
+.P
+Since it is inherently destructive this command requires \-\-force to
+.br
+actually run\.
+

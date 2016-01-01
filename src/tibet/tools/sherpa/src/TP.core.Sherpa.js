@@ -219,7 +219,9 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('finishSetup',
 function() {
 
-    var worldTPElem,
+    var viewDoc,
+
+        worldTPElem,
 
         toggleKey,
 
@@ -232,11 +234,12 @@ function() {
     //  Set up the HUD
     this.setupHUD();
 
+    viewDoc = this.get('vWin').document;
+
     //  The World was set up on initial startup - set up the rest of the
     //  components. We do set up the World to observe when the HUD shows
-    worldTPElem = TP.byId('SherpaWorld', this.get('vWin'));
-    worldTPElem.observe(TP.byId('SherpaHUD', this.get('vWin')),
-                        'HiddenChange');
+    worldTPElem = TP.byId('SherpaWorld', viewDoc);
+    worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'HiddenChange');
 
     //  Set up the halo
     this.setupHalo();
@@ -271,9 +274,7 @@ function() {
             TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
     */
 
-    sherpaEastDrawer = TP.byCSSPath('#east > .drawer',
-                                    this.get('vWin').document,
-                                    true);
+    sherpaEastDrawer = TP.byCSSPath('#east > .drawer', viewDoc, true);
 
     tileDockTPElem = sherpaEastDrawer.addContent(
                         TP.sherpa.tiledock.getResourceElement(
@@ -284,9 +285,7 @@ function() {
     //tileDockTPElem.render();
 
 
-    sherpaWestDrawer = TP.byCSSPath('#west > .drawer',
-                                    this.get('vWin').document,
-                                    true);
+    sherpaWestDrawer = TP.byCSSPath('#west > .drawer', viewDoc, true);
 
     snippetBarTPElem = sherpaWestDrawer.addContent(
                         TP.sherpa.snippetbar.getResourceElement(
@@ -295,6 +294,20 @@ function() {
     snippetBarTPElem.setID('snippetBar');
     //snippetBarTPElem.awaken();
     //snippetBarTPElem.render();
+
+    (function() {
+        var tpElem;
+
+        tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
+        tpElem.setAttribute('tibet:nomutationtracking', true);
+
+        tpElem = TP.byCSSPath('#north > .drawer', viewDoc, true);
+        tpElem.setAttribute('tibet:nomutationtracking', true);
+
+        tpElem = TP.byId('center', viewDoc);
+        tpElem.setAttribute('tibet:nomutationtracking', true);
+
+    }).fork(500);
 
     return this;
 });
@@ -375,8 +388,6 @@ function() {
 
     consoleOutTPElem = worldTPElem.createSlotElement('SherpaConsoleSlot');
     */
-
-    sherpaSouthDrawer.setAttribute('tibet:nomutationtracking', true);
 
     TP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
     APP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());

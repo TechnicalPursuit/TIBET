@@ -1249,9 +1249,12 @@ TP.boot.initializeCanvasDocument = function(aDocument) {
 
     //  Skip doing this twice.
     if (doc && doc.body && TP.boot.$isElement(doc.body)) {
+
+        //  NB: hasAttributeNS, unlike setAttributeNS below, only wants the
+        //  local attribute name.
         if (doc.body.hasAttributeNS(
                 'http://www.technicalpursuit.com/1999/tibet',
-                'tibet:canvasinitialized')) {
+                'canvasinitialized')) {
 
             if (TP.sys.cfg('log.hook') &&
                 TP.sys.cfg('boot.context') !== 'phantomjs') {

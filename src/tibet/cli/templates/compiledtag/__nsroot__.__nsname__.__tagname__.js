@@ -1,6 +1,6 @@
 /**
  * @type { {{~nsroot~}}.{{nsname}}.{{~tagname~}} }
- * @summary A new tag
+ * @summary A compiled tag which...
  */
 
 //  ------------------------------------------------------------------------
@@ -13,35 +13,16 @@ TP.core.CompiledTag.defineSubtype('{{nsroot}}.{{nsname}}:{{tagname}}');
 function(aRequest) {
 
     /**
-     * @name tagCompile
-     * @synopsis Convert instances of the tag into their HTML representation.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     * @returns {Element} The element that this tag has become.
+     * @method tagCompile
+     * @synopsis Convert instances of the tag into their XHTML form.
+     * @param {TP.sig.Request} aRequest A request containing the tag element
+     *     to convert along with other optional processing parameters.
+     * @returns {Element|Array<Element>} The element(s) to replace the inbound
+     *     element with in the final DOM.
      */
 
-    var elem,
-        newElem;
-
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    newElem = TP.xhtmlnode(
-        '<h1 tibet:tag="{{nsname}}:{{tagname}}">Compiled Tag!</h1>');
-
-    TP.elementReplaceWith(elem, newElem);
-
-    return;
+    return this.callNextMethod();
 });
-
-//  ------------------------------------------------------------------------
-
-/*
- * For information on how to expand the functionality in this type visit:
- *
- * https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Getting-Started
- */
 
 //  ------------------------------------------------------------------------
 //  end

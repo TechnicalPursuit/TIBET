@@ -19,10 +19,12 @@
 
 var CLI,
     Parent,
-    Cmd;
+    Cmd,
+    path;
 
 
 CLI = require('./_cli');
+path = require('path');
 
 //  ---
 //  Type Construction
@@ -66,27 +68,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Initializes a TIBET project, linking and installing dependencies.\n\n' +
-
-'This command must be run prior to most activity within a TIBET\n' +
-'project. Many of the TIBET cli commands will fail to run until\n' +
-'you have run a \'tibet init\' command.\n\n' +
-
-'The optional link parameter will use \'npm link tibet\' to link\n' +
-'TIBET into the project rather than attempting to install it via\n' +
-'the current npm package.\n\n' +
-
-'--link is useful/necessary when you are working with a copy of\n' +
-'TIBET cloned from the public repository. For --link to work\n' +
-'properly you need to have a local TIBET repository and you need\n' +
-'to have run \'npm link .\' in that repository prior to tibet init.\n';
-
-
-/**
  * The command usage string.
  * @type {string}
  */
@@ -108,6 +89,7 @@ Cmd.prototype.execute = function() {
         child,  // The child_process module.
         cmd,    // Closure'd var providing access to the command object.
         dna,
+        lnerr,
         rmerr;
 
     cmd = this;
@@ -152,7 +134,7 @@ Cmd.prototype.execute = function() {
         // For reasons largely due to how the CLI needs to operate (and
         // until the code is part of the global npm package install) we
         // also need an internal link to the tibet 5.0 platform.
-        cmd.log('linking TIBET dynamically via `npm link tibet`.');
+        cmd.log('linking TIBET into project via `npm link tibet`.');
 
         child.exec('npm link tibet', function(linkerr, linkstdout, linkstderr) {
             if (linkerr) {
@@ -162,7 +144,20 @@ Cmd.prototype.execute = function() {
                 throw new Error();
             }
 
-            cmd.log('TIBET development dependency linked successfully.');
+            //  We also link TIBET library code into the TIBET-INF location to
+            //  avoid pointing down into node_modules or having node_modules be
+            //  a location potentially pushed to a remote deployment target.
+            sh.ln('-s', path.join(
+                CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
+                path.join(
+                CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
+            lnerr = sh.error();
+            if (lnerr) {
+                this.error('Error linking library launch directory: ' +
+                    lnerr);
+            } else {
+                cmd.log('TIBET development dependency linked successfully.');
+            }
 
             // Ensure npm install is run once we're sure the things that
             // need to be 'npm link'd into place have been. If we don't
@@ -187,6 +182,21 @@ Cmd.prototype.execute = function() {
             if (err) {
                 cmd.error('Failed to initialize: ' + stderr);
                 throw new Error();
+            }
+
+            //  We also link TIBET library code into the TIBET-INF location to
+            //  avoid pointing down into node_modules or having node_modules be
+            //  a location potentially pushed to a remote deployment target.
+            sh.ln('-s', path.join(
+                CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
+                path.join(
+                CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
+            lnerr = sh.error();
+            if (lnerr) {
+                this.error('Error linking library launch directory: ' +
+                    lnerr);
+            } else {
+                cmd.log('TIBET development dependency linked successfully.');
             }
 
             // If initialization worked invoke startup function.

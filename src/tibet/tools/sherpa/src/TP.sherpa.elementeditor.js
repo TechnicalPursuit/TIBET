@@ -58,7 +58,13 @@ function() {
     editorObj.setOption('lineNumbers', true);
     editorObj.setOption('lineWrapping', true);
 
-    editorObj.refresh();
+    //  By forking this, we give the console a chance to focus the input cell
+    //  (which it really wants to do after executing a command) and then we can
+    //  shift the focus back to us.
+    (function() {
+        this.get('editor').refreshEditor();
+        this.get('editor').focus();
+    }).bind(this).fork(500);
 
     this.$set('didSetup', true);
 
@@ -170,7 +176,7 @@ function() {
 
     /* eslint-disable no-extra-parens */
     (function() {
-        editor.$get('$editorObj').refresh();
+        editor.refreshEditor();
     }).fork(200);
     /* eslint-enable no-extra-parens */
 

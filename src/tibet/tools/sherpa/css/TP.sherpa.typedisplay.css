@@ -14,32 +14,32 @@ sherpa|typedisplay {
     overflow: auto;
 }
 
-sherpa|typedisplay > .typelist {
+sherpa|typedisplay > .infolist {
 
     font-size: 10px;
 
     line-height: 1.3;
 }
 
-sherpa|typedisplay > .typelist .parent {
+sherpa|typedisplay > .infolist .parent {
 
     float: left;
 }
 
-sherpa|typedisplay > .typelist .header {
+sherpa|typedisplay > .infolist .header {
 
     margin: 0px;
     text-align: center;
 }
 
-sherpa|typedisplay > .typelist table {
+sherpa|typedisplay > .infolist table {
 
     border-collapse: collapse;
     margin: 4px;
 }
 
-sherpa|typedisplay > .typelist th,
-sherpa|typedisplay > .typelist td {
+sherpa|typedisplay > .infolist th,
+sherpa|typedisplay > .infolist td {
 
     width: 60px;
     padding: 4px;

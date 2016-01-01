@@ -53,44 +53,22 @@ Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 //  Instance Attributes
 //  ---
 
-/**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Manages and/or displays the current TIBET configuration data.\n\n' +
-
-'The config command can output one or more configuration values to the\n' +
-'console based on current configuration data for your application or\n' +
-'update a particular value to a string, number or boolean value.\n\n' +
-
-'You can view the entire configuration list by leaving off any specific\n' +
-'value. You can view all values for a particular prefix by listing just\n' +
-'the prefix. You can view a specific value by naming that value directly.\n\n' +
-
-'You can dump virtual paths by quoting them as in: \'~app\' or \'~lib\'.\n\n' +
-
-'Configuration data can also be updated by adding an \'=\' and value to\n' +
-'a properly defined property name.\n\n' +
-
-'Examples:\n\n' +
-
-'tibet config -> list all configuration values.\n' +
-'tibet config \'~\' -> list all path values.\n' +
-'tibet config boot -> list all boot.* values.\n' +
-'tibet config boot.level -> list a single value.\n' +
-'tibet config foo.bar=true -> set foo.bar to true.\n\n' +
-
-'NOTE that if you use this command to set values it will rewrite tibet.json\n' +
-'by using the beautify npm module to process the stringified JSON content.\n' +
-'As a result your file may not retain its appearance after updates.\n';
-
+/* eslint-disable quote-props */
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    {
+        'string': ['env'],
+        'default': {
+            'env': 'development'
+        }
+    },
+    Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
 
 /**
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet config [property[=value]]';
+Cmd.prototype.USAGE = 'tibet config [property[=value]] [--env <env>]';
 
 
 //  ---
@@ -155,6 +133,23 @@ Cmd.prototype.execute = function() {
         return;
     }
 
+    // Filter TDS user keys...
+    try {
+        keys = Object.keys(cfg).filter(function(key) {
+            return key.indexOf('tds.users') !== 0;
+        });
+        newcfg = {};
+        keys.forEach(function(key) {
+            if (CLI.isValid(cfg[key])) {
+                newcfg[key] = cfg[key];
+            }
+        });
+        cfg = newcfg;
+    } catch (e) {
+        //  Ignore, probably not an object with keys.
+        void 0;
+    }
+
     // Object.keys will throw for anything other than Object/Array...
     try {
         str = '{\n';
@@ -202,7 +197,12 @@ Cmd.prototype.setConfig = function(path, value) {
         key,
         val;
 
-    file = CLI.expandPath('~tibet_file');
+    if (/^tds\./.test(path)) {
+        file = CLI.expandPath('~tds_file');
+    } else {
+        file = CLI.expandPath('~tibet_file');
+    }
+
     json = require(file);
     if (!json) {
         this.error('Unable to load: ' + file);
@@ -213,6 +213,13 @@ Cmd.prototype.setConfig = function(path, value) {
     if (parts.length === 1) {
         json[path] = value;
     } else {
+
+        //  TDS values aren't prefixed as such in the TDS file, they're placed
+        //  without prefix under an appropriate environment root.
+        if (/^tds\./.test(path)) {
+            parts[0] = this.options.env;
+        }
+
         root = json;
         while (parts.length > 1) {
             key = parts.shift();
@@ -251,7 +258,12 @@ Cmd.prototype.setConfig = function(path, value) {
     if (text) {
         json = JSON.parse(text);
         /* eslint-disable no-eval */
-        this.info(eval('json.' + path));
+        if (/^tds\./.test(path)) {
+            key = this.options.env + path.slice(3);
+        } else {
+            key = path;
+        }
+        this.info(eval('json.' + key));
         /* eslint-disable no-eval */
     }
 };

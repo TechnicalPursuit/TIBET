@@ -1,32 +1,36 @@
 {
-  "//": "{{appname}} npm package configuration.",
   "name": "{{appname}}",
   "version": "0.1.0",
   "dependencies": {
+    "bluebird": "*",
     "body-parser": "*",
+    "chokidar": "^1.4.0",
     "compression": "*",
+    "cookies": "*",
     "cookie-parser": "*",
-    "csurf": "*",
-    "helmet": "*",
+    "crypto": "0.0.3",
     "express": "*",
+    "express-handlebars": "^2.0.1",
     "express-session": "*",
+    "express-winston": "*",
+    "helmet": "*",
+    "js-beautify": "*",
+    "keygrip": "*",
     "minimist": "*",
     "morgan": "*",
+    "passport": "*",
+    "passport-local": "*",
     "require-dir": "*",
-    "serve-static": "*",
     "shelljs": "TechnicalPursuit/shelljs",
     "tibet": "*",
-    "winston": "*"
-  },
-  "devDependencies": {
-  },
+    "winston": "TechnicalPursuit/winston"
+    },
+  "devDependencies": {},
   "engines": {
     "node": ">=0.10",
     "npm": ">=1"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "preferGlobal": "false",
   "private": true
 }
-

@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe", "color": "red"},
@@ -38,7 +38,7 @@
     <br/>
 
     <!-- Set up a span to define the first part of the binding scope -->
-    <span bind:scope="urn:tibet:test_person">
+    <span bind:scope="urn:tibet:test_people">
 
         <!-- Set up a span to define the second part of the binding scope -->
         <span bind:scope="#json($.people[3])">

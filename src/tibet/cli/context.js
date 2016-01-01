@@ -56,14 +56,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Outputs current context information to stdout.\n';
-
-
-/**
  * The command usage string.
  * @type {string}
  */

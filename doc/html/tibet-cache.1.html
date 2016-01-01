@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-cache</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-cache</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-cache-1-manages-a-project-s-html5-application-manifest">tibet-cache(1) -- manages a project&#39;s HTML5 application manifest</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet cache [--file &lt;cachefile&gt;] [--enable|--disable|--status] [--missing] [--develop] [--rebuild] [--touch]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>TIBET projects include a manifest file named <code>{appname}.appcache</code> which is<br>managed by this command. Specific comment blocks in TIBET versions of the<br>manifest file help delimit the content of the file for easier processing.</p>
+<p>Content checks are done against the files in <code>~app_build</code> and <code>~lib_build</code>.<br>If your application caches files outside of those directories you<br>must add those entries manually. <em>This command never removes entries</em> so<br>you can feel confident both editing the cache and using this command.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--file</code> :<br>Provides a way to point to an application manifest other than<br><code>{appname}.appcache</code>. You will need this if you renamed the default app manifest<br>file.</p>
+</li>
+<li><p><code>--enable</code> :<br>Update <code>index.html</code> to use the proper manifest value. When active the html<br>element will have a <code>manifest</code> attribute, otherwise it will have a <code>no-manifest</code><br>attribute (which effectively turns off caching).</p>
+</li>
+<li><p><code>--disable</code> :<br>Update <code>index.html</code> to have a <code>no-manifest</code> attribute. This attribute name<br>effectively will disable the cache. <em>NOTE that if the cache was ever activated<br>you must clear your browser&#39;s cache content and any browser-specific appcache<br>(chrome://appcache-internals/) to fully disable.</em></p>
+</li>
+<li><p><code>--develop</code> :<br>Update the cache such that application file content is commented out so it<br>will load dynamically via the network. Invert the flag via <code>--no-develop</code> to<br>uncomment application section content to test your application running from the<br>cache. Note <code>--develop</code> is on by default.</p>
+</li>
+<li><p><code>--missing</code> :<br>List files in the application not in the manifest. This is a relatively<br>simple scan looking for css, image, and other non-source files which might be<br>useful to cache. For JavaScript the system presumes that only source files in<br><code>~app_build</code> should be part of the cache.</p>
+</li>
+<li><p><code>--rebuild</code> :<br>Refresh the app and lib sections of the manifest. This is the only flag<br>which edits the file content of the appcache itself. If the comment delimiters<br>for app and lib sections are not present this operation will fail and output an<br>appropriate error message. Use this option with a degree of caution since it<br>will alter the content of your cache.</p>
+</li>
+<li><p><code>--touch</code> : Update the embedded ID: {timestamp} value provided by the<br>default cache template. This effectively changes the cache content which<br>should have the effect of causing your browser to refresh the cache.</p>
+</li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

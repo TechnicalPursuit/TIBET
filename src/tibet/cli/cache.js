@@ -56,55 +56,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
 //  ---
 
 /**
- * The command help string.
- * @type {string}
- */
-Cmd.prototype.HELP =
-'Provides control over HTML5 application manifests and their activation.\n\n' +
-
-'TIBET projects include a manifest file named {appname}.appcache which is\n' +
-'managed by this command by taking advantage of specific comment blocks\n' +
-'which help delimit the content of the cache file for easier processing.\n\n' +
-
-'Content checks are done against the files in ~app_build and ~lib_build.\n' +
-'If your application should cache files outside of those directories you\n' +
-'must add those entries manually. This command never removes entries so\n' +
-'you can feel confident both editing the cache and using this command.\n\n' +
-
-'The --file option provides a way to point to an application manifest other\n' +
-'than {appname}.appcache. You will need this if you renamed the default app\n' +
-'manifest file.\n\n' +
-
-'Use --enable to update index.html to use the proper manifest value. When\n' +
-'active the html element will have a manifest attribute, otherwise it will\n' +
-'have a no-manifest attribute (which effectively turns off caching).\n\n' +
-
-'Use --disable to update index.html to have a no-manifest attribute. This\n' +
-'attribute name effectively will disable the cache. NOTE that if the cache\n' +
-'was ever activated you must clear your browser\'s cache content and any\n' +
-'browser-specific appcache (chrome://appcache-internals/) to fully disable.\n\n' +
-
-'Use --develop to update the cache such that application file content is\n' +
-'commented out so it will load dynamically via the network. Invert the flag\n' +
-'via --no-develop to uncomment application section content to test your\n' +
-'application running from the cache. Note --develop is on by default.\n\n' +
-
-'Use --missing to list files in the application not in the manifest. This\n' +
-'is a relatively simple scan looking for css, image, and other non-source\n' +
-'files which might be useful to cache. For JavaScript the system presumes\n' +
-'that only source files in ~app_build should be part of the cache.\n\n' +
-
-'Use --rebuild to refresh the app and lib sections of the manifest. This is\n' +
-'the only flag which edits the file content of the appcache itself. If the\n' +
-'comment delimiters for app and lib sections are not present this operation\n' +
-'will fail and output an appropriate error message. Use this option with a\n' +
-'degree of caution since it will alter the content of your cache.\n\n' +
-
-'Use --touch to update the embedded ID: {timestamp} value provided by the\n' +
-'default cache template. This effectively changes the cache content which\n' +
-'should have the effect of causing your browser to refresh the cache.\n\n';
-
-/**
  * The pattern used for locating the section specific to app files.
  * @type {RegExp}
  */
@@ -210,9 +161,6 @@ Cmd.prototype.execute = function() {
         appname = CLI.getcfg('npm.name');
         cachefile = CLI.expandPath('~app/' + appname + '.appcache');
     }
-
-    //  resolve the cache file path relative to our current location
-    cachefile = '.' + cachefile.replace(CLI.expandPath('~app'), '');
 
     if (!sh.test('-e', cachefile)) {
         this.error('Cannot find cache file: ' + cachefile);
@@ -555,7 +503,8 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
  */
 Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
-    var text,
+    var file,
+        text,
         doc,
         html,
         value,
@@ -564,12 +513,13 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     this.log('checking application cache status...');
 
-    if (!sh.test('-e', 'index.html')) {
+    file = CLI.expandPath('~app/index.html');
+    if (!sh.test('-e', file)) {
         this.error('Cannot find index.html');
         throw new Error();
     }
 
-    text = sh.cat('index.html');
+    text = sh.cat(file);
     if (!text) {
         this.error('Unable to read index.html content.');
         throw new Error();
@@ -629,7 +579,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     // Serializer has a habit of not placing a newline after the DOCTYPE.
     text = text.replace(/html><html/, 'html>\n<html');
-    text.to('index.html');
+    text.to(file);
 
     operation = this.options.enable ? 'enabled' : 'disabled';
 

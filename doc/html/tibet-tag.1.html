@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-tag</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-tag</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-tag-1-creates-a-new-tibet-tag-type">tibet-tag(1) -- creates a new TIBET tag type</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet tag &lt;tagName&gt; [options]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Creates a new TIBET tag using the supplied tag name and parameters.</p>
+<p>Tag names can supply one, two or three parts, separated by <code>.</code> or<br><code>:</code>. If three parts are supplied, they are used as the root namespace,<br>the tag type namespace and the tag name, respectively. If two parts are<br>supplied, they are used for the tag type namespace and the tag name and<br>the root namespace is defaulted to either <code>APP</code> or <code>TP</code>, depending<br>on whether this command is being executed in an application project or<br>the TIBET library. If one part is supplied, and this command is being<br>executed in an application project, the tag type namespace is defaulted<br>to the application project name and the root namespace is defaulted as<br>it is when two parts are supplied. It is not a valid operation to execute<br>this command with one part when executed inside of the TIBET library.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--package</code> :<br>Used to determine the cfg package file that will be updated with entries to<br>load the new tag type and configure it. If this parameter is not supplied, the<br>default for a tag being created in a project is <code>~app_cfg/.xml</code>. For<br>a tag created in the TIBET library it&#39;s <code>lib_cfg/lib_namespaces.xml</code>.</p>
+</li>
+<li><p><code>--config</code> :<br>Used as the name of the config package in the cfg package file that the<br>new tag will be made a part of. If this parameter is not supplied, the default<br>for a tag being created in a project is <code>app_img</code> and for a tag being created<br>in the TIBET library is the same as the tag namespace name.</p>
+</li>
+<li><p><code>--dir</code> :<br>Used as the destination directory for the newly created source code files<br>representing the tag. If this parameter is not supplied, the default for a tag<br>being created in a project is <code>~app_src/tags</code> and for a tag being created in<br>the TIBET library is <code>~lib_src/</code>.</p>
+</li>
+<li><p><code>--compiled</code> :<br>Used to determine whether to create a templated tag or a compiled tag. A<br>templated tag uses an external template (by default an .xhtml file) to render<br>itself into an application, whereas a compiled tag overrides the <code>tagCompile</code><br>and manually manipulates the browser&#39;s DOM. The default for this flag is false.</p>
+</li>
+<li><p><code>--template</code> :<br>Used to configure the system&#39;s <code>cfg</code> parameter that points to this tag<br>type&#39;s template. If this parameter is not supplied, this defaults to null as, if<br>the tag is a templated (i.e. not compiled) one, the system will automatically<br>associate a similarly-named .xhtml file with the tag&#39;s template (this parameter<br>is not used for compiled tags at all). It will assume that this file is in the<br>same directory as the tag&#39;s source .js file. Supply a value here if the template<br>file you wish to use for the tag is in a different directory, is of a different<br>name or is of a different type (i.e. a .svg file). This is highly recommended to<br>use a virtual URI here (i.e. a URI with a leading <code>~</code>).</p>
+</li>
+<li><p><code>--style</code> :<br>Used to determine the style sheet configuration for the tag. By default each<br>tag gets a specific style sheet in the same directory with tag type and optional<br>template. If you want no style associated you can use the special value<br>NO_RESULT. Supply a value here if the tag you are defining has CSS or LESS<br>style associated with it. This is highly recommended to use a virtual URI here<br>(i.e. a URI with a leading <code>~</code>).</p>
+</li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

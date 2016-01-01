@@ -87,6 +87,10 @@ body.showlog #BOOT-CONSOLE {
     overflow: auto;
 }
 
+#BOOT-IMAGE {
+    cursor: pointer;
+}
+
 #BOOT-LOG {
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-size: 85%;

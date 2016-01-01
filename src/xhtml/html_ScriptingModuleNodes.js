@@ -121,7 +121,9 @@ function(aSrc) {
 
     var srcURL,
         resp,
-        src;
+        src,
+        defining,
+        typenames;
 
     if (TP.notEmpty(aSrc)) {
 
@@ -138,10 +140,33 @@ function(aSrc) {
                                 'No valid Javascript source from: ' + aSrc);
         }
 
-        //  Do the job of importing the source. Note that this uses the actual
-        //  supplied source code in the src argument for eval'ing purposes. The
-        //  location is provided for source code tracking purposes.
-        TP.boot.$sourceImport(src, null, srcURL.getLocation(), null, true);
+
+        //  A little trick here to intercept which types load in the source.
+        defining = TP.sys.definingTypename;
+
+        typenames = TP.ac();
+
+        TP.sys.definingTypename = function(typename) {
+            typenames.push(typename);
+        };
+
+        try {
+            //  Do the job of importing the source. Note that this uses the
+            //  actual supplied source code in the src argument for eval'ing
+            //  purposes. The location is provided for source code tracking.
+            TP.boot.$sourceImport(src, null, srcURL.getLocation(), null, true);
+        } finally {
+            TP.sys.definingTypename = defining;
+        }
+
+        typenames.forEach(function(typename) {
+            var type;
+
+            type = TP.sys.getTypeByName(typename);
+            if (TP.canInvoke(type, 'refreshInstances')) {
+                type.refreshInstances();
+            }
+        });
     }
 
     return this;

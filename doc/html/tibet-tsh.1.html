@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-tsh</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-tsh</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-tsh-1-runs-a-tibet-shell-tsh-expression">tibet-tsh(1) -- runs a TIBET Shell (TSH) expression</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet tsh &lt;command&gt; [&lt;phantomtsh_args&gt;]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Runs the TIBET phantomtsh script runner to execute a TSH script.</p>
+<p>The script to execute is presumed to be the first argument, quoted as<br>needed to ensure that it can be captured as a single string to pass to<br>the TIBET Shell. For example: tibet tsh &#39;:echo &quot;Hello World!&quot;&#39;.<br>You can also use the --script argument to provide the TSH script.</p>
+<p>&lt;phantomtsh\_args&gt; refers to the various flags and paramters you can<br>provide to TIBET&#39;s phantomtsh.js script. To see phantomtsh.js help<br>use &#39;phantomjs ${TIBET_HOME}/etc/phantom/phantomtsh.js --help<br>where ${TIBET_HOME} refers to your TIBET installation directory.</p>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

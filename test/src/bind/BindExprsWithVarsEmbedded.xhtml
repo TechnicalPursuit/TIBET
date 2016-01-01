@@ -45,24 +45,24 @@
     <br/>
 
     <label for="xmlBindAttr">Variable bound to XML data:</label>
-    <input type="text" id="xmlBindAttr" value="[[urn:tibet:test_person_xml#tibet($TAG.canonicalName)]]" tabindex="0"/><br/>
+    <input type="text" id="xmlBindAttr" value="[[$TAG.canonicalName]]" tabindex="0"/><br/>
 
     <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
-    <input type="text" id="xmlBindStdinAttr" value="[[urn:tibet:test_person_xml#tibet($_.(.//lastname).value .% upperCase)]]" tabindex="0"/><br/>
+    <input type="text" id="xmlBindStdinAttr" value="[[urn:tibet:test_person_xml#tibet($_.(.//lastname).value) .% upperCase]]" tabindex="0"/><br/>
 
 
     <label for="jsonBindAttr">Variable bound to JSON data:</label>
-    <input type="text" id="jsonBindAttr" value="[[urn:tibet:test_person_json#tibet($TAG.canonicalName)]]" tabindex="0"/><br/>
+    <input type="text" id="jsonBindAttr" value="[[$TAG.canonicalName]]" tabindex="0"/><br/>
 
     <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
-    <input type="text" id="jsonBindStdinAttr" value="[[urn:tibet:test_person_json#tibet($_.($.person.lastname).value .% upperCase)]]" tabindex="0"/><br/>
+    <input type="text" id="jsonBindStdinAttr" value="[[urn:tibet:test_person_json#tibet($_.($.person.lastname).value) .% upperCase]]" tabindex="0"/><br/>
 
 
     <label for="jsobjBindAttr">Variable bound to JavaScript Object data:</label>
-    <input type="text" id="jsobjBindAttr" value="[[urn:tibet:test_person_jsobj#tibet($TAG.canonicalName)]]" tabindex="0"/><br/>
+    <input type="text" id="jsobjBindAttr" value="[[$TAG.canonicalName]]" tabindex="0"/><br/>
 
     <label for="jsobjBindStdinAttr">Binding to JavaScript Object data with $_ variable reference:</label>
-    <input type="text" id="jsobjBindStdinAttr" value="[[urn:tibet:test_person_jsobj#tibet($_.person.lastname .% upperCase)]]" tabindex="0"/><br/>
+    <input type="text" id="jsobjBindStdinAttr" value="[[urn:tibet:test_person_jsobj#tibet($_.person.lastname) .% upperCase]]" tabindex="0"/><br/>
 
 </body>
 </html>

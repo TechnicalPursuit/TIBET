@@ -649,6 +649,15 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
                         break;
 
+                    case 'identifier':
+
+                        //  TODO: This is a hack due to a bug in the tokenizer
+                        if (val === '($') {
+                            val = '$';
+                        }
+
+                        //  Note the fallthrough
+
                     default:
                         //  leave everything else alone
                         expr += val;
@@ -870,6 +879,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
         '    source;\n',
         '\n',
         'params = TP.ifInvalid(aParamHash, TP.hc());\n',
+        'params.$$noPathTracking = true;\n',
         'source = TP.wrap(aDataSource);\n',
         '\n\n',
 

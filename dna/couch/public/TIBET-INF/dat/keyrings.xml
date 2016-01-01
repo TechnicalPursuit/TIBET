@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE keyrings [
+  <!ATTLIST keyring id ID #IMPLIED>
+  <!ATTLIST key id ID #IMPLIED>
+]>
+<keyrings xmlns="http://www.technicalpursuit.com/1999/tibet">
+    <!-- Application keyrings go here. See TIBET-Permissions for info -->
+</keyrings>
+

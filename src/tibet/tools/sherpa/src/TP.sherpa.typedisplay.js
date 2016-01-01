@@ -20,7 +20,7 @@ TP.sherpa.typedisplay.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.typedisplay.Inst.defineAttribute(
         'list',
-        {value: TP.cpc('> .typelist', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .infolist', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -110,10 +110,7 @@ function() {
             return d;
         });
 
-    TP.nodeAppendChild(
-            TP.unwrap(this.get('list')),
-            wrapper,
-            false);
+    this.get('list').setRawContent(wrapper, false);
 
     return this;
 });
@@ -163,6 +160,25 @@ function() {
     data = TP.hc('name', 'Supertypes');
 
     rawData = this.getSupertypeNames();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var childData;
+
+                childData = TP.hc('name', item);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Subtypes');
+
+    rawData = this.getSubtypeNames(true);
 
     childrenData = TP.ac();
     rawData.forEach(

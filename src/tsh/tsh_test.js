@@ -46,6 +46,7 @@ function(aRequest) {
         total,
         suiteName,
         cases,
+        context,
         msg,
         obj;
 
@@ -71,7 +72,7 @@ function(aRequest) {
                         'tsh:target',
                         shell.getArgument(aRequest, 'ARG0'));
 
-    if (TP.notEmpty(target)) {
+    if (TP.isString(target)) {
         target = target.unquoted();
     }
 
@@ -83,23 +84,31 @@ function(aRequest) {
     if (suiteName === true) {
         //  Only a single dash...syntax glitch...
         suiteName = '';
-    } else if (TP.notEmpty(suiteName)) {
+    } else if (TP.isString(suiteName)) {
         suiteName = suiteName.unquoted();
     }
 
     cases = shell.getArgument(aRequest, 'tsh:cases', null);
-    if (TP.notEmpty(cases)) {
+    if (TP.isString(cases)) {
         cases = cases.unquoted();
+    }
+
+    context = shell.getArgument(aRequest, 'tsh:context', 'app');
+    if (TP.isString(context)) {
+        context = context.unquoted();
     }
 
     options = TP.hc('ignore_only', ignore_only,
                     'ignore_skip', ignore_skip,
+                    'context', context,
+                    'target', target,
                     'suite', suiteName,
                     'cases', cases);
 
     karma = TP.ifInvalid(
             TP.extern.karma, {
                 info: TP.NOOP,
+                error: TP.NOOP,
                 results: TP.NOOP,
                 complete: TP.NOOP
             });
@@ -108,7 +117,7 @@ function(aRequest) {
 
         //  If the CLI drove this, or the Sherpa/TDC, there should be an
         //  explicit -all. The karma-tibet bridge doesn't do that however.
-        if (shell.getArgument(aRequest, 'tsh:all', false) ||
+        if (TP.sys.cfg('boot.context') === 'phantomjs' ||
                 TP.sys.hasFeature('karma')) {
 
             total = runner.getCases(options).getSize();
@@ -181,10 +190,13 @@ function(aRequest) {
                 karma.info({total: total});
 
                 //  Type first, then Inst, then Local
+                TP.sys.logTest('# Running Type tests for ' + target);
                 obj.Type.runTestSuites(options).then(
                         function() {
+                            TP.sys.logTest('# Running Inst tests for ' + target);
                             return obj.Inst.runTestSuites(options);
                         }).then(function() {
+                            TP.sys.logTest('# Running Local tests for ' + target);
                             return obj.runTestSuites(options);
                         }).then(function(result) {
                             // TODO: should we pass non-null results?
@@ -207,6 +219,7 @@ function(aRequest) {
         total = runner.getCases(params).getSize();
         karma.info({total: total});
 
+        TP.sys.logTest('# Running Local tests for ' + target);
         obj.runTestSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?

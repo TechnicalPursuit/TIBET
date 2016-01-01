@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-clone</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-clone</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-clone-1-clones-a-project-from-a-template-directory">tibet-clone(1) -- clones a project from a template directory</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<pre><code>tibet clone &lt;target&gt; [--list] [--force] [--name &lt;appname&gt;] [--dna &lt;template&gt;]
+</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>Clones a template directory, considered the <code>dna</code>, to create a new project.</p>
+<p><code>&lt;target&gt;</code> is required and must be a valid directory name to clone to.</p>
+<p>By default the target will be the new project&#39;s appname unless otherwise<br>specified. You can use <code>.</code> to clone to the current directory HOWEVER no checks<br>are currently done to prevent potential data loss. Be careful!</p>
+<p>NOTE this command is currently being re-evaluated and will likely become a<br>front-end for Yeoman functionality in a future release.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--list</code> :<br>Output a list of available dna options. No project is created if you use<br>this option.</p>
+</li>
+<li><p><code>--force</code> :<br>Required if you use <code>.</code> as a simple reminder to be careful. You can also<br>use <code>--force</code> with existing directories but <em>no checks are done</em> to avoid<br>overwriting existing files.</p>
+</li>
+<li><p><code>--name</code> :<br>Lets you rename from the directory name to an alternative name. This lets<br>the directory and appname vary. This is common when cloning to existing<br>directories or poorly named ones like those required for GitHub Pages<br>repositories.</p>
+</li>
+<li><p><code>--dna</code> :<br>Lets you clone any valid template in TIBET&#39;s <code>dna</code> directory or a<br>directory of your choosing. This latter option lets you create your own reusable<br>custom application templates.</p>
+</li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.7 - Copyright (C) 2015 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

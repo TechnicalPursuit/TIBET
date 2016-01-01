@@ -97,6 +97,20 @@ function(ensureUniqueness) {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('definingTypename', function(typename) {
+
+    /**
+     * @method definingTypename
+     * @summary A hook function used by import logic in various locations
+     *     to capture the list of type names imported during script loading.
+     * @param {String} typename The typename being imported.
+     */
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 //  and don't forget to add the root type to the metadata
 TP.sys.addCustomType('TP.lang.RootObject', TP.lang.RootObject);
 
@@ -233,6 +247,10 @@ function(name) {
 
     wholeName = root + '.' + nsName + '.' + subtypeName;
 
+    //  Invoke hook function import code can use to determine which types may be
+    //  loading during a specific import sequence.
+    TP.sys.definingTypename(wholeName);
+
     //  check with TIBET so we don't try to build type twice
     if (TP.sys.cfg('oo.unique_types')) {
         //  note the false here to avoid issues with proxies
@@ -335,6 +353,12 @@ function(name) {
     realType.Type[TP.OWNER] = realType;
     realType.Inst = realType[TP.INSTC].prototype;
     realType.Inst[TP.OWNER] = realType;
+
+    //  map over load path information or the Inst and Type won't have them.
+    realType.Type[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
+    realType.Type[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+    realType.Inst[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
+    realType.Inst[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
 
     //  make sure we've got arrays to hold subtypes and add our new child
     this[TP.SUBTYPE_NAMES] = this[TP.SUBTYPE_NAMES] || TP.ac();

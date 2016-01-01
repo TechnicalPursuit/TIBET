@@ -7,6 +7,8 @@ sherpa|tile[contenttype="sherpa:searcher"] {
     bottom: 0px;
     left: 5px;
 
+    height: 50%;
+
     border: dotted 1px orange;
     background-color: #3F3F3F;
 }
@@ -24,14 +26,6 @@ sherpa|searcher {
 sherpa|searcher > .body {
 
     position: absolute;
-
-    /*
-    font: 14px/1.4 'HelveticaNeue-Light', 'Helvetica Neue Light', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
-
-    color: black;
-
-    background-color: white;
-    */
 
     border: solid 1px orange;
     color: orange;
@@ -77,6 +71,8 @@ sherpa|searcher > .foot {
     overflow: auto;
 
     -webkit-column-width: 30em;
+    -moz-column-width: 30em;
+    -ms-column-width: 30em;
 
     font-size: 80%;
 }
@@ -109,7 +105,7 @@ sherpa|searcher > .foot {
 
 .results_list li:hover {
 
-    outline: solid 1px orange;
+    outline: dashed 1px orange;
 }
 
 .result_detail {

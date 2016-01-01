@@ -26,32 +26,28 @@ TP.core.UIElementNode.defineSubtype('tibet:data');
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.tibet.data.Type.defineMethod('tagAttachData',
+TP.tibet.data.Type.defineMethod('tagAttachComplete',
 function(aRequest) {
 
     /**
-     * @method tagAttachData
-     * @summary Sets up runtime machinery for the element in aRequest.
+     * @method tagAttachComplete
+     * @summary Processes the tag once it's been fully processed. Because
+     *     tibet:data tag content drives binds and we need to notify even
+     *     without a full page load we process through setContent once the
+     *     attachment is complete (instead of during tagAttachData).
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
     var elem,
         tpElem,
-
         namedHref,
-
         children,
         cdatas,
-
-        resourceStr,
-
-        thisTPDoc,
-        loadedHandler;
+        resourceStr;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
         return;
     }
 
@@ -61,70 +57,50 @@ function(aRequest) {
     //  resource's content.
     if (TP.notEmpty(elem.childNodes)) {
 
-        if (TP.notEmpty(namedHref = tpElem.getAttribute('name'))) {
-            if (!TP.isURI(TP.uc(namedHref))) {
-                //  Raise an exception
-                return this.raise('TP.sig.InvalidURI');
-            }
+        namedHref = tpElem.getAttribute('name');
+        if (!TP.isURI(TP.uc(namedHref))) {
+            return this.raise('TP.sig.InvalidURI');
         }
 
-        //  NOTE: Many of these calls use the native node, since we want to
+        //  NOTE: logic here focuses on the native node since we want to
         //  manipulate native node objects here.
 
-        //  Normalize the node to try to get the best representation
+        //  Normalize the node to try to get the best representation.
         TP.nodeNormalize(elem);
 
         //  Get a result type for the data (either defined on the receiver
         //  element itself or from a supplied MIME type), construct an instance
         //  of that type and set it as the named URI's resource.
 
-        //  If there is a CDATA section, then we grab it's text value.
+        //  If there is a CDATA section, then we grab it's text value...it's
+        //  probably JSON data.
         cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
         if (TP.notEmpty(cdatas)) {
-
             //  The string we'll use is from the first CDATA.
             resourceStr = TP.nodeGetTextContent(cdatas.first());
-
         } else {
-            //  Otherwise, if the first child element is an XML element
             children = TP.nodeGetChildElements(elem);
 
+            //  We rely on the first child element to be XML for usable data.
             if (TP.isXMLNode(children.first())) {
-
                 if (children.getSize() > 1) {
-                    //  Raise an exception
                     return this.raise(
                             'TP.sig.InvalidNode',
-                            'tibet:data elements do not support fragments');
+                            'tibet:data elements do not support fragments.');
                 }
 
-                //  Stringify the XML.
+                //  Stringify the XML for use in our upcoming setContent call.
                 resourceStr = TP.str(children.first());
             }
         }
 
-        //  Get this element's document wrapper.
-        thisTPDoc = TP.wrap(elem).getDocument();
-
-        //  Define a handler that waits for this element to be completely loaded
-        //  into the page and then calls setContent() (which signals from the
-        //  named URI that it's content has changed). This allows page-level
-        //  bindings to be set up before the notifications go out that their
-        //  data has changed.
-
-        loadedHandler =
-            function(aSig) {
-
-                loadedHandler.ignore(thisTPDoc, 'TP.sig.DOMContentLoaded');
-
-                tpElem.setContent(resourceStr);
-            };
-
-        //  Tell the handler to observe this element's document wrapper.
-        loadedHandler.observe(thisTPDoc, 'TP.sig.DOMContentLoaded');
+        if (TP.notEmpty(resourceStr)) {
+            //  A bit strange to remove content into string form only to set it
+            //  again, but the setContent step forces interpretation of the data
+            //  into our URI, triggers the right change notifications etc.
+            tpElem.setContent(resourceStr);
+        }
     } else {
-
-        //  Raise an exception
         return this.raise('TP.sig.InvalidNode');
     }
 
@@ -287,7 +263,9 @@ function(aContentObject, aRequest) {
         mimeType,
         resultType,
 
-        newResource;
+        newResource,
+
+        isValid;
 
     this.callNextMethod();
 
@@ -302,11 +280,21 @@ function(aContentObject, aRequest) {
         mimeType = TP.ietf.Mime.guessMIMEType(aContentObject);
     }
 
+    //  Obtain a MIME type for the result and use it to obtain a result type.
     resultType = this.getResultType(mimeType);
 
     //  If a result type couldn't be determined, then just use String.
     if (!TP.isType(resultType)) {
         resultType = String;
+    }
+
+    //  Make sure that it's valid for its container. Note that we pass 'false'
+    //  as a second parameter here for content objects that do both trivial and
+    //  full facet checks on their data. We only want trival checks here (i.e.
+    //  is the XML inside of a TP.core.XMLContent really XML - same for JSON)
+    isValid = resultType.validate(aContentObject, false);
+    if (!isValid) {
+        return this.raise('TP.sig.InvalidValue');
     }
 
     newResource = resultType.construct();

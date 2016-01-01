@@ -1,5 +1,5 @@
 /**
- * @overview Common functionality used by the TDS components.
+ * @overview Common functionality used by the TIBET Data Server and middleware.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -7,14 +7,15 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint no-console:0 */
-
-(function() {
+(function(root) {
 
     'use strict';
 
-    var Package,
+    var beautify,
+        Package,
         TDS;
+
+    beautify = require('js-beautify');
 
     // Load the CLI's package support to help with option/configuration data.
     Package = require('../cli/tibet-package');
@@ -32,8 +33,9 @@
      */
     /* eslint-disable quote-props */
     TDS.PARSE_OPTIONS = {
-        'string': ['app_root', 'config'],
-        'number': ['tds.port'],
+        'boolean': ['verbose'],
+        'string': ['debug', 'level', 'tds.log.level'],
+        'number': ['port', 'tds.port'],
         'default': {}
     };
     /* eslint-enable quote-props */
@@ -43,6 +45,13 @@
      * @type {Package} A TIBET CLI package instance.
      */
     TDS._package = null;
+
+    /**
+     * A common handle to the js-beautify routine for pretty-printing JSON to
+     * the console or via the logger.
+     * @type {Function}
+     */
+    TDS.beautify = beautify;
 
     /**
      * Expands virtual paths using configuration data loaded from TIBET.
@@ -63,6 +72,16 @@
         this.initPackage();
 
         return TDS._package.getAppHead();
+    };
+
+    /**
+     * Return the application head, the location serving as the top-level root.
+     * @returns {String} The application head path.
+     */
+    TDS.getAppRoot = function() {
+        this.initPackage();
+
+        return TDS._package.getAppRoot();
     };
 
     /**
@@ -94,24 +113,7 @@
         this._package = new Package(options);
     };
 
-    /**
-     * Provides a useful 'skip' function for the Express logger. This will
-     * filter out a lot of logging overhead that might otherwise occur when the
-     * TDS is being accessed.
-     * @returns {Boolean} true to skip logging the current request.
-     */
-    TDS.logFilter = function(req, res) {
-        var url;
-
-        url = TDS.getcfg('tds.watch.uri');
-
-        // Don't log repeated calls to the watcher URL.
-        if (req.path.indexOf(url) !== -1) {
-            return true;
-        }
-    };
-
     module.exports = TDS;
 
-}());
+}(this));
 

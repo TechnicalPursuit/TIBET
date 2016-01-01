@@ -431,22 +431,22 @@ function() {
                 test.assert.isAttributeEqualTo(
                     TP.byId('area1', windowContext, false),
                     'href',
-                    'file:///usr/local/src/TIBET/base/lib/tibet/img/tibet_logo_369.gif');
+                    'file:///usr/local/src/TIBET/base/lib/tibet/img/area1.gif');
 
                 test.assert.isAttributeEqualTo(
                     TP.byId('area2', windowContext, false),
                     'href',
-                    TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
+                    TP.uc('~tibet/base/lib/tibet/img/area2.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
                     TP.byId('area3', windowContext, false),
                     'href',
-                    TP.uc('~tibet/base/lib/tibet/img/../tibet_logo_369.gif').getLocation());
+                    TP.uc('~tibet/base/lib/tibet/img/../area3.gif').getLocation());
 
                 test.assert.isAttributeEqualTo(
                     TP.byId('area4', windowContext, false),
                     'href',
-                    TP.uc('~tibet/base/lib/tibet/img/tibet_logo_369.gif').getLocation());
+                    TP.uc('~tibet/base/lib/tibet/img/area4.gif').getLocation());
             });
     });
 

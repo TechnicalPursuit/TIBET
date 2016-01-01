@@ -712,7 +712,7 @@ window.onerror = function(msg, url, line, column, errorObj) {
  */
 
 /*
- * NOTE that the code below is _really old_ and desperately in need of an update
+ * NOTE that the code below is _really old_ and probably in need of an update
  * to be current regarding things like mobile devices etc.
  */
 
@@ -1704,6 +1704,9 @@ TP.sys.getHomeURL = function(checkSession) {
 
     if (checkSession && window.sessionStorage) {
         homeURL = window.sessionStorage.getItem('TIBET.project.home_page');
+
+        //  This is a "one time use" value. Clear after fetching.
+        window.sessionStorage.removeItem('TIBET.project.home_page');
     }
 
     //  NOTE that the session.home_page value is set during startup to preserve
@@ -2171,13 +2174,13 @@ TP.boot.$uriExpandPath = function(aPath) {
             value = TP.sys.cfg('path.' + variable);
 
             if (typeof value === 'string') {
-                //  one issue here is that we may have a variable value
-                //  that starts with or ends with a '/' since they're
-                //  parts of paths, but we don't want to alter that
-                //  aspect of the current path so we want to trim them
-                //  off if found
-                if (value.indexOf('/') === 0) {
-                    value = value.slice(1);
+                //  If we're replacing something of the form ~variable/stuff we
+                //  don't want to get something of the form value//stuff back so
+                //  we trim off any trailing '/' on the value.
+                if (path !== '~' + variable) {
+                    if (value.charAt(value.length - 1) === '/') {
+                        value = value.slice(0, -1);
+                    }
                 }
 
                 //  patch the original path for testing
@@ -2192,7 +2195,7 @@ TP.boot.$uriExpandPath = function(aPath) {
         }
     }
 
-    if (path.lastIndexOf('/') === path.length - 1) {
+    if (path.charAt(path.length - 1) === '/') {
         path = path.slice(0, -1);
     }
 
@@ -2508,16 +2511,33 @@ TP.boot.$uriJoinPaths = function(firstPath, secondPath) {
     }
 
     //  while we're being told to 'back up' the path, do so
-    while (second.indexOf('../') === 0) {
-        second = second.slice(3, second.length);
+    while (second.indexOf('..') === 0) {
+        if (second.charAt(2) === '/') {
+            second = second.slice(3, second.length);
+        } else {
+            second = second.slice(2, second.length);
+        }
         first = first.slice(0, first.lastIndexOf('/'));
     }
 
-    //  join what's left, applying separator as needed
-    if (second.charAt(0) !== '/') {
-        val = first + '/' + second;
+    //  join the resulting chunks while paying attention to separator(s).
+    if (first.charAt(first.length - 1) === '/') {
+        if (second.charAt(0) === '/') {
+            val = first + second.slice(1);
+        } else if (second.charAt(0) === '#') {
+            val = first.slice(-1) + second;
+        } else {
+            val = first + second;
+        }
     } else {
-        val = first + second;
+        //  First does not end in '/'...
+        if (second.charAt(0) === '/') {
+            val = first + second;
+        } else if (second.charAt(0) === '#') {
+            val = first + second;
+        } else {
+            val = first + '/' + second;
+        }
     }
 
     return val;
@@ -2869,11 +2889,9 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
      * @method $uriWithRoot
      * @summary Returns the path provided with any additional root information
      * which is necessary to create a full path name. The root used is the
-     * result of calling TP.boot.$getRootPath(), which may be referencing either
-     * the lib or app root at the time of the call depending on the current
-     * settings.
+     * result of calling TP.boot.$getAppHead().
      * @param {String} targetUrl A url to expand as needed.
-     * @param {String} aRoot The root path to use. Default is launch root.
+     * @param {String} aRoot The root path to use. Default is app head.
      * @returns {String} The url - after ensuring a root exists.
      */
 
@@ -2895,7 +2913,7 @@ TP.boot.$uriWithRoot = function(targetUrl, aRoot) {
     //  note the use of the 'current root' path here since we can't assume
     //  that this should be rooted against libroot or approot without help
     if (TP.boot.$notValid(aRoot)) {
-        base = TP.getAppHead();
+        base = TP.boot.$getAppHead();
     } else {
         base = aRoot;
     }
@@ -8110,14 +8128,18 @@ TP.boot.$getAppHead = function() {
 
     /**
      * @method $getAppHead
-     * @summary Returns the portion of the launch location just above whichever
-     *     file actually triggered the launch sequence. Always computed from the
-     *     window.location (if available).
+     * @summary Returns the application "head", the location normally associated
+     *     with '/' for HTTP launches but trickier to compute for file launches
+     *     where it typically refers to the location containing the public app
+     *     resources as identified by the boot.tibet_pub configuration value.
+     *     The value here is typically computed from the window location to help
+     *     identify the scheme and path to the file containing tibet_loader.js.
      * @returns {String} The computed path.
      */
 
     var path,
-        offset,
+        node,
+        head,
         parts,
         keys,
         key,
@@ -8129,43 +8151,85 @@ TP.boot.$getAppHead = function() {
         return TP.boot.$$apphead;
     }
 
-    //  Compute from the window location. This presumes window is a real slot
-    //  (which means it won't work on Node.js etc by default).
+    //  App head is the location containing the public or node_modules directory
+    //  in the majority of cases since these are the app_root and lib_root
+    //  default locations and app_head is by definition their parent location.
+
+    //  Compute from the window location, normally a reference to an index.html
+    //  file somewhere below a host (but maybe a file:// reference as well).
     path = decodeURI(window.location.toString());
     path = path.split(/[#?]/)[0];
 
-    //  From a semantic viewpoint the app head can't be inside the library
-    //  area, it has to be above it, typically where we'd think of app root
-    keys = [TP.sys.cfg('boot.tibet_dir'), TP.sys.cfg('boot.tibet_inf')];
-    len = keys.length;
-    for (i = 0; i < len; i++) {
-        key = '/' + keys[i] + '/';
-        if (path.indexOf(key) !== -1) {
-            TP.boot.$$apphead = path.slice(0, path.indexOf(key));
+    //  A bit of a hack but no clear way around this. Karma will run its own web
+    //  server and include a segment like '/base' for some reason. We have to
+    //  adjust for that if we appear to be loading in a Karma environment. The
+    //  only reasonably consistent way is to leverage the node containing the
+    //  boot script itself, and process the path to that file to compute this.
+    if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
+
+        node = TP.sys.getLaunchNode(TP.sys.getLaunchDocument());
+        if (TP.boot.$isValid(node)) {
+            path = node.getAttribute('src');
+        }
+        //  Combine current path with the src path in case of relative path
+        //  specification (common) and we should end up with a workable
+        //  offset.
+        if (TP.boot.$notEmpty(path)) {
+            path = TP.boot.$uriJoinPaths(path,
+                TP.sys.cfg('boot.karma_offset'));
+        }
+
+        TP.boot.$$apphead = TP.boot.$uriJoinPaths(
+            TP.sys.cfg('boot.karma_root'), path);
+
+        return TP.boot.$$apphead;
+    }
+
+    //  PhantomJS launches are unique in that they leverage a page that resides
+    //  in the library (usually under node_modules) and therefore one that will
+    //  not expose a tibet_pub reference. We have to add that in manually.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        head = TP.boot.$uriJoinPaths(path, TP.sys.cfg('boot.phantom_offset'));
+        if (head.charAt(head.length - 1) === '/') {
+            head = head.slice(0, -1);
+        }
+        TP.boot.$$apphead = head;
+        return TP.boot.$$apphead;
+    }
+
+    //  For file: launches the public directory or the node_modules directory
+    //  is likely to be on the URI path.
+    if (path.indexOf('file:') === 0) {
+        keys = [TP.sys.cfg('boot.tibet_pub'), TP.sys.cfg('boot.tibet_dir')];
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            key = '/' + keys[i] + '/';
+            if (path.indexOf(key) !== -1) {
+                TP.boot.$$apphead = path.slice(0, path.indexOf(key));
+                return TP.boot.$$apphead;
+            }
+        }
+
+        //  Didn't find a typical project library location on the path. Check to
+        //  see if we're _in_ the library.
+        lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibet_lib');
+        if (path.indexOf('/' + lib + '/') !== -1) {
+            TP.boot.$$apphead = path.slice(0,
+                path.indexOf('/' + lib + '/') + lib.length + 1);
             return TP.boot.$$apphead;
         }
     }
 
-    //  Didn't find a typical project library location on the path. Check to see
-    //  if we're _in_ the library.
-    lib = TP.sys.cfg('boot.libtest') || TP.sys.cfg('boot.tibet_lib');
-    if (path.indexOf('/' + lib + '/') !== -1) {
-        TP.boot.$$apphead = path.slice(0,
-            path.indexOf('/' + lib + '/') + lib.length + 1);
-        return TP.boot.$$apphead;
-    }
+    //  HTTP or similar protocol where we're likely rooted from some host
+    //  and a path directly to the index.html (or no visible path at all).
 
-    //  Should have found boot.tibet_lib but just in case we can just use an
-    //  offset from the current window location (minus noise for # etc.)
-    offset = TP.sys.getcfg('path.head_offset');
-    if (TP.boot.$notEmpty(offset)) {
-        TP.boot.$$apphead = TP.boot.$uriCollapsePath(
-            TP.boot.$uriJoinPaths(path, offset));
-        return TP.boot.$$apphead;
-    }
+    //  In neither case will we normally find a public or node_modules
+    //  directory reference on the URI. It'll usually just be whatever is
+    //  the "collection path" that contains index.html, or the full path
+    //  if we're basically looking at host:port[/].
 
-    //  If we're not launching from somewhere below the typical library root we
-    //  try to work from the last portion of the path prior to any hash value.
+    //  Process the path as a typical HTTP launch path which means finding the
+    //  host:port portion (if any) or the final "collection path".
     parts = path.split('/');
     if (parts[parts.length - 1].match(/\./)) {
         parts.length = parts.length - 1;
@@ -8173,14 +8237,6 @@ TP.boot.$getAppHead = function() {
     path = parts.join('/');
 
     TP.boot.$$apphead = path;
-
-    //  A bit of a hack but no clear way around this. Karma will run its own web
-    //  server and include a segment like '/base' for some reason. We have to
-    //  adjust for that if we appear to be loading in a Karma environment.
-    if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
-        TP.boot.$$apphead = TP.boot.$uriJoinPaths(path,
-            TP.sys.cfg('boot.karma_root'));
-    }
 
     return TP.boot.$$apphead;
 };
@@ -8193,30 +8249,87 @@ TP.boot.$getAppRoot = function() {
      * @method $getAppRoot
      * @summary Returns the root path for the application, the point from which
      *     most if not all "app path" resolution occurs. Unless this has been
-     *     defined otherwise the return value is computed based on the value
-     *     found via $getAppHead. If the application launch path includes a
-     *     reference to node_modules the app root is presumed to be the location
-     *     containing node_modules and it is adjusted accordingly.
+     *     defined otherwise the return value is computed based on the launch
+     *     path and then adjusted relative to $getAppHead. If the launch path
+     *     includes a reference to boot.tibet_pub the app root is presumed to be
+     *     the location boot.tibet_pub and it is adjusted accordingly.
      * @returns {String} The computed path.
      */
 
-    var approot;
+    var approot,
+        pub,
+        path,
+        params,
+        keys,
+        len,
+        i,
+        key;
 
     //  first check for a cached value. this is what's used during booting
     if (TP.boot.$$approot != null) {
         return TP.boot.$$approot;
     }
 
-    //  if specified it should be an absolute path we can expand and use
+    //  if specified it should be an absolute path we can expand and use.
     approot = TP.sys.cfg('path.app_root');
     if (TP.boot.$notEmpty(approot)) {
         return TP.boot.$setAppRoot(approot);
     }
 
-    //  If app root isn't going to match up with app head it's going to
-    //  typically be set via launch parameters, url parameters, or via
-    //  tibet.json. We can set it initially here and it'll be reset once those
-    //  are processed.
+    //  Compute from the window location, normally a reference to an index.html
+    //  file somewhere below a host (but maybe a file:// reference as well).
+    path = decodeURI(window.location.toString());
+
+    //  PhantomJS launches are unique in that they leverage a page that resides
+    //  in the library (usually under node_modules) and therefore one that will
+    //  not expose a tibet_pub reference. We have to add that in manually.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+
+        //  First look for help on the URL. TIBET's phantomtsh.js script is
+        //  often invoked via CLI calls that augement the URI with app_root.
+        params = TP.boot.$uriFragmentParameters(path);
+        if (params['path.app_root']) {
+            TP.boot.$$approot = TP.boot.$uriCollapsePath(
+                TP.boot.$uriJoinPaths(TP.boot.$$apphead,
+                    params['path.app_root']));
+            return TP.boot.$$approot;
+        }
+
+        if (window[TP.sys.cfg('karma.slot', '__karma__')]) {
+            pub = TP.boot.$uriJoinPaths(
+                TP.sys.cfg('boot.karma_root'),
+                TP.sys.getcfg('boot.tibet_pub'));
+        } else {
+            pub = TP.sys.getcfg('boot.tibet_pub');
+        }
+
+        TP.boot.$$approot = TP.boot.$uriCollapsePath(
+            TP.boot.$uriJoinPaths(TP.boot.$$apphead, pub));
+        return TP.boot.$$approot;
+    }
+
+    //  Remaining path processing works with just the base path.
+    path = path.split(/[#?]/)[0];
+
+    //  Normally we want the location below public, but that will typically be
+    //  found only when launching via the file system. When running from a
+    //  typical web server the index.html file will be at '/' with no prefix for
+    //  the public directory (since the TDS etc. normally root the server there.
+    if (path.indexOf('file:') === 0) {
+        keys = [TP.sys.cfg('boot.tibet_pub'), TP.sys.cfg('boot.tibet_inf')];
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            key = '/' + keys[i] + '/';
+            if (path.indexOf(key) !== -1) {
+                TP.boot.$$approot = path.slice(0,
+                    path.indexOf(key) + key.length);
+                return TP.boot.$$approot;
+            }
+        }
+    }
+
+    //  For HTTP launches where there's rarely an extra subdirectory we will
+    //  almost always see app root and app head pointing to the same path.
     return TP.boot.$setAppRoot(TP.boot.$getAppHead());
 };
 
@@ -8340,7 +8453,7 @@ TP.boot.$getLibRoot = function() {
                     TP.boot.$uriCollapsePath(
                         TP.boot.$uriJoinPaths(TP.boot.$uriJoinPaths(
                             libroot, path),
-                        TP.sys.cfg('boot.loadoffset'))));
+                        TP.sys.cfg('boot.loader_offset'))));
             }
 
             break;
@@ -8481,7 +8594,7 @@ TP.boot.$configurePackage = function() {
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
-            package = '~app_cfg/' + TP.sys.cfg('project.name');
+            package = '~app_cfg/app.xml';
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
                 package + '.', TP.DEBUG);
@@ -8580,8 +8693,9 @@ TP.boot.$configureBootstrap = function() {
 
     //  Launch parameters can be provided directly to the launch command such
     //  that the bootstrap file isn't needed. If that's the case we can skip
-    //  loading the file and cut out one more HTTP call.
-    if (TP.sys.cfg('boot.no_tibet_file')) {
+    //  loading the file and cut out one more HTTP call...or if we've already
+    //  done this once during launch vs. boot processing.
+    if (TP.sys.cfg('boot.no_tibet_file') || TP.boot.$$bootstrap) {
         return;
     }
 
@@ -8597,6 +8711,10 @@ TP.boot.$configureBootstrap = function() {
             TP.boot.$stderr('Failed to load: ' + file, TP.FATAL);
         }
         obj = JSON.parse(str);
+
+        //  Cache as bootstrap for reference.
+        TP.boot.$$bootstrap = obj;
+
     } catch (e) {
         TP.boot.$stderr('Failed to load: ' + logpath,
             TP.boot.$ec(e), TP.FATAL);
@@ -9239,12 +9357,12 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
     //  load the source the 'DOM way' so we get commented source
     elem = TP.boot.$$scriptTemplate.cloneNode(true);
-    TP.boot.$loadNode = elem;
+    TP.boot.$$loadNode = elem;
 
     //  ensure we keep track of the proper package/config information
-    TP.boot.$loadNode.setAttribute('load_package',
+    TP.boot.$$loadNode.setAttribute('load_package',
                                     TP.sys.cfg('load.package', ''));
-    TP.boot.$loadNode.setAttribute('load_config',
+    TP.boot.$$loadNode.setAttribute('load_config',
                                     TP.sys.cfg('load.config', ''));
 
     scriptDoc = TP.boot.$isValid(targetDoc) ?
@@ -9269,6 +9387,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     //  url reference
     TP.boot.$$onerrorURL = scriptUrl;
 
+    TP.boot.$$srcPath = scriptUrl;
+    TP.boot.$$loadPath = scriptUrl;
+
     try {
         //  first, check to see if we already have a 'script' node with a
         //  'source' attribute equal to scriptUrl. If we do, that means we've
@@ -9289,6 +9410,10 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     } catch (e) {
         $ERROR = e;
     } finally {
+
+        TP.boot.$$srcPath = null;
+        TP.boot.$$loadPath = null;
+
         //  appends with source code that has syntax errors or other issues
         //  won't trigger Error conditions we can catch, but they will hit
         //  the onerror hook so we can check $STATUS and proceed from there.
@@ -9297,7 +9422,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
                 throw $ERROR;
             }
         } else if (!result || $STATUS !== 0) {
-            TP.boot.$loadNode = null;
+            TP.boot.$$loadNode = null;
 
             if (shouldThrow === true) {
                 if (scriptUrl === 'inline') {
@@ -9380,27 +9505,6 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$importApplication = function() {
-
-    /**
-     * @method $importApplication
-     * @summary Dynamically imports application content.
-     * @summary This method makes heavy use of the config/build file
-     *     information to construct a list of script files and inline source
-     *     code to import/execute to create a running application image in the
-     *     browser. Note that this method 'chains' its parts via setTimeout so
-     *     that interim output can be displayed. This helps to avoid long delays
-     *     without user feedback.
-     * @returns {null}
-     */
-
-    TP.boot.$$importPhaseOne();
-
-    return;
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.$$importComplete = function() {
 
     /**
@@ -9441,20 +9545,22 @@ TP.boot.$$importComplete = function() {
 
                     TP.boot.$stdout('', TP.SYSTEM);
 
-                    //  NOTE that this is a possible cul-de-sac since if
-                    //  no phase two page ever loads we'll just sit.
-                    //  TODO: trigger a boot timer here to force a timeout
-
                     //  basically the question is simply what happens last,
                     //  either we finish with phase one after the phase two
                     //  page has loaded, or we finish before it. if we
                     //  finish after it arrives we can just keep right on
                     //  moving, but we want to call the function in that
                     //  frame to ensure that the page initializes
-                    win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
+                    if (TP.sys.cfg('boot.use_login') &&
+                            TP.sys.cfg('boot.parallel')) {
+                        //  Parallel login means the window updated will be the
+                        //  boot/splash screen, not the typical uiroot screen.
+                        win = TP.sys.getWindowById(TP.sys.cfg('boot.uiboot'));
+                    } else {
+                        win = TP.sys.getWindowById(TP.sys.cfg('tibet.uiroot'));
+                    }
 
                     if (win) {
-
                         if (win.$$phase_two === true ||
                             window.$$phase_two === true) {
                             //  if the page didn't find TIBET the function
@@ -9514,8 +9620,7 @@ TP.boot.$importComponents = function(loadSync) {
      * @summary Dynamically imports a set of application elements read from a
      *     list of 'bootnodes' configured by the invoking function. This boot
      *     node list is a shared property on TP.boot so only one import sequence
-     *     can be running at a time. Normally you'd call importPackage instead
-     *     of this routine to trigger imports.
+     *     can be running at a time.
      * @param {Boolean} loadSync Should the import be done synchronously or not?
      *     Default is false so that each file is loaded via a short setTimeout.
      * @returns {null}
@@ -9537,11 +9642,11 @@ TP.boot.$importComponents = function(loadSync) {
         logpath,
         source;
 
-    TP.boot.$loadNode = null;
-    TP.boot.$loadPath = null;
-    TP.boot.$srcPath = null;
-    TP.boot.$loadPackage = null;
-    TP.boot.$loadConfig = null;
+    TP.boot.$$loadNode = null;
+    TP.boot.$$loadPath = null;
+    TP.boot.$$srcPath = null;
+    TP.boot.$$loadPackage = null;
+    TP.boot.$$loadConfig = null;
 
     if (TP.boot.shouldStop()) {
         return;
@@ -9664,21 +9769,21 @@ TP.boot.$importComponents = function(loadSync) {
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
-            TP.boot.$loadPath = srcpath;
+            TP.boot.$$loadPath = srcpath;
             TP.boot.$$loadpaths.push(srcpath);
-            TP.boot.$srcPath = TP.boot.$uriInTIBETFormat(srcpath);
+            TP.boot.$$srcPath = TP.boot.$uriInTIBETFormat(srcpath);
         } else {
-            TP.boot.$loadPath = null;
-            TP.boot.$srcPath = null;
+            TP.boot.$$loadPath = null;
+            TP.boot.$$srcPath = null;
         }
 
-        TP.boot.$loadPackage = nd.getAttribute('load_package') || '';
-        TP.boot.$loadConfig = nd.getAttribute('load_config') || '';
+        TP.boot.$$loadPackage = nd.getAttribute('load_package') || '';
+        TP.boot.$$loadConfig = nd.getAttribute('load_config') || '';
 
         //  set the configuration values so the sourceImport call will have
         //  the information from the current node being processed
-        TP.sys.setcfg('load.package', TP.boot.$loadPackage);
-        TP.sys.setcfg('load.config', TP.boot.$loadConfig);
+        TP.sys.setcfg('load.package', TP.boot.$$loadPackage);
+        TP.sys.setcfg('load.config', TP.boot.$$loadConfig);
 
         //  In some sense the rest of this is all about getting the source code
         //  to import, either inlined, or from the original location, in either
@@ -9696,14 +9801,14 @@ TP.boot.$importComponents = function(loadSync) {
             if (TP.sys.cfg('import.use_dom')) {
                 elem = TP.boot.$$scriptTemplate.cloneNode(true);
 
-                elem.setAttribute('load_package', TP.boot.$loadPackage);
-                elem.setAttribute('load_config', TP.boot.$loadConfig);
+                elem.setAttribute('load_package', TP.boot.$$loadPackage);
+                elem.setAttribute('load_config', TP.boot.$$loadConfig);
 
-                TP.boot.$loadNode = elem;
+                TP.boot.$$loadNode = elem;
 
                 callback = function(event) {
 
-                    TP.boot.$loadNode = null;
+                    TP.boot.$$loadNode = null;
 
                     TP.boot.$$bootindex += 1;
                     TP.boot.$displayProgress();
@@ -9718,14 +9823,14 @@ TP.boot.$importComponents = function(loadSync) {
                 elem.onload = callback;
 
                 if (TP.sys.cfg('import.check_404')) {
-                    if (!TP.boot.$uriExists(TP.boot.$loadPath)) {
+                    if (!TP.boot.$uriExists(TP.boot.$$loadPath)) {
                         TP.boot.$stderr('404 (Not Found): ' +
-                            TP.boot.$loadPath);
+                            TP.boot.$$loadPath);
                         return;
                     }
                 }
 
-                elem.setAttribute('src', TP.boot.$loadPath);
+                elem.setAttribute('src', TP.boot.$$loadPath);
 
                 //  append it into the 'head' element so that it starts the
                 //  loading process. If there is an error, it will be
@@ -9736,7 +9841,7 @@ TP.boot.$importComponents = function(loadSync) {
                 return;
             }
 
-            source = TP.boot.$uriLoad(TP.boot.$loadPath, TP.TEXT, 'source');
+            source = TP.boot.$uriLoad(TP.boot.$$loadPath, TP.TEXT, 'source');
         } else {
             source = '';
 
@@ -9756,9 +9861,9 @@ TP.boot.$importComponents = function(loadSync) {
 
         //  if we were handling inline code then we can import it directly now.
         try {
-            TP.boot.$sourceImport(source, null, TP.boot.$loadPath);
+            TP.boot.$sourceImport(source, null, TP.boot.$$loadPath);
         } finally {
-            TP.boot.$loadNode = null;
+            TP.boot.$$loadNode = null;
         }
 
     } else if (tn === 'tibet_image') {
@@ -9844,19 +9949,9 @@ TP.boot.$$importPhase = function() {
     TP.boot.$$bootindex = 0;
 
     TP.boot.$$workload = nodelist.length;
-
     TP.boot.$$totalwork += nodelist.length;
-/*
-    //  TODO: this should happen based on a return value being provided.
-    window.$$phase_two = true;
-*/
 
     TP.boot.$importComponents();
-/*
-
-    TP.boot.$$importComplete();
-*/
-
 };
 
 //  ----------------------------------------------------------------------------
@@ -9910,8 +10005,19 @@ TP.boot.$$importPhaseTwo = function(manifest) {
 };
 
 //  ============================================================================
-//  5.0 IMPORT FUNCTIONS
+//  5.0 IMPORT SUPPORT
 //  ============================================================================
+
+TP.boot.$$configs = [];
+TP.boot.$$packageStack = [];
+
+TP.boot.$$assets = {};
+TP.boot.$$packages = {};
+TP.boot.$$paths = {};
+
+TP.boot.$$assets_list = null;
+
+//  ----------------------------------------------------------------------------
 
 TP.boot.$config = function() {
 
@@ -10001,20 +10107,6 @@ TP.boot.$expand = function() {
 
     return;
 };
-
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-
-TP.boot.$$configs = [];
-TP.boot.$$packageStack = [];
-
-TP.boot.$$assets = {};
-TP.boot.$$packages = {};
-TP.boot.$$paths = {};
-
-TP.boot.$$assets_list = null;
 
 //  ----------------------------------------------------------------------------
 
@@ -10527,67 +10619,6 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$ifUnlessPassedLite = function(anElement) {
-
-    /**
-     * @method $ifUnlessPassedLite
-     * @summary Tests if and unless conditions on the node, returning true if
-     *     the node passes and should be retained based on those conditions.
-     * @param {Node} anElement The element to test.
-     * @returns {Boolean} True if the element passes the filtering tests.
-     */
-
-    var i,
-        condition,
-        conditions,
-        key,
-        invalid;
-
-    invalid = false;
-
-    //  process any unless="a b c" entries on the element
-    condition = anElement.getAttribute('unless');
-    if (TP.boot.$notEmpty(condition)) {
-
-        conditions = condition.split(' ');
-
-        for (i = 0; i < conditions.length; i++) {
-
-            key = conditions[i].trim();
-            condition = TP.sys.cfg(key);
-
-            if (condition === true) {
-                invalid = true;
-                break;
-            }
-        }
-    }
-
-    //  process any if="a b c" entries on the element
-    condition = anElement.getAttribute('if');
-    if (TP.boot.$notEmpty(condition)) {
-
-        conditions = condition.split(' ');
-
-        for (i = 0; i < conditions.length; i++) {
-
-            key = conditions[i].trim();
-
-            condition = TP.sys.cfg(key);
-
-            if (TP.boot.$notValid(condition) || condition === false) {
-
-                invalid = true;
-                break;
-            }
-        }
-    }
-
-    return !invalid;
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.$listConfigAssets = function(anElement, aList) {
 
     /**
@@ -10797,11 +10828,39 @@ TP.boot.$pushPackage = function(aPath) {
 };
 
 //  ----------------------------------------------------------------------------
+
+TP.boot.$refreshPackages = function() {
+    var packages,
+        keys,
+        stderr;
+
+    packages = TP.boot.$$packages;
+    keys = Object.keys(packages);
+
+    //  Force refresh of the documents held in the package cache.
+    keys.forEach(function(key) {
+        packages[key] = TP.boot.$uriLoad(key);
+    });
+
+    //  Re-expand the resulting packages, but turn off any error reporting since
+    //  this will trigger duplicate reference warnings.
+    try {
+        stderr = TP.boot.$stderr;
+        TP.boot.$stderr = TP.boot.STDERR_NULL;
+        TP.boot.$expand();
+    } finally {
+        TP.boot.$stderr = stderr;
+    }
+
+    return;
+};
+
+//  ----------------------------------------------------------------------------
 //  ----------------------------------------------------------------------------
 //  ----------------------------------------------------------------------------
 //  ----------------------------------------------------------------------------
 
-TP.boot.$import = function() {
+TP.boot.$importApplication = function() {
 
     //  Clear script dictionary. This will be used to unique across all imports.
     TP.boot.$$scripts = {};
@@ -10834,7 +10893,7 @@ TP.boot.boot = function() {
 
     //  import based on expanded package. startup is invoked once the async
     //  import process completes.
-    TP.boot.$import();
+    TP.boot.$importApplication();
 
     return;
 };
@@ -10853,10 +10912,10 @@ TP.boot.launch = function(options) {
      *     boot.no_url_args in this option list (which is useful in certain
      *     production setups).
      * @param {Object} options A set of options which control the boot process.
-     *     Common keys used by this function include 'use_login' and 'parallel'.
-     *     Other keys are passed through to boot(), config() et al.
      * @returns {Window} The window the application launched in.
      */
+
+    var hash;
 
     //  Start logging...
     TP.boot.$stdout('TIBET Boot System (TBS) ' + TP.boot.$version,
@@ -10870,6 +10929,17 @@ TP.boot.launch = function(options) {
     if (TP.$$nested_loader) {
         delete TP.$$nested_loader;
         return;
+    }
+
+    //  If we're booting in response to a login page sequence we may have had
+    //  client-side fragment information tucked away. Check for that and restore
+    //  it if we find any (and clear it for any future processing).
+    if (window.sessionStorage) {
+        hash = window.sessionStorage.getItem('TIBET.boot.fragment');
+        if (hash) {
+            window.sessionStorage.removeItem('TIBET.boot.fragment');
+            top.location.hash = hash;
+        }
     }
 
     TP.boot.$$launchOptions = options;
@@ -11071,8 +11141,10 @@ TP.boot.$stageAction = function() {
         case 'import_paused':
             //  Happens in two-phase booting when waiting for login to return us
             //  a hook file to trigger the second phase of the boot process.
-
-            //  TODO: is there a 'user accessible' trigger we want to add here?
+            TP.boot.$$restarttime = new Date();
+            TP.boot.$stdout('Startup process reengaged by user.',
+                TP.SYSTEM);
+            TP.boot.$$importPhaseTwo();
             break;
         default:
             break;
@@ -11289,9 +11361,7 @@ TP.boot.$uiRootReady = function() {
 
     var uiRootID,
         win,
-        login,
-        parallel,
-        file;
+        login;
 
     uiRootID = TP.sys.cfg('tibet.uiroot') || 'UIROOT';
     win = TP.sys.getWindowById(uiRootID);
@@ -11303,36 +11373,31 @@ TP.boot.$uiRootReady = function() {
         win = window;
     }
 
-    login = TP.sys.cfg('boot.use_login');
-    if (login !== true) {
-        //  without a login sequence there won't be a page coming back to
-        //  say that we're authenticated for phase two, we have to do that
-        //  manually here.
-        win.$$phase_two = true;
-
-        TP.boot.boot();
-    } else {
-        //  login was explicitly true
-        file = TP.sys.cfg('path.login_page');
-        file = TP.boot.$uriExpandPath(file);
-
-        parallel = TP.sys.cfg('boot.parallel');
-        if (parallel === false) {
-            //  sequential login means we don't start booting, we just
-            //  have to put the login page into place and rely on the page
-            //  that comes back to re-start the boot sequence without
-            //  needing a login (since it just completed)...
-
-            //  NOTE 'window' here, not win, is intentional
-            window.location.replace(file);
+    //  If we're loading from HTTP we depend on the server to determine what
+    //  we're up to. The only consideration we have in that case is whether we
+    //  expect a second phase or not.
+    if (TP.sys.isHTTPBased()) {
+        login = TP.sys.cfg('boot.use_login');
+        if (login !== true) {
+            win.$$phase_two = true;
+            TP.boot.boot();
         } else {
-            //  parallel booting means we'll put the login page into the
-            //  ui canvas while booting in the background. The login
-            //  response must set $$phase_two to allow booting to proceed
-            //  beyond the first phase.
-            TP.boot.showUICanvas(file);
+            //  If login is true then the server will be in control of the pages
+            //  we receive. There are two models: single-phase and two-phase.
+            //  If we're booting single-phase we probably had a pure login page
+            //  and only on successful authentication was a page with the loader
+            //  vended to the client. In two-phase we're loading and showing the
+            //  login page at the same time and will only get a "keep booting"
+            //  option when authentication passes. So two phase booting (aka
+            //  parallel booting) means we want the phase_two flag turned off.
+            win.$$phase_two = !TP.sys.cfg('boot.parallel');
             TP.boot.boot();
         }
+    } else {
+        //  Without logins and success pages we can't rely on a "second phase"
+        //  component to trigger booting phase two so we set it explicitly.
+        win.$$phase_two = true;
+        TP.boot.boot();
     }
 
     return;

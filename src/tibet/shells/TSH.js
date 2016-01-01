@@ -2383,7 +2383,7 @@ function(aRequest) {
 
     checklib = this.getArgument(aRequest, 'tsh:tibet', false);
 
-    filter = this.getArgument(aRequest, 'tsh:filter', false);
+    filter = this.getArgument(aRequest, 'tsh:filter', null);
     if (TP.notEmpty(filter)) {
         filter = filter.unquoted();
         if (/^\/.+\/([ig]*)$/.test(filter)) {
@@ -3250,12 +3250,17 @@ function(aRequest) {
                         //  check below.
                         file = TP.objectGetLoadPath(obj);
 
-                        if (TP.notEmpty(file) && file.match(/\.min\./)) {
-                            results.push(
-                                'Source minified. No comment text available.');
+                        if (TP.notEmpty(file)) {
+                            if (file.match(/\.min\./)) {
+                                results.push(
+                                    'Source minified. No comment text available.');
+                            } else {
+                                results.push(
+                                    'Uncommented :(. No comment text available.');
+                            }
                         } else {
                             results.push(
-                                'Uncommented :(. No comment text available.');
+                                'No source file. Native code?');
                         }
                     } else {
                         results.push(text);

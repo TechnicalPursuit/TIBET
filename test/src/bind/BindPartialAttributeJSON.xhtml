@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe", "color": "red"},
@@ -34,9 +34,9 @@
     <br/>
 
     <label for="colorField">Color: </label>
-    Joe's Favorite Color: <input type="text" id="colorField" value="[[urn:tibet:test_person#json($.people[0].color)]]" tabindex="0"/><br/>
+    Joe's Favorite Color: <input type="text" id="colorField" value="[[urn:tibet:test_people#json($.people[0].color)]]" tabindex="0"/><br/>
 
-    <span id="colorSpan" style="background-color: [[urn:tibet:test_person#json($.people[0].color)]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
+    <span id="colorSpan" style="background-color: [[urn:tibet:test_people#json($.people[0].color)]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
 
 </body>
 </html>

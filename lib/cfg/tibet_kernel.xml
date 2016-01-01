@@ -223,8 +223,6 @@
     <!-- NB: These must come before TIBETDHTMLTypes -->
     <script src="TIBETDOMTypes.js"/>
     <script src="TIBETUIDOMTypes.js"/>
-    <property name="path.TP.core.UIElementNode.keybindings"
-        value="~lib_dat/TP.core.UIElementNode.keybindings.xml"/>
 
     <script src="TIBETDHTMLTypes.js"/>
     <script src="TIBETGraphicsTypes.js"/>
@@ -234,7 +232,7 @@
 
     <script src="TIBETWorkflowDOMTypes.js"/>
 
-    <script src="TIBETDataBinding.js"/>
+    <script src="TIBETBinding.js"/>
     <script src="TIBETCoreTags.js"/>
 
     <!-- We don't activate this during boot in any case -->
@@ -242,6 +240,14 @@
 
     <!--    KERNEL STAGE 6, FINALIZATION -->
     <script src="TIBETFinalization.js"/>
+
+    <script src="~lib_dat/TP.core.URI.default_urimap.js"/>
+    <script src="~lib_dat/TP.core.UIElementNode.default_keymap.js"/>
+
+    <script src="~lib_dat/TP.dat.COUNTRYCODES.js"/>
+    <script src="~lib_dat/TP.dat.STATECODES.js"/>
+
+    <script src="~lib_schema/html401_strict.js"/>
 
 </config>
 

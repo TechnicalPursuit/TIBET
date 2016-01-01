@@ -1,0 +1,78 @@
+.TH "TIBET\-CONFIG" "1" "December 2015" "" ""
+.SH "NAME"
+\fBtibet-config\fR \- manages and displays TIBET configuration data
+.SH SYNOPSIS
+.P
+.RS 2
+.nf
+tibet config [property[=value]] [\-\-env <env>]
+.fi
+.RE
+.SH DESCRIPTION
+.P
+The config command can output one or more configuration values to the
+.br
+console based on current configuration data for your application or
+.br
+update a particular value to a string, number or boolean value\.
+.P
+You can view the entire configuration list by leaving off any specific
+.br
+value\. You can view all values for a particular prefix by listing just
+.br
+the prefix\. You can view a specific value by naming that value directly\.
+.P
+You can dump virtual paths by quoting them as in: \fB\|'~app'\fP or \fB\|'~lib'\fP as needed
+.br
+by whichever native shell you may be using\.
+.P
+For set operations you can specify an optional environment value\. In the
+.br
+current implementation this applies only to TDS settings (tds\.* values)\.
+.P
+NOTE that if you use this command to set values it will rewrite \fBtibet\.json\fP
+.br
+by using the beautify npm module to process the stringified JSON content\.
+.br
+As a result your file may not retain its appearance after updates\.
+.P
+Configuration data can also be updated by adding an \fB=\fP and value to
+.br
+a properly defined property name\.
+.SH EXAMPLES
+.SS List all configuration values:
+.P
+.RS 2
+.nf
+tibet config
+.fi
+.RE
+.SS List all path values:
+.P
+.RS 2
+.nf
+tibet config '~'
+.fi
+.RE
+.SS List all boot\.* values:
+.P
+.RS 2
+.nf
+tibet config boot
+.fi
+.RE
+.SS List a single value:
+.P
+.RS 2
+.nf
+tibet config boot\.level
+.fi
+.RE
+.SS Set a value (foo\.bar to true here):
+.P
+.RS 2
+.nf
+tibet config foo\.bar=true
+.fi
+.RE
+

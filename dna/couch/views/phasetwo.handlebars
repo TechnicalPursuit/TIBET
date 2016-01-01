@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<!-- Sample return file from login which triggers phase two import/startup. -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8"/>
+
+<title>{{appname}}</title>
+
+<link rel="shortcut icon" href="./media/favicon.ico" type="image/x-icon"/>
+<link rel="icon" href="./media/favicon.ico" type="image/x-icon"/>
+
+<link rel="stylesheet" type="text/css" href="./TIBET-INF/boot/styles/tibet_content.css"/>
+<link rel="stylesheet" type="text/css" href="./TIBET-INF/boot/styles/tibet_boot.css" />
+<link rel="stylesheet" type="text/css" href="./styles/app.css"/>
+
+<!-- set the phase two flag before we bring in the hook file -->
+<script>window.$$phase_two = true;</script>
+<script src="./TIBET-INF/tibet/lib/src/tibet_hook.js"></script>
+
+</head>
+<body>
+<div id="content">
+
+<div class="yesscript">
+    <div class="detail-intro">
+        <a class="image-link" href="#">
+            <img id="LOGIN-IMAGE" alt="Current Stage Icon"
+                src="./TIBET-INF/boot/media/app_logo.png"/>
+        </a>
+        <blockquote id="LOGIN-HEAD" class="lead boot-stage">Import Phase Two</blockquote>
+        <blockquote id="LOGIN-SUBHEAD" class="follow">Loading appliction resources...</blockquote>
+    </div>
+
+    <div id="LOGIN-SPLASH">
+        <div id="LOGIN-FORM"></div>
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>

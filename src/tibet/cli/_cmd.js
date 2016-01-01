@@ -48,13 +48,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 //  ---
 
 /**
- * A help string for optional expanded help content.
- * @type {string}
- */
-Cmd.prototype.HELP = '';
-
-
-/**
  * A usage string which should _not_ begin with 'Usage: ' since that may be
  * added by the outer CLI when dumping usage for all available commands.
  * @type {string}
@@ -249,21 +242,6 @@ Cmd.prototype.getcfg = function(property) {
 
 
 /**
- * Outputs expanded help text if available, otherwise outputs usage().
- */
-Cmd.prototype.help = function() {
-
-    // Dump the usage string as a form of 'summary'. NOTE that this typically
-    // outputs a newline above and below the actual usage text.
-    this.usage();
-
-    // Dump any additional HELP text.
-    this.info((this.HELP || '') + '\n' +
-    'For more visit http://github.com/TechnicalPursuit/TIBET/wiki.\n');
-};
-
-
-/**
  * Parse the arguments and blend with default values. This routine uses parsing
  * via minimist and places the result in the receiver's options property.
  * @returns {Object} An object in minimist argument format.
@@ -334,10 +312,6 @@ Cmd.prototype.run = function() {
 
     if (this.options.usage) {
         return this.usage();
-    }
-
-    if (this.options.help) {
-        return this.help();
     }
 
     code = this.prereqs();

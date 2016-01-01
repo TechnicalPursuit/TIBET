@@ -92,8 +92,10 @@ if (!top.$$TIBET) {
         top.console.log('TIBET hook in \'' + root.name +
             '\' unable to find TIBET.');
 
-        //  "redirect" to the root location. This may cause TIBET to boot if the
-        //  current file was a bookmarked content page.
+        //  Without TIBET we presume the user opened a tibet-hooked page but did
+        //  that outside of a TIBET application. The idea here is to store that
+        //  page in session storage and try to boot TIBET via a root (/) url. If
+        //  that works TIBET will set the home page when it sees session value.
         if (top.sessionStorage) {
             top.sessionStorage.setItem('TIBET.project.home_page',
                 top.location.protocol + '//' + top.location.host +
@@ -109,10 +111,22 @@ if (!top.$$TIBET) {
 
         top.location = $$location;
         return;
+    } else {
+        //  If TIBET is found then the current page shouldn't be preserved as a
+        //  session var to drive home page on startup. Clear any value we have.
+        if (top.sessionStorage) {
+            top.sessionStorage.removeItem('TIBET.project.home_page');
+        }
     }
 
 } else {
     tibet = top.$$TIBET;
+
+    //  If TIBET is found then the current page shouldn't be preserved as a
+    //  session var to drive home page on startup. Clear any value we have.
+    if (top.sessionStorage) {
+        top.sessionStorage.removeItem('TIBET.project.home_page');
+    }
 }
 
 Object.defineProperty(root, 'TP', {value: tibet.TP, writable: false});
@@ -215,7 +229,9 @@ if (TP.sys && TP.sys.hasLoaded && TP.sys.cfg &&
             };
 
             //  if the boot is paused it's because we got here late, so
-            //  it's up to us to trigger the final stage
+            //  it's up to us to trigger the final stage. if the boot is still
+            //  in progress it's up to the loader to detect we've set the
+            //  $$phase_two flag and continue the boot process.
             if (TP.boot.$$stage === 'import_paused') {
                 TP.boot.bootPhaseTwo();
             }

@@ -1,0 +1,30 @@
+<div id="content">
+
+<div class="yesscript">
+    <div class="detail-intro">
+        <a class="image-link" href="#" onclick="stageAction()">
+            <img id="LOGIN-IMAGE" alt="Current Stage Icon"
+                src="./TIBET-INF/boot/media/app_logo.png"/>
+        </a>
+        <blockquote id="LOGIN-HEAD" class="lead boot-stage">Login</blockquote>
+        <blockquote id="LOGIN-SUBHEAD" class="follow"></blockquote>
+    </div>
+
+    <div id="LOGIN-SPLASH">
+        <div id="LOGIN-FORM">
+        <form id="login" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username"
+                value="\{{username}}"
+                autofocus="autofocus"/>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password"/>
+            <button onclick="login()">Login</button>
+        </form>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script src="./TIBET-INF/tibet/lib/src/tibet_login.js"></script>

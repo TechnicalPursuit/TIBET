@@ -214,8 +214,9 @@ function(aString) {
                     } else {
                         //  There was no context or value that resolved to a
                         //  context, so we trim the value and then unquote the
-                        //  result.
-                        str += TP.trim(val).unquoted();
+                        //  result (but only unquote double quotes - leave
+                        //  single quotes alone).
+                        str += TP.trim(val).unquoted('"');
                     }
                 }
 
@@ -227,14 +228,31 @@ function(aString) {
             case 'operator':
                 if (val === '.' && TP.isValid(tokens.at(i - 1))) {
 
-                    //  If there isn't a valid context, and useGlobalContext is
-                    //  still true, then try to use the previous token's value
-                    //  as the context. If we've already flipped
-                    //  useGlobalContext to false, then we're not at the 'first
-                    //  segment' of a '.' separated value and, therefore, should
-                    //  just skip the value (the '.' - we don't want it).
-                    if (TP.notValid(context) && useGlobalContext) {
-                        context = tokens.at(i - 1).value;
+                    //  If there isn't a valid context, test to see if we can
+                    //  obtain one or not.
+                    if (TP.notValid(context)) {
+
+                        //  If useGlobalContext is still true, try to use the
+                        //  previous token's value as the context. Otherwise, if
+                        //  we've already flipped useGlobalContext to false,
+                        //  then we're not at the 'first segment' of a '.'
+                        //  separated value and so we just append the '.' and
+                        //  move on.
+                        if (useGlobalContext) {
+                            context = tokens.at(i - 1).value;
+
+                            //  If we got an empty (or whitespace only) context,
+                            //  then we don't really have a context at all, but
+                            //  a standalone '.'. Just append it and move on.
+                            context = TP.trim(context);
+                            if (TP.isEmpty(context)) {
+                                useGlobalContext = false;
+                                str += '.';
+                            }
+
+                        } else {
+                            str += '.';
+                        }
                     }
 
                     break;
@@ -259,7 +277,7 @@ function(aString) {
 
                     context = null;
 
-                    //  We're at the end of a value - need to reset for the next
+                    //  We're at the end of a key - need to reset for the next
                     //  value.
                     useGlobalContext = true;
                 } else if (val === ',') {
@@ -318,6 +336,10 @@ function(aString) {
         }
     }
 
+    //  Because JSON doesn't allow for escaped single quotes, we have to make
+    //  sure to replace them all here.
+    str = str.replace(/\\'/g,'\'');
+
     return str;
 });
 
@@ -366,18 +388,10 @@ function(aString, smartConversion, shouldReport) {
      * @method json2js
      * @summary Transforms a JSON-formatted string into the equivalent
      *     JavaScript objects.
-     * @description The TIBET version of this process extends the standard JSON
-     *     processing to allow strings in ISO8601 format
-     *     (YYYY-MM-DDTHH:MM:SS[Z|+/-HH:MM]) to be reconstituted as Date
-     *     instances. For more information on the JSON format see:
-     *     http://www.json.org. Note that 'smart conversion' does impose quite a
-     *     performance hit, so large blocks of JSON data should probably set it
-     *     to false.
      * @param {String} aString A JSON-formatted string.
      * @param {Boolean} smartConversion Whether or not to 'smart convert' the
-     *     JSON into JS. This includes detecting for Date data to construct Date
-     *     objects, detecting for RegExp data to construct RegExp objects and
-     *     construct TP.core.Hashes instead of Objects. This defaults to true.
+     *     JSON into JS. This causes the construction of TP.core.Hashes instead
+     *     of Objects. This defaults to true.
      * @param {Boolean} shouldReport False to suppress errors. Default is true.
      * @returns {Object} A JavaScript object containing the JSON data.
      * @exception InvalidJSON
@@ -389,7 +403,7 @@ function(aString, smartConversion, shouldReport) {
 
         obj,
 
-        tpHashProto;
+        tpHashInstProto;
 
     //  avoid changing parameter value
     text = aString;
@@ -414,9 +428,8 @@ function(aString, smartConversion, shouldReport) {
         //  read and write) the __proto__ slot of a JavaScript object instance.
         //  This is now supported in all environments we run in.
 
-        //  To do this, we first create a real TP.core.Hash and grab the value
-        //  in it's __proto__ slot.
-        tpHashProto = TP.core.Hash.construct().__proto__;
+        //  To do this, we first grab the 'instance prototype' of TP.core.Hash
+        tpHashInstProto = TP.core.Hash.Inst;
 
         //  NB: Some of the constructs in the following loop are 'bare JS' to
         //  get the required performance.
@@ -440,7 +453,7 @@ function(aString, smartConversion, shouldReport) {
                             //  Create a new value to replace the object handed
                             //  to us by the parse routine and set its prototype
                             //  to the hash prototype obtained above.
-                            newVal = Object.create(tpHashProto);
+                            newVal = Object.create(tpHashInstProto);
 
                             newVal.$$type = TP.core.Hash;
 
