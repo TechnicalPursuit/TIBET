@@ -244,15 +244,11 @@ function() {
     normalResponder.set('$consoleGUI', this.get('$consoleGUI'));
 
     keyboardSM.defineHandler('NormalInput', function(aSignal) {
-        var triggerSignal,
-            triggerEvent;
+        var triggerSignal;
 
         triggerSignal = aSignal.getPayload().at('trigger');
-        triggerEvent = triggerSignal.getEvent();
 
-        if (triggerSignal.getSignalName() ===
-                'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up' ||
-            normalResponder.isCommandEvent(triggerEvent)) {
+        if (normalResponder.isSpecialSignal(triggerSignal)) {
             normalResponder.executeTriggerSignalHandler(triggerSignal);
         }
 
@@ -1944,6 +1940,34 @@ function(anEvent) {
 
         default:
             return false;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleKeyResponder.Inst.defineMethod('isSpecialSignal',
+function(aSignal) {
+
+    /**
+     * @method isSpecialSignal
+     * @summary Returns whether or not the signal is a 'special signal' that
+     *     should be handled by one of this responders handlers.
+     * @param {TP.sig.Signal} aSignal The signal that fired.
+     * @returns {Boolean} Whether or not the supplied signal is considered to be
+     *     a 'special signal'.
+     */
+
+    var signame;
+
+    signame = aSignal.getSignalName();
+
+    switch (signame) {
+        case 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up':
+
+            return true;
+
+        default:
+            return this.isCommandEvent(aSignal.getEvent());
     }
 });
 
