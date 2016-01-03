@@ -383,6 +383,7 @@
          */
         feed.on('error', function(err) {
             var str;
+
             //  A common problem, especially on Macs, is an error due to running
             //  out of open file handles. Try to help clarify that one here.
             str = JSON.stringify(err);

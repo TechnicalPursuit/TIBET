@@ -145,7 +145,7 @@ targets.build_docs = function(make) {
             indexbody,
             indexpath,
             list,
-            params,
+            options,
             splitter,
             manpath,
             rootpath,
@@ -191,11 +191,9 @@ targets.build_docs = function(make) {
         //  ---
 
         genHtml = function(file, params) {
-            var content,
+            var html,
                 destdir,
                 destfile,
-                head,
-                foot,
                 result,
                 srcfile;
 
@@ -219,11 +217,11 @@ targets.build_docs = function(make) {
                 return;
             }
 
-            content = header(params) + result.output + footer(params);
+            html = header(params) + result.output + footer(params);
 
             //  One last substitution is to look for variations on 'foo(n)'
             //  and convert them into links which point to the target page.
-            content = content.replace(/([-_a-zA-Z]+)\((\d+)\)/g,
+            html = html.replace(/([-_a-zA-Z]+)\((\d+)\)/g,
             function(match, topic, section) {
                 if (topic === params.topic) {
                     return match;
@@ -233,16 +231,15 @@ targets.build_docs = function(make) {
                     section + '.html">' + topic + '(' + section + ')' + '</a>';
             });
 
-            content.to(destfile);
+            html.to(destfile);
         };
 
         genMan = function(file, params) {
-            var content,
+            var man,
                 destdir,
                 destfile,
                 result,
-                srcfile,
-                template;
+                srcfile;
 
             srcfile = path.join(srcpath, file + '.tmp');
 
@@ -264,8 +261,8 @@ targets.build_docs = function(make) {
                 return;
             }
 
-            content = result.output;
-            content.to(destfile);
+            man = result.output;
+            man.to(destfile);
         };
 
         //  ---
@@ -311,7 +308,7 @@ targets.build_docs = function(make) {
             topic = parts[1];
             section = parts[2];
 
-            params = {
+            options = {
                 topic: topic,
                 section: section,
                 version: version,
@@ -322,15 +319,15 @@ targets.build_docs = function(make) {
                 tempfile = srcfile + '.tmp';
                 content = sh.cat(srcfile);
                 template = hb.compile(content);
-                content = template(params);
+                content = template(options);
                 content.to(tempfile);
 
                 //  NOTE this depends on first line being the # {{topic}} line.
-                params.firstline = content.split('\n')[0];
-                index.push(JSON.parse(JSON.stringify(params)));
+                options.firstline = content.split('\n')[0];
+                index.push(JSON.parse(JSON.stringify(options)));
 
-                genMan(file, params);
-                genHtml(file, params);
+                genMan(file, options);
+                genHtml(file, options);
             } catch (e) {
                 make.error('Error processing ' + file + ': ' + e.message);
             } finally {
@@ -344,7 +341,7 @@ targets.build_docs = function(make) {
 
         indexpath = path.join(htmlpath, 'index.html');
 
-        params = {
+        options = {
             topic: 'TIBET',
             section: 1,
             version: version,
@@ -384,11 +381,11 @@ targets.build_docs = function(make) {
 
         //  Assemble the final index.html page content by using the same
         //  header/footer as all other pages and our indexbody for content.
-        (header(params) +
+        (header(options) +
          '<dl class="toc">\n' +
          indexbody.join('<br/>') +
          '</dl>\n' +
-         footer(params)).to(
+         footer(options)).to(
             indexpath);
 
         //  ---

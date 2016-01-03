@@ -880,7 +880,8 @@ CLI.rpad = function(obj, length, padChar) {
  * @return {RegExp} The matching regular expression, if one can be built.
  */
 CLI.stringAsRegExp = function(aString) {
-    var str,
+    var escape,
+        str,
         fallback,
         attrs,
         tail;
@@ -987,7 +988,6 @@ CLI.handleError = function(e, phase, command) {
 CLI.run = function(config) {
 
     var command,        // the first non-option argument, the command name.
-        topic,          // when using help this is the original command name.
         cmdPath;        // the command path (for use with require())
 
     // Typically contains npm config data under a 'npm' key and a slot for TIBET
