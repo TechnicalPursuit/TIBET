@@ -77,6 +77,10 @@
     <property name="path.TP.sherpa.elementeditor.template" value="~ide_root/xhtml/TP.sherpa.elementeditor.xhtml"/>
     <property name="path.TP.sherpa.elementeditor.style" value="~ide_root/css/TP.sherpa.elementeditor.css"/>
 
+    <script src="./src/TP.sherpa.urieditor.js"/>
+    <property name="path.TP.sherpa.urieditor.template" value="~ide_root/xhtml/TP.sherpa.urieditor.xhtml"/>
+    <property name="path.TP.sherpa.urieditor.style" value="~ide_root/css/TP.sherpa.urieditor.css"/>
+
     <script src="./src/TP.sherpa.typedisplay.js"/>
     <property name="path.TP.sherpa.typedisplay.template" value="~ide_root/xhtml/TP.sherpa.typedisplay.xhtml"/>
     <property name="path.TP.sherpa.typedisplay.style" value="~ide_root/css/TP.sherpa.typedisplay.css"/>
