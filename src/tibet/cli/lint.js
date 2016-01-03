@@ -323,9 +323,11 @@ Cmd.prototype.executeForEach = function(list) {
     }
 
     if (CLI.notEmpty(filter)) {
-        if (/^\/.*\/$/.test(filter.trim())) {
-            pattern = new RegExp(filter.slice(1, -1));
+        //  Simple directory search requires a leading '.' to signify.
+        if (filter.charAt(0) === '.') {
+            filter = path.join(process.cwd(), filter);
         }
+        pattern = CLI.stringAsRegExp(filter);
     }
 
     try {
@@ -352,12 +354,12 @@ Cmd.prototype.executeForEach = function(list) {
                 if (CLI.notEmpty(filter)) {
                     if (CLI.notEmpty(pattern)) {
                         if (!pattern.test(src)) {
-                            cmd.verbose('skipping filtered file: ' + src);
+                            cmd.verbose(src + ' # filtered');
                             return;
                         }
                     } else {
                         if (src.indexOf(filter) === -1) {
-                            cmd.verbose('skipping filtered file: ' + src);
+                            cmd.verbose(src + ' # filtered');
                             return;
                         }
                     }
@@ -365,13 +367,13 @@ Cmd.prototype.executeForEach = function(list) {
 
                 // Skip minified files regardless of their type.
                 if (src.match(/\.min\./)) {
-                    cmd.verbose('skipping minified file: ' + src);
+                    cmd.verbose(src + ' # minified');
                     return;
                 }
 
                 // Skip minified files regardless of their type.
                 if (src.match(/__(.+)__/)) {
-                    cmd.verbose('skipping template file: ' + src);
+                    cmd.verbose(src + ' # template');
                     return;
                 }
 
@@ -385,12 +387,12 @@ Cmd.prototype.executeForEach = function(list) {
                 } else if (cmd.XML_EXTENSIONS.indexOf(ext) !== -1) {
                     files.xml.push(src);
                 } else {
-                    cmd.verbose('skipping unsupported file: ' + src);
+                    cmd.verbose(src + ' # unlintable');
                 }
 
             } else if (cmd.options.nodes) {
                 // Nodes, but no src attribute. Inline source.
-                cmd.verbose('skipping inline source...');
+                cmd.verbose('<script> # inline source');
                 cmd.debug(item.textContent.trim(), true);
 
                 /*
@@ -429,6 +431,7 @@ Cmd.prototype.getScannedAssetList = function() {
         file,
         /* eslint-disable no-unused-vars */
         ignores,
+        lib,
         /* eslint-enable no-unused-vars */
         list;
 
@@ -443,9 +446,21 @@ Cmd.prototype.getScannedAssetList = function() {
         ignores = '';
     }
 
+    lib = CLI.inLibrary();
     list = sh.find(dir).filter(function(fname) {
-        return !sh.test('-d', fname) &&
-            !fname.match(/node_modules|.git|.svn/);
+        if (sh.test('-d', fname) ||
+            fname.match(/node_modules|.git|.svn/)) {
+            return false;
+        }
+
+        //  Don't scan into frozen library source when in a project.
+        if (!lib) {
+            return !fname.match(/TIBET-INF\/tibet/);
+        }
+
+        //  TODO:   add glob checks against ignores list
+
+        return true;
     });
 
     return list;
@@ -516,7 +531,7 @@ Cmd.prototype.processEslintResult = function(result) {
         messages = entry.messages;
 
         if (messages.length === 0) {
-            cmd.verbose(chalk.underline(file));
+            cmd.verbose(chalk.green(chalk.underline(file)));
             return;
         }
 
@@ -531,7 +546,7 @@ Cmd.prototype.processEslintResult = function(result) {
             // If we're only doing output when an error exists we're done if no
             // errors were found.
             if (errors === 0) {
-                cmd.verbose(chalk.underline(file));
+                cmd.verbose(chalk.green(chalk.underline(file)));
                 return;
             }
         } else {
@@ -611,7 +626,9 @@ Cmd.prototype.validateConfigFiles = function() {
 
     var cfg,
         cfgdir,
-        files;
+        files,
+        filter,
+        pattern;
 
     if (CLI.inLibrary()) {
         cfg = '~lib_cfg';
@@ -623,11 +640,29 @@ Cmd.prototype.validateConfigFiles = function() {
         this.verbose('checking ' + cfg + ' package files...');
     }
 
+    if (CLI.notEmpty(this.options.filter)) {
+        filter = this.options.filter;
+    } else {
+        // The options._ object holds non-qualified parameters. [0] is the
+        // command name. [1] should be the "filter" if any.
+        filter = this.options._[1];
+    }
+
+    if (CLI.notEmpty(filter)) {
+        pattern = CLI.stringAsRegExp(filter);
+    }
+
     cfgdir = CLI.expandPath(cfg);
 
     files = sh.find(cfgdir).filter(function(file) {
-        return !sh.test('-d', file) &&
-            file.match(/\.xml$/);
+        if (CLI.notEmpty(pattern)) {
+            return pattern.test(file) &&
+                !sh.test('-d', file) &&
+                file.match(/\.xml$/);
+        } else {
+            return !sh.test('-d', file) &&
+                file.match(/\.xml$/);
+        }
     });
 
     return this.validateXMLFiles(files);
@@ -684,7 +719,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
             var text,
                 result;
 
-            cmd.verbose(chalk.underline(file));
+            cmd.verbose(chalk.green(chalk.underline(file)));
             res.checked += 1;
 
             text = sh.cat(file);
@@ -757,7 +792,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         function(file) {
             var text;
 
-            cmd.verbose(chalk.underline(file));
+            cmd.verbose(chalk.green(chalk.underline(file)));
             res.checked += 1;
 
             text = sh.cat(file);
@@ -861,6 +896,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
 Cmd.prototype.validateXMLFiles = function(files, results) {
 
     var cmd,
+        lib,
         res,
         xmlFiles,
         parser,
@@ -871,11 +907,16 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
     xmlFiles = Array.isArray(files) ? files : [files];
     res.files += xmlFiles.length;
+    lib = CLI.inLibrary();
 
     parser = new dom.DOMParser({
         locator: {},
         errorHandler: {
             error: function(msg) {
+                //  Certain library DNA files will trigger errors. Ignore those.
+                if (lib && msg.match(/{{appname}}/)) {
+                    return;
+                }
                 res.errors += 1;
                 cmd.error('Error in ' + current + ': ' + msg);
             },
@@ -895,7 +936,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 doc;
 
             current = file;
-            cmd.verbose(chalk.underline(file));
+            cmd.verbose(chalk.green(chalk.underline(file)));
             res.checked += 1;
 
             text = sh.cat(file);
