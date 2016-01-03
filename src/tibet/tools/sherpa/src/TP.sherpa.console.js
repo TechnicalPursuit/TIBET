@@ -1619,6 +1619,8 @@ function(uniqueID, dataRecord) {
         rawData,
         outputText,
 
+        cmdTagName,
+
         outputClass,
 
         resultTile,
@@ -1683,11 +1685,22 @@ function(uniqueID, dataRecord) {
         //  need it.
         TP.elementRemoveAttribute(cellGroupElem, 'tibet:noawaken', true);
 
-        resultTile = TP.bySystemId('Sherpa').makeEditorTile(
-                                    uniqueID + '_tile',
-                                    cellGroupElem);
+        cmdTagName = TP.name(
+                        dataRecord.at('request').getPayload().at('cmdNode'));
+        switch (cmdTagName) {
+            case 'tsh:edit':
+
+                resultTile = TP.bySystemId('Sherpa').makeEditorTile(
+                                            uniqueID + '_tile',
+                                            cellGroupElem);
+                resultTile.set('sourceObject', rawData);
+                break;
+
+            default:
+                break;
+        }
+
         resultTile.setAttribute('attachedto', 'console');
-        resultTile.set('sourceObject', rawData);
         resultTile.toggle('hidden');
 
     } else {
