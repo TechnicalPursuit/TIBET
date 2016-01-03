@@ -12,7 +12,7 @@ sherpa|halo {
 	/* This should match TIBET's HALO_TIER constant */
 	z-index: 10000;
 
-    border: dashed 1px gray;
+    border: dashed 2px red;
     border-radius: 5px;
 
     pointer-events: none;
