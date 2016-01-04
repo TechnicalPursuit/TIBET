@@ -130,7 +130,7 @@ function(anElement) {
 
                                 if (TP.isURI(dataExprs.at(l))) {
                                     primaryLoc =
-                                        TP.uc(dataExprs.at(l)).getPrimaryHref();
+                                        TP.uc(dataExprs.at(l)).getPrimaryLocation();
 
                                     primaryURILocs.push(primaryLoc);
                                 }
@@ -140,7 +140,7 @@ function(anElement) {
                 } else if (TP.isURI(attrVal)) {
                     //  Otherwise, it's a 'bind:scope' or 'bind:repeat', which
                     //  can extract the URI information from directly.
-                    primaryLoc = TP.uc(attrVal).getPrimaryHref();
+                    primaryLoc = TP.uc(attrVal).getPrimaryLocation();
                     primaryURILocs.push(primaryLoc);
                 }
             }

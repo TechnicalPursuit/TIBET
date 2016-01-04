@@ -1252,7 +1252,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
 
                 splitURI = TP.uc(exprToExecute);
 
-                primaryURIPath = splitURI.getPrimaryHref() + '#tibet(.)';
+                primaryURIPath = splitURI.getPrimaryLocation() + '#tibet(.)';
                 exprToExecute = splitURI.getFragmentExpr();
             } else {
                 //  Use the scope values array and join all of the values
@@ -1542,7 +1542,7 @@ function(attrName, attrValue, scopeVals, direction, unregisterURIs) {
             //  reset the expression to execute to be just the fragment text.
             if (TP.isURI(exprToExecute)) {
                 splitURI = TP.uc(exprToExecute);
-                primaryURIPath = splitURI.getPrimaryHref() +
+                primaryURIPath = splitURI.getPrimaryLocation() +
                                     '#tibet(value)';
                 exprToExecute = splitURI.getFragmentExpr();
                 if (unregisterURIs) {

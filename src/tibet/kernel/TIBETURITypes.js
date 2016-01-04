@@ -1012,9 +1012,9 @@ function() {
 TP.core.URI.Inst.defineAttribute('uri');
 TP.core.URI.Inst.defineAttribute('decoded');
 
-//  the primary href, the portion in front of any # fragment, and any
+//  the primary location, the portion in front of any # fragment, and any
 //  associated TP.core.URI instance constructed to reference it.
-TP.core.URI.Inst.defineAttribute('primaryHref');
+TP.core.URI.Inst.defineAttribute('primaryLocation');
 TP.core.URI.Inst.defineAttribute('primaryURI');
 
 //  any potentially cached fragment portion. NOTE that caching the fragment
@@ -1209,7 +1209,7 @@ function(schemeSpecificString) {
      * @returns {TP.core.Hash} The parsed URI 'components'.
      */
 
-    var primaryHref,
+    var primaryLocation,
         fragment;
 
     if (TP.isEmpty(schemeSpecificString)) {
@@ -1222,11 +1222,11 @@ function(schemeSpecificString) {
     //  everything is in place.
 
     if (schemeSpecificString.indexOf('#') !== TP.NOT_FOUND) {
-        primaryHref = schemeSpecificString.slice(
+        primaryLocation = schemeSpecificString.slice(
                         0, schemeSpecificString.indexOf('#'));
 
-        this.$set('primaryHref',
-                    TP.join(this.$get('scheme'), ':', primaryHref),
+        this.$set('primaryLocation',
+                    TP.join(this.$get('scheme'), ':', primaryLocation),
                     false);
 
         if (TP.notEmpty(fragment = schemeSpecificString.slice(
@@ -1234,7 +1234,7 @@ function(schemeSpecificString) {
             this.$set('fragment', fragment, false);
         }
     } else {
-        this.$set('primaryHref',
+        this.$set('primaryLocation',
                     TP.join(this.$get('scheme'), ':', schemeSpecificString),
                     false);
     }
@@ -2223,12 +2223,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getPrimaryHref',
+TP.core.URI.Inst.defineMethod('getPrimaryLocation',
 function() {
 
     /**
-     * @method getPrimaryHref
-     * @summary Returns the primary resource's href as a String. This is the
+     * @method getPrimaryLocation
+     * @summary Returns the primary resource's URIs location. This is the
      *     portion of the URI which isn't qualified by a fragment, the portion
      *     you can send to a server without causing an error.
      * @returns {String} The primary href as a String.
@@ -2238,7 +2238,7 @@ function() {
 
     //  If we have a locally cached value return that. We only compute this
     //  when the receiver didn't defer to a primary URI.
-    if (TP.notEmpty(str = this.$get('primaryHref'))) {
+    if (TP.notEmpty(str = this.$get('primaryLocation'))) {
         return str;
     }
 
@@ -2248,7 +2248,7 @@ function() {
         str = str.split('#').at(0);
     }
 
-    this.$set('primaryHref', str);
+    this.$set('primaryLocation', str);
 
     return str;
 });
@@ -2305,7 +2305,7 @@ function() {
     //  need to get a reference to the primary.
     url = this;
     if (this.hasFragment()) {
-        url = TP.uc(this.getPrimaryHref());
+        url = TP.uc(this.getPrimaryLocation());
     }
 
     this.$set('primaryURI', url);
@@ -3935,7 +3935,7 @@ function(schemeSpecificString) {
     //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
     //  for this type, so we don't invoke the supertype method here, we set
     //  our primary href directly.
-    this.$set('primaryHref',
+    this.$set('primaryLocation',
         this.$get('scheme') + ':' + schemeSpecificString);
             */
     this.callNextMethod();
@@ -4534,7 +4534,7 @@ function(aSeparator) {
      */
 
     if (this.hasFragment()) {
-        return TP.uriExtension(this.getPrimaryHref(), aSeparator);
+        return TP.uriExtension(this.getPrimaryLocation(), aSeparator);
     }
 
     return TP.uriExtension(this.getLocation(), aSeparator);
@@ -6341,7 +6341,7 @@ function(schemeSpecificString) {
     //  NOTE that the concept of 'primary' and 'fragment' aren't relevant
     //  for this type, so we don't invoke the supertype method here, we set
     //  our primary href directly.
-    this.$set('primaryHref',
+    this.$set('primaryLocation',
                 this.$get('scheme') + ':' + schemeSpecificString);
 
     this.$set('jsSource',
@@ -7336,12 +7336,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('getPrimaryHref',
+TP.core.TIBETURL.Inst.defineMethod('getPrimaryLocation',
 function() {
 
     /**
-     * @method getPrimaryHref
-     * @summary Returns the primary resource's href as a String. This is the
+     * @method getPrimaryLocation
+     * @summary Returns the primary resource's URIs location. This is the
      *     portion of the URI which isn't qualified by a fragment, the portion
      *     you can send to a server without causing an error.
      * @returns {String} The primary href as a String.
@@ -7350,7 +7350,7 @@ function() {
     //  TIBET URLs with no canvas are effectively simply aliases to the
     //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getConcreteURI().getPrimaryHref();
+        return this.getConcreteURI().getPrimaryLocation();
     }
 
     return this.callNextMethod();
