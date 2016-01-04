@@ -41,6 +41,8 @@ function(anObject) {
         return 'Type';
     } else if (TP.isKindOf(anObject, TP.core.ElementNode)) {
         return 'TP.core.ElementNode';
+    } else if (TP.isKindOf(anObject, TP.core.URI)) {
+        return 'TP.core.URI';
     }
 
     return null;
@@ -199,6 +201,22 @@ TP.core.ElementNode.Inst.defineMethod('getSherpaStructuredEditor',
 function() {
 
     return TP.sherpa.elementeditor;
+});
+
+//  ---
+
+TP.core.ElementNode.Inst.defineMethod('getSherpaStructuredEditor',
+function() {
+
+    return TP.sherpa.elementeditor;
+});
+
+//  ---
+
+TP.core.URI.Inst.defineMethod('getSherpaStructuredEditor',
+function() {
+
+    return TP.sherpa.urieditor;
 });
 
 //  ------------------------------------------------------------------------

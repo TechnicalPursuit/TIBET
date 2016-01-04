@@ -143,6 +143,26 @@ function() {
                                 'normal',
                                 {trigger: 'TP.sig.DOM_Esc_Up'});
 
+
+    stateMachine.defineMethod('acceptSearch', function(aSignal) {
+
+        var keyName,
+            consoleGUI,
+            currentInputContent;
+
+        keyName = aSignal.getKeyName();
+
+        if (keyName === 'DOM_QuestionMark_Up') {
+            consoleGUI = this.get('$consoleService').get('$consoleGUI');
+            currentInputContent = consoleGUI.getInputContent();
+            if (TP.isEmpty(currentInputContent)) {
+                return true;
+            }
+        }
+
+        return false;
+    }.bind(this));
+
     //  Create a set of matchers
     this.set('matchers',
                 TP.ac(

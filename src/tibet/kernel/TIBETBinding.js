@@ -911,7 +911,7 @@ function(aSignal) {
 
     tpDocElem = this.getDocumentElement();
 
-    changedPrimaryLoc = aSignal.getOrigin().getPrimaryHref();
+    changedPrimaryLoc = aSignal.getOrigin().getPrimaryLocation();
 
     boundAttrNodes = TP.ac();
     for (i = 0; i < elems.length; i++) {
@@ -1135,7 +1135,7 @@ function(attrValue) {
                 //  expression and append a '#tibet(.)' on it (which will
                 //  retrieve the whole value).
                 splitURI = TP.uc(valueExpr);
-                valueExpr = splitURI.getPrimaryHref() + '#tibet(.)';
+                valueExpr = splitURI.getPrimaryLocation() + '#tibet(.)';
 
                 //  Reset the value expression to just the fragment.
                 computedValueExpr = splitURI.getFragmentExpr();
@@ -1522,7 +1522,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
         ownerWrappers,
 
-        primaryHrefMatcher,
+        primaryLocMatcher,
 
         len,
 
@@ -1604,8 +1604,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
     if (TP.isEmpty(pathParts)) {
 
-        primaryHrefMatcher =
-            TP.rc(TP.regExpEscape(aSignal.getOrigin().getPrimaryHref()));
+        primaryLocMatcher =
+            TP.rc(TP.regExpEscape(aSignal.getOrigin().getPrimaryLocation()));
 
         len = boundAttrNodes.getSize();
         for (i = 0; i < len; i++) {
@@ -1620,7 +1620,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
             if (attrName === 'scope' || attrName === 'repeat') {
 
                 if (TP.isURIString(attrVal) &&
-                    !primaryHrefMatcher.test(attrVal)) {
+                    !primaryLocMatcher.test(attrVal)) {
                     continue;
                 }
 
@@ -1851,7 +1851,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
     //  already update absolute references in the main change method, we filter
     //  for absolute references that are not ones that we are currently part of
     //  the update chain for.
-    primaryLocation = aSignal.getOrigin().getPrimaryHref();
+    primaryLocation = aSignal.getOrigin().getPrimaryLocation();
 
     len = infoKeys.getSize();
     for (i = 0; i < len; i++) {
