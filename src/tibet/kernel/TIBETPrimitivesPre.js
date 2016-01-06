@@ -7878,6 +7878,31 @@ function(anObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isHash',
+function(anObj) {
+
+    /**
+     * @method isHash
+     * @summary Returns true if the object provided is a TP.core.Hash value.
+     * @param {Object} anObj The object to test.
+     * @returns {Boolean}
+     */
+
+    //  all dates report object as their primitive type (but so does null)
+    if (TP.notValid(anObj) || typeof anObj !== 'object') {
+        return false;
+    }
+
+    //  localizable check
+    if (typeof TP.isKindOf === 'function') {
+        return TP.isKindOf(anObj, TP.core.Hash);
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('isNumber',
 function(anObj) {
 
