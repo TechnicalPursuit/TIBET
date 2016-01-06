@@ -237,7 +237,7 @@
             if (!req.headers.accept ||
                     req.headers.accept !== 'text/event-stream') {
                 logger.error(
-                    'Request does not accept text/event-stream. Ingoring.');
+                    'Request does not accept text/event-stream. Ignoring.');
                 return next();
             }
 
