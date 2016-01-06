@@ -659,124 +659,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('$regenerateRepeat',
-function(aCollection) {
-
-    var elem,
-
-        repeatContent,
-
-        bodyFragment,
-
-        mgmtElement,
-
-        startIndex,
-        endIndex,
-
-        i,
-
-        newNode;
-
-    if (TP.notValid(aCollection)) {
-        return;
-    }
-
-    elem = this.getNativeNode();
-
-    //  This will be a DocumentFragment that we stuffed away when the receiver
-    //  was rebuilt.
-    repeatContent = this.get('repeatContent');
-
-    bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
-
-    startIndex = 0;
-    endIndex = aCollection.getSize();
-
-    //  Iterate over the resource and build out a chunk of markup for each
-    //  item in the resource.
-    for (i = startIndex; i < endIndex; i++) {
-
-        //  Make sure to clone the content.
-        newNode = TP.nodeCloneNode(repeatContent);
-
-        //  Append this new chunk of markup to the document fragment we're
-        //  building up and then loop to the top to do it again.
-        bodyFragment.appendChild(newNode);
-    }
-
-    //  Append a 'management element' under ourself to manage things like awaken
-    mgmtElement = TP.documentConstructElement(this.getNativeDocument(),
-                                                'span',
-                                                TP.w3.Xmlns.XHTML);
-    TP.elementSetAttribute(mgmtElement, 'tibet:nomutationtracking', true, true);
-
-    //  Append the management element under the receiver element
-    mgmtElement = TP.nodeAppendChild(elem, mgmtElement, false);
-
-
-    //  Finally, append the whole fragment under the receiver element
-    TP.nodeAppendChild(mgmtElement, bodyFragment, false);
-
-    //  Bubble any xmlns attributes upward to avoid markup clutter.
-    TP.elementBubbleXMLNSAttributes(mgmtElement);
-
-    TP.nodeAwakenContent(mgmtElement);
-
-    this.defineAttribute('generatedContent');
-    this.set('generatedContent', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('rebuildRepeat',
-function(aSignalOrHash) {
-
-    var bindingAttachPoint,
-
-        bindingAttachLocations,
-        bidiAttrs,
-
-        childrenFragment;
-
-    bindingAttachPoint = this.getBindingAttachPoint();
-
-    bindingAttachLocations = TP.ac();
-
-    this.addBindingEntriesFromBindAttr(
-                    'repeat', TP.IN, bidiAttrs,
-                    bindingAttachLocations,
-                    bindingAttachPoint);
-
-    if (TP.isEmpty(bindingAttachLocations)) {
-        return this;
-    }
-
-    this.getDocument().registerChangeNotificationsFor(
-                bindingAttachLocations,
-                bindingAttachPoint);
-
-    //  If there is no children content already captured, then capture it.
-    if (TP.notValid(childrenFragment = this.get('repeatContent'))) {
-
-        //  Grab the childNodes of the receiver as a DocumentFragment.
-        //  NOTE: This *removes* these child nodes from the receiver.
-        childrenFragment = TP.nodeListAsFragment(
-                                this.getNativeNode().childNodes);
-
-        //  Make sure to define the attribute or TIBET will warn ;-).
-        this.defineAttribute('repeatContent');
-
-        //  Store our repeat content away for use later.
-        this.set('repeatContent', childrenFragment);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  ------------------------------------------------------------------------
 //  ------------------------------------------------------------------------
 //  ------------------------------------------------------------------------
@@ -809,6 +691,7 @@ TP.totalInitialGetTime = 0;
 
 TP.core.DocumentNode.Inst.defineAttribute('$signalingBatchID');
 TP.core.DocumentNode.Inst.defineAttribute('$observedURIs');
+TP.core.DocumentNode.Inst.defineAttribute('$repeatTemplates');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -897,6 +780,24 @@ function(aSignal) {
     initialVal = primarySource;
 
     doc = this.getNativeNode();
+
+
+    /*
+    //  Cause any repeats that don't have their content to grab it before we
+    //  start other processing.
+    var repeatElems =
+        TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
+
+    var repeatTPElems = TP.wrap(repeatElems);
+var repeatTPElem;
+
+    for (i = 0; i < repeatTPElems.getSize(); i++) {
+        repeatTPElem = repeatTPElems.at(i);
+        if (TP.notValid(repeatTPElem.get('repeatContent'))) {
+            repeatTPElem.$captureRepeatContent();
+        }
+    }
+    */
 
     //  Query for all elements containing namespaced attributes of 'io', 'in',
     //  'scope' or repeat. This is the most sophisticated 'namespace like' query
@@ -1522,6 +1423,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
         ownerWrappers,
 
+        theVal,
+
         primaryLocMatcher,
 
         len,
@@ -1544,7 +1447,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
     var startQuery = Date.now();
 
-    subscopes = TP.ac(elem.querySelectorAll('*[*|scope]'));
+    subscopes = TP.ac(elem.querySelectorAll('*[*|scope], *[*|repeat]'));
 
     subscopes = subscopes.filter(
             function(aSubscope) {
@@ -1602,6 +1505,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
     var endQuery = Date.now();
     TP.totalBranchQueryTime += (endQuery - startQuery);
 
+    if (TP.isPlainObject(initialVal)) {
+        theVal = TP.hc(initialVal);
+    } else {
+        theVal = initialVal;
+    }
+
     if (TP.isEmpty(pathParts)) {
 
         primaryLocMatcher =
@@ -1629,30 +1538,34 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                     if (branchURI.hasFragment()) {
                         branchVal = branchURI.getResource().get('result');
                     } else {
-                        branchVal = initialVal;
+                        branchVal = theVal;
                     }
                 } else {
-                    if (TP.isXMLNode(initialVal)) {
-                        branchVal = TP.wrap(initialVal).get(TP.xpc(attrVal));
+                    if (TP.isXMLNode(theVal)) {
+                        branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
                         pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                    } else if (TP.isKindOf(initialVal, TP.core.Node)) {
-                        branchVal = initialVal.get(TP.xpc(attrVal));
+                    } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                        branchVal = theVal.get(TP.xpc(attrVal));
                         pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
                     } else if (TP.regex.JSON_POINTER.test(attrVal) ||
                                 TP.regex.JSON_PATH.test(attrVal)) {
-                        if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
-                            branchVal = TP.jpc(attrVal).executeGet(initialVal);
+                        if (TP.isKindOf(theVal, TP.core.JSONContent)) {
+                            branchVal = TP.jpc(attrVal).executeGet(theVal);
                         } else {
-                            jsonContent = TP.core.JSONContent.construct(initialVal);
+                            jsonContent = TP.core.JSONContent.construct(theVal);
                             branchVal = TP.jpc(attrVal).executeGet(jsonContent);
                         }
                         pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
                     } else {
-                        branchVal = initialVal.get(attrVal);
+                        branchVal = theVal.get(attrVal);
                     }
                 }
 
                 pathType = TP.ifInvalid(pathType, aPathType);
+
+                if (attrName === 'repeat') {
+                    TP.wrap(ownerElem).$regenerateRepeat(branchVal, elems);
+                }
 
                 TP.wrap(ownerElem).refreshBranches(
                     primarySource, aSignal, elems, branchVal, pathType, null);
@@ -1675,7 +1588,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                 ownerTPElem = TP.wrap(ownerElem);
 
                 ownerTPElem.refreshLeaf(
-                    primarySource, aSignal, initialVal, boundAttr, aPathType);
+                    primarySource, aSignal, theVal, boundAttr, aPathType);
             }
         }
 
@@ -1685,9 +1598,41 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
         partsNegativeSlice = 0;
 
+        var lastPart,
+            startPredIndex,
+            endPredIndex,
+
+            hasPredicate,
+            predicatePhaseOneComplete,
+
+            didUpdate,
+
+            predicateStmt;
+
+        predicatePhaseOneComplete = false;
+
+        didUpdate = false;
+
         //  Work in reverse order, trying to find the 'most specific'
         //  branching elements.
         while (TP.notEmpty(searchParts)) {
+
+            lastPart = searchParts.last();
+            startPredIndex = lastPart.indexOf('[');
+
+            //  Note that we don't allow statements such as '[0]' to qualify as
+            //  predicates we want to process, hence looking for a '[' at a
+            //  position greater than 0;
+            hasPredicate = startPredIndex > 0;
+
+            if (hasPredicate && predicatePhaseOneComplete) {
+                endPredIndex = lastPart.lastIndexOf(']') + 1;
+                predicateStmt = lastPart.slice(startPredIndex, endPredIndex);
+                lastPart = lastPart.slice(0, startPredIndex);
+                searchParts.atPut(searchParts.getSize() - 1, lastPart);
+            } else {
+                predicateStmt = null;
+            }
 
             if (searchParts.getSize() > 1) {
                 if (TP.isURIString(searchParts.first())) {
@@ -1730,6 +1675,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
 
                 if (isScopingElement && branchMatcher.test(attrVal)) {
 
+                    didUpdate = true;
+
                     ownerTPElem = TP.wrap(ownerElem);
 
                     if (TP.isURIString(attrVal)) {
@@ -1737,33 +1684,41 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                         if (branchURI.hasFragment()) {
                             branchVal = branchURI.getResource().get('result');
                         } else {
-                            branchVal = initialVal;
+                            branchVal = theVal;
                         }
                     } else {
-                        if (TP.isXMLNode(initialVal)) {
-                            branchVal = TP.wrap(initialVal).get(TP.xpc(attrVal));
+                        if (TP.isXMLNode(theVal)) {
+                            branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
                             pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
-                        } else if (TP.isKindOf(initialVal, TP.core.Node)) {
-                            branchVal = initialVal.get(TP.xpc(attrVal));
+                        } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                            branchVal = theVal.get(TP.xpc(attrVal));
                             pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
                         } else if (TP.regex.JSON_POINTER.test(attrVal) ||
                                     TP.regex.JSON_PATH.test(attrVal)) {
-                            if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
-                                branchVal = TP.jpc(attrVal).executeGet(initialVal);
+                            if (TP.isKindOf(theVal, TP.core.JSONContent)) {
+                                branchVal = TP.jpc(attrVal).executeGet(theVal);
                             } else {
-                                jsonContent = TP.core.JSONContent.construct(initialVal);
+                                jsonContent = TP.core.JSONContent.construct(theVal);
                                 branchVal = TP.jpc(attrVal).executeGet(jsonContent);
                             }
                             pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
                         } else {
-                            branchVal = initialVal.get(attrVal);
+                            branchVal = theVal.get(attrVal);
                             pathType = TP.ifInvalid(aPathType, TP.TIBET_PATH_TYPE);
                         }
                     }
 
-                    remainderParts = pathParts.slice(partsNegativeSlice);
+                    if (partsNegativeSlice === 0) {
+                        remainderParts = TP.ac();
+                    } else {
+                        remainderParts = pathParts.slice(partsNegativeSlice);
+                    }
 
                     pathType = TP.ifInvalid(pathType, aPathType);
+
+                    if (hasPredicate && predicatePhaseOneComplete) {
+                        remainderParts.unshift(predicateStmt);
+                    }
 
                     ownerTPElem.refreshBranches(
                             primarySource,
@@ -1773,6 +1728,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                             pathType,
                             remainderParts);
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
+
+                    didUpdate = true;
 
                     /*
                     if (TP.notValid(
@@ -1788,12 +1745,45 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                     ownerTPElem = TP.wrap(ownerElem);
 
                     ownerTPElem.refreshLeaf(
-                        primarySource, aSignal, initialVal, boundAttr, aPathType);
+                        primarySource, aSignal, theVal, boundAttr, aPathType);
                 }
             }
 
-            partsNegativeSlice--;
-            searchParts = pathParts.slice(0, partsNegativeSlice);
+            if (hasPredicate && !predicatePhaseOneComplete) {
+                predicatePhaseOneComplete = true;
+            } else {
+                predicatePhaseOneComplete = false;
+                partsNegativeSlice--;
+                searchParts = pathParts.slice(0, partsNegativeSlice);
+            }
+        }
+
+        if (this.hasAttribute('bind:repeat') &&
+            !didUpdate &&
+            TP.regex.SIMPLE_NUMERIC_PATH.test(lastPart)) {
+            var modificationIndex =
+                TP.regex.SIMPLE_NUMERIC_PATH.match(lastPart).at(1);
+            modificationIndex = TP.nc(modificationIndex);
+
+            var newRowElem, newRowTPElem;
+
+            newRowElem = this.$insertRepeatRowAt(theVal, modificationIndex);
+            //newRowTPElem = TP.wrap(newRowElem);
+
+    var query = '*[*|io]' + ', ' +
+            '*[*|in]' + ', ' +
+            '*[*|scope]' + ', ' +
+            '*[*|repeat]';
+
+    var newElems = TP.ac(newRowElem.ownerDocument.documentElement.querySelectorAll(query));
+
+            this.refreshBranches(
+                    primarySource,
+                    aSignal,
+                    newElems,
+                    theVal,
+                    pathType,
+                    pathParts);
         }
     }
 
@@ -1948,7 +1938,9 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 }
 
             } else {
-                if (TP.isXMLNode(initialVal)) {
+                if (TP.isPlainObject(initialVal)) {
+                    finalVal = TP.hc(initialVal).get(expr);
+                } else if (TP.isXMLNode(initialVal)) {
                     finalVal = TP.wrap(initialVal).get(TP.xpc(expr));
                 } else if (TP.isKindOf(initialVal, TP.core.Node)) {
                     finalVal = initialVal.get(TP.xpc(expr));
@@ -2006,6 +1998,316 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
     var end = Date.now();
     TP.totalInitialGetTime += (end - start);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$registerRepeatContent',
+function() {
+
+    var elem,
+        doc,
+
+        nestedRepeatElems,
+        nestedRepeatTPElems,
+
+        i,
+
+        repeatContent,
+
+        repeatItems,
+
+        templateID,
+        templateInfo;
+
+    elem = this.getNativeNode();
+
+    //  If this attribute is present, then we've already register - just bail
+    //  out
+    if (TP.elementHasAttribute(elem, 'tibet:templateID', true)) {
+        return this;
+    }
+
+    doc = TP.nodeGetDocument(elem);
+
+    //  Cause any repeats that haven't registered their content to grab it
+    //  before we start other processing.
+    nestedRepeatElems =
+            TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
+    nestedRepeatElems = nestedRepeatElems.filter(
+                    function(anElem) {
+                        return elem !== anElem && elem.contains(anElem);
+                    })
+
+    //  To avoid mutation events as register the repeat content will cause DOM
+    //  modifications, we wrap all of the found 'bind:repeat' Elements at once
+    //  here.
+    nestedRepeatTPElems = TP.wrap(nestedRepeatElems);
+
+    for (i = 0; i < nestedRepeatTPElems.getSize(); i++) {
+        nestedRepeatTPElems.at(i).$registerRepeatContent();
+    }
+
+    //  Append a 'wrap element' as the 'root element' of the repeat content.
+    repeatContent = TP.documentConstructElement(this.getNativeDocument(),
+                                                'span',
+                                                TP.w3.Xmlns.XHTML);
+
+    TP.elementAddClass(repeatContent, 'item');
+
+    //  Grab the childNodes of the receiver as a DocumentFragment.
+    //  NOTE: This *removes* these child nodes from the receiver.
+    repeatItems = TP.nodeListAsFragment(elem.childNodes);
+
+    TP.nodeAppendChild(repeatContent, repeatItems, false);
+
+    //  Make sure to define the attribute or TIBET will warn ;-).
+    //this.defineAttribute('repeatContent');
+
+    //  Store our repeat content away for use later.
+    //this.set('repeatContent', repeatContent);
+
+    templateID = TP.genID('bind_repeat_template');
+
+    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+        templateInfo = TP.hc();
+        this.getDocument().set('$repeatTemplates', templateInfo);
+    }
+
+    templateInfo.atPut(templateID, repeatContent);
+    TP.elementSetAttribute(elem, 'tibet:templateID', templateID, true);
+
+
+    var mutObj = new MutationObserver(
+                        function(mutationRecords, obs) {
+                            debugger;
+                        });
+    mutObj.observe(
+            repeatContent,
+            {
+                childList: true,
+                subtree: true,
+                attributes:true
+            });
+
+    return repeatContent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
+function(aCollection, index) {
+
+    var elem,
+
+        templateID,
+        templateInfo,
+
+        repeatContent,
+        newElement,
+
+        insertionPoint,
+        mgmtElement;
+
+
+    elem = this.getNativeNode();
+
+    templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
+    if (TP.isEmpty(templateID)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  This will be a DocumentFragment that we stuffed away when the receiver
+    //  was rebuilt.
+    if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
+        return this;
+    }
+
+    elem = this.getNativeNode();
+
+    //  Make sure to clone the content.
+    newElement = TP.nodeCloneNode(repeatContent);
+
+    TP.elementSetAttribute(newElement,
+                            'bind:scope',
+                            '[' + index + ']',
+                            true);
+
+    mgmtElement = TP.byCSSPath(
+                        '> *[tibet|nomutationtracking]',
+                        elem,
+                        true,
+                        false);
+
+    if (!TP.isElement(mgmtElement)) {
+        //  TODO: Raise exception
+        return;
+    }
+
+    insertionPoint = TP.byCSSPath(
+                            '*[bind|scope="' + index + '"]',
+                            elem,
+                            true,
+                            false);
+
+    if (!TP.isElement(insertionPoint)) {
+        TP.nodeAppendChild(mgmtElement, newElement, false);
+    } else {
+        TP.nodeInsertBefore(mgmtElement, insertionPoint, newElement, false);
+    }
+
+    TP.nodeAwakenContent(newElement);
+
+    return newElement;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$regenerateRepeat',
+function(aCollection, elems) {
+
+    var existingItemCount,
+
+        elem,
+
+        templateInfo,
+        templateID,
+        repeatContent,
+
+        bodyFragment,
+
+        startIndex,
+        endIndex,
+        i,
+
+        newElement,
+
+        mgmtElement,
+
+        query,
+        newElems,
+        elemIndex,
+        args;
+
+    if (TP.notValid(aCollection)) {
+        return;
+    }
+
+    if (TP.isDefined(existingItemCount = this.get('generatedItemCount'))) {
+        if (existingItemCount === aCollection.getSize()) {
+            return this;
+        }
+    }
+
+    elem = this.getNativeNode();
+
+    templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
+    if (TP.isEmpty(templateID)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  This will be a DocumentFragment that we stuffed away when the receiver
+    //  was rebuilt.
+    if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
+        //  TODO: Raise an exception
+        return this;
+        /*
+        repeatContent = this.$captureRepeatContent(elems);
+        if (!TP.owns(this, 'addContent')) {
+            this.defineMethod(
+                'addContent',
+                function(newContent, aRequest, stdinContent) {
+                    this.callNextMethod();
+                    this.$captureRepeatContent();
+                });
+            this.defineMethod(
+                'insertContent',
+                function(newContent, aRequest, stdinContent) {
+                    this.callNextMethod();
+                    this.$captureRepeatContent();
+                });
+            this.defineMethod(
+                'replaceContent',
+                function(newContent, aRequest, stdinContent) {
+                    this.callNextMethod();
+                    this.$captureRepeatContent();
+                });
+            this.defineMethod(
+                'setContent',
+                function(newContent, aRequest, stdinContent) {
+                    this.callNextMethod();
+                    this.$captureRepeatContent();
+                });
+        }
+        */
+    }
+
+    bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
+
+    //  TODO: All of the collection ho-dee-do
+    startIndex = 0;
+    endIndex = aCollection.getSize();
+
+    //  Iterate over the resource and build out a chunk of markup for each
+    //  item in the resource.
+    for (i = startIndex; i < endIndex; i++) {
+
+        //  Make sure to clone the content.
+        newElement = TP.nodeCloneNode(repeatContent);
+
+        TP.elementSetAttribute(newElement, 'bind:scope', '[' + i + ']', true);
+
+        //  Append this new chunk of markup to the document fragment we're
+        //  building up and then loop to the top to do it again.
+        bodyFragment.appendChild(newElement);
+    }
+
+    //  Append a 'management element' under ourself to manage things like awaken
+    mgmtElement = TP.documentConstructElement(this.getNativeDocument(),
+                                                'span',
+                                                TP.w3.Xmlns.XHTML);
+    TP.elementSetAttribute(mgmtElement, 'tibet:nomutationtracking', true, true);
+
+    //  Append the management element under the receiver element
+    mgmtElement = TP.nodeAppendChild(elem, mgmtElement, false);
+
+    //  Finally, append the whole fragment under the receiver element
+    TP.nodeAppendChild(mgmtElement, bodyFragment, false);
+
+    //  Bubble any xmlns attributes upward to avoid markup clutter.
+    TP.elementBubbleXMLNSAttributes(mgmtElement);
+
+    TP.nodeAwakenContent(mgmtElement);
+
+    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+
+    newElems = TP.ac(elem.querySelectorAll(query));
+    newElems = newElems.filter(
+                    function(anElem) {
+                        return elem.contains(anElem);
+                    })
+
+    elemIndex = elems.indexOf(elem);
+
+    args = TP.ac(elemIndex + 1, 0).concat(newElems);
+    Array.prototype.splice.apply(elems, args);
+
+    this.defineAttribute('generatedItemCount');
+    this.set('generatedItemCount', aCollection.getSize());
 
     return this;
 });
