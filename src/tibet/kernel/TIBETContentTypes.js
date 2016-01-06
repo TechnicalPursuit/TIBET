@@ -3863,7 +3863,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         oldVal,
 
         tpXMLDoc,
-        xmlPath;
+        xmlPath,
+
+        objVal,
+        valueXMLDoc,
+        attrVal;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -3930,7 +3934,25 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         }
     }
 
-    xmlPath.executeSet(tpXMLDoc, attributeValue, shouldSignal);
+    //  If we were handed a Hash, then we need to convert the attribute value to
+    //  a DocumentFragment that contains the individual hash items as little
+    //  chunks of XML. Note that nested Hashes will be handled by the
+    //  'finalizeSetValue()' call *inside* of the XML path's 'executeSet' call.
+    if (TP.isHash(attributeValue)) {
+
+        //  First, grab the native plain JS Object under the Hash, then run it
+        //  through the conversion process.
+        objVal = attributeValue.asObject();
+        valueXMLDoc = TP.$jsonObj2xml({rootObj: objVal});
+
+        //  This will extract the child nodes as a DocumentFragment *and remove
+        //  them from their current parent node*.
+        attrVal = TP.nodeListAsFragment(valueXMLDoc.documentElement.childNodes);
+    } else {
+        attrVal = attributeValue;
+    }
+
+    xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
 
     return this;
 });
