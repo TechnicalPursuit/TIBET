@@ -3139,7 +3139,12 @@ function(srcPath, templateArgs) {
                 switch (exprRecord.type) {
 
                     case 'identifier':
-                        xmlStr += exprRecord.value;
+                        //  Special identifier of 'value' just returns '.'
+                        if (exprRecord.value === 'value') {
+                            xmlStr += '.';
+                        } else {
+                            xmlStr += exprRecord.value;
+                        }
                         break;
                     case 'wildcard':
                         xmlStr += '*';
