@@ -3498,8 +3498,8 @@ function(targetObj, varargs) {
                 //  Retrieve the XML representation that is sitting in the
                 //  actual 'data' slot (using $get() to avoid getting
                 //  recursively called here).
-                if (TP.isValid(tpValueDoc = this.$get('data'))) {
-
+                tpValueDoc = this.$get('data');
+                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
                     if (TP.isValid(
                         result = TP.$xml2jsonObj(TP.unwrap(tpValueDoc)))) {
 
@@ -3511,6 +3511,12 @@ function(targetObj, varargs) {
                         //  NB: In our particular encoding of JS<->XML, we use
                         //  the 'rootObj' slot as a top-level value. See below.
                         return result.rootObj;
+                    } else {
+                        TP.ifWarn() ?
+                            TP.warn(TP.annotate(
+                                    this,
+                                    'Unable to produce JSON data' +
+                                    ' for path: ' + this.get('srcPath'))) : 0;
                     }
                 }
 
@@ -3524,22 +3530,50 @@ function(targetObj, varargs) {
         target.defineMethod(
             'setData',
             function(aDataObject, shouldSignal) {
-                var rootObj,
+                var dataObj,
+
+                    rootObj,
                     tpValueDoc;
+
+                //  If the data we got handed is a String, then we need to parse
+                //  it into a JS structure from the JSON. If a JS structure
+                //  can't be produced from the String, then log an Error and
+                //  return.
+                if (TP.isString(aDataObject)) {
+                    dataObj = JSON.parse(aDataObject);
+                } else {
+                    dataObj = aDataObject;
+                }
+
+                if (TP.notValid(dataObj)) {
+                    TP.ifError() ?
+                        TP.error(TP.annotate(
+                                    this,
+                                    'Invalid data for JSON path: ' +
+                                    this.get('srcPath'))) : 0;
+
+                    return this;
+                }
 
                 //  We always place this behind a 'rootObj' slot - if the JSON
                 //  describes a top-level Hash with multiple properties, then we
                 //  need to have this anyway so that the XML can have a single
                 //  root element. The TP.$jsonObj2xml() call will do this for us
                 //  automatically, but we want to have a well-known handle.
-                rootObj = {rootObj: aDataObject};
+                rootObj = {rootObj: dataObj};
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
-                if (TP.isValid(tpValueDoc)) {
+                if (TP.isKindOf(tpValueDoc), TP.core.DocumentNode) {
                     //  Locally program a reference to ourself on the generated
                     //  XML TP.core.Document.
                     tpValueDoc.defineAttribute('$$realData');
                     tpValueDoc.$set('$$realData', this);
+                } else {
+                    TP.ifWarn() ?
+                        TP.warn(TP.annotate(
+                                this,
+                                'Unable to generate underlying XML data' +
+                                ' for path: ' + this.get('srcPath'))) : 0;
                 }
 
                 //  Call 'up' to our super method to set the real underlying
