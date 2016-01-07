@@ -781,24 +781,6 @@ function(aSignal) {
 
     doc = this.getNativeNode();
 
-
-    /*
-    //  Cause any repeats that don't have their content to grab it before we
-    //  start other processing.
-    var repeatElems =
-        TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
-
-    var repeatTPElems = TP.wrap(repeatElems);
-var repeatTPElem;
-
-    for (i = 0; i < repeatTPElems.getSize(); i++) {
-        repeatTPElem = repeatTPElems.at(i);
-        if (TP.notValid(repeatTPElem.get('repeatContent'))) {
-            repeatTPElem.$captureRepeatContent();
-        }
-    }
-    */
-
     //  Query for all elements containing namespaced attributes of 'io', 'in',
     //  'scope' or repeat. This is the most sophisticated 'namespace like' query
     //  we can give the native querySelectorAll() call since it doesn't really
@@ -857,6 +839,8 @@ var repeatTPElem;
 
                     var changeRecords,
                         changedPath,
+
+                        pathAction,
                         pathParts,
                         pathType;
 
@@ -878,6 +862,8 @@ var repeatTPElem;
                     //  the *same* change.
                     changedPath = changeRecords.first().first();
 
+                    pathAction = changeRecords.first().last().getKeys().first();
+
                     pathParts = TP.getAccessPathParts(changedPath);
                     pathType = TP.getAccessPathType(changedPath);
 
@@ -896,7 +882,7 @@ var repeatTPElem;
 
                     tpDocElem.refreshBranches(
                         primarySource, aSignal, elems, initialVal,
-                        pathType, pathParts);
+                        pathType, pathParts, pathAction);
                 });
 
         var endUpdate = Date.now();
@@ -930,7 +916,8 @@ var repeatTPElem;
 
         //  Refresh all bindings
         tpDocElem.refreshBranches(
-                primarySource, aSignal, elems, initialVal, null, null);
+                primarySource, aSignal, elems, initialVal,
+                null, null, null);
 
         var endSetup = Date.now();
         TP.totalSetupTime += (endSetup - startSetup);
@@ -1395,7 +1382,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
+function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction) {
 
     var elem,
 
@@ -1556,6 +1543,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                             branchVal = TP.jpc(attrVal).executeGet(jsonContent);
                         }
                         pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
+                    } else if (TP.notValid(theVal)) {
+                        branchVal = null;
                     } else {
                         branchVal = theVal.get(attrVal);
                     }
@@ -1568,7 +1557,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                 }
 
                 TP.wrap(ownerElem).refreshBranches(
-                    primarySource, aSignal, elems, branchVal, pathType, null);
+                    primarySource, aSignal, elems, branchVal,
+                    pathType, null, null);
             } else {
 
                 //  There are different types of wrappers depending on full tag
@@ -1720,13 +1710,24 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
                         remainderParts.unshift(predicateStmt);
                     }
 
+                    /*
+                    if (TP.notValid(branchVal) &&
+                        TP.regex.SIMPLE_NUMERIC_PATH.test(lastPart)) {
+                        var modificationIndex =
+                            TP.regex.SIMPLE_NUMERIC_PATH.match(lastPart).at(1);
+                        modificationIndex = TP.nc(modificationIndex);
+
+                        debugger;
+
+                        //var newRowElem, newRowTPElem;
+
+                        //newRowElem = this.$insertRepeatRowAt(theVal, modificationIndex);
+                        return this;
+                    } else {
+                    */
                     ownerTPElem.refreshBranches(
-                            primarySource,
-                            aSignal,
-                            elems,
-                            branchVal,
-                            pathType,
-                            remainderParts);
+                            primarySource, aSignal, elems, branchVal,
+                            pathType, remainderParts, pathAction);
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
                     didUpdate = true;
@@ -1761,6 +1762,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
         if (this.hasAttribute('bind:repeat') &&
             !didUpdate &&
             TP.regex.SIMPLE_NUMERIC_PATH.test(lastPart)) {
+
+            debugger;
+
             var modificationIndex =
                 TP.regex.SIMPLE_NUMERIC_PATH.match(lastPart).at(1);
             modificationIndex = TP.nc(modificationIndex);
@@ -1778,12 +1782,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts) {
     var newElems = TP.ac(newRowElem.ownerDocument.documentElement.querySelectorAll(query));
 
             this.refreshBranches(
-                    primarySource,
-                    aSignal,
-                    newElems,
-                    theVal,
-                    pathType,
-                    pathParts);
+                    primarySource, aSignal, newElems, theVal,
+                    pathType, pathParts, pathAction);
         }
     }
 
@@ -1824,10 +1824,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         jsonContent;
 
     var start = Date.now();
-
-    if (TP.notValid(initialVal)) {
-        return this;
-    }
 
     facet = aSignal.at('facet');
 
@@ -1952,6 +1948,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                         jsonContent = TP.core.JSONContent.construct(initialVal);
                         finalVal = TP.jpc(expr).executeGet(jsonContent);
                     }
+                } else if (TP.notValid(initialVal)) {
+                    finalVal = null;
                 } else {
                     finalVal = initialVal.get(expr);
                 }
@@ -1963,30 +1961,28 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
             }
         }
 
-        if (TP.notValid(finalVal)) {
-            continue;
-        }
+        if (TP.isValid(finalVal)) {
+            if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
 
-        if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
+                //  If finalVal is a single-valued Array, try to collapse it for
+                //  better results
+                if (TP.isArray(finalVal)) {
+                    finalVal = TP.collapse(finalVal);
+                }
 
-            //  If finalVal is a single-valued Array, try to collapse it for
-            //  better results
-            if (TP.isArray(finalVal)) {
-                finalVal = TP.collapse(finalVal);
+                //  If finalVal is a Node, try to get it's value (i.e. for Elements,
+                //  it's text content) for better results
+                if (TP.isNode(finalVal)) {
+                    finalVal = TP.val(finalVal);
+                }
+
+                finalVal = transformFunc(
+                                aSignal.getSource(),
+                                finalVal,
+                                this,
+                                null,
+                                null);
             }
-
-            //  If finalVal is a Node, try to get it's value (i.e. for Elements,
-            //  it's text content) for better results
-            if (TP.isNode(finalVal)) {
-                finalVal = TP.val(finalVal);
-            }
-
-            finalVal = transformFunc(
-                            aSignal.getSource(),
-                            finalVal,
-                            this,
-                            null,
-                            null);
         }
 
         if (aspect === 'value') {
