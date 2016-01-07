@@ -121,16 +121,16 @@ function(anElement) {
                         //  in our binding expression and grab the 'data'
                         //  expression.
                         for (k = 0; k < entriesKeys.getSize(); k++) {
-                            dataExprs =
-                                bindEntries.at(entriesKeys.at(k)).at('dataExprs');
+                            dataExprs = bindEntries.at(entriesKeys.at(k)).
+                                                            at('dataExprs');
 
                             //  Iterate over each data expression and, if it can
                             //  be resolved as a URI, grab it's *primary URI*.
                             for (l = 0; l < dataExprs.getSize(); l++) {
 
                                 if (TP.isURI(dataExprs.at(l))) {
-                                    primaryLoc =
-                                        TP.uc(dataExprs.at(l)).getPrimaryLocation();
+                                    primaryLoc = TP.uc(dataExprs.at(l)).
+                                                        getPrimaryLocation();
 
                                     primaryURILocs.push(primaryLoc);
                                 }
@@ -279,8 +279,8 @@ function(anElement) {
     }
 
     //  Gather any URIs that are referenced in binding expressions under the
-    //  supplied Element. The primary URIs of these URIs will be the URIs that the
-    //  owner TP.core.Document of the supplied Element will observe for
+    //  supplied Element. The primary URIs of these URIs will be the URIs that
+    //  the owner TP.core.Document of the supplied Element will observe for
     //  FacetChange.
     primaryURILocs = this.$gatherReferencedURIs(anElement);
 
@@ -338,8 +338,8 @@ function(anElement) {
     }
 
     //  Gather any URIs that are referenced in binding expressions under the
-    //  supplied Element. The primary URIs of these URIs will be the URIs that the
-    //  owner TP.core.Document of the supplied Element could ignore for
+    //  supplied Element. The primary URIs of these URIs will be the URIs that
+    //  the owner TP.core.Document of the supplied Element could ignore for
     //  FacetChange (if by detecting it, we decrement the count to 0).
     primaryURILocs = this.$gatherReferencedURIs(anElement);
 
