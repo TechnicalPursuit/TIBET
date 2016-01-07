@@ -165,6 +165,13 @@ function(anElement) {
 
         boundTextNodes,
 
+        repeatElems,
+
+        repeatTPElems,
+        len,
+        i,
+        repeatTPElem,
+
         observedURIs,
 
         tpDoc,
@@ -263,6 +270,28 @@ function(anElement) {
                                             exprNode,
                                             false);
         });
+
+    //  Cause any repeats that haven't registered their content to grab it
+    //  before we start other processing.
+    repeatElems = TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
+    repeatElems = repeatElems.filter(
+                    function(anElem) {
+                        return anElement.contains(anElem);
+                    })
+
+    //  To avoid mutation events as register the repeat content will cause DOM
+    //  modifications, we wrap all of the found 'bind:repeat' Elements at once
+    //  here.
+    repeatTPElems = TP.wrap(repeatElems);
+
+    //  Iterate over all of the found repeat elements and tell them to register
+    //  their repeat content. This is done here to avoid (lots of) problems with
+    //  dynamic shuffling of Elements under a repeat during render time.
+    len = repeatTPElems.getSize();
+    for (i = 0; i < len; i++) {
+        repeatTPElem = repeatTPElems.at(i);
+        repeatTPElem.$registerRepeatContent();
+    }
 
     //  Make sure that the owner TP.core.Document has an '$observedURIs' hash.
     //  This hash will consist of the URI's 'primary URI' location and a counter
