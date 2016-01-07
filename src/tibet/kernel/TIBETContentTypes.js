@@ -3493,8 +3493,8 @@ function(targetObj, varargs) {
                 //  Retrieve the XML representation that is sitting in the
                 //  actual 'data' slot (using $get() to avoid getting
                 //  recursively called here).
-                if (TP.isValid(tpValueDoc = this.$get('data'))) {
-
+                tpValueDoc = this.$get('data');
+                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
                     if (TP.isValid(
                         result = TP.$xml2jsonObj(TP.unwrap(tpValueDoc)))) {
 
@@ -3506,6 +3506,12 @@ function(targetObj, varargs) {
                         //  NB: In our particular encoding of JS<->XML, we use
                         //  the 'rootObj' slot as a top-level value. See below.
                         return result.rootObj;
+                    } else {
+                        TP.ifWarn() ?
+                            TP.warn(TP.annotate(
+                                    this,
+                                    'Unable to produce JSON data' +
+                                    ' for path: ' + this.get('srcPath'))) : 0;
                     }
                 }
 
@@ -3519,22 +3525,50 @@ function(targetObj, varargs) {
         target.defineMethod(
             'setData',
             function(aDataObject, shouldSignal) {
-                var rootObj,
+                var dataObj,
+
+                    rootObj,
                     tpValueDoc;
+
+                //  If the data we got handed is a String, then we need to parse
+                //  it into a JS structure from the JSON. If a JS structure
+                //  can't be produced from the String, then log an Error and
+                //  return.
+                if (TP.isString(aDataObject)) {
+                    dataObj = JSON.parse(aDataObject);
+                } else {
+                    dataObj = aDataObject;
+                }
+
+                if (TP.notValid(dataObj)) {
+                    TP.ifError() ?
+                        TP.error(TP.annotate(
+                                    this,
+                                    'Invalid data for JSON path: ' +
+                                    this.get('srcPath'))) : 0;
+
+                    return this;
+                }
 
                 //  We always place this behind a 'rootObj' slot - if the JSON
                 //  describes a top-level Hash with multiple properties, then we
                 //  need to have this anyway so that the XML can have a single
                 //  root element. The TP.$jsonObj2xml() call will do this for us
                 //  automatically, but we want to have a well-known handle.
-                rootObj = {rootObj: aDataObject};
+                rootObj = {rootObj: dataObj};
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
-                if (TP.isValid(tpValueDoc)) {
+                if (TP.isKindOf(tpValueDoc), TP.core.DocumentNode) {
                     //  Locally program a reference to ourself on the generated
                     //  XML TP.core.Document.
                     tpValueDoc.defineAttribute('$$realData');
                     tpValueDoc.$set('$$realData', this);
+                } else {
+                    TP.ifWarn() ?
+                        TP.warn(TP.annotate(
+                                this,
+                                'Unable to generate underlying XML data' +
+                                ' for path: ' + this.get('srcPath'))) : 0;
                 }
 
                 //  Call 'up' to our super method to set the real underlying
@@ -3824,7 +3858,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         oldVal,
 
         tpXMLDoc,
-        xmlPath;
+        xmlPath,
+
+        objVal,
+        valueXMLDoc,
+        attrVal;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -3891,7 +3929,25 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         }
     }
 
-    xmlPath.executeSet(tpXMLDoc, attributeValue, shouldSignal);
+    //  If we were handed a Hash, then we need to convert the attribute value to
+    //  a DocumentFragment that contains the individual hash items as little
+    //  chunks of XML. Note that nested Hashes will be handled by the
+    //  'finalizeSetValue()' call *inside* of the XML path's 'executeSet' call.
+    if (TP.isHash(attributeValue)) {
+
+        //  First, grab the native plain JS Object under the Hash, then run it
+        //  through the conversion process.
+        objVal = attributeValue.asObject();
+        valueXMLDoc = TP.$jsonObj2xml({rootObj: objVal});
+
+        //  This will extract the child nodes as a DocumentFragment *and remove
+        //  them from their current parent node*.
+        attrVal = TP.nodeListAsFragment(valueXMLDoc.documentElement.childNodes);
+    } else {
+        attrVal = attributeValue;
+    }
+
+    xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
 
     return this;
 });
@@ -6330,7 +6386,7 @@ function(aPath, config) {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
-function(aNode, prevNode) {
+function(aNode, prevNode, aValue) {
 
     /**
      * @method $addChangedAddressFromNode
@@ -6340,6 +6396,9 @@ function(aNode, prevNode) {
      * @param {Node} prevNode Any previous content that was at the place in the
      *     data structure where aNode is now. This is used to determine what
      *     kind of change action to compute.
+     * @param {Object} aValue The value that the node is being set to. Note that
+     *     this isn't necessary a Node / markup value, but is useful for
+     *     comparison purposes.
      * @returns {TP.core.XMLPath} The receiver.
      */
 
@@ -6390,10 +6449,14 @@ function(aNode, prevNode) {
     //  Obtain the node's document position - we will use this as our address.
     address = TP.nodeGetDocumentPosition(aNode);
 
-    //  If we're doing a TP.UPDATE, we message ourself to determine whether to
-    //  change an 'update' to a 'delete'/'create' combination. If so, then we
-    //  change to registering a TP.DELETE, followed by a TP.CREATE for that.
-    if (action === TP.UPDATE &&
+    //  If we're doing a TP.UPDATE *with a valid value*, we message ourself to
+    //  determine whether to change an 'update' to a 'delete'/'create'
+    //  combination. If so, then we change to registering a TP.DELETE, followed
+    //  by a TP.CREATE for that. Note that this is an invalid value (null or
+    //  undefined) then the new value is 'nulling out' the old and it is indeed
+    //  an update, not a combination of delete followed by create.
+    if (TP.isValid(aValue) &&
+        action === TP.UPDATE &&
         this.$updateOpsBecomeDeleteInsertOps(aNode, prevNode)) {
         TP.core.AccessPath.registerChangedAddress(address, TP.DELETE);
         TP.core.AccessPath.registerChangedAddress(address, TP.CREATE);
@@ -6873,12 +6936,18 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         oldcontent = TP.nodeCloneNode(content);
 
         //  Finalize the set value.
-        value = this.finalizeSetValue(content, value);
         mutatedStructure = this.valueIsStructural(content, value);
+        value = this.finalizeSetValue(content, value);
 
-        //  leverage TP.core.Node wrappers to manage update intelligently
-        tpcontent = TP.wrap(content);
-        tpcontent.setRawContent(value);
+        //  If the value is null or undefined, then we're removing the value so
+        //  empty the content.
+        if (TP.notValid(value)) {
+            TP.nodeEmptyContent(content);
+        } else {
+            //  leverage TP.core.Node wrappers to manage update intelligently
+            tpcontent = TP.wrap(content);
+            tpcontent.setRawContent(value);
+        }
 
         //  99% is single value targeting a single element, attribute node or
         //  text node
@@ -6897,11 +6966,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 //  address on this element.
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, oldcontent);
+                this.$addChangedAddressFromNode(content, oldcontent, value);
 
                 if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
                     affectedElems.push(ownerElem);
-                    this.$addChangedAddressFromNode(ownerElem);
+                    this.$addChangedAddressFromNode(ownerElem, null, false);
                 }
             } else if (flagChanges) {
                 //  Note here how we pass in 'false', because we don't want to
@@ -6927,7 +6996,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.elementFlagChange(
                         ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content);
+                this.$addChangedAddressFromNode(content, null, false);
             } else if (flagChanges) {
                 //  Note here how we pass in 'false', because we don't want to
                 //  overwrite any existing change flag record for the TP.ATTR +
@@ -6949,7 +7018,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.elementFlagChange(
                         ownerElem, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content);
+                this.$addChangedAddressFromNode(content, null, false);
             } else if (flagChanges) {
                 //  Note here how we pass in 'false', because we don't want to
                 //  overwrite any existing change flag record for the TP.ATTR +
@@ -6973,12 +7042,19 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             oldcontent = TP.nodeCloneNode(contentnode);
 
-            value = this.finalizeSetValue(contentnode, value);
             mutatedStructure = this.valueIsStructural(contentnode, value);
+            value = this.finalizeSetValue(contentnode, value);
 
-            //  leverage TP.core.Node wrappers to manage update intelligently
-            tpcontent = TP.wrap(contentnode);
-            tpcontent.setRawContent(value);
+            //  If the value is null or undefined, then we're removing the value
+            //  so empty the content.
+            if (TP.notValid(value)) {
+                TP.nodeEmptyContent(contentnode);
+            } else {
+                //  leverage TP.core.Node wrappers to manage update
+                //  intelligently
+                tpcontent = TP.wrap(contentnode);
+                tpcontent.setRawContent(value);
+            }
 
             if (TP.isNode(contentnode)) {
                 if (TP.isElement(contentnode)) {
@@ -6998,12 +7074,15 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode, TP.SELF, TP.UPDATE, false);
 
                         this.$addChangedAddressFromNode(contentnode,
-                                                        oldcontent);
+                                                        oldcontent,
+                                                        value);
 
                         if (TP.notEmpty(TP.elementGetChangeAction(
                                                         ownerElem, TP.SELF))) {
                             affectedElems.push(ownerElem);
-                            this.$addChangedAddressFromNode(ownerElem);
+                            this.$addChangedAddressFromNode(ownerElem,
+                                                            null,
+                                                            value);
                         }
                     } else if (flagChanges) {
                         //  Note here how we pass in 'false', because we don't
@@ -7034,7 +7113,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 TP.UPDATE,
                                 false);
 
-                        this.$addChangedAddressFromNode(contentnode);
+                        this.$addChangedAddressFromNode(contentnode,
+                                                        null,
+                                                        value);
                     } else if (flagChanges) {
                         //  Note here how we pass in 'false', because we don't
                         //  want to overwrite any existing change flag record
@@ -7064,7 +7145,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 TP.UPDATE,
                                 false);
 
-                        this.$addChangedAddressFromNode(contentnode);
+                        this.$addChangedAddressFromNode(contentnode,
+                                                        null,
+                                                        value);
                     } else if (flagChanges) {
                         //  Note here how we pass in 'false', because we don't
                         //  want to overwrite any existing change flag record

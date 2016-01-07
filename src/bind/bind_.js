@@ -121,16 +121,16 @@ function(anElement) {
                         //  in our binding expression and grab the 'data'
                         //  expression.
                         for (k = 0; k < entriesKeys.getSize(); k++) {
-                            dataExprs =
-                                bindEntries.at(entriesKeys.at(k)).at('dataExprs');
+                            dataExprs = bindEntries.at(entriesKeys.at(k)).
+                                                            at('dataExprs');
 
                             //  Iterate over each data expression and, if it can
                             //  be resolved as a URI, grab it's *primary URI*.
                             for (l = 0; l < dataExprs.getSize(); l++) {
 
                                 if (TP.isURI(dataExprs.at(l))) {
-                                    primaryLoc =
-                                        TP.uc(dataExprs.at(l)).getPrimaryLocation();
+                                    primaryLoc = TP.uc(dataExprs.at(l)).
+                                                        getPrimaryLocation();
 
                                     primaryURILocs.push(primaryLoc);
                                 }
@@ -164,6 +164,13 @@ function(anElement) {
     var doc,
 
         boundTextNodes,
+
+        repeatElems,
+
+        repeatTPElems,
+        len,
+        i,
+        repeatTPElem,
 
         observedURIs,
 
@@ -264,6 +271,28 @@ function(anElement) {
                                             false);
         });
 
+    //  Cause any repeats that haven't registered their content to grab it
+    //  before we start other processing.
+    repeatElems = TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
+    repeatElems = repeatElems.filter(
+                    function(anElem) {
+                        return anElement.contains(anElem);
+                    })
+
+    //  To avoid mutation events as register the repeat content will cause DOM
+    //  modifications, we wrap all of the found 'bind:repeat' Elements at once
+    //  here.
+    repeatTPElems = TP.wrap(repeatElems);
+
+    //  Iterate over all of the found repeat elements and tell them to register
+    //  their repeat content. This is done here to avoid (lots of) problems with
+    //  dynamic shuffling of Elements under a repeat during render time.
+    len = repeatTPElems.getSize();
+    for (i = 0; i < len; i++) {
+        repeatTPElem = repeatTPElems.at(i);
+        repeatTPElem.$registerRepeatContent();
+    }
+
     //  Make sure that the owner TP.core.Document has an '$observedURIs' hash.
     //  This hash will consist of the URI's 'primary URI' location and a counter
     //  matching the number of times this primary URI is encountered in the
@@ -279,8 +308,8 @@ function(anElement) {
     }
 
     //  Gather any URIs that are referenced in binding expressions under the
-    //  supplied Element. The primary URIs of these URIs will be the URIs that the
-    //  owner TP.core.Document of the supplied Element will observe for
+    //  supplied Element. The primary URIs of these URIs will be the URIs that
+    //  the owner TP.core.Document of the supplied Element will observe for
     //  FacetChange.
     primaryURILocs = this.$gatherReferencedURIs(anElement);
 
@@ -338,8 +367,8 @@ function(anElement) {
     }
 
     //  Gather any URIs that are referenced in binding expressions under the
-    //  supplied Element. The primary URIs of these URIs will be the URIs that the
-    //  owner TP.core.Document of the supplied Element could ignore for
+    //  supplied Element. The primary URIs of these URIs will be the URIs that
+    //  the owner TP.core.Document of the supplied Element could ignore for
     //  FacetChange (if by detecting it, we decrement the count to 0).
     primaryURILocs = this.$gatherReferencedURIs(anElement);
 
