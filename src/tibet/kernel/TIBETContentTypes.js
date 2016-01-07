@@ -6929,8 +6929,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         oldcontent = TP.nodeCloneNode(content);
 
         //  Finalize the set value.
-        value = this.finalizeSetValue(content, value);
         mutatedStructure = this.valueIsStructural(content, value);
+        value = this.finalizeSetValue(content, value);
 
         //  leverage TP.core.Node wrappers to manage update intelligently
         tpcontent = TP.wrap(content);
@@ -7029,8 +7029,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             oldcontent = TP.nodeCloneNode(contentnode);
 
-            value = this.finalizeSetValue(contentnode, value);
             mutatedStructure = this.valueIsStructural(contentnode, value);
+            value = this.finalizeSetValue(contentnode, value);
 
             //  leverage TP.core.Node wrappers to manage update intelligently
             tpcontent = TP.wrap(contentnode);
