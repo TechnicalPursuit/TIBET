@@ -6932,9 +6932,15 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         mutatedStructure = this.valueIsStructural(content, value);
         value = this.finalizeSetValue(content, value);
 
-        //  leverage TP.core.Node wrappers to manage update intelligently
-        tpcontent = TP.wrap(content);
-        tpcontent.setRawContent(value);
+        //  If the value is null or undefined, then we're removing the value so
+        //  empty the content.
+        if (TP.notValid(value)) {
+            TP.nodeEmptyContent(content);
+        } else {
+            //  leverage TP.core.Node wrappers to manage update intelligently
+            tpcontent = TP.wrap(content);
+            tpcontent.setRawContent(value);
+        }
 
         //  99% is single value targeting a single element, attribute node or
         //  text node
@@ -7032,9 +7038,16 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             mutatedStructure = this.valueIsStructural(contentnode, value);
             value = this.finalizeSetValue(contentnode, value);
 
-            //  leverage TP.core.Node wrappers to manage update intelligently
-            tpcontent = TP.wrap(contentnode);
-            tpcontent.setRawContent(value);
+            //  If the value is null or undefined, then we're removing the value
+            //  so empty the content.
+            if (TP.notValid(value)) {
+                TP.nodeEmptyContent(contentnode);
+            } else {
+                //  leverage TP.core.Node wrappers to manage update
+                //  intelligently
+                tpcontent = TP.wrap(contentnode);
+                tpcontent.setRawContent(value);
+            }
 
             if (TP.isNode(contentnode)) {
                 if (TP.isElement(contentnode)) {
