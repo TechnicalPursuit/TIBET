@@ -6386,7 +6386,7 @@ function(aPath, config) {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLPath.Inst.defineMethod('$addChangedAddressFromNode',
-function(aNode, prevNode) {
+function(aNode, prevNode, aValue) {
 
     /**
      * @method $addChangedAddressFromNode
@@ -6396,6 +6396,9 @@ function(aNode, prevNode) {
      * @param {Node} prevNode Any previous content that was at the place in the
      *     data structure where aNode is now. This is used to determine what
      *     kind of change action to compute.
+     * @param {Object} aValue The value that the node is being set to. Note that
+     *     this isn't necessary a Node / markup value, but is useful for
+     *     comparison purposes.
      * @returns {TP.core.XMLPath} The receiver.
      */
 
@@ -6446,10 +6449,14 @@ function(aNode, prevNode) {
     //  Obtain the node's document position - we will use this as our address.
     address = TP.nodeGetDocumentPosition(aNode);
 
-    //  If we're doing a TP.UPDATE, we message ourself to determine whether to
-    //  change an 'update' to a 'delete'/'create' combination. If so, then we
-    //  change to registering a TP.DELETE, followed by a TP.CREATE for that.
-    if (action === TP.UPDATE &&
+    //  If we're doing a TP.UPDATE *with a valid value*, we message ourself to
+    //  determine whether to change an 'update' to a 'delete'/'create'
+    //  combination. If so, then we change to registering a TP.DELETE, followed
+    //  by a TP.CREATE for that. Note that this is an invalid value (null or
+    //  undefined) then the new value is 'nulling out' the old and it is indeed
+    //  an update, not a combination of delete followed by create.
+    if (TP.isValid(aValue) &&
+        action === TP.UPDATE &&
         this.$updateOpsBecomeDeleteInsertOps(aNode, prevNode)) {
         TP.core.AccessPath.registerChangedAddress(address, TP.DELETE);
         TP.core.AccessPath.registerChangedAddress(address, TP.CREATE);
@@ -6959,11 +6966,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 //  address on this element.
                 TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, oldcontent);
+                this.$addChangedAddressFromNode(content, oldcontent, value);
 
                 if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
                     affectedElems.push(ownerElem);
-                    this.$addChangedAddressFromNode(ownerElem);
+                    this.$addChangedAddressFromNode(ownerElem, null, false);
                 }
             } else if (flagChanges) {
                 //  Note here how we pass in 'false', because we don't want to
@@ -6989,7 +6996,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.elementFlagChange(
                         ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content);
+                this.$addChangedAddressFromNode(content, null, false);
             } else if (flagChanges) {
                 //  Note here how we pass in 'false', because we don't want to
                 //  overwrite any existing change flag record for the TP.ATTR +
@@ -7011,7 +7018,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 TP.elementFlagChange(
                         ownerElem, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content);
+                this.$addChangedAddressFromNode(content, null, false);
             } else if (flagChanges) {
                 //  Note here how we pass in 'false', because we don't want to
                 //  overwrite any existing change flag record for the TP.ATTR +
@@ -7067,12 +7074,15 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode, TP.SELF, TP.UPDATE, false);
 
                         this.$addChangedAddressFromNode(contentnode,
-                                                        oldcontent);
+                                                        oldcontent,
+                                                        value);
 
                         if (TP.notEmpty(TP.elementGetChangeAction(
                                                         ownerElem, TP.SELF))) {
                             affectedElems.push(ownerElem);
-                            this.$addChangedAddressFromNode(ownerElem);
+                            this.$addChangedAddressFromNode(ownerElem,
+                                                            null,
+                                                            value);
                         }
                     } else if (flagChanges) {
                         //  Note here how we pass in 'false', because we don't
@@ -7103,7 +7113,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 TP.UPDATE,
                                 false);
 
-                        this.$addChangedAddressFromNode(contentnode);
+                        this.$addChangedAddressFromNode(contentnode,
+                                                        null,
+                                                        value);
                     } else if (flagChanges) {
                         //  Note here how we pass in 'false', because we don't
                         //  want to overwrite any existing change flag record
@@ -7133,7 +7145,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 TP.UPDATE,
                                 false);
 
-                        this.$addChangedAddressFromNode(contentnode);
+                        this.$addChangedAddressFromNode(contentnode,
+                                                        null,
+                                                        value);
                     } else if (flagChanges) {
                         //  Note here how we pass in 'false', because we don't
                         //  want to overwrite any existing change flag record
