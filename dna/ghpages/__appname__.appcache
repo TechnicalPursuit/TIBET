@@ -33,7 +33,7 @@ TIBET-INF/tibet/lib/cfg/tibet_kernel.xml
 TIBET-INF/tibet/lib/cfg/tibet_extensions.xml
 TIBET-INF/tibet/lib/cfg/lib_namespaces.xml
 
-TIBET-INF/tibet/lib/media/boot/tibet_logo.png
+TIBET-INF/tibet/lib/media/boot/tibet_logo.svg
 
 TIBET-INF/tibet/lib/dat/keyrings.xml
 TIBET-INF/tibet/lib/dat/uris.xml
