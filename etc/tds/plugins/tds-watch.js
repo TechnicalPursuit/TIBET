@@ -241,9 +241,6 @@
                 return next();
             }
 
-            //  Don't let the socket time out if at all possible.
-            req.socket.setTimeout(Infinity);
-
             //  Capture data from the request we want available for logging in
             //  the channel tranmission function.
             res.ip = req.ip
