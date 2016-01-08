@@ -28,6 +28,17 @@ TP.sig.URIRequest.defineSubtype('HTTPRequest');
 TP.sig.HTTPRequest.Type.defineAttribute('responseType', 'TP.sig.HTTPResponse');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * Whether this request has been logged. Normally not used but if errors occur
+ * during the request this slot is used to avoid logging multiple times.
+ * @type {Boolean}
+ */
+TP.sig.HTTPRequest.Inst.defineAttribute('logged');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
