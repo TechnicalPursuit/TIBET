@@ -52,8 +52,8 @@
         app.use(helmet.contentSecurityPolicy({
             directives: {
                 reportUri: '/',
-                reportOnly: true
-            }
+            },
+            reportOnly: true
         }));
 
         //  Should be more configurable. These are disabled by default.
