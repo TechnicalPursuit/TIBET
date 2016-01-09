@@ -5,12 +5,12 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet tag' command. This command copies tibet tag source files
- *     into a target directory, creating the directory if necessary. Files
+ * @overview The 'tibet tag' command. This command creates new tag source files
+ *     in a target directory, creating the directory if necessary. Files
  *     containing handlebars templates are processed with an object containing
  *     the tagname and any other argument values for the command. It also
- *     updates a project's (or the TIBET core library's) manifest to contain
- *     entries for the newly added tags.
+ *     updates the appropriate package/config locations to contain entries for
+ *     the newly created files.
  */
 //  ========================================================================
 
@@ -40,46 +40,31 @@ Cmd.prototype = new Parent();
 //  ---
 
 /**
- * The command execution context. 'tag' can only be done inside of the TIBET
- * library or a project.
+ * The command execution context. This command can only be done inside the TIBET
+ * library or a TIBET project.
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
 
 /**
- * Where are the tag source templates we should clone from? This value will be
- * joined with the current file's load path to create the absolute root path.
- * @type {string}
+ * Where do we look for compiled tag files to use as our source templates?
+ * @type {String}
  */
-Cmd.prototype.TEMPLATED_TAG_ROOT = '../templates/templatedtag/';
 Cmd.prototype.COMPILED_TAG_ROOT = '../templates/compiledtag/';
 
-
-/*
- * The defaults for various parameters are as follows
- *
- * name             application             library
- * ----             -----------             -------
- * nsroot           'APP'                   'TP'
- * nsname           appname                 cannot default
- * tagname          cannot default          cannot default
- *
- * package          '~app_cfg/{{appname}}.xml'   '~lib_cfg/lib_namespaces.xml'
- * config           'app_img'               '<nsname>'
- * dir              '~app_src/tags'        '~lib_src/<nsname>'
- * compiled         false                   false
- * template         ''                      ''
- * style            '~app_src/tags/.'      '~lib/styles'
-*/
+/**
+ * Where do we look for templated tag files to use as our source templates?
+ * @type {String}
+ */
+Cmd.prototype.TEMPLATED_TAG_ROOT = '../templates/templatedtag/';
 
 /**
  * Command argument parsing options.
  * @type {Object}
  */
-
-/* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    /* eslint-disable quote-props */
     {
         'boolean': ['compiled'],
         'string': ['package', 'config', 'dir', 'template', 'style'],
@@ -90,7 +75,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     },
     Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
-
 
 /**
  * The command usage string.
@@ -105,15 +89,29 @@ Cmd.prototype.USAGE =
 //  ---
 
 /**
- * Processes the command line options and maps the proper settings into their
- * corresponding eslint command arguments.
- * @returns {Object} The options specific to running eslint.
+ * Processes command line and default options to resolve the final parameters to
+ * use for command execution.
+ *
+ * The defaults for various parameters are as follows
+ *
+ * name             application             library
+ * ----             -----------             -------
+ * nsroot           'APP'                   'TP'
+ * nsname           appname                 cannot default
+ * tagname          cannot default          cannot default
+ *
+ * package          '~app_cfg/{{appname}}.xml'   '~lib_cfg/lib_namespaces.xml'
+ * config           'app_img'               '<nsname>'
+ * dir              '~app_src/tags'        '~lib_src/<nsname>'
+ * compiled         false                   false
+ * template         ''                      ''
+ * style            '~app_src/tags/.'      '~lib/styles'
+ *
+ * @returns {Object} The options specific to running this command.
  */
 Cmd.prototype.configureOptions = function() {
-
-    var opts,
-        inProj,
-
+    var inProj,
+        opts,
         tagname,
         tnparts;
 
@@ -123,7 +121,8 @@ Cmd.prototype.configureOptions = function() {
 
     //  Have to get at least one non-option argument (the tagname).
     if (!tagname) {
-        return null;
+        this.usage();
+        throw new Error();
     }
 
     if (CLI.inProject()) {
@@ -405,29 +404,32 @@ Cmd.prototype.writeConfigNode = function(pkgfile, config) {
 
 //  ---
 
-Cmd.prototype.updateConfigFile = function(opts) {
-
+Cmd.prototype.updateConfigFile = function(files, opts) {
     var cfgNode,
         fqtagname;
 
-    cfgNode = this.readConfigNode(opts.pkgname, opts.cfgname);
+    fqtagname = opts.nsroot + '.' + opts.nsname + '.' + opts.tagname;
 
+    cfgNode = this.readConfigNode(opts.pkgname, opts.cfgname);
     if (!cfgNode) {
-        return null;
+        throw new Error('Unable to find ' + opts.pkgname + '#' + opts.cfgname);
+        return;
     }
 
-    fqtagname = opts.nsroot + '.' + opts.nsname + '.' + opts.tagname;
+    //  ---
+    //  app_img
+    //  ---
 
     this.addXMLEntry(
             cfgNode,
-            '\n    ',
+            '    ',
             '<script src="' + opts.dirname + '/' + fqtagname + '.js"/>',
             '');
 
     if (opts.style) {
         this.addXMLEntry(
             cfgNode,
-            '\n    ',
+            '    ',
             '<property name="path.' + fqtagname + '.style"' +
                         ' value="' + opts.style + '"/>',
             '');
@@ -436,11 +438,31 @@ Cmd.prototype.updateConfigFile = function(opts) {
     if (opts.template) {
         this.addXMLEntry(
             cfgNode,
-            '\n    ',
+            '    ',
             '<property name="path.' + fqtagname + '.template"' +
                         ' value="' + opts.template + '"/>',
             '');
     }
+
+    this.addXMLLiteral(cfgNode, '\n');
+
+    this.writeConfigNode(opts.pkgname, cfgNode);
+
+    //  ---
+    //  app_tests
+    //  ---
+
+    cfgNode = this.readConfigNode(opts.pkgname, 'app_tests');
+    if (!cfgNode) {
+        throw new Error('Unable to find ' + opts.pkgname + '#' + opts.cfgname);
+        return;
+    }
+
+    this.addXMLEntry(
+            cfgNode,
+            '    ',
+            '<script src="' + opts.dirname + '/' + fqtagname + '_test.js"/>',
+            '');
 
     this.addXMLLiteral(cfgNode, '\n');
 
@@ -489,22 +511,6 @@ Cmd.prototype.execute = function() {
     //  Compute opts based on the supplied options (stored in this.options) and
     //  intelligent defaults depending on whether we're in an app or a lib.
     opts = this.configureOptions();
-    if (!opts) {
-        return 1;
-    }
-    //console.log('options: ' + JSON.stringify(opts));
-
-    //  ---
-    //  Update the cfg file based on the computed opts
-    //  ---
-
-    if (!this.updateConfigFile(opts)) {
-        return 1;
-    }
-
-    //  ---
-    //  Clone to the target directory.
-    //  ---
 
     fs = require('fs');
     path = require('path');
@@ -515,12 +521,16 @@ Cmd.prototype.execute = function() {
     } else {
         src = path.join(module.filename, this.TEMPLATED_TAG_ROOT);
     }
-    //console.log('source directory: ' + src);
 
+    //  Verify source directory for template files.
+    if (!sh.test('-d', src)) {
+        this.error('Error finding source directory ' + src);
+        return 1;
+    }
+
+    //  Verify target directory exists, or create it as needed.
     target = CLI.expandPath(opts.dirname);
-    //console.log('destination directory: ' + target);
-
-    if (!fs.existsSync(target)) {
+    if (!sh.test('-d', target)) {
         sh.mkdir(target);
         err = sh.error();
         if (err) {
@@ -529,121 +539,104 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    //  NOTE: trailing slash says to copy source content, not source directory.
-    sh.cp('-r', src + '/', target);
-    err = sh.error();
-    if (err) {
-        this.error('Error cloning tag source files: ' + err);
-        return 1;
-    }
-
-    //  ---
-    //  Process templated content to inject appname.
-    //  ---
-
     find = require('findit');
     hb = require('handlebars');
 
-    finder = find(target);
+    cmd.written = [];
+    finder = find(src);
     code = 0;
 
     finder.on('file', function(file) {
-
         var content,  // File content after template injection.
             data,     // File data.
             template; // The compiled template content.
 
-        if (/__nsroot__/.test(file)) {
+        cmd.verbose('Processing file: ' + file);
 
-            cmd.verbose('Processing file: ' + file);
-            if (opts.style && path.extname(file) === '.css') {
-                cmd.verbose('Removing unused style: ' + file);
-                sh.rm('-f', file);
-                return;
-            }
-
-            try {
-                data = fs.readFileSync(file, {encoding: 'utf8'});
-                if (!data) {
-                    throw new Error('Empty');
-                }
-            } catch (e) {
-                cmd.error('Error reading ' + file + ': ' + e.message);
-                code = 1;
-                return;
-            }
-
-            try {
-                template = hb.compile(data);
-                if (!template) {
-                    throw new Error('InvalidTemplate');
-                }
-            } catch (e) {
-                cmd.error('Error compiling template ' + file + ': ' +
-                    e.message);
-                code = 1;
-                return;
-            }
-
-            try {
-                content = template(opts);
-                if (!content) {
-                    throw new Error('InvalidContent');
-                }
-            } catch (e) {
-                cmd.error('Error injecting template data in ' + file +
-                    ': ' + e.message);
-                code = 1;
-                return;
-            }
-
-            if (data === content) {
-                cmd.verbose('Ignoring static file: ' + file);
-            } else {
-                cmd.verbose('Updating file: ' + file);
-                try {
-                    fs.writeFileSync(file, content);
-                } catch (e) {
-                    cmd.error('Error writing file ' + file + ': ' + e.message);
-                    code = 1;
-                    return;
-                }
-            }
+        if (opts.style && path.extname(file) === '.css') {
+            cmd.verbose('Skipping unused style: ' + file);
+            return;
         }
 
-        // Rename the file if it also has a name which matches our
-        // appname that's templated.
         try {
-
-            oldFile = file;
-
-            if (/__nsroot__/.test(oldFile)) {
-                newFile = oldFile.replace(/__nsroot__/g, opts.nsroot);
-                sh.mv(oldFile, newFile);
-                oldFile = newFile;
-            }
-            if (/__nsname__/.test(oldFile)) {
-                newFile = oldFile.replace(/__nsname__/g, opts.nsname);
-                sh.mv(oldFile, newFile);
-                oldFile = newFile;
-            }
-            if (/__tagname__/.test(oldFile)) {
-                newFile = oldFile.replace(/__tagname__/g, opts.tagname);
-                sh.mv(oldFile, newFile);
-                oldFile = newFile;
+            data = fs.readFileSync(file, {encoding: 'utf8'});
+            if (!data) {
+                throw new Error('Empty');
             }
         } catch (e) {
-            cmd.error('Error renaming template ' + file + ': ' + e.message);
+            cmd.error('Error reading ' + file + ': ' + e.message);
+            code = 1;
+            return;
+        }
+
+        try {
+            template = hb.compile(data);
+            if (!template) {
+                throw new Error('InvalidTemplate');
+            }
+        } catch (e) {
+            cmd.error('Error compiling template ' + file + ': ' +
+                e.message);
+            code = 1;
+            return;
+        }
+
+        try {
+            content = template(opts);
+            if (!content) {
+                throw new Error('InvalidContent');
+            }
+        } catch (e) {
+            cmd.error('Error injecting template data in ' + file +
+                ': ' + e.message);
+            code = 1;
+            return;
+        }
+
+        //  Work through the root/ns/tag portions to build out the new file name
+        //  we should be creating/writing.
+        oldFile = path.join(target, file.replace(src, ''));
+        if (/__nsroot__/.test(oldFile)) {
+            newFile = oldFile.replace(/__nsroot__/g, opts.nsroot);
+            oldFile = newFile;
+        }
+        if (/__nsname__/.test(oldFile)) {
+            newFile = oldFile.replace(/__nsname__/g, opts.nsname);
+            oldFile = newFile;
+        }
+        if (/__tagname__/.test(oldFile)) {
+            newFile = oldFile.replace(/__tagname__/g, opts.tagname);
+            oldFile = newFile;
+        }
+
+        if (sh.test('-e', newFile)) {
+            cmd.error('Error writing file ' + newFile + ': file exists.');
+            code = 1;
+            return;
+        }
+
+        cmd.verbose('Writing file: ' + newFile);
+        cmd.written.push(newFile);
+        try {
+            fs.writeFileSync(newFile, content);
+        } catch (e) {
+            cmd.error('Error writing file ' + newFile + ': ' + e.message);
             code = 1;
             return;
         }
     });
 
     finder.on('end', function() {
+
+        //  Once all files have been generated/processed update the config.
+        if (!cmd.updateConfigFile(cmd.written, opts)) {
+            return 1;
+        }
+
         if (code === 0) {
-            cmd.info('New TIBET tag: \'' +
+            cmd.info('New tag: \'' +
                 (opts.nsroot + '.' + opts.nsname + '.' + opts.tagname) +
-                '\' added to project: \'' + appname + '\'.');
+                '\' added successfully.');
         }
     });
 };
