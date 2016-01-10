@@ -3541,11 +3541,9 @@ function(targetObj, varargs) {
                 }
 
                 if (TP.notValid(dataObj)) {
-                    TP.ifError() ?
-                        TP.error(TP.annotate(
-                                    this,
-                                    'Invalid data for JSON path: ' +
-                                    this.get('srcPath'))) : 0;
+
+                    //  Call 'up' to our super method.
+                    this.callNextMethod(dataObj, shouldSignal);
 
                     return this;
                 }
