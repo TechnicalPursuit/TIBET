@@ -517,9 +517,8 @@ function(anObject) {
         debugKey,
         debugVal;
 
-    if (!TP.isValid(anObject)) {
-        return TP.raise(this, 'TP.sig.InvalidParameter');
-    }
+    //  NOTE: No checks for invalid values here - JSON.stringify knows what to
+    //  do with 'null' and 'undefined'.
 
     debugKey = null;
     debugVal = null;
