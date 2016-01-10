@@ -8364,7 +8364,7 @@ function(aTPNode, shouldSignal) {
      *     against.
      * @param {shouldSignal} Boolean If false, no signaling occurs. Defaults to
      *     targetObj.shouldSignalChange().
-     * @returns {TP.core.XPathPath} The receiver.
+     * @returns {Array} An Array of the changed Node addresses.
      */
 
     var node,
@@ -8374,6 +8374,8 @@ function(aTPNode, shouldSignal) {
 
         targetTPDoc,
         signalChange,
+
+        changedAddresses,
 
         len,
         i,
@@ -8404,11 +8406,15 @@ function(aTPNode, shouldSignal) {
         signalChange = targetTPDoc.shouldSignalChange();
     }
 
+    changedAddresses = TP.ac();
+
     len = results.getSize();
 
     //  Found something, so now we have to remove it (and/or flag as needed)
     for (i = 0; i < len; i++) {
         node = results[i];
+
+        changedAddresses.push(TP.nodeGetDocumentPosition(node));
 
         //  If what we have is an attribute then we are being asked to remove
         //  it from it's containing element
@@ -8453,7 +8459,7 @@ function(aTPNode, shouldSignal) {
         }
     }
 
-    return this;
+    return changedAddresses;
 });
 
 //  ------------------------------------------------------------------------
