@@ -225,7 +225,7 @@ function(aURI, $$vetted) {
         //  This should invoke a relatively simple alloc/init sequence with
         //  the URI as the only parameter. NOTE that when we go down this
         //  branch 'this' is always a subtype of TP.core.URI.
-        if (TP.isValid(inst = this.callNextMethod(aURI))) {
+        if (TP.isValid(inst = this.callNextMethod(aURI, $$vetted))) {
             TP.core.URI.registerInstance(inst);
         }
 
@@ -285,7 +285,6 @@ function(aURI, $$vetted) {
     TP.sys.shouldLogRaise(false);
 
     try {
-        //  TIBET URLs are the most common so we try to optimize for them
         if (TP.regex.TIBET_URL.test(url)) {
             //  if it starts with ~ or tibet: then we need to check for the
             //  fully expanded form as a registered instance
@@ -297,6 +296,14 @@ function(aURI, $$vetted) {
             //  NOTE the true value here to signify the URI is vetted
             //  and ready to use without additional processing.
             inst = TP.core.TIBETURL.construct(url, true);
+        } else if (TP.regex.TIBET_URN.test(url)) {
+            //  check for :: and if found expand it to :tibet: for consistency.
+            if (/urn::/.test(url)) {
+                url = url.replace('urn::', 'urn:tibet:');
+            }
+            url = url.slice(url.indexOf('urn:tibet:'));
+
+            inst = TP.core.URN.construct(url, true);
         } else {
             if (TP.isURI(inst = TP.core.URI.getInstanceById(url))) {
                 return inst;
@@ -3789,7 +3796,7 @@ TP.core.URN.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.core.URN.Type.defineConstant('URN_REGEX',
-                            TP.rc('urn:([a-zA-Z0-9]+):(\\S+)'));
+                            TP.rc('urn:([a-zA-Z0-9]*):(\\S+)'));
 
 TP.core.URN.Type.defineConstant('URN_NSS_REGEX',
                             TP.rc('^([a-zA-Z0-9]+):(\\S+)'));
@@ -3835,7 +3842,7 @@ function(aPath) {
         return;
     }
 
-    nid = parts.at(1);
+    nid = TP.ifEmpty(parts.at(1), 'tibet');
 
     type = TP.core.URN.$get('nidHandlers').at(nid);
     if (TP.isType(type)) {
