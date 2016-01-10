@@ -4960,6 +4960,7 @@ function(aPath, config) {
     //  TODO: This is hacky - figure out how to combine them into one RegExp.
     if (TP.regex.JS_IDENTIFIER.test(path) ||
         TP.regex.ONLY_NUM.test(path) ||
+        TP.regex.ONLY_PERIOD.test(path) ||
         TP.regex.SIMPLE_NUMERIC_PATH.test(path)) {
         return TP.core.SimpleTIBETPath.construct.apply(
                         TP.core.SimpleTIBETPath, arguments);
