@@ -39,10 +39,9 @@
   "main": "./bin/tibet",
   "directories": {
     "bin": "./bin",
-    "doc": "./doc",
-    "example": "examples",
+    "doc": "./doc/markdown",
     "lib": "./lib",
-    "man": "./man"
+    "man": ".doc/man"
   },
   "dependencies": {
     "bluebird": "TechnicalPursuit/bluebird",
