@@ -2479,6 +2479,8 @@ function(targetObj) {
         description,
         batchID,
 
+        actionsLen,
+
         pathAction,
         pathAddresses,
 
@@ -2682,12 +2684,8 @@ function(targetObj) {
             description.atPut(TP.SIGNAL_BATCH, batchID);
         }
 
-        //  Last signal... stamp in the batch ID under TP.END_SIGNAL_BATCH
-        if (i === keysLen - 1) {
-            description.atPut(TP.END_SIGNAL_BATCH, batchID);
-        }
-
-        for (j = 0; j < actions.getSize(); j++) {
+        actionsLen = actions.getSize();
+        for (j = 0; j < actionsLen; j++) {
 
             pathAction = actions.at(j);
             description.atPut('action', pathAction);
@@ -2697,6 +2695,11 @@ function(targetObj) {
 
             //  Compute the signal name based on the action.
             sigName = signalNameForAction(pathAction);
+
+            //  Last signal... stamp in the batch ID under TP.END_SIGNAL_BATCH
+            if (i === keysLen - 1 && j === actionsLen - 1) {
+                description.atPut(TP.END_SIGNAL_BATCH, batchID);
+            }
 
             //  If we found any path aliases, then loop over them and dispatch
             //  individual signals using their aspect name.
