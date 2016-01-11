@@ -2145,9 +2145,9 @@ function(targetUrl, resultType) {
     /**
      * @method uriResultType
      * @summary Returns a reasonable result type, TP.TEXT or TP.DOM, based on
-     *     examination of the targetUrl's extension. If that check isn't
-     *     definitive then the original resultType is returned (which may mean a
-     *     null result type is returned).
+     *     examination of the targetUrl's extension. The extensions for XML are
+     *     kept in TP.boot.$xmlMimes so if a match isn't happening check there.
+     *     If a resultType is provided it is always returned as the result.
      * @param {String} targetUrl A url to define a result type for.
      * @param {TP.TEXT|TP.DOM|null} resultType A result type constant.
      * @exception TP.sig.InvalidURI
@@ -2158,27 +2158,7 @@ function(targetUrl, resultType) {
         return TP.raise(this, 'TP.sig.InvalidURI');
     }
 
-    if (!TP.isRegExp(TP.regex.XML_EXTENSIONS)) {
-        TP.regex.XML_EXTENSIONS = TP.regExpConstruct(
-            TP.XML_EXTENSIONS, '\\.', '$');
-    }
-
-    if (TP.isRegExp(TP.regex.XML_EXTENSIONS)) {
-        if (TP.regex.XML_EXTENSIONS.test(targetUrl)) {
-            return TP.DOM;
-        }
-    } else if (/\.xml$|\.xhtml$|\.tsh$|\.xsl$|\.xsd$/.test(targetUrl)) {
-        return TP.DOM;
-    }
-
-    //  Certain extensions are clearly not intended to be XML, like .js and
-    //  .css files for example. We ignore any input result type in these
-    //  cases since there's no way they should be TP.DOM even if specified.
-    if (/\.js$|\.css$|\.html$|\.txt$|\.json$/.test(targetUrl)) {
-        return TP.TEXT;
-    }
-
-    return resultType;
+    return TP.boot.$uriResultType(targetUrl, resultType);
 });
 
 //  ----------------------------------------------------------------------------
