@@ -80,7 +80,7 @@ virtual URIs:
  * @type {TP.core.URI}
  * @summary An abstract type that models Uniform Resource Identifiers in the
  *     TIBET system. While abstract, this type's constructor should always be
- *     used directly or via the TP.uc() or TP.uri() functions.
+ *     used directly or via the TP.uc() primitive.
  * @description The top-level URI type in the TIBET system is an abstract type.
  *     This follows the somewhat 'classical' view of the W3C spec, where URIs
  *     represent the overall Web addressing and naming scheme and various
