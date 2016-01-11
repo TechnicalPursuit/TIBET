@@ -1010,6 +1010,13 @@ function() {
 
         jsonData = TP.json2js(jsonData);
 
+        //  When first loading from server content the first pass can often
+        //  return just a transformed string. If the first char of that is a
+        //  curly brace we want to do a second pass.
+        if (TP.isString(jsonData) && jsonData.charAt(0) === '{') {
+            jsonData = TP.json2js(jsonData);
+        }
+
         //  TP.json2js will raise for us.
         if (TP.notValid(jsonData)) {
             return;
