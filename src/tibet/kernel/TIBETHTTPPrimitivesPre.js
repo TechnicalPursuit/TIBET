@@ -46,13 +46,6 @@ function(targetUrl) {
         url.$set('lastCommObj', xhr);
     }
 
-    //  set MIME type to 'text/plain' to avoid parsing errors on non-XML
-    if (TP.uriResultType(targetUrl) !== TP.DOM) {
-        xhr.overrideMimeType(TP.PLAIN_TEXT_ENCODED);
-    } else {
-        xhr.overrideMimeType(TP.XML_ENCODED);
-    }
-
     return xhr;
 });
 
