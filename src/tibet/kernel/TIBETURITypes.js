@@ -2315,8 +2315,6 @@ function() {
         url = TP.uc(this.getPrimaryLocation());
     }
 
-    this.$set('primaryURI', url);
-
     return url;
 });
 
