@@ -57,8 +57,8 @@ function(targetDoc, cssHref, inlineRuleText) {
         //  If inlineRuleText is true, then we load the style rule text
         //  synchronously. If its not empty, we use that style text to add
         //  under a 'style' element.
-
-        resp = TP.uc(cssHref).getResourceText(TP.hc('async', false));
+        resp = TP.uc(cssHref).getResource(
+            TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = resp.get('result');
 
         newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
@@ -309,7 +309,8 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
         //  synchronously. If its not empty, we use that style text to add
         //  under a 'style' element.
 
-        resp = TP.uc(linkHref).getResourceText(TP.hc('async', false));
+        resp = TP.uc(linkHref).getResource(
+            TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = resp.get('result');
 
         newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);

@@ -33,7 +33,7 @@
  *     TP.str(aRequest.getResult())): 0; });
  *
  *     // OR Fetch the content and ignore the URL cache, going to the // data
- *     source each time. myJSONPURL.getResourceText(jsonRequest);
+ *     source each time. myJSONPURL.getResource(jsonRequest);
  */
 
 //  ------------------------------------------------------------------------

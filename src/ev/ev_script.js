@@ -94,7 +94,7 @@ function(aRequest) {
                     'Invalid src attribute value: ' + src);
         }
 
-        resp = url.getResourceText(TP.hc('async', false));
+        resp = url.getResource(TP.hc('async', false, 'resultType', TP.TEXT));
         source = resp.get('result');
     }
 

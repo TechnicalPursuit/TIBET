@@ -2354,53 +2354,6 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('getResourceNode',
-function(aRequest) {
-
-    /**
-     * @method getResourceNode
-     * @summary Returns the resource of the receiver in native Node form. Note
-     *     that like all variants of getResource* this method can be
-     *     asynchronous depending on the nature of the resource.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-     *     defining control parameters.
-     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
-     *     node content set as its result.
-     */
-
-    var request;
-
-    request = this.constructRequest(aRequest);
-    request.atPut('resultType', TP.DOM);
-
-    return this.getResource(request);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getResourceText',
-function(aRequest) {
-
-    /**
-     * @method getResourceText
-     * @summary Returns the resource of the receiver in text (String) form,
-     *     provided that the resource is a String.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-     *     defining control parameters.
-     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
-     *     text content set as its result.
-     */
-
-    var request;
-
-    request = this.constructRequest(aRequest);
-    request.atPut('resultType', TP.TEXT);
-
-    return this.getResource(request);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.URI.Inst.defineMethod('getRoot',
 function() {
 
@@ -4685,7 +4638,8 @@ function(aRequest) {
                 }
             });
 
-    this.getResourceNode(subrequest);
+    subrequest.atPut('resultType', TP.DOM);
+    this.getResource(subrequest);
 
     //  If async we can only return the result/response being used to
     //  actually process the async activity.
