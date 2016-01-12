@@ -755,14 +755,10 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
     var args,
         signal,
         error,
-
         type,
         sig,
         id,
-
         throwExceptions,
-
-        willLogError,
         logRaise;
 
     //  make sure we've got at least a basic TP.core.Request to work with
