@@ -3699,7 +3699,7 @@ function(onFulfilled, onRejected) {
             } else {
                 //  Otherwise, return a rejected Promise with the result for
                 //  chainability.
-                return TP.extern.Promise.reject(result);
+                return TP.extern.Promise.reject(new Error(result));
             }
         }
     }
