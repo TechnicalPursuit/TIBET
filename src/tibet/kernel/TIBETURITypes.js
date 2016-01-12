@@ -4500,6 +4500,34 @@ function(aSeparator) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URL.Inst.defineMethod('$getLastComm',
+function() {
+
+    /**
+     * @method $getLastComm
+     * @summary Returns the last communication channel object leveraged by the
+     *     receiver. Not all URI instances will have this value.
+     * @returns {XHR|WebSocket} The receiver's last communication object.
+     */
+
+    var comm,
+        url;
+
+    comm = this.$get('lastCommObj');
+    if (TP.isValid(comm)) {
+        return comm;
+    }
+
+    url = this.getPrimaryURI();
+    if (url !== this) {
+        return url.$getLastComm();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URL.Inst.defineMethod('getMIMEType',
 function() {
 
@@ -5739,6 +5767,86 @@ function(schemeSpecificString) {
 });
 
 //  ========================================================================
+//  TP.core.CommURL
+//  ========================================================================
+
+/**
+ * @type {TP.core.CommURL}
+ * @summary A trait class designed to add "comm" (mostly XHR) access methods.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('TP.core.CommURL');
+
+TP.core.CommURL.isAbstract(true);       //  Always set for a trait.
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
+
+    /**
+     * @method getCommResponse
+     * @summary Returns the last comm (usually xhr) result data from the
+     *     receiver's interactions with the server.
+     * @return {Object} The result data from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.$getLastComm();
+    if (TP.isValid(comm)) {
+        return comm.response;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
+
+    /**
+     * @method getCommStatusCode
+     * @summary Returns the last comm (usually xhr) status code from the
+     *     receiver's interactions with the server.
+     * @return {Number} The status code from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.$getLastComm();
+    if (TP.isValid(comm)) {
+        return comm.status;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommStatusText', function() {
+
+    /**
+     * @method getCommStatusText
+     * @summary Returns the last comm (usually xhr) status text from the
+     *     receiver's interactions with the server.
+     * @return {String} The status message from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.$getLastComm();
+    if (TP.isValid(comm)) {
+        return comm.statusText;
+    }
+
+    return;
+});
+
+//  ========================================================================
 //  TP.core.HTTPURL
 //  ========================================================================
 
@@ -5750,6 +5858,8 @@ function(schemeSpecificString) {
 //  ------------------------------------------------------------------------
 
 TP.core.URL.defineSubtype('HTTPURL');
+
+TP.core.HTTPURL.addTraits(TP.core.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -6781,6 +6891,8 @@ function(schemeSpecificString) {
 //  ------------------------------------------------------------------------
 
 TP.core.URL.defineSubtype('TIBETURL');
+
+TP.core.TIBETURL.addTraits(TP.core.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
