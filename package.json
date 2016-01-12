@@ -41,7 +41,7 @@
     "bin": "./bin",
     "doc": "./doc/markdown",
     "lib": "./lib",
-    "man": ".doc/man"
+    "man": "./doc/man"
   },
   "dependencies": {
     "bluebird": "TechnicalPursuit/bluebird",
