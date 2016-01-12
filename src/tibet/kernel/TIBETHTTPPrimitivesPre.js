@@ -836,7 +836,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
         //  If we're already logging errors, then configure raising to not log -
         //  otherwise, we see things twice.
         logRaise = TP.sys.shouldLogRaise();
-        if (willLogError) {
+        if (args.get('logged') === true) {
             TP.sys.shouldLogRaise(false);
         }
 
