@@ -731,6 +731,9 @@ function(aSignal) {
         j,
         attrVal,
 
+        changedPathKeys,
+        keysToProcess,
+
         matcher,
         len,
 
@@ -785,10 +788,7 @@ function(aSignal) {
     //  'scope' or repeat. This is the most sophisticated 'namespace like' query
     //  we can give the native querySelectorAll() call since it doesn't really
     //  recognize namespaces... we'll fix that later.
-    query = '*[*|io]' + ', ' +
-            '*[*|in]' + ', ' +
-            '*[*|scope]' + ', ' +
-            '*[*|repeat]';
+    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
 
     elems = TP.ac(doc.documentElement.querySelectorAll(query));
 
@@ -816,73 +816,66 @@ function(aSignal) {
 
         var startUpdate = Date.now();
 
-        var changedAddressEntries;
+        changedPathKeys = changedPaths.getKeys();
 
-        //  Group the changed paths by the address that changed for the
-        //  currently processing action.
-        changedAddressEntries = changedPaths.groupBy(
-                function(item) {
-                    return item.last().at(aSignal.get('action'));
-                });
+        changedPathKeys.sort(
+            function(a, b) {
 
-        //  changedAddressEntries will now look like:
+                return a.length - b.length;
+            });
 
-        //
-        //  [
-        //      <address>  ,  [
-        //                      [ path , <changeRecords> ]
-        //                  ]
-        //  ]
+        keysToProcess = TP.ac(changedPathKeys.first());
 
-        changedAddressEntries.perform(
-                function(anEntry) {
+        for (i = 0; i < changedPathKeys.getSize(); i++) {
 
-                    var changeRecords,
-                        changedPath,
+            //  NB: We use getSize() here as we expect that this Array could
+            //  change size as we add keys to it.
+            for (j = 0; j < keysToProcess.getSize(); j++) {
+                if (changedPathKeys.at(i).startsWith(keysToProcess.at(j))) {
+                    continue;
+                }
+
+                keysToProcess.push(changedPathKeys.at(i));
+            }
+        }
+
+        keysToProcess.perform(
+                function(changedPath) {
+
+                    var actions,
+                        actionLen,
+                        k,
 
                         pathAction,
                         pathParts,
                         pathType;
 
-                    changeRecords = anEntry.last();
+                    actions = changedPaths.at(changedPath).getKeys();
 
-                    //  Sort the change records (which is itself an Array of
-                    //  pairs of paths and their change records) so that the
-                    //  longest path is first.
-                    changeRecords.sort(
-                            function(a, b) {
+                    actionLen = actions.getSize();
+                    for (k = 0; k < actionLen; k++) {
+                        pathAction = actions.at(k);
 
-                                //  The 'first()' of each of these is the path
-                                //  itself.
-                                return b.first().length - a.first().length;
-                            });
+                        pathParts = TP.getAccessPathParts(changedPath);
+                        pathType = TP.getAccessPathType(changedPath);
 
-                    //  Grab the path of the first change record - that will be
-                    //  the longest path of all of change records that represent
-                    //  the *same* change.
-                    changedPath = changeRecords.first().first();
+                        if (pathType === TP.XPATH_PATH_TYPE &&
+                            changedPath.startsWith('/')) {
+                            pathParts.atPut(0, '/' + pathParts.at(0));
+                        } else if (pathType === TP.TIBET_PATH_TYPE) {
+                            initialVal = initialVal.get('value');
+                        }
 
-                    pathAction = changeRecords.first().last().getKeys().first();
+                        pathParts.unshift(
+                                '#' + TP.getPointerScheme(changedPath) + '()');
 
-                    pathParts = TP.getAccessPathParts(changedPath);
-                    pathType = TP.getAccessPathType(changedPath);
+                        //  Unshift the primary location onto the front.
+                        pathParts.unshift(changedPrimaryLoc);
 
-                    if (pathType === TP.XPATH_PATH_TYPE &&
-                        changedPath.startsWith('/')) {
-                        pathParts.atPut(0, '/' + pathParts.at(0));
-                    } else if (pathType === TP.TIBET_PATH_TYPE) {
-                        initialVal = initialVal.get('value');
+                        tpDocElem.refreshBranches(
+                            primarySource, aSignal, elems, initialVal,
+                            pathType, pathParts, pathAction);
                     }
-
-                    pathParts.unshift(
-                            '#' + TP.getPointerScheme(changedPath) + '()');
-
-                    //  Unshift the primary location onto the front.
-                    pathParts.unshift(changedPrimaryLoc);
-
-                    tpDocElem.refreshBranches(
-                        primarySource, aSignal, elems, initialVal,
-                        pathType, pathParts, pathAction);
                 });
 
         var endUpdate = Date.now();
@@ -1381,6 +1374,204 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$getBoundElements',
+function(wantsShallow) {
+
+    var elem,
+
+        doc,
+
+        subscopeQuery,
+        allSubscopes,
+        shallowSubscopes,
+
+        allBoundQuery,
+        boundElems;
+
+    elem = this.getNativeNode();
+
+    doc = TP.nodeGetDocument(elem);
+
+    //  If the caller wants the 'shallow set', then we do *not* want to return
+    //  elements that are under subscopes of the receiver. We need to compute
+    //  the set of subscopes that *are* under the receiver, so that we can use
+    //  them later for filtering.
+    if (wantsShallow) {
+        subscopeQuery = '*[*|scope], *[*|repeat]';
+
+        allSubscopes =
+            TP.ac(doc.documentElement.querySelectorAll(subscopeQuery));
+        shallowSubscopes = allSubscopes.filter(
+                function(aSubscope) {
+
+                    var k;
+
+                    for (k = 0; k < allSubscopes.length; k++) {
+                        if (allSubscopes[k] !== aSubscope &&
+                            allSubscopes[k].contains(aSubscope)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+    }
+
+    allBoundQuery = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
+
+    boundElems = TP.ac(doc.documentElement.querySelectorAll(allBoundQuery));
+    boundElems = boundElems.filter(
+            function(aNewElem) {
+
+                var k;
+
+                if (aNewElem === elem) {
+                    return false;
+                }
+
+                if (elem.contains(aNewElem)) {
+                    if (wantsShallow) {
+                        for (k = 0; k < shallowSubscopes.length; k++) {
+
+                            //  The element was contained in a subscope - return
+                            //  false to filter it out.
+                            if (shallowSubscopes[k].contains(aNewElem)) {
+                                return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                }
+
+                return false;
+            });
+
+    if (TP.notEmpty(shallowSubscopes)) {
+        boundElems = boundElems.concat(shallowSubscopes);
+    }
+
+    return boundElems;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
+function(indexes) {
+
+    var elem,
+
+        mgmtElement,
+
+        index,
+
+        deletionElement;
+
+    elem = this.getNativeNode();
+
+    mgmtElement = TP.byCSSPath(
+                        '> *[tibet|nomutationtracking]',
+                        elem,
+                        true,
+                        false);
+
+    if (!TP.isElement(mgmtElement)) {
+        //  TODO: Raise exception
+        return;
+    }
+
+    //  TODO: Fix this to support multiple indices
+    index = indexes.first();
+
+    deletionElement = TP.byCSSPath(
+                            '> *[bind|scope="[' + index + ']"]',
+                            mgmtElement,
+                            true,
+                            false);
+
+    TP.nodeDetach(deletionElement);
+
+    return deletionElement;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
+function(indexes) {
+
+    var elem,
+
+        templateID,
+        templateInfo,
+
+        repeatContent,
+        newElement,
+
+        index,
+
+        insertionPoint,
+        mgmtElement;
+
+    elem = this.getNativeNode();
+
+    templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
+    if (TP.isEmpty(templateID)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    //  This will be a DocumentFragment that we stuffed away when the receiver
+    //  was rebuilt.
+    if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
+        return this;
+    }
+
+    //  Make sure to clone the content.
+    newElement = TP.nodeCloneNode(repeatContent);
+
+    //  TODO: Fix this to support multiple indices
+    index = indexes.first();
+
+    TP.elementSetAttribute(newElement,
+                            'bind:scope',
+                            '[' + index + ']',
+                            true);
+
+    mgmtElement = TP.byCSSPath(
+                        '> *[tibet|nomutationtracking]',
+                        elem,
+                        true,
+                        false);
+
+    if (!TP.isElement(mgmtElement)) {
+        //  TODO: Raise exception
+        return;
+    }
+
+    insertionPoint = TP.byCSSPath(
+                            '*[bind|scope="[' + index + ']"]',
+                            elem,
+                            true,
+                            false);
+
+    if (!TP.isElement(insertionPoint)) {
+        TP.nodeAppendChild(mgmtElement, newElement, false);
+    } else {
+        TP.nodeInsertBefore(mgmtElement, insertionPoint, newElement, false);
+    }
+
+    TP.nodeAwakenContent(newElement);
+
+    return newElement;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('refreshBranches',
 function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction) {
 
@@ -1395,19 +1586,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         i,
         j,
 
-        ownerElem,
-
-        isScopingElement,
-
-        searchParts,
-
-        partsNegativeSlice,
-
-        searchPath,
-
-        branchMatcher,
-        leafMatcher,
-
         ownerWrappers,
 
         theVal,
@@ -1420,15 +1598,47 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         attrName,
         attrVal,
 
-        ownerTPElem,
+        ownerElem,
+
+        isScopingElement,
+
         branchURI,
         branchVal,
 
         pathType,
 
+        repeatScopeVals,
+        repeatPath,
+        repeatFragExpr,
+
+        ownerTPElem,
+
+        searchParts,
+
+        partsNegativeSlice,
+        predicatePhaseOneComplete,
+
+        lastPart,
+
+        startPredIndex,
+        endPredIndex,
+        hasPredicate,
+        predicateStmt,
+
+        searchPath,
+
+        branchMatcher,
+        leafMatcher,
+
         jsonContent,
 
-        remainderParts;
+        remainderParts,
+
+        needsRefresh,
+
+        indexes,
+        newRowElem,
+        newSubElems;
 
     elem = this.getNativeNode();
 
@@ -1513,7 +1723,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
             ownerElem = boundAttr.ownerElement;
 
             //  Nested scope?
-            if (attrName === 'scope' || attrName === 'repeat') {
+            isScopingElement = attrName === 'scope' || attrName === 'repeat';
+            if (isScopingElement) {
 
                 if (TP.isURIString(attrVal) &&
                     !primaryLocMatcher.test(attrVal)) {
@@ -1528,6 +1739,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         branchVal = theVal;
                     }
                 } else {
+                    if (TP.isArray(theVal) &&
+                        theVal.first() !== TP.NULL &&
+                        TP.isXMLNode(TP.unwrap(theVal.first()))) {
+                        theVal.unshift(TP.NULL);
+                    }
+
                     if (TP.isXMLNode(theVal)) {
                         branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
                         pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
@@ -1553,6 +1770,16 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 pathType = TP.ifInvalid(pathType, aPathType);
 
                 if (attrName === 'repeat') {
+
+                    if (!TP.isURIString(attrVal)) {
+                        repeatScopeVals =
+                            this.getBindingScopeValues().concat(attrVal);
+                        repeatPath =
+                            TP.uriJoinFragments.apply(TP, repeatScopeVals);
+                        repeatFragExpr = TP.uc(repeatPath).getFragmentExpr();
+                        TP.apc(repeatFragExpr).executeGet(primarySource);
+                    }
+
                     TP.wrap(ownerElem).$regenerateRepeat(branchVal, elems);
                 }
 
@@ -1588,20 +1815,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
         partsNegativeSlice = 0;
 
-        var lastPart,
-            startPredIndex,
-            endPredIndex,
-
-            hasPredicate,
-            predicatePhaseOneComplete,
-
-            didUpdate,
-
-            predicateStmt;
-
         predicatePhaseOneComplete = false;
-
-        didUpdate = false;
 
         //  Work in reverse order, trying to find the 'most specific'
         //  branching elements.
@@ -1665,8 +1879,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 if (isScopingElement && branchMatcher.test(attrVal)) {
 
-                    didUpdate = true;
-
                     ownerTPElem = TP.wrap(ownerElem);
 
                     if (TP.isURIString(attrVal)) {
@@ -1677,6 +1889,13 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                             branchVal = theVal;
                         }
                     } else {
+
+                        if (TP.isArray(theVal) &&
+                            theVal.first() !== TP.NULL &&
+                            TP.isXMLNode(TP.unwrap(theVal.first()))) {
+                            theVal.unshift(TP.NULL);
+                        }
+
                         if (TP.isXMLNode(theVal)) {
                             branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
                             pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
@@ -1710,27 +1929,66 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         remainderParts.unshift(predicateStmt);
                     }
 
-                    /*
-                    if (TP.notValid(branchVal) &&
-                        TP.regex.SIMPLE_NUMERIC_PATH.test(lastPart)) {
-                        var modificationIndex =
-                            TP.regex.SIMPLE_NUMERIC_PATH.match(lastPart).at(1);
-                        modificationIndex = TP.nc(modificationIndex);
+                    needsRefresh = true;
 
-                        debugger;
+                    if (attrName === 'repeat' &&
+                        TP.isEmpty(remainderParts) &&
+                        attrVal === searchPath) {
 
-                        //var newRowElem, newRowTPElem;
+                        indexes = aSignal.at('indexes');
 
-                        //newRowElem = this.$insertRepeatRowAt(theVal, modificationIndex);
-                        return this;
-                    } else {
-                    */
-                    ownerTPElem.refreshBranches(
-                            primarySource, aSignal, elems, branchVal,
-                            pathType, remainderParts, pathAction);
+                        switch (pathAction) {
+
+                            case TP.CREATE:
+                            case TP.INSERT:
+
+                                if (TP.notEmpty(indexes)) {
+                                    newRowElem =
+                                        ownerTPElem.$insertRepeatRowAt(indexes);
+                                    newSubElems =
+                                        TP.wrap(newRowElem).$getBoundElements(
+                                                                        false);
+                                    ownerTPElem.refreshBranches(
+                                        primarySource, aSignal, newSubElems,
+                                        theVal, pathType, pathParts,
+                                        pathAction);
+
+                                    needsRefresh = false;
+                                } else {
+
+                                    //  NB: This modifies the supplied 'elems'
+                                    //  Array to add the newly generated
+                                    //  elements. They will be refreshed below.
+                                    ownerTPElem.$regenerateRepeat(
+                                                    branchVal, elems);
+                                }
+
+                                break;
+
+                            case TP.DELETE:
+
+                                if (TP.notEmpty(indexes)) {
+                                    ownerTPElem.$deleteRepeatRowAt(indexes);
+                                } else {
+                                    ownerTPElem.empty();
+                                    ownerTPElem.set('generatedItemCount', 0);
+                                }
+
+                                needsRefresh = false;
+
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (needsRefresh) {
+                        ownerTPElem.refreshBranches(
+                                primarySource, aSignal, elems, branchVal,
+                                pathType, remainderParts, pathAction);
+                    }
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
-
-                    didUpdate = true;
 
                     /*
                     if (TP.notValid(
@@ -1757,33 +2015,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 partsNegativeSlice--;
                 searchParts = pathParts.slice(0, partsNegativeSlice);
             }
-        }
-
-        if (this.hasAttribute('bind:repeat') &&
-            !didUpdate &&
-            TP.regex.SIMPLE_NUMERIC_PATH.test(lastPart)) {
-
-            debugger;
-
-            var modificationIndex =
-                TP.regex.SIMPLE_NUMERIC_PATH.match(lastPart).at(1);
-            modificationIndex = TP.nc(modificationIndex);
-
-            var newRowElem, newRowTPElem;
-
-            newRowElem = this.$insertRepeatRowAt(theVal, modificationIndex);
-            //newRowTPElem = TP.wrap(newRowElem);
-
-    var query = '*[*|io]' + ', ' +
-            '*[*|in]' + ', ' +
-            '*[*|scope]' + ', ' +
-            '*[*|repeat]';
-
-    var newElems = TP.ac(newRowElem.ownerDocument.documentElement.querySelectorAll(query));
-
-            this.refreshBranches(
-                    primarySource, aSignal, newElems, theVal,
-                    pathType, pathParts, pathAction);
         }
     }
 
@@ -1970,8 +2201,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                     finalVal = TP.collapse(finalVal);
                 }
 
-                //  If finalVal is a Node, try to get it's value (i.e. for Elements,
-                //  it's text content) for better results
+                //  If finalVal is a Node, try to get it's value (i.e. for
+                //  Elements, it's text content) for better results
                 if (TP.isNode(finalVal)) {
                     finalVal = TP.val(finalVal);
                 }
@@ -2000,173 +2231,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$registerRepeatContent',
-function() {
-
-    var elem,
-        doc,
-
-        nestedRepeatElems,
-        nestedRepeatTPElems,
-
-        i,
-
-        repeatContent,
-
-        repeatItems,
-
-        templateID,
-        templateInfo;
-
-    elem = this.getNativeNode();
-
-    //  If this attribute is present, then we've already register - just bail
-    //  out
-    if (TP.elementHasAttribute(elem, 'tibet:templateID', true)) {
-        return this;
-    }
-
-    doc = TP.nodeGetDocument(elem);
-
-    //  Cause any repeats that haven't registered their content to grab it
-    //  before we start other processing.
-    nestedRepeatElems =
-            TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
-    nestedRepeatElems = nestedRepeatElems.filter(
-                    function(anElem) {
-                        return elem !== anElem && elem.contains(anElem);
-                    })
-
-    //  To avoid mutation events as register the repeat content will cause DOM
-    //  modifications, we wrap all of the found 'bind:repeat' Elements at once
-    //  here.
-    nestedRepeatTPElems = TP.wrap(nestedRepeatElems);
-
-    for (i = 0; i < nestedRepeatTPElems.getSize(); i++) {
-        nestedRepeatTPElems.at(i).$registerRepeatContent();
-    }
-
-    //  Append a 'wrap element' as the 'root element' of the repeat content.
-    repeatContent = TP.documentConstructElement(this.getNativeDocument(),
-                                                'span',
-                                                TP.w3.Xmlns.XHTML);
-
-    TP.elementAddClass(repeatContent, 'item');
-
-    //  Grab the childNodes of the receiver as a DocumentFragment.
-    //  NOTE: This *removes* these child nodes from the receiver.
-    repeatItems = TP.nodeListAsFragment(elem.childNodes);
-
-    TP.nodeAppendChild(repeatContent, repeatItems, false);
-
-    //  Make sure to define the attribute or TIBET will warn ;-).
-    //this.defineAttribute('repeatContent');
-
-    //  Store our repeat content away for use later.
-    //this.set('repeatContent', repeatContent);
-
-    templateID = TP.genID('bind_repeat_template');
-
-    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
-        templateInfo = TP.hc();
-        this.getDocument().set('$repeatTemplates', templateInfo);
-    }
-
-    templateInfo.atPut(templateID, repeatContent);
-    TP.elementSetAttribute(elem, 'tibet:templateID', templateID, true);
-
-
-    var mutObj = new MutationObserver(
-                        function(mutationRecords, obs) {
-                            debugger;
-                        });
-    mutObj.observe(
-            repeatContent,
-            {
-                childList: true,
-                subtree: true,
-                attributes:true
-            });
-
-    return repeatContent;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
-function(aCollection, index) {
-
-    var elem,
-
-        templateID,
-        templateInfo,
-
-        repeatContent,
-        newElement,
-
-        insertionPoint,
-        mgmtElement;
-
-
-    elem = this.getNativeNode();
-
-    templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
-    if (TP.isEmpty(templateID)) {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    //  This will be a DocumentFragment that we stuffed away when the receiver
-    //  was rebuilt.
-    if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
-        return this;
-    }
-
-    elem = this.getNativeNode();
-
-    //  Make sure to clone the content.
-    newElement = TP.nodeCloneNode(repeatContent);
-
-    TP.elementSetAttribute(newElement,
-                            'bind:scope',
-                            '[' + index + ']',
-                            true);
-
-    mgmtElement = TP.byCSSPath(
-                        '> *[tibet|nomutationtracking]',
-                        elem,
-                        true,
-                        false);
-
-    if (!TP.isElement(mgmtElement)) {
-        //  TODO: Raise exception
-        return;
-    }
-
-    insertionPoint = TP.byCSSPath(
-                            '*[bind|scope="' + index + '"]',
-                            elem,
-                            true,
-                            false);
-
-    if (!TP.isElement(insertionPoint)) {
-        TP.nodeAppendChild(mgmtElement, newElement, false);
-    } else {
-        TP.nodeInsertBefore(mgmtElement, insertionPoint, newElement, false);
-    }
-
-    TP.nodeAwakenContent(newElement);
-
-    return newElement;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Inst.defineMethod('$regenerateRepeat',
 function(aCollection, elems) {
 
@@ -2180,15 +2244,19 @@ function(aCollection, elems) {
 
         bodyFragment,
 
+        isXMLResource,
+
         startIndex,
         endIndex,
+
+        scopeIndex,
+
         i,
 
         newElement,
 
         mgmtElement,
 
-        query,
         newElems,
         elemIndex,
         args;
@@ -2254,7 +2322,8 @@ function(aCollection, elems) {
 
     bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
 
-    //  TODO: All of the collection ho-dee-do
+    isXMLResource = TP.isXMLNode(TP.unwrap(aCollection.first()));
+
     startIndex = 0;
     endIndex = aCollection.getSize();
 
@@ -2265,7 +2334,14 @@ function(aCollection, elems) {
         //  Make sure to clone the content.
         newElement = TP.nodeCloneNode(repeatContent);
 
-        TP.elementSetAttribute(newElement, 'bind:scope', '[' + i + ']', true);
+        if (isXMLResource) {
+            scopeIndex = i + 1;
+        } else {
+            scopeIndex = i;
+        }
+
+        TP.elementSetAttribute(
+                newElement, 'bind:scope', '[' + scopeIndex + ']', true);
 
         //  Append this new chunk of markup to the document fragment we're
         //  building up and then loop to the top to do it again.
@@ -2289,13 +2365,7 @@ function(aCollection, elems) {
 
     TP.nodeAwakenContent(mgmtElement);
 
-    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
-
-    newElems = TP.ac(elem.querySelectorAll(query));
-    newElems = newElems.filter(
-                    function(anElem) {
-                        return elem.contains(anElem);
-                    })
+    newElems = this.$getBoundElements(false);
 
     elemIndex = elems.indexOf(elem);
 
@@ -2306,6 +2376,80 @@ function(aCollection, elems) {
     this.set('generatedItemCount', aCollection.getSize());
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$registerRepeatContent',
+function() {
+
+    var elem,
+        doc,
+
+        nestedRepeatElems,
+        nestedRepeatTPElems,
+
+        i,
+
+        repeatContent,
+
+        repeatItems,
+
+        templateID,
+        templateInfo;
+
+    elem = this.getNativeNode();
+
+    //  If this attribute is present, then we've already register - just bail
+    //  out
+    if (TP.elementHasAttribute(elem, 'tibet:templateID', true)) {
+        return this;
+    }
+
+    doc = TP.nodeGetDocument(elem);
+
+    //  Cause any repeats that haven't registered their content to grab it
+    //  before we start other processing.
+    nestedRepeatElems =
+            TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
+    nestedRepeatElems = nestedRepeatElems.filter(
+                    function(anElem) {
+                        return elem !== anElem && elem.contains(anElem);
+                    })
+
+    //  To avoid mutation events as register the repeat content will cause DOM
+    //  modifications, we wrap all of the found 'bind:repeat' Elements at once
+    //  here.
+    nestedRepeatTPElems = TP.wrap(nestedRepeatElems);
+
+    for (i = 0; i < nestedRepeatTPElems.getSize(); i++) {
+        nestedRepeatTPElems.at(i).$registerRepeatContent();
+    }
+
+    //  Append a 'wrap element' as the 'root element' of the repeat content.
+    repeatContent = TP.documentConstructElement(this.getNativeDocument(),
+                                                'span',
+                                                TP.w3.Xmlns.XHTML);
+
+    TP.elementAddClass(repeatContent, 'item');
+
+    //  Grab the childNodes of the receiver as a DocumentFragment.
+    //  NOTE: This *removes* these child nodes from the receiver.
+    repeatItems = TP.nodeListAsFragment(elem.childNodes);
+
+    TP.nodeAppendChild(repeatContent, repeatItems, false);
+
+    templateID = TP.genID('bind_repeat_template');
+
+    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+        templateInfo = TP.hc();
+        this.getDocument().set('$repeatTemplates', templateInfo);
+    }
+
+    templateInfo.atPut(templateID, repeatContent);
+    TP.elementSetAttribute(elem, 'tibet:templateID', templateID, true);
+
+    return repeatContent;
 });
 
 //  ------------------------------------------------------------------------
