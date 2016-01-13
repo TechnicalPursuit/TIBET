@@ -46,8 +46,8 @@ function(anEntry) {
 
         stdio;
 
-    // Try to find a matching console API method to our level name. If we find
-    // it we'll use that to output the message content.
+    //  Try to find a matching console API method to our level name. If we find
+    //  it we'll use that to output the message content.
     name = anEntry.getLevel().get('name').toLowerCase();
     switch (name) {
         case 'warn':
@@ -64,12 +64,12 @@ function(anEntry) {
             break;
     }
 
-    // If the entry contains multiple parts and we have access to a
-    // group/groupEnd api via the console we'll group our output to help show
-    // that it's all the result of a single logging call...
-    // TODO:
+    //  If the entry contains multiple parts and we have access to a
+    //  group/groupEnd api via the console we'll group our output to help show
+    //  that it's all the result of a single logging call...
+    //  TODO:
 
-    // Format the little critter...
+    //  Format the little critter...
     layout = this.getLayout();
 
     results = layout.layout(anEntry);
