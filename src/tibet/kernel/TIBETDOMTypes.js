@@ -1907,6 +1907,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('getParentNode',
+function() {
+
+    /**
+     * @method getParentNode
+     * @summary Returns a TP.core.Node wrapping the parent node of the receiver.
+     * @returns {TP.core.Node} The parent node of the receiver.
+     */
+
+    return TP.wrap(this.getNativeNode().parentNode);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('getOuterContent',
 function(aRequest) {
 
