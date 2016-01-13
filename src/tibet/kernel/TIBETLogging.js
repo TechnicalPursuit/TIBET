@@ -1143,6 +1143,32 @@ function(anEntry) {
 
 //  ----------------------------------------------------------------------------
 
+TP.log.Logger.Inst.defineMethod('removeAppender',
+function(anAppender) {
+
+    /**
+     * @method removeAppender
+     * @summary Removes a appender from the logger. Loggers can have 0 to N
+     *     appenders.
+     * @param {TP.log.Appender} anAppender The appender to remove.
+     * @returns {TP.log.Logger} The receiver.
+     */
+
+    var appenders;
+
+    //  Make sure to use $get() here to only get our local appenders, not any of
+    //  our parent's appenders.
+    if (TP.notValid(appenders = this.$get('appenders'))) {
+        return this;
+    }
+
+    appenders.remove(anAppender, TP.IDENTITY);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.log.Logger.Inst.defineMethod('trace',
 function(varargs) {
 
