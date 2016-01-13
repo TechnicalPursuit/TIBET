@@ -37,13 +37,11 @@ function(targetUrl) {
                                 'Unable to instantiate XHR object.'));
     }
 
-    //  to support certain scenarios we need to keep track of the last
-    //  HTTP request object used for a particular URI so we associate it
-    //  here if possible
-    if (TP.isValid(targetUrl) &&
-        TP.isValid(TP.sys.require('TP.core.URI'))) {
+    //  URL instances which make use of "comm objects" support API to access the
+    //  last used object and its data provided we keep that reference updated.
+    if (TP.isValid(targetUrl) && TP.isValid(TP.sys.require('TP.core.URI'))) {
         url = TP.uc(targetUrl);
-        url.$set('lastCommObj', xhr);
+        url.$set('commObject', xhr);
     }
 
     return xhr;

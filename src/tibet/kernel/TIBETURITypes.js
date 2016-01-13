@@ -293,7 +293,7 @@ function(aURI, $$vetted) {
                 return inst;
             }
 
-            //  NOTE the true value here to signify the URI is vetted
+            //  NOTE the 'true' value here to signify the URI is vetted
             //  and ready to use without additional processing.
             inst = TP.core.TIBETURL.construct(url, true);
         } else if (TP.regex.TIBET_URN.test(url)) {
@@ -317,7 +317,7 @@ function(aURI, $$vetted) {
             //  here we construct the instance and init() it using the root
             type = this.getConcreteType(url);
             if (TP.isType(type)) {
-                //  NOTE the true value here to signify the URI is vetted
+                //  NOTE the 'true' value here to signify the URI is vetted
                 //  and ready to use without additional processing.
                 inst = type.construct(url, true);
             } else {
@@ -4450,7 +4450,7 @@ TP.core.URL.Inst.defineAttribute('lastRequest');
 
 //  placeholder for URI handlers to find most recent 'communication' object
 //  (i.e. the native XHR or WebSocket object)
-TP.core.URL.Inst.defineAttribute('lastCommObj');
+TP.core.URL.Inst.defineAttribute('commObject');
 
 //  whether or not the URI is being watched for change
 TP.core.URL.Inst.defineAttribute('watched');
@@ -4479,6 +4479,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URL.Inst.defineMethod('getCommObject',
+function() {
+
+    /**
+     * @method getCommObject
+     * @summary Returns the last communication channel object leveraged by the
+     *     receiver. Not all URI instances will have this value.
+     * @returns {XHR|WebSocket} The receiver's last communication object.
+     */
+
+    var comm,
+        url;
+
+    comm = this.$get('commObject');
+    if (TP.isValid(comm)) {
+        return comm;
+    }
+
+    url = this.getPrimaryURI();
+    if (url !== this) {
+        return url.getCommObject();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URL.Inst.defineMethod('getExtension',
 function(aSeparator) {
 
@@ -4496,34 +4524,6 @@ function(aSeparator) {
     }
 
     return TP.uriExtension(this.getLocation(), aSeparator);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URL.Inst.defineMethod('$getLastComm',
-function() {
-
-    /**
-     * @method $getLastComm
-     * @summary Returns the last communication channel object leveraged by the
-     *     receiver. Not all URI instances will have this value.
-     * @returns {XHR|WebSocket} The receiver's last communication object.
-     */
-
-    var comm,
-        url;
-
-    comm = this.$get('lastCommObj');
-    if (TP.isValid(comm)) {
-        return comm;
-    }
-
-    url = this.getPrimaryURI();
-    if (url !== this) {
-        return url.$getLastComm();
-    }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5785,20 +5785,106 @@ TP.core.CommURL.isAbstract(true);       //  Always set for a trait.
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.CommURL.Inst.defineMethod('commDidSucceed', function() {
+
+    /**
+     * @method commDidSucceed
+     * @summary Returns true if the last comm request (xhr etc) to the server
+     *     was successful based on status information in the comm object.
+     * @return {Boolean} True for successful communications.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return TP.httpDidSucceed(comm);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
 
     /**
      * @method getCommResponse
-     * @summary Returns the last comm (usually xhr) result data from the
-     *     receiver's interactions with the server.
+     * @summary Returns response data from the last communication object (xhr
+     *     etc) used in the receiver's interactions with the server.
      * @return {Object} The result data from the last comm request.
      */
 
     var comm;
 
-    comm = this.$getLastComm();
+    comm = this.getCommObject();
     if (TP.isValid(comm)) {
         return comm.response;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponseText', function() {
+
+    /**
+     * @method getCommResponseText
+     * @summary Returns response text from the last communication object (xhr
+     *     etc) used in the receiver's interactions with the server.
+     * @return {String} The result text from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.responseText;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponseType', function() {
+
+    /**
+     * @method getCommResponseType
+     * @summary Returns the response type from the last communication object
+     * (xhr etc) used in the receiver's interactions with the server.
+     * @return {String} A string from the XMLHttpRequest API with one of the
+     *     following values: "", arraybuffer, blob, document, json, or text. The
+     *     default ("") means a DOMString value just as with "text".
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.responseType;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponseXML', function() {
+
+    /**
+     * @method getCommResponseXML
+     * @summary Returns response XML from the last communication object (xhr
+     *     etc) used in the receiver's interactions with the server.
+     * @return {String} The result XML from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.responseXML;
     }
 
     return;
@@ -5817,7 +5903,7 @@ TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
 
     var comm;
 
-    comm = this.$getLastComm();
+    comm = this.getCommObject();
     if (TP.isValid(comm)) {
         return comm.status;
     }
@@ -5838,7 +5924,7 @@ TP.core.CommURL.Inst.defineMethod('getCommStatusText', function() {
 
     var comm;
 
-    comm = this.$getLastComm();
+    comm = this.getCommObject();
     if (TP.isValid(comm)) {
         return comm.statusText;
     }
