@@ -77,7 +77,7 @@ div {
     bottom: 0;
     right: 0;
     left: 0;
-    margin: 2px;
+    margin: 1px;
     border: 1px solid #666;
     background-color: #eee;
 }
@@ -105,7 +105,7 @@ div {
     left: 0;
     border: 1px solid #666;
     background-color: #eee;
-    margin: 2px;
+    margin: 1px;
 }
 
 /* -----------------------------*
@@ -132,7 +132,7 @@ div {
     bottom: 0;
     left: 0;
     border: 1px solid #666;
-    margin: 2px;
+    margin: 1px;
     background-color: #eee;
 }
 
@@ -334,7 +334,7 @@ div {
     background: #fff;
     border-radius: 4px;
 
-    margin: 2px;
+    margin: 1px;
     border: 1px solid #666;
 }
 

@@ -37,20 +37,11 @@ function(targetUrl) {
                                 'Unable to instantiate XHR object.'));
     }
 
-    //  to support certain scenarios we need to keep track of the last
-    //  HTTP request object used for a particular URI so we associate it
-    //  here if possible
-    if (TP.isValid(targetUrl) &&
-        TP.isValid(TP.sys.require('TP.core.URI'))) {
+    //  URL instances which make use of "comm objects" support API to access the
+    //  last used object and its data provided we keep that reference updated.
+    if (TP.isValid(targetUrl) && TP.isValid(TP.sys.require('TP.core.URI'))) {
         url = TP.uc(targetUrl);
-        url.$set('lastCommObj', xhr);
-    }
-
-    //  set MIME type to 'text/plain' to avoid parsing errors on non-XML
-    if (TP.uriResultType(targetUrl) !== TP.DOM) {
-        xhr.overrideMimeType(TP.PLAIN_TEXT_ENCODED);
-    } else {
-        xhr.overrideMimeType(TP.XML_ENCODED);
+        url.$set('commObject', xhr);
     }
 
     return xhr;
@@ -762,14 +753,10 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
     var args,
         signal,
         error,
-
         type,
         sig,
         id,
-
         throwExceptions,
-
-        willLogError,
         logRaise;
 
     //  make sure we've got at least a basic TP.core.Request to work with
@@ -843,7 +830,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
         //  If we're already logging errors, then configure raising to not log -
         //  otherwise, we see things twice.
         logRaise = TP.sys.shouldLogRaise();
-        if (willLogError) {
+        if (args.get('logged') === true) {
             TP.sys.shouldLogRaise(false);
         }
 

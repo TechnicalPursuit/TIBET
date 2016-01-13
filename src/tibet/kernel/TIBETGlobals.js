@@ -2771,7 +2771,7 @@ TP.regex.TIBET_URL = /^[tibet:|~]/;
 TP.regex.TIBET_URL_SPLITTER =
                 /tibet:([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
 
-TP.regex.TIBET_URN = /urn:tibet:/;
+TP.regex.TIBET_URN = /urn:tibet:|urn::/;
 TP.TIBET_URN_PREFIX = 'urn:tibet:';
 
 TP.regex.TPOINTER = /([^\(]*)\(([^\)]*)\)/;

@@ -500,8 +500,11 @@ function() {
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
 
-            //  Unregister the URI to avoid a memory leak
-            loadURI.unregister();
+            if (loadURI) {
+                //  Unregister the URI to avoid a memory leak
+                loadURI.unregister();
+                loadURI = null;
+            }
         });
 
     //  ---

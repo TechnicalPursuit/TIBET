@@ -12,7 +12,7 @@
 
 <config id="app_tests">
     <!-- put your test scripts here -->
-    <script src="~app_test/APP.js" />
+    <script src="~app_test/APP_test.js" />
 </config>
 
 <config id="base" if="boot.phase_two">

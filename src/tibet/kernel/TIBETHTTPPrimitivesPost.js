@@ -39,7 +39,10 @@ function(httpObj) {
 
     //  IE prefers an empty function here
     httpObj.onreadystatechange = TP.RETURN_NULL;
-    httpObj.abort();
+
+    //  NOTE we used to call httpObj.abort() here but doing that will clear any
+    //  data on the object depending on the browser in question. So don't do
+    //  that :).
 
     return httpObj;
 });

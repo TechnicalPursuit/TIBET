@@ -135,7 +135,7 @@ function(targetURI, aRequest) {
     response = request.getResponse();
 
     //  Saving data to a 'WebDAV' resource requires 'data' to save ;-)
-    resp = targetURI.getResourceText(TP.hc('async', false));
+    resp = targetURI.getResource(TP.hc('async', false, 'resultType', TP.TEXT));
     if (TP.isEmpty(content = resp.get('result'))) {
 
         request.fail();

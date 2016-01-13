@@ -25,6 +25,7 @@ var CLI,
     sh,
     eslint,
     Parent,
+    parseString,
     Cmd;
 
 
@@ -34,6 +35,7 @@ path = require('path');
 beautify = require('js-beautify').js_beautify;
 chalk = require('chalk');
 dom = require('xmldom');
+parseString = require('xml2js').parseString;
 sh = require('shelljs');
 eslint = require('eslint');
 
@@ -900,7 +902,8 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
         res,
         xmlFiles,
         parser,
-        current;
+        current,
+        currentText;
 
     cmd = this;
     res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
@@ -917,14 +920,23 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 if (lib && msg.match(/{{appname}}/)) {
                     return;
                 }
-                res.errors += 1;
-                cmd.error('Error in ' + current + ': ' + msg);
+
+                parseString(currentText, function (err, result) {
+                    if (err) {
+                        res.errors += 1;
+                        cmd.error('Error in ' + current + ': ' + err);
+                    }
+                });
             },
             warn: function(msg) {
-                res.warnings += 1;
-                if (!cmd.options.quiet) {
-                    cmd.warn('Warning in ' + current + ': ' + msg);
-                }
+                parseString(currentText, function (err, result) {
+                    if (err) {
+                        res.warnings += 1;
+                        if (!cmd.options.quiet) {
+                            cmd.warn('Warning in ' + current + ': ' + msg);
+                        }
+                    }
+                });
             }
         }
     });
@@ -940,6 +952,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
             res.checked += 1;
 
             text = sh.cat(file);
+            currentText = text;
             if (!text) {
                 cmd.error('Unable to read ' + file);
                 res.errors += 1;
@@ -949,8 +962,13 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 doc = parser.parseFromString(text);
                 if (!doc || CLI.isValid(
                         doc.getElementsByTagName('parsererror')[0])) {
-                    cmd.error(file);
-                    res.errors += 1;
+
+                    parseString(text, function (err, result) {
+                        if (err) {
+                            res.errors += 1;
+                            cmd.error('Error in ' + file + ': ' + err);
+                        }
+                    });
                 }
             } catch (e) {
                 cmd.error(file);

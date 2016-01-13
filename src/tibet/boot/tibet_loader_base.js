@@ -1850,14 +1850,6 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
 
     try {
         httpObj = TP.boot.$httpConstruct();
-
-        //  If its Mozilla, and we're not trying to load XML, then set
-        //  the MIME type to 'text/plain' to avoid parsing errors due to
-        //  Moz trying to turn everything into XML and then complaining
-        if (TP.sys.isUA('GECKO') &&
-            TP.boot.$uriResultType(targetUrl) !== TP.DOM) {
-            httpObj.overrideMimeType('text/plain');
-        }
     } catch (e) {
         return TP.boot.$httpError(
             'RequestObjectError.  url: ' + targetUrl, TP.boot.$ec(e));
@@ -3129,13 +3121,6 @@ TP.boot.$uriLastModifiedMozFile = function(targetUrl) {
 
     httpObj = TP.boot.$httpConstruct();
 
-    //  If its Mozilla, and we're not trying to load XML, then set the MIME
-    //  type to 'text/plain' to avoid parsing errors.
-    if (TP.sys.isUA('GECKO') &&
-        TP.boot.$uriResultType(targetUrl) !== TP.DOM) {
-        httpObj.overrideMimeType('text/plain');
-    }
-
     try {
         httpObj.open(TP.HTTP_GET,
                         targetUrl.slice(0, targetUrl.lastIndexOf('/')),
@@ -3325,13 +3310,6 @@ TP.boot.$uriExistsFile = function(targetUrl) {
 
     //  using HTTP object avoids permission problems on all browsers
     httpObj = TP.boot.$httpConstruct();
-
-    //  If its Mozilla, and we're not trying to load XML, then set the MIME
-    //  type to 'text/plain' to avoid parsing errors.
-    if (TP.sys.isUA('GECKO') &&
-        TP.boot.$uriResultType(targetUrl) !== TP.DOM) {
-        httpObj.overrideMimeType('text/plain');
-    }
 
     try {
         httpObj.open(TP.HTTP_GET, targetUrl, false);
@@ -3543,12 +3521,6 @@ TP.boot.$uriLoadCommonFile = function(targetUrl, resultType) {
     returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     httpObj = TP.boot.$httpConstruct();
-
-    //  If its Mozilla, and we're not trying to load XML, then set the MIME
-    //  type to 'text/plain' to avoid parsing errors.
-    if (TP.sys.isUA('GECKO') && returnType !== TP.DOM) {
-        httpObj.overrideMimeType('text/plain');
-    }
 
     //  for non-IE we always use the same approach to get the
     //  data...xmlhttprequest...even when using a file url
@@ -3833,27 +3805,27 @@ TP.boot.$uriResultType = function(targetUrl, resultType) {
     /**
      * @method $uriResultType
      * @summary Returns a reasonable result type, TP.TEXT or TP.DOM, based on
-     *     examination of the targetUrl's extension. If that check isn't
-     *     definitive then the original resultType is returned (which may mean a
-     *     null result type is returned).
+     *     examination of the targetUrl's extension. The extensions for XML are
+     *     kept in TP.boot.$xmlMimes so if a match isn't happening check there.
+     *     If a resultType is provided it is always returned as the result.
      * @param {String} targetUrl A url to define a result type for.
-     * @param {TP.DOM|TP.TEXT|null} resultType A result type constant.
-     * @returns {Number} TP.DOM|TP.TEXT|null
+     * @param {TP.DOM|TP.TEXT} [resultType] A result type constant.
+     * @returns {Number} TP.DOM|TP.TEXT
      */
 
-    //  Certain extensions are clearly not intended to be XML, like .js and
-    //  .css files for example. We ignore any input result type in these
-    //  cases since there's no way they should be TP.DOM even if specified.
-    if (/\.js$|\.css$|\.html$|\.txt$|\.json$/.test(targetUrl)) {
-        return TP.TEXT;
+    var ext;
+
+    if (TP.boot.$isValid(resultType)) {
+        return resultType;
     }
 
-    if (/\.xml$|\.xhtml$|\.tsh$|\.xsl$|\.xsd$/.test(targetUrl)) {
+    ext = targetUrl.slice(targetUrl.lastIndexOf('.'));
+
+    if (TP.boot.$notEmpty(TP.boot.$xmlMimes[ext])) {
         return TP.DOM;
     }
 
-    //  Yes, this might be null.
-    return resultType;
+    return TP.TEXT;
 };
 
 //  ============================================================================

@@ -3920,7 +3920,7 @@ function(aRequest) {
 //  TIBET COMMAND INTERFACE
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeTibet',
+TP.core.TSH.Inst.defineMethod('executeCli',
 function(aRequest) {
 
     var cmd,
@@ -4237,6 +4237,7 @@ TP.core.TSH.addHelpTopic(':break', 'Sets a debugger breakpoint.');
 TP.core.TSH.addHelpTopic(':builtins', 'Lists the available built-in functions.');
 TP.core.TSH.addHelpTopic(':change', 'Stores a string as a change log entry.');
 TP.core.TSH.addHelpTopic(':changedFS', 'Displays a list of pending FS changes.');
+TP.core.TSH.addHelpTopic(':cli', 'Runs a tibet CLI call. Requires active TDS.');
 TP.core.TSH.addHelpTopic(':clear', 'Clears the console output region.');
 TP.core.TSH.addHelpTopic(':colors', 'Generates a table of the 216 websafe colors.');
 TP.core.TSH.addHelpTopic(':counts', 'Generates a table of object creation counts.');
@@ -4276,7 +4277,6 @@ TP.core.TSH.addHelpTopic(':source', 'Reloads the source file for an object/type.
 TP.core.TSH.addHelpTopic(':sourceFS', 'Sources in pending file system changes.');
 TP.core.TSH.addHelpTopic(':sync', 'Updates a target file relative to a source file.');
 TP.core.TSH.addHelpTopic(':test', 'Executes an object\'s tests or test suite.');
-TP.core.TSH.addHelpTopic(':tibet', 'Runs a tibet CLI call. Requires active TDS.');
 TP.core.TSH.addHelpTopic(':tidy', 'Runs a URI through the HTML Tidy service.');
 TP.core.TSH.addHelpTopic(':types', 'Outputs a list of available system types.');
 TP.core.TSH.addHelpTopic(':uniq', 'Uniques stdin and writes it to stdout.');

@@ -482,7 +482,8 @@ function(aURI, shouldReport) {
     }
 
     //  this will return a TP.core.Node if at all possible
-    resp = aURI.getResourceNode(TP.hc('async', false));
+    resp = aURI.getResource(
+        TP.hc('async', false, 'resultType', TP.DOM));
     content = TP.wrap(resp.get('result'));
 
     if (TP.isKindOf(content, TP.core.Node)) {
@@ -11014,7 +11015,7 @@ function(resource, mimeType, setupFunc) {
     //  Grab the receiver's content for processing. We do this synchronously
     //  here and we also get it in string form so we can process the markup and
     //  add default namespace as needed to make authoring more convenient.
-    resp = uri.getResourceText(TP.hc('async', false));
+    resp = uri.getResource(TP.hc('async', false, 'resultType', TP.TEXT));
     str = resp.get('result');
 
     if (TP.isEmpty(mime = mimeType)) {

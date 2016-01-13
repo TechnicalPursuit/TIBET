@@ -13859,8 +13859,9 @@ function(aNode, anObject) {
         return TP.raise(this, 'TP.sig.InvalidNode');
     }
 
-    if (TP.canInvoke(anObject, 'getResourceText')) {
-        resp = anObject.getResourceText(TP.hc('async', false));
+    if (TP.canInvoke(anObject, 'getResource')) {
+        resp = anObject.getResource(
+            TP.hc('async', false, 'resultType', TP.TEXT));
         content = resp.get('result');
     } else {
         content = TP.str(anObject);
@@ -14816,9 +14817,10 @@ function(anObject, defaultNS, shouldReport) {
         if (TP.isNode(node)) {
             return TP.core.Node.construct(node);
         }
-    } else if (TP.canInvoke(anObject, 'getResourceNode')) {
+    } else if (TP.canInvoke(anObject, 'getResource')) {
         //  content will be a Node - we want a TP.core.Node
-        resp = anObject.getResourceNode(TP.hc('async', false));
+        resp = anObject.getResource(
+            TP.hc('async', false, 'resultType', TP.DOM));
         content = TP.wrap(resp.get('result'));
 
         if (TP.isKindOf(content, 'TP.core.Node')) {

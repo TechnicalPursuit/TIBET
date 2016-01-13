@@ -478,8 +478,8 @@ function(targetURI, aRequest) {
     switch (action) {
         case 'command':
 
-            resp = targetURI.getResourceNode(
-                                TP.hc('refresh', false, 'async', false));
+            resp = targetURI.getResource(
+                TP.hc('refresh', false, 'async', false, 'resultType', TP.DOM));
 
             if (TP.isEmpty(content = resp.get('result'))) {
                 content = uriparams.atIfInvalid(
@@ -492,8 +492,8 @@ function(targetURI, aRequest) {
 
         case 'message':
 
-            resp = targetURI.getResourceText(
-                                TP.hc('refresh', false, 'async', false));
+            resp = targetURI.getResource(
+                TP.hc('refresh', false, 'async', false, 'resultType', TP.TEXT));
 
             if (TP.isEmpty(content = resp.get('result'))) {
                 content = uriparams.atIfInvalid(
@@ -506,8 +506,8 @@ function(targetURI, aRequest) {
 
         case 'presence':
 
-            resp = targetURI.getResourceText(
-                                TP.hc('refresh', false, 'async', false));
+            resp = targetURI.getResource(
+                TP.hc('refresh', false, 'async', false, 'resultType', TP.TEXT));
 
             if (TP.isEmpty(content = resp.get('result'))) {
                 content = uriparams.atIfInvalid(

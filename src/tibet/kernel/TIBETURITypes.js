@@ -80,7 +80,7 @@ virtual URIs:
  * @type {TP.core.URI}
  * @summary An abstract type that models Uniform Resource Identifiers in the
  *     TIBET system. While abstract, this type's constructor should always be
- *     used directly or via the TP.uc() or TP.uri() functions.
+ *     used directly or via the TP.uc() primitive.
  * @description The top-level URI type in the TIBET system is an abstract type.
  *     This follows the somewhat 'classical' view of the W3C spec, where URIs
  *     represent the overall Web addressing and naming scheme and various
@@ -225,7 +225,7 @@ function(aURI, $$vetted) {
         //  This should invoke a relatively simple alloc/init sequence with
         //  the URI as the only parameter. NOTE that when we go down this
         //  branch 'this' is always a subtype of TP.core.URI.
-        if (TP.isValid(inst = this.callNextMethod(aURI))) {
+        if (TP.isValid(inst = this.callNextMethod(aURI, $$vetted))) {
             TP.core.URI.registerInstance(inst);
         }
 
@@ -285,7 +285,6 @@ function(aURI, $$vetted) {
     TP.sys.shouldLogRaise(false);
 
     try {
-        //  TIBET URLs are the most common so we try to optimize for them
         if (TP.regex.TIBET_URL.test(url)) {
             //  if it starts with ~ or tibet: then we need to check for the
             //  fully expanded form as a registered instance
@@ -294,9 +293,17 @@ function(aURI, $$vetted) {
                 return inst;
             }
 
-            //  NOTE the true value here to signify the URI is vetted
+            //  NOTE the 'true' value here to signify the URI is vetted
             //  and ready to use without additional processing.
             inst = TP.core.TIBETURL.construct(url, true);
+        } else if (TP.regex.TIBET_URN.test(url)) {
+            //  check for :: and if found expand it to :tibet: for consistency.
+            if (/urn::/.test(url)) {
+                url = url.replace('urn::', 'urn:tibet:');
+            }
+            url = url.slice(url.indexOf('urn:tibet:'));
+
+            inst = TP.core.URN.construct(url, true);
         } else {
             if (TP.isURI(inst = TP.core.URI.getInstanceById(url))) {
                 return inst;
@@ -310,7 +317,7 @@ function(aURI, $$vetted) {
             //  here we construct the instance and init() it using the root
             type = this.getConcreteType(url);
             if (TP.isType(type)) {
-                //  NOTE the true value here to signify the URI is vetted
+                //  NOTE the 'true' value here to signify the URI is vetted
                 //  and ready to use without additional processing.
                 inst = type.construct(url, true);
             } else {
@@ -2308,8 +2315,6 @@ function() {
         url = TP.uc(this.getPrimaryLocation());
     }
 
-    this.$set('primaryURI', url);
-
     return url;
 });
 
@@ -2343,53 +2348,6 @@ function(aRequest) {
     return this.$requestContent(aRequest,
                                 '$getPrimaryResource',
                                 '$getResultFragment');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getResourceNode',
-function(aRequest) {
-
-    /**
-     * @method getResourceNode
-     * @summary Returns the resource of the receiver in native Node form. Note
-     *     that like all variants of getResource* this method can be
-     *     asynchronous depending on the nature of the resource.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-     *     defining control parameters.
-     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
-     *     node content set as its result.
-     */
-
-    var request;
-
-    request = this.constructRequest(aRequest);
-    request.atPut('resultType', TP.DOM);
-
-    return this.getResource(request);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getResourceText',
-function(aRequest) {
-
-    /**
-     * @method getResourceText
-     * @summary Returns the resource of the receiver in text (String) form,
-     *     provided that the resource is a String.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
-     *     defining control parameters.
-     * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
-     *     text content set as its result.
-     */
-
-    var request;
-
-    request = this.constructRequest(aRequest);
-    request.atPut('resultType', TP.TEXT);
-
-    return this.getResource(request);
 });
 
 //  ------------------------------------------------------------------------
@@ -3789,7 +3747,7 @@ TP.core.URN.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.core.URN.Type.defineConstant('URN_REGEX',
-                            TP.rc('urn:([a-zA-Z0-9]+):(\\S+)'));
+                            TP.rc('urn:([a-zA-Z0-9]*):(\\S+)'));
 
 TP.core.URN.Type.defineConstant('URN_NSS_REGEX',
                             TP.rc('^([a-zA-Z0-9]+):(\\S+)'));
@@ -3835,7 +3793,7 @@ function(aPath) {
         return;
     }
 
-    nid = parts.at(1);
+    nid = TP.ifEmpty(parts.at(1), 'tibet');
 
     type = TP.core.URN.$get('nidHandlers').at(nid);
     if (TP.isType(type)) {
@@ -4492,7 +4450,7 @@ TP.core.URL.Inst.defineAttribute('lastRequest');
 
 //  placeholder for URI handlers to find most recent 'communication' object
 //  (i.e. the native XHR or WebSocket object)
-TP.core.URL.Inst.defineAttribute('lastCommObj');
+TP.core.URL.Inst.defineAttribute('commObject');
 
 //  whether or not the URI is being watched for change
 TP.core.URL.Inst.defineAttribute('watched');
@@ -4517,6 +4475,34 @@ function() {
      */
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('getCommObject',
+function() {
+
+    /**
+     * @method getCommObject
+     * @summary Returns the last communication channel object leveraged by the
+     *     receiver. Not all URI instances will have this value.
+     * @returns {XHR|WebSocket} The receiver's last communication object.
+     */
+
+    var comm,
+        url;
+
+    comm = this.$get('commObject');
+    if (TP.isValid(comm)) {
+        return comm;
+    }
+
+    url = this.getPrimaryURI();
+    if (url !== this) {
+        return url.getCommObject();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -4678,7 +4664,8 @@ function(aRequest) {
                 }
             });
 
-    this.getResourceNode(subrequest);
+    subrequest.atPut('resultType', TP.DOM);
+    this.getResource(subrequest);
 
     //  If async we can only return the result/response being used to
     //  actually process the async activity.
@@ -5780,6 +5767,172 @@ function(schemeSpecificString) {
 });
 
 //  ========================================================================
+//  TP.core.CommURL
+//  ========================================================================
+
+/**
+ * @type {TP.core.CommURL}
+ * @summary A trait class designed to add "comm" (mostly XHR) access methods.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.defineSubtype('TP.core.CommURL');
+
+TP.core.CommURL.isAbstract(true);       //  Always set for a trait.
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('commDidSucceed', function() {
+
+    /**
+     * @method commDidSucceed
+     * @summary Returns true if the last comm request (xhr etc) to the server
+     *     was successful based on status information in the comm object.
+     * @return {Boolean} True for successful communications.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return TP.httpDidSucceed(comm);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
+
+    /**
+     * @method getCommResponse
+     * @summary Returns response data from the last communication object (xhr
+     *     etc) used in the receiver's interactions with the server.
+     * @return {Object} The result data from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.response;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponseText', function() {
+
+    /**
+     * @method getCommResponseText
+     * @summary Returns response text from the last communication object (xhr
+     *     etc) used in the receiver's interactions with the server.
+     * @return {String} The result text from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.responseText;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponseType', function() {
+
+    /**
+     * @method getCommResponseType
+     * @summary Returns the response type from the last communication object
+     * (xhr etc) used in the receiver's interactions with the server.
+     * @return {String} A string from the XMLHttpRequest API with one of the
+     *     following values: "", arraybuffer, blob, document, json, or text. The
+     *     default ("") means a DOMString value just as with "text".
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.responseType;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommResponseXML', function() {
+
+    /**
+     * @method getCommResponseXML
+     * @summary Returns response XML from the last communication object (xhr
+     *     etc) used in the receiver's interactions with the server.
+     * @return {String} The result XML from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.responseXML;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
+
+    /**
+     * @method getCommStatusCode
+     * @summary Returns the last comm (usually xhr) status code from the
+     *     receiver's interactions with the server.
+     * @return {Number} The status code from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.status;
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommStatusText', function() {
+
+    /**
+     * @method getCommStatusText
+     * @summary Returns the last comm (usually xhr) status text from the
+     *     receiver's interactions with the server.
+     * @return {String} The status message from the last comm request.
+     */
+
+    var comm;
+
+    comm = this.getCommObject();
+    if (TP.isValid(comm)) {
+        return comm.statusText;
+    }
+
+    return;
+});
+
+//  ========================================================================
 //  TP.core.HTTPURL
 //  ========================================================================
 
@@ -5791,6 +5944,8 @@ function(schemeSpecificString) {
 //  ------------------------------------------------------------------------
 
 TP.core.URL.defineSubtype('HTTPURL');
+
+TP.core.HTTPURL.addTraits(TP.core.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -6822,6 +6977,8 @@ function(schemeSpecificString) {
 //  ------------------------------------------------------------------------
 
 TP.core.URL.defineSubtype('TIBETURL');
+
+TP.core.TIBETURL.addTraits(TP.core.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
