@@ -6931,8 +6931,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  from it's original DOM, etc.
         if (TP.isNode(value = attrValue)) {
             value = TP.nodeCloneNode(attrValue, true);
-        } else {
-            value = attrValue;
         }
 
         oldcontent = TP.nodeCloneNode(content);
@@ -7034,12 +7032,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         for (i = 0; i < len; i++) {
             contentnode = content.at(i);
 
-            //  If the value is a Node, clone it so that we don't remove it
+            //  If the attrValue is a Node, clone it so that we don't remove it
             //  from it's original DOM, etc.
             if (TP.isNode(value = attrValue)) {
                 value = TP.nodeCloneNode(attrValue, true);
-            } else {
-                value = attrValue;
             }
 
             oldcontent = TP.nodeCloneNode(contentnode);
