@@ -762,6 +762,13 @@ TP.test.Suite.Inst.defineAttribute('caseList');
 TP.test.Suite.Inst.defineAttribute('drivers');
 
 /**
+ * A log appender that gets installed when the test harness is running to catch
+ * errors and fail the current executing test case.
+ * @type {TP.log.TestAppender}
+ */
+TP.test.Suite.Inst.defineAttribute('logAppender');
+
+/**
  * The number of milliseconds the object is limited to for run time before
  * timing out. Defaults to 15 seconds for a test suite.
  * @type {Number}
@@ -1338,6 +1345,8 @@ function(target, suiteName, suiteFunc) {
         TP.test.TestMethodCollection.construct());
     this.$set('refuter',
         TP.test.TestMethodCollection.construct().set('isRefuter', true));
+    this.$set('logAppender',
+        TP.log.TestAppender.construct());
 
     this.$set('drivers', TP.hc());
 
@@ -1486,6 +1495,11 @@ function(options) {
         ignored + ' todo.',
         TP.DEBUG);
 
+    //  Make sure uninstall the test appender from our default 'TP' and 'APP'
+    //  logs as our last thing to do.
+    TP.getDefaultLogger().removeAppender(this.get('logAppender'));
+    APP.getDefaultLogger().removeAppender(this.get('logAppender'));
+
     return this;
 });
 
@@ -1622,6 +1636,11 @@ function(options) {
         function() {
             var beforeMaybe,
                 generatedPromise;
+
+            //  Make sure to install the test appender for our default 'TP' and
+            //  'APP' logs as our first thing to do.
+            TP.getDefaultLogger().addAppender(suite.get('logAppender'));
+            APP.getDefaultLogger().addAppender(suite.get('logAppender'));
 
             //  Run any 'before' hook for the suite. Note that this may
             //  generate a Promise that will now be in '$internalPromise'.
@@ -2936,6 +2955,7 @@ function(options) {
             function(resolver, rejector) {
                 var asserter,
                     refuter,
+                    logAppender,
 
                     drivers,
 
@@ -2950,6 +2970,9 @@ function(options) {
                 refuter = testcase.getSuite().get('refuter');
                 refuter.$set('currentTestCase', testcase);
                 testcase.$set('refute', refuter);
+
+                logAppender = testcase.getSuite().get('logAppender');
+                logAppender.$set('currentTestCase', testcase);
 
                 //  The testcase provides a 'then()', 'thenAllowGUIRefresh()',
                 //  'thenPromise()' and 'thenWait()' API to our drivers, so we
@@ -3765,6 +3788,79 @@ function(methodInfoDict) {
     for (i = 0; i < endNames.getSize(); i++) {
         endName = endNames.at(i);
         this.$installMethodChain(methodInfoDict.at(endName), endName);
+    }
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.log.TestAppender
+//  ------------------------------------------------------------------------
+
+/**
+ * @type {TP.log.TestAppender}
+ */
+
+//  ----------------------------------------------------------------------------
+
+TP.log.Appender.defineSubtype('TestAppender');
+
+//  ----------------------------------------------------------------------------
+//  Type Attributes
+//  ----------------------------------------------------------------------------
+
+/**
+ * The default layout type for this appender. Note that we use the console
+ * layout for this type since we want the plain text.
+ * @type {TP.log.Layout}
+ */
+TP.log.TestAppender.Type.$set('defaultLayoutType', 'TP.log.ConsoleLayout');
+
+//  ----------------------------------------------------------------------------
+//  Instance Attribute
+//  ----------------------------------------------------------------------------
+
+TP.log.TestAppender.Inst.defineAttribute('currentTestCase');
+
+//  ----------------------------------------------------------------------------
+//  Instance Methods
+//  ----------------------------------------------------------------------------
+
+TP.log.TestAppender.Inst.defineMethod('append',
+function(anEntry) {
+
+    /**
+     * @method append
+     * @summary Formats the entry data using the receiver's layout and writes
+     *     it to the console using the best console API method possible.
+     * @param {TP.log.Entry} anEntry The log entry to format and append.
+     * @returns {TP.log.Appender} The receiver.
+     */
+
+    var layout,
+        content,
+
+        currentCase;
+
+    //  If this flag is not true, then just bail out here.
+    if (!TP.sys.cfg('test.fail_on_error_log')) {
+        return this;
+    }
+
+    //  If the entry is an Error or more severe, then we want to fail the test
+    //  case.
+    if (anEntry.isError()) {
+
+        layout = this.getLayout();
+        content = layout.layout(anEntry).at('content');
+        currentCase = this.get('currentTestCase');
+
+        //  We need to set the status code back to TP.ACTIVE here - the test
+        //  thinks it has completed, but since this could be being called
+        //  from an asynchronous callback and it failed, then need to
+        //  'reactivate' the test and fail it.
+        currentCase.set('statusCode', TP.ACTIVE);
+        currentCase.fail(content);
     }
 
     return this;

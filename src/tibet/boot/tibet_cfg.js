@@ -1354,6 +1354,9 @@
     //  prevent the Promise machinery from starving the event loop.
     TP.sys.setcfg('test.anti_starve_timeout', 10);
 
+    //  whether or not 'error' logging causes tests to fail
+    TP.sys.setcfg('test.fail_on_error_log', true);
+
 
     //  ---
     //  signaling

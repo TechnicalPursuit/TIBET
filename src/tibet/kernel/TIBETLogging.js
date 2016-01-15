@@ -1678,6 +1678,21 @@ function(aLogger, aLevel, arglist) {
     return this;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.log.Entry.Inst.defineMethod('isError',
+function() {
+
+    /**
+     * Returns whether or not this log entry represents an error condition.
+     * @returns {Boolean}
+     */
+
+    //  NB: The boot system expects to see these in all uppercase. For example,
+    //  TP.boot.ERROR.
+    return TP.boot.Log.isErrorLevel(this.get('name').toUpperCase());
+});
+
 //  ============================================================================
 //  Filter
 //  ============================================================================
