@@ -605,10 +605,6 @@ function(aSignal) {
                             TP.nc(aSignal.at('index')),
                             aSignal.at('position'));
 
-    //  Signal a 'changed' from ourself so that observers reflect our new
-    //  reality.
-    this.changed(scopeURI.getFragmentExpr(), TP.INSERT);
-
     return;
 });
 
@@ -644,10 +640,6 @@ function(aSignal) {
     //  Remove a row from that collection, using the deletion index in the
     //  signal.
     this.removeRowFromAt(scopeURI, aSignal.at('index'));
-
-    //  Signal a 'changed' from ourself so that observers reflect our new
-    //  reality.
-    this.changed(scopeURI.getFragmentExpr(), TP.DELETE);
 
     return;
 });
@@ -1082,7 +1074,14 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
         itemToClone,
         newItem,
 
-        insertIndex;
+        insertIndex,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
 
     //  Make sure that we have an Array as our collection. If we end up with a
     //  non-Array, we wrap it into one.
@@ -1128,6 +1127,39 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
     //  Splice it into the collection.
     targetCollection.splice(insertIndex, 0, newItem);
 
+    //  The index that changed.
+    changedIndex = insertIndex;
+
+    //  The aspect that changed is just the collection along with the index that
+    //  changed.
+    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+
+    //  For these paths, the changed addresses are just an Array of the changed
+    //  aspect.
+    changedAddresses = TP.ac(changedAspect);
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureInsert',
+                TP.hc('action', TP.INSERT,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', TP.ac(changedIndex),
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
+
     return this;
 });
 
@@ -1151,7 +1183,17 @@ function(aCollectionURI, aDeleteIndex) {
 
     var targetCollection,
 
-        deleteIndexes;
+        deleteIndexes,
+
+        changedAddresses,
+
+        len,
+        i,
+
+        changedAspect,
+        changedPaths,
+
+        batchID;
 
     //  If the supplied URI really resolves to an Array, then remove the proper
     //  row.
@@ -1163,11 +1205,11 @@ function(aCollectionURI, aDeleteIndex) {
         //  If a deletion index was supplied or we have numbers in our selection
         //  indexes, then use those as the deletion indexes.
         if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
-            //  empty
+            deleteIndexes = TP.ac(aDeleteIndex);
         } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
             //  empty
         } else {
-            deleteIndexes = targetCollection.getSize() - 1;
+            deleteIndexes = TP.ac(targetCollection.getSize() - 1);
         }
 
         //  If we have an Array of deletion indexes, use a TIBET convenience
@@ -1177,7 +1219,54 @@ function(aCollectionURI, aDeleteIndex) {
         } else {
             targetCollection.splice(deleteIndexes, 1);
         }
+
+    } else {
+        //  Allocate and push 0 separately to avoid oldtime JS behavior around
+        //  an Array with a single Number as its argument.
+        deleteIndexes = TP.ac();
+        deleteIndexes.push(0);
     }
+
+    changedAddresses = TP.ac();
+
+    len = deleteIndexes.getSize();
+    for (i = 0; i < len; i++) {
+        //  The aspect that changed is just the collection along with the index
+        //  that changed.
+        changedAspect = aCollectionURI.getFragmentExpr() +
+                        '[' + deleteIndexes.at(i) + ']';
+
+        //  For these paths, the changed addresses are just an Array of the
+        //  changed aspect.
+        changedAddresses.push(changedAspect);
+    }
+
+    //  Just set the changed aspect to the first address that changed -
+    //  observers can dig into the changedAddresses Array to find out exactly
+    //  which aspects changed if more than 1 did.
+    changedAspect = changedAddresses.first();
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.DELETE, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureDelete',
+                TP.hc('action', TP.DELETE,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', deleteIndexes,
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
 
     return this;
 });
@@ -1359,9 +1448,20 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
         itemToClone,
         newItem,
 
+        itemParent,
+
         insertIndex,
 
-        insertionPath;
+        insertionPath,
+
+        newTPNode,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
 
     //  Make sure that we have a TP.core.CollectionNode
 
@@ -1369,8 +1469,8 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
     targetCollection = aCollectionURI.getResource(
                         TP.hc('resultType', TP.WRAP)).get('result');
 
-    if (!TP.isKindOf(targetCollection, TP.core.CollectionNode)) {
-        return this.raise('TP.sig.InvalidNode');
+    if (!TP.isArray(targetCollection)) {
+        targetCollection = TP.ac(targetCollection);
     }
 
     //  Clone the first row if no clone index was supplied
@@ -1380,8 +1480,10 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
     }
 
     //  Get the item to clone and clone it.
-    itemToClone = targetCollection.get('./*[' + cloneIndex + ']');
+    itemToClone = targetCollection.at(cloneIndex);
     newItem = itemToClone.clone(true);
+
+    itemParent = itemToClone.getParentNode();
 
     //  Clear out all of the 'text content' - that is, all of the scalar values
     //  in the newly cloned item. This will descend through the new item's data
@@ -1406,17 +1508,55 @@ function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
         //  collection.
         if (aPosition === TP.BEFORE) {
             insertionPath = './*[last()]';
+            insertIndex = targetCollection.getSize();
+        } else {
+            //  Add one because the collection size isn't taking our new size
+            //  into account.
+            insertIndex = targetCollection.getSize() + 1;
         }
     }
 
     //  If the insertion path is not empty, that means that we're not just
     //  appending to the end.
     if (TP.notEmpty(insertionPath)) {
-        targetCollection.insertRawContent(newItem, insertionPath, null, false);
+        newTPNode = itemParent.insertRawContent(
+                            newItem, insertionPath, null, false);
     } else {
         //  We're just appending to the end.
-        targetCollection.addRawContent(newItem, null, false);
+        newTPNode = itemParent.addRawContent(newItem, null, false);
     }
+
+    //  Grab the address of the node that changed.
+    changedAddresses = TP.ac(newTPNode.getDocumentPosition());
+
+    //  And the index that changed.
+    changedIndex = insertIndex;
+
+    //  The aspect that changed is just the collection along with the
+    //  index that changed.
+    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureInsert',
+                TP.hc('action', TP.INSERT,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', TP.ac(changedIndex),
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
 
     return this;
 });
@@ -1442,9 +1582,22 @@ function(aCollectionURI, aDeleteIndex) {
 
     var targetCollection,
 
+        preDeleteSize,
+
         deleteIndexes,
         deletionPath,
-        i;
+
+        itemParent,
+
+        deleteIndex,
+        i,
+
+        changedAddresses,
+        changedIndex,
+        changedAspect,
+        changedPaths,
+
+        batchID;
 
     //  Make sure that we have a TP.core.CollectionNode
 
@@ -1452,9 +1605,11 @@ function(aCollectionURI, aDeleteIndex) {
     targetCollection = aCollectionURI.getResource(
                         TP.hc('resultType', TP.WRAP)).get('result');
 
-    if (!TP.isKindOf(targetCollection, TP.core.CollectionNode)) {
-        return this.raise('TP.sig.InvalidNode');
+    if (!TP.isArray(targetCollection)) {
+        targetCollection = TP.ac(targetCollection);
     }
+
+    preDeleteSize = targetCollection.getSize();
 
     //  Compute an XPath to do the deletion.
 
@@ -1462,10 +1617,13 @@ function(aCollectionURI, aDeleteIndex) {
     //  indexes, then use those as the deletion indexes.
     if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
 
-        deletionPath = './*[' + deleteIndexes + ']';
+        deletionPath = './*[' + aDeleteIndex + ']';
 
+        deleteIndexes = TP.ac(aDeleteIndex);
     } else if (TP.notEmpty(deleteIndexes = this.get('selectionIndexes'))) {
+
         deletionPath = './*[';
+
         for (i = 0; i < deleteIndexes.getSize(); i++) {
             deletionPath += 'position = ' + deleteIndexes.at(i) + ' or ';
         }
@@ -1475,10 +1633,51 @@ function(aCollectionURI, aDeleteIndex) {
 
         //  Otherwise, just delete the last item.
         deletionPath = './*[last()]';
+
+        //  Allocate and push a Number representing the end of the collection
+        //  separately to avoid oldtime JS behavior around an Array with a
+        //  single Number as its argument.
+        deleteIndexes = TP.ac();
+
+        //  Don't substract 1 due XPath 1-based-ness
+        deleteIndexes.push(preDeleteSize);
     }
 
+    itemParent = TP.wrap(targetCollection.first()).getParentNode();
+
     //  Create an XPathPath object from the computed path and execute a delete.
-    TP.xpc(deletionPath).execRemove(targetCollection, false);
+    //  Note here how we supply 'false' as to whether we want the path machinery
+    //  to signal a change. We'll do that here.
+    changedAddresses = TP.xpc(deletionPath).execRemove(itemParent, false);
+
+    //  And the first index that changed.
+    changedIndex = deleteIndexes.first();
+
+    //  The aspect that changed is just the collection along with the
+    //  index that changed.
+    changedAspect = aCollectionURI.getFragmentExpr() + '[' + changedIndex + ']';
+
+    //  Construct a 'changed paths' data structure that observers will expect to
+    //  see.
+    changedPaths = TP.hc(changedAspect, TP.hc(TP.DELETE, changedAddresses));
+
+    //  We need this purely so that any machinery that relies on signal batching
+    //  (i.e. the markup-based data binding) knows that this signal represents
+    //  an entire batch.
+    batchID = TP.genID('SIGNAL_BATCH');
+
+    TP.signal(this.getID(),
+                'TP.sig.StructureDelete',
+                TP.hc('action', TP.DELETE,
+                        'addresses', changedAddresses,
+                        'aspect', changedAspect,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths,
+                        'target', this,
+                        'indexes', deleteIndexes,
+                        TP.CHANGE_URIS, null,
+                        TP.START_SIGNAL_BATCH, batchID,
+                        TP.END_SIGNAL_BATCH, batchID));
 
     return this;
 });
@@ -3623,11 +3822,28 @@ function(targetObj, varargs) {
 
                 insertIndex,
 
-                insertionPath;
+                insertionPath,
 
+                newTPNode,
+
+                changedAddresses,
+                changedIndex,
+                changedAspect,
+                changedPaths,
+
+                batchID;
+
+            //  Grab the XPath version of the JSONPath that should be the
+            //  fragment expression of the supplied URI.
             xpath = TP.core.JSONPath.asXPath(aCollectionURI.getFragmentExpr());
 
-            targetCollection = this.$get('data').get(xpath);
+            //  Grab the underlying XML data structure that we will manipulate.
+            //  Note how we do this with a primitive call, so that we avoid
+            //  registering XPath paths for the target object, which we
+            //  definitely don't want.
+            targetCollection = TP.wrap(TP.nodeEvaluateXPath(
+                                        this.$get('data').getNativeNode(),
+                                        xpath));
 
             //  Clone the first row if no clone index was supplied
             if (!TP.isNumber(cloneIndex = aCloneIndex)) {
@@ -3639,7 +3855,10 @@ function(targetObj, varargs) {
             cloneIndex++;
 
             //  Get the item to clone and clone it.
-            itemToClone = targetCollection.get('./*[' + cloneIndex + ']');
+            itemToClone = TP.wrap(TP.nodeEvaluateXPath(
+                                        TP.unwrap(targetCollection),
+                                        './*[' + cloneIndex + ']',
+                                        TP.FIRST_NODE));
             newItem = itemToClone.clone(true);
 
             //  Clear out all of the 'text content' - that is, all of the scalar
@@ -3659,9 +3878,7 @@ function(targetObj, varargs) {
 
                 //  We add 1 to account for indexing differences between
                 //  JSONPath and XPath
-                insertIndex++;
-
-                insertionPath = './*[' + insertIndex + ']';
+                insertionPath = './*[' + (insertIndex + 1) + ']';
 
             } else {
 
@@ -3669,15 +3886,60 @@ function(targetObj, varargs) {
                 //  the collection.
                 if (aPosition === TP.BEFORE) {
                     insertionPath = './*[last()]';
+                    insertIndex = targetCollection.getSize() - 1;
                 } else {
-                    targetCollection.addRawContent(newItem, null, false);
+                    insertIndex = targetCollection.getSize();
                 }
             }
 
+            //  If the insertion path is not empty, that means that we're not
+            //  just appending to the end.
             if (TP.notEmpty(insertionPath)) {
-                targetCollection.insertRawContent(
+                newTPNode = targetCollection.insertRawContent(
                                     newItem, insertionPath, null, false);
+            } else {
+                //  We're just appending to the end.
+                newTPNode = targetCollection.addRawContent(
+                                    newItem, null, false);
             }
+
+            //  Grab the address of the node that changed.
+            changedAddresses = TP.ac(newTPNode.getDocumentPosition());
+
+            //  And the index that changed. Note here how, because we added 1 to
+            //  the insertIndex above to make it work with XPath, that we
+            //  subtract that 1 off here.
+            changedIndex = insertIndex;
+
+            //  The aspect that changed is just the collection along with the
+            //  index that changed (using the JSON compatible index, not the
+            //  XPath compatible one).
+            changedAspect =
+                    aCollectionURI.getFragmentExpr() +
+                    '[' + changedIndex + ']';
+
+            //  Construct a 'changed paths' data structure that observers will
+            //  expect to see.
+            changedPaths =
+                TP.hc(changedAspect, TP.hc(TP.INSERT, changedAddresses));
+
+            //  We need this purely so that any machinery that relies on signal
+            //  batching (i.e. the markup-based data binding) knows that this
+            //  signal represents an entire batch.
+            batchID = TP.genID('SIGNAL_BATCH');
+
+            TP.signal(this.getID(),
+                        'TP.sig.StructureInsert',
+                        TP.hc('action', TP.INSERT,
+                                'addresses', changedAddresses,
+                                'aspect', changedAspect,
+                                'facet', 'value',
+                                TP.CHANGE_PATHS, changedPaths,
+                                'target', this,
+                                'indexes', TP.ac(changedIndex),
+                                TP.CHANGE_URIS, null,
+                                TP.START_SIGNAL_BATCH, batchID,
+                                TP.END_SIGNAL_BATCH, batchID));
 
             return this;
         });
@@ -3695,32 +3957,56 @@ function(targetObj, varargs) {
             var xpath,
                 targetCollection,
 
+                preDeleteSize,
+
                 deleteIndexes,
                 deletionPath,
 
                 deleteIndex,
-                i;
+                i,
 
+                changedAddresses,
+                changedIndex,
+                changedAspect,
+                changedPaths,
+
+                batchID;
+
+            //  Grab the XPath version of the JSONPath that should be the
+            //  fragment expression of the supplied URI.
             xpath = TP.core.JSONPath.asXPath(aCollectionURI.getFragmentExpr());
 
-            targetCollection = this.$get('data').get(xpath);
+            //  Grab the underlying XML data structure that we will manipulate.
+            //  Note how we do this with a primitive call, so that we avoid
+            //  registering XPath paths for the target object, which we
+            //  definitely don't want.
+            targetCollection = TP.wrap(TP.nodeEvaluateXPath(
+                                        this.$get('data').getNativeNode(),
+                                        xpath));
 
-            //  Compute an XPath to do the deletion.
+            preDeleteSize = targetCollection.getSize();
+
+            //  Compute an XPath to do the deletion. Note that the numbers
+            //  contained in 'deleteIndexes' will always be 0-based whereas the
+            //  expression will be built using 1-based.
 
             //  If a deletion index was supplied or we have numbers in our
-            //  selection indexes, then use those as the deletion indexes.
-            if (TP.isNumber(deleteIndexes = aDeleteIndex)) {
+            //  selection indexes, then use those as the deletion indexes. Note
+            //  that, as we build up the XPath expression, we have to shift
+            //  these numbers by 1 to accomodate XPath's 1-based-ness.
+            if (TP.isNumber(aDeleteIndex)) {
 
-                deleteIndexes++;
+                deletionPath = './*[' + (aDeleteIndex + 1) + ']';
 
-                deletionPath = './*[' + deleteIndexes + ']';
-
+                deleteIndexes = TP.ac(aDeleteIndex);
             } else if (TP.notEmpty(
                             deleteIndexes = this.get('selectionIndexes'))) {
-                deletionPath = './*[';
-                for (i = 0; i < deleteIndexes.getSize(); i++) {
-                    deleteIndex = deleteIndexes.at(i) + 1;
 
+                deletionPath = './*[';
+
+                for (i = 0; i < deleteIndexes.getSize(); i++) {
+                    //  Add 1 for XPath
+                    deleteIndex = deleteIndexes.at(i) + 1;
                     deletionPath += 'position = ' + deleteIndex + ' or ';
                 }
 
@@ -3729,11 +4015,53 @@ function(targetObj, varargs) {
 
                 //  Otherwise, just delete the last item.
                 deletionPath = './*[last()]';
+
+                //  Allocate and push a Number representing the end of the
+                //  collection separately to avoid oldtime JS behavior around an
+                //  Array with a single Number as its argument.
+                deleteIndexes = TP.ac();
+
+                deleteIndexes.push(preDeleteSize - 1);
             }
 
             //  Create an XPathPath object from the computed path and execute a
-            //  delete.
-            TP.xpc(deletionPath).execRemove(targetCollection, false);
+            //  delete. Note here how we supply 'false' as to whether we want
+            //  the path machinery to signal a change. We'll do that here.
+            changedAddresses = TP.xpc(deletionPath).execRemove(
+                                                    targetCollection, false);
+
+            //  And the first index that changed.
+            changedIndex = deleteIndexes.first();
+
+            //  The aspect that changed is just the collection along with the
+            //  index that changed (using the JSON compatible index, not the
+            //  XPath compatible one).
+            changedAspect =
+                    aCollectionURI.getFragmentExpr() +
+                    '[' + changedIndex + ']';
+
+            //  Construct a 'changed paths' data structure that observers will
+            //  expect to see.
+            changedPaths =
+                TP.hc(changedAspect, TP.hc(TP.DELETE, changedAddresses));
+
+            //  We need this purely so that any machinery that relies on signal
+            //  batching (i.e. the markup-based data binding) knows that this
+            //  signal represents an entire batch.
+            batchID = TP.genID('SIGNAL_BATCH');
+
+            TP.signal(this.getID(),
+                        'TP.sig.StructureDelete',
+                        TP.hc('action', TP.DELETE,
+                                'addresses', changedAddresses,
+                                'aspect', changedAspect,
+                                'facet', 'value',
+                                TP.CHANGE_PATHS, changedPaths,
+                                'target', this,
+                                'indexes', deleteIndexes,
+                                TP.CHANGE_URIS, null,
+                                TP.START_SIGNAL_BATCH, batchID,
+                                TP.END_SIGNAL_BATCH, batchID));
 
             return this;
         });
