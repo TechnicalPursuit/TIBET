@@ -601,8 +601,8 @@ function(aSignal) {
     //  Insert a row into that collection, using the cloning index, insertion
     //  index and position given in the signal.
     this.insertRowIntoAt(scopeURI,
-                            TP.nc(aSignal.at('cloneIndex')),
-                            TP.nc(aSignal.at('index')),
+                            TP.nc(aSignal.at('cloneIndex')).asNumber(),
+                            TP.nc(aSignal.at('index')).asNumber(),
                             aSignal.at('position'));
 
     return;
