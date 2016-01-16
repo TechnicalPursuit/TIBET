@@ -575,101 +575,9 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceAttributeName, sourceFacetName);
 });
 
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('getBindingScopeValues',
-function() {
-
-    /**
-     * @method getBindingScopeValues
-     * @summary Returns the binding scope values by starting at the receiver
-     *      and traversing the DOM tree up to the #document node, gathering
-     *      'bind:scope' attribute values along the way. This will be used to
-     *      qualify binding expressions on the receiver.
-     * @returns {Array} An Array of binding scope values.
-     */
-
-    var elem,
-
-        localScopeNode,
-
-        scopeVals;
-
-    if (TP.notEmpty(scopeVals = this.get('scopeValues'))) {
-        return scopeVals;
-    }
-
-    elem = this.getNativeNode();
-
-    scopeVals = TP.ac();
-
-    //  Check to see if there is a local 'scope' attribute on the element
-    //  itself. This will be used to qualify any expressions on the element
-    //  itself.
-    if (TP.notEmpty(localScopeNode = TP.elementGetAttributeNodesInNS(
-                            elem, /\w+:(scope|repeat)/, TP.w3.Xmlns.BIND))) {
-        scopeVals.push(localScopeNode[0].value);
-    }
-
-    //  Gather the 'bind:scope' setting up the chain.
-    TP.nodeAncestorsPerform(
-        elem,
-        function(aNode) {
-
-            var scopeAttrNodes;
-
-            //  Have to check to make sure we're not at the #document node.
-            if (TP.isElement(aNode)) {
-
-                //  Get any 'scope' attributes belonging to the TP.w3.Xmlns.BIND
-                //  namespace.
-
-                //  First, check to see if there's a 'bind:repeat' attribute. If
-                //  so, we want to use it's value first.
-                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
-                                aNode, 'repeat', TP.w3.Xmlns.BIND);
-
-                if (TP.notEmpty(scopeAttrNodes)) {
-                    scopeVals.push(scopeAttrNodes[0].value);
-                }
-
-                //  Then, check to see if there's a 'bind:scope' attribute. If
-                //  so, we want to use it's value next.
-                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
-                                aNode, 'scope', TP.w3.Xmlns.BIND);
-
-                if (TP.notEmpty(scopeAttrNodes)) {
-                    scopeVals.push(scopeAttrNodes[0].value);
-                }
-            }
-        });
-
-    //  Make sure to reverse the scope values, since we want the 'most
-    //  significant' to be first.
-    scopeVals.reverse();
-
-    this.set('scopeValues', scopeVals);
-
-    return scopeVals;
-});
-
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-//  ------------------------------------------------------------------------
-
 //  ========================================================================
 //  MARKUP BINDING
 //  ========================================================================
-
-//  ------------------------------------------------------------------------
 
 TP.totalSetupTime = 0;
 
@@ -1054,8 +962,8 @@ function(attrValue) {
     //  Function that will transform the data before returning it.
     if (!isSimpleExpr) {
 
-        transformFunc = function(
-                            source, val, targetTPElem, repeatSource, index) {
+        transformFunc = function(source, val, targetTPElem,
+                                    repeatSource, index, isXMLResource) {
             var wrappedVal,
 
                 params,
@@ -1067,26 +975,48 @@ function(attrValue) {
 
             wrappedVal = TP.wrap(val);
 
+            //  Iterating context
             if (TP.isNumber(index)) {
 
-                last = repeatSource.getSize() - 1;
+                if (isXMLResource) {
 
-                //  Iterating context
-                params = TP.hc(
-                    '$REQUEST', null,
-                    '$TP', TP,
-                    '$APP', APP,
-                    '$TAG', targetTPElem,
-                    '$TARGET', targetTPElem.getDocument(),
-                    '$_', wrappedVal,
-                    '$INPUT', repeatResourceResult,
-                    '$INDEX', index,
-                    '$FIRST', index === 0,
-                    '$MIDDLE', index > 0 && index < last,
-                    '$LAST', index !== last,
-                    '$EVEN', index % 2 === 0,
-                    '$ODD', index % 2 !== 0,
-                    '$#', index);
+                    last = repeatSource.getSize();
+
+                    params = TP.hc(
+                        '$REQUEST', null,
+                        '$TP', TP,
+                        '$APP', APP,
+                        '$TAG', targetTPElem,
+                        '$TARGET', targetTPElem.getDocument(),
+                        '$_', wrappedVal,
+                        '$INPUT', repeatResourceResult,
+                        '$INDEX', index,
+                        '$FIRST', index === 1,
+                        '$MIDDLE', index > 1 && index < last,
+                        '$LAST', index !== last,
+                        '$EVEN', index % 2 === 0,
+                        '$ODD', index % 2 !== 0,
+                        '$#', index);
+                } else {
+
+                    last = repeatSource.getSize() - 1;
+
+                    params = TP.hc(
+                        '$REQUEST', null,
+                        '$TP', TP,
+                        '$APP', APP,
+                        '$TAG', targetTPElem,
+                        '$TARGET', targetTPElem.getDocument(),
+                        '$_', wrappedVal,
+                        '$INPUT', repeatResourceResult,
+                        '$INDEX', index,
+                        '$FIRST', index === 0,
+                        '$MIDDLE', index > 0 && index < last,
+                        '$LAST', index !== last,
+                        '$EVEN', index % 2 === 0,
+                        '$ODD', index % 2 !== 0,
+                        '$#', index);
+                }
             } else {
                 //  Non-iterating context
                 params = TP.hc(
@@ -1233,9 +1163,28 @@ function(targetElement, attributeValue) {
             fullExpr = entry;
         }
 
-        if (hadBrackets &&
+        //  If the expression contains ACP variables, then we *must* generate a
+        //  transformation Function to process them properly. The expression
+        //  might or might not have surrounding '[[...]]', but we take care of
+        //  that here.
+        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullExpr)) {
+
+            //  If the expression doesn't start with '[[' AND end with ']]',
+            //  then we fix that here.
+            if (!/^\s*\[\[/.test(fullExpr) && !/\]\]\s*$/.test(fullExpr)) {
+                fullExpr = '[[' + fullExpr + ']]';
+            }
+
+            transformInfo = this.computeTransformationFunction(
+                                                    fullExpr);
+
+            //  The Function object that does the transformation.
+            transformFunc = transformInfo.first();
+
+            //  The referenced expressions
+            dataLocs = transformInfo.last();
+        } else if (hadBrackets &&
             (!/^\s*\[\[/.test(fullExpr) || !/\]\]\s*$/.test(fullExpr) ||
-            TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(fullExpr) ||
             TP.regex.ACP_FORMAT.test(fullExpr))) {
 
             transformInfo = this.computeTransformationFunction(
@@ -1336,40 +1285,80 @@ function(attributeValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('isBoundElement',
+TP.core.ElementNode.Inst.defineMethod('getBindingScopeValues',
 function() {
 
     /**
-     * @method isBoundElement
-     * @summary Whether or not the receiver is a bound element.
-     * @returns {Boolean} Whether or not the receiver is bound.
+     * @method getBindingScopeValues
+     * @summary Returns the binding scope values by starting at the receiver
+     *      and traversing the DOM tree up to the #document node, gathering
+     *      'bind:scope' attribute values along the way. This will be used to
+     *      qualify binding expressions on the receiver.
+     * @returns {Array} An Array of binding scope values.
      */
 
-    var bindAttrNodes;
+    var elem,
 
-    //  We look for either 'in', 'out', 'io' here to determine if the receiver
-    //  is bound. The 'scope' attribute doesn't indicate that it is bound.
-    bindAttrNodes = TP.elementGetAttributeNodesInNS(
-            this.getNativeNode(), /.*:(in|out|io)/, TP.w3.Xmlns.BIND);
+        localScopeNode,
 
-    if (TP.notEmpty(bindAttrNodes)) {
-        return true;
+        scopeVals;
+
+    if (TP.notEmpty(scopeVals = this.get('scopeValues'))) {
+        return scopeVals;
     }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('isScopingElement',
-function() {
-
-    var elem;
 
     elem = this.getNativeNode();
 
-    return TP.elementHasAttribute(elem, 'bind:scope', true) ||
-            TP.elementHasAttribute(elem, 'bind:repeat', true);
+    scopeVals = TP.ac();
+
+    //  Check to see if there is a local 'scope' attribute on the element
+    //  itself. This will be used to qualify any expressions on the element
+    //  itself.
+    if (TP.notEmpty(localScopeNode = TP.elementGetAttributeNodesInNS(
+                            elem, /\w+:(scope|repeat)/, TP.w3.Xmlns.BIND))) {
+        scopeVals.push(localScopeNode[0].value);
+    }
+
+    //  Gather the 'bind:scope' setting up the chain.
+    TP.nodeAncestorsPerform(
+        elem,
+        function(aNode) {
+
+            var scopeAttrNodes;
+
+            //  Have to check to make sure we're not at the #document node.
+            if (TP.isElement(aNode)) {
+
+                //  Get any 'scope' attributes belonging to the TP.w3.Xmlns.BIND
+                //  namespace.
+
+                //  First, check to see if there's a 'bind:repeat' attribute. If
+                //  so, we want to use it's value first.
+                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
+                                aNode, 'repeat', TP.w3.Xmlns.BIND);
+
+                if (TP.notEmpty(scopeAttrNodes)) {
+                    scopeVals.push(scopeAttrNodes[0].value);
+                }
+
+                //  Then, check to see if there's a 'bind:scope' attribute. If
+                //  so, we want to use it's value next.
+                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
+                                aNode, 'scope', TP.w3.Xmlns.BIND);
+
+                if (TP.notEmpty(scopeAttrNodes)) {
+                    scopeVals.push(scopeAttrNodes[0].value);
+                }
+            }
+        });
+
+    //  Make sure to reverse the scope values, since we want the 'most
+    //  significant' to be first.
+    scopeVals.reverse();
+
+    this.set('scopeValues', scopeVals);
+
+    return scopeVals;
 });
 
 //  ------------------------------------------------------------------------
@@ -1456,6 +1445,80 @@ function(wantsShallow) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
+function() {
+
+    var elem,
+
+        repeatElem,
+        repeatAttrVal,
+
+        repeatIndex,
+
+        repeatSource,
+
+        repeatScopeVals,
+        repeatPath;
+
+    elem = this.getNativeNode();
+
+    repeatElem = TP.nodeDetectAncestor(
+                    elem,
+                    function(aNode) {
+                        var isRepeat;
+
+                        isRepeat = TP.isElement(aNode) &&
+                                    TP.elementHasAttribute(
+                                            aNode, 'bind:repeat', true);
+
+                        if (isRepeat) {
+                            repeatAttrVal =
+                                    TP.elementGetAttribute(
+                                            aNode, 'bind:repeat', true);
+                        }
+
+                        return isRepeat;
+                    });
+
+    if (TP.isElement(repeatElem)) {
+
+        //  Try to calculate a repeat source
+        if (TP.isURIString(repeatAttrVal)) {
+            repeatSource = TP.uc(repeatAttrVal).getResource().get('value');
+        } else {
+            repeatScopeVals = TP.wrap(repeatElem).
+                                getBindingScopeValues().concat(repeatAttrVal);
+            repeatPath = TP.uriJoinFragments.apply(TP, repeatScopeVals);
+            repeatSource = TP.uc(repeatPath).getResource().get('value');
+        }
+
+        //  Try to calculate a repeat index
+        TP.nodeDetectAncestor(
+            elem,
+            function(aNode) {
+                var attrVal;
+
+                if (TP.isElement(aNode) &&
+                    TP.notEmpty(attrVal = TP.elementGetAttribute(
+                                                aNode, 'bind:scope', true))) {
+                    if (TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal)) {
+                        repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
+                                                    attrVal).at(1).asNumber();
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+        return TP.ac(repeatSource, repeatIndex);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
 function(indexes) {
 
@@ -1463,9 +1526,18 @@ function(indexes) {
 
         mgmtElement,
 
+        len,
+        i,
         index,
 
-        deletionElement;
+        deletionElement,
+
+        followingScopedSiblings,
+
+        len2,
+        j,
+        scopedSibling,
+        scopeVal;
 
     elem = this.getNativeNode();
 
@@ -1480,16 +1552,56 @@ function(indexes) {
         return;
     }
 
-    //  TODO: Fix this to support multiple indices
-    index = indexes.first();
+    //  Loop over all of the supplied indices
+    len = indexes.getSize();
+    for (i = 0; i < len; i++) {
 
-    deletionElement = TP.byCSSPath(
-                            '> *[bind|scope="[' + index + ']"]',
-                            mgmtElement,
-                            true,
-                            false);
+        index = indexes.at(i);
 
-    TP.nodeDetach(deletionElement);
+        //  The deletion element would be the element with the same index as the
+        //  row we're deleting. If we find one, we delete that row and decrement
+        //  the number of all numeric scoped elements *at the same level* with
+        //  an index equal to or greater than the delete index.
+        deletionElement = TP.byCSSPath(
+                                '> *[bind|scope="[' + index + ']"]',
+                                mgmtElement,
+                                true,
+                                false);
+
+        followingScopedSiblings = TP.byCSSPath(
+                                    '~ *[bind|scope]',
+                                    deletionElement,
+                                    false,
+                                    false);
+
+        //  Now that we've found the scoped siblings, we can remove the deletion
+        //  element
+        TP.nodeDetach(deletionElement);
+
+        len2 = followingScopedSiblings.getSize();
+        for (j = 0; j < len2; j++) {
+
+            scopedSibling = followingScopedSiblings.at(j);
+
+            if (TP.notEmpty(scopeVal = TP.elementGetAttribute(
+                                    scopedSibling, 'bind:scope', true))) {
+                if (TP.regex.SIMPLE_NUMERIC_PATH.test(scopeVal)) {
+
+                    TP.elementSetAttribute(
+                            scopedSibling,
+                            'bind:scope',
+                            '[' + index + ']',
+                            true);
+
+                    //  Note how we increment this *after* we set the attribute.
+                    //  This is because we're shifting everything 'up' and so we
+                    //  want to start renumbering *at the same index* as the
+                    //  deletion element was.
+                    index += 1;
+                }
+            }
+        }
+    }
 
     return deletionElement;
 });
@@ -1505,12 +1617,23 @@ function(indexes) {
         templateInfo,
 
         repeatContent,
-        newElement,
+
+        mgmtElement,
 
         index,
 
+        len,
+        i,
+
+        newElement,
+
         insertionPoint,
-        mgmtElement;
+
+        followingScopedSiblings,
+        len2,
+        j,
+        scopedSibling,
+        scopeVal;
 
     elem = this.getNativeNode();
 
@@ -1531,17 +1654,6 @@ function(indexes) {
         return this;
     }
 
-    //  Make sure to clone the content.
-    newElement = TP.nodeCloneNode(repeatContent);
-
-    //  TODO: Fix this to support multiple indices
-    index = indexes.first();
-
-    TP.elementSetAttribute(newElement,
-                            'bind:scope',
-                            '[' + index + ']',
-                            true);
-
     mgmtElement = TP.byCSSPath(
                         '> *[tibet|nomutationtracking]',
                         elem,
@@ -1553,27 +1665,124 @@ function(indexes) {
         return;
     }
 
-    insertionPoint = TP.byCSSPath(
-                            '*[bind|scope="[' + index + ']"]',
-                            elem,
-                            true,
-                            false);
+    //  Loop over all of the supplied indices
+    len = indexes.getSize();
+    for (i = 0; i < len; i++) {
 
-    if (!TP.isElement(insertionPoint)) {
-        TP.nodeAppendChild(mgmtElement, newElement, false);
-    } else {
-        TP.nodeInsertBefore(mgmtElement, insertionPoint, newElement, false);
+        index = indexes.at(i);
+
+        //  Make sure to clone the content.
+        newElement = TP.nodeCloneNode(repeatContent);
+
+        TP.elementSetAttribute(newElement,
+                                'bind:scope',
+                                '[' + index + ']',
+                                true);
+
+        //  An insertion point would be the element with the same index as the
+        //  row we're inserting. If we find one, we insert the new row before
+        //  that and increment the number of all numeric scoped elements *at the
+        //  same level* with an index equal to or greater than the insert index.
+        insertionPoint = TP.byCSSPath(
+                                '> *[bind|scope="[' + index + ']"]',
+                                mgmtElement,
+                                true,
+                                false);
+
+        //  There was no insertion point - just append the element.
+        if (!TP.isElement(insertionPoint)) {
+            TP.nodeAppendChild(mgmtElement, newElement, false);
+        } else {
+
+            //  Otherwise, go ahead and insert the element and then renumber all
+            //  of the ones coming after. Note the reassignment.
+            newElement = TP.nodeInsertBefore(
+                            mgmtElement, newElement, insertionPoint, false);
+
+            followingScopedSiblings = TP.byCSSPath(
+                                        '~ *[bind|scope]',
+                                        newElement,
+                                        false,
+                                        false);
+
+            len2 = followingScopedSiblings.getSize();
+            for (j = 0; j < len2; j++) {
+
+                scopedSibling = followingScopedSiblings.at(j);
+
+                if (TP.notEmpty(scopeVal = TP.elementGetAttribute(
+                                        scopedSibling, 'bind:scope', true))) {
+                    if (TP.regex.SIMPLE_NUMERIC_PATH.test(scopeVal)) {
+
+                        index += 1;
+                        TP.elementSetAttribute(
+                                scopedSibling,
+                                'bind:scope',
+                                '[' + index + ']',
+                                true);
+                    }
+                }
+            }
+        }
+
+        TP.nodeAwakenContent(newElement);
+
+        //  Bubble any xmlns attributes upward to avoid markup clutter.
+        TP.elementBubbleXMLNSAttributes(newElement);
     }
-
-    TP.nodeAwakenContent(newElement);
 
     return newElement;
 });
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('isBoundElement',
+function() {
+
+    /**
+     * @method isBoundElement
+     * @summary Whether or not the receiver is a bound element.
+     * @returns {Boolean} Whether or not the receiver is bound.
+     */
+
+    var bindAttrNodes;
+
+    //  We look for either 'in', 'out', 'io' here to determine if the receiver
+    //  is bound. The 'scope' attribute doesn't indicate that it is bound.
+    bindAttrNodes = TP.elementGetAttributeNodesInNS(
+            this.getNativeNode(), /.*:(in|out|io)/, TP.w3.Xmlns.BIND);
+
+    if (TP.notEmpty(bindAttrNodes)) {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('isScopingElement',
+function() {
+
+    /**
+     * @method isScopingElement
+     * @summary Returns whether or not the receiver is a 'scoping' element (that
+     *     is, an Element containing a 'bind:scope' or 'bind:repeat').
+     * @returns {Boolean} Whether or not the receiver is a scoping element.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    return TP.elementHasAttribute(elem, 'bind:scope', true) ||
+            TP.elementHasAttribute(elem, 'bind:repeat', true);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction) {
+function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, altContext) {
 
     var elem,
 
@@ -1617,6 +1826,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
         partsNegativeSlice,
         predicatePhaseOneComplete,
+
+        didProcess,
 
         lastPart,
 
@@ -1821,6 +2032,8 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         //  branching elements.
         while (TP.notEmpty(searchParts)) {
 
+            didProcess = false;
+
             lastPart = searchParts.last();
             startPredIndex = lastPart.indexOf('[');
 
@@ -1859,9 +2072,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     TP.rc('^' + TP.regExpEscape(searchPath) + '$');
             } else {
                 branchMatcher =
-                    TP.rc('^(#[()a-zA-Z0-9]+)?' +
+                    TP.rc('^(' + '(#[()a-zA-Z0-9]+)?' +
                             TP.regExpEscape(searchPath) +
-                            '$');
+                            '|\.)$');
             }
 
             leafMatcher = TP.rc(TP.regExpEscape(searchPath));
@@ -1880,6 +2093,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 if (isScopingElement && branchMatcher.test(attrVal)) {
 
                     ownerTPElem = TP.wrap(ownerElem);
+
+                    if (attrVal === '.') {
+                        return ownerTPElem.refreshBranches(
+                                primarySource, aSignal, elems, theVal,
+                                aPathType, pathParts, pathAction, this);
+                    }
 
                     if (TP.isURIString(attrVal)) {
                         branchURI = TP.uc(attrVal);
@@ -1931,9 +2150,18 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     needsRefresh = true;
 
-                    if (attrName === 'repeat' &&
+                    var isRepeatScope =
+                        TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal) &&
+                        TP.elementHasClass(ownerElem, 'item');
+
+                    if ((attrName === 'repeat' || isRepeatScope) &&
                         TP.isEmpty(remainderParts) &&
                         attrVal === searchPath) {
+
+                        if (isRepeatScope) {
+                            ownerElem = ownerElem.parentNode.parentNode;
+                            ownerTPElem = TP.wrap(ownerElem);
+                        }
 
                         indexes = aSignal.at('indexes');
 
@@ -1948,9 +2176,16 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                     newSubElems =
                                         TP.wrap(newRowElem).$getBoundElements(
                                                                         false);
+
+                                    if (isRepeatScope) {
+                                    var insertParts = pathParts.slice(0, -1);
+                                    } else {
+                                    var insertParts = pathParts;
+                                    }
+
                                     ownerTPElem.refreshBranches(
                                         primarySource, aSignal, newSubElems,
-                                        theVal, pathType, pathParts,
+                                        theVal, pathType, insertParts,
                                         pathAction);
 
                                     needsRefresh = false;
@@ -1983,11 +2218,16 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         }
                     }
 
+                    didProcess = true;
+
                     if (needsRefresh) {
                         ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, branchVal,
                                 pathType, remainderParts, pathAction);
+                    } else {
+                        break;
                     }
+
                 } else if (!isScopingElement && leafMatcher.test(attrVal)) {
 
                     /*
@@ -2005,6 +2245,36 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     ownerTPElem.refreshLeaf(
                         primarySource, aSignal, theVal, boundAttr, aPathType);
+
+                    didProcess = true;
+                }
+            }
+
+            //  If we didn't process at least once, and the last part of the
+            //  path is a simple numeric path, and there is a value at the end
+            //  of that patch, then we may have an insertion.
+            if (!didProcess &&
+                TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal) &&
+                TP.isDefined(branchVal = TP.wrap(theVal).get(attrVal)) &&
+                (pathAction === TP.CREATE || pathAction === TP.INSERT)) {
+
+                indexes = aSignal.at('indexes');
+
+                if (TP.notEmpty(indexes)) {
+                    newRowElem = this.$insertRepeatRowAt(indexes);
+                    newSubElems = TP.wrap(newRowElem).$getBoundElements(false);
+
+                    this.refreshBranches(
+                        primarySource, aSignal, newSubElems,
+                        theVal, pathType, TP.ac(),
+                        pathAction);
+
+                } else {
+
+                    //  NB: This modifies the supplied 'elems'
+                    //  Array to add the newly generated
+                    //  elements. They will be refreshed below.
+                    ownerTPElem.$regenerateRepeat(branchVal, elems);
                 }
             }
 
@@ -2046,6 +2316,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
         primaryLocation,
 
+        theVal,
+
         len,
         i,
 
@@ -2069,6 +2341,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
     //  for absolute references that are not ones that we are currently part of
     //  the update chain for.
     primaryLocation = aSignal.getOrigin().getPrimaryLocation();
+
+    theVal = TP.collapse(initialVal);
 
     len = infoKeys.getSize();
     for (i = 0; i < len; i++) {
@@ -2094,8 +2368,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 switch (pathType) {
                     case TP.XPATH_PATH_TYPE:
 
-                        if (TP.isXMLNode(initialVal) ||
-                            TP.isKindOf(initialVal, TP.core.Node)) {
+                        if (TP.isXMLNode(theVal) ||
+                            TP.isKindOf(theVal, TP.core.Node)) {
                             //  empty
                         } else {
                             pathType = null;
@@ -2104,7 +2378,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                         break;
 
                     case TP.JSON_PATH_TYPE:
-                        if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
+                        if (TP.isKindOf(theVal, TP.core.JSONContent)) {
                             //  empty
                         } else {
                             pathType = null;
@@ -2132,10 +2406,10 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                     case TP.XPATH_PATH_TYPE:
                         path = TP.xpc(expr);
 
-                        if (TP.isXMLNode(initialVal)) {
-                            finalVal = path.executeGet(TP.wrap(initialVal));
-                        } else if (TP.isKindOf(initialVal, TP.core.Node)) {
-                            finalVal = path.executeGet(initialVal);
+                        if (TP.isXMLNode(theVal)) {
+                            finalVal = path.executeGet(TP.wrap(theVal));
+                        } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                            finalVal = path.executeGet(theVal);
                         }
                         break;
 
@@ -2147,72 +2421,100 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
                         path = TP.jpc(expr);
 
-                        //  Because of the check above, initialVal has to be a
+                        //  Because of the check above, theVal has to be a
                         //  JSONContent object here.
-                        finalVal = path.executeGet(initialVal);
+                        finalVal = path.executeGet(theVal);
 
                         break;
 
                     case TP.TIBET_PATH_TYPE:
                         path = TP.tpc(expr);
 
-                        finalVal = path.executeGet(initialVal);
+                        finalVal = path.executeGet(theVal);
                         break;
 
                     default:
-                        finalVal = initialVal.get(expr);
+                        finalVal = theVal.get(expr);
                         break;
                 }
 
             } else {
-                if (TP.isPlainObject(initialVal)) {
-                    finalVal = TP.hc(initialVal).get(expr);
-                } else if (TP.isXMLNode(initialVal)) {
-                    finalVal = TP.wrap(initialVal).get(TP.xpc(expr));
-                } else if (TP.isKindOf(initialVal, TP.core.Node)) {
-                    finalVal = initialVal.get(TP.xpc(expr));
+                if (TP.regex.COMPOSITE_PATH.test(expr)) {
+                    if (TP.isValid(entry.at('transformFunc'))) {
+                        finalVal = theVal;
+                    } else {
+                        finalVal = TP.wrap(theVal).get(TP.apc(expr));
+                    }
+                } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
+                    finalVal = theVal;
+                } else if (TP.isPlainObject(theVal)) {
+                    finalVal = TP.hc(theVal).get(expr);
+                } else if (TP.isXMLNode(theVal)) {
+                    finalVal = TP.wrap(theVal).get(TP.xpc(expr));
+                } else if (TP.isKindOf(theVal, TP.core.Node)) {
+                    finalVal = theVal.get(TP.xpc(expr));
                 } else if (TP.regex.JSON_POINTER.test(expr) ||
                             TP.regex.JSON_PATH.test(expr)) {
-                    if (TP.isKindOf(initialVal, TP.core.JSONContent)) {
-                        finalVal = TP.jpc(expr).executeGet(initialVal);
+                    if (TP.isKindOf(theVal, TP.core.JSONContent)) {
+                        finalVal = TP.jpc(expr).executeGet(theVal);
                     } else {
-                        jsonContent = TP.core.JSONContent.construct(initialVal);
+                        jsonContent = TP.core.JSONContent.construct(theVal);
                         finalVal = TP.jpc(expr).executeGet(jsonContent);
                     }
-                } else if (TP.notValid(initialVal)) {
+                } else if (TP.notValid(theVal)) {
                     finalVal = null;
                 } else {
-                    finalVal = initialVal.get(expr);
+                    finalVal = theVal.get(expr);
                 }
             }
 
-            if (TP.notValid(finalVal) &&
-                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
-                finalVal = initialVal;
-            }
+            //if (TP.notValid(finalVal) &&
+             //   TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
+              //  finalVal = theVal;
+            //}
         }
 
         if (TP.isValid(finalVal)) {
             if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
 
-                //  If finalVal is a single-valued Array, try to collapse it for
-                //  better results
-                if (TP.isArray(finalVal)) {
+        var isXMLResource,
+            repeatInfo,
+            repeatIndex,
+            repeatSource;
+
+                //  If we only accept 'single values' and finalVal is a
+                //  collection, try to collapse it for better results.
+                if (this.isSingleValued() && TP.isCollection(finalVal)) {
                     finalVal = TP.collapse(finalVal);
                 }
 
+                isXMLResource = TP.isXMLNode(TP.unwrap(finalVal));
+
+                /*
                 //  If finalVal is a Node, try to get it's value (i.e. for
                 //  Elements, it's text content) for better results
                 if (TP.isNode(finalVal)) {
                     finalVal = TP.val(finalVal);
+                }
+                */
+
+                //  Important for the logic in the transformation Function to
+                //  set this to NaN and let the logic below set it if it finds
+                //  it.
+                repeatIndex = NaN;
+
+                if (TP.isValid(repeatInfo = this.$getRepeatSourceAndIndex())) {
+                    repeatSource = repeatInfo.first();
+                    repeatIndex = repeatInfo.last();
                 }
 
                 finalVal = transformFunc(
                                 aSignal.getSource(),
                                 finalVal,
                                 this,
-                                null,
-                                null);
+                                repeatSource,
+                                repeatIndex,
+                                isXMLResource);
             }
         }
 
@@ -2249,9 +2551,17 @@ function(aCollection, elems) {
         startIndex,
         endIndex,
 
+        idSuffix,
+
         scopeIndex,
 
         i,
+
+        elemsWithIDs,
+        j,
+        elemWithID,
+        oldIdVal,
+        newIdVal,
 
         newElement,
 
@@ -2327,6 +2637,25 @@ function(aCollection, elems) {
     startIndex = 0;
     endIndex = aCollection.getSize();
 
+    //  Calculate an ID suffix by concatenating any 'bind:scope' numeric values
+    //  up the chain.
+    idSuffix = '';
+
+    TP.nodeAncestorsPerform(
+        elem,
+        function(aNode) {
+
+            var scopeVal;
+
+            if (TP.isElement(aNode) &&
+                TP.notEmpty(scopeVal = TP.elementGetAttribute(
+                                                aNode, 'bind:scope', true))) {
+                if (TP.regex.SIMPLE_NUMERIC_PATH.test(scopeVal)) {
+                    idSuffix += scopeVal.slice(1, -1);
+                }
+            }
+        });
+
     //  Iterate over the resource and build out a chunk of markup for each
     //  item in the resource.
     for (i = startIndex; i < endIndex; i++) {
@@ -2339,6 +2668,21 @@ function(aCollection, elems) {
         } else {
             scopeIndex = i;
         }
+
+        elemsWithIDs = TP.byCSSPath('*[id]', newElement, false, false);
+
+        for (j = 0; j < elemsWithIDs.getSize(); j++) {
+
+            elemWithID = elemsWithIDs.at(j);
+
+            oldIdVal = TP.elementGetAttribute(elemWithID, 'id', true);
+            newIdVal = oldIdVal + idSuffix + scopeIndex;
+
+            TP.elementSetAttribute(elemWithID, 'id', newIdVal, true);
+        }
+
+        //  TODO: Make sure to update any *references* (i.e. IDREFs) to the ID
+        //  that we just changed.
 
         TP.elementSetAttribute(
                 newElement, 'bind:scope', '[' + scopeIndex + ']', true);
