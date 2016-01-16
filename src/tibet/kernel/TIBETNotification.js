@@ -5995,6 +5995,8 @@ function(originSet, aSignal, aPayload, aType) {
         payload,
         scope,
         evt,
+
+        origin,
         target,
 
         scopeVals,
@@ -6025,14 +6027,23 @@ function(originSet, aSignal, aPayload, aType) {
     if (TP.notValid(scope = payload.at('scope'))) {
 
         //  Make sure that we have both an Event and an Event target.
-        if (TP.isEvent(evt = payload.at('event')) &&
-            TP.isElement(target = TP.eventGetTarget(evt))) {
+        if (TP.isEvent(evt = payload.at('event'))) {
 
-            //  Wrap the target and compute its binding scope values.
-            scopeVals = TP.wrap(target).getBindingScopeValues();
+            if (TP.isElement(origin = originSet)) {
+                //  Wrap the origin and compute its binding scope values.
+                scopeVals = TP.wrap(origin).getBindingScopeValues();
+            } else if (TP.isElement(target = TP.eventGetTarget(evt))) {
+                //  Wrap the target and compute its binding scope values.
+                scopeVals = TP.wrap(target).getBindingScopeValues();
+            }
 
             //  Join all of the scope value fragments together and set the scope
             //  in the payload.
+            if (TP.isEmpty(scopeVals)) {
+                TP.ifWarn() ? TP.warn('Bind firing without scope values: ') : 0;
+                return sig;
+            }
+
             scope = TP.uriJoinFragments.apply(TP, scopeVals);
             payload.atPut('scope', scope);
         }
