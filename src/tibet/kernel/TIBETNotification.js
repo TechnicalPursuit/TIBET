@@ -5277,6 +5277,9 @@ function(originSet, aSignal, aPayload, aType) {
                     //  by ID (using the original origin's document).
                     if (TP.notEmpty(orgid = sigParams.at('origin'))) {
 
+                        //  Just in case it was supplied as a quoted value
+                        orgid = orgid.unquoted();
+
                         //  Note how we pass false to avoid getting a wrapped
                         //  origin, which we don't want here.
                         origin = TP.byId(
@@ -5287,6 +5290,10 @@ function(originSet, aSignal, aPayload, aType) {
                     //  instead of the name of the original DOM signal that was
                     //  fired.
                     signame = TP.ifInvalid(sigParams.at('signal'), signame);
+
+                    //  Just in case it was supplied in the signal params as a
+                    //  quoted value
+                    signame = signame.unquoted();
 
                     //  Grab whatever payload was specified.
                     sigPayload = sigParams.at('payload');
