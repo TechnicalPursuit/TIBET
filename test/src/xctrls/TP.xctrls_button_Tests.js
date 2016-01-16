@@ -33,10 +33,10 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            //this.getDriver().setLocation(unloadURI);
+            this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
-            //loadURI.unregister();
+            loadURI.unregister();
         });
 
     //  ---

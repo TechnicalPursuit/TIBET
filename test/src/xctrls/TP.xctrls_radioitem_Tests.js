@@ -33,10 +33,10 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            //this.getDriver().setLocation(unloadURI);
+            this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
-            //loadURI.unregister();
+            loadURI.unregister();
         });
 
     //  ---
@@ -272,7 +272,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: set value',
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: get/set value',
 function() {
 
     var testData,
@@ -304,10 +304,10 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            //this.getDriver().setLocation(unloadURI);
+            this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
-            //loadURI.unregister();
+            loadURI.unregister();
         });
 
     //  ---
