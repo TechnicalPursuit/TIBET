@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <people xmlns="">
             <person>
                 <lastname>Smith</lastname>
@@ -35,7 +35,7 @@
     <br/>
     <br/>
 
-    <span bind:repeat="urn:tibet:test_person#xpath1(/people/person)">
+    <span bind:repeat="urn:tibet:test_people#xpath1(/people/person)">
         <label for="firstNameField">First name: </label>
         <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>
 

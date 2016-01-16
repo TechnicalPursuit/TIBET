@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe"},
@@ -39,7 +39,7 @@
                 <th>First Name</th><th>Last Name</th>
             </tr>
         </thead>
-        <tbody id="people" bind:repeat="urn:tibet:test_person#tibet(people)">
+        <tbody id="people" bind:repeat="urn:tibet:test_people#tibet(people)">
             <tr>
                 <td>[[firstname]]</td><td>[[lastname]]</td>
             </tr>

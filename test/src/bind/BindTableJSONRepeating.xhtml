@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person_json">
+    <tibet:data name="urn:tibet:test_people_json">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe"},
@@ -42,7 +42,7 @@
                 <th>First Name</th><th>Last Name</th>
             </tr>
         </thead>
-        <tbody id="people" bind:repeat="urn:tibet:test_person_json#json($.people)">
+        <tbody id="people" bind:repeat="urn:tibet:test_people_json#json($.people)">
             <tr>
                 <td>[[$INDEX]]</td><td>[[firstname]]</td><td>[[lastname]]</td>
             </tr>

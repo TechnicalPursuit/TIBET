@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person_xml">
+    <tibet:data name="urn:tibet:test_people_xml">
         <people xmlns="">
             <person>
                 <lastname>Smith</lastname>
@@ -24,7 +24,16 @@
         </people>
     </tibet:data>
 
-    <tibet:data name="urn:tibet:test_person_json">
+    <tibet:data name="urn:tibet:test_people_json">
+        <![CDATA[
+            {"people": [
+                {"lastname": "Smith", "middlename": "Bob", "firstname": "Joe"},
+                {"lastname": "Jones", "middlename": "Jay", "firstname": "John"}
+            ]}
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:test_people_jsobj">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe"},
@@ -47,26 +56,43 @@
     <br/>
     <br/>
 
-    <span bind:repeat="urn:tibet:test_person_xml#xpath1(/people/person)">
-        <label for="xmlBindStdinAttr">Binding to XML data with $_ variable reference:</label>
-        <input type="text" id="xmlBindStdinAttr" bind:io="{value: 'The first name: [[$_.(.//firstname).value .% upperCase]]'}" tabindex="0"/><br/>
+    <span id="xmlrepeater" bind:repeat="urn:tibet:test_people_xml#xpath1(/people/person)">
+        <label>Binding to XML data with $_ variable reference:</label>
+        <input type="text" bind:io="{value: 'The first name: [[$_.(.//firstname).value .% upperCase]]'}" tabindex="0"/><br/>
 
-        <label for="xmlBindIndexAttr">Binding to XML data with $INDEX variable reference:</label>
-        <input type="text" id="xmlBindIndexAttr" bind:io="{value: 'The index: [[$INDEX]]'}" tabindex="0"/><br/>
+        <label>Binding to XML data with $INDEX variable reference:</label>
+        <input type="text" bind:io="{value: 'The index: [[$INDEX]]'}" tabindex="0"/><br/>
 
-        <label for="firstNameField">First name: </label>
-        <input type="text" id="firstNameField" bind:io="{value: 'The first name: [[firstname]]'}" tabindex="0"/><br/>
+        <label>First name: </label>
+        <input type="text" bind:io="{value: 'The first name: [[firstname]]'}" tabindex="0"/><br/>
     </span>
 
-    <span bind:repeat="urn:tibet:test_person_json#tibet(people)">
-        <label for="jsonBindStdinAttr">Binding to JSON data with $_ variable reference:</label>
-        <input type="text" id="jsonBindStdinAttr" bind:io="{value: 'The last name: [[$_.lastname .% upperCase]]'}" tabindex="0"/><br/>
+    <br/>
+    <br/>
 
-        <label for="jsonBindIndexAttr">Binding to JSON data with $INDEX variable reference:</label>
-        <input type="text" id="jsonBindIndexAttr" bind:io="{value: 'The index: [[$INDEX]]'}" tabindex="0"/><br/>
+    <span id="jsonrepeater" bind:repeat="urn:tibet:test_people_json#json($.people)">
+        <label>Binding to JSON data with $_ variable reference:</label>
+        <input type="text" bind:io="{value: 'The middle name: [[$_.middlename .% upperCase]]'}" tabindex="0"/><br/>
 
-        <label for="lastNameField">Last name: </label>
-        <input type="text" id="lastNameField" bind:io="{value: 'The last name: [[lastname]]'}" tabindex="0"/><br/>
+        <label>Binding to JSON data with $INDEX variable reference:</label>
+        <input type="text" bind:io="{value: 'The index: [[$INDEX]]'}" tabindex="0"/><br/>
+
+        <label>Middle name: </label>
+        <input type="text" bind:io="{value: 'The middle name: [[middlename]]'}" tabindex="0"/><br/>
+    </span>
+
+    <br/>
+    <br/>
+
+    <span id="jsobjrepeater" bind:repeat="urn:tibet:test_people_jsobj#tibet(people)">
+        <label>Binding to JavaScript Object data with $_ variable reference:</label>
+        <input type="text" bind:io="{value: 'The last name: [[$_.lastname .% upperCase]]'}" tabindex="0"/><br/>
+
+        <label>Binding to JavaScript Object data with $INDEX variable reference:</label>
+        <input type="text" bind:io="{value: 'The index: [[$INDEX]]'}" tabindex="0"/><br/>
+
+        <label>Last name: </label>
+        <input type="text" bind:io="{value: 'The last name: [[lastname]]'}" tabindex="0"/><br/>
     </span>
 
 </body>

@@ -11,7 +11,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe",
@@ -61,7 +61,7 @@
     <br/>
     <br/>
 
-    <span id="personRepeat" bind:repeat="urn:tibet:test_person#tibet(people)" bind:repeatindex="0" bind:repeatsize="2">
+    <span id="personRepeat" bind:repeat="urn:tibet:test_people#tibet(people)" bind:repeatindex="0" bind:repeatsize="2">
         <label for="firstNameField">First name: </label>
         <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>
 

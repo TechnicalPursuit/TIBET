@@ -3813,14 +3813,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person)'),
+                        TP.uc('urn:tibet:test_people#xpath1(/people/person)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField1', windowContext).get('value'),
@@ -3912,14 +3912,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#xpath1(/people/person)'),
+                        TP.uc('urn:tibet:test_people#xpath1(/people/person)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 //  ---
 
@@ -4091,14 +4091,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people)'),
+                        TP.uc('urn:tibet:test_people#json($.people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField0', windowContext).get('value'),
@@ -4192,14 +4192,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#json($.people)'),
+                        TP.uc('urn:tibet:test_people#json($.people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 //  ---
 
@@ -4367,14 +4367,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people)'),
+                        TP.uc('urn:tibet:test_people#tibet(people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
                     TP.byId('lastNameField0', windowContext).get('value'),
@@ -4468,14 +4468,14 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person#tibet(people)'),
+                        TP.uc('urn:tibet:test_people#tibet(people)'),
                         'TP.sig.StructureChange');
 
-                modelObj = TP.uc('urn:tibet:test_person').getResource().get('result');
+                modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 //  ---
 
@@ -4784,7 +4784,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).skip();
 
     //  ---
 
@@ -5012,7 +5012,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    }).timeout(10000).skip();
 
     //  ---
 
@@ -5174,7 +5174,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).skip();
 
     //  ---
 
@@ -5402,7 +5402,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(15000);
+    }).timeout(15000).skip();
 
     //  ---
 
@@ -5564,7 +5564,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    });
+    }).skip();
 
     //  ---
 
@@ -5792,7 +5792,7 @@ function() {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000);
+    }).timeout(10000).skip();
 }).timeout(60000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
@@ -7832,94 +7832,79 @@ function() {
 
                 var windowContext,
 
-                    xmlField,
-                    jsonField,
-                    jsobjField;
+                    xmlFields,
+                    jsonFields,
+                    jsobjFields;
 
                 windowContext = test.getDriver().get('windowContext');
 
-                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
-                jsobjField = TP.byId('jsobjBindStdinAttr0', windowContext);
+                xmlFields = TP.byCSSPath('#xmlrepeater input[type="text"]',
+                                        windowContext);
+
+                jsonFields = TP.byCSSPath('#jsonrepeater input[type="text"]',
+                                        windowContext);
+
+                jsobjFields = TP.byCSSPath('#jsobjrepeater input[type="text"]',
+                                        windowContext);
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(0).getValue(),
                     'JOE');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(0).getValue(),
                     'BOB');
                 test.assert.isEqualTo(
-                    jsobjField.getValue(),
+                    jsobjFields.at(0).getValue(),
                     'SMITH');
 
-                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
-                jsobjField = TP.byId('jsobjBindStdinAttr1', windowContext);
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    'JOHN');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    'JAY');
-                test.assert.isEqualTo(
-                    jsobjField.getValue(),
-                    'JONES');
-
-                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
-                jsobjField = TP.byId('jsobjBindIndexAttr0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(1).getValue(),
                     '1');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(1).getValue(),
                     '0');
                 test.assert.isEqualTo(
-                    jsobjField.getValue(),
+                    jsobjFields.at(1).getValue(),
                     '0');
 
-                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
-                jsobjField = TP.byId('jsobjBindIndexAttr1', windowContext);
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    '2');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    '1');
-                test.assert.isEqualTo(
-                    jsobjField.getValue(),
-                    '1');
-
-                xmlField = TP.byId('firstNameField1', windowContext);
-                jsonField = TP.byId('middleNameField0', windowContext);
-                jsobjField = TP.byId('lastNameField0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(2).getValue(),
                     'Joe');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(2).getValue(),
                     'Bob');
                 test.assert.isEqualTo(
-                    jsobjField.getValue(),
+                    jsobjFields.at(2).getValue(),
                     'Smith');
 
-                xmlField = TP.byId('firstNameField2', windowContext);
-                jsonField = TP.byId('middleNameField1', windowContext);
-                jsobjField = TP.byId('lastNameField1', windowContext);
+                test.assert.isEqualTo(
+                    xmlFields.at(3).getValue(),
+                    'JOHN');
+                test.assert.isEqualTo(
+                    jsonFields.at(3).getValue(),
+                    'JAY');
+                test.assert.isEqualTo(
+                    jsobjFields.at(3).getValue(),
+                    'JONES');
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(4).getValue(),
+                    '2');
+                test.assert.isEqualTo(
+                    jsonFields.at(4).getValue(),
+                    '1');
+                test.assert.isEqualTo(
+                    jsobjFields.at(4).getValue(),
+                    '1');
+
+                test.assert.isEqualTo(
+                    xmlFields.at(5).getValue(),
                     'John');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(5).getValue(),
                     'Jay');
                 test.assert.isEqualTo(
-                    jsobjField.getValue(),
+                    jsobjFields.at(5).getValue(),
                     'Jones');
             },
             function(error) {
@@ -7941,69 +7926,79 @@ function() {
 
                 var windowContext,
 
-                    xmlField,
-                    jsonField;
+                    xmlFields,
+                    jsonFields,
+                    jsobjFields;
 
                 windowContext = test.getDriver().get('windowContext');
 
-                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
+                xmlFields = TP.byCSSPath('#xmlrepeater input[type="text"]',
+                                        windowContext);
+
+                jsonFields = TP.byCSSPath('#jsonrepeater input[type="text"]',
+                                        windowContext);
+
+                jsobjFields = TP.byCSSPath('#jsobjrepeater input[type="text"]',
+                                        windowContext);
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(0).getValue(),
                     'The first name: JOE');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(0).getValue(),
+                    'The middle name: BOB');
+                test.assert.isEqualTo(
+                    jsobjFields.at(0).getValue(),
                     'The last name: SMITH');
 
-                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    'The first name: JOHN');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    'The last name: JONES');
-
-                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(1).getValue(),
                     'The index: 1');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(1).getValue(),
+                    'The index: 0');
+                test.assert.isEqualTo(
+                    jsobjFields.at(1).getValue(),
                     'The index: 0');
 
-                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    'The index: 2');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    'The index: 1');
-
-                xmlField = TP.byId('firstNameField1', windowContext);
-                jsonField = TP.byId('lastNameField0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(2).getValue(),
                     'The first name: Joe');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(2).getValue(),
+                    'The middle name: Bob');
+                test.assert.isEqualTo(
+                    jsobjFields.at(2).getValue(),
                     'The last name: Smith');
 
-                xmlField = TP.byId('firstNameField2', windowContext);
-                jsonField = TP.byId('lastNameField1', windowContext);
+                test.assert.isEqualTo(
+                    xmlFields.at(3).getValue(),
+                    'The first name: JOHN');
+                test.assert.isEqualTo(
+                    jsonFields.at(3).getValue(),
+                    'The middle name: JAY');
+                test.assert.isEqualTo(
+                    jsobjFields.at(3).getValue(),
+                    'The last name: JONES');
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(4).getValue(),
+                    'The index: 2');
+                test.assert.isEqualTo(
+                    jsonFields.at(4).getValue(),
+                    'The index: 1');
+                test.assert.isEqualTo(
+                    jsobjFields.at(4).getValue(),
+                    'The index: 1');
+
+                test.assert.isEqualTo(
+                    xmlFields.at(5).getValue(),
                     'The first name: John');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(5).getValue(),
+                    'The middle name: Jay');
+                test.assert.isEqualTo(
+                    jsobjFields.at(5).getValue(),
                     'The last name: Jones');
             },
             function(error) {
@@ -8025,69 +8020,79 @@ function() {
 
                 var windowContext,
 
-                    xmlField,
-                    jsonField;
+                    xmlFields,
+                    jsonFields,
+                    jsobjFields;
 
                 windowContext = test.getDriver().get('windowContext');
 
-                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
+                xmlFields = TP.byCSSPath('#xmlrepeater input[type="text"]',
+                                        windowContext);
+
+                jsonFields = TP.byCSSPath('#jsonrepeater input[type="text"]',
+                                        windowContext);
+
+                jsobjFields = TP.byCSSPath('#jsobjrepeater input[type="text"]',
+                                        windowContext);
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(0).getValue(),
                     'JOE');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(0).getValue(),
+                    'BOB');
+                test.assert.isEqualTo(
+                    jsobjFields.at(0).getValue(),
                     'SMITH');
 
-                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    'JOHN');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    'JONES');
-
-                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(1).getValue(),
                     '1');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(1).getValue(),
+                    '0');
+                test.assert.isEqualTo(
+                    jsobjFields.at(1).getValue(),
                     '0');
 
-                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    '2');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    '1');
-
-                xmlField = TP.byId('firstNameField1', windowContext);
-                jsonField = TP.byId('lastNameField0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(2).getValue(),
                     'Joe');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(2).getValue(),
+                    'Bob');
+                test.assert.isEqualTo(
+                    jsobjFields.at(2).getValue(),
                     'Smith');
 
-                xmlField = TP.byId('firstNameField2', windowContext);
-                jsonField = TP.byId('lastNameField1', windowContext);
+                test.assert.isEqualTo(
+                    xmlFields.at(3).getValue(),
+                    'JOHN');
+                test.assert.isEqualTo(
+                    jsonFields.at(3).getValue(),
+                    'JAY');
+                test.assert.isEqualTo(
+                    jsobjFields.at(3).getValue(),
+                    'JONES');
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(4).getValue(),
+                    '2');
+                test.assert.isEqualTo(
+                    jsonFields.at(4).getValue(),
+                    '1');
+                test.assert.isEqualTo(
+                    jsobjFields.at(4).getValue(),
+                    '1');
+
+                test.assert.isEqualTo(
+                    xmlFields.at(5).getValue(),
                     'John');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(5).getValue(),
+                    'Jay');
+                test.assert.isEqualTo(
+                    jsobjFields.at(5).getValue(),
                     'Jones');
             },
             function(error) {
@@ -8109,70 +8114,79 @@ function() {
 
                 var windowContext,
 
-                    xmlField,
-                    jsonField;
+                    xmlFields,
+                    jsonFields,
+                    jsobjFields;
 
                 windowContext = test.getDriver().get('windowContext');
 
-                xmlField = TP.byId('xmlBindStdinAttr1', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr0', windowContext);
+                xmlFields = TP.byCSSPath('#xmlrepeater input[type="text"]',
+                                        windowContext);
+
+                jsonFields = TP.byCSSPath('#jsonrepeater input[type="text"]',
+                                        windowContext);
+
+                jsobjFields = TP.byCSSPath('#jsobjrepeater input[type="text"]',
+                                        windowContext);
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(0).getValue(),
                     'The first name: JOE');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(0).getValue(),
+                    'The middle name: BOB');
+                test.assert.isEqualTo(
+                    jsobjFields.at(0).getValue(),
                     'The last name: SMITH');
 
-                xmlField = TP.byId('xmlBindStdinAttr2', windowContext);
-                jsonField = TP.byId('jsonBindStdinAttr1', windowContext);
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    'The first name: JOHN');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    'The last name: JONES');
-
-                xmlField = TP.byId('xmlBindIndexAttr1', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(1).getValue(),
                     'The index: 1');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(1).getValue(),
+                    'The index: 0');
+                test.assert.isEqualTo(
+                    jsobjFields.at(1).getValue(),
                     'The index: 0');
 
-                xmlField = TP.byId('xmlBindIndexAttr2', windowContext);
-                jsonField = TP.byId('jsonBindIndexAttr1', windowContext);
-
-
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
-                    'The index: 2');
-                test.assert.isEqualTo(
-                    jsonField.getValue(),
-                    'The index: 1');
-
-                xmlField = TP.byId('firstNameField1', windowContext);
-                jsonField = TP.byId('lastNameField0', windowContext);
-
-                test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(2).getValue(),
                     'The first name: Joe');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(2).getValue(),
+                    'The middle name: Bob');
+                test.assert.isEqualTo(
+                    jsobjFields.at(2).getValue(),
                     'The last name: Smith');
 
-                xmlField = TP.byId('firstNameField2', windowContext);
-                jsonField = TP.byId('lastNameField1', windowContext);
+                test.assert.isEqualTo(
+                    xmlFields.at(3).getValue(),
+                    'The first name: JOHN');
+                test.assert.isEqualTo(
+                    jsonFields.at(3).getValue(),
+                    'The middle name: JAY');
+                test.assert.isEqualTo(
+                    jsobjFields.at(3).getValue(),
+                    'The last name: JONES');
 
                 test.assert.isEqualTo(
-                    xmlField.getValue(),
+                    xmlFields.at(4).getValue(),
+                    'The index: 2');
+                test.assert.isEqualTo(
+                    jsonFields.at(4).getValue(),
+                    'The index: 1');
+                test.assert.isEqualTo(
+                    jsobjFields.at(4).getValue(),
+                    'The index: 1');
+
+                test.assert.isEqualTo(
+                    xmlFields.at(5).getValue(),
                     'The first name: John');
                 test.assert.isEqualTo(
-                    jsonField.getValue(),
+                    jsonFields.at(5).getValue(),
+                    'The middle name: Jay');
+                test.assert.isEqualTo(
+                    jsobjFields.at(5).getValue(),
                     'The last name: Jones');
             },
             function(error) {
@@ -8599,7 +8613,7 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 insertBeforeBeginButton =
@@ -8624,8 +8638,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField1', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(0).get('value'));
+                        test.assert.isEmpty(fields.at(1).get('value'));
                     });
 
                 //  Insert empty row after the first row
@@ -8636,8 +8656,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField2', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the second row
+                        test.assert.isEmpty(fields.at(2).get('value'));
+                        test.assert.isEmpty(fields.at(3).get('value'));
                     });
 
                 //  Insert empty row before the last row
@@ -8648,8 +8674,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField5', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the fifth row
+                        test.assert.isEmpty(fields.at(8).get('value'));
+                        test.assert.isEmpty(fields.at(9).get('value'));
                     });
 
                 //  Insert empty row after the last row
@@ -8660,8 +8692,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField7', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the seventh row
+                        test.assert.isEmpty(fields.at(12).get('value'));
+                        test.assert.isEmpty(fields.at(13).get('value'));
                     });
             },
             function(error) {
@@ -8690,7 +8728,7 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 insertBeforeBeginButton =
@@ -8715,8 +8753,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField0', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(0).get('value'));
+                        test.assert.isEmpty(fields.at(1).get('value'));
                     });
 
                 //  Insert empty row after the first row
@@ -8727,8 +8771,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField1', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(2).get('value'));
+                        test.assert.isEmpty(fields.at(3).get('value'));
                     });
 
                 //  Insert empty row before the last row
@@ -8739,8 +8789,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField4', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(8).get('value'));
+                        test.assert.isEmpty(fields.at(9).get('value'));
                     });
 
                 //  Insert empty row after the last row
@@ -8751,8 +8807,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField6', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(12).get('value'));
+                        test.assert.isEmpty(fields.at(13).get('value'));
                     });
             },
             function(error) {
@@ -8781,7 +8843,7 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 insertBeforeBeginButton =
@@ -8806,8 +8868,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField0', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(0).get('value'));
+                        test.assert.isEmpty(fields.at(1).get('value'));
                     });
 
                 //  Insert empty row after the first row
@@ -8818,8 +8886,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField1', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(2).get('value'));
+                        test.assert.isEmpty(fields.at(3).get('value'));
                     });
 
                 //  Insert empty row before the last row
@@ -8830,8 +8904,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField4', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(8).get('value'));
+                        test.assert.isEmpty(fields.at(9).get('value'));
                     });
 
                 //  Insert empty row after the last row
@@ -8842,8 +8922,14 @@ function() {
 
                 test.then(
                     function() {
-                        test.assert.isEmpty(
-                        TP.byId('lastNameField6', windowContext).get('value'));
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname and firstname of the first row
+                        test.assert.isEmpty(fields.at(12).get('value'));
+                        test.assert.isEmpty(fields.at(13).get('value'));
                     });
             },
             function(error) {
@@ -8914,7 +9000,7 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 deleteFirstRowButton =
@@ -8933,8 +9019,14 @@ function() {
 
                 test.then(
                     function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname of the first row
                         test.assert.isEqualTo(
-                            TP.byId('lastNameField1', windowContext).get('value'),
+                            fields.at(1).get('value'),
                             'Jones');
                     });
 
@@ -8982,7 +9074,7 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 deleteFirstRowButton =
@@ -9001,8 +9093,14 @@ function() {
 
                 test.then(
                     function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname of the first row
                         test.assert.isEqualTo(
-                            TP.byId('lastNameField0', windowContext).get('value'),
+                            fields.at(1).get('value'),
                             'Jones');
                     });
 
@@ -9050,7 +9148,7 @@ function() {
                 windowContext = test.getDriver().get('windowContext');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_person'),
+                        TP.uc('urn:tibet:test_people'),
                         'TP.sig.ValueChange');
 
                 deleteFirstRowButton =
@@ -9069,8 +9167,14 @@ function() {
 
                 test.then(
                     function() {
+                        var fields;
+
+                        fields = TP.byCSSPath('#repeater input[type="text"]',
+                                                windowContext);
+
+                        //  The lastname of the first row
                         test.assert.isEqualTo(
-                            TP.byId('lastNameField0', windowContext).get('value'),
+                            fields.at(1).get('value'),
                             'Jones');
                     });
 

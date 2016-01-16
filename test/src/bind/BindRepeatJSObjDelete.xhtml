@@ -12,7 +12,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <tibet:data name="urn:tibet:test_people">
         <![CDATA[
             {"people": [
                 {"lastname": "Smith", "firstname": "Joe"},
@@ -35,17 +35,17 @@
     <br/>
     <br/>
 
-    <span bind:scope="urn:tibet:test_person#tibet(people)">
+    <span bind:scope="urn:tibet:test_people#tibet(people)">
         <span id="repeater" bind:repeat=".">
-            <label for="firstNameField">First name: </label>
-            <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>
+            <label>First name: </label>
+            <input type="text" bind:io="{value: firstname}" tabindex="0"/><br/>
 
-            <label for="lastNameField">Last name: </label>
-            <input type="text" id="lastNameField" bind:io="{value: lastname}" tabindex="0"/><br/>
+            <label>Last name: </label>
+            <input type="text" bind:io="{value: lastname}" tabindex="0"/><br/>
         </span>
 
-        <button id="deleteFirstRow" on:click="{signal: DeleteItem, payload: {index:0}}">Click to delete the first row</button>
-        <button id="deleteLastRow" on:click="DeleteItem">Click to delete the last row</button>
+        <button id="deleteFirstRow" on:click="{signal: DeleteItem, origin: 'repeater', payload: {index:0}}">Click to delete the first row</button>
+        <button id="deleteLastRow" on:click="{signal: DeleteItem, origin: 'repeater'}">Click to delete the last row</button>
     </span>
 
 </body>
