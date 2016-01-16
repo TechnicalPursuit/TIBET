@@ -1095,6 +1095,17 @@ function(aValue, shouldSignal) {
 
         flag;
 
+    //  If we're not signaling, then we don't need to worry about obtaining and
+    //  checking the old value, etc. Just produce a new value, set the
+    //  receiver's display value to it and return.
+    if (shouldSignal === false) {
+
+        newValue = this.produceValue(aValue);
+        this.setDisplayValue(newValue);
+
+        return this;
+    }
+
     oldValue = this.getValue();
 
     newValue = this.produceValue(aValue);
@@ -1808,13 +1819,16 @@ function() {
      * @returns {TP.core.UIElementNode[]} The Array of shared value items.
      */
 
-    var name,
+    var elem,
 
+        name,
         results;
 
     //  If we don't have a 'name' attribute, at least return an Array with 1
     //  item - ourself
-    if (TP.isEmpty(name = this.getAttribute('name'))) {
+    elem = this.getNativeNode();
+
+    if (TP.isEmpty(name = TP.elementGetAttribute(elem, 'name', true))) {
         return TP.ac(this);
     }
 
@@ -1822,7 +1836,7 @@ function() {
     //  (including the receiver's native node) that share the same name as the
     //  receiver. Note here how we don't collapse.
     results = TP.byCSSPath('input[name="' + name + '"]',
-                            this.getNativeDocument(),
+                            TP.nodeGetDocument(elem),
                             false);
 
     //  If we didn't get any nodes back from our query, at least return an Array
@@ -1847,7 +1861,7 @@ function() {
      * @returns {String} The markup value of the receiver.
      */
 
-    return this.getAttribute('value');
+    return TP.elementGetAttribute(this.getNativeNode(), 'value', true);
 });
 
 //  ------------------------------------------------------------------------
