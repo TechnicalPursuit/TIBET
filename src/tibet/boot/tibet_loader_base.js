@@ -9741,9 +9741,9 @@ TP.boot.$importComponents = function(loadSync) {
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
-            TP.boot.$$loadPath = srcpath;
             TP.boot.$$loadpaths.push(srcpath);
             TP.boot.$$srcPath = TP.boot.$uriInTIBETFormat(srcpath);
+            TP.boot.$$loadPath = TP.boot.$$srcPath;
         } else {
             TP.boot.$$loadPath = null;
             TP.boot.$$srcPath = null;
@@ -9795,14 +9795,13 @@ TP.boot.$importComponents = function(loadSync) {
                 elem.onload = callback;
 
                 if (TP.sys.cfg('import.check_404')) {
-                    if (!TP.boot.$uriExists(TP.boot.$$loadPath)) {
-                        TP.boot.$stderr('404 (Not Found): ' +
-                            TP.boot.$$loadPath);
+                    if (!TP.boot.$uriExists(srcpath)) {
+                        TP.boot.$stderr('404 (Not Found): ' + srcpath);
                         return;
                     }
                 }
 
-                elem.setAttribute('src', TP.boot.$$loadPath);
+                elem.setAttribute('src', srcpath);
 
                 //  append it into the 'head' element so that it starts the
                 //  loading process. If there is an error, it will be
@@ -9813,7 +9812,7 @@ TP.boot.$importComponents = function(loadSync) {
                 return;
             }
 
-            source = TP.boot.$uriLoad(TP.boot.$$loadPath, TP.TEXT, 'source');
+            source = TP.boot.$uriLoad(srcpath, TP.TEXT, 'source');
         } else {
             source = '';
 
@@ -9833,7 +9832,7 @@ TP.boot.$importComponents = function(loadSync) {
 
         //  if we were handling inline code then we can import it directly now.
         try {
-            TP.boot.$sourceImport(source, null, TP.boot.$$loadPath);
+            TP.boot.$sourceImport(source, null, srcpath);
         } finally {
             TP.boot.$$loadNode = null;
         }
