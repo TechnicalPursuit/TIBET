@@ -144,21 +144,6 @@ Cmd.prototype.execute = function() {
                 throw new Error();
             }
 
-            //  We also link TIBET library code into the TIBET-INF location to
-            //  avoid pointing down into node_modules or having node_modules be
-            //  a location potentially pushed to a remote deployment target.
-            sh.ln('-s', path.join(
-                CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
-                path.join(
-                CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
-            lnerr = sh.error();
-            if (lnerr) {
-                cmd.error('Error linking library launch directory: ' +
-                    lnerr);
-            } else {
-                cmd.log('TIBET development dependency linked successfully.');
-            }
-
             // Ensure npm install is run once we're sure the things that
             // need to be 'npm link'd into place have been. If we don't
             // do this last it'll just fail.
@@ -168,6 +153,22 @@ Cmd.prototype.execute = function() {
                 if (err) {
                     cmd.error('Failed to initialize: ' + stderr);
                     throw new Error();
+                }
+
+                //  We also link TIBET library code into the TIBET-INF location
+                //  to avoid pointing down into node_modules or having
+                //  node_modules be a location potentially pushed to a remote
+                //  deployment target.
+                sh.ln('-s', path.join(
+                    CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
+                    path.join(
+                    CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
+                lnerr = sh.error();
+                if (lnerr) {
+                    cmd.error('Error linking library launch directory: ' +
+                        lnerr);
+                } else {
+                    cmd.log('TIBET development dependency linked.');
                 }
 
                 cmd.info('Project initialized successfully.');
