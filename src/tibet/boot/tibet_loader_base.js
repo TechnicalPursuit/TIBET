@@ -10811,7 +10811,7 @@ TP.boot.$refreshPackages = function() {
 
     //  Force refresh of the documents held in the package cache.
     keys.forEach(function(key) {
-        packages[key] = TP.boot.$uriLoad(key);
+        packages[key] = TP.boot.$uriLoad(key, TP.DOM, 'manifest');
     });
 
     //  Re-expand the resulting packages, but turn off any error reporting since
