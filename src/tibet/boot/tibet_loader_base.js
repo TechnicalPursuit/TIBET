@@ -9359,8 +9359,8 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     //  url reference
     TP.boot.$$onerrorURL = scriptUrl;
 
-    TP.boot.$$srcPath = scriptUrl;
-    TP.boot.$$loadPath = scriptUrl;
+    TP.boot.$$srcPath = TP.boot.$uriInTIBETFormat(scriptUrl);
+    TP.boot.$$loadPath = TP.boot.$uriInTIBETFormat(scriptUrl);
 
     try {
         //  first, check to see if we already have a 'script' node with a
