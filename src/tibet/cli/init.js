@@ -121,6 +121,18 @@ Cmd.prototype.execute = function() {
         }
     }
 
+    //  If the library is linked into its normal location in TIBET-INF and we're
+    //  reinitializing we need to clear that out so it will link properly.
+    if (this.options.force) {
+        if (sh.test('-e', 'TIBET-INF/tibet')) {
+            rmerr = sh.rm('-rf', 'TIBET-INF/tibet');
+            if (rmerr) {
+                this.error('Error removing node_modules directory: ' + rmerr);
+                return 1;
+            }
+        }
+    }
+
     dna = this.getcfg('tibet.dna');
     if (CLI.notEmpty(dna)) {
         dna = dna.slice(dna.lastIndexOf('/') + 1);
