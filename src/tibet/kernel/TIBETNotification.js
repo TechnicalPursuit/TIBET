@@ -5612,6 +5612,12 @@ function(target, signal) {
             if (TP.isType(responder)) {
                 last = responder;
                 responder = responder.construct();
+                if (TP.notValid(responder)) {
+                    return this.raise(
+                                'InvalidController',
+                                TP.sc('Unable to construct controller',
+                                        'instance of:', id));
+                }
             } else {
                 last = responder.getType();
             }
@@ -5620,9 +5626,10 @@ function(target, signal) {
                 signal.setOrigin(TP.gid(target));
                 responder.handle(signal);
             } else {
-                this.raise('InvalidController',
-                        TP.sc('Controller: ', id,
-                                ' cannot handle: ', signal.getSignalName()));
+                return this.raise('InvalidController',
+                                    TP.sc('Controller:', id,
+                                            'cannot invoke "handle" using:',
+                                            signal.getSignalName()));
             }
 
             //  Don't proceed to tibet:tag without checking for propagation.
