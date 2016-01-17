@@ -153,7 +153,7 @@ Cmd.prototype.execute = function() {
                 CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
             lnerr = sh.error();
             if (lnerr) {
-                this.error('Error linking library launch directory: ' +
+                cmd.error('Error linking library launch directory: ' +
                     lnerr);
             } else {
                 cmd.log('TIBET development dependency linked successfully.');
@@ -193,7 +193,7 @@ Cmd.prototype.execute = function() {
                 CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
             lnerr = sh.error();
             if (lnerr) {
-                this.error('Error linking library launch directory: ' +
+                cmd.error('Error linking library launch directory: ' +
                     lnerr);
             } else {
                 cmd.log('TIBET development dependency linked successfully.');
