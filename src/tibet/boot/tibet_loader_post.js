@@ -515,10 +515,10 @@ TP.boot.installPatches = function(aWindow) {
     //  CSS OM Patches
     //  --------------------------------------------------------------------
 
-    //  Mozilla has bugs around its Gecko rendering engine not properly
-    //  supplying the offset* properties for custom elements. We rectify
+    //  These browsers rendering engines have problems not properly supplying
+    //  the offset* properties for custom (i.e. non-XHTML) elements. We rectify
     //  that here.
-    if (TP.boot.$$isMoz()) {
+    if (TP.boot.$$isMoz() || TP.boot.$$isWebkit()) {
 
         aWindow.Element.prototype.__defineGetter__(
             'offsetParent',
