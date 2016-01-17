@@ -10661,6 +10661,8 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                                     TP.boot.$nodeAsString(child));
                             }
 
+                            //  Make sure to fully expand the path.
+                            src = TP.boot.$getFullPath(child, src);
                             TP.boot.$listPackageAssets(src, config, result);
                             break;
                         case 'property':
@@ -10682,6 +10684,9 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             src = child.getAttribute('src') ||
                                 child.getAttribute('href');
                             if (TP.boot.$notEmpty(src)) {
+                                //  Make sure to fully expand the path.
+                                src = TP.boot.$getFullPath(child, src);
+
                                 //  Unique the things we push by checking and
                                 //  caching entries as we go.
                                 if (TP.boot.$notValid(TP.boot.$$assets[src])) {
