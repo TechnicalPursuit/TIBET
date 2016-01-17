@@ -3872,6 +3872,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getAttrClosed',
+function() {
+
+    /**
+     * @method getAttrClosed
+     * @summary The getter for the receiver's closed state.
+     * @returns {Boolean} Whether the receiver's state is closed.
+     */
+
+    return this.$isInState('pclass:closed');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getAttrDisabled',
 function() {
 
@@ -3924,20 +3938,6 @@ function() {
      */
 
     return this.$isInState('pclass:invalid');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('getAttrOpen',
-function() {
-
-    /**
-     * @method getAttrOpen
-     * @summary The getter for the receiver's open state.
-     * @returns {Boolean} Whether the receiver's state is open.
-     */
-
-    return this.$isInState('pclass:open');
 });
 
 //  ------------------------------------------------------------------------
