@@ -5931,6 +5931,21 @@ function(aStateMachine) {
 });
 
 //  ========================================================================
+//  TP.core.UIController
+//  ========================================================================
+
+/**
+ * @type {TP.core.UIController}
+ * @summary This type is a common supertype for all UI controllers in the
+ *     system. It contains any default handlers for signals that should be
+ *     responded to by all UI controllers.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Controller.defineSubtype('UIController');
+
+//  ========================================================================
 //  TP.core.Application
 //  ========================================================================
 
