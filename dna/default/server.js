@@ -134,6 +134,8 @@
 
     require('./plugins/tds')(options);
 
+    require('./plugins/proxy')(options);
+
     require('./plugins/fallback')(options);
 
     require('./plugins/errors')(options);
