@@ -310,7 +310,7 @@ Cmd.prototype.getProfile = function() {
  * @returns {String} The profile config ID.
  */
 Cmd.prototype.getProfileConfig = function() {
-    return;
+    return 'reflection';
 };
 
 
