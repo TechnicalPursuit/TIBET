@@ -3187,7 +3187,9 @@ function(aRequest) {
         //  Second attempt :) We try to support shortened input with respect to
         //  method names in particular. If we find it via that name in the owner
         //  list we can use that list to filter back through the method keys.
-        if (TP.notValid(obj)) {
+        //  NOTE we don't go here for 'null' values since those actually DID
+        //  resolve, probably to an attribute slot or other defined slot value.
+        if (TP.notDefined(obj)) {
             meta = TP.sys.getMetadata('methods');
 
             // Query for owners, but just names. We don't want to ass_ume types.
@@ -3249,6 +3251,7 @@ function(aRequest) {
                     }
                 }
                 results.sort();
+                results.push(TP.objectGetSourcePath(obj) || '');
 
             } else if (TP.isType(obj)) {
 
@@ -3275,6 +3278,7 @@ function(aRequest) {
                     }
                 }
                 results.sort();
+                results.push(TP.objectGetSourcePath(obj) || '');
 
             } else if (TP.isFunction(obj)) {
 
@@ -3334,10 +3338,9 @@ function(aRequest) {
                 }
 
             } else if (!TP.isMutable(obj)) {
-
                 //  Simple values should just output as values.
                 results.push(TP.str(obj));
-
+                results.push(TP.objectGetSourcePath(obj) || '');
             } else {
                 if (TP.notEmpty(interface)) {
                     results.addAll(TP.interface(obj, interface));
@@ -3360,7 +3363,11 @@ function(aRequest) {
                 }
                 results.sort();
             }
-        } else if (TP.isEmpty(results)) {
+        } else if (TP.isDefined(obj)) {
+            results.push(arg0 + ' defined but has no default value.');
+        }
+
+        if (TP.isEmpty(results)) {
             results.push(arg0 + ' not found.');
         }
     }

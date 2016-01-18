@@ -77,8 +77,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {String}
  */
 Cmd.prototype.USAGE =
-    'tibet reflect [target] [--interface <interface>] ' +
-        '[--filter <filter>] [--types] [--methods] [--owners] [--slots]';
+    'tibet reflect [<target>] [--filter <filter>] ' +
+        '[--types] [--methods] [--owners] [--slots] [--interface <interface>]';
 
 //  ---
 //  Instance Methods
