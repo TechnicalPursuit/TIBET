@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet test [<target>]
+    tibet test [<target>] [--suite <filter>] [--cases <filter>] [--context <app|lib|all>]
 
 ## DESCRIPTION
 
