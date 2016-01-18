@@ -10221,32 +10221,39 @@ TP.boot.$expandConfig = function(anElement) {
                         if (typeof value === 'string') {
                             value = TP.boot.$quoted(value);
                         }
-                        try {
-                            str = '<script><![CDATA[' +
-                                'TP.sys.setcfg(' +
-                                '\'' + name + '\', ' + value +
-                                ');' +
-                                ']]></script>';
-                            doc = TP.boot.$documentFromString(str);
-                            elem = doc.childNodes[0];
 
-                            value = child.getAttribute('if');
-                            if (TP.boot.$notEmpty(value)) {
-                                elem.setAttribute('if', value);
+                        //  If the property is a boot property we need to set it
+                        //  right now or it won't take effect.
+                        if (name.indexOf('boot.') === 0) {
+                            TP.sys.setcfg(name, value);
+                        } else {
+                            try {
+                                str = '<script><![CDATA[' +
+                                    'TP.sys.setcfg(' +
+                                    '\'' + name + '\', ' + value +
+                                    ');' +
+                                    ']]></script>';
+                                doc = TP.boot.$documentFromString(str);
+                                elem = doc.childNodes[0];
+
+                                value = child.getAttribute('if');
+                                if (TP.boot.$notEmpty(value)) {
+                                    elem.setAttribute('if', value);
+                                }
+
+                                value = child.getAttribute('unless');
+                                if (TP.boot.$notEmpty(value)) {
+                                    elem.setAttribute('unless', value);
+                                }
+
+                                child.parentNode.replaceChild(elem, child);
+
+                            } catch (e) {
+                                msg = e.message;
+                                throw new Error('Error expanding: ' +
+                                    TP.boot.$nodeAsString(child) +
+                                    msg);
                             }
-
-                            value = child.getAttribute('unless');
-                            if (TP.boot.$notEmpty(value)) {
-                                elem.setAttribute('unless', value);
-                            }
-
-                            child.parentNode.replaceChild(elem, child);
-
-                        } catch (e) {
-                            msg = e.message;
-                            throw new Error('Error expanding: ' +
-                                TP.boot.$nodeAsString(child) +
-                                msg);
                         }
                     }
 
