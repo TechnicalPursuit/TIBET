@@ -1048,6 +1048,12 @@ TP.sys.getBrowserUI = function() {
 
 TP.sys.isMac = function() {
 
+    /**
+     * @method isMac
+     * @summary Returns whether or not we're running on a Mac.
+     * @returns {Boolean} Whether or not we're running on a Mac.
+     */
+
     return TP.$platform.indexOf('mac') === 0;
 };
 
@@ -1055,12 +1061,25 @@ TP.sys.isMac = function() {
 
 TP.sys.isNix = function() {
 
+    /**
+     * @method isNix
+     * @summary Returns whether or not we're running on some variant of *nix.
+     * @returns {Boolean} Whether or not we're running on some variant of *nix.
+     */
+
     return TP.$platform.indexOf('*nix') === 0;
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.sys.isWin = function() {
+
+    /**
+     * @method isWin
+     * @summary Returns whether or not we're running on some variant of Windows.
+     * @returns {Boolean} Whether or not we're running on some variant of
+     *     Windows.
+     */
 
     return TP.$platform.indexOf('win') === 0 ||
             TP.$platform.indexOf('vista') === 0;
@@ -1677,8 +1696,9 @@ TP.sys.getLaunchWindow = function() {
 
     /**
      * @method getLaunchWindow
-     * @summary Returns the actual launch window, the native window reference
-     *     containing the overall application.
+     * @summary Returns the actual launch window, that is the native window
+     *     reference containing the overall application.
+     * @returns {Window} The launch Window.
      */
 
     return window.$$TIBET;
@@ -1987,7 +2007,6 @@ TP.boot.$httpError = function(aString, errObj) {
      * @param {Object} errObj An optional Error object, as creatd by the
      *     TP.boot.$ec() call.
      * @exception Error Throws an Error containing aString.
-     * @returns {null}
      */
 
     //  since we're throwing an exception here we'll rely on debug mode to
@@ -2207,30 +2226,31 @@ TP.boot.$uriExpandPath = function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$uriFragmentParameters = function(url, textOnly) {
+TP.boot.$uriFragmentParameters = function(uri, textOnly) {
 
     /**
      * @method $uriFragmentParameters
-     * @summary Parses the given URL for any TIBET-specific argument block.
-     *     The URL hash is checked for any & segment and that segment is
+     * @summary Parses the given URI for any TIBET-specific argument block.
+     *     The URI hash is checked for any & segment and that segment is
      *     split just as if it were a set of server parameters. For example,
      *     http://localhost/index.html#foo&boot.debug=true results in the
      *     argument object containing {'boot.debug':true};
-     * @param {String} url The url to process.
+     * @param {String} uri The URI to process.
      * @param {Boolean} [textOnly=false] Return just the text parameter string
      *     if any.
-     * @returns {Object}
+     * @returns {Object} An object containing the parsed URI fragment
+     *     parameters.
      */
 
     var hash,
         params,
         args;
 
-    //  Process any hash portion of the URL string.
-    if (!/#/.test(url)) {
+    //  Process any hash portion of the URI string.
+    if (!/#/.test(uri)) {
         return {};
     }
-    hash = url.slice(url.indexOf('#') + 1);
+    hash = uri.slice(uri.indexOf('#') + 1);
     hash = decodeURIComponent(hash);
 
     args = {};
@@ -4566,15 +4586,13 @@ TP.boot.$documentFromStringCommon = function(aString) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$documentFromStringIE = function(aString, prohibitDTD) {
+TP.boot.$documentFromStringIE = function(aString) {
 
     /**
      * @method $documentFromStringIE
      * @summary Parses aString and returns the XML node representing the root
      *     element of the string's DOM representation.
      * @param {String} aString The source string to be parsed.
-     * @param {Boolean} prohibitDTD Turn off ability to parse in documents with
-     *     DTDs.
      * @returns {XMLDocument} The XML document created from the supplied String.
      */
 
@@ -4880,7 +4898,7 @@ TP.boot.$elementAddClass = function(anElement, aClassname) {
      * @param {Element} anElement The element to add the CSS class to.
      * @param {String} aClassname The CSS class name to add.
      * @exception InvalidElement,InvalidString
-     * @returns {Element} The element the supplied class was added to.
+     * @returns {HTMLElement} The element the supplied class was added to.
      */
 
     var cls;
@@ -4944,7 +4962,7 @@ TP.boot.$elementReplaceClass = function(anElement, aPattern, aClassname) {
      * @param {String} oldClassName The CSS class name to replace.
      * @param {String} newClassName The CSS class name to replace it with.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidString
-     * @returns {Element} The element.
+     * @returns {HTMLElement} The element.
      */
 
     var re,
@@ -4994,14 +5012,11 @@ TP.boot.$elementSetInnerContent = function(anElement, theContent) {
      * @param {HTMLElement} anElement The element to set the 'inner content' of.
      * @param {String} theContent The content to replace the 'inner content' of
      *     anElement with.
-     * @returns {null}
      */
 
     if (anElement && anElement.ownerDocument) {
         anElement.innerHTML = theContent;
     }
-
-    return;
 };
 
 //  ============================================================================
@@ -5017,8 +5032,12 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
      *     the keys we make it a little easier to find specific properties
      *     quickly.
      * @param {Object} anObject The object to dump.
-     * @param {String} aSeparator An optional separator string used to separate
-     *     entries. Default is '\n'.
+     * @param {String} [aSeparator] An optional separator string used to
+     *     separate entries. Default is '\n'.
+     * @param {Boolean} [shouldEscape=false] Whether or not to escape XML
+     *     constructs.
+     * @param {Number} [depth] The recursion 'depth' to dump an object to. If
+     *     this is not specified, this method may recurse indefinitely.
      * @returns {String} A formatted object string.
      */
 
@@ -5273,7 +5292,7 @@ TP.boot.$join = function(varargs) {
      * @summary Returns a string built from joining the various arguments to
      *     the function.
      * @param {Object} varargs The first of a set of variable arguments.
-     * @returns {String}
+     * @returns {String} A String built from the joined arguments.
      */
 
     //  NB: In modern browsers, going back to the old '+=' method of String
@@ -5307,7 +5326,7 @@ TP.boot.$lpad = function(obj, length, padChar) {
      *     representation with.
      * @param {String} padChar The pad character to use to pad the String
      *     representation.
-     * @returns {String}
+     * @returns {String} The 'left padded' String.
      */
 
     var str,
@@ -5353,7 +5372,7 @@ TP.boot.$rpad = function(obj, length, padChar) {
      *     representation with.
      * @param {String} padChar The pad character to use to pad the String
      *     representation.
-     * @returns {String}
+     * @returns {String} The 'right padded' String.
      */
 
     var str,
@@ -5414,7 +5433,7 @@ TP.boot.$trim = function(aString) {
      * @summary Returns a new String representing the parameter with any
      *     leading and trailing whitespace removed.
      * @param {String} aString The string to trim.
-     * @returns {String}
+     * @returns {String} The String with whitespace trimmed.
      */
 
     var str,
@@ -5444,6 +5463,14 @@ TP.boot.$trim = function(aString) {
 
 TP.boot.Annotation = function(anObject, aMessage) {
 
+    /**
+     * @method TP.boot.Annotation
+     * @summary Contructor for a log message annotations. This construct
+     *     is used by all TIBET logs although it is wrapped by higher-level
+     *     objects once the kernel has loaded.
+     * @returns {TP.boot.Annotation} A new instance.
+     */
+
     //  can't be null or undefined, or have empty annotation text.
     if (anObject == null || aMessage == null || aMessage === '') {
         throw new Error('InvalidParameter');
@@ -5459,8 +5486,11 @@ TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
 
     /**
      * @method as
-     * @summary
-     * @returns {String}
+     * @summary Returns the receiver formatted to the type or format provided.
+     * @param {Object} typeOrFormat The type, typename, or format to use.
+     * @param {TP.core.Hash} formatParams Option parameters for the formatting
+     *     process.
+     * @returns {String} The receiver formatted to the type or format provided.
      */
 
     var type,
@@ -5498,7 +5528,8 @@ TP.boot.Annotation.prototype.asDumpString = function() {
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
-     * @returns {String} A new String containing the dump string of the receiver.
+     * @returns {String} A new String containing the dump string of the
+     *     receiver.
      */
 
     return TP.boot.$join('TP.boot.Annotation :: ',
@@ -5633,8 +5664,8 @@ TP.boot.Annotation.prototype.getTypeName = function() {
 
     /**
      * @method getTypeName
-     * @summary
-     * @returns {String}
+     * @summary Returns the receiver's type name.
+     * @returns {String} The receiver's type name.
      */
 
     return 'TP.boot.Annotation';
@@ -5646,8 +5677,8 @@ TP.boot.Annotation.prototype.getSupertypes = function() {
 
     /**
      * @method getSupertypes
-     * @summary
-     * @returns {String}
+     * @summary Returns an Array of the receiver's supertypes.
+     * @returns {Array} The Array of the receiver's supertypes.
      */
 
     return [Object];
@@ -5659,8 +5690,8 @@ TP.boot.Annotation.prototype.toString = function() {
 
     /**
      * @method toString
-     * @summary Returns a string representation of the receiver.
-     * @returns {String}
+     * @summary Returns a String representation of the receiver.
+     * @returns {String} The String representation of the receiver.
      */
 
     return TP.boot.$join(TP.boot.$str(this.message),
@@ -5715,22 +5746,28 @@ TP.boot.$ec = function(anError, aMessage) {
 };
 
 //  ============================================================================
-//  Boot Reporters
+//  Boot Log
 //  ============================================================================
 
 /*
- * Simple reporter functions which handle the details of output to different
- * targets. The two we need for certain are one for the console object found in
- * both browsers and Node.js and one for the TIBET boot UI if present.
+ * Methods to manage the boot log.
  */
 
-//  ----------------------------------------------------------------------------
+TP.boot.$flushLog = function(forceUIUpdate) {
 
-TP.boot.$flushLog = function(force) {
+    /**
+     * @method $flushLog
+     * @summary Flushes the current log entries into the GUI element
+     *     representing the log and scrolls that element.
+     * @param {Boolean} [forceUIUpdate=false] Whether or not to force a UI
+     *     update whether the GUI buffer size has been reached or not.
+     */
 
-    TP.boot.$flushUIBuffer(force);
+    //  NB: This only really flushes the UI buffer if the buffer size has been
+    //  reached or forceUIUpdate is true.
+    TP.boot.$flushUIBuffer(forceUIUpdate);
 
-    if (force === true) {
+    if (forceUIUpdate) {
         TP.boot.$scrollUIBuffer();
     }
 };
@@ -5739,6 +5776,11 @@ TP.boot.$flushLog = function(force) {
 
 TP.boot.$scrollLog = function() {
 
+    /**
+     * @method $scrollLog
+     * @summary Scrolls the boot log to the end of its content.
+     */
+
     TP.boot.$scrollUIBuffer();
 };
 
@@ -5746,12 +5788,42 @@ TP.boot.$scrollLog = function() {
 
 TP.boot.$clearLog = function() {
 
+    /**
+     * @method $clearLog
+     * @summary Clears the boot log of its current content.
+     */
+
     TP.boot.$clearUIBuffer();
 };
 
+//  ============================================================================
+//  Boot Reporting helpers
+//  ============================================================================
+
+/*
+ * Reporter helper functions which format and style boot log entries.
+ */
+
 //  ----------------------------------------------------------------------------
 
-TP.boot.$$logReporter = function(entry, options) {
+TP.boot.$$formatLogEntry = function(entry, options) {
+
+    /**
+     * @method $$formatLogEntry
+     * @summary A method that generates a String representation of the
+     *     supplied entry in 'TIBET standard' format.
+     * @param {Array} entry A log entry with information at indexes that match
+     *     TP.boot.LOG_ENTRY_* constants.
+     * @param {Object} options A hash of formatting options:
+     *     [options.separator] {String} A String used to separate entries. The
+     *         default is '\n'.
+     *     [options.escape=false] {Boolean} Whether or not to escape XML
+     *         constructs.
+     *     [options.console=false] {Boolean} Whether or not this content is
+     *         destined for a plain JS console and should therefore not be
+     *         colorized, etc.
+     * @returns {String} The formatted log entry.
+     */
 
     var opts,
 
@@ -5788,8 +5860,9 @@ TP.boot.$$logReporter = function(entry, options) {
     time = entry[TP.boot.LOG_ENTRY_DATE];
     obj = entry[TP.boot.LOG_ENTRY_PAYLOAD];
 
-    esc = TP.boot.$isValid(opts.escape) ? opts.escape : true;
     sep = TP.boot.$isValid(opts.separator) ? opts.separator : '\n';
+    esc = TP.boot.$isValid(opts.escape) ? opts.escape : true;
+
     console = TP.boot.$isValid(opts.console) ? opts.console : false;
 
     //  If the object is an annotation we've got to process it. Note that we
@@ -5852,13 +5925,102 @@ TP.boot.$$logReporter = function(entry, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$consoleReporter = function(entry, options) {
+TP.boot.$style = function(aString, aTheme) {
+
+    /**
+     * @method $style
+     * @summary A method that styles the supplied String according to the
+     *     setting of the current color mode and the supplied theme name.
+     * @param {String} aString The String to style.
+     * @param {String} aTheme The name of the theme to use to style the supplied
+     *     String. This will normally come from one of the definitions in
+     *     TP.boot.$$theme but can also be a dot ('.') separated list of those
+     *     names for styling with multiple themes (i.e. 'trace.time').
+     * @returns {String} The stylized String.
+     */
+
+    var mode,
+        styles,
+        parts,
+        color,
+        codes,
+        result;
+
+    mode = TP.sys.cfg('log.color.mode');
+    styles = TP.boot.$$styles[mode];
+
+    try {
+        if (TP.boot.$$PROP_KEY_REGEX.test(aTheme)) {
+            result = '';
+
+            parts = aTheme.split('.');
+            parts.forEach(
+                    function(style) {
+                        color = TP.boot.$$theme[style];
+
+                        //  Do we have a mapping for this color in our theme?
+                        if (TP.boot.$notValid(color)) {
+                            return;
+                        }
+
+                        //  If we had a color mapping in the theme, find the
+                        //  codes.
+                        codes = styles[color];
+                        if (TP.boot.$notValid(codes)) {
+                            return;
+                        }
+
+                        result = codes[0] + (result || aString) + codes[1];
+                    });
+        } else {
+
+            //  Do we have a mapping for this color in our theme?
+            color = TP.boot.$$theme[aTheme];
+            if (TP.boot.$notValid(color)) {
+                return aString;
+            }
+
+            //  If we had a color mapping in the theme, find the codes.
+            codes = styles[color];
+            if (TP.boot.$notValid(codes)) {
+                return aString;
+            }
+
+            result = codes[0] + aString + codes[1];
+        }
+    } catch (e) {
+        return aString;
+    }
+
+    return result;
+};
+
+//  ============================================================================
+//  Boot Reporters
+//  ============================================================================
+
+/*
+ * Simple reporter functions which handle the details of output to different
+ * targets. The two we need for certain are one for the console object found in
+ * both browsers and Node.js and one for the TIBET boot UI if present.
+ */
+
+TP.boot.$consoleReporter = function(entry) {
+
+    /**
+     * @method $$consoleReporter
+     * @summary A reporter method that generates a String representation of the
+     *     supplied entry in 'JavaScript console.*() functions standard' format
+     *     and outputs that via the appropriate console.*() function.
+     * @param {Array} A log entry with information at indexes that match
+     *     TP.boot.LOG_ENTRY_* constants.
+     */
 
     var msg,
         level;
 
     TP.sys.setcfg('log.color.mode', 'console');
-    msg = TP.boot.$$logReporter(entry,
+    msg = TP.boot.$$formatLogEntry(entry,
         {separator: '\n', escape: false, console: true});
     if (TP.boot.$notValid(msg)) {
         return;
@@ -5899,7 +6061,16 @@ TP.boot.$consoleReporter = function(entry, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$bootuiReporter = function(entry, options) {
+TP.boot.$bootuiReporter = function(entry) {
+
+    /**
+     * @method $$bootuiReporter
+     * @summary A reporter method that generates a String representation of the
+     *     supplied entry in 'TIBET boot log standard' format and outputs that
+     *     to wherever the TIBET boot log is being displayed.
+     * @param {Array} A log entry with information at indexes that match
+     *     TP.boot.LOG_ENTRY_* constants.
+     */
 
     var elem,
         msg,
@@ -5921,7 +6092,7 @@ TP.boot.$bootuiReporter = function(entry, options) {
     }
 
     TP.sys.setcfg('log.color.mode', 'browser');
-    msg = TP.boot.$$logReporter(entry,
+    msg = TP.boot.$$formatLogEntry(entry,
         {separator: '<br/>', escape: true, console: false});
     if (TP.boot.$notValid(msg)) {
         return;
@@ -5985,7 +6156,17 @@ TP.boot.$bootuiReporter = function(entry, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$phantomReporter = function(entry, options) {
+TP.boot.$phantomReporter = function(entry) {
+
+    /**
+     * @method $$phantomReporter
+     * @summary A reporter method that generates a String representation of the
+     *     supplied entry in 'JavaScript console.*() functions standard' format
+     *     and outputs that to PhantomJS via the appropriate console.*()
+     *     function.
+     * @param {Array} A log entry with information at indexes that match
+     *     TP.boot.LOG_ENTRY_* constants.
+     */
 
     var msg,
         level;
@@ -6003,7 +6184,7 @@ TP.boot.$phantomReporter = function(entry, options) {
     }
 
     TP.sys.setcfg('log.color.mode', 'terminal');
-    msg = TP.boot.$$logReporter(entry,
+    msg = TP.boot.$$formatLogEntry(entry,
         {separator: '\n', escape: false, console: true});
     if (TP.boot.$notValid(msg)) {
         return;
@@ -6046,67 +6227,16 @@ TP.boot.$phantomReporter = function(entry, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$silentReporter = function() {
+TP.boot.$silentReporter = function(entry) {
+
+    /**
+     * @method $$phantomReporter
+     * @summary A reporter method that reports nothing.
+     * @param {Array} A log entry with information at indexes that match
+     *     TP.boot.LOG_ENTRY_* constants.
+     */
 
     return;
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$style = function(aString, aStyle) {
-
-    var mode,
-        styles,
-        parts,
-        color,
-        codes,
-        result;
-
-    mode = TP.sys.cfg('log.color.mode');
-    styles = TP.boot.$$styles[mode];
-
-    try {
-        if (TP.boot.$$PROP_KEY_REGEX.test(aStyle)) {
-            result = '';
-
-            parts = aStyle.split('.');
-            parts.forEach(function(style) {
-                color = TP.boot.$$theme[style];
-
-                //  Do we have a mapping for this color in our theme?
-                if (TP.boot.$notValid(color)) {
-                    return;
-                }
-
-                //  If we had a color mapping in the theme, find the codes.
-                codes = styles[color];
-                if (TP.boot.$notValid(codes)) {
-                    return;
-                }
-
-                result = codes[0] + (result || aString) + codes[1];
-            });
-        } else {
-
-            //  Do we have a mapping for this color in our theme?
-            color = TP.boot.$$theme[aStyle];
-            if (TP.boot.$notValid(color)) {
-                return aString;
-            }
-
-            //  If we had a color mapping in the theme, find the codes.
-            codes = styles[color];
-            if (TP.boot.$notValid(codes)) {
-                return aString;
-            }
-
-            result = codes[0] + aString + codes[1];
-        }
-    } catch (e) {
-        return aString;
-    }
-
-    return result;
 };
 
 //  ============================================================================
@@ -6130,7 +6260,7 @@ TP.boot.Log = function() {
      * @summary Contructor for a primitive log data structure. This construct
      *     is used by all TIBET logs although it is wrapped by higher-level
      *     objects once the kernel has loaded.
-     * @returns {Log} A new instance.
+     * @returns {TP.boot.Log} A new instance.
      */
 
     //  the array of all messages sent to the log
@@ -6389,7 +6519,7 @@ TP.boot.Log.prototype.getEntries = function() {
      * @method getEntries
      * @summary Returns an array containing individual log entries. The array
      *     should be considered read-only.
-     * @returns {Array}
+     * @returns {Array} The Array containing individual log entries.
      */
 
     return this.messages;
@@ -6414,8 +6544,8 @@ TP.boot.Log.prototype.getTypeName = function() {
 
     /**
      * @method getTypeName
-     * @summary
-     * @returns {String}
+     * @summary Returns the receiver's type name.
+     * @returns {String} The receiver's type name.
      */
 
     return 'TP.boot.Log';
@@ -6427,8 +6557,8 @@ TP.boot.Log.prototype.getSupertypes = function() {
 
     /**
      * @method getSupertypes
-     * @summary
-     * @returns {String}
+     * @summary Returns an Array of the receiver's supertypes.
+     * @returns {Array} The Array of the receiver's supertypes.
      */
 
     return [Object];
@@ -6552,7 +6682,8 @@ TP.boot.Log.prototype.report = function(entry) {
     /**
      * @method report
      * @summary Writes a log entry using the currently configured reporter.
-     * @param {Object} entry A boot log entry object.
+     * @param {Array} entry A log entry with information at indexes that match
+     *     TP.boot.LOG_ENTRY_* constants.
      */
 
     var limit,
@@ -6678,7 +6809,6 @@ TP.boot.log = function(anObject, aLogLevel) {
      *     the particular log viewing logic used to display the log.
      * @param {Object} anObject The object to log.
      * @param {Number} aLogLevel The logging level to use.
-     * @returns {null}
      */
 
     var level;
@@ -6688,7 +6818,6 @@ TP.boot.log = function(anObject, aLogLevel) {
     TP.sys.$bootlog.log(anObject,
                             TP.BOOT_LOG,
                             level);
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -6703,7 +6832,7 @@ TP.boot.$byId = function(anID) {
      *     document.getElementById.
      * @param {String|Element} anID The string ID to locate, or an element
      *     (which will be returned).
-     * @returns {Element}
+     * @returns {HTMLElement}
      */
 
     if (typeof anID === 'string') {
@@ -6747,6 +6876,7 @@ TP.boot.$getBootElement = function(id, name) {
     }
 
     TP.boot[name] = elem;
+
     return TP.boot[name];
 };
 
@@ -6836,9 +6966,12 @@ TP.boot.$getUIElement = function(varargs) {
 
     /**
      * @method $getUIElement
-     * @summary Locates and returns an element based on the ID or IDs provided
-     *     as arguments.
+     * @summary Locates and returns an element based on the ID provided
+     *     as arguments. If multiple arguments are provided, they are used to
+     *     traverse downward through a chain of iframe documents, with each ID,
+     *     except for the final one, matching the IDs of embedded iframes.
      * @param {String} varargs One or more arguments containing string IDs.
+     * @returns {HTMLElement} The HTML element matching the ID or IDs provided.
      */
 
     //  TODO: work with access paths as well.
@@ -6863,6 +6996,7 @@ TP.boot.$getUIElement = function(varargs) {
     len = ids.length;
     for (i = 0; i < len; i++) {
         id = ids[i];
+
         elem = doc.getElementById(id);
         if (!elem) {
             return;
@@ -6889,6 +7023,13 @@ TP.boot.$getUIElement = function(varargs) {
 
 TP.boot.getUIBoot = function() {
 
+    /**
+     * @method getUIBoot
+     * @summary Returns the iframe element holding TIBET's boot infrastructure.
+     * @returns {HTMLIFrameElement} The HTML iframe element holding TIBET's boot
+     *     infrastructure.
+     */
+
     var id;
 
     id = TP.sys.cfg('boot.uiboot');
@@ -6899,6 +7040,13 @@ TP.boot.getUIBoot = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.getUIRoot = function() {
+
+    /**
+     * @method getUIRoot
+     * @summary Returns the iframe element holding TIBET's root GUI.
+     * @returns {HTMLIFrameElement} The HTML iframe element holding TIBET's root
+     *     GUI.
+     */
 
     var id;
 
@@ -6914,7 +7062,6 @@ TP.boot.$releaseUIElements = function() {
     /**
      * @method $releaseUIElements
      * @summary Releases any cached UI references created during startup.
-     * @returns {null}
      */
 
     TP.boot.$$uiHead = null;
@@ -6924,61 +7071,81 @@ TP.boot.$releaseUIElements = function() {
     TP.boot.$$uiPath = null;
     TP.boot.$$uiProgress = null;
     TP.boot.$$uiSubhead = null;
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
 //  BOOT UI DISPLAY
 //  ----------------------------------------------------------------------------
 
-TP.boot.$computeLogBufferSize = function(force) {
+TP.boot.$computeLogBufferSize = function(forceUIUpdate) {
+
+    /**
+     * @method $computeLogBufferSize
+     * @summary Computes the size of the log buffer. This is used by other
+     *     logging machinery to determine log flushing intervals.
+     * @param {Boolean} [forceUIUpdate=false] Whether or not to force a UI
+     *     update whether the GUI buffer size has been reached or not.
+     * @returns {Number} The current size that the log buffer should be.
+     */
 
     var level,
         size;
 
-        size = TP.boot.$$logbufsize;
-        if (force !== true && TP.boot.$isValid(size)) {
-            return size;
-        }
-
-        size = parseInt(TP.sys.cfg('log.buffer_size'), 10);
-        size = isNaN(size) ? 1 : size;
-
-        level = TP.boot.$$loglevel;
-
-        switch (level) {
-            case 0:         //  trace
-                size = size * 2;
-                break;
-            case 1:         //  info
-            case 2:         //  warn
-            case 3:         //  error
-            case 4:         //  severe
-                size = Math.max(Math.floor(size / 2), size);
-                break;
-            case 5:         //  fatal
-            case 6:         //  system
-                size = 1;
-                break;
-            default:
-                size = 1;
-                break;
-        }
-
-        TP.boot.$$logbufsize = size;
-
+    size = TP.boot.$$logbufsize;
+    if (forceUIUpdate !== true && TP.boot.$isValid(size)) {
         return size;
+    }
+
+    size = parseInt(TP.sys.cfg('log.buffer_size'), 10);
+    size = isNaN(size) ? 1 : size;
+
+    level = TP.boot.$$loglevel;
+
+    switch (level) {
+        case 0:         //  trace
+            size = size * 2;
+            break;
+        case 1:         //  info
+        case 2:         //  warn
+        case 3:         //  error
+        case 4:         //  severe
+            size = Math.max(Math.floor(size / 2), size);
+            break;
+        case 5:         //  fatal
+        case 6:         //  system
+            size = 1;
+            break;
+        default:
+            size = 1;
+            break;
+    }
+
+    TP.boot.$$logbufsize = size;
+
+    return size;
 };
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$flushUIBuffer = function(force) {
+TP.boot.$flushUIBuffer = function(forceUIUpdate) {
+
+    /**
+     * @method $flushUIBuffer
+     * @summary Flushes the current log entries into the GUI element
+     *     representing the log, but only if the GUI buffer size has been
+     *     reached or forceUIUpdate is true.
+     * @param {Boolean} [forceUIUpdate=false] Whether or not to force a UI
+     *     update whether the GUI buffer size has been reached or not.
+     * @returns {HTMLElement} The element representing boot system's message
+     *     buffer.
+     */
 
     var elem,
         buffer,
         bufSize;
 
+    //  Grab the element displaying the boot log. If it's not visible, there's
+    //  nothing to do here so just return.
     elem = TP.boot.$getBootLogElement();
     if (!TP.boot.$isVisible(elem)) {
         return;
@@ -6992,9 +7159,16 @@ TP.boot.$flushUIBuffer = function(force) {
 
     bufSize = TP.boot.$$logbufsize || TP.boot.$computeLogBufferSize();
 
+    //  If there are child nodes in the buffer and the forceUIUpdate flag is
+    //  true or we've reached the buffer size under which we're supposed to
+    //  flush, then go ahead and update the GUI.
     if (buffer.childNodes.length > 0 &&
-        (force === true || buffer.childNodes.length === bufSize)) {
+        (forceUIUpdate === true || buffer.childNodes.length === bufSize)) {
+
         TP.boot.$nodeAppendChild(elem, buffer);
+
+        //  Reset by allocating a new DocumentFragment to hold future log
+        //  entries.
         TP.boot.$$msgBuffer = buffer =
             elem.ownerDocument.createDocumentFragment();
     }
@@ -7005,6 +7179,11 @@ TP.boot.$flushUIBuffer = function(force) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$clearUIBuffer = function() {
+
+    /**
+     * @method $clearUIBuffer
+     * @summary Clears the GUI responsible for displaying the log buffer.
+     */
 
     var elem;
 
@@ -7022,6 +7201,12 @@ TP.boot.$clearUIBuffer = function() {
 
 TP.boot.$scrollUIBuffer = function() {
 
+    /**
+     * @method $scrollUIBuffer
+     * @summary Scrolls the GUI responsible for displaying the log buffer to the
+     *     end of its content.
+     */
+
     var elem;
 
     elem = TP.boot.$getBootLogElement();
@@ -7037,6 +7222,13 @@ TP.boot.$scrollUIBuffer = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$displayImage = function(aUrl) {
+
+    /**
+     * @method $displayImage
+     * @summary Displays the image referenced by the supplied URL on the 'boot
+     *     image' part of the boot page.
+     * @param {String} aUrl The URL to the image to display.
+     */
 
     var elem;
 
@@ -7153,6 +7345,12 @@ TP.boot.$displayMessage = function(aString, flush) {
 
 TP.boot.$displayProgress = function() {
 
+    /**
+     * @method $displayProgress
+     * @summary Updates the 'progress bar' version of the boot system to show
+     *     the system booting.
+     */
+
     var elem,
         workload,
         percent,
@@ -7199,6 +7397,12 @@ TP.boot.$displayProgress = function() {
 
 TP.boot.$displayStage = function(aString) {
 
+    /**
+     * @method $displayStage
+     * @summary Updates the 'stage text' version of the boot system to show
+     *     the system booting.
+     */
+
     var elem;
 
     elem = TP.boot.$getBootHeadElement();
@@ -7212,6 +7416,12 @@ TP.boot.$displayStage = function(aString) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$displayStatus = function(aString) {
+
+    /**
+     * @method $displayStatus
+     * @summary Updates the 'status text' version of the boot system to show
+     *     the system booting.
+     */
 
     var elem;
 
@@ -7235,7 +7445,6 @@ TP.boot.hideContent = function(anID) {
      *     element if no element is specified.
      * @param {String|Element} anID The element whose content should be
      *     hidden.
-     * @returns {null}
      */
 
     var elem;
@@ -7252,6 +7461,12 @@ TP.boot.hideContent = function(anID) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.hideUIBoot = function() {
+
+    /**
+     * @method hideUIBoot
+     * @summary Hides the iframe element holding TIBET's boot infrastructure and
+     *     focuses TIBET's root GUI iframe.
+     */
 
     var elem,
         id;
@@ -7282,6 +7497,11 @@ TP.boot.hideUIBoot = function() {
 
 TP.boot.hideUIRoot = function() {
 
+    /**
+     * @method hideUIRoot
+     * @summary Hides the iframe element holding TIBET's root GUI.
+     */
+
     var elem,
         id;
 
@@ -7298,55 +7518,12 @@ TP.boot.hideUIRoot = function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.writeBootLog = function(level, reporter) {
-
-    /**
-     * @method writeBootLog
-     * @summary Dump the bootlog to the current target location. By default this
-     *     is directed to the consoleReporter.
-     * @returns {null}
-     */
-
-    var lvl,
-        rep,
-        name,
-        entries;
-
-    name = '$' + (reporter || 'console') + 'Reporter';
-    rep = TP.boot[name];
-
-    if (TP.boot.$notValid(rep)) {
-        TP.boot.$consoleReporter(
-            [new Date(), TP.BOOT_LOG, TP.boot.WARN,
-                'Boot reporter \'' + reporter + '\' not found.']);
-        return;
-    }
-
-    //  By default dump the entire log.
-    lvl = TP.boot.$isValid(level) ? level : TP.DEBUG;
-    lvl = typeof lvl === 'string' ? TP.boot[lvl] : lvl;
-
-    entries = TP.sys.getBootLog().getEntries();
-    entries.forEach(function(entry) {
-
-        if (entry[TP.boot.LOG_ENTRY_LEVEL] < lvl) {
-            return;
-        }
-
-        TP.boot[name](entry);
-    });
-
-    return;
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.showUIBoot = function() {
 
     /**
      * @method showUIBoot
-     * @summary Displays the current tibet.uiboot element in the
-     *     application's main window.
+     * @summary Displays the current tibet.uiboot element in the application's
+     *     main window.
      */
 
     var elem,
@@ -7382,7 +7559,6 @@ TP.boot.showUICanvas = function(aURI) {
      *     that URI is placed in the canvas.
      * @param {String} aURI The URI whose content should be loaded and
      *     displayed.
-     * @returns {null}
      */
 
     var win,
@@ -7404,8 +7580,6 @@ TP.boot.showUICanvas = function(aURI) {
     }
 
     TP.boot.hideUIBoot();
-
-    return;
 };
 
 //  ------------------------------------------------------------------------
@@ -7434,8 +7608,6 @@ TP.boot.showUIRoot = function() {
     TP.boot.hideUIBoot();
 
     elem.focus();
-
-    return;
 };
 
 //  ------------------------------------------------------------------------
@@ -7466,8 +7638,46 @@ TP.boot.toggleUI = function() {
             TP.boot.hideUIBoot();
         }
     }
+};
 
-    return;
+//  ----------------------------------------------------------------------------
+
+TP.sys.writeBootLog = function(level, reporter) {
+
+    /**
+     * @method writeBootLog
+     * @summary Dump the bootlog to the current target location. By default this
+     *     is directed to the consoleReporter.
+     */
+
+    var lvl,
+        rep,
+        name,
+        entries;
+
+    name = '$' + (reporter || 'console') + 'Reporter';
+    rep = TP.boot[name];
+
+    if (TP.boot.$notValid(rep)) {
+        TP.boot.$consoleReporter(
+            [new Date(), TP.BOOT_LOG, TP.boot.WARN,
+                'Boot reporter \'' + reporter + '\' not found.']);
+        return;
+    }
+
+    //  By default dump the entire log.
+    lvl = TP.boot.$isValid(level) ? level : TP.DEBUG;
+    lvl = typeof lvl === 'string' ? TP.boot[lvl] : lvl;
+
+    entries = TP.sys.getBootLog().getEntries();
+    entries.forEach(function(entry) {
+
+        if (entry[TP.boot.LOG_ENTRY_LEVEL] < lvl) {
+            return;
+        }
+
+        TP.boot[name](entry);
+    });
 };
 
 //  ============================================================================
@@ -7799,12 +8009,28 @@ TP.boot.$getBootStats = function() {
 
 TP.boot.$getStage = function() {
 
+    /**
+     * @method $getStage
+     * @summary Returns the current boot stage.
+     * @returns {String} The current boot stage.
+     */
+
     return TP.boot.$$stage;
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.$getStageInfo = function(aStage) {
+
+    /**
+     * @method $getStageInfo
+     * @summary Returns information about the supplied boot stage.
+     * @param {String} aStage A valid boot stage. This list is somewhat flexible
+     *     but common stages include: config, config_*, phase_one, phase_two,
+     *     phase_*_complete, activation, starting, and running :).
+     * @returns {Object} Information about the supplied stage. Keys include:
+     *     'log', 'entered', 'head', 'sub', 'image', 'hook'.
+     */
 
     var stage;
 
@@ -7816,6 +8042,17 @@ TP.boot.$getStageInfo = function(aStage) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$hasReachedStage = function(aStage) {
+
+    /**
+     * @method $hasReachedStage
+     * @summary Returns whether or not the system has reached the supplied stage
+     *     in the booting process.
+     * @param {String} aStage A valid boot stage. This list is somewhat flexible
+     *     but common stages include: config, config_*, phase_one, phase_two,
+     *     phase_*_complete, activation, starting, and running :).
+     * @returns {Boolean} Whether or not the system has reached the supplied
+     *     stage.
+     */
 
     var target,
         current;
@@ -7957,6 +8194,17 @@ TP.boot.$setStage = function(aStage, aReason) {
 
 TP.boot.$getNextStage = function(aStage) {
 
+    /**
+     * @method $getNextStage
+     * @summary Returns the stage that follows the supplied stage in the boot
+     *     process.
+     * @param {String} aStage A valid boot stage. This list is somewhat flexible
+     *     but common stages include: config, config_*, phase_one, phase_two,
+     *     phase_*_complete, activation, starting, and running :).
+     * @returns {String} The stage that follows the supplied stage in the
+     *     boot process.
+     */
+
     var stage,
         index;
 
@@ -7973,6 +8221,17 @@ TP.boot.$getNextStage = function(aStage) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$getPriorStage = function(aStage) {
+
+    /**
+     * @method $getPriorStage
+     * @summary Returns the stage that precedes the supplied stage in the boot
+     *     process.
+     * @param {String} aStage A valid boot stage. This list is somewhat flexible
+     *     but common stages include: config, config_*, phase_one, phase_two,
+     *     phase_*_complete, activation, starting, and running :).
+     * @returns {String} The stage that precedes the supplied stage in the
+     *     boot process.
+     */
 
     var stage,
         index;
@@ -8051,6 +8310,15 @@ TP.boot.$getStageTime = function(aStage, startStage) {
 //  ============================================================================
 
 TP.boot.$getArgumentPrimitive = function(value) {
+
+    /**
+     * @method $getArgumentPrimitive
+     * @summary Returns the primitive value for the supplied value. This is
+     *     useful for converting Strings representing Numbers, Booleans, RegExps
+     *     and JSON values to their native JS values.
+     * @param {String} value The String value to convert.
+     * @returns {Number|Boolean|RegExp|Object} The converted value.
+     */
 
     if (TP.boot.$notValid(value)) {
         return value;
@@ -8312,7 +8580,7 @@ TP.boot.$getLibRoot = function() {
     /**
      * @method $getLibRoot
      * @summary Returns the root path for the TIBET codebase.
-     * @summary When the value for path.lib_root is not specified this
+     * @description When the value for path.lib_root is not specified this
      *     method will try to compute one. The computation can be altered via
      *     the boot.libcomp setting.
      * @returns {String} The root path for the TIBET codebase.
@@ -8447,7 +8715,7 @@ TP.boot.$getRootPath = function() {
     /**
      * @method $getRootPath
      * @summary Returns the currently active root path for the codebase.
-     * @returns {String}
+     * @returns {String} The currently active root path.
      */
 
     var path,
@@ -8548,6 +8816,7 @@ TP.boot.$configurePackage = function() {
      *     barename. The profile 'development#team-tibet' for example will load
      *     the development profile file and use the team-tibet config. The value
      *     for boot.package on the other hand is a pure URL to the package file.
+     * @returns {Document} The document containing the package XML.
      */
 
     var profile,
@@ -8696,8 +8965,6 @@ TP.boot.$configureBootstrap = function() {
     //  Process the values in the tibet_file to push them into the system
     //  configuration.
     TP.boot.$configureOptions(obj);
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -8710,7 +8977,6 @@ TP.boot.$configureEnvironment = function() {
      *     conditional processing of tasks/targets. These variables are set
      *     based browser and feature-detection techniques as needed to try to
      *     describe the environment accurately.
-     * @returns {null}
      */
 
     //  start with platform
@@ -8758,13 +9024,21 @@ TP.boot.$configureEnvironment = function() {
                         TP.$language.toLowerCase());
 
     TP.sys.setcfg('tibet.offline', !TP.sys.isHTTPBased());
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.$configureOptions = function(anObject, aPrefix) {
+
+    /**
+     * @method $configureOptions
+     * @summary Sets configuration options (i.e. 'cfg' variables') based on the
+     *     supplied object. Note that this method can handle nested structures
+     *     by recursing on the structure.
+     * @param {Object} anObject An object containing key/value pairs that are
+     *     used for 'cfg' variable names and values.
+     * @param {String} [aPrefix=''] The key prefix to use to look up the value.
+     */
 
     var prefix;
 
@@ -8828,11 +9102,12 @@ TP.boot.$$configureOverrides = function(options, activate) {
      * @summary Processes any arg values that the user may have set,
      *     allowing them to override certain boot properties. Common overrides
      *     include debug, verbose, and display. The args for environment
-     *     setting are processed individually by the $configureBootstrap
-     *     function prior to loading the environment-specific configuration.
+     *     setting are processed individually by the
+     *     TP.boot.$configureBootstrap() function prior to loading the
+     *     environment-specific configuration.
      * @param {Object} options An object containing option values.
-     *
-     * @returns {null}
+     * @param {Boolean} [activate=false] Whether or not to activate override
+     *     checking.
      */
 
     var keys,
@@ -8909,13 +9184,17 @@ TP.boot.$$configureOverrides = function(options, activate) {
             });
 
     TP.boot.$$argsDone = activate;
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.$configureProject = function() {
+
+    /**
+     * @method $$configureProject
+     * @summary Sets the various project.* properties for the project, such as
+     *     name, version and controller.
+     */
 
     var doc,
         package;
@@ -8946,8 +9225,6 @@ TP.boot.$configureProject = function() {
     if (TP.boot.$notValid(TP.sys.cfg('project.home_page'))) {
         TP.sys.setcfg('project.home_page', '~boot_xhtml/home.xhtml');
     }
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -8956,6 +9233,7 @@ TP.boot.$configureTarget = function() {
 
     /**
      * @method $configureTarget
+     * @summary Sets the boot system's package config target.
      */
 
     var doc,
@@ -8971,8 +9249,6 @@ TP.boot.$configureTarget = function() {
     }
 
     TP.boot.$$bootconfig = config;
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -8981,6 +9257,9 @@ TP.boot.$configureUI = function() {
 
     /**
      * @method $configureUI
+     * @summary Sets up the boot system's boot GUI. This uses the value of the
+     *     cfg() variable 'boot.show_log' to determine whether the boot log
+     *     should be visible or not.
      */
 
     var show,
@@ -9002,6 +9281,13 @@ TP.boot.$configureUI = function() {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$updateDependentVars = function() {
+
+    /**
+     * @method $updateDependentVars
+     * @summary Updates any variable dependencies that might have changed
+     *     because of changes that might have been made to those variables when
+     *     reading in new config data.
+     */
 
     var level;
 
@@ -9083,8 +9369,8 @@ TP.boot.$ifUnlessPassed = function(aNode) {
      *     the node passes and should be retained based on those conditions.
      *     This test is typically used to filter for the current browser
      *     environment based on TP.sys.isUA()-style tests.
-     * @param {Node} aNode
-     * @returns {Boolean}
+     * @param {Node} aNode The node to check for the if and unless conditions.
+     * @returns {Boolean} Whether or not the node should be retained.
      */
 
     var j,
@@ -9202,8 +9488,8 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
      * @method $uniqueNodeList
      * @summary Removes any duplicates from the array provided so that
      *     subsequent loads of the list don't try to load things twice.
-     * @param {Array } aNodeArray
-     * @returns {Array} The supplied Array of nodes filtered for duplicates.
+     * @param {Array} aNodeArray The Array of Nodes to unique for duplicates.
+     * @returns {Array} The supplied Array of Nodes filtered for duplicates.
      */
 
     var i,
@@ -9275,11 +9561,6 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 //  ============================================================================
 //  IMPORT FUNCTIONS
 //  ============================================================================
-
-/*
-*/
-
-//  ----------------------------------------------------------------------------
 
 TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
                                     shouldThrow) {
@@ -9483,7 +9764,6 @@ TP.boot.$$importComplete = function() {
      * @method $$importComplete
      * @summary Finalizes an import sequence. Called internally by the
      *     $importComponents routine.
-     * @returns {null}
      */
 
     var stage,
@@ -9547,7 +9827,6 @@ TP.boot.$$importComplete = function() {
                             return;
                         }
                     } else {
-                        //debugger;
                         void 0;
                     }
 
@@ -9576,11 +9855,8 @@ TP.boot.$$importComplete = function() {
         //  turn off reporting to bootlog via TP.boot.$stderr.
         TP.boot.$stderr = TP.boot.STDERR_NULL;
     } else {
-        //debugger;
         void 0;
     }
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -9595,7 +9871,6 @@ TP.boot.$importComponents = function(loadSync) {
      *     can be running at a time.
      * @param {Boolean} loadSync Should the import be done synchronously or not?
      *     Default is false so that each file is loaded via a short setTimeout.
-     * @returns {null}
      */
 
     var j,
@@ -9742,6 +10017,8 @@ TP.boot.$importComponents = function(loadSync) {
         //  trigger the appropriate "will" hook
         if (srcpath) {
             TP.boot.$$loadpaths.push(srcpath);
+
+            //  load/src path are always in virtualized form
             TP.boot.$$srcPath = TP.boot.$uriInTIBETFormat(srcpath);
             TP.boot.$$loadPath = TP.boot.$$srcPath;
         } else {
@@ -9807,7 +10084,6 @@ TP.boot.$importComponents = function(loadSync) {
                 //  loading process. If there is an error, it will be
                 //  reported via the 'onerror' hook.
                 TP.boot.$nodeAppendChild(TP.boot.$$head, elem);
-                //TP.boot.$$head.appendChild(elem);
 
                 return;
             }
@@ -9892,13 +10168,18 @@ TP.boot.$importComponents = function(loadSync) {
     } else {
         setTimeout(TP.boot.$$importAsync, 0);
     }
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
 
 TP.boot.$$importPhase = function() {
+
+    /**
+     * @method $$importPhase
+     * @summary Imports the currently active phase. This method is called by
+     *     TP.boot.$$importPhaseOne() and TP.boot.$$importPhaseTwo() and should
+     *     be considered private.
+     */
 
     var package,
         config,
@@ -9933,7 +10214,6 @@ TP.boot.$$importPhaseOne = function() {
      * @method $$importPhaseOne
      * @summary Imports any elements of the original boot file/config that were
      *     specific to phase one.
-     * @returns {Number} The number of phase one nodes imported.
      */
 
     TP.boot.$setStage('import_phase_one');
@@ -9944,8 +10224,6 @@ TP.boot.$$importPhaseOne = function() {
     TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
     TP.boot.$$importPhase();
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -9956,7 +10234,6 @@ TP.boot.$$importPhaseTwo = function(manifest) {
      * @method $$importPhaseTwo
      * @summary Imports any elements of the original boot file/config that were
      *     specific to phase two.
-     * @returns {Number} The number of phase two nodes imported.
      */
 
     if (TP.sys.cfg('boot.two_phase') !== true) {
@@ -9971,8 +10248,6 @@ TP.boot.$$importPhaseTwo = function(manifest) {
     TP.sys.setcfg('boot.phase_two', true);
 
     TP.boot.$$importPhase();
-
-    return;
 };
 
 //  ============================================================================
@@ -9995,7 +10270,7 @@ TP.boot.$config = function() {
     /**
      * @method $config
      * @summary Configures various aspects of the boot system prior to final
-     * expansion and importing of the application's components.
+     *     expansion and importing of the application's components.
      */
 
     TP.boot.$setStage('configuring');
@@ -10064,6 +10339,12 @@ TP.boot.$config = function() {
 
 TP.boot.$expand = function() {
 
+    /**
+     * @method expand
+     * @summary Expands the entire package hierarchy, starting at the root for
+     *     the whole application.
+     */
+
     var file,
         config;
 
@@ -10081,157 +10362,89 @@ TP.boot.$expand = function() {
 
 //  ----------------------------------------------------------------------------
 
-/**
- * Expands a single package configuration, resolving any embedded package
- * references and virtual paths which might be included.
- * @param {Element} anElement The config node to process and expand.
- */
 TP.boot.$expandConfig = function(anElement) {
+
+    /**
+     * @method expandConfig
+     * @summary Expands a single package configuration, resolving any embedded
+     *     package references and virtual paths which might be included.
+     * @param {Element} anElement The config node to process and expand.
+     */
 
     var list;
 
     list = Array.prototype.slice.call(anElement.childNodes, 0);
-    list.forEach(function(child) {
 
-        var ref,
-            src,
-            config,
-            key,
-            name,
-            elem,
-            value,
-            level,
-            text,
-            msg,
-            str,
-            doc;
+    list.forEach(
+            function(child) {
 
-        if (child.nodeType === 1) {
+                var ref,
+                    src,
+                    config,
+                    key,
+                    name,
+                    elem,
+                    value,
+                    level,
+                    text,
+                    msg,
+                    str,
+                    doc;
 
-            switch (child.tagName) {
-                case 'config':
-                    ref = child.getAttribute('ref');
-                    ref = TP.boot.$expandReference(ref);
-                    config = TP.boot.$documentGetElementById(
-                        anElement.ownerDocument, ref);
-                    if (TP.boot.$notValid(config)) {
-                        throw new Error('<config> not found: ' +
-                            TP.boot.$getCurrentPackage() + '#' + ref);
-                    }
+                if (child.nodeType === Node.ELEMENT_NODE) {
 
-                    key = TP.boot.$getCurrentPackage() + '#' + ref;
-                    if (TP.boot.$$configs.indexOf(key) !== -1) {
-                        //  A duplicate/circular reference of some type.
-                        TP.boot.$stderr(
-                            'Ignoring duplicate reference to: ' + key);
-                        break;
-                    }
+                    switch (child.tagName) {
 
-                    TP.boot.$$configs.push(key);
-                    TP.boot.$expandConfig(config);
+                        case 'config':
 
-                    break;
-                case 'echo':
-                    value = child.getAttribute('message');
-                    if (TP.boot.$isEmpty(value)) {
-                        try {
-                            child.normalize();
-                            text = child.childNodes[0];
-                            value = text.data;
-                        } catch (e) {
-                            throw new Error('Unable to find message: ' +
-                                TP.boot.$nodeAsString(child));
-                        }
-                    }
+                            ref = child.getAttribute('ref');
+                            ref = TP.boot.$expandReference(ref);
+                            config = TP.boot.$documentGetElementById(
+                                anElement.ownerDocument, ref);
+                            if (TP.boot.$notValid(config)) {
+                                throw new Error('<config> not found: ' +
+                                    TP.boot.$getCurrentPackage() + '#' + ref);
+                            }
 
-                    level = child.getAttribute('level');
-                    if (TP.boot.$notEmpty(level)) {
-                        level = ', ' + level;
-                    } else {
-                        level = '';
-                    }
+                            key = TP.boot.$getCurrentPackage() + '#' + ref;
+                            if (TP.boot.$$configs.indexOf(key) !== -1) {
+                                //  A duplicate/circular reference of some type.
+                                TP.boot.$stderr(
+                                    'Ignoring duplicate reference to: ' + key);
+                                break;
+                            }
 
-                    try {
-                        str = '<script><![CDATA[' +
-                            'TP.boot.$stdout(\'' +
-                                value.replace(/'/g, '\'') +
-                            '\'' + level + ');' +
-                            ']]></script>';
-                        doc = TP.boot.$documentFromString(str);
-                        elem = doc.childNodes[0];
+                            TP.boot.$$configs.push(key);
+                            TP.boot.$expandConfig(config);
 
-                        value = child.getAttribute('if');
-                        if (TP.boot.$notEmpty(value)) {
-                            elem.setAttribute('if', value);
-                        }
+                            break;
 
-                        value = child.getAttribute('unless');
-                        if (TP.boot.$notEmpty(value)) {
-                            elem.setAttribute('unless', value);
-                        }
+                        case 'echo':
 
-                        child.parentNode.replaceChild(elem, child);
+                            value = child.getAttribute('message');
+                            if (TP.boot.$isEmpty(value)) {
+                                try {
+                                    child.normalize();
+                                    text = child.childNodes[0];
+                                    value = text.data;
+                                } catch (e) {
+                                    throw new Error('Unable to find message: ' +
+                                        TP.boot.$nodeAsString(child));
+                                }
+                            }
 
-                    } catch (e) {
-                        msg = e.message;
-                        throw new Error('Error expanding: ' +
-                            TP.boot.$nodeAsString(child) +
-                            msg);
-                    }
+                            level = child.getAttribute('level');
+                            if (TP.boot.$notEmpty(level)) {
+                                level = ', ' + level;
+                            } else {
+                                level = '';
+                            }
 
-                    break;
-              case 'img':
-                    //  similar to default case but we need to avoid messing
-                    //  with data urls.
-                    src = child.getAttribute('src');
-                    if (TP.boot.$notEmpty(src) && src.indexOf('data:') !== 0) {
-                        src = TP.boot.$getFullPath(child, src);
-                        child.setAttribute('src', src);
-                    }
-                    break;
-                case 'package':
-                    src = child.getAttribute('src');
-                    src = TP.boot.$getFullPath(child, src);
-                    child.setAttribute('src', src);
-
-                    config = child.getAttribute('config');
-                    if (TP.boot.$notEmpty(config)) {
-                        config = TP.boot.$expandReference(config);
-                        child.setAttribute('config', config);
-                    }
-
-                    key = src + '#' + config;
-                    if (TP.boot.$$configs.indexOf(key) !== -1) {
-                        //  A duplicate/circular reference of some type.
-                        TP.boot.$stderr(
-                            'Ignoring duplicate reference to: ' + key);
-                        break;
-                    }
-
-                    TP.boot.$$configs.push(key);
-                    TP.boot.$expandPackage(src, config);
-
-                    break;
-                case 'property':
-                    name = child.getAttribute('name');
-                    value = child.getAttribute('value');
-
-                    if (TP.boot.$notEmpty(name) && TP.boot.$notEmpty(value)) {
-                        value = TP.boot.$getArgumentPrimitive(value);
-                        if (typeof value === 'string') {
-                            value = TP.boot.$quoted(value);
-                        }
-
-                        //  If the property is a boot property we need to set it
-                        //  right now or it won't take effect.
-                        if (name.indexOf('boot.') === 0) {
-                            TP.sys.setcfg(name, value);
-                        } else {
                             try {
                                 str = '<script><![CDATA[' +
-                                    'TP.sys.setcfg(' +
-                                    '\'' + name + '\', ' + value +
-                                    ');' +
+                                    'TP.boot.$stdout(\'' +
+                                        value.replace(/'/g, '\'') +
+                                    '\'' + level + ');' +
                                     ']]></script>';
                                 doc = TP.boot.$documentFromString(str);
                                 elem = doc.childNodes[0];
@@ -10254,31 +10467,122 @@ TP.boot.$expandConfig = function(anElement) {
                                     TP.boot.$nodeAsString(child) +
                                     msg);
                             }
-                        }
-                    }
 
-                    break;
-                case 'script':
-                    /* falls through */
-                case 'style':
-                    /* falls through */
-                case 'template':
-                    /* falls through */
-                default:
-                    src = child.getAttribute('href');
-                    if (TP.boot.$notEmpty(src)) {
-                        src = TP.boot.$getFullPath(child, src);
-                        child.setAttribute('href', src);
+                            break;
+
+                      case 'img':
+
+                            //  similar to default case but we need to avoid
+                            //  messing with data urls.
+                            src = child.getAttribute('src');
+                            if (TP.boot.$notEmpty(src) &&
+                                src.indexOf('data:') !== 0) {
+
+                                src = TP.boot.$getFullPath(child, src);
+                                child.setAttribute('src', src);
+                            }
+                            break;
+
+                        case 'package':
+
+                            src = child.getAttribute('src');
+                            src = TP.boot.$getFullPath(child, src);
+                            child.setAttribute('src', src);
+
+                            config = child.getAttribute('config');
+                            if (TP.boot.$notEmpty(config)) {
+                                config = TP.boot.$expandReference(config);
+                                child.setAttribute('config', config);
+                            }
+
+                            key = src + '#' + config;
+                            if (TP.boot.$$configs.indexOf(key) !== -1) {
+                                //  A duplicate/circular reference of some type.
+                                TP.boot.$stderr(
+                                    'Ignoring duplicate reference to: ' + key);
+                                break;
+                            }
+
+                            TP.boot.$$configs.push(key);
+                            TP.boot.$expandPackage(src, config);
+
+                            break;
+
+                        case 'property':
+
+                            name = child.getAttribute('name');
+                            value = child.getAttribute('value');
+
+                            if (TP.boot.$notEmpty(name) &&
+                                TP.boot.$notEmpty(value)) {
+
+                                value = TP.boot.$getArgumentPrimitive(value);
+
+                                if (typeof value === 'string') {
+                                    value = TP.boot.$quoted(value);
+                                }
+
+                                //  If the property is a boot property we need
+                                //  to set it right now or it won't take effect.
+                                if (name.indexOf('boot.') === 0) {
+                                    TP.sys.setcfg(name, value);
+                                } else {
+                                    try {
+                                        str = '<script><![CDATA[' +
+                                            'TP.sys.setcfg(' +
+                                            '\'' + name + '\', ' + value +
+                                            ');' +
+                                            ']]></script>';
+                                        doc = TP.boot.$documentFromString(str);
+
+                                        elem = doc.childNodes[0];
+
+                                        value = child.getAttribute('if');
+                                        if (TP.boot.$notEmpty(value)) {
+                                            elem.setAttribute('if', value);
+                                        }
+
+                                        value = child.getAttribute('unless');
+                                        if (TP.boot.$notEmpty(value)) {
+                                            elem.setAttribute('unless', value);
+                                        }
+
+                                        child.parentNode.replaceChild(
+                                                                elem, child);
+                                    } catch (e) {
+                                        msg = e.message;
+                                        throw new Error('Error expanding: ' +
+                                            TP.boot.$nodeAsString(child) +
+                                            msg);
+                                    }
+                                }
+                            }
+
+                            break;
+                        case 'script':
+                            /* falls through */
+                        case 'style':
+                            /* falls through */
+                        case 'template':
+                            /* falls through */
+                        default:
+
+                            src = child.getAttribute('href');
+                            if (TP.boot.$notEmpty(src)) {
+                                src = TP.boot.$getFullPath(child, src);
+                                child.setAttribute('href', src);
+                            }
+
+                            src = child.getAttribute('src');
+                            if (TP.boot.$notEmpty(src)) {
+                                src = TP.boot.$getFullPath(child, src);
+                                child.setAttribute('src', src);
+                            }
+
+                            break;
                     }
-                    src = child.getAttribute('src');
-                    if (TP.boot.$notEmpty(src)) {
-                        src = TP.boot.$getFullPath(child, src);
-                        child.setAttribute('src', src);
-                    }
-                    break;
-            }
-        }
-    });
+                }
+            });
 };
 
 //  ----------------------------------------------------------------------------
@@ -10292,7 +10596,8 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
      * @param {String} aPath The path to the package manifest file to be
      *     processed.
      * @param {String} aConfig The config ID within the package to be expanded.
-     * @returns {Document} An xml document containing the expanded configuration.
+     * @returns {Document} An xml document containing the expanded
+     *     configuration.
      */
 
     var expanded,   //  The expanded path equivalent.
@@ -10469,6 +10774,7 @@ TP.boot.$expandReference = function(aRef) {
      * @param {String} aRef A potential property value reference to expand.
      * @returns {String} The expanded value, or the original string value.
      */
+
     var ref;
 
     if (aRef && aRef.indexOf('{') === 0) {
@@ -10532,7 +10838,7 @@ TP.boot.$getFullPath = function(anElement, aPath) {
      * @param {Element} anElement The element from which to begin basedir
      *     lookups.
      * @param {String} aPath The path to resolve into a full path.
-     * @returns {string} The fully-expanded path.
+     * @returns {String} The fully-expanded path.
      */
 
     var elem,
@@ -10553,11 +10859,15 @@ TP.boot.$getFullPath = function(anElement, aPath) {
     elem = anElement;
     while (elem) {
         base = elem.getAttribute('basedir');
+
         if (TP.boot.$notEmpty(base)) {
             return TP.boot.$uriExpandPath(TP.boot.$uriJoinPaths(base, aPath));
         }
+
         elem = elem.parentNode;
     }
+
+    return '';
 };
 
 //  ----------------------------------------------------------------------------
@@ -10569,6 +10879,8 @@ TP.boot.$ifAssetPassed = function(anElement) {
      * @summary Returns true if the element's tag name passes any asset-type
      *     filtering which is in place. Asset filtering is done via tag name.
      * @param {Element} anElement The element to filter.
+     * @returns {Boolean} Whether or not the element's tag name passes any
+     *     assert-type filters.
      */
 
     var tag,
@@ -10632,7 +10944,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                     src,
                     config;
 
-                if (child.nodeType === 1) {
+                if (child.nodeType === Node.ELEMENT_NODE) {
 
                     if (!TP.boot.$ifUnlessPassed(child)) {
                         return;
@@ -10643,7 +10955,9 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                     }
 
                     switch (child.tagName) {
+
                         case 'config':
+
                             ref = child.getAttribute('ref');
 
                             config = TP.boot.$documentGetElementById(
@@ -10652,13 +10966,18 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                                 throw new Error('<config> not found: ' + ref);
                             }
                             TP.boot.$listConfigAssets(config, result);
+
                             break;
+
                         case 'echo':
+
                             //  Shouldn't exist, these should have been
                             //  converted into <script> tags calling
                             //  TP.boot.$stdout.
                             break;
+
                         case 'package':
+
                             src = child.getAttribute('src');
                             config = child.getAttribute('config');
 
@@ -10670,14 +10989,19 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             //  Make sure to fully expand the path.
                             src = TP.boot.$getFullPath(child, src);
                             TP.boot.$listPackageAssets(src, config, result);
+
                             break;
+
                         case 'property':
+
                             child.setAttribute('load_package',
                                 TP.boot.$getCurrentPackage());
                             child.setAttribute('load_config',
                                 anElement.getAttribute('id'));
                             result.push(child);
+
                             break;
+
                         case 'img':
                             /* falls through */
                         case 'script':
@@ -10687,8 +11011,10 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                         case 'template':
                             /* falls through */
                         default:
+
                             src = child.getAttribute('src') ||
                                 child.getAttribute('href');
+
                             if (TP.boot.$notEmpty(src)) {
                                 //  Make sure to fully expand the path.
                                 src = TP.boot.$getFullPath(child, src);
@@ -10716,6 +11042,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                                     anElement.getAttribute('id'));
                                 result.push(child);
                             }
+
                             break;
                     }
                 }
@@ -10813,6 +11140,14 @@ TP.boot.$pushPackage = function(aPath) {
 //  ----------------------------------------------------------------------------
 
 TP.boot.$refreshPackages = function() {
+
+    /**
+     * @method $refreshPackages
+     * @summary Refreshes any package manifests currently loaded by system. Note
+     *     that this re-expands all package manifest entries to ensure that all
+     *     changes are properly propagated.
+     */
+
     var packages,
         keys,
         stderr;
@@ -10821,9 +11156,10 @@ TP.boot.$refreshPackages = function() {
     keys = Object.keys(packages);
 
     //  Force refresh of the documents held in the package cache.
-    keys.forEach(function(key) {
-        packages[key] = TP.boot.$uriLoad(key, TP.DOM, 'manifest');
-    });
+    keys.forEach(
+            function(key) {
+                packages[key] = TP.boot.$uriLoad(key, TP.DOM, 'manifest');
+            });
 
     //  Re-expand the resulting packages, but turn off any error reporting since
     //  this will trigger duplicate reference warnings.
@@ -10834,16 +11170,17 @@ TP.boot.$refreshPackages = function() {
     } finally {
         TP.boot.$stderr = stderr;
     }
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
-//  ----------------------------------------------------------------------------
 
 TP.boot.$importApplication = function() {
+
+    /**
+     * @method $importApplication
+     * @summary Clears all currently loaded script entries and imports the whole
+     *     application, starting with phase one.
+     */
 
     //  Clear script dictionary. This will be used to unique across all imports.
     TP.boot.$$scripts = {};
@@ -10851,8 +11188,6 @@ TP.boot.$importApplication = function() {
     TP.boot.$$totalwork = 0;
 
     TP.boot.$$importPhaseOne();
-
-    return;
 };
 
 //  ============================================================================
@@ -10877,8 +11212,6 @@ TP.boot.boot = function() {
     //  import based on expanded package. startup is invoked once the async
     //  import process completes.
     TP.boot.$importApplication();
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -10895,7 +11228,6 @@ TP.boot.launch = function(options) {
      *     boot.no_url_args in this option list (which is useful in certain
      *     production setups).
      * @param {Object} options A set of options which control the boot process.
-     * @returns {Window} The window the application launched in.
      */
 
     var hash;
@@ -11003,12 +11335,14 @@ TP.boot.launch = function(options) {
     //  don't boot TIBET twice into the same window hierarchy, check to make
     //  sure we don't already see the $$TIBET window reference
     if (window.$$TIBET && window.$$TIBET !== window) {
+
         //  make sure the user sees this
         TP.boot.$stderr('Found existing TIBET image in ' +
             (typeof window.$$TIBET.getFullName === 'function' ?
                 window.$$TIBET.getFullName() :
                 window.$$TIBET.name) +
                 '. Boot sequence terminated.', TP.FATAL);
+
         return;
     }
 
@@ -11064,12 +11398,18 @@ TP.boot.main = function() {
 
 TP.boot.$activate = function() {
 
+    /**
+     * @method $activate
+     * @summary Invoked from TP.boot.main() to activate the application when the
+     *     booting process is complete. This installs various window/system-level
+     *     hooks and then tells the entire system to activate.
+     */
+
     TP.boot.$setStage('activating');
 
     try {
-        //  ---
+
         //  protect the codebase from inadvertent exits
-        //  ---
 
         //  make sure that the application knows to prompt the user before
         //  quitting.
@@ -11099,8 +11439,6 @@ TP.boot.$activate = function() {
     } catch (e) {
         TP.boot.$stderr('Error activating application.', TP.boot.$ec(e));
     }
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
@@ -11108,27 +11446,36 @@ TP.boot.$activate = function() {
 TP.boot.$stageAction = function() {
 
     /**
-     * Responds to actions from within the various boot display pages. When a
-     * particular stage pauses the UI this routine is typically attached as the
-     * onclick handler for one or more components in the UI. The user can
-     * restart and/or resume the boot sequence by triggering this handler.
+     * @method $stageAction
+     * @summary Responds to actions from within the various boot display pages.
+     *     When a particular stage pauses the UI this routine is typically
+     *     attached as the onclick handler for one or more components in the UI.
+     *     The user can restart and/or resume the boot sequence by triggering
+     *     this handler.
      */
 
     switch (TP.boot.$getStage()) {
+
         case 'paused':
+
             TP.boot.$$restarttime = new Date();
             TP.boot.$stdout('Startup process reengaged by user.',
                 TP.SYSTEM);
             TP.boot.$activate();
+
             break;
+
         case 'import_paused':
+
             //  Happens in two-phase booting when waiting for login to return us
             //  a hook file to trigger the second phase of the boot process.
             TP.boot.$$restarttime = new Date();
             TP.boot.$stdout('Startup process reengaged by user.',
                 TP.SYSTEM);
             TP.boot.$$importPhaseTwo();
+
             break;
+
         default:
             break;
     }
@@ -11166,7 +11513,7 @@ TP.boot.$uiBootConfig = function() {
     }
 
     TP.boot.$stdout('Unable to locate ' + uiBootID + ', generating it.',
-        TP.DEBUG);
+                    TP.DEBUG);
 
     launchDoc = TP.sys.getLaunchDocument();
 
@@ -11202,8 +11549,7 @@ TP.boot.$uiBootConfig = function() {
     //  because it's necessary when creating the XHTML version
     //  of the iframe.
     iFrameWrapper = launchDoc.createElement('span');
-    lastBodyChild.parentNode.insertBefore(iFrameWrapper,
-                                            lastBodyChild);
+    lastBodyChild.parentNode.insertBefore(iFrameWrapper, lastBodyChild);
 
     //  Set the innerHTML of the span wrapper. This will create
     //  the iframe. Then set the 'src' attribute to a 'data:'
@@ -11218,6 +11564,7 @@ TP.boot.$uiBootConfig = function() {
     uiFrame.setAttribute('src', path);
 
     uiFrame.onload = function() {
+
         var doc;
 
         //  grab the 'object' element by ID - that'll be the
@@ -11246,7 +11593,6 @@ TP.boot.$uiBootReady = function() {
 
     TP.boot.$uiRootConfig();
 };
-
 
 //  ----------------------------------------------------------------------------
 
@@ -11316,6 +11662,7 @@ TP.boot.$uiRootConfig = function() {
     uiFrame.setAttribute('src', path);
 
     uiFrame.onload = function() {
+
         var doc;
 
         //  grab the 'object' element by ID - that'll be the
@@ -11360,7 +11707,9 @@ TP.boot.$uiRootReady = function() {
     //  we're up to. The only consideration we have in that case is whether we
     //  expect a second phase or not.
     if (TP.sys.isHTTPBased()) {
+
         login = TP.sys.cfg('boot.use_login');
+
         if (login !== true) {
             win.$$phase_two = true;
             TP.boot.boot();
@@ -11382,8 +11731,6 @@ TP.boot.$uiRootReady = function() {
         win.$$phase_two = true;
         TP.boot.boot();
     }
-
-    return;
 };
 
 //  ----------------------------------------------------------------------------
