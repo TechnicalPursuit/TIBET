@@ -35,6 +35,7 @@
     fs = require('fs');
     system = require('system');
     minimist = require('minimist');
+    beautify = require('js-beautify');
 
     //  ---
     //  PhantomTSH
@@ -566,6 +567,14 @@
 
         if (PhantomTSH.argv.tap) {
             msg = PhantomTSH.TAP_PREFIX + msg;
+        }
+
+        //  If the message is a JSON string beautify it for easier reading.
+        try {
+            JSON.parse(msg);
+            msg = beautify(msg);
+        } catch (e) {
+            void 0;
         }
 
         // If color is explicit we go with that, otherwise we check the content
