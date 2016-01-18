@@ -5,7 +5,7 @@
 .P
 .RS 2
 .nf
-tibet doclint [<filter>]
+tibet doclint [<target>] [\-\-filter <filter>] [\-\-context <app|lib|all>]
 .fi
 .RE
 .SH DESCRIPTION
@@ -20,11 +20,23 @@ TIBET comment standards\. This check can be a part of an overall quality
 .br
 pass which includes running \fBtibet lint\fP and \fBtibet test\fP on your code\.
 .P
-If you provide an optional string parameter it will be used as a filter
+If you provide an optional string parameter it will be used as a target
 .br
-for filenames\. Using a string which begins and ends with / will cause the
+ID which must resolve via TP\.bySystemId\. Only methods owned by that target will
 .br
-pattern to be treated as a regular expression for testing purposes\.
+be checked\.
+.P
+If you provide a \-\-filter the method names themselves will be filtered to match
+.br
+only the pattern or string provided\.
+.P
+The context (app, lib, or all) is generally defaulted based on any target data
+.br
+given\. For example, using a target of \fBAPP\.*\fP will cause an \fBapp\fP context while
+.br
+using a target of \fBTP\.*\fP will default to a lib context\. To use the \fBall\fP context
+.br
+you must specify it explicitly\.
 .P
 Note that because it uses method reflection, not file lists, to drive
 .br

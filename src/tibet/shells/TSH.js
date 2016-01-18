@@ -2347,8 +2347,10 @@ function(aRequest) {
 
     var methods,
         results,
-        checklib,
+        context,
         filter,
+        target,
+        owner,
         pattern,
         tags,
         aliases,
@@ -2410,11 +2412,29 @@ function(aRequest) {
 
     fileDict = TP.hc();
 
-    checklib = this.getArgument(aRequest, 'tsh:tibet', false);
+    //  Context determines whether we care about app, lib, or both. It is always
+    //  in effect and defaults to app.
+    context = this.getArgument(aRequest, 'tsh:context', 'app');
+    if (TP.isString(context)) {
+        context = context.unquoted();
+    }
+
+    //  Target is an optional "owner" specification for filtering by method
+    //  owner. The value must be resolvable via TP.bySystemId.
+    target = this.getArgument(aRequest, 'tsh:target', null);
+    if (TP.notEmpty(target)) {
+        target = target.unquoted();
+        owner = TP.bySystemId(target);
+        if (TP.notEmpty(target) && TP.notValid(owner)) {
+            return aRequest.fail('Unable to resolve target: ' + target);
+        }
+    }
 
     filter = this.getArgument(aRequest, 'tsh:filter', null);
     if (TP.notEmpty(filter)) {
         filter = filter.unquoted();
+
+        //  TODO: generalize this
         if (/^\/.+\/([ig]*)$/.test(filter)) {
             pattern = RegExp.construct(filter);
         }
@@ -2443,6 +2463,13 @@ function(aRequest) {
         name = item.at(0);
         func = item.at(1);
 
+        //  Owner is our resolved target, used for filtering by method owner.
+        if (TP.isValid(owner)) {
+            if (!name.startsWith(target)) {
+                return;
+            }
+        }
+
         //  Note how we go after load path here, since source paths will never
         //  be minified and that's what we check below.
         file = TP.objectGetLoadPath(func);
@@ -2451,8 +2478,14 @@ function(aRequest) {
         source = func.getSourceText();
         error = {file: file, name: name, errors: TP.ac()};
 
-        if (TP.isFalse(checklib)) {
-            if (TP.boot.$uriInTIBETFormat(file).startsWith('~lib')) {
+        //  Context can be either app, lib, or both. We use that to determine if
+        //  a particular component should be checked at a very broad level.
+        if (context === 'app') {
+            if (!TP.boot.$uriInTIBETFormat(file).startsWith('~app')) {
+                return;
+            }
+        } else if (context === 'lib') {
+            if (!TP.boot.$uriInTIBETFormat(file).startsWith('~lib')) {
                 return;
             }
         }
@@ -2460,12 +2493,12 @@ function(aRequest) {
         if (TP.notEmpty(filter)) {
             if (TP.isValid(pattern)) {
                 //  Regular expression as filter.
-                if (!pattern.match(file)) {
+                if (!pattern.match(name)) {
                     return;
                 }
             } else {
                 //  Normal text string as filter.
-                if (!TP.boot.$uriInTIBETFormat(file).contains(filter)) {
+                if (!name.contains(filter)) {
                     return;
                 }
             }
