@@ -140,7 +140,6 @@
     <script src="tsh/tsh_Element.js"/>
     <script src="tsh/tsh_cmd.js"/>
     <script src="tsh/tsh_history.js"/>
-    <script src="tsh/tsh_lint.js"/>
     <script src="tsh/tsh_pp.js"/>
     <script src="tsh/tsh_script.js"/>
     <script src="tsh/tsh_template.js"/>

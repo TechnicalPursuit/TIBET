@@ -4259,7 +4259,6 @@ TP.core.TSH.addHelpTopic(':interests', 'Displays the XML-based signal interest m
 TP.core.TSH.addHelpTopic(':job', 'Generates a table of active "processes".');
 TP.core.TSH.addHelpTopic(':kill', 'Kill an active TIBET "job" instance.');
 TP.core.TSH.addHelpTopic(':line', 'Displays a line number from a URI[line] entry.');
-TP.core.TSH.addHelpTopic(':lint', 'Lint check an object or set of objects.');
 TP.core.TSH.addHelpTopic(':load', 'Loads the content text and/or xml of a URI.');
 TP.core.TSH.addHelpTopic(':log', 'Generates a listing of a particular log.');
 TP.core.TSH.addHelpTopic(':login', 'Logs in to a specific user profile.');
