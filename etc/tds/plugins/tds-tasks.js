@@ -9,6 +9,40 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/*
+
+NOTE:   To make this work you must have the following in CouchDB:
+
+A view on the 'app' design document named 'test' for form_id filtering:
+
+function(doc) {
+    emit(doc.form_id, doc);
+}
+
+At least one "spec" document whose form_id slot will match "jobs". The
+tasks array should list names of tasks in the project directory which
+will be load and run for execution of each "step":
+
+{
+    "type": "spec",
+    "form_id": "mailbucket",
+    "customer": "Team TIBET",
+    "tasks": ["mail", "s3"]
+}
+
+One or more "job" documents with a form_id that matches a "spec" defined
+in an earlier step. The task_results will be updated as each task in the
+spec is run for this specific job:
+
+{
+    "type": "job",
+    "form_id": "mailbucket",
+    "status": "ready",
+    "task_results": []
+}
+
+*/
+
 (function(root) {
 
     'use strict';
