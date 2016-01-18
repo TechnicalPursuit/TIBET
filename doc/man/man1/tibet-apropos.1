@@ -14,21 +14,25 @@ Runs the TSH \fB:apropos\fP command to find methods related to one or more topic
 .P
 This is a good command to use when you know what you'd like to do conceptually
 .br
-but are unsure of what options TIBET may offer to support your goals\. You can
-.br
-combine this command with \fBtibet reflect\fP to first get a list of potential
-.br
-options and then get detailed information on apropos methods via \fBreflect\fP\|\.
+but are unsure of what options TIBET may offer to support your goals\.
 .P
 By default this command searches method names for matches to search terms\.
 .br
-The terms provided can be simple strings or a JavaScript\-style RegExp literal\.
+The terms provided can be simple strings or JavaScript\-style RegExp literals\.
 .br
-If a method name matches a term it is always included in the output regardless
+When you provide more than one term the terms are combined using \fBand\fP semantics
 .br
-of any other flag settings\.
+meaning that all terms must match a result for it to be presented\. You can use
+.br
+RegExp literal syntax with vertical bars (|) to create \fBor\fP conditions\.
 .SH OPTIONS
 .RS 0
+.IP \(bu 2
+\fBterms\fP :
+.br
+A space\-separated list of separate terms to match\. Each term can be either a
+.br
+simple string or a JavaScript RegExp literal\.
 .IP \(bu 2
 \fB\-\-comments\fP :
 .br

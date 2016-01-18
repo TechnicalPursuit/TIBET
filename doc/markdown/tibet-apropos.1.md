@@ -10,16 +10,19 @@
 Runs the TSH `:apropos` command to find methods related to one or more topics.
 
 This is a good command to use when you know what you'd like to do conceptually
-but are unsure of what options TIBET may offer to support your goals. You can
-combine this command with `tibet reflect` to first get a list of potential
-options and then get detailed information on apropos methods via `reflect`.
+but are unsure of what options TIBET may offer to support your goals.
 
 By default this command searches method names for matches to search terms.
-The terms provided can be simple strings or a JavaScript-style RegExp literal.
-If a method name matches a term it is always included in the output regardless
-of any other flag settings.
+The terms provided can be simple strings or JavaScript-style RegExp literals.
+When you provide more than one term the terms are combined using `and` semantics
+meaning that all terms must match a result for it to be presented. You can use
+RegExp literal syntax with vertical bars (|) to create `or` conditions.
 
 ## OPTIONS
+
+  * `terms` :
+    A space-separated list of separate terms to match. Each term can be either a
+simple string or a JavaScript RegExp literal.
 
   * `--comments` :
     Search comment text in addition to the method name. This will greatly expand

@@ -2144,17 +2144,25 @@ function(aRequest) {
     //  original term and we'll try indexOf during checking.
     terms = terms.map(
                 function(term) {
-                    var regex;
+                    var regex,
+                        str,
+                        parts;
 
                     //  Use a global regex so we can capture counts which form a
-                    //  kind of aid for determining which matches are the most
-                    //  relevant.
-                    regex = RegExp.construct(
-                                    term.unquoted(),
-                                    'g' + (ignorecase ? 'i' : ''));
+                    //  basis for determining which matches are most relevant.
+                    str = term.unquoted();
+                    parts = TP.stringRegExpComponents(str);
+                    if (TP.notTrue(/g/.test(parts[1]))) {
+                        parts[1] += 'g';
+                    }
 
+                    if (TP.notFalse(ignorecase)) {
+                        parts[1] += 'i';
+                    }
+
+                    regex = RegExp.construct(parts[0], parts[1]);
                     if (TP.notValid(regex)) {
-                        return term;
+                        return str;
                     }
                     return regex;
                 });
@@ -2173,27 +2181,35 @@ function(aRequest) {
                     file,
                     count;
 
+                //  Metadata stores methods as Owner_Track_Name so split here.
                 name = item.at(0);
                 method = name.split('_').last();
 
                 func = item.at(1);
 
-                //  Note how we go after load path here, since source paths will
-                //  never be minified and that's what we check below.
+                //  Note how we go after load path and not source path. Load
+                //  path is where the code was actually loaded from, which may
+                //  vary from sourcePath when working with minified code.
                 file = TP.objectGetLoadPath(func);
                 text = comments ? func.getCommentText() : '';
 
+                //  When there's no comment text in the method body we need to
+                //  know if that's because it's minified or not.
                 if (TP.isEmpty(text)) {
                     if (TP.notEmpty(file) && file.match(/\.min\./)) {
                         minified = true;
                     }
                 }
 
+                ands = 0;
                 count = 0;
 
+                //  When we have multiple terms we want to treat them as an AND
+                //  condition (since you can easily do OR via RegExp).
                 terms.forEach(
                         function(term) {
                             var parts,
+                                found,
                                 match;
 
                             if (TP.isString(term)) {
@@ -2206,6 +2222,7 @@ function(aRequest) {
                                 if (method.indexOf(term) !== -1) {
                                     nameMatch = true;
                                     count += 1;
+                                    ands += 1;
                                 }
 
                             } else {
@@ -2215,15 +2232,27 @@ function(aRequest) {
                                 match = term.match(text);
                                 if (TP.isValid(match)) {
                                     count += match.getSize();
+                                    found = true;
+                                    ands += 1;
                                 }
 
                                 match = term.match(method);
                                 if (TP.isValid(match)) {
                                     nameMatch = true;
                                     count += match.getSize();
+
+                                    //  If we haven't already counted this term
+                                    //  count it as having matched.
+                                    if (!found) {
+                                        ands += 1;
+                                    }
                                 }
                             }
                         });
+
+                if (ands !== terms.getSize()) {
+                    return;
+                }
 
                 if (nameMatch) {
                     byName.push(TP.ac(name, count, true));

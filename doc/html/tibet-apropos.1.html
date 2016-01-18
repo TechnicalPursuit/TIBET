@@ -24,10 +24,12 @@
 <pre><code>tibet apropros &lt;terms&gt; [--comments] [--limit=N] [--no-ignorecase]
 </code></pre><h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH <code>:apropos</code> command to find methods related to one or more topics.</p>
-<p>This is a good command to use when you know what you&#39;d like to do conceptually<br>but are unsure of what options TIBET may offer to support your goals. You can<br>combine this command with <code>tibet reflect</code> to first get a list of potential<br>options and then get detailed information on apropos methods via <code>reflect</code>.</p>
-<p>By default this command searches method names for matches to search terms.<br>The terms provided can be simple strings or a JavaScript-style RegExp literal.<br>If a method name matches a term it is always included in the output regardless<br>of any other flag settings.</p>
+<p>This is a good command to use when you know what you&#39;d like to do conceptually<br>but are unsure of what options TIBET may offer to support your goals.</p>
+<p>By default this command searches method names for matches to search terms.<br>The terms provided can be simple strings or JavaScript-style RegExp literals.<br>When you provide more than one term the terms are combined using <code>and</code> semantics<br>meaning that all terms must match a result for it to be presented. You can use<br>RegExp literal syntax with vertical bars (|) to create <code>or</code> conditions.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
+<li><p><code>terms</code> :<br>A space-separated list of separate terms to match. Each term can be either a<br>simple string or a JavaScript RegExp literal.</p>
+</li>
 <li><p><code>--comments</code> :<br>Search comment text in addition to the method name. This will greatly expand<br>the set of returned values depending on the term in question.</p>
 </li>
 <li><p><code>--limit</code> :<br>Set a minimum match count for success. Items which don&#39;t match the search<br>term at least <code>--limit</code> number of times will be discarded. The default value is<br>2.</p>
