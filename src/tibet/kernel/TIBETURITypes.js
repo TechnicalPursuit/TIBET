@@ -5512,36 +5512,18 @@ function() {
     //  Force a reload.
     uri = this;
     this.getResource().then(function(resource) {
-        var scripts,
-            loaded,
-            missing;
 
         //  Notify observers of the URI (elements, etc.) that the resource has
         //  been refreshed with potentially new content.
         uri.$changed();
 
-        //  TODO:   extract into an "$importPackageUpdates" in import/export?
-
         //  Watch specifically for changes to application manifest which
         //  might indicate new code has been added to the project. These files
         //  don't get observed since they never trigger a mutation observer.
-        if (TP.uriInTIBETFormat(uri.getLocation()).indexOf('~app_cfg') === 0) {
-            TP.boot.$refreshPackages();
-            scripts = TP.boot.$listPackageAssets(
-                TP.boot.$$bootfile, TP.boot.$$bootconfig)
-            scripts = scripts.map(function(node) {
-                return TP.uriExpandPath(node.getAttribute('src'));
-            });
-            scripts.compact(TP.isEmpty);
+        if (TP.uriInTIBETFormat(
+                uri.getLocation()).indexOf('~app_cfg') !== TP.NOT_FOUND) {
 
-            loaded = TP.boot.$$loadpaths;
-
-            missing = scripts.difference(loaded);
-
-            missing.forEach(function(path) {
-                TP.info('Loading new script file: ' + TP.str(path));
-                TP.sys.importScript(path);
-            });
+            TP.boot.$importPackageUpdates();
         }
     });
 
@@ -5572,12 +5554,13 @@ function() {
         watched = TP.ifInvalid(TP.sys.cfg('uri.remote_watch_sources'), TP.ac());
         uri = this.getLocation();
 
-        autoRefresh = watched.some(function(path) {
-            var prefix;
+        autoRefresh = watched.some(
+                        function(path) {
+                            var prefix;
 
-            prefix = TP.uriExpandPath(prefix);
-            return uri.indexOf(prefix) === 0;
-        });
+                            prefix = TP.uriExpandPath(prefix);
+                            return uri.indexOf(prefix) === 0;
+                        });
 
         this.set('autoRefresh', autoRefresh);
     }

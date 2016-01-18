@@ -10909,6 +10909,50 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$importPackageUpdates = function(importScripts) {
+
+    /**
+     * @method $importPackageUpdates
+     * @summary Re-imports package definitions.
+     * @param {Boolean} [importScripts=true] Whether or not to import any *new*
+     *     scripts that were referenced in the updated package definitions. This
+     *     method will *not* re-import any scripts that are already present via
+     *     existing package entries whether this flag is present or not.
+     */
+
+    var newScripts,
+
+        loadedScripts,
+        missingScripts;
+
+    TP.boot.$refreshPackages();
+
+    if (importScripts !== false) {
+
+        newScripts = TP.boot.$listPackageAssets(
+                            TP.boot.$$bootfile, TP.boot.$$bootconfig);
+
+        newScripts = newScripts.map(
+                        function(node) {
+                            return TP.uriExpandPath(node.getAttribute('src'));
+                        });
+
+        TP.compact(newScripts, TP.isEmpty);
+
+        loadedScripts = TP.boot.$$loadpaths;
+
+        missingScripts = newScripts.difference(loadedScripts);
+
+        missingScripts.forEach(
+                function(path) {
+                    TP.info('Loading new script file: ' + TP.str(path));
+                    TP.sys.importScript(path);
+                });
+    }
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$listConfigAssets = function(anElement, aList) {
 
     /**
