@@ -13,6 +13,7 @@
 
 <config id="reflection">
     <config ref="properties"/>
+    <property name="boot.unminified" value="true"/>
     <package src="~app_cfg/app.xml" config="test"/>
 </config>
 
