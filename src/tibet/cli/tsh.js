@@ -47,7 +47,7 @@ Cmd.prototype = new Parent();
  * The context viable for this command.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.ANY;
+Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
 
 /**
