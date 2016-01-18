@@ -106,9 +106,13 @@ Cmd.prototype.getScript = function() {
         prefix,
         target;
 
-    // The options._ object holds non-qualified parameters. [0] is the
-    // command name. [1] should be the "target" if any.
-    target = this.options._[1];
+    if (CLI.notEmpty(this.options.target)) {
+        target = this.options.target;
+    } else {
+        // The options._ object holds non-qualified parameters. [0] is the
+        // command name. [1] should be the "target" if any.
+        target = this.options._[1];
+    }
 
     if (CLI.notEmpty(this.options.filter)) {
         filter = this.options.filter;
