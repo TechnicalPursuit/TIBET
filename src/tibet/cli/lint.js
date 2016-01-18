@@ -110,7 +110,7 @@ Cmd.prototype.XML_EXTENSIONS = ['atom', 'gpx', 'kml', 'rdf', 'rss', 'svg',
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet lint [<filter>] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]';
+    'tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]';
 
 
 //  ---

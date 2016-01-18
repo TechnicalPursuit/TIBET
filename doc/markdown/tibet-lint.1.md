@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet lint [<filter>] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]
+    tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]
 
 ## DESCRIPTION
 
