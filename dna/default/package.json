@@ -20,6 +20,7 @@
     "morgan": "*",
     "passport": "*",
     "passport-local": "*",
+    "request": "*",
     "require-dir": "*",
     "shelljs": "TechnicalPursuit/shelljs",
     "tibet": "*",
