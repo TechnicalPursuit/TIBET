@@ -3839,7 +3839,9 @@ TP.boot.$uriResultType = function(targetUrl, resultType) {
         return resultType;
     }
 
-    ext = targetUrl.slice(targetUrl.lastIndexOf('.'));
+    //  We slice 1 past the last index of since we want to slice off the '.' as
+    //  well.
+    ext = targetUrl.slice(targetUrl.lastIndexOf('.') + 1);
 
     if (TP.boot.$notEmpty(TP.boot.$xmlMimes[ext])) {
         return TP.DOM;
