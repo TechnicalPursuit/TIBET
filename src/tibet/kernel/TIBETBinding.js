@@ -2484,7 +2484,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
                 //  If we only accept 'single values' and finalVal is a
                 //  collection, try to collapse it for better results.
-                if (this.isSingleValued() && TP.isCollection(finalVal)) {
+                if (this.isSingleValued(aspect) && TP.isCollection(finalVal)) {
                     finalVal = TP.collapse(finalVal);
                 }
 

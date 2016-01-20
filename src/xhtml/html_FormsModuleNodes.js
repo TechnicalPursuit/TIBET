@@ -1479,13 +1479,15 @@ function(anObject, formatArgs) {
 //  ------------------------------------------------------------------------
 
 TP.html.input.Inst.defineMethod('isSingleValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
      * @returns {Boolean} True when single valued.
      */
 
@@ -1495,13 +1497,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.html.input.Inst.defineMethod('isScalarValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
      * @returns {Boolean} For input types, this returns true.
      */
 
@@ -2172,13 +2176,15 @@ TP.html.inputCheckable.defineSubtype('inputCheckbox');
 //  ------------------------------------------------------------------------
 
 TP.html.inputCheckbox.Inst.defineMethod('isSingleValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
      * @returns {Boolean} True when single valued.
      */
 
@@ -2945,13 +2951,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.html.select.Inst.defineMethod('isScalarValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
      * @returns {Boolean} For input types, this returns true.
      */
 
@@ -3232,13 +3240,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.html.textarea.Inst.defineMethod('isSingleValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
      * @returns {Boolean} True when single valued.
      */
 
@@ -3248,13 +3258,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.html.textarea.Inst.defineMethod('isScalarValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
      * @returns {Boolean} For input types, this returns true.
      */
 

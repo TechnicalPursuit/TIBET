@@ -5339,13 +5339,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isScalarValued
      * @summary Returns true if the receiver deals with scalar values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
      * @returns {Boolean} For input types, this returns true.
      */
 

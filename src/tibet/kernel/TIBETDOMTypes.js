@@ -2409,13 +2409,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('isSingleValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
      * @returns {Boolean} True when single valued.
      */
 
@@ -2425,7 +2427,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('isScalarValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isScalarValued
@@ -2450,6 +2452,8 @@ function() {
      *     <html:textarea>     true                  true
      *     <html:select>       true                  false
      *
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
      * @returns {Boolean} True when scalar valued.
      */
 
@@ -5640,54 +5644,6 @@ function() {
      */
 
     return TP.nodeGetChildNodes(this.getNativeNode()).getSize() === 0;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('isSingleValued',
-function() {
-
-    /**
-     * @method isSingleValued
-     * @summary Returns true if the receiver deals with single values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
-     *     for more information.
-     * @returns {Boolean} True when single valued.
-     */
-
-    //  If this element has a 'tibet:isSingleValued' attribute, then we return
-    //  the value of that. This allows 'instance level' programming of a
-    //  particular element.
-    if (TP.elementHasAttribute(
-            this.getNativeNode(), 'tibet:isSingleValued', true)) {
-        return true;
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('isScalarValued',
-function() {
-
-    /**
-     * @method isScalarValued
-     * @summary Returns true if the receiver deals with scalar values.
-     * @description See the TP.core.Node's 'isScalarValued()' instance method
-     *     for more information.
-     * @returns {Boolean} True when scalar valued.
-     */
-
-    //  If this element has a 'tibet:isScalarValued' attribute, then we return
-    //  the value of that. This allows 'instance level' programming of a
-    //  particular element.
-    if (TP.elementHasAttribute(
-            this.getNativeNode(), 'tibet:isScalarValued', true)) {
-        return true;
-    }
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -12335,6 +12291,83 @@ function(aSignal) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('isSingleValued',
+function(aspectName) {
+
+    /**
+     * @method isSingleValued
+     * @summary Returns true if the receiver deals with single values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
+     * @returns {Boolean} True when single valued.
+     */
+
+    var elem,
+        attrVal;
+
+    elem = this.getNativeNode();
+
+    //  If this element has a 'tibet:isSingleValued' attribute, then we return
+    //  the value of that. This allows 'instance level' programming of a
+    //  particular element.
+    if (TP.elementHasAttribute(elem, 'tibet:isSingleValued', true)) {
+        if (TP.notEmpty(aspectName)) {
+            attrVal = TP.elementGetAttribute(
+                            elem, 'tibet:isSingleValued', true);
+            attrVal = attrVal.split(' ');
+            return attrVal.contains(aspectName);
+        }
+
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('isScalarValued',
+function(aspectName) {
+
+    /**
+     * @method isScalarValued
+     * @summary Returns true if the receiver deals with scalar values.
+     * @description See the TP.core.Node's 'isScalarValued()' instance method
+     *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is scalar valued for.
+     * @returns {Boolean} True when scalar valued.
+     */
+
+    //  If this element has a 'tibet:isScalarValued' attribute, then we return
+    //  the value of that. This allows 'instance level' programming of a
+    //  particular element.
+    var elem,
+        attrVal;
+
+    elem = this.getNativeNode();
+
+    //  If this element has a 'tibet:isScalarValued' attribute, then we return
+    //  the value of that. This allows 'instance level' programming of a
+    //  particular element.
+    if (TP.elementHasAttribute(elem, 'tibet:isScalarValued', true)) {
+        if (TP.notEmpty(aspectName)) {
+            attrVal = TP.elementGetAttribute(
+                            elem, 'tibet:isScalarValued', true);
+            attrVal = attrVal.split(' ');
+            return attrVal.contains(aspectName);
+        }
+
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------

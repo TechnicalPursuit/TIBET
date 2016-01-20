@@ -195,13 +195,15 @@ function(anInput, cmdNode, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.tsh.transform.Inst.defineMethod('isSingleValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver binds to single values.
      * @description This method on this type always returns 'false', since we
      *     can handle 'collection' data, not just single values.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
      * @returns {Boolean} True when single valued.
      */
 

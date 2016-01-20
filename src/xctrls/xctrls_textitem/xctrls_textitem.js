@@ -100,13 +100,15 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.textitem.Inst.defineMethod('isSingleValued',
-function() {
+function(aspectName) {
 
     /**
      * @method isSingleValued
      * @summary Returns true if the receiver deals with single values.
      * @description See the TP.core.Node's 'isScalarValued()' instance method
      *     for more information.
+     * @param {String} [aspectName] An optional aspect name that is being used
+     *     by the caller to determine whether the receiver is single valued for.
      * @returns {Boolean} True when single valued.
      */
 
