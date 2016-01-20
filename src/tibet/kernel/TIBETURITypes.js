@@ -5511,21 +5511,25 @@ function() {
 
     //  Force a reload.
     uri = this;
-    this.getResource().then(function(resource) {
+    this.getResource().then(
+            function(resource) {
 
-        //  Notify observers of the URI (elements, etc.) that the resource has
-        //  been refreshed with potentially new content.
-        uri.$changed();
+                var virtualURI;
 
-        //  Watch specifically for changes to application manifest which
-        //  might indicate new code has been added to the project. These files
-        //  don't get observed since they never trigger a mutation observer.
-        if (TP.uriInTIBETFormat(
-                uri.getLocation()).indexOf('~app_cfg') !== TP.NOT_FOUND) {
+                //  Notify observers of the URI (elements, etc.) that the
+                //  resource has been refreshed with potentially new content.
+                uri.$changed();
 
-            TP.boot.$importPackageUpdates();
-        }
-    });
+                //  Watch specifically for changes to application manifest which
+                //  might indicate new code has been added to the project. These
+                //  files don't get observed since they never trigger a mutation
+                //  observer.
+                virtualURI = TP.uriInTIBETFormat(uri.getLocation());
+                if (virtualURI.indexOf('~app_cfg') !== TP.NOT_FOUND) {
+
+                    TP.boot.$importPackageUpdates();
+                }
+            });
 
     return this;
 });
