@@ -96,7 +96,7 @@ function(typeOrFormat, formatParams) {
      * @param {Object} typeOrFormat The type, typename, or format to use.
      * @param {TP.core.Hash} formatParams Option parameters for the formatting
      *     process.
-     * @returns {String}
+     * @returns {String} The receiver formatted to the type or format provided.
      */
 
     var type,
