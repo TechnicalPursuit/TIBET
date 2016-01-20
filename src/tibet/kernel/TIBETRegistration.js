@@ -557,8 +557,14 @@ function(anObj, anID) {
         return false;
     }
 
-    urn.clearCaches();
+    //  NOTE: We must unregister() first!!! The clearCaches() call will release
+    //  the URN's resource and set 'loaded' to false and we need both of those
+    //  to do any ignore()ing of signals coming from the resource up into the
+    //  URN.
     urn.unregister();
+
+    //  Now it's safe to clear the caches.
+    urn.clearCaches();
 
     //  fail quietly
     return true;
