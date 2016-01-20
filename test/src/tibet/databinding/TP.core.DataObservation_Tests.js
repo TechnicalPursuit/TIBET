@@ -2515,7 +2515,7 @@ function() {
                     salaryField;
 
                 modelObj = TP.core.JSONContent.construct(
-                                '{"emp":{"salary":50000,"salaryInRange":null}}');
+                            '{"emp":{"salary":50000,"salaryInRange":null}}');
 
                 //  This sets the ID of the object and registers it with an
                 //  accompanying 'urn:tibet' URN (which will allow the
