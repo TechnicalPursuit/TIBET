@@ -1514,15 +1514,14 @@ function(aProvider) {
                 return aProvider.stderr(anError, aRequest);
             };
 
-    // The first thing to attach "wins" in that it will be the one we default to
-    // whenever we detach later.
+    //  The first thing to attach "wins" in that it will be the one we default
+    //  to whenever we detach later.
     if (TP.notValid(this.$origStdin)) {
         this.$origNotify = this.notify;
         this.$origStdin = this.stdin;
         this.$origStdout = this.stdout;
         this.$origStderr = this.stderr;
     }
-
 
     return this;
 });
