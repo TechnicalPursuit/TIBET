@@ -254,13 +254,13 @@ function(anElement) {
                                     '{value: ' + tnStr + '}',
                                     true);
 
-            //  Mark this Element as 'scalar valued', meaning that it will try
-            //  to convert any bound value that it is being updated to to a
-            //  singular, scalar value if possible.
+            //  Mark this Element as 'scalar valued' for it's 'value' aspect,
+            //  meaning that it will try to convert any bound 'value' value that
+            //  it is being updated to to a singular, scalar value if possible.
             TP.elementSetAttribute(newSpan,
                                     'tibet:isScalarValued',
                                     true,
-                                    true);
+                                    'value');
 
             //  Replace that text node with the span, leaving the text nodes to
             //  the left (the original) to the right (created by the 2nd
