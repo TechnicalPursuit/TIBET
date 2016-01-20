@@ -5357,7 +5357,7 @@ function(aspectName) {
 //  ------------------------------------------------------------------------
 
 TP.core.TogglingUIElementNode.Inst.defineMethod('produceValue',
-function(aContentObject, aRequest) {
+function(aspectName, aContentObject, aRequest) {
 
     /**
      * @method produceValue
@@ -5371,6 +5371,8 @@ function(aContentObject, aRequest) {
      *     wasn't present on the receiving element. Note that this will format
      *     values using the first 'ui:display' setting found in the group and
      *     then exit.
+     * @param {String} aspectName The aspect name on the receiver that the value
+     *     is being produced for. Many times, this is 'value'.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      */
@@ -5537,7 +5539,7 @@ function(aValue, shouldSignal) {
 
     oldValue = this.getValue();
 
-    newValue = this.produceValue(aValue);
+    newValue = this.produceValue('value', aValue);
 
     if (this.allowsMultiples()) {
 

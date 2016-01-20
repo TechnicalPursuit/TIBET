@@ -1100,7 +1100,7 @@ function(aValue, shouldSignal) {
     //  receiver's display value to it and return.
     if (shouldSignal === false) {
 
-        newValue = this.produceValue(aValue);
+        newValue = this.produceValue('value', aValue);
         this.setDisplayValue(newValue);
 
         return this;
@@ -1108,7 +1108,7 @@ function(aValue, shouldSignal) {
 
     oldValue = this.getValue();
 
-    newValue = this.produceValue(aValue);
+    newValue = this.produceValue('value', aValue);
 
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
@@ -3130,7 +3130,7 @@ function(aValue, shouldSignal) {
 
     oldValue = this.getValue();
 
-    newValue = this.produceValue(aValue);
+    newValue = this.produceValue('value', aValue);
 
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {

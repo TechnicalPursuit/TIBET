@@ -2538,7 +2538,7 @@ function(aContentObject, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('produceValue',
-function(aContentObject, aRequest) {
+function(aspectName, aContentObject, aRequest) {
 
     /**
      * @method produceValue
@@ -2548,6 +2548,8 @@ function(aContentObject, aRequest) {
      *     'isScalarValued()' methods to produce the proper value for the
      *     receiver. See the method description for isScalarValued() for more
      *     information.
+     * @param {String} aspectName The aspect name on the receiver that the value
+     *     is being produced for. Many times, this is 'value'.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      */
@@ -2566,7 +2568,7 @@ function(aContentObject, aRequest) {
     //  Reduce the content so we're not dealing with an Array when we're
     //  single-valued... no point in either observing too much or in running it
     //  all through a formatting pipeline when we only want one value.
-    if (this.isSingleValued()) {
+    if (this.isSingleValued(aspectName)) {
         input = this.$reduceValue(input, aRequest);
     }
 
@@ -2574,7 +2576,7 @@ function(aContentObject, aRequest) {
     //  convert them into a proper scalar value. The same is true for any
     //  collection of input, we've got to convert it into a collection of scalar
     //  values rather than a collection of more complex objects
-    if (this.isScalarValued()) {
+    if (this.isScalarValued(aspectName)) {
         if (TP.isString(input)) {
             value = input;
         } else if (TP.isNode(input)) {
@@ -3042,7 +3044,7 @@ function(aValue, shouldSignal) {
 
     var newValue;
 
-    newValue = this.produceValue(aValue);
+    newValue = this.produceValue('value', aValue);
 
     return this.setTextContent(newValue, shouldSignal);
 });
@@ -12373,7 +12375,7 @@ function(aspectName) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('produceValue',
-function(aContentObject, aRequest) {
+function(aspectName, aContentObject, aRequest) {
 
     /**
      * @method produceValue
@@ -12383,6 +12385,8 @@ function(aContentObject, aRequest) {
      *     'isScalarValued()' methods to produce the proper value for the
      *     receiver. See the method description for isScalarValued() for more
      *     information.
+     * @param {String} aspectName The aspect name on the receiver that the value
+     *     is being produced for. Many times, this is 'value'.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
      */
@@ -12695,7 +12699,7 @@ function(aValue, shouldSignal) {
 
         newValue;
 
-    newValue = this.produceValue(aValue);
+    newValue = this.produceValue('value', aValue);
 
     if (TP.isString(newValue)) {
         this.setTextContent(newValue, shouldSignal);
@@ -13379,12 +13383,11 @@ function(aValue, shouldSignal) {
 
     var newValue;
 
-    newValue = this.produceValue(aValue);
+    newValue = this.produceValue('value', aValue);
 
     return this.getOwnerElement().setAttribute(
                                         this.getNativeNode().nodeName,
                                         newValue);
-
 });
 
 //  ========================================================================
