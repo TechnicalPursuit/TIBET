@@ -142,6 +142,8 @@ TP.hc(
             val,
             bindAttr,
 
+            isSingleValued,
+
             outputStr;
 
         //  Use the 'old ActiveX way' to parse the document - this parser
@@ -198,6 +200,8 @@ TP.hc(
 
             val = srcAttr.nodeValue;
 
+            isSingleValued = false;
+
             //  If the expression starts and ends exactly (modulo whitespace)
             //  with '[[' and ']]', and it doesn't contain ACP variables or
             //  formatting expressions, then we can trim off the '[[' and ']]'.
@@ -214,6 +218,12 @@ TP.hc(
                 //  either the start or end, then we quote the entire
                 //  expression.
                 val = val.quoted('\'');
+
+                //  Since we'll be putting this through a transformation
+                //  function that will probably expect a single value, we need
+                //  to mark it as such below. If the tag type doesn't want this,
+                //  it will need to override the 'isSingleValued()' method.
+                isSingleValued = true;
             }
 
             //  There was no existing bind:io attribute - build one and set
@@ -223,6 +233,13 @@ TP.hc(
                         TP.w3.Xmlns.BIND,
                         'bind:io',
                         '{' + srcAttr.name + ': ' + val + '}');
+
+                if (isSingleValued) {
+                    ownerElem.setAttributeNS(
+                            TP.w3.Xmlns.TIBET,
+                            'tibet:isSingleValued',
+                            srcAttr.name);
+                }
             } else {
                 //  Already have a bind:io attribute - add to it.
                 bindAttr.nodeValue =
@@ -279,6 +296,8 @@ TP.hc(
             val,
             bindAttr,
 
+            isSingleValued,
+
             outputStr;
 
         //  Use the 'old ActiveX way' to parse the document - this parser
@@ -325,6 +344,8 @@ TP.hc(
 
             val = srcAttr.nodeValue;
 
+            isSingleValued = false;
+
             //  If the expression starts and ends exactly (modulo whitespace)
             //  with '[[' and ']]', and it doesn't contain ACP variables or
             //  formatting expressions, then we can trim off the '[[' and ']]'.
@@ -341,6 +362,12 @@ TP.hc(
                 //  either the start or end, then we quote the entire
                 //  expression.
                 val = val.quoted('\'');
+
+                //  Since we'll be putting this through a transformation
+                //  function that will probably expect a single value, we need
+                //  to mark it as such below. If the tag type doesn't want this,
+                //  it will need to override the 'isSingleValued()' method.
+                isSingleValued = true;
             }
 
             //  There was no existing bind:io attribute - build one and set
@@ -354,6 +381,17 @@ TP.hc(
                 ownerElem.setAttributeNode(bindAttr);
 
                 bindAttr.nodeValue = '{' + srcAttr.name + ': ' + val + '}';
+
+                if (isSingleValued) {
+                    bindAttr = activeXDoc.createNode(
+                                            Node.ATTRIBUTE_NODE,
+                                            'tibet:isSingleValued',
+                                            TP.w3.Xmlns.TIBET);
+
+                    ownerElem.setAttributeNode(bindAttr);
+
+                    bindAttr.nodeValue = srcAttr.name;
+                }
             } else {
                 //  Already have a bind:io attribute - add to it.
                 bindAttr.nodeValue =
