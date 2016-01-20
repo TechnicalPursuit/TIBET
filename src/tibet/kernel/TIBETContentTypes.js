@@ -1041,7 +1041,9 @@ function(aPath) {
         return this;
     }
 
-    return this.$get('data');
+    //  Make sure to call the specific getData() handler here so that any
+    //  necessary conversion takes place.
+    return this.getData();
 });
 
 //  ------------------------------------------------------------------------
