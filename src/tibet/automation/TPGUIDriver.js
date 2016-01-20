@@ -443,25 +443,11 @@ function(aURI, aWindow) {
 
             promise = TP.extern.Promise.construct(
                             function(resolver, rejector) {
-                                var request,
-                                    onloadFunc;
+                                var request;
 
                                 request = TP.request();
 
-                                //  We fork() the onload function here to give
-                                //  the GUI a chance to refresh before we
-                                //  manipulate it. Note that the return value
-                                //  from fork() is the timeout used to schedule
-                                //  it - but the TP.ONLOAD property on the
-                                //  request expects a Function object, therefore
-                                //  we have to wrap it.
-
-                                onloadFunc =
-                                    function() {
-                                        resolver.fork(100);
-                                    };
-
-                                request.atPut(TP.ONLOAD, onloadFunc);
+                                request.atPut(TP.ONLOAD, resolver);
                                 request.atPut(TP.ONFAIL, rejector);
 
                                 tpWin.setLocation(aURI, request);
