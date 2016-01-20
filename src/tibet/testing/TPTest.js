@@ -3031,10 +3031,7 @@ function(options) {
                         //  'thenable'), use it.
                         if (TP.isThenable(maybe)) {
 
-                            //  NB: We use 'done()' here rather than 'then()'
-                            //  as per the recommendation of the Q
-                            //  documentation.
-                            maybe.done(
+                            maybe.then(
                                 function(obj) {
 
                                     //  Make sure to set the testcase to be
@@ -3101,14 +3098,11 @@ function(options) {
                         //  Based on the evaluation of that, the testcase will
                         //  have been considered to have passed or failed.
 
-                        //  NB: Note how we use 'done()' here as the *last* part
-                        //  of the chain rather than 'then()' as per the
-                        //  recommendation of the Q documentation.
                         if (TP.isThenable(maybe)) {
                             internalPromise.then(
                                 function(obj) {
                                     return maybe;
-                                }).done(
+                                }).then(
                                 function(obj) {
 
                                     //  Make sure to set the testcase to be
