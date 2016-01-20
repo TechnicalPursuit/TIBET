@@ -318,7 +318,7 @@ function(aSalt, params) {
     //  Default the keySize to TP.PBKDF2_KEYSIZE and the iteration count to
     //  TP.PBKDF_ITERATION_COUNT if they're not defined (or 'params' isn't
     //  defined at all).
-    if (TP.isKindOf(params, TP.core.Hash)) {
+    if (TP.isHash(params)) {
         keySize = params.atIfInvalid('keySize', TP.PBKDF2_KEYSIZE);
         iterationCount = params.atIfInvalid('iterationCount',
                                             TP.PBKDF2_ITERATION_COUNT);

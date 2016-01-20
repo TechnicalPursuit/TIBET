@@ -1628,7 +1628,7 @@ function(anObject, nodeContext) {
         return anObject;
     }
 
-    if (TP.isKindOf(anObject, TP.core.Hash) ||
+    if (TP.isHash(anObject) ||
         TP.isKindOf(anObject, TP.core.Point)) {
         return TP.ac(anObject.at('x'), anObject.at('y'));
     }

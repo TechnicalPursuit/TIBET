@@ -88,7 +88,7 @@ function(x, y) {
                 theData = theData.$get('data');
                 newData = {x: theData.x,
                             y: theData.y};
-            } else if (TP.isKindOf(theData, TP.core.Hash)) {
+            } else if (TP.isHash(theData)) {
                 newData = {x: theData.at('x') || theData.at('left'),
                             y: theData.at('y') || theData.at('top')};
             } else if (TP.isArray(theData)) {
@@ -1003,7 +1003,7 @@ function(x, y, width, height) {
                             y: theData.y,
                             width: theData.width,
                             height: theData.height};
-            } else if (TP.isKindOf(theData, TP.core.Hash)) {
+            } else if (TP.isHash(theData)) {
                 newData = {x: theData.at('x') || theData.at('left'),
                             y: theData.at('y') || theData.at('top'),
                             width: theData.at('width'),

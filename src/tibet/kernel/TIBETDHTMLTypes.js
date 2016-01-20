@@ -4846,7 +4846,7 @@ function(aValue) {
     //  avoid MxN iterations by creating a hash of aValues
     if (TP.isArray(aValue)) {
         dict = TP.hc().addAllKeys(aValue, '');
-    } else if (TP.isKindOf(aValue, TP.core.Hash)) {
+    } else if (TP.isHash(aValue)) {
         dict = TP.hc().addAllKeys(aValue.getValues());
     } else if (TP.isMemberOf(aValue, Object)) {
         dict = TP.hc();

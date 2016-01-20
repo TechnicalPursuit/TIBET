@@ -2116,7 +2116,7 @@ function(aPath, config) {
 
     this.set('srcPath', aPath);
 
-    if (TP.isKindOf(config, TP.core.Hash)) {
+    if (TP.isHash(config)) {
         this.set('shouldMakeStructures',
                     config.atIfInvalid('shouldMakeStructures', false));
         this.set('packageWith', config.atIfInvalid('packageWith', null));
@@ -3605,7 +3605,7 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
-    if (TP.isKindOf(config, TP.core.Hash)) {
+    if (TP.isHash(config)) {
         this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
     } else {
         this.set('shouldCollapse', true);
@@ -4871,7 +4871,7 @@ function(aPath, config) {
 
     this.callNextMethod(path, config);
 
-    if (TP.isKindOf(config, TP.core.Hash)) {
+    if (TP.isHash(config)) {
         this.set('shouldCollapse', config.atIfInvalid('shouldCollapse', true));
     } else {
         this.set('shouldCollapse', true);
@@ -6712,7 +6712,7 @@ function(aPath, config) {
 
     this.callNextMethod();
 
-    if (TP.isKindOf(config, TP.core.Hash)) {
+    if (TP.isHash(config)) {
         this.set('shouldMakeValues',
                     config.atIfInvalid('shouldMakeValues', true));
     } else {
@@ -8359,7 +8359,7 @@ function(aPath, config, forceNative) {
     }
 
     if (TP.regex.TEXT_NODE_ENDS.test(tnTestPath)) {
-        if (TP.isKindOf(config, TP.core.Hash)) {
+        if (TP.isHash(config)) {
             this.set('shouldCollapse',
                         config.atIfInvalid('shouldCollapse', true));
         } else {

@@ -296,7 +296,7 @@ function(nodeSpec, varargs) {
     //  If varargs is a TP.core.Hash and inst is an instance of some subtype
     //  of TP.core.ElementNode, then try to execute '.setAttribute()'
     //  against the new instance for each key in the hash.
-    if (TP.isKindOf(varargs, 'TP.core.Hash') &&
+    if (TP.isHash(varargs) &&
         TP.isKindOf(inst, 'TP.core.ElementNode')) {
         varargs.perform(
             function(kvPair) {
@@ -2608,7 +2608,7 @@ function(aspectName, aContentObject, aRequest) {
                 result.atPut(i, TP.val(input.at(i)));
             }
             value = result;
-        } else if (TP.isKindOf(input, TP.core.Hash)) {
+        } else if (TP.isHash(input)) {
             result = TP.hc();
             keys = input.getKeys();
             len = keys.getSize();
@@ -2710,7 +2710,7 @@ function(theContent, anIndex) {
 
         index = TP.ifInvalid(anIndex, TP.keys(result).first());
 
-        if (TP.isKindOf(result, TP.core.Hash)) {
+        if (TP.isHash(result)) {
             result = result.at(index);
         } else {
             result = result[index];

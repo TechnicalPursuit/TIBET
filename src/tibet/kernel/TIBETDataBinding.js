@@ -2963,7 +2963,7 @@ function(aNode, aResource, pathValues, anIndex, numTotalValues, repeatResourceRe
         '$ODD', index % 2 !== 0,
         '$#', index);
 
-    resourceIsHash = TP.isKindOf(aResource, TP.core.Hash);
+    resourceIsHash = TP.isHash(aResource);
 
     for (j = 0; j < allTextNodes.length; j++) {
         textNode = allTextNodes[j];

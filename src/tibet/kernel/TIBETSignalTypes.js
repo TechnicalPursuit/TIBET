@@ -1214,7 +1214,7 @@ function(aPayload) {
 
     var hash;
 
-    hash = TP.isKindOf(aPayload, TP.core.Hash) ? aPayload : TP.hc();
+    hash = TP.isHash(aPayload) ? aPayload : TP.hc();
     hash.addIfAbsent(
             'target', null,
             'currentTarget', null,

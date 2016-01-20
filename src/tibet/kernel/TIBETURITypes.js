@@ -3662,7 +3662,7 @@ function(headerData) {
 
     dict = this.$get('headers');
 
-    if (TP.isKindOf(headerData, TP.core.Hash)) {
+    if (TP.isHash(headerData)) {
         if (TP.isValid(dict)) {
             dict.addAll(headerData);
         } else {
@@ -5139,7 +5139,7 @@ function(aRequest) {
             //  No concrete handler type for the MIME type? Use the string.
             result = dat;
         }
-    } else if (TP.isKindOf(dat, 'TP.core.Hash')) {
+    } else if (TP.isHash(dat)) {
         tname = dat.at('type');
         if (TP.isString(tname) &&
             TP.isType(type = TP.sys.getTypeByName(tname)) &&

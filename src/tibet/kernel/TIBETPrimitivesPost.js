@@ -4723,7 +4723,7 @@ function(anObject) {
         return newObj;
     }
 
-    if (TP.isKindOf(anObject, TP.core.Hash)) {
+    if (TP.isHash(anObject)) {
         keys = TP.keys(anObject);
 
         newObj = TP.hc();
@@ -4818,7 +4818,7 @@ function(anObject) {
         return newObj;
     }
 
-    if (TP.isKindOf(anObject, TP.core.Hash)) {
+    if (TP.isHash(anObject)) {
         keys = TP.keys(anObject);
 
         newObj = TP.hc();
