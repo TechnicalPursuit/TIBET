@@ -4913,9 +4913,6 @@ function(aPath, aScheme) {
 
     var scheme,
 
-        splitter,
-        stripper,
-
         predicateExprs,
         path,
 
@@ -4934,16 +4931,13 @@ function(aPath, aScheme) {
 
         case 'css':
 
-            splitter = /( +|\s*[+>~](?:!=)\s*|,)/;
-            stripper = /^(\s*| +|\s*[+>~]\s*|,)$/;
-
             //  Split along separators, etc.
-            results = aPath.split(splitter);
+            results = aPath.split(TP.regex.CSS_PATH_SPLITTER);
 
             //  Strip out anything that would be empty or separator characters.
             results = results.filter(
                         function(item, index) {
-                            return !stripper.test(item);
+                            return !TP.regex.CSS_PATH_STRIPPER.test(item);
                         });
 
             break;
@@ -4966,11 +4960,8 @@ function(aPath, aScheme) {
                         '__PRED__',
                         '__PRED__');
 
-            splitter = /(\.\.|\.|\w+)/;
-            stripper = /^(\s*|\.)$/;
-
             //  Split along separators, etc.
-            results = path.split(splitter);
+            results = path.split(TP.regex.JSON_PATH_SPLITTER);
 
             //  Iterate over the results, encoding certain values in certain
             //  ways, and putting the captured predicates back into what is now
@@ -5003,7 +4994,7 @@ function(aPath, aScheme) {
             //  Strip out anything that would be empty or separator characters.
             results = results.filter(
                         function(item, index) {
-                            return !stripper.test(item);
+                            return !TP.regex.JSON_PATH_STRIPPER.test(item);
                         });
 
             //  If there were any 'double period' constructs, convert them to an
@@ -5038,11 +5029,8 @@ function(aPath, aScheme) {
                         '__PRED__',
                         '__PRED__');
 
-            splitter = /(\/\/|\/|@?[A-Za-z0-9_:.-]+\*?|\||\*\w+)/;
-            stripper = /^(\s*|\/|\|)$/;
-
             //  Split along separators, etc.
-            results = path.split(splitter);
+            results = path.split(TP.regex.XPATH_PATH_SPLITTER);
 
             //  Iterate over the results, encoding certain values in certain
             //  ways, and putting the captured predicates back into what is now
@@ -5075,7 +5063,7 @@ function(aPath, aScheme) {
             //  Strip out anything that would be empty or separator characters.
             results = results.filter(
                         function(item, index) {
-                            return !stripper.test(item);
+                            return !TP.regex.XPATH_PATH_STRIPPER.test(item);
                         });
 
             //  If there were any 'double slash' constructs, convert them to an
@@ -5093,14 +5081,10 @@ function(aPath, aScheme) {
             break;
 
         default:
-            splitter = null;
+            break;
     }
 
-    if (TP.isRegExp(splitter)) {
-        return results;
-    }
-
-    return TP.ac();
+    return results;
 });
 
 //  ------------------------------------------------------------------------

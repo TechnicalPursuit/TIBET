@@ -2998,6 +2998,19 @@ TP.regex.XPATH_POINTER = /(xpointer|xpath1)\((.*)\)/;
 TP.regex.XPATH_DEFAULTNS = new RegExp(
         '\\$def:((' + TP.XML_NAMECHAR + ')+)', 'g');    //  needs reset
 
+//  ---
+//  path parts splitters and strippers
+//  ---
+
+TP.regex.CSS_PATH_SPLITTER = /( +|\s*[+>~](?:!=)\s*|,)/;
+TP.regex.CSS_PATH_STRIPPER = /^(\s*| +|\s*[+>~]\s*|,)$/;
+
+TP.regex.JSON_PATH_SPLITTER = /(\.\.|\.|\w+)/;
+TP.regex.JSON_PATH_STRIPPER = /^(\s*|\.)$/;
+
+TP.regex.XPATH_PATH_SPLITTER = /(\/\/|\/|@?[A-Za-z0-9_:.-]+\*?|\||\*\w+)/;
+TP.regex.XPATH_PATH_STRIPPER = /^(\s*|\/|\|)$/;
+
 //  ------------------------------------------------------------------------
 //  MISC VARIABLES
 //  ------------------------------------------------------------------------
