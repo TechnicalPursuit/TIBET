@@ -1500,12 +1500,7 @@ function(aProvider) {
 
     this.stdout =
             function(anObject, aRequest) {
-                //  If we're running under phantomjs we want to avoid output of
-                //  just [object Object] for anything "interesting".
-                if (TP.sys.cfg('boot.context') === 'phantomjs') {
-                    return aProvider.stdout(
-                        TP.json(anObject), aRequest);
-                }
+
                 return aProvider.stdout(anObject, aRequest);
             };
 
