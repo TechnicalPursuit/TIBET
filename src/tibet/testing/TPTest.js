@@ -2267,10 +2267,6 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
         info;
 
-    //  NOTE that even though we had an error we still resolve, not reject. This
-    //  allows other test cases to continue to be processed.
-    this.$resolve();
-
     this.set('msend', Date.now());
 
     msg = ('not ok - ' + this.getCaseName() + ' error' +
@@ -2336,11 +2332,6 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     var msg,
         info;
-
-    //  NOTE that even though we had a failure we still resolve, not reject.
-    //  This allows other test cases to continue to be processed in the same
-    //  chain with passing tasks.
-    this.$resolve();
 
     this.set('msend', Date.now());
 
@@ -2827,7 +2818,6 @@ function() {
     }
 
     this.complete();
-    this.$resolve();
 
     this.set('msend', Date.now());
 
@@ -3051,6 +3041,11 @@ function(options) {
                                     } else {
                                         testcase.pass();
                                     }
+
+                                    //  Make sure to resolve() the Promise above
+                                    //  here so that the rest of the chain after
+                                    //  this test case continues to process.
+                                    resolver();
                                 },
                                 function(err) {
                                     //  NOTE that if we fail at this level the
@@ -3063,6 +3058,11 @@ function(options) {
                                     } else {
                                         testcase.fail(err);
                                     }
+
+                                    //  Make sure to resolve() the Promise above
+                                    //  here so that the rest of the chain after
+                                    //  this test case continues to process.
+                                    resolver();
                                 });
                         } else {
 
@@ -3088,6 +3088,11 @@ function(options) {
                             } else {
                                 testcase.pass();
                             }
+
+                            //  Make sure to resolve() the Promise above here so
+                            //  that the rest of the chain after this test case
+                            //  continues to process.
+                            resolver();
                         }
                     } else {
                         //  There was an internal Promise.
@@ -3122,6 +3127,11 @@ function(options) {
                                     } else {
                                         testcase.pass();
                                     }
+
+                                    //  Make sure to resolve() the Promise above
+                                    //  here so that the rest of the chain after
+                                    //  this test case continues to process.
+                                    resolver();
                                 },
                                 function(err) {
                                     //  NOTE that if we fail at this level the
@@ -3134,13 +3144,18 @@ function(options) {
                                     } else {
                                         testcase.fail(err);
                                     }
+
+                                    //  Make sure to resolve() the Promise above
+                                    //  here so that the rest of the chain after
+                                    //  this test case continues to process.
+                                    resolver();
                                 });
 
                         } else {
                             //  The test method didn't return a Promise - just
                             //  'then()' onto our internal promise to either
                             //  pass or fail the testcase.
-                            internalPromise.done(
+                            internalPromise.then(
                                 function(obj) {
 
                                     //  Make sure to set the testcase to be
@@ -3161,6 +3176,11 @@ function(options) {
                                     } else {
                                         testcase.pass();
                                     }
+
+                                    //  Make sure to resolve() the Promise above
+                                    //  here so that the rest of the chain after
+                                    //  this test case continues to process.
+                                    resolver();
                                 },
                                 function(err) {
                                     //  NOTE that if we fail at this level the
@@ -3173,6 +3193,11 @@ function(options) {
                                     } else {
                                         testcase.fail(err);
                                     }
+
+                                    //  Make sure to resolve() the Promise above
+                                    //  here so that the rest of the chain after
+                                    //  this test case continues to process.
+                                    resolver();
                                 });
                         }
                     }
