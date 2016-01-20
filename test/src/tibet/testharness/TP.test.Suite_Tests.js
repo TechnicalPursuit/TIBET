@@ -192,7 +192,7 @@ function() {
 
     this.it('promise chain test', function(test, options) {
 
-        test.pass();
+        test.assert.isTrue(true);
 
         //  A statement in the code body should be seen first
         TP.sys.logTest('You should see this - #7', TP.DEBUG);
