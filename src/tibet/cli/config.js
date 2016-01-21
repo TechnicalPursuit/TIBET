@@ -92,8 +92,8 @@ Cmd.prototype.execute = function() {
     }
 
     if (/\=/.test(option)) {
-        parts = option.split('=');
-        return this.setConfig(parts[0], parts[1]);
+        return this.setConfig(option.slice(0, option.indexOf('=')),
+            option.slice(option.indexOf('=') + 1));
     } else if (option === '~') {
         cfg = CLI.getAppHead();
     } else if (option === '~app' || option === '~app_root') {
