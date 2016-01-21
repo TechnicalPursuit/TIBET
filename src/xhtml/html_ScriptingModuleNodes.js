@@ -113,8 +113,31 @@ function(aSrc) {
     /**
      * @method reloadFromAttrSrc
      * @summary Reloads the receiver with the content found at the end of the
-     *     src.
+     *     src by refreshing the 'src' attribute. This will *not* cause the
+     *     'whole source text' to be brought in.
      * @param {String} aSrc The URL that the receiver will use to reload its
+     *     content.
+     * @returns {TP.html.script} The receiver.
+     */
+
+    //  For now, we just use the same routine as loading script using the whole
+    //  text source.
+
+    //  TODO: Convert this to using the boot system to (re)load by setting the
+    //  'src' attribute of the native node.
+    return this.reloadFromAttrSource(aSrc);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.script.Inst.defineMethod('reloadFromAttrSource',
+function(aSource) {
+
+    /**
+     * @method reloadFromAttrSource
+     * @summary Reloads the receiver with the content found at the end of the
+     *     source by bringing in the whole source content and refreshing it.
+     * @param {String} aSource The URL that the receiver will use to reload its
      *     content.
      * @returns {TP.html.script} The receiver.
      */
@@ -125,11 +148,12 @@ function(aSrc) {
         defining,
         typenames;
 
-    if (TP.notEmpty(aSrc)) {
+    if (TP.notEmpty(aSource)) {
 
-        srcURL = TP.uc(aSrc);
+        srcURL = TP.uc(aSource);
         if (!TP.isURI(srcURL)) {
-            return this.raise('InvalidURI', 'Not a valid \'src\' URI: ' + aSrc);
+            return this.raise('InvalidURI',
+                                'Not a valid \'src\' URI: ' + aSource);
         }
 
         resp = srcURL.getResource(TP.hc('async', false, 'refresh', true));
@@ -137,7 +161,7 @@ function(aSrc) {
 
         if (TP.notValid(src)) {
             return this.raise('InvalidString',
-                                'No valid Javascript source from: ' + aSrc);
+                                'No valid Javascript source from: ' + aSource);
         }
 
 
@@ -159,17 +183,41 @@ function(aSrc) {
             TP.sys.definingTypename = defining;
         }
 
-        typenames.forEach(function(typename) {
-            var type;
+        typenames.forEach(
+                function(typename) {
+                    var type;
 
-            type = TP.sys.getTypeByName(typename);
-            if (TP.canInvoke(type, 'refreshInstances')) {
-                type.refreshInstances();
-            }
-        });
+                    type = TP.sys.getTypeByName(typename);
+                    if (TP.canInvoke(type, 'refreshInstances')) {
+                        type.refreshInstances();
+                    }
+                });
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.script.Inst.defineMethod('setAttrSource',
+function(aSource) {
+
+    /**
+     * @method setAttrSource
+     * @summary Sets the 'source' that the receiver will use to retrieve its
+     *     content. Note that this refreshes the source by causing the entire
+     *     text content of the script node to be brought in.
+     * @param {String} aSource The URL that the receiver will use to fetch its
+     *     content.
+     */
+
+    this.$setAttribute('source', aSource);
+
+    //  reload from the content found at the 'source'.
+    this.reloadFromAttrSource(aSource);
+
+    //  setting an attribute returns void according to the spec
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -180,12 +228,14 @@ function(aSrc) {
     /**
      * @method setAttrSrc
      * @summary Sets the src that the receiver will use to retrieve its
-     *     content.
+     *     content. Note that this just refreshes the 'src' attribute and does
+     *     not cause the entire text content of the script node to be brought
+     *     in.
      * @param {String} aSrc The URL that the receiver will use to fetch its
      *     content.
      */
 
-    this.$setAttribute('href', aSrc);
+    this.$setAttribute('src', aSrc);
 
     //  reload from the content found at the src.
     this.reloadFromAttrSrc(aSrc);
