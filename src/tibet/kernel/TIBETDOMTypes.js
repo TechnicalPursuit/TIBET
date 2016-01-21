@@ -12244,6 +12244,9 @@ function(aSignal) {
         i,
 
         attrName,
+        attrVal,
+        attrURI,
+
         val,
 
         methodName;
@@ -12268,23 +12271,26 @@ function(aSignal) {
 
             attrName = reloadableAttrs.at(i);
 
-            //  Grab any URI location value that can be computed from the
-            //  result of getting the attribute on ourself (and removing any
-            //  'unique query' cache-busting string from it).
-            val = TP.uriRemoveUniqueQuery(
-                    TP.uc(this.getAttribute(attrName)).getLocation());
+            if (TP.notEmpty(attrVal = this.getAttribute(attrName)) &&
+                    TP.isURI(attrURI = TP.uc(attrVal))) {
 
-            //  If that value equals the location that changed, call the proper
-            //  messaging machinery.
-            if (val === originLocation) {
+                //  Grab any URI location value that can be computed from the
+                //  result of getting the attribute on ourself (and removing any
+                //  'unique query' cache-busting string from it).
+                val = TP.uriRemoveUniqueQuery(attrURI.getLocation());
 
-                //  Compute a method name for reloading the resource referenced
-                //  by that attribute on ourself and invoke it if we respond to
-                //  that method..
-                methodName = 'reloadFromAttr' + attrName.asTitleCase();
-                if (TP.canInvoke(this, methodName)) {
-                    this[methodName](val);
-                    break;
+                //  If that value equals the location that changed, call the
+                //  proper messaging machinery.
+                if (val === originLocation) {
+
+                    //  Compute a method name for reloading the resource
+                    //  referenced by that attribute on ourself and invoke it if
+                    //  we respond to that method.
+                    methodName = 'reloadFromAttr' + attrName.asTitleCase();
+                    if (TP.canInvoke(this, methodName)) {
+                        this[methodName](val);
+                        break;
+                    }
                 }
             }
         }
