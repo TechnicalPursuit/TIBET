@@ -265,7 +265,7 @@ function(aValue) {
 
     node = this.getNativeNode();
 
-    if (!TP.isKindOf(aValue, TP.core.Hash)) {
+    if (!TP.isHash(aValue)) {
         return this.raise('TP.sig.InvalidParameter',
                             'Must provide a hash of key value pairs.');
     }

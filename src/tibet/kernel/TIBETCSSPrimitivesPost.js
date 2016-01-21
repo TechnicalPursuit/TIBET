@@ -1840,7 +1840,7 @@ function(anElement, theStyle) {
         styleObj.cssText = null;
     } else if (TP.isString(theStyle)) {
         styleObj.cssText = theStyle;
-    } else if (TP.isKindOf(theStyle, 'TP.core.Hash')) {
+    } else if (TP.isHash(theStyle)) {
         //  Pass 'false' to not quote values with whitespace.
         styleObj.cssText = TP.styleStringFromHash(theStyle, false);
     } else {

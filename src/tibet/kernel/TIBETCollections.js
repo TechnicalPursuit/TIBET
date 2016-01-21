@@ -4594,7 +4594,7 @@ function() {
                 for (i = 0; i < len; i++) {
                     this.atPut(attrs[i].name, attrs[i].value);
                 }
-            } else if (TP.isKindOf(obj, TP.core.Hash)) {
+            } else if (TP.isHash(obj)) {
                 return obj;
             } else {
                 if (TP.isPlainObject(obj)) {
@@ -6700,7 +6700,7 @@ function(aHash, aTest) {
         changeSet,
         source;
 
-    if (!TP.isKindOf(aHash, TP.core.Hash)) {
+    if (!TP.isHash(aHash)) {
         return this.raise('InvalidHash', aHash);
     }
 
@@ -7729,7 +7729,7 @@ function(anIndex) {
             //  'entry' to be the 'next TP.core.Hash in line'
             item = entry.at(index);
 
-            if (!TP.isKindOf(item, TP.core.Hash)) {
+            if (!TP.isHash(item)) {
                 return null;
             }
 
@@ -7825,7 +7825,7 @@ function(anIndex, aValue) {
             //  next 'entry' to be the 'next TP.core.Hash in line'
             item = entry.at(index);
 
-            if (!TP.isKindOf(item, TP.core.Hash)) {
+            if (!TP.isHash(item)) {
                 item = TP.hc();
                 entry.atPut(index, item);
                 op = TP.INSERT;

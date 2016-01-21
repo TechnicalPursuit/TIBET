@@ -52,7 +52,7 @@ function(anEntry) {
     entry = arglist.first();
 
     //  Only pass along entries that are ok/not ok.
-    if (TP.isKindOf(entry, TP.core.Hash)) {
+    if (TP.isHash(entry)) {
         text = entry.at('statusText')
     } else {
         text = entry.get('statusText');
@@ -83,6 +83,7 @@ function(anEntry) {
  *     coverage: null
  * });
  */
+
 TP.log.Layout.defineSubtype('KarmaLayout');
 
 //  ----------------------------------------------------------------------------
@@ -111,7 +112,7 @@ function(anEntry) {
 
     //  A bit of variation on input here. Hash, Case, or Suite. For Case/Suite
     //  we can use get() but for Hash we can just convert to object form.
-    if (TP.isKindOf(entry, TP.core.Hash)) {
+    if (TP.isHash(entry)) {
         //  Simple conversion to an object when using hashes.
         obj = entry.asObject();
         text = obj.statusText;

@@ -1875,7 +1875,7 @@ TP.hc(
                     args = commandArgs;
                 } else if (TP.isArray(commandArgs)) {
                     args = commandArgs.join(' ');
-                } else if (TP.isKindOf(commandArgs, TP.core.Hash)) {
+                } else if (TP.isHash(commandArgs)) {
                     args = commandArgs.asArray().flatten().join(' ');
                 } else {
                     args = '';
@@ -2391,7 +2391,7 @@ TP.hc(
                 args = commandArgs;
             } else if (TP.isArray(commandArgs)) {
                 args = commandArgs.join(' ');
-            } else if (TP.isKindOf(commandArgs, TP.core.Hash)) {
+            } else if (TP.isHash(commandArgs)) {
                 args = commandArgs.asArray().flatten().join(' ');
             } else {
                 args = '';

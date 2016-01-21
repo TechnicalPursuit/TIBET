@@ -3080,7 +3080,7 @@ function(aPointOrObject) {
     if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
         styleObj.left = aPointOrObject.getX() + 'px';
         styleObj.top = aPointOrObject.getY() + 'px';
-    } else if (TP.isKindOf(aPointOrObject, TP.core.Hash)) {
+    } else if (TP.isHash(aPointOrObject)) {
         styleObj.left = aPointOrObject.at('x') + 'px';
         styleObj.top = aPointOrObject.at('y') + 'px';
     } else if (TP.isArray(aPointOrObject)) {
@@ -3120,7 +3120,7 @@ function(aRectOrObject) {
         styleObj.top = aRectOrObject.getY() + 'px';
         styleObj.width = aRectOrObject.getWidth() + 'px';
         styleObj.height = aRectOrObject.getHeight() + 'px';
-    } else if (TP.isKindOf(aRectOrObject, TP.core.Hash)) {
+    } else if (TP.isHash(aRectOrObject)) {
         styleObj.left = aRectOrObject.at('x') + 'px';
         styleObj.top = aRectOrObject.at('y') + 'px';
         styleObj.width = aRectOrObject.at('width') + 'px';

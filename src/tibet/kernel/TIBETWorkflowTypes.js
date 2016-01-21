@@ -1427,7 +1427,7 @@ function(aRequest) {
         }
     } else if (TP.isKindOf(aRequest, TP.sig.Request)) {
         request = TP.copy(aRequest.getPayload());
-    } else if (TP.isKindOf(aRequest, TP.core.Hash)) {
+    } else if (TP.isHash(aRequest)) {
         request = aRequest;
     } else {
         request = TP.hc(aRequest);
