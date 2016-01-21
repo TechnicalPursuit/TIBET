@@ -2298,6 +2298,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
     var facet,
 
+        pathOptions,
+
         aspect,
 
         entry,
@@ -2324,7 +2326,12 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         transformFunc,
         finalVal,
 
-        jsonContent;
+        jsonContent,
+
+        isXMLResource,
+        repeatInfo,
+        repeatIndex,
+        repeatSource;
 
     var start = Date.now();
 
@@ -2343,6 +2350,15 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
     primaryLocation = aSignal.getOrigin().getPrimaryLocation();
 
     theVal = TP.collapse(initialVal);
+
+    pathOptions = TP.hc();
+    if (this.isScalarValued(aspect)) {
+        pathOptions.atPut('extractWith', 'value');
+    }
+
+    if (this.isSingleValued(aspect)) {
+        pathOptions.atPut('shouldCollapse', true);
+    }
 
     len = infoKeys.getSize();
     for (i = 0; i < len; i++) {
@@ -2404,7 +2420,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
                 switch (pathType) {
                     case TP.XPATH_PATH_TYPE:
-                        path = TP.xpc(expr);
+                        path = TP.xpc(expr, pathOptions);
 
                         if (TP.isXMLNode(theVal)) {
                             finalVal = path.executeGet(TP.wrap(theVal));
@@ -2419,7 +2435,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                             expr = '$.' + expr;
                         }
 
-                        path = TP.jpc(expr);
+                        path = TP.jpc(expr, pathOptions);
 
                         //  Because of the check above, theVal has to be a
                         //  JSONContent object here.
@@ -2428,7 +2444,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                         break;
 
                     case TP.TIBET_PATH_TYPE:
-                        path = TP.tpc(expr);
+                        path = TP.tpc(expr, pathOptions);
 
                         finalVal = path.executeGet(theVal);
                         break;
@@ -2439,27 +2455,28 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 }
 
             } else {
+
                 if (TP.regex.COMPOSITE_PATH.test(expr)) {
                     if (TP.isValid(entry.at('transformFunc'))) {
                         finalVal = theVal;
                     } else {
-                        finalVal = TP.wrap(theVal).get(TP.apc(expr));
+                        finalVal = TP.wrap(theVal).get(TP.apc(expr, pathOptions));
                     }
                 } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
                     finalVal = theVal;
                 } else if (TP.isPlainObject(theVal)) {
                     finalVal = TP.hc(theVal).get(expr);
                 } else if (TP.isXMLNode(theVal)) {
-                    finalVal = TP.wrap(theVal).get(TP.xpc(expr));
+                    finalVal = TP.wrap(theVal).get(TP.xpc(expr, pathOptions));
                 } else if (TP.isKindOf(theVal, TP.core.Node)) {
-                    finalVal = theVal.get(TP.xpc(expr));
+                    finalVal = theVal.get(TP.xpc(expr, pathOptions));
                 } else if (TP.regex.JSON_POINTER.test(expr) ||
                             TP.regex.JSON_PATH.test(expr)) {
                     if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                        finalVal = TP.jpc(expr).executeGet(theVal);
+                        finalVal = TP.jpc(expr, pathOptions).executeGet(theVal);
                     } else {
                         jsonContent = TP.core.JSONContent.construct(theVal);
-                        finalVal = TP.jpc(expr).executeGet(jsonContent);
+                        finalVal = TP.jpc(expr, pathOptions).executeGet(jsonContent);
                     }
                 } else if (TP.notValid(theVal)) {
                     finalVal = null;
@@ -2474,29 +2491,15 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
             //}
         }
 
+
         if (TP.isValid(finalVal)) {
             if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
 
-        var isXMLResource,
-            repeatInfo,
-            repeatIndex,
-            repeatSource;
-
-                //  If we only accept 'single values' and finalVal is a
-                //  collection, try to collapse it for better results.
-                if (this.isSingleValued(aspect) && TP.isCollection(finalVal)) {
-                    finalVal = TP.collapse(finalVal);
+                if (TP.isCollection(finalVal)) {
+                    isXMLResource = TP.isXMLNode(TP.unwrap(finalVal.first()));
+                } else {
+                    isXMLResource = TP.isXMLNode(TP.unwrap(finalVal));
                 }
-
-                isXMLResource = TP.isXMLNode(TP.unwrap(finalVal));
-
-                /*
-                //  If finalVal is a Node, try to get it's value (i.e. for
-                //  Elements, it's text content) for better results
-                if (TP.isNode(finalVal)) {
-                    finalVal = TP.val(finalVal);
-                }
-                */
 
                 //  Important for the logic in the transformation Function to
                 //  set this to NaN and let the logic below set it if it finds
