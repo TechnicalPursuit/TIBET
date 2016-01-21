@@ -1809,7 +1809,7 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -1876,7 +1876,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeSort',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -1886,7 +1886,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeUniq',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 
@@ -1899,7 +1899,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeBreak',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -1909,7 +1909,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeExpect',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -1919,7 +1919,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeWatch',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -1931,7 +1931,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeJob',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -1941,7 +1941,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeKill',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -2105,7 +2105,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeInspect',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -2115,7 +2115,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeMan',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -3437,7 +3437,7 @@ function(aRequest) {
         aRequest.atPut('cmdAsIs', true);
         aRequest.stdout(entity);
     } else {
-        aRequest.stdout('Entity table dump not yet implemented.');
+        aRequest.stdout('Entity table dump coming soon.');
         aRequest.complete();
     }
 });
@@ -3783,7 +3783,7 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeBuiltins',
 function(aRequest) {
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -3931,7 +3931,7 @@ function(aRequest) {
      *     be less consistent.
      */
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
@@ -3980,7 +3980,7 @@ function(aRequest) {
      *     shell execution timing to an $observe call.
      */
 
-    aRequest.stdout('Not yet implemented.');
+    aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
 });
