@@ -374,26 +374,79 @@
         var handler;
 
         handler = function(aSignal, stdioResults) {
-            var str;
+            var result,
+                found,
+                results,
+                str;
 
-            if (TP.canInvoke(stdioResults, 'push')) {
-                if (TP.isValid(aSignal)) {
-                    stdioResults.push(aSignal.getResult());
+            //  Normalize the result data array. We rely on an array of results
+            //  so that buffered output can be processed and we can be sure of
+            //  the callPhantom call's wrapup steps which exit the process.
+            if (TP.isValid(stdioResults)) {
+                if (TP.isArray(stdioResults)) {
+                    results = stdioResults;
+                } else {
+                    //  Objects in the stdioResults array are supposed to be
+                    //  simple pojos with meta/data keys.
+                    if (TP.notValid(stdioResults.meta)) {
+                        results = [{
+                            meta: 'stdout',
+                            data: TP.json(stdioResults)
+                        }];
+                    } else {
+                        results = [stdioResults];
+                    }
+                }
+            } else {
+                results = [];
+            }
+
+            //  If we have signal data and it's not already represented in the
+            //  result array add it before getting to the output sequence.
+            if (TP.isValid(aSignal)) {
+                result = aSignal.getResult();
+                found = results.some(function(item) {
+                    return item.data === result;
+                });
+                if (!found) {
+                    results.push({
+                        meta: 'stdout',
+                        data: str
+                    });
                 }
             }
 
-            if (TP.notEmpty(stdioResults)) {
+            //  Normalize all data slots in result set to be string form.
+            results = results.map(function(item) {
+                var data;
+
                 try {
-                    str = JSON.stringify(stdioResults);
+                    if (TP.isString(item.data)) {
+                        data = item.data;
+                    } else {
+                        data = JSON.stringify(item.data);
+                    }
                 } catch (e) {
-                    str = TP.str(stdioResults);
+                    try {
+                        data = TP.str(item.data);
+                    } catch (e2) {
+                        data = item.data;
+                    }
                 }
 
-                if (TP.isEmpty(str)) {
-                    str = TP.boot.$dump(stdioResults);
+                if (TP.notValid(data)) {
+                    data = TP.boot.$dump(item.data);
                 }
-            }
 
+                return {
+                    meta: item.meta,
+                    data: data
+                }
+            });
+
+            str = JSON.stringify(results);
+
+            //  Notify/output the final results.
             try {
                 if (window.callPhantom) {
                     window.callPhantom(str);
