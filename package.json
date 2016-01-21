@@ -68,7 +68,6 @@
     "jsdiff": "TechnicalPursuit/jsdiff",
     "jshint": "*",
     "jxon": "TechnicalPursuit/jxon",
-    "karma": "^0.13.11",
     "less": "TechnicalPursuit/less.js",
     "marked-man": "^0.1.5",
     "mime-types": "^2.1.4",
@@ -92,7 +91,6 @@
     "xpath": "TechnicalPursuit/xpath.js"
   },
   "devDependencies": {
-    "karma-chrome-launcher": "^0.2.1"
   },
   "engines": {
     "node": ">=0.10",
