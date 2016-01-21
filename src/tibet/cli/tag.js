@@ -252,6 +252,20 @@ Cmd.prototype.addXMLEntry = function(node, prefix, content, suffix) {
 
 //  ---
 
+Cmd.prototype.hasXMLEntry = function(node, tagName, attrName, attrValue) {
+    var children;
+
+    children = Array.prototype.slice.call(node.childNodes, 0);
+    return children.some(function(child) {
+        if (child.tagName === tagName) {
+            return child.getAttribute(attrName) === attrValue;
+        }
+        return false;
+    });
+};
+
+//  ---
+
 Cmd.prototype.addXMLLiteral = function(node, text) {
 
     var doc;
@@ -406,6 +420,8 @@ Cmd.prototype.writeConfigNode = function(pkgfile, config) {
 
 Cmd.prototype.updateConfigFile = function(files, opts) {
     var cfgNode,
+        dirty,
+        value,
         fqtagname;
 
     fqtagname = opts.nsroot + '.' + opts.nsname + '.' + opts.tagname;
@@ -420,33 +436,47 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
     //  app_img
     //  ---
 
-    this.addXMLEntry(
-            cfgNode,
-            '    ',
-            '<script src="' + opts.dirname + '/' + fqtagname + '.js"/>',
-            '');
+    value = opts.dirname + '/' + fqtagname + '.js';
+    if (!this.hasXMLEntry(cfgNode, 'script', 'src', value)) {
+        dirty = true;
+        this.addXMLEntry(
+                cfgNode,
+                '    ',
+                '<script src="' + value + '"/>',
+                '');
+    }
 
     if (opts.style) {
-        this.addXMLEntry(
-            cfgNode,
-            '    ',
-            '<property name="path.' + fqtagname + '.style"' +
-                        ' value="' + opts.style + '"/>',
-            '');
+        value = 'path.' + fqtagname + '.style';
+        if (!this.hasXMLEntry(cfgNode, 'property', 'name', value)) {
+            dirty = true;
+            this.addXMLEntry(
+                cfgNode,
+                '    ',
+                '<property name="' + value + '"' +
+                    ' value="' + opts.style + '"/>',
+                '');
+        }
     }
 
     if (opts.template) {
-        this.addXMLEntry(
-            cfgNode,
-            '    ',
-            '<property name="path.' + fqtagname + '.template"' +
-                        ' value="' + opts.template + '"/>',
-            '');
+        value = 'path.' + fqtagname + '.template';
+        if (!this.hasXMLEntry(cfgNode, 'property', 'name', value)) {
+            dirty = true;
+            this.addXMLEntry(
+                cfgNode,
+                '    ',
+                '<property name="' + value + '"' +
+                    ' value="' + opts.template + '"/>',
+                '');
+        }
     }
 
-    this.addXMLLiteral(cfgNode, '\n');
-
-    this.writeConfigNode(opts.pkgname, cfgNode);
+    if (dirty) {
+        this.addXMLLiteral(cfgNode, '\n');
+        this.writeConfigNode(opts.pkgname, cfgNode);
+    }
+    dirty = false;
 
     //  ---
     //  app_tests
@@ -458,15 +488,20 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
         return;
     }
 
-    this.addXMLEntry(
-            cfgNode,
-            '    ',
-            '<script src="' + opts.dirname + '/' + fqtagname + '_test.js"/>',
-            '');
+    value = opts.dirname + '/' + fqtagname + '_test.js';
+    if (!this.hasXMLEntry(cfgNode, 'script', 'src', value)) {
+        dirty = true;
+        this.addXMLEntry(
+                cfgNode,
+                '    ',
+                '<script src="' + value + '"/>',
+                '');
+    };
 
-    this.addXMLLiteral(cfgNode, '\n');
-
-    this.writeConfigNode(opts.pkgname, cfgNode);
+    if (dirty) {
+        this.addXMLLiteral(cfgNode, '\n');
+        this.writeConfigNode(opts.pkgname, cfgNode);
+    }
 
     return true;
 };
