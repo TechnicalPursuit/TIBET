@@ -109,21 +109,47 @@ function(aURI, aRequest) {
      * @returns {TP.html.script} The HTML Script node holding the script.
      */
 
-    var url;
+    var url,
+
+        reqCallbackFunc,
+        callbackFunc;
 
     url = TP.uc(aURI);
     if (TP.notValid(url)) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  adjust the path per any rewrite rules in place for the URI. Note
+    //  Adjust the path per any rewrite rules in place for the URI. Note
     //  that we only do this if the url is absolute
     if (TP.uriIsAbsolute(url.getLocation())) {
         url = url.rewrite();
     }
 
+    //  Grab any callback that was defined by the request
+    reqCallbackFunc = TP.ifKeyInvalid(aRequest, 'callback', null);
+
+    //  Define a callback function that will call TP.html.script's
+    //  'tagAttachDOM' method to register the script for any changes to its
+    //  remote resource (if watching remote resources is turned on).
+    callbackFunc =
+        function(scriptNode) {
+
+            var req;
+
+            if (TP.isCallable(reqCallbackFunc)) {
+                reqCallbackFunc(scriptNode);
+            }
+
+            req = TP.request();
+
+            //  Manually call 'tagAttachDOM' with a manually constructed
+            //  request.
+            req.atPut('node', scriptNode);
+            TP.html.script.tagAttachDOM(req);
+        };
+
     return TP.boot.$uriImport(url.getLocation(),
-                                TP.ifKeyInvalid(aRequest, 'callback', null),
+                                callbackFunc,
                                 true,
                                 false);
 });
