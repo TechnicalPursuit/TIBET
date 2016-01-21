@@ -9652,6 +9652,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
         oldScript = scriptHead.querySelector('*[source="' + scriptUrl + '"]');
         if (oldScript) {
             oldScript.parentNode.removeChild(oldScript);
+
+            //  Make sure to copy over the ID - other TIBET machinery uses it
+            elem.setAttribute('id', oldScript.getAttribute('id'));
         }
 
         tn = scriptDoc.createTextNode(jsSrcUrl);
