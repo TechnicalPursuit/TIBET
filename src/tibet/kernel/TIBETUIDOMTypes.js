@@ -2999,7 +2999,7 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      *     configured.
      * @param {String} aspectName The name of the aspect to set.
      * @param {String} facetName The name of the facet to set.
-     * @param {Boolean} facetValue The value to set the facet to.
+     * @param {Object} facetValue The value to set the facet to.
      * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
      *     this.shouldSignalChange().
      * @returns {Object} The receiver.
