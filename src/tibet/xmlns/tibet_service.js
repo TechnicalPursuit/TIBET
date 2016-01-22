@@ -475,6 +475,8 @@ function() {
 
                 } else if (TP.isNode(result)) {
                     newResource = TP.wrap(result);
+                } else {
+                    newResource = result;
                 }
 
                 //  If the named URI has existing data, then we signal
