@@ -13,6 +13,7 @@
 <config id="app_tests">
     <!-- put your test scripts here -->
     <script src="~app_test/APP_test.js" />
+    <script src="~app_src/tags/APP.{{appname}}.app_test.js" />
 </config>
 
 <config id="base" if="boot.phase_two">

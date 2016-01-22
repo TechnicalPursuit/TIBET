@@ -6,16 +6,18 @@
 @namespace {{appname}} url(urn:tibet:{{appname}});
 
 /**
- * If you don't transform from XML form to tibet:tag form use this approach:
- */
-{{appname}}|app {
-    /* style here for xml formatted tags */
-}
-
-/**
- * If you transform tags from XML form to tibet:tag form use this approach:
+ * If your template/compile process transforms <{{appname}}:app/> tags
+ * from namespaced XML into XHTML with a tibet:tag attribute so they render
+ * in the page similar to <div tibet:tag="{{appname}}:app"/> place your
+ * style in rules with the following root form:
  */
 *[tibet|tag="{{appname}}:app"] {
     /* style here for xhtml converted tags */
 }
 
+/**
+ * If you don't transform from XML form (tags in the page remain in their
+ * <{{appname}}:app/> form) use rules of this form:
+ */
+{{appname}}|app {
+}

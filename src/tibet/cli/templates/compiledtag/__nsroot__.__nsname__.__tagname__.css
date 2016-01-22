@@ -7,8 +7,8 @@
 
 /**
  * If your template/compile process transforms <{{nsname}}:{{tagname}}/> tags
- * from namespaced XML into XHTML with a tibet:tag attribute so they render in
- * the page similar to <div tibet:tag="{{nsname}}:{{tagname}}"/> place your
+ * from namespaced XML into XHTML with a tibet:tag attribute so they render
+ * in the page similar to <div tibet:tag="{{nsname}}:{{tagname}}"/> place your
  * style in rules with the following root form:
  */
 *[tibet|tag="{{nsname}}:{{tagname}}"] {
@@ -17,10 +17,7 @@
 
 /**
  * If you don't transform from XML form (tags in the page remain in their
- * <{{nsname}}:{{tagname}}/> form) comment out the prior block and use rules
- * with the following root form:
+ * <{{nsname}}:{{tagname}}/> form) use rules of this form:
  */
-/*
 {{nsname}}|{{tagname}} {
 }
-*/
