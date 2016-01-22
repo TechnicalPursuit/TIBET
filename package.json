@@ -97,7 +97,6 @@
     "npm": ">=2"
   },
   "scripts": {
-    "prepublish": "./bin/tibet build",
     "test": "./bin/tibet checkup",
     "test_all": "phantomjs ./test/phantom/phantomtsh.js --profile '~app/phantom' --script ':test -ignore_only'",
     "test_cli": "mocha ./test/mocha/cli_test.js"
