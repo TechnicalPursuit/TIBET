@@ -471,6 +471,8 @@ function() {
                     //  object type will convert it to the proper type).
                     if (TP.canInvoke(newResource, 'setData')) {
                         newResource.setData(result);
+                    } else {
+                        newResource = result;
                     }
 
                 } else if (TP.isNode(result)) {
