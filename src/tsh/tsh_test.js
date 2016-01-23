@@ -105,6 +105,7 @@ function(aRequest) {
                     'suite', suiteName,
                     'cases', cases);
 
+    //  Stubs for when Karma isn't around.
     karma = TP.ifInvalid(
             TP.extern.karma, {
                 info: TP.NOOP,
@@ -115,32 +116,19 @@ function(aRequest) {
 
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
-        //  If the CLI drove this, or the Sherpa/TDC, there should be an
-        //  explicit -all. The karma-tibet bridge doesn't do that however.
-        if (TP.sys.cfg('boot.context') === 'phantomjs' ||
-                TP.sys.hasFeature('karma')) {
+        total = runner.getCases(options).getSize();
+        karma.info({total: total});
 
-            total = runner.getCases(options).getSize();
-            karma.info({total: total});
-
-            runner.runSuites(options).then(
-                function(result) {
-                    aRequest.complete();
-                    karma.complete();
-                },
-                function(error) {
-                    aRequest.fail(error);
-                    karma.complete();
-                }
-            );
-
-        } else {
-            msg = 'Usage - :test <target> [-suite <filter>] [-cases <filter>] [-local_only] [-ignore_only] [-ignore_skip]';
-            aRequest.stdout(msg);
-            aRequest.complete();
-            karma.error(msg);
-            return;
-        }
+        runner.runSuites(options).then(
+            function(result) {
+                aRequest.complete();
+                karma.complete();
+            },
+            function(error) {
+                aRequest.fail(error);
+                karma.complete();
+            }
+        );
 
     } else if (TP.isEmpty(target) && TP.notEmpty(suiteName)) {
 
