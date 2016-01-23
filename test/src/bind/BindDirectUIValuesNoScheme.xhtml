@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+</head>
+
+<body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
+
+	<h2>Bind Directly to GUI Field values</h2><br/>
+	<br/>
+	<br/>
+    This test sets up a 'direct GUI binding' between a source textfield and destination text fields that use an 'embedded expression' (one a whole attribute expression and the other a partial attribute expression). It does this by using a simple fragment indicator that indicates an element in the page with that ID.
+	<br/>
+	<br/>
+
+	<label for="sourceField">Name: </label>
+    <input type="text" id="sourceField" tabindex="0"/><br/>
+
+    <label for="destinationWholeField">Copied Name as whole value - without 'tibet://uicanvas' scheme: </label>
+    <input type="text" id="destinationWholeField" value="[[#sourceField]]" tabindex="0"/><br/>
+
+    <label for="destinationPartialField">Copied Name as partial value - without 'tibet://uicanvas' scheme: </label>
+    <input type="text" id="destinationPartialField" value="The name is: [[#sourceField]]" tabindex="0"/><br/>
+
+</body>
+</html>

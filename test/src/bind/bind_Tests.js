@@ -9206,6 +9206,236 @@ function() {
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
+//  ------------------------------------------------------------------------
+
+TP.bind.XMLNS.Type.describe('bind: direct to UI expressions',
+function() {
+
+    var unloadURI,
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+            this.getDriver().showTestGUI();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('direct to UI expressions - UI control values, with scheme', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindDirectUIValuesWithScheme.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    sourceField,
+                    destinationWholeField,
+                    destinationPartialField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                sourceField = TP.byId('sourceField', windowContext);
+                destinationWholeField = TP.byId('destinationWholeField', windowContext);
+                destinationPartialField = TP.byId('destinationPartialField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        sourceField.clearValue();
+                    }).
+                    sendKeys('Joe Smith', sourceField).
+                    sendEvent(TP.hc('type', 'change'), sourceField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            destinationWholeField.get('value'),
+                            'Joe Smith');
+
+                        test.assert.isEqualTo(
+                            destinationPartialField.get('value'),
+                            'The name is: Joe Smith');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('direct to UI expressions - UI control attributes, with scheme', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindDirectUIAttributesWithScheme.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    sourceField,
+                    destinationWholeField,
+                    destinationPartialField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                sourceField = TP.byId('sourceField', windowContext);
+                destinationWholeField = TP.byId('destinationWholeField', windowContext);
+                destinationPartialField = TP.byId('destinationPartialField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        sourceField.clearValue();
+                    }).
+                    sendKeys('Mike Jones', sourceField).
+                    sendEvent(TP.hc('type', 'change'), sourceField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            destinationWholeField.get('value'),
+                            'Mike Jones');
+
+                        test.assert.isEqualTo(
+                            destinationPartialField.get('value'),
+                            'The name is: Mike Jones');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('direct to UI expressions - UI control values, no scheme', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindDirectUIValuesNoScheme.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    sourceField,
+                    destinationWholeField,
+                    destinationPartialField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                sourceField = TP.byId('sourceField', windowContext);
+                destinationWholeField = TP.byId('destinationWholeField', windowContext);
+                destinationPartialField = TP.byId('destinationPartialField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        sourceField.clearValue();
+                    }).
+                    sendKeys('Joe Smith', sourceField).
+                    sendEvent(TP.hc('type', 'change'), sourceField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            destinationWholeField.get('value'),
+                            'Joe Smith');
+
+                        test.assert.isEqualTo(
+                            destinationPartialField.get('value'),
+                            'The name is: Joe Smith');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+    //  ---
+
+    this.it('direct to UI expressions - UI control attributes, no scheme', function(test, options) {
+
+        loadURI = TP.uc('~lib_test/src/bind/BindDirectUIAttributesNoScheme.xhtml');
+
+        this.getDriver().setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                var windowContext,
+
+                    sourceField,
+                    destinationWholeField,
+                    destinationPartialField;
+
+                windowContext = test.getDriver().get('windowContext');
+
+                sourceField = TP.byId('sourceField', windowContext);
+                destinationWholeField = TP.byId('destinationWholeField', windowContext);
+                destinationPartialField = TP.byId('destinationPartialField', windowContext);
+
+                test.getDriver().startSequence().
+                    exec(function() {
+                        sourceField.clearValue();
+                    }).
+                    sendKeys('Mike Jones', sourceField).
+                    sendEvent(TP.hc('type', 'change'), sourceField).
+                    perform();
+
+                test.then(
+                    function() {
+                        test.assert.isEqualTo(
+                            destinationWholeField.get('value'),
+                            'Mike Jones');
+
+                        test.assert.isEqualTo(
+                            destinationPartialField.get('value'),
+                            'The name is: Mike Jones');
+                    });
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------
