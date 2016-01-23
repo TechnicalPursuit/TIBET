@@ -192,21 +192,29 @@ function(aRequest) {
                 //  Type first, then Inst, then Local
                 TP.sys.logTest('# Running Type tests for ' + target);
                 obj.Type.runTestSuites(options).then(
-                        function() {
-                            TP.sys.logTest('# Running Inst tests for ' + target);
-                            return obj.Inst.runTestSuites(options);
-                        }).then(function() {
-                            TP.sys.logTest('# Running Local tests for ' + target);
-                            return obj.runTestSuites(options);
-                        }).then(function(result) {
-                            // TODO: should we pass non-null results?
-                            aRequest.complete();
-                            karma.complete();
-                        },
-                        function(error) {
-                            aRequest.fail(error);
-                            karma.complete();
-                        }
+                    function() {
+                        TP.sys.logTest('# Running Inst tests for ' + target);
+
+                        //  This method returns a Promise, so we must return
+                        //  that here so that everything gets chained
+                        //  properly.
+                        return obj.Inst.runTestSuites(options);
+                    }).then(function() {
+                        TP.sys.logTest('# Running Local tests for ' + target);
+
+                        //  This method returns a Promise, so we must return
+                        //  that here so that everything gets chained
+                        //  properly.
+                        return obj.runTestSuites(options);
+                    }).then(function(result) {
+                        // TODO: should we pass non-null results?
+                        aRequest.complete();
+                        karma.complete();
+                    },
+                    function(error) {
+                        aRequest.fail(error);
+                        karma.complete();
+                    }
                 );
                 return;
             }
