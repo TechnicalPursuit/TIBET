@@ -210,7 +210,10 @@ function(options) {
         exclusives,
         summarize,
         total,
-        msg;
+        msg,
+
+        currentSuite,
+        handler;
 
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
@@ -366,17 +369,46 @@ function(options) {
             function(chain, current, index, array) {
                 return chain.then(
                     function(obj) {
-                        //return current.run(TP.hc(options));
+                        currentSuite = current;
                         return current.run(params);
                     },
                     function(err) {
-                        //  Suite.run should trap all errors and resolve() so
-                        //  the chain remains unbroken...unless we're doing an
-                        //  early exit etc.
-                        //  TODO: early exit?
+                        //  The TP.test.Case run() method should've trapped any
+                        //  case-level errors and the TP.test.Suite run() method
+                        //  should've trapped any suite-level errors outside of
+                        //  the machinery of the case and fail()ed or error()ed
+                        //  the current test case.
+
+                        //  Additionally, the globally-installed 'unhandled
+                        //  rejection' handlers below should catch any unhandled
+                        //  rejections for Promise code that is used in other
+                        //  parts of TIBET and fail() or error() the current
+                        //  test case.
+
+                        //  This is all so that the chain remains unbroken...
+                        //  unless we're doing an early exit etc.
+                        //  Therefore, this should never be called unless we're
+                        //  doing an early exit.
                         void 0;
                     });
             }, TP.extern.Promise.resolve());
+
+    handler = function(reason, unhandledPromise) {
+
+        var currentCase;
+
+        currentCase = currentSuite.get('currentTestCase');
+
+        if (reason instanceof Error) {
+            currentCase.error(reason);
+        } else {
+            currentCase.fail(reason);
+        }
+    };
+
+    //  Install the Bluebird (specific) top-level unhandled rejection handlers
+    TP.extern.Promise.onPossiblyUnhandledRejection(handler);
+    TP.extern.Promise.onUnhandledRejectionHandled(handler);
 
     TP.sys.setcfg('test.running', true);
 
@@ -388,6 +420,9 @@ function(options) {
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
 
+                TP.extern.Promise.onPossiblyUnhandledRejection(null);
+                TP.extern.Promise.onUnhandledRejectionHandled(null);
+
                 //  Summarize output
                 summarize();
             },
@@ -397,6 +432,9 @@ function(options) {
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
+
+                TP.extern.Promise.onPossiblyUnhandledRejection(null);
+                TP.extern.Promise.onUnhandledRejectionHandled(null);
 
                 //  Summarize output
                 summarize();
@@ -1803,10 +1841,15 @@ function(options) {
                                         finalAfterEachHandler);
                     },
                     function(err) {
-                        //  TODO: the suite run() operation errored out, now
-                        //  what?
-                        //  At a minimum, error out the currently executing test
-                        //  case with the error object
+                        //  The suite run() operation errored out. If a test
+                        //  case failed, it will have already been fail()ed or
+                        //  error()ed.
+
+                        //  But, in case the error occurred in a piece of code
+                        //  that is in a Promise that is *outside* of a
+                        //  particular test case, but in the process of running
+                        //  a test case, error out the currently executing test
+                        //  case with the error object.
                         current.error(err);
                     });
             }, firstPromise);
