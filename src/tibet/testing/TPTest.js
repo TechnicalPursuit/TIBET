@@ -936,6 +936,19 @@ function(setup) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Suite.Inst.defineMethod('cleanup',
+function(options) {
+
+    //  Make sure uninstall the test appender from our default 'TP' and 'APP'
+    //  logs as our last thing to do.
+    TP.getDefaultLogger().removeAppender(this.get('logAppender'));
+    APP.getDefaultLogger().removeAppender(this.get('logAppender'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Suite.Inst.defineMethod('executeAfter',
 function(result, options) {
 
@@ -1332,6 +1345,8 @@ function(target, suiteName, suiteFunc) {
      * @returns {TP.core.Hash} The new test suite instance.
      */
 
+    var newAppender;
+
     if (TP.notValid(target) ||
             TP.notValid(suiteName) ||
             TP.notValid(suiteFunc)) {
@@ -1351,11 +1366,19 @@ function(target, suiteName, suiteFunc) {
         TP.test.TestMethodCollection.construct());
     this.$set('refuter',
         TP.test.TestMethodCollection.construct().set('isRefuter', true));
-    this.$set('logAppender',
-        TP.log.TestAppender.construct());
 
+    //  Initialize a log appender for our default 'TP' and 'APP' logs. This
+    //  makes sure that logging of a particular log level or higher while the
+    //  test cases are being run will fail the test case.
+    newAppender = TP.log.TestAppender.construct();
+    this.$set('logAppender', newAppender);
+
+    //  Install it for both 'TP' and 'APP' logs
+    TP.getDefaultLogger().addAppender(newAppender);
+    APP.getDefaultLogger().addAppender(newAppender);
+
+    //  Install any GUI drivers we might need.
     this.$set('drivers', TP.hc());
-
     if (TP.sys.getTypeByName('TP.gui.Driver')) {
         this.$get('drivers').atPut('gui', TP.gui.Driver.construct());
     }
@@ -1363,6 +1386,11 @@ function(target, suiteName, suiteFunc) {
     //  Track load information to support context/file test filtering.
     this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
     this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
+
+    //  Set up a handler for unhandled rejections. We need this because if we
+    //  have code outside of the test harness that is using Promises, we need to
+    //  make sure that if they haven't handled the rejection, that we can fail
+    //  the test case here.
 
     return this;
 });
@@ -1491,6 +1519,9 @@ function(options) {
     total = 0;
     total += passed + failed + errored + ignored + skipped;
 
+    //  NOTE: per-Suite statistics logging only happens at the DEBUG level.
+    //  Normally, all of the statistics are reported at once after all suites
+    //  have been run. See the TP.test.runSuites() method.
     TP.sys.logTest(
         prefix +
         total + ' total, ' +
@@ -1500,11 +1531,6 @@ function(options) {
         skipped + ' skip, ' +
         ignored + ' todo.',
         TP.DEBUG);
-
-    //  Make sure uninstall the test appender from our default 'TP' and 'APP'
-    //  logs as our last thing to do.
-    TP.getDefaultLogger().removeAppender(this.get('logAppender'));
-    APP.getDefaultLogger().removeAppender(this.get('logAppender'));
 
     return this;
 });
@@ -1642,11 +1668,6 @@ function(options) {
         function() {
             var beforeMaybe,
                 generatedPromise;
-
-            //  Make sure to install the test appender for our default 'TP' and
-            //  'APP' logs as our first thing to do.
-            TP.getDefaultLogger().addAppender(suite.get('logAppender'));
-            APP.getDefaultLogger().addAppender(suite.get('logAppender'));
 
             //  Run any 'before' hook for the suite. Note that this may
             //  generate a Promise that will now be in '$internalPromise'.
@@ -1824,12 +1845,14 @@ function(options) {
                                         }).then(
                                         function() {
                                             suite.report(options);
+                                            suite.cleanup();
                                         });
                     } else {
                         //  No returned Promise, just a last promise.
                         return finalPromise.then(
                                         function() {
                                             suite.report(options);
+                                            suite.cleanup();
                                         });
                     }
                 } else if (TP.isThenable(afterMaybe)) {
@@ -1837,10 +1860,12 @@ function(options) {
                     return afterMaybe.then(
                                     function() {
                                         suite.report(options);
+                                        suite.cleanup();
                                     });
                 } else {
-                    //  Otherwise, just report.
+                    //  Otherwise, just report and cleanup.
                     suite.report(options);
+                    suite.cleanup();
                 }
             }
         };
