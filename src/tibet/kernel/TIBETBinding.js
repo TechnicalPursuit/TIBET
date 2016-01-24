@@ -598,7 +598,6 @@ TP.totalInitialGetTime = 0;
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentNode.Inst.defineAttribute('$signalingBatchID');
-TP.core.DocumentNode.Inst.defineAttribute('$observedURIs');
 TP.core.DocumentNode.Inst.defineAttribute('$repeatTemplates');
 
 //  ------------------------------------------------------------------------
@@ -621,8 +620,12 @@ function(aSignal) {
 
         signalFlag,
 
+        sigOrigin,
         primarySource,
         initialVal,
+
+        changedPrimaryLoc,
+        changedPrimaryURI,
 
         doc,
 
@@ -630,8 +633,6 @@ function(aSignal) {
         elems,
 
         tpDocElem,
-
-        changedPrimaryLoc,
 
         boundAttrNodes,
         i,
@@ -687,7 +688,38 @@ function(aSignal) {
     signalFlag = TP.sys.shouldSignalDOMLoaded();
     TP.sys.shouldSignalDOMLoaded(false);
 
-    primarySource = aSignal.getOrigin().getResource().get('result');
+    sigOrigin = aSignal.getOrigin();
+
+    if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+
+        primarySource = sigOrigin.getResource().get('result');
+        changedPrimaryLoc = sigOrigin.getPrimaryLocation();
+
+        matcher = TP.rc(TP.regExpEscape(changedPrimaryLoc));
+
+    } else {
+
+        primarySource = sigOrigin.get('value');
+        changedPrimaryLoc = sigOrigin.getID();
+        changedPrimaryURI = TP.uc(changedPrimaryLoc);
+
+        if (changedPrimaryURI.getCanvas() === TP.sys.uiwin(true)) {
+
+            if (TP.isKindOf(sigOrigin, TP.core.ElementNode)) {
+                changedPrimaryLoc =
+                    sigOrigin.getLocalID();
+            } else if (TP.isKindOf(sigOrigin, TP.core.AttributeNode)) {
+                changedPrimaryLoc =
+                    sigOrigin.getOwnerElement().getLocalID() +
+                    '@' + sigOrigin.getLocalName();
+            }
+
+            matcher = TP.rc('(tibet://uicanvas#' +
+                            TP.regExpEscape(changedPrimaryLoc) + '|' +
+                            '#' + TP.regExpEscape(changedPrimaryLoc) + ')');
+        }
+    }
+
     initialVal = primarySource;
 
     doc = this.getNativeNode();
@@ -702,8 +734,6 @@ function(aSignal) {
 
     tpDocElem = this.getDocumentElement();
 
-    changedPrimaryLoc = aSignal.getOrigin().getPrimaryLocation();
-
     boundAttrNodes = TP.ac();
     for (i = 0; i < elems.length; i++) {
         attrs = elems[i].attributes;
@@ -713,7 +743,8 @@ function(aSignal) {
             attrVal = attrs[j].value;
 
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
-                (attrVal.indexOf(changedPrimaryLoc) !== TP.NOT_FOUND ||
+                //(attrVal.indexOf(changedPrimaryLoc) !== TP.NOT_FOUND ||
+                (matcher.test(attrVal) ||
                 TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
                 boundAttrNodes.push(attrs[j])
             }
@@ -795,8 +826,6 @@ function(aSignal) {
 
         //  Refresh all 'absolute' leafs
 
-        matcher = TP.rc(TP.regExpEscape(changedPrimaryLoc));
-
         len = boundAttrNodes.getSize();
         for (i = 0; i < len; i++) {
 
@@ -815,10 +844,12 @@ function(aSignal) {
             }
         }
 
+        if (TP.isKindOf(sigOrigin, TP.core.URI)) {
         //  Refresh all bindings
         tpDocElem.refreshBranches(
                 primarySource, aSignal, elems, initialVal,
                 null, null, null);
+        }
 
         var endSetup = Date.now();
         TP.totalSetupTime += (endSetup - startSetup);
@@ -2039,7 +2070,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
             //  Note that we don't allow statements such as '[0]' to qualify as
             //  predicates we want to process, hence looking for a '[' at a
-            //  position greater than 0;
+            //  position greater than 0.
             hasPredicate = startPredIndex > 0;
 
             if (hasPredicate && predicatePhaseOneComplete) {
@@ -2317,6 +2348,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         infoKeys,
 
         primaryLocation,
+        sigOrigin,
 
         theVal,
 
@@ -2341,13 +2373,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
     info = this.getBindingInfoFrom(attrValue);
 
     infoKeys = info.getKeys();
-
-    //  So, for now, we don't support mixed scoped and absolute references to
-    //  resources that are not the ones that we're scoped for. So, since we
-    //  already update absolute references in the main change method, we filter
-    //  for absolute references that are not ones that we are currently part of
-    //  the update chain for.
-    primaryLocation = aSignal.getOrigin().getPrimaryLocation();
 
     theVal = TP.collapse(initialVal);
 
@@ -2377,7 +2402,16 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 continue;
             }
 
+            expr = exprs.at(0);
+
+            if (TP.regex.BARENAME.test(expr)) {
+                expr = 'tibet://uicanvas' + expr;
+            }
+
             pathType = aPathType;
+
+            //pathType = TP.ifInvalid(
+             //               aPathType, TP.getAccessPathType(exprs.at(0)));
 
             if (TP.isValid(pathType)) {
 
@@ -2407,15 +2441,28 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 }
             }
 
-            expr = exprs.at(0);
-
             if (TP.isURIString(expr)) {
+
+                //  So, for now, we don't support mixed scoped and absolute
+                //  references to resources that are not the ones that we're
+                //  scoped for. So, since we already update absolute references
+                //  in the main change method, we filter for absolute references
+                //  that are not ones that we are currently part of the update
+                //  chain for.
+
+                sigOrigin = aSignal.getOrigin();
+                if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+                    primaryLocation = sigOrigin.getPrimaryLocation();
 
                 if (expr.startsWith(primaryLocation)) {
                     finalVal = TP.uc(expr).getResource().get('result');
                 } else {
                     continue;
                 }
+                } else {
+                    finalVal = initialVal;
+                }
+
             } else if (TP.isValid(pathType)) {
 
                 switch (pathType) {
@@ -2829,7 +2876,9 @@ function(aValue, scopeVals, bindingInfoValue) {
                 wholeURI,
                 primaryURI,
 
-                frag;
+                frag,
+
+                result;
 
             attrName = bindEntry.first();
 
@@ -2883,8 +2932,21 @@ function(aValue, scopeVals, bindingInfoValue) {
                 primaryURI = wholeURI.getPrimaryURI();
                 frag = wholeURI.getFragmentExpr();
 
-                primaryURI.getResource().get('result').set(
-                                                TP.apc(frag), aValue);
+                if (TP.notValid(
+                        result = primaryURI.getResource().get('result'))) {
+                    var newValue = TP.lang.Object.construct();
+                    newValue.defineAttribute('value');
+                    newValue.set('value', aValue);
+
+                    primaryURI.setResource(newValue);
+                } else {
+
+                    if (TP.isEmpty(frag)) {
+                        result.set('value', aValue);
+                    } else {
+                        result.set(TP.apc(frag), aValue);
+                    }
+                }
             }
         });
 
