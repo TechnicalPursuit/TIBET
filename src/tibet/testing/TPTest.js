@@ -755,6 +755,12 @@ TP.test.Suite.Inst.defineAttribute('beforeEvery');
 TP.test.Suite.Inst.defineAttribute('caseList');
 
 /**
+ * The currently executing test case.
+ * @type {TP.test.Case}
+ */
+TP.test.Suite.Inst.defineAttribute('currentTestCase');
+
+/**
  * A hash of 1..n 'drivers' used for things like fetching resources,
  * manipulating the GUI and running shell commands.
  * @type {TP.gui.Driver}
@@ -2952,7 +2958,19 @@ function(options) {
                     internalPromise,
                     maybe;
 
-                //  Set up state for the testcase case
+                //  If this testcase is skipped and we're not ignoring skips,
+                //  then just call the resolver and return.
+                if (testcase.isSkipped() && !params.at('ignore_skip')) {
+                    TP.sys.logTest(
+                            'ok - ' + testcase.getCaseName() + ' # SKIP');
+                    resolver();
+
+                    return;
+                }
+
+                //  Set up state for the current test case
+                testcase.getSuite().set('currentTestCase', testcase);
+
                 asserter = testcase.getSuite().get('asserter');
                 asserter.$set('currentTestCase', testcase);
                 testcase.$set('assert', asserter);
@@ -2983,14 +3001,6 @@ function(options) {
                 //  place.
                 testcase.set('$resolver', resolver);
                 testcase.set('$rejector', rejector);
-
-                if (testcase.isSkipped() && !params.at('ignore_skip')) {
-                    TP.sys.logTest(
-                            'ok - ' + testcase.getCaseName() + ' # SKIP');
-                    resolver();
-
-                    return;
-                }
 
                 //  NOTE: do this after checking for deferred so we don't end up
                 //  with timing values for something we never ran.
