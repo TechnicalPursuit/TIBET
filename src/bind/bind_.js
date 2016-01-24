@@ -23,20 +23,20 @@ TP.core.XMLNamespace.defineSubtype('bind.XMLNS');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.bind.XMLNS.Type.defineMethod('$gatherReferencedURIs',
+TP.bind.XMLNS.Type.defineMethod('$gatherReferencedLocations',
 function(anElement) {
 
     /**
-     * @method $gatherReferencedURIs
+     * @method $gatherReferencedLocations
      * @param {Element} anElement The element under which to gather referenced
-     *     URIs.
-     * @returns {Array} An Array of referenced primary URIs.
+     *     locations.
+     * @returns {Array} An Array of referenced locations.
      */
 
     var query,
         boundElements,
 
-        primaryURILocs,
+        uriLocs,
 
         infoCacheDict,
 
@@ -53,7 +53,7 @@ function(anElement) {
         dataExprs,
         l,
 
-        primaryLoc;
+        location;
 
 
     //  Query for any attributes named 'io', 'in', 'scope' or 'repeat', no
@@ -62,10 +62,7 @@ function(anElement) {
     //  call in most browsers. It is extremely fast, which is why we use it and
     //  then filter more later, but it's query capabilities around namespaces is
     //  quite pathetic.
-    query = '*[*|io],' +
-            '*[*|in],' +
-            '*[*|scope],' +
-            '*[*|repeat]';
+    query = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
 
     boundElements = TP.ac(anElement.querySelectorAll(query));
 
@@ -78,7 +75,7 @@ function(anElement) {
         boundElements.unshift(anElement);
     }
 
-    primaryURILocs = TP.ac();
+    uriLocs = TP.ac();
 
     //  Since computing binding information is compute intensive, we keep a
     //  local cache of binding information for a particular attribute value
@@ -124,30 +121,34 @@ function(anElement) {
                             dataExprs = bindEntries.at(entriesKeys.at(k)).
                                                             at('dataExprs');
 
-                            //  Iterate over each data expression and, if it can
-                            //  be resolved as a URI, grab it's *primary URI*.
+                            //  Iterate over each data expression and, if it is
+                            //  either a URI or a barename expression (used for
+                            //  direct GUI-to-GUI binding), grab it's value.
                             for (l = 0; l < dataExprs.getSize(); l++) {
 
-                                if (TP.isURI(dataExprs.at(l))) {
-                                    primaryLoc = TP.uc(dataExprs.at(l)).
-                                                        getPrimaryLocation();
+                                location = dataExprs.at(l);
 
-                                    primaryURILocs.push(primaryLoc);
+                                //  If this is a URI String or is a barename
+                                //  (used for direct GUI-to-GUI binding), then
+                                //  it's one we're interested in.
+                                if (TP.isURIString(location) ||
+                                    TP.regex.BARENAME.test(location)) {
+                                    uriLocs.push(location);
                                 }
                             }
                         }
                     }
-                } else if (TP.isURI(attrVal)) {
+                } else if (TP.isURIString(attrVal)) {
                     //  Otherwise, it's a 'bind:scope' or 'bind:repeat', which
-                    //  can extract the URI information from directly.
-                    primaryLoc = TP.uc(attrVal).getPrimaryLocation();
-                    primaryURILocs.push(primaryLoc);
+                    //  can we extract the URI information directly.
+                    location = attrVal;
+                    uriLocs.push(location);
                 }
             }
         }
     }
 
-    return primaryURILocs;
+    return uriLocs;
 });
 
 //  ------------------------------------------------------------------------
@@ -172,10 +173,10 @@ function(anElement) {
         i,
         repeatTPElem,
 
-        observedURIs,
+        observedLocations,
 
         tpDoc,
-        primaryURILocs;
+        uriLocs;
 
     doc = TP.nodeGetDocument(anElement);
 
@@ -249,6 +250,8 @@ function(anElement) {
             newSpan = TP.documentConstructElement(
                                     doc, 'span', TP.w3.Xmlns.XHTML);
 
+            //  Construct a 'bind:in' attribute for this, binding it to the
+            //  'value' aspect.
             TP.elementSetAttribute(newSpan,
                                     'bind:in',
                                     '{value: ' + tnStr + '}',
@@ -279,9 +282,9 @@ function(anElement) {
                         return anElement.contains(anElem);
                     })
 
-    //  To avoid mutation events as register the repeat content will cause DOM
-    //  modifications, we wrap all of the found 'bind:repeat' Elements at once
-    //  here.
+    //  IMPORTANT: To avoid mutation events as register the repeat content will
+    //  cause DOM modifications, we wrap all of the found 'bind:repeat' Elements
+    //  at once here.
     repeatTPElems = TP.wrap(repeatElems);
 
     //  Iterate over all of the found repeat elements and tell them to register
@@ -293,50 +296,98 @@ function(anElement) {
         repeatTPElem.$registerRepeatContent();
     }
 
-    //  Make sure that the owner TP.core.Document has an '$observedURIs' hash.
-    //  This hash will consist of the URI's 'primary URI' location and a counter
-    //  matching the number of times this primary URI is encountered in the
-    //  content. This counter is used as Elements come and go (see the
-    //  'teardown' method below) and when the count is 0, the TP.core.Document
-    //  ignores that primary URI.
+    //  Make sure that the owner TP.core.Document has an '$observedLocations'
+    //  hash. This hash will consist of the location and a counter matching the
+    //  number of times this primary URI is encountered in the content. This
+    //  counter is used as Elements come and go (see the 'teardown' method
+    //  below) and when the count is 0, the TP.core.Document ignores that
+    //  location.
 
     tpDoc = TP.wrap(doc);
 
-    if (TP.notValid(observedURIs = tpDoc.get('$observedURIs'))) {
-        observedURIs = TP.hc();
-        tpDoc.set('$observedURIs', observedURIs);
+    if (TP.notValid(observedLocations = tpDoc.get('$observedLocations'))) {
+        observedLocations = TP.hc();
+        tpDoc.set('$observedLocations', observedLocations);
     }
 
-    //  Gather any URIs that are referenced in binding expressions under the
-    //  supplied Element. The primary URIs of these URIs will be the URIs that
-    //  the owner TP.core.Document of the supplied Element will observe for
-    //  FacetChange.
-    primaryURILocs = this.$gatherReferencedURIs(anElement);
+    //  Gather any locations that are referenced in binding expressions under
+    //  the supplied Element. These are the locations that the owner
+    //  TP.core.Document of the supplied Element will observe for FacetChange.
+    uriLocs = this.$gatherReferencedLocations(anElement);
 
-    //  Iterate over the gathered URIs and register their primary URI with the
-    //  $observedURIs hash. Note that the first time a particular primary URI is
-    //  encountered, the TP.core.Document is told to observe it.
-    primaryURILocs.forEach(
-            function(aPrimaryLoc) {
-                var uriCount;
+    //  Iterate over the gathered locations and register them with the
+    //  'observedLocations' hash. Note that the first time a particular location
+    //  is encountered, the TP.core.Document is told to observe it.
+    uriLocs.forEach(
+        function(aLocation) {
+            var location,
 
-                //  If we already saw this primary location, then we increment
-                //  the counter.
-                if (observedURIs.containsKey(aPrimaryLoc)) {
-                    uriCount = observedURIs.at(aPrimaryLoc);
+                concreteURI,
+                concreteLoc,
 
-                    uriCount++;
+                resultObj,
 
-                    //  place the new value.
-                    observedURIs.atPut(aPrimaryLoc, uriCount);
-                } else {
+                uriCount;
 
-                    //  Initialize the counter for this primary URI and tell our
-                    //  TP.core.Document to observe it for FacetChange.
-                    observedURIs.atPut(aPrimaryLoc, 1);
-                    tpDoc.observe(TP.uc(aPrimaryLoc), 'FacetChange');
+            //  Grab the location. If it's a barename (i.e. starting with '#'
+            //  and followed by 1-n word characters), then that's a sugar for a
+            //  direct GUI-to-GUI binding. We desugar these by prepending them
+            //  with 'tibet://uicanvas', making them into 'TIBET URLs'.
+            location = aLocation;
+            if (TP.regex.BARENAME.test(location)) {
+                location = 'tibet://uicanvas' + location;
+            }
+
+            //  Get the concrete URI. For TIBET URLs, this produces a real URL,
+            //  resolved to the name of the current ui canvas, that can be
+            //  observed by the Document for changes. For other kinds of URIs,
+            //  this usually returns the URI itself.
+            concreteURI = TP.uc(location).getConcreteURI();
+
+            //  If we have a TIBET URL, then check to see if its canvas (i.e.
+            //  Window) is the same as the current UI canvas Window. If it is,
+            //  configure the GUI control to signal change when its GUI value
+            //  changes.
+            if (TP.isKindOf(concreteURI, TP.core.TIBETURL)) {
+
+                if (concreteURI.getCanvas() === TP.sys.uiwin(true)) {
+
+                    if (TP.isValid(resultObj =
+                                    concreteURI.getResource().get('result'))) {
+
+                        //  If the binding expression was to an Attribute node,
+                        //  then we want to grab the Attribute's owner element.
+                        if (TP.isKindOf(resultObj, TP.core.AttributeNode)) {
+                            resultObj = resultObj.getOwnerElement();
+                        }
+
+                        //  Configure it to signal changes.
+                        resultObj.shouldSignalChange(true);
+                    }
                 }
-            });
+            } else {
+                //  If this isn't a TIBET URL, just grab it's primary URI.
+                concreteURI = concreteURI.getPrimaryURI();
+            }
+
+            concreteLoc = concreteURI.getLocation();
+
+            //  If we already saw this location, then we increment the counter.
+            if (observedLocations.containsKey(concreteLoc)) {
+                uriCount = observedLocations.at(concreteLoc);
+
+                uriCount++;
+
+                //  place the new value.
+                observedLocations.atPut(concreteLoc, uriCount);
+            } else {
+
+                //  Initialize the counter for this primary URI and tell our
+                //  TP.core.Document to observe it for FacetChange.
+                observedLocations.atPut(concreteLoc, 1);
+                tpDoc.observe(TP.uc(concreteLoc), 'FacetChange');
+            }
+        });
 
     return;
 });
@@ -355,14 +406,14 @@ function(anElement) {
     var doc,
         tpDoc,
 
-        primaryURILocs,
-        observedURIs;
+        uriLocs,
+        observedLocations;
 
     doc = TP.nodeGetDocument(anElement);
     tpDoc = TP.wrap(doc);
 
-    //  If the TP.core.Document has no '$observedURIs', then just exit here.
-    if (TP.notValid(observedURIs = tpDoc.get('$observedURIs'))) {
+    //  If the TP.core.Document has no '$observedLocations', then just exit here.
+    if (TP.notValid(observedLocations = tpDoc.get('$observedLocations'))) {
         return;
     }
 
@@ -370,31 +421,57 @@ function(anElement) {
     //  supplied Element. The primary URIs of these URIs will be the URIs that
     //  the owner TP.core.Document of the supplied Element could ignore for
     //  FacetChange (if by detecting it, we decrement the count to 0).
-    primaryURILocs = this.$gatherReferencedURIs(anElement);
+    uriLocs = this.$gatherReferencedLocations(anElement);
 
-    primaryURILocs.forEach(
-            function(aPrimaryLoc) {
-                var uriCount;
+    uriLocs.forEach(
+        function(aLocation) {
+            var location,
 
-                //  If we already saw this primary location, then we decrement
-                //  the counter.
-                if (observedURIs.containsKey(aPrimaryLoc)) {
-                    uriCount = observedURIs.at(aPrimaryLoc);
+                concreteURI,
+                concreteLoc,
 
-                    uriCount--;
+                uriCount;
 
-                    //  If the counter is 0, then tell our TP.core.Document to
-                    //  ignore that primary URI for FacetChange and remove that
-                    //  key.
-                    if (uriCount === 0) {
-                        tpDoc.ignore(TP.uc(aPrimaryLoc), 'FacetChange');
-                        observedURIs.removeKey(aPrimaryLoc);
-                    } else {
-                        //  Otherwise, just place the new value.
-                        observedURIs.atPut(aPrimaryLoc, uriCount);
-                    }
+            //  Grab the location. If it's a barename (i.e. starting with '#'
+            //  and followed by 1-n word characters), then that's a sugar for a
+            //  direct GUI-to-GUI binding. We desugar these by prepending them
+            //  with 'tibet://uicanvas', making them into 'TIBET URLs'.
+            location = aLocation;
+            if (TP.regex.BARENAME.test(location)) {
+                location = 'tibet://uicanvas' + location;
+            }
+
+            //  Get the concrete URI. For TIBET URLs, this produces a real URL,
+            //  resolved to the name of the current ui canvas, that can be
+            //  observed by the Document for changes. For other kinds of URIs,
+            //  this usually returns the URI itself.
+            concreteURI = TP.uc(aLocation).getConcreteURI();
+
+            //  If this isn't a TIBET URL, just grab it's primary URI. This
+            //  matches the behavior in the setup.
+            if (!TP.isKindOf(concreteURI, TP.core.TIBETURL)) {
+                concreteURI = concreteURI.getPrimaryURI();
+            }
+
+            concreteLoc = concreteURI.getLocation();
+
+            //  If we already saw this location, then we decrement the counter.
+            if (observedLocations.containsKey(concreteLoc)) {
+                uriCount = observedLocations.at(concreteLoc);
+
+                uriCount--;
+
+                //  If the counter is 0, then tell our TP.core.Document to
+                //  ignore that location for FacetChange and remove that key.
+                if (uriCount === 0) {
+                    tpDoc.ignore(TP.uc(concreteLoc), 'FacetChange');
+                    observedLocations.removeKey(concreteLoc);
+                } else {
+                    //  Otherwise, just place the new value.
+                    observedLocations.atPut(concreteLoc, uriCount);
                 }
-            });
+            }
+        });
 
     return;
 });
