@@ -130,6 +130,8 @@ function(anEntry) {
             obj.success = /^ok/.test(text);
             obj.skipped = /# SKIP/.test(text);
         }
+    } else {
+        return;
     }
 
     //  For 'info' output don't bother with extra values, they just get Karma
@@ -236,10 +238,19 @@ function(anEntry) {
     layout = this.getLayout();
     results = layout.layout(anEntry);
 
+    //  If the layout process doesn't return data we don't output anything.
+    if (TP.notValid(results)) {
+        return;
+    }
+
     //  Entries like N..M are reformated for info(), all others are result().
     if (TP.isValid(results.total)) {
         karma.info(results);
     } else {
+        //  If we don't pass a valid number karma will NaN the net time calc.
+        if (!TP.isNumber(results.time)) {
+            results.time = 0;
+        }
         karma.result(results);
     }
 
