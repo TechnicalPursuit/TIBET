@@ -1977,31 +1977,32 @@ function(anObject, assignIfAbsent) {
 
     if (TP.isNode(obj)) {
         if (TP.isAttributeNode(obj)) {
-            localID = 'xpath1(./@' + TP.attributeGetLocalName(obj) + ')';
-            if (TP.isElement(elem = TP.attributeGetOwnerElement(obj))) {
-                localID = TP.lid(elem) + localID;
-            }
-
-            //  return early here since what we do for the rest of these is not
-            //  applicable to Attribute nodes
-            return localID;
+            localID = '@' + TP.attributeGetLocalName(obj);
+            elem = TP.attributeGetOwnerElement(obj);
         } else if (TP.isTextNode(obj)) {
-            localID = 'xpath1(./text()[contains(.,\'' +
-                TP.nodeGetTextContent(obj) + '\')])';
+            localID = 'text()[contains(.,\'' +
+                TP.nodeGetTextContent(obj) + '\')]';
         } else if (TP.isCDATASectionNode(obj)) {
-            localID = 'xpath1(./text()[contains(.,\'' +
-                TP.nodeGetTextContent(obj) + '\')])';
+            localID = 'text()[contains(.,\'' +
+                TP.nodeGetTextContent(obj) + '\')]';
         } else if (TP.isPINode(obj)) {
-            localID = 'xpath1(./processing-instruction(\'' +
-                TP.name(obj) + '\'))';
+            localID = 'processing-instruction(\'' + TP.name(obj) + '\')';
         } else if (TP.isCommentNode(obj)) {
-            localID = 'xpath1(./comment()[1])';
+            localID = 'comment()[1]';
         } else if (TP.isFragment(obj)) {
             localID = '#document-fragment';
         }
 
-        if (TP.isElement(elem = obj.parentNode)) {
-            localID = TP.lid(elem) + localID;
+        //  If the element wasn't assigned above (i.e. we were not an Attribute
+        //  node), then try here by getting the parent node.
+        if (!TP.isElement(elem)) {
+            elem = obj.parentNode;
+        }
+
+        if (TP.isElement(elem)) {
+            localID = '#xpath1(//*[@id=\'' + TP.lid(elem) + '\']/' +
+                        localID +
+                        ')';
         }
 
         return localID;
