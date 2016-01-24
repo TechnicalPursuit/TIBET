@@ -2003,6 +2003,9 @@ function(anObject, assignIfAbsent) {
             localID = '#xpath1(//*[@id=\'' + TP.lid(elem) + '\']/' +
                         localID +
                         ')';
+        } else if (!TP.isFragment(obj)) {
+            //  NB: We don't do this for DocumentFragments.
+            localID = '#xpath1(./' + localID + ')';
         }
 
         return localID;

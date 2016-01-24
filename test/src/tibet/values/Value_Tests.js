@@ -64,11 +64,11 @@ function() {
         'XMLDocument',                          'document',
         'XMLElement',                           /foo_(\w+)$/,
 
-        'AttributeNode',                        'xpath1(./@foo)',
-        'TextNode',                             'xpath1(./text()[contains(.,\'foo\')])',
-        'CDATASectionNode',                     'xpath1(./text()[contains(.,\'foo\')])',
-        'PINode',                               'xpath1(./processing-instruction(\'foo\'))',
-        'CommentNode',                          'xpath1(./comment()[1])',
+        'AttributeNode',                        '#xpath1(./@foo)',
+        'TextNode',                             '#xpath1(./text()[contains(.,\'foo\')])',
+        'CDATASectionNode',                     '#xpath1(./text()[contains(.,\'foo\')])',
+        'PINode',                               '#xpath1(./processing-instruction(\'foo\'))',
+        'CommentNode',                          '#xpath1(./comment()[1])',
         'DocumentFragmentNode',                 '#document-fragment',
 
         'NodeList',                             /^NodeList\$(\w+)$/,
@@ -96,11 +96,11 @@ function() {
         'TP.core.XMLElementNode',               /foo_(\w+)$/,
 
         'TP.core.DocumentFragmentNode',         '#document-fragment',
-        'TP.core.AttributeNode',                'xpath1(./@foo)',
-        'TP.core.TextNode',                     'xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.CDATASectionNode',             'xpath1(./text()[contains(.,\'foo\')])',
-        'TP.core.ProcessingInstructionNode',    'xpath1(./processing-instruction(\'foo\'))',
-        'TP.core.CommentNode',                  'xpath1(./comment()[1])',
+        'TP.core.AttributeNode',                '#xpath1(./@foo)',
+        'TP.core.TextNode',                     '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.core.CDATASectionNode',             '#xpath1(./text()[contains(.,\'foo\')])',
+        'TP.core.ProcessingInstructionNode',    '#xpath1(./processing-instruction(\'foo\'))',
+        'TP.core.CommentNode',                  '#xpath1(./comment()[1])',
 
         'TP.core.SimpleTIBETPath',              /^TP\.core\.SimpleTIBETPath\$(\w+)$/,
         'TP.core.ComplexTIBETPath',             /^TP\.core\.ComplexTIBETPath\$(\w+)$/,
