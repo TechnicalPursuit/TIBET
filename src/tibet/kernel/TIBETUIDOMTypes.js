@@ -3005,12 +3005,46 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @returns {Object} The receiver.
      */
 
+    var attrName,
+        parts,
+
+        funcName;
+
     //  If the facet is 'value', then use the standard 'set' mechanism.
     if (facetName === 'value') {
-        //  NB: This will signal the standard TP.sig.ValueChange
+
+        //  See if there is a specific Attribute setter on this element. If so,
+        //  use it to set any attribute named with the aspect name. This will be
+        //  done in addition to any internal value of the aspect on the
+        //  receiver (i.e. both attribute 'foo' and the internal 'foo' property
+        //  will be set).
+
+        //  try attribute manipulation naming convention first
+
+        //  if the attribute is namespace qualified, we 'start upper' each
+        //  piece.
+        //  e.g. 'foo:bar' -> 'FooBar'
+        if (/:/.test(attrName = aspectName)) {
+            parts = attrName.split(/:/);
+            attrName = parts.first().asStartUpper() +
+                        parts.last().asStartUpper();
+        } else {
+            //  Otherwise, we just 'start upper' the whole piece
+            //  'foo' -> 'Foo'
+            attrName = attrName.asStartUpper();
+        }
+
+        funcName = 'setAttr' + attrName;
+        if (TP.canInvoke(this, funcName)) {
+            this[funcName](facetValue);
+        }
+
+        //  NB: This will signal the standard TP.sig.ValueChange (where 'value'
+        //  is the facet that changed).
         return this.set(aspectName, facetValue, shouldSignal);
     }
 
+    //  This will signal with the facet name as the facet that changed.
     this.signalUsingFacetAndValue(facetName, facetValue);
 
     return this;
