@@ -5767,7 +5767,7 @@ function(aRequest) {
     }
 
     //  if we had a valid request URI, try to use it.
-    if (TP.isURI(requestURI)) {
+    if (TP.isURIString(requestURI)) {
         //  if request URI is absolute, we use that
         if (TP.uriIsAbsolute(requestURI)) {
             url = requestURI;
@@ -6930,7 +6930,7 @@ function(aURL, fromDoc) {
     url = TP.uriExpandPath(url);
     url = decodeURIComponent(url);
 
-    if (!TP.isURI(url)) {
+    if (!TP.isURIString(url)) {
         TP.raise(this, 'TP.sig.InvalidURI');
         return;
     }
@@ -6999,7 +6999,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
         basePath,
         pushable;
 
-    if (!TP.isURI(aURL)) {
+    if (!TP.isURIString(aURL)) {
         TP.raise(this, 'TP.sig.InvalidURI');
         return;
     }
@@ -7672,7 +7672,7 @@ function(aCodeURL) {
         workerThread,
         newPromise;
 
-    if (!TP.isURI(aCodeURL)) {
+    if (!TP.isURIString(aCodeURL) && !TP.isURI(aCodeURL)) {
         return this.raise('InvalidURL',
                             'Not a valid URL to JavaScript source code.');
     }

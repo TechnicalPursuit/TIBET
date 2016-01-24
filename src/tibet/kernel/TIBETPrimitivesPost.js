@@ -3562,7 +3562,8 @@ function(anObject, anAspect, autoCollapse) {
 
     //  if the aspect is a URI (but only if it's an absolute URI with a scheme),
     //  try to get the value of the URI's resource's result.
-    if (TP.isURI(anAspect) && TP.regex.HAS_SCHEME.test(TP.str(anAspect))) {
+    if (TP.isURIString(anAspect) &&
+        TP.regex.HAS_SCHEME.test(TP.str(anAspect))) {
         //  NB: We assume 'async' of false here.
         val = TP.val(TP.uc(anAspect).getResource().get('result'));
     }

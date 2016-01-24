@@ -116,7 +116,7 @@ function(aURI) {
                             changesFeedLoc).join('/');
     }
 
-    if (!TP.isURI(watcherLoc)) {
+    if (!TP.isURIString(watcherLoc)) {
         return null;
     }
 

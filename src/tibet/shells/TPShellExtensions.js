@@ -1388,7 +1388,7 @@ function(aRequest) {
 
     //  If we were able to get a URI, then use it in a setLocation call to get
     //  proper push/history state management.
-    if (TP.isURI(maybeURI)) {
+    if (TP.isURIString(maybeURI) || TP.isURI(maybeURI)) {
 
         //  Build a request we can pass to the setLocation routine to handle any
         //  callbacks, error conditions, etc.

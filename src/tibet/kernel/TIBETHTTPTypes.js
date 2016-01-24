@@ -84,7 +84,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     //  update what we consider to be our "final uri", the qualified URI
     //  based on parameter data etc.
     url = this.at('finaluri');
-    if (TP.isURI(url)) {
+    if (TP.isURIString(url)) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
             uri.isLoaded(false);
@@ -138,7 +138,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     //  update what we consider to be our "final uri", the qualified URI
     //  based on parameter data etc.
     url = this.at('finaluri');
-    if (TP.isURI(url)) {
+    if (TP.isURIString(url)) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
             uri.isLoaded(false);
@@ -174,7 +174,7 @@ function(aResult) {
         //  update what we consider to be our "final uri", the qualified URI
         //  based on parameter data etc.
         url = this.at('finaluri');
-        if (TP.isURI(url)) {
+        if (TP.isURIString(url)) {
             uri = TP.uc(url);
             if (TP.isURI(uri)) {
                 uri.updateHeaders(httpObj);
@@ -979,7 +979,7 @@ function(aRequest) {
                 this.$get('mimetype'),
                 TP.ietf.Mime.guessMIMEType(
                     aRequest.at('body'),
-                    aRequest.at('uri'),
+                    TP.uc(aRequest.at('uri')),
                     this.getType().get('mimetype'))
                 )
             );

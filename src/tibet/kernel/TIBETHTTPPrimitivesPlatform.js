@@ -260,7 +260,7 @@ TP.hc(
                                 request);
         }
 
-        if (!TP.isKindOf(url, String)) {
+        if (!TP.isURIString(url)) {
             return TP.httpError(url, 'TP.sig.InvalidParameter',
                                 request);
         }
@@ -520,7 +520,7 @@ TP.hc(
                                 request);
         }
 
-        if (!TP.isKindOf(url, String)) {
+        if (!TP.isURIString(url)) {
             return TP.httpError(url, 'TP.sig.InvalidParameter',
                                 request);
         }
@@ -737,7 +737,7 @@ TP.hc(
                                 request);
         }
 
-        if (!TP.isKindOf(url, String)) {
+        if (!TP.isURIString(url)) {
             return TP.httpError(url, 'TP.sig.InvalidParameter',
                                 request);
         }

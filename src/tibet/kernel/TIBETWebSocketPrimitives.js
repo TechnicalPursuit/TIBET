@@ -285,7 +285,7 @@ function(targetUrl, openCallback) {
 
             //  We need to keep track of the last WebSocket object used for
             //  a particular URI so we associate it here if possible
-            if (TP.isURI(targetUrl) &&
+            if (TP.isURIString(targetUrl) &&
                 TP.isType(TP.sys.require('TP.core.URI'))) {
                 url = TP.uc(targetUrl);
                 url.set('webSocketObj', wsObj);

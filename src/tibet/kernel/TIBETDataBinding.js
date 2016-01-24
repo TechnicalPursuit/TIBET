@@ -1248,7 +1248,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
             //  run the 'transform' call, because the expression is going to
             //  expect to run against the core source object itself. We then
             //  reset the expression to execute to be just the fragment text.
-            if (TP.isURI(exprToExecute)) {
+            if (TP.isURIString(exprToExecute)) {
 
                 splitURI = TP.uc(exprToExecute);
 
@@ -1268,7 +1268,7 @@ function(attrName, attrValue, scopeVals, direction, refreshImmediately) {
             //  If the expression to execute is a fully-formed URI, then we
             //  don't take the scope values into consideration. We build a
             //  primaryURIPath consisting of the expression to execute.
-            if (TP.isURI(exprToExecute)) {
+            if (TP.isURIString(exprToExecute)) {
                 primaryURIPath = exprToExecute;
             } else {
                 //  Concatenate the expression to execute onto the scope values
@@ -1540,7 +1540,7 @@ function(attrName, attrValue, scopeVals, direction, unregisterURIs) {
             //  primaryURIPath consisting of the URI's primary href and a
             //  'value' TIBET XPointer that will just return the value. We then
             //  reset the expression to execute to be just the fragment text.
-            if (TP.isURI(exprToExecute)) {
+            if (TP.isURIString(exprToExecute)) {
                 splitURI = TP.uc(exprToExecute);
                 primaryURIPath = splitURI.getPrimaryLocation() +
                                     '#tibet(value)';
@@ -1729,7 +1729,7 @@ function(attributeName, wantsFullScope) {
 
                 //  If we weren't able to compute a real URI from the fully
                 //  expanded URI value, then raise an exception and return here.
-                if (!TP.isURI(fullyExpandedVal)) {
+                if (!TP.isURIString(fullyExpandedVal)) {
                     this.raise('TP.sig.InvalidURI');
 
                     return TP.BREAK;
@@ -1742,7 +1742,7 @@ function(attributeName, wantsFullScope) {
 
                 //  If we weren't able to compute a real URI from the fully
                 //  expanded URI value, then raise an exception and return here.
-                if (!TP.isURI(bindVal = TP.trim(bindVal))) {
+                if (!TP.isURIString(bindVal = TP.trim(bindVal))) {
                     this.raise('TP.sig.InvalidURI');
 
                     return TP.BREAK;
@@ -2426,7 +2426,7 @@ function(aSignalOrHash) {
 
         //  If we weren't able to compute a real URI from the fully expanded URI
         //  value, then raise an exception and return here.
-        if (!TP.isURI(fullyExpandedVal)) {
+        if (!TP.isURIString(fullyExpandedVal)) {
             this.raise('TP.sig.InvalidURI');
 
             return this;

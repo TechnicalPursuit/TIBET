@@ -152,7 +152,7 @@ function(aRequest) {
             //  If the value is already a URI, don't mess with it. Changing
             //  the value here is only meant for when the whole value is
             //  something like 'url(#foo)'.
-            if (TP.isURI(val)) {
+            if (TP.isURIString(val)) {
                 return;
             }
 

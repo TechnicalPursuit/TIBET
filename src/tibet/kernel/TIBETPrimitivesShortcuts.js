@@ -2705,7 +2705,7 @@ function(aURIOrRoute, linkContext) {
         }
     }
 
-    if (!TP.isURI(aURIOrRoute)) {
+    if (!TP.isURIString(aURIOrRoute)) {
         TP.raise(this, 'TP.sig.InvalidURI');
         return false;
     }

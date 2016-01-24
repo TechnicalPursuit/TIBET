@@ -4591,8 +4591,8 @@ function() {
 
     //  if we couldn't ask the content then we can try to guess via the
     //  MIME type itself
-    mimeType = TP.ietf.Mime.guessMIMEType(content, this.getLocation(),
-                                    this.get('defaultMIMEType'));
+    mimeType = TP.ietf.Mime.guessMIMEType(
+                                content, this, this.get('defaultMIMEType'));
 
     if (TP.isString(mimeType)) {
         //  note that we don't cache the guess

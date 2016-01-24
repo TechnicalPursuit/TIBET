@@ -4105,7 +4105,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
     //  If the handler ID isn't already a URI, then we create a TIBET URN out of
     //  it.
-    if (!TP.isURI(handlerID)) {
+    if (!TP.isURIString(handlerID)) {
 
         //  Prepend the standard TIBET URN prefix onto the handler ID and check
         //  to see if there's already a URI registered under that location. Note
@@ -4267,7 +4267,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         //  '$registerInterest' call above for more on how & why these URIs get
         //  created.
 
-        if (!TP.isURI(handlerID)) {
+        if (!TP.isURIString(handlerID)) {
             handlerID = TP.TIBET_URN_PREFIX + handlerID;
         }
 

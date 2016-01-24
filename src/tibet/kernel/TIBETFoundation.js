@@ -2051,6 +2051,9 @@ function(anObject) {
      *     it impossible to do a reasonable job without using subtypes specific
      *     to each scheme (which TIBET supports but which it does not leverage
      *     for this method).
+     *     NOTE: This method is evolving to become just a type check for
+     *     TP.core.URI. Use TP.isURIString() to check to see if a String looks
+     *     like a URI.
      * @param {Object} anObject The object to test.
      * @returns {Boolean} True if the object appears to be a URI.
      */
@@ -2060,6 +2063,13 @@ function(anObject) {
     }
 
     if (TP.isString(anObject)) {
+
+        //  A warning that, at some point, this API will change to no longer
+        //  test Strings.
+        TP.ifWarn() ?
+            TP.warn('String supplied to isURI: ' + anObject + '.' +
+                    ' Use TP.isURIString() instead.') : 0;
+
         //  simple check for proper URI form - but make sure it's not a RegExp
         //  literal.
         return TP.regex.URI_LIKELY.test(anObject) &&

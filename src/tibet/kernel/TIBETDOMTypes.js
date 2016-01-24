@@ -165,8 +165,14 @@ function(nodeSpec, varargs) {
         if (TP.isValid(varargs) &&
             (TP.isURI(varargs) || TP.isString(varargs))) {
 
-            if (TP.isURI(varargs)) {
-                resp = TP.uc(varargs).getResource(
+            args = varargs;
+
+            if (TP.isURIString(args)) {
+                args = TP.uc(args);
+            }
+
+            if (TP.isURI(args)) {
+                resp = TP.uc(args).getResource(
                             TP.hc('async', false, 'resultType', TP.WRAP));
                 template = resp.get('result');
 
@@ -175,8 +181,8 @@ function(nodeSpec, varargs) {
                 } else if (TP.isKindOf(template, 'TP.core.ElementNode')) {
                     template.removeAttribute('id');
                 }
-            } else if (TP.isString(varargs)) {
-                template = varargs;
+            } else if (TP.isString(args)) {
+                template = args;
             }
 
             str = TP.format(node, template, arguments[2]);
@@ -187,11 +193,21 @@ function(nodeSpec, varargs) {
 
             return retVal;
         }
-    } else if (TP.isURI(nodeSpec)) {
-        //  Make sure its a URI, and not a URI string.
-        uri = TP.uc(nodeSpec);
+    } else if (TP.isURIString(nodeSpec)) {
 
+        uri = TP.uc(nodeSpec);
         resp = uri.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
+
+        if (!TP.isNode(retVal = resp.get('result'))) {
+            return;
+        }
+
+        return retVal.clone(true);
+    } else if (TP.isURI(nodeSpec)) {
+
+        uri = nodeSpec;
+        resp = uri.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
+
         if (!TP.isNode(retVal = resp.get('result'))) {
             return;
         }
@@ -338,11 +354,21 @@ function() {
     if (TP.notEmpty(template = this.get('template'))) {
         if (TP.isNode(template)) {
             return TP.nodeCloneNode(template, true);
-        } else if (TP.isURI(template)) {
-            //  Make sure its a URI, and not a URI string.
-            uri = TP.uc(template);
+        } else if (TP.isURIString(template)) {
 
+            uri = TP.uc(template);
             resp = uri.getResource(TP.hc('async', false, 'resultType', TP.DOM));
+
+            if (!TP.isNode(retVal = resp.get('result'))) {
+                return;
+            }
+
+            return TP.nodeCloneNode(retVal, true);
+        } else if (TP.isURI(template)) {
+
+            uri = template;
+            resp = uri.getResource(TP.hc('async', false, 'resultType', TP.DOM));
+
             if (!TP.isNode(retVal = resp.get('result'))) {
                 return;
             }
@@ -1899,7 +1925,7 @@ function() {
     var url;
 
     url = this.get('uri');
-    if (TP.isURI(url)) {
+    if (TP.isURIString(url)) {
         return TP.uc(url).getLocation();
     }
 
@@ -3017,7 +3043,7 @@ function(aURI) {
      * @returns {TP.core.Node} The receiver.
      */
 
-    if (!TP.isURI(aURI)) {
+    if (!TP.isURIString(aURI) && !TP.isURI(aURI)) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
@@ -4265,8 +4291,9 @@ function(aURI, force, aParamHash) {
 
             //  NOTE the key here which is required to get proper relative
             //  path resolution
-            if (TP.isURI(url = aParamHash.at('uri'))) {
-                //  The 'uri' slot in the param hash typically contains a
+            url = aParamHash.at('uri');
+            if (TP.isURIString(url) || TP.isURI(url)) {
+                //  The 'uri' slot in the param hash sometimes contains a
                 //  TP.core.URI instance... make sure its a String.
                 url = url.asString();
             } else {
@@ -4353,7 +4380,7 @@ function(aValue) {
         baseURI = node.ownerDocument.baseURI;
     }
 
-    if (!TP.isURI(pathURI = TP.elementComputeXMLBaseFrom(node))) {
+    if (!TP.isURIString(pathURI = TP.elementComputeXMLBaseFrom(node))) {
         pathURI = baseURI;
     }
 
@@ -5200,7 +5227,7 @@ function(newContent, aRequest, stdinContent) {
     //  If the content to be set is a URI, then track it via the 'uri'
     //  property on the request. This helps downstream routines check to see if
     //  the content changes are URI/document level.
-    if (TP.isURI(newContent)) {
+    if (TP.isURIString(newContent)) {
         request.atPutIfAbsent('uri', newContent);
     }
 
@@ -5493,7 +5520,7 @@ function(newContent, aPositionOrPath, aRequest, stdinContent) {
     //  If the content to be set is a URI, then track it via the 'uri'
     //  property on the request. This allows us to use it later when
     //  attempting to add to the history mechanism.
-    if (TP.isURI(newContent)) {
+    if (TP.isURIString(newContent)) {
         request.atPutIfAbsent('uri', newContent);
     }
 
@@ -5706,8 +5733,12 @@ function(newContent, aRequest, stdinContent) {
     //  the Node level, it is determined whether this is a scalar or
     //  single-value node and might do some further processing on 'newContent'
     //  at that point.
+
+    //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
+    //  TP.isURIString() method because the content can be so mixed that it
+    //  might have embedded URIs.
     if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.isURI(content = TP.str(content)) &&
+        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
         !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
         return this.callNextMethod();
     }
@@ -5718,7 +5749,7 @@ function(newContent, aRequest, stdinContent) {
     //  If the content to be set is a URI, then track it via the 'uri'
     //  property on the request. This allows us to use it later when
     //  attempting to add to the history mechanism.
-    if (TP.isURI(newContent)) {
+    if (TP.isURIString(newContent)) {
         request.atPutIfAbsent('uri', newContent);
     }
 
@@ -5906,8 +5937,12 @@ function(newContent, aRequest, stdinContent) {
     //  the Node level, it is determined whether this is a scalar or
     //  single-value node and might do some further processing on 'newContent'
     //  at that point.
+
+    //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
+    //  TP.isURIString() method because the content can be so mixed that it
+    //  might have embedded URIs.
     if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.isURI(content = TP.str(content)) &&
+        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
         !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
         return this.callNextMethod();
     }
@@ -5918,7 +5953,7 @@ function(newContent, aRequest, stdinContent) {
     //  If the content to be set is a URI, then track it via the 'uri'
     //  property on the request. This allows us to use it later when
     //  attempting to add to the history mechanism.
-    if (TP.isURI(newContent)) {
+    if (TP.isURIString(newContent)) {
         request.atPutIfAbsent('uri', newContent);
     }
 
@@ -14154,7 +14189,7 @@ function() {
     var url;
 
     url = TP.documentGetLocation(this.getNativeNode());
-    if (TP.isURI(url)) {
+    if (TP.isURIString(url)) {
         return TP.uc(url).getLocation();
     }
 

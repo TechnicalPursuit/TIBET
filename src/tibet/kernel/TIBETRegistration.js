@@ -501,7 +501,7 @@ function(anObj, anID, forceRegistration, observeResource) {
 
     //  If the ID is already a URI, then it can already be looked up without
     //  having to register it under a TIBET URN.
-    if (TP.isURI(id)) {
+    if (TP.isURIString(id)) {
         return false;
     }
 
