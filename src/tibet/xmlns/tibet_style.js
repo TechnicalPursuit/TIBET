@@ -148,7 +148,6 @@ function(lessLoc, lessText) {
                     styleElems,
 
                     insertionPoint,
-                    docHead,
 
                     existingStyleElem,
                     generatedStyleElem,
@@ -217,8 +216,6 @@ function(lessLoc, lessText) {
                 //  Note here that, in order to try to preserve CSS rule order,
                 //  we try to insert the '@imported' style sheets at the top.
 
-                docHead = TP.documentGetHead(natDoc);
-
                 cssImports.forEach(
                         function(aPath) {
                             var isCSS,
@@ -277,7 +274,7 @@ function(lessLoc, lessText) {
                                 //  already exist, we don't have to worry about
                                 //  multiple awakenings.
                                 styleElem = TP.nodeInsertBefore(
-                                                    docHead,
+                                                    insertionPoint.parentNode,
                                                     styleElem,
                                                     insertionPoint,
                                                     true);
