@@ -134,7 +134,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         uri;
 
     url = this.at('uri');
-    if (TP.isURI(url)) {
+    if (TP.isURIString(url)) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
             uri.isLoaded(false);
@@ -165,7 +165,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         uri;
 
     url = this.at('uri');
-    if (TP.isURI(url)) {
+    if (TP.isURIString(url)) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
             uri.isLoaded(false);
@@ -195,7 +195,7 @@ function(aResult) {
         data;
 
     url = this.at('uri');
-    if (TP.isURI(url)) {
+    if (TP.isURIString(url)) {
         uri = TP.uc(url);
         if (TP.isURI(uri)) {
             data = uri.updateResourceCache(this);
