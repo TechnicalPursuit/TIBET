@@ -451,6 +451,9 @@ function(options) {
  */
 TP.lang.Object.defineSubtype('test.Root');
 
+//  can't construct concrete instances of this
+TP.test.Root.isAbstract(true);
+
 //  Add support for job control status tracking and querying.
 
 //  NB: For PhantomJS, we resolve the traits right away, due to a crashing bug.
