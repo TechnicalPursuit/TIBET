@@ -1637,6 +1637,8 @@ function(options) {
         result,
         suite,
 
+        skippedCount,
+
         params,
         wantsOnly,
 
@@ -1659,16 +1661,19 @@ function(options) {
     caselist = this.getCaseList(options);
 
     if (this.isSkipped() && !params.at('ignore_skip')) {
+
+        skippedCount = caselist.getSize();
+
         statistics = TP.hc('passed', 0,
                             'failed', 0,
                             'ignored', 0,
                             'errored', 0,
-                            'skipped', caselist.getSize());
+                            'skipped', skippedCount);
         this.set('statistics', statistics);
 
         TP.sys.logTest('# SKIP - test suite skipped.', TP.DEBUG);
         TP.sys.logTest('# pass: 0 pass, 0 fail, 0 error, ' +
-            this.get('statistics').at('skipped') + ' skip, 0 todo.');
+                        skippedCount + ' skip, 0 todo.');
 
         return TP.extern.Promise.resolve();
     }
