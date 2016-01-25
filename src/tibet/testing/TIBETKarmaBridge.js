@@ -46,7 +46,9 @@ function(anEntry) {
 
     var arglist,
         entry,
-        text;
+        text,
+
+        didPass;
 
     arglist = anEntry.getArglist();
     entry = arglist.first();
@@ -58,9 +60,17 @@ function(anEntry) {
         text = entry.get('statusText');
     }
 
-    //  Allow either actual test info (ok or not ok) or count data (N..M).
-    return /^(ok|not ok)/.test(text) ||
-        /^(\d*?)\.\.(\d*?)$/.test(text);
+    //  Allow:
+
+    //  actual test info (ok or not ok)
+    //  count data (N..M).
+    //  suite skip output.
+    didPass =
+        /^(ok|not ok)/.test(text) ||
+        /^(\d*?)\.\.(\d*?)$/.test(text) ||
+        /# pass: 0 pass, 0 fail, 0 error, \d+ skip, 0 todo./.test(text);
+
+    return didPass;
 });
 
 //  ============================================================================
@@ -105,7 +115,10 @@ function(anEntry) {
     var arglist,
         entry,
         obj,
-        text;
+        text,
+
+        suiteSkippedMatcher,
+        numSkipped;
 
     arglist = anEntry.getArglist();
     entry = arglist.first();
@@ -121,10 +134,19 @@ function(anEntry) {
         text = entry.get('statusText');
     }
 
+    suiteSkippedMatcher =
+        /# pass: 0 pass, 0 fail, 0 error, (\d+) skip, 0 todo./;
+
     if (TP.isValid(text)) {
         //  If this is an N..M count line capture count.
         if (/^(\d*?)\.\.(\d*?)$/.test(text)) {
             obj.total = text.split('..').last();
+        } else if (suiteSkippedMatcher.test(text)) {
+            numSkipped = suiteSkippedMatcher.exec(text).at(1);
+
+            obj.skipped = true;
+            obj.wholeSuiteSkippedCount = numSkipped.asNumber();
+
         } else {
             obj.log = [text];
             obj.success = /^ok/.test(text);
@@ -168,7 +190,8 @@ TP.log.KarmaAppender.Type.$set('defaultLayoutType', 'TP.log.KarmaLayout');
 //  Type Methods
 //  ----------------------------------------------------------------------------
 
-TP.log.KarmaAppender.Type.defineMethod('initialize', function() {
+TP.log.KarmaAppender.Type.defineMethod('initialize',
+function() {
 
     /**
      * @method initialize
@@ -224,9 +247,12 @@ function(anEntry) {
      * @returns {TP.log.Appender} The receiver.
      */
 
-    var layout,
+    var karma,
+
+        layout,
         results,
-        karma;
+        resultCount,
+        i;
 
     //  Get a handle to karma object, or ignore entire thing.
     karma = TP.extern.karma;
@@ -251,7 +277,20 @@ function(anEntry) {
         if (!TP.isNumber(results.time)) {
             results.time = 0;
         }
-        karma.result(results);
+
+        //  If this property exists, then a whole suite was skipped and we have
+        //  to iterate and call 'result()' for each skip.
+        if (TP.isNumber(resultCount = results.wholeSuiteSkippedCount)) {
+
+            //  Remove this to avoid issues with Karma.
+            delete results.wholeSuiteSkippedCount;
+
+            for (i = 0; i < resultCount; i++) {
+                karma.result(results);
+            }
+        } else {
+            karma.result(results);
+        }
     }
 
     return this;
