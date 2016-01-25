@@ -1560,9 +1560,6 @@ function(options) {
     total = 0;
     total += passed + failed + errored + ignored + skipped;
 
-    //  NOTE: per-Suite statistics logging only happens at the DEBUG level.
-    //  Normally, all of the statistics are reported at once after all suites
-    //  have been run. See the TP.test.runSuites() method.
     TP.sys.logTest(
         prefix +
         total + ' total, ' +
