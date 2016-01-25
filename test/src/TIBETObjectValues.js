@@ -51,7 +51,9 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.definePrimitive('$$setupCommonObjectValues',
 function(aRequest) {
-    var undefVal,
+    var topLevelWindow,
+
+        undefVal,
         nullVal,
 
         stringVal,
@@ -159,6 +161,8 @@ function(aRequest) {
         return;
     }
 
+    topLevelWindow = TP.sys.getLaunchWindow();
+
     //  undefined
     undefVal = undefined;
     //  null
@@ -192,14 +196,14 @@ function(aRequest) {
     nativeFuncVal = Array.prototype.slice;
 
     //  Window
-    windowVal = top;
+    windowVal = topLevelWindow;
     //  iframe Window
-    iframeWindowVal = top.UIROOT;
+    iframeWindowVal = topLevelWindow.UIROOT;
 
     //  HTML Document
-    htmlDocumentVal = top.document;
+    htmlDocumentVal = topLevelWindow.document;
     //  HTML Element
-    htmlElementVal = top.document.body;
+    htmlElementVal = topLevelWindow.document.body;
 
     //  XML Document
     xmlDocumentVal = TP.constructDocument();
@@ -243,7 +247,7 @@ function(aRequest) {
     namedNodeMapVal = xmlDocumentVal.documentElement.attributes;
 
     //  Style sheet
-    stylesheetVal = top.document.styleSheets[0];
+    stylesheetVal = topLevelWindow.document.styleSheets[0];
     //  Style rule
     styleRuleVal = TP.styleSheetGetStyleRules(stylesheetVal, false)[0];
     //  Style declaration
@@ -517,7 +521,9 @@ function(aRequest) {
 
 TP.definePrimitive('$$setupCommonObjectTypes',
 function(aRequest) {
-    var undefVal,
+    var topLevelWindow,
+
+        undefVal,
         nullVal,
 
         stringVal,
@@ -628,9 +634,11 @@ function(aRequest) {
 
         objRootTypes;
 
-    if (TP.isValid(TP.$$commonObjectTypes)) {
+    if (TP.isValid(TP.$$commonObjectTypeHierarchies)) {
         return;
     }
+
+    topLevelWindow = TP.sys.getLaunchWindow();
 
     undefVal = TP.ac();
     nullVal = TP.ac();
@@ -654,7 +662,7 @@ function(aRequest) {
     nativeFuncVal = TP.ac(Function, Object);
 
     windowVal = TP.ac(Window, Object);
-    iframeWindowVal = TP.ac(top.UIROOT.Window, top.UIROOT.Object);
+    iframeWindowVal = TP.ac(topLevelWindow.UIROOT.Window, topLevelWindow.UIROOT.Object);
 
     htmlDocumentVal = TP.ac(HTMLDocument, Document, Node, Object);
     htmlElementVal = TP.ac(HTMLBodyElement, HTMLElement, Element, Node, Object);
