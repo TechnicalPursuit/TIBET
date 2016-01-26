@@ -47,7 +47,6 @@ function(aRequest) {
         suiteName,
         cases,
         context,
-        msg,
         obj;
 
     runner = TP.bySystemId('TP.test');
