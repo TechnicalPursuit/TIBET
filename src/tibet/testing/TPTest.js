@@ -207,7 +207,7 @@ function(options) {
         throwHandlers,
         shouldLogSetting,
         promise,
-        exclusives,
+        ignoreOnly,
         summarize,
         total,
         msg,
@@ -231,11 +231,11 @@ function(options) {
 
     target = params.at('target');
 
-    exclusives = TP.isTrue(params.at('ignore_only'));
+    ignoreOnly = TP.isTrue(params.at('ignore_only'));
 
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
-    if (exclusives === true) {
+    if (ignoreOnly === true) {
         TP.sys.logTest('# filtering for exclusive suite(s).', TP.WARN);
         suites = suites.filter(
                         function(suite) {
@@ -259,17 +259,22 @@ function(options) {
     summarize = function(obj) {
         var passed,
             failed,
+            skipped,
             ignored,
             errored,
-            skipped,
-            prefix,
-            cases;
+            exclusives,
+
+            cases,
+
+            prefix;
 
         passed = 0;
         failed = 0;
+        skipped = 0;
         ignored = 0;
         errored = 0;
-        skipped = 0;
+        exclusives = 0;
+
         cases = 0;
 
         suites.perform(
@@ -290,9 +295,10 @@ function(options) {
                     } else {
                         passed += stats.at('passed');
                         failed += stats.at('failed');
+                        skipped += stats.at('skipped');
                         errored += stats.at('errored');
                         ignored += stats.at('ignored');
-                        skipped += stats.at('skipped');
+                        exclusives += stats.at('exclusives');
                     }
                 }, 0);
 
@@ -313,7 +319,8 @@ function(options) {
             failed + ' fail, ' +
             errored + ' error, ' +
             skipped + ' skip, ' +
-            ignored + ' todo.');
+            ignored + ' todo, ' +
+            exclusives + ' only.');
 
         TP.sys.setcfg('test.running', false);
     };
@@ -874,6 +881,13 @@ TP.test.Suite.Inst.defineAttribute('$currentPromise');
  * @type {Boolean}
  */
 TP.test.Suite.Inst.defineAttribute('$capturingSignals');
+
+/**
+ * The count of 'exclusive' test cases (i.e. those with '.only()') in this
+ * suite.
+ * @type {Number}
+ */
+TP.test.Suite.Inst.defineAttribute('$exclusiveCount');
 
 /**
  * What actual file location did this suite get loaded from?
@@ -1476,6 +1490,12 @@ function(caseName, caseFunc) {
 TP.test.Suite.Inst.defineMethod('report',
 function(options) {
 
+    /**
+     * Reports the execution of the test Cases of a single Suite.
+     * @param {TP.core.Hash} options A dictionary of test options.
+     * @returns {TP.testSuite} The receiver.
+     */
+
     var statistics,
 
         caseList,
@@ -1485,7 +1505,9 @@ function(options) {
         ignored,
         skipped,
         prefix,
-        total;
+        total,
+
+        exclusives;
 
     statistics = this.get('statistics');
 
@@ -1536,11 +1558,17 @@ function(options) {
                     }
                 });
 
+        if (!TP.isNumber(exclusives = this.get('$exclusiveCount'))) {
+            exclusives = 0;
+        }
+
         statistics = TP.hc('passed', passed,
                             'failed', failed,
+                            'skipped', skipped,
                             'ignored', ignored,
                             'errored', errored,
-                            'skipped', skipped);
+                            'exclusives', exclusives);
+
         this.set('statistics', statistics);
     } else {
         passed = statistics.at('passed');
@@ -1548,6 +1576,7 @@ function(options) {
         skipped = statistics.at('skipped');
         ignored = statistics.at('ignored');
         errored = statistics.at('errored');
+        exclusives = statistics.at('exclusives');
     }
 
     //  NOTE the didError check here is for 'describe' errors.
@@ -1567,7 +1596,8 @@ function(options) {
         failed + ' fail, ' +
         errored + ' error, ' +
         skipped + ' skip, ' +
-        ignored + ' todo.',
+        ignored + ' todo, ' +
+        exclusives + ' only.',
         TP.DEBUG);
 
     return this;
@@ -1663,9 +1693,10 @@ function(options) {
 
         statistics = TP.hc('passed', 0,
                             'failed', 0,
+                            'skipped', skippedCount,
                             'ignored', 0,
                             'errored', 0,
-                            'skipped', skippedCount);
+                            'exclusives', 0);
         this.set('statistics', statistics);
 
         TP.sys.logTest('# SKIP - test suite skipped.', TP.DEBUG);
@@ -1674,6 +1705,10 @@ function(options) {
 
         return TP.extern.Promise.resolve();
     }
+
+    //  Zero-out the count of 'exclusive' test cases (i.e. those with '.only()')
+    //  in this suite.
+    this.set('$exclusiveCount', 0);
 
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
@@ -1692,10 +1727,12 @@ function(options) {
                             return test.isExclusive();
                         });
 
-            if (caselist.length > 1) {
+            if (caselist.getSize() > 1) {
                 TP.sys.logTest('# ' + caselist.length +
                     ' exclusive test cases found.', TP.WARN);
             }
+
+            this.set('$exclusiveCount', caselist.getSize());
         }
     }
 
