@@ -320,10 +320,11 @@
             //logger.debug('CouchDB change:\n' +
              //   TDS.beautify(JSON.stringify(change)));
 
-            //  Delegate task processing to the TDS TaskRunner if available.
-            if (TDS.taskrunner) {
+            //  Delegate task processing to the TIBET Workflow Subsystem (TWS)
+            //  if it's been loaded.
+            if (TDS.workflow) {
                 process.nextTick(function() {
-                    TDS.taskrunner(change.doc);
+                    TDS.workflow(change.doc);
                 });
             }
             return;
@@ -913,4 +914,3 @@
     };
 
 }(this));
-

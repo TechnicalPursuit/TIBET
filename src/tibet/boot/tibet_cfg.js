@@ -612,6 +612,8 @@
     TP.sys.setcfg('path.tibet_inf', 'TIBET-INF');
 
     TP.sys.setcfg('path.tds_file', '~/tds.json');
+    TP.sys.setcfg('path.tds_plugins', '~/plugins');
+    TP.sys.setcfg('path.tds_tasks', '~/tasks');
 
     TP.sys.setcfg('path.app_inf', '~app/' + TP.sys.cfg('path.tibet_inf'));
     TP.sys.setcfg('path.lib_inf', '~lib/' + TP.sys.cfg('path.tibet_inf'));
