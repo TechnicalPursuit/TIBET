@@ -54,6 +54,78 @@
     TDS.beautify = beautify;
 
     /**
+     * A useful variation on extend from other libs sufficient for parameter
+     * block copies. The objects passed are expected to be simple JavaScript
+     * objects. No checking is done to support more complex cases. Slots in the
+     * target are only overwritten if they don't already exist. Only slots owned
+     * by the source will be copied. Arrays are treated with some limited deep
+     * copy semantics as well.
+     * @param {Object} target The object which will potentially be modified.
+     * @param {Object} source The object which provides new property values.
+     */
+    TDS.blend = function(target, source) {
+
+        if (!isValid(source)) {
+            return target;
+        }
+
+        if (Array.isArray(target)) {
+            if (!Array.isArray(source)) {
+                return target;
+            }
+
+            // Both arrays. Blend as best we can.
+            source.forEach(function(item, index) {
+                //  Items that don't appear in the list get pushed.
+                if (target.indexOf(item) === -1) {
+                    target.push(item);
+                }
+            });
+
+            return target;
+        }
+
+        if (isValid(target)) {
+            //  Target is primitive value. Don't replace.
+            if (!isObject(target)) {
+                return target;
+            }
+
+            //  Target is complex object, but source isn't.
+            if (!isObject(source)) {
+                return target;
+            }
+        } else {
+            // Target not valid, source should overlay.
+            return source;
+        }
+
+        Object.keys(source).forEach(function(key) {
+            if (key in target) {
+                if (isObject(target[key])) {
+                    blend(target[key], source[key]);
+                } else if (Array.isArray(target[key])) {
+                    blend(target[key], source[key]);
+                }
+                return;
+            }
+
+            //  Key isn't in target, build it out with source copy.
+            if (Array.isArray(source[key])) {
+                // Copy array/object slots deeply as needed.
+                target[key] = blend([], source[key]);
+            } else if (isObject(source[key])) {
+                // Deeply copy other non-primitive objects.
+                target[key] = blend({}, source[key]);
+            } else {
+                target[key] = source[key];
+            }
+        });
+
+        return target;
+    };
+
+    /**
      * Expands virtual paths using configuration data loaded from TIBET.
      * @param {String} aPath The virtual path to expand.
      * @returns {String} The expanded path.
