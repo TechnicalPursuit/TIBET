@@ -63,12 +63,14 @@ function(anEntry) {
     //  Allow:
 
     //  actual test info (ok or not ok)
-    //  count data (N..M).
-    //  suite skip output.
+    //  count data (N..M)
+    //  whole suite skip output
+    //  per suite status lines
     didPass =
         /^(ok|not ok)/.test(text) ||
         /^(\d*?)\.\.(\d*?)$/.test(text) ||
-        /# pass: 0 pass, 0 fail, 0 error, \d+ skip, 0 todo./.test(text);
+        /# pass: 0 pass, 0 fail, 0 error, \d+ skip, 0 todo\./.test(text) ||
+        /# (?:pass|fail): \d+ total, \d+ pass, \d+ fail, \d+ error, (\d+) skip, \d+ todo, (\d+) only\./.test(text);
 
     return didPass;
 });
@@ -117,8 +119,12 @@ function(anEntry) {
         obj,
         text,
 
-        suiteSkippedMatcher,
-        numSkipped;
+        wholeSuiteSkippedMatcher,
+        suiteSummaryMatcher,
+
+        numOnly,
+
+        summaryData;
 
     arglist = anEntry.getArglist();
     entry = arglist.first();
@@ -134,23 +140,51 @@ function(anEntry) {
         text = entry.get('statusText');
     }
 
-    suiteSkippedMatcher =
+    wholeSuiteSkippedMatcher =
         /# pass: 0 pass, 0 fail, 0 error, (\d+) skip, 0 todo./;
 
+    suiteSummaryMatcher =
+        /# (?:pass|fail): \d+ total, \d+ pass, \d+ fail, \d+ error, (\d+) skip, \d+ todo, (\d+) only\./;
+
+    obj.isInfo = false;
     if (TP.isValid(text)) {
         //  If this is an N..M count line capture count.
         if (/^(\d*?)\.\.(\d*?)$/.test(text)) {
-            obj.total = text.split('..').last();
-        } else if (suiteSkippedMatcher.test(text)) {
-            numSkipped = suiteSkippedMatcher.exec(text).at(1);
 
-            obj.skipped = true;
-            obj.wholeSuiteSkippedCount = numSkipped.asNumber();
+            obj.isInfo = true;
+            obj.total = text.split('..').last();
+
+        } else if (wholeSuiteSkippedMatcher.test(text)) {
+
+            //  Otherwise, a whole suite was skipped. Capture its skip count.
+            obj.numSkipped =
+                wholeSuiteSkippedMatcher.exec(text).at(1).asNumber();
+
+        } else if (suiteSummaryMatcher.test(text)) {
+
+            summaryData = suiteSummaryMatcher.exec(text);
+            obj.numSkipped = summaryData.at(1).asNumber();
+            numOnly = summaryData.at(2).asNumber();
+
+            //  If the number of 'only' test cases was 0, then we don't have any
+            //  of the other test cases in this suite that we need to report as
+            //  skipped.
+            if (numOnly === 0) {
+                delete obj.numSkipped;
+                obj.isInfo = true;
+            }
 
         } else {
+
+            //  A regular per-test-case log message.
             obj.log = [text];
-            obj.success = /^ok/.test(text);
             obj.skipped = /# SKIP/.test(text);
+
+            if (/^ok/.test(text)) {
+                obj.success = true;
+            } else if (/^not ok/.test(text)) {
+                obj.success = false;
+            }
         }
     } else {
         return;
@@ -158,7 +192,7 @@ function(anEntry) {
 
     //  For 'info' output don't bother with extra values, they just get Karma
     //  onInfo output routines confused.
-    if (TP.notValid(obj.total)) {
+    if (!obj.isInfo) {
         obj.success = TP.ifInvalid(obj.success, false);
         obj.description = TP.ifInvalid(obj.description, '');
         obj.suite = TP.ifInvalid(obj.suite, []);
@@ -251,6 +285,9 @@ function(anEntry) {
 
         layout,
         results,
+
+        outputResult,
+
         resultCount,
         i;
 
@@ -270,7 +307,8 @@ function(anEntry) {
     }
 
     //  Entries like N..M are reformated for info(), all others are result().
-    if (TP.isValid(results.total)) {
+    if (results.isInfo) {
+        delete results.isInfo;
         karma.info(results);
     } else {
         //  If we don't pass a valid number karma will NaN the net time calc.
@@ -278,17 +316,29 @@ function(anEntry) {
             results.time = 0;
         }
 
-        //  If this property exists, then a whole suite was skipped and we have
-        //  to iterate and call 'result()' for each skip.
-        if (TP.isNumber(resultCount = results.wholeSuiteSkippedCount)) {
+        outputResult = false;
+
+        //  If there were skips, then iterate over how many they were and report
+        //  them one-at-a-time. The reason that we don't report skips
+        //  individually is that they can come in groups, either because a whole
+        //  suite was skipped, or because a suite had an '.only()' on one of its
+        //  test cases and the rest of the cases in that suite are considered
+        //  skipped. Either way, skipped tests are tracked by reading the status
+        //  line for the suite, which means they will come in batcheds.
+        if (TP.isNumber(resultCount = results.numSkipped)) {
+
+            outputResult = true;
 
             //  Remove this to avoid issues with Karma.
-            delete results.wholeSuiteSkippedCount;
+            delete results.numSkipped;
 
+            results.skipped = true;
             for (i = 0; i < resultCount; i++) {
                 karma.result(results);
             }
-        } else {
+        }
+
+        if (!outputResult) {
             karma.result(results);
         }
     }
