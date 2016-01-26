@@ -2257,6 +2257,24 @@ function(anElement, attributeName, checkAttrNSURI) {
         //  by the 'getAttributeNS' spec.
         if (TP.notValid(retVal =
                         anElement.getAttributeNS(nsURI, parts.at(2)))) {
+
+            //  We didn't get a value - so now we try a convenience provided by
+            //  TIBET. Officially, X(HT)ML attributes are not in any namespace,
+            //  including their owning element's namespace, unless they are
+            //  specifically prefixed. But we provide a convenience such that,
+            //  if there was no value returned by checking the 'whole attribute
+            //  name' (i.e. with a prefix), we see if the namespace computed by
+            //  the prefix supplied to this call is the same as the namespace of
+            //  the owning element. If it is, we'll try again with just the
+            //  local name of the attribute. This allows for markup authored
+            //  like: <foo:bar baz="goo"/> and for us to use
+            //  TP.elementGetAttribute('foo:baz') which will return 'goo'.
+            if (nsURI === anElement.namespaceURI) {
+                if (TP.notEmpty(retVal = anElement.getAttribute(parts.at(2)))) {
+                    return retVal;
+                }
+            }
+
             return '';
         }
     }
@@ -3377,7 +3395,25 @@ function(anElement, attributeName, checkAttrNSURI) {
 
         //  Note here that we use only the *local* attribute name as specified
         //  by the 'hasAttributeNS' spec.
-        return anElement.hasAttributeNS(nsURI, parts.at(2));
+        if (!anElement.hasAttributeNS(nsURI, parts.at(2))) {
+
+            //  We didn't get a 'true' - so now we try a convenience provided by
+            //  TIBET. Officially, X(HT)ML attributes are not in any namespace,
+            //  including their owning element's namespace, unless they are
+            //  specifically prefixed. But we provide a convenience such that,
+            //  if there was a false returned by checking the 'whole attribute
+            //  name' (i.e. with a prefix), we see if the namespace computed by
+            //  the prefix supplied to this call is the same as the namespace of
+            //  the owning element. If it is, we'll try again with just the
+            //  local name of the attribute. This allows for markup authored
+            //  like: <foo:bar baz="goo"/> and for us to use
+            //  TP.elementHasAttribute('foo:baz') which will return true.
+            if (nsURI === anElement.namespaceURI) {
+                return anElement.hasAttribute(parts.at(2));
+            }
+
+            return false;
+        }
     }
 
     return true;
@@ -3865,7 +3901,28 @@ function(anElement, attributeName, checkAttrNSURI) {
 
         //  Note here that we use only the *local* attribute name as specified
         //  by the 'removeAttributeNS' spec.
-        return anElement.removeAttributeNS(nsURI, parts.at(2));
+        anElement.removeAttributeNS(nsURI, parts.at(2));
+
+        if (TP.elementHasAttribute(anElement, attributeName, checkAttrNSURI)) {
+
+            //  If we still have the attribute, we try a convenience provided by
+            //  TIBET. Officially, X(HT)ML attributes are not in any namespace,
+            //  including their owning element's namespace, unless they are
+            //  specifically prefixed. But we provide a convenience such that,
+            //  if the attribute wasn't actually removed by using the
+            //  'whole attribute name' (i.e. with a prefix), we see if the
+            //  namespace computed by the prefix supplied to this call is the
+            //  same as the namespace of the owning element. If it is, we'll try
+            //  again with just the local name of the attribute. This allows for
+            //  markup authored like: <foo:bar baz="goo"/> and for us to use
+            //  TP.elementRemoveAttribute('foo:baz') which will remove the
+            //  attribute.
+            if (nsURI === anElement.namespaceURI) {
+                anElement.removeAttribute(parts.at(2));
+            }
+
+            return;
+        }
     }
 });
 
