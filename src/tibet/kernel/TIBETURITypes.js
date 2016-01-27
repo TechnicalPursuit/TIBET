@@ -10083,6 +10083,8 @@ function(targetURI, aRequest) {
         targetLoc,
 
         nukeRequest,
+        resp,
+        content,
 
         useWebDAV;
 
@@ -10108,6 +10110,15 @@ function(targetURI, aRequest) {
     //  constructed so it won't process/complete until the child request
     //  does.
     request.andJoinChild(nukeRequest);
+
+    //  Yes, nuke requests can have a body. Note that this will get encoded via
+    //  the httpEncode() call in lower layers, so we don't touch it here.
+    if (TP.notValid(nukeRequest.at('body'))) {
+        resp = targetURI.getResource(TP.hc('async', false));
+        content = TP.ifInvalid(resp.get('result', ''));
+
+        nukeRequest.atPut('body', content);
+    }
 
     //  ensure the required settings are available for this operation
     nukeRequest.atPut('uri', targetLoc);
