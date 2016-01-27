@@ -12441,7 +12441,7 @@ function(aspectName, aContentObject, aRequest) {
     //  value according to the formats found there.
     if (TP.notEmpty(formats = this.getAttribute('ui:display'))) {
         value = this.$formatValue(value, formats);
-        value = this.callNextMethod(value, aRequest);
+        value = this.callNextMethod(aspectName, value, aRequest);
     } else {
         value = this.callNextMethod();
     }
