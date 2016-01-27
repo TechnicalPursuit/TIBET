@@ -757,6 +757,7 @@ function(aRequest) {
     //  by '--' and '--'.
     if (mimetype === TP.MP_RELATED_ENCODED ||
         mimetype === TP.MP_FORMDATA_ENCODED) {
+
         body = aRequest.at('body');
         boundaryMarker = /--([$\w]+)--/.match(body);
 
@@ -764,7 +765,7 @@ function(aRequest) {
 
         //  If we successfully got a boundary value, then add it to the
         //  'Content-Type' header.
-        if (TP.notEmpty(boundaryMarker.at(1))) {
+        if (TP.isValid(boundaryMarker) && TP.notEmpty(boundaryMarker.at(1))) {
             headers.atPut('Content-Type',
                             TP.join(mimetype,
                                     '; boundary="',
