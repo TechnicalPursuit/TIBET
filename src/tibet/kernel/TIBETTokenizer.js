@@ -653,7 +653,9 @@ function(src, ops, tsh, exp, alias, args) {
                     (tsh && startsURI)) {
 
                     if (testval.charAt(0) === '(') {
-                        uriParenCount++;
+                        if (startsURI) {
+                            uriParenCount++;
+                        }
                         if (result.at(result.getSize() -1).value === '(') {
                             result.pop();
                         }
