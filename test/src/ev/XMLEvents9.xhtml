@@ -31,7 +31,8 @@
 
     <ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.salary)">
         <![CDATA[
-        TP.byId('salaryField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
+        var path = TP.apc(triggerSignal.getOrigin().getFragmentExpr());
+        TP.byId('salaryField').set('value', triggerSignal.getTarget().get(path));
         ]]>
     </ev:script>
 
@@ -50,7 +51,8 @@
 
     <ev:script type="text/javascript" event="TP.sig.ValueChange" observer="urn:tibet:empObject#tibet(person.SSN)">
         <![CDATA[
-        TP.byId('ssnField').set('value', triggerSignal.getTarget().get(TP.apc(triggerSignal.at('path'))));
+        var path = TP.apc(triggerSignal.getOrigin().getFragmentExpr());
+        TP.byId('ssnField').set('value', triggerSignal.getTarget().get(path));
         ]]>
     </ev:script>
 
