@@ -69,6 +69,13 @@ function() {
 
             //  ---
 
+            //  Register these for our test - we probably aren't running the
+            //  German locale.
+            TP.core.DELocale.registerStrings(
+                    {false: 'falsch', Hello: 'Hallo', yes: 'ja'});
+
+            //  ---
+
             if (!TP.isType(TP.sys.getTypeByName('TP.test.Localizer'))) {
 
                 TP.lang.Object.defineSubtype('TP.test.Localizer');
