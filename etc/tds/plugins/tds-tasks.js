@@ -16,6 +16,10 @@
 //  TODO    test error processing
 //  TODO    clean up logging around pid, task/step name, etc.
 //  TODO    capture task runner results as appropriate.
+//  TODO    add machine/node name to pid capture
+//  TODO    add $$cancelled state to support job cancellation
+//  TODO    add $$paused state to support pause at next step
+//  TODO    add scan for timed out job documents
 
 (function(root) {
 
@@ -38,6 +42,7 @@
             isTaskComplete,
             shouldTaskTimeOut,
             isJobComplete,
+            loggedIn,
             failTask,
             retrieveFlow,
             retrieveTask,
@@ -81,7 +86,7 @@
             throw new Error('No application instance provided.');
         }
 
-        //loggedIn = options.loggedIn;
+        loggedIn = options.loggedIn;
         logger = options.logger;
         TDS = app.TDS;
 
@@ -879,6 +884,53 @@
                     require(path.join(taskdir, file))(options);
             });
         }
+
+        //  ---
+        //  Middleware
+        //  ---
+
+        TDS.workflow.job = function(req, res, next) {
+
+            var body,
+                job;
+
+            body = req.body;
+            switch (typeof body) {
+                case 'string':
+                    //  Could be bad header (text not json)
+                    try {
+                        job = JSON.parse(body);
+                    } catch (e) {
+                        res.status(400).send(e.message);
+                        return;
+                    }
+                    break;
+                case undefined:
+                    //  Something went wrong in request.
+                    res.status(400).send('Undefined request body.');
+                    return;
+                default:
+                    //  Should be a json-parsed object.
+                    job = body;
+                    break;
+            }
+
+            dbSave(job).then(function(result) {
+                res.status(201);    //  created :)
+            },
+            function(err) {
+                //  TODO:   refine error code here based on actual error.
+                res.status(500).send(err);
+            });
+
+            return;
+        };
+
+        //  ---
+        //  Routes
+        //  ---
+
+        app.post(TDS.cfg('tds.job.uri'), loggedIn, TDS.workflow.job);
     };
 
 }(this));
