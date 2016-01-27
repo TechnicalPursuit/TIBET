@@ -147,8 +147,6 @@ function() {
 
                 //  ---
 
-                TP.str(TP.sys.uidoc());
-
                 elem = TP.byId('span', windowContext);
                 test.assert.isElement(elem);
 
