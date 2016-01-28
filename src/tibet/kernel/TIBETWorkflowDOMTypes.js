@@ -1688,6 +1688,13 @@ function(aNode) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  If the supplied node is a text node or an attribute node and has ACP
+    //  (templating) expressions, then return an Array with that node.
+    if ((TP.isTextNode(aNode) || TP.isAttributeNode(aNode)) &&
+        TP.regex.HAS_ACP.test(TP.nodeGetTextContent(aNode))) {
+        return TP.ac(aNode);
+    }
+
     //  NB: The attribute portion of this query does *not* pick attributes in
     //  the TP.w3.Xmlns.UI namespace - they might contain runtime formatting
     //  instructions (i.e. 'ui:display', etc.)
