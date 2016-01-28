@@ -6444,7 +6444,7 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineCommonMethod('getPathSource',
+TP.defineMetaInstMethod('getPathSource',
 function(aPath) {
 
     /**
@@ -6462,7 +6462,7 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineCommonMethod('getPathParameters',
+TP.defineMetaInstMethod('getPathParameters',
 function() {
 
     /**
