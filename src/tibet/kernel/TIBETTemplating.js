@@ -331,7 +331,8 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  list' of 'source variable' supplied by the caller, then it
             //  should get its value from the 'params' parameter to the template
             //  Function
-            if (/^\$\w+/.test(propName) && !srcVars.contains(propName)) {
+            if (TP.regex.IS_ACP_VARIABLE.test(propName) &&
+                !srcVars.contains(propName)) {
                 sourceName = 'params';
             } else {
                 //  Otherwise, if a list of 'scoped source' names is being kept

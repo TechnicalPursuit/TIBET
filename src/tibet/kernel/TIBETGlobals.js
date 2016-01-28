@@ -2512,8 +2512,9 @@ TP.regex.ACP_FORMAT_SEPARATOR = /\s*\.\|\s*/;
 TP.regex.ACP_OPERATORS = /(\.(%\*|%|\|\|))/g;   //  needs reset
 
 //  '$' followed by a word character (including '_') or '*' or '#'
-TP.regex.ACP_PATH_CONTAINS_VARIABLES = /\$(\w|\*|#)+/;
+TP.regex.ACP_PATH_CONTAINS_VARIABLES = /TP|APP|\$(\w|\*|#)+/;
 
+TP.regex.IS_ACP_VARIABLE = /^(TP|APP|\$(\w+|\*|#)+)/;
 
 TP.regex.BIND_ATTR_SPLITTER = new RegExp('\\s*(' + TP.XML_NAME + ')' +
                                             '\\s*:\\s*' +

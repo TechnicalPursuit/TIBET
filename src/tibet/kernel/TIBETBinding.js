@@ -1015,8 +1015,8 @@ function(attrValue) {
 
                     params = TP.hc(
                         '$REQUEST', null,
-                        '$TP', TP,
-                        '$APP', APP,
+                        'TP', TP,
+                        'APP', APP,
                         '$TAG', targetTPElem,
                         '$TARGET', targetTPElem.getDocument(),
                         '$_', wrappedVal,
@@ -1034,8 +1034,8 @@ function(attrValue) {
 
                     params = TP.hc(
                         '$REQUEST', null,
-                        '$TP', TP,
-                        '$APP', APP,
+                        'TP', TP,
+                        'APP', APP,
                         '$TAG', targetTPElem,
                         '$TARGET', targetTPElem.getDocument(),
                         '$_', wrappedVal,
@@ -1052,8 +1052,8 @@ function(attrValue) {
                 //  Non-iterating context
                 params = TP.hc(
                     '$REQUEST', null,
-                    '$TP', TP,
-                    '$APP', APP,
+                    'TP', TP,
+                    'APP', APP,
                     '$TAG', targetTPElem,
                     '$TARGET', targetTPElem.getDocument(),
                     '$_', wrappedVal,
