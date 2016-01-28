@@ -10114,7 +10114,7 @@ function(targetURI, aRequest) {
     //  Yes, nuke requests can have a body. Note that this will get encoded via
     //  the httpEncode() call in lower layers, so we don't touch it here.
     if (TP.notValid(nukeRequest.at('body'))) {
-        resp = targetURI.getResource(TP.hc('async', false));
+        resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
         content = TP.ifInvalid(resp.get('result', ''));
 
         nukeRequest.atPut('body', content);
