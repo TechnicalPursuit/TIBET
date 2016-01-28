@@ -8,6 +8,13 @@
  */
 //  ========================================================================
 
+/**
+ * NB: All of these tests contain an assertion that is true. This is done so
+ * that, even if the test case is meant to fail, that it doesn't do so because
+ * the test harness reports that it has no assertions (which it *will* do), but
+ * because some intentional failure mode was triggered.
+ */
+
 TP.test.Suite.Inst.describe('TP.test.Suite parameter check',
 function() {
 
@@ -42,6 +49,8 @@ function() {
     });
 
     this.it('parameter check', function(test, options) {
+
+        test.assert.isTrue(true);
 
         if (!TP.isKindOf(this, TP.test.Case)) {
             TP.sys.logTest('"it" this is of wrong type', TP.ERROR);
@@ -93,18 +102,26 @@ TP.test.Suite.Inst.describe('TP.test.Suite case skip check',
 function() {
 
     this.it('case skip check 1', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should see this - check 1', TP.DEBUG);
     });
 
     this.it('case skip check 2', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should not see this - check 2', TP.DEBUG);
     }).skip();
 
     this.it('case skip check 3', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should see this - check 3', TP.DEBUG);
     });
 
     this.it('case skip check 4', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should see this - check 4', TP.DEBUG);
     });
 });
@@ -115,6 +132,8 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #1',
 function() {
 
     this.it('suite skip check 1', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should see this - check 1', TP.DEBUG);
     });
 });
@@ -125,6 +144,8 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #2',
 function() {
 
     this.it('suite skip check 2', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should not see this - check 2', TP.DEBUG);
     });
 }).skip();
@@ -135,6 +156,8 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #3',
 function() {
 
     this.it('suite skip check 3', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should see this - check 3', TP.DEBUG);
     });
 });
@@ -145,6 +168,8 @@ TP.test.Suite.Inst.describe('TP.test.Suite suite skip check - #4',
 function() {
 
     this.it('suite skip check 4', function(test, options) {
+        test.assert.isTrue(true);
+
         TP.sys.logTest('You should see this - check 4', TP.DEBUG);
     });
 });
