@@ -202,12 +202,14 @@ function(options) {
     var target,
         suites,
         count,
+
         params,
+        onlysExist,
+
         throwExceptions,
         throwHandlers,
         shouldLogSetting,
         promise,
-        ignoreOnly,
         summarize,
         total,
         msg,
@@ -231,26 +233,35 @@ function(options) {
 
     target = params.at('target');
 
-    ignoreOnly = TP.isTrue(params.at('ignore_only'));
-
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
-    if (ignoreOnly === true) {
-        TP.sys.logTest('# filtering for exclusive suite(s).', TP.WARN);
-        suites = suites.filter(
-                        function(suite) {
-                            return suite.isExclusive();
-                        });
+    if (!params.at('ignore_only')) {
 
-        if (suites.length > 1) {
-            msg = '# ' + suites.length +
-                ' exclusive suite(s) found';
-            if (TP.isValid(target)) {
-                ' for ' + TP.name(target) + '.';
-            } else {
-                msg += '.';
+        //  Test to see if there are any exclusive suites
+        onlysExist = suites.some(
+                function(suite) {
+                    return suite.isExclusive();
+                });
+
+        if (onlysExist) {
+            TP.sys.logTest('# filtering for exclusive suite(s).',
+                            TP.WARN);
+
+            suites = suites.filter(
+                            function(suite) {
+                                return suite.isExclusive();
+                            });
+
+            if (suites.getSize() > 1) {
+                msg = '# ' + suites.getSize() +
+                    ' exclusive suite(s) found';
+                if (TP.isValid(target)) {
+                    ' for ' + TP.name(target) + '.';
+                } else {
+                    msg += '.';
+                }
+                TP.sys.logTest(msg, TP.WARN);
             }
-            TP.sys.logTest(msg, TP.WARN);
         }
     }
 
@@ -325,7 +336,7 @@ function(options) {
         TP.sys.setcfg('test.running', false);
     };
 
-    msg = '# ' + suites.length +
+    msg = '# ' + suites.getSize() +
         ' suite(s) found';
     if (TP.isValid(target)) {
         ' for ' + TP.name(target) + '.';
@@ -1667,7 +1678,7 @@ function(options) {
         skippedCount,
 
         params,
-        wantsOnly,
+        onlysExist,
 
         firstPromise,
 
@@ -1713,12 +1724,14 @@ function(options) {
     //  Filter for exclusivity. We might get more than one if authoring was off
     //  so check for that as well.
     if (!params.at('ignore_only')) {
-        wantsOnly = caselist.some(
+
+        //  Test to see if there are any exclusive test cases
+        onlysExist = caselist.some(
                 function(test) {
                     return test.isExclusive();
                 });
 
-        if (wantsOnly) {
+        if (onlysExist) {
             TP.sys.logTest('# filtering for exclusive test cases.',
                             TP.WARN);
 
@@ -1728,7 +1741,7 @@ function(options) {
                         });
 
             if (caselist.getSize() > 1) {
-                TP.sys.logTest('# ' + caselist.length +
+                TP.sys.logTest('# ' + caselist.getSize() +
                     ' exclusive test cases found.', TP.WARN);
             }
 
@@ -2388,7 +2401,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     msg = ('not ok - ' + this.getCaseName() + ' error' +
             (aFaultString ? ': ' + aFaultString : '')).trim();
 
-    if (msg.charAt(msg.length - 1) !== '.') {
+    if (msg.charAt(msg.getSize() - 1) !== '.') {
         msg += '.';
     }
 
