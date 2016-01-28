@@ -123,7 +123,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
         //  Build a URI and check to see if it already has a resource result -
         //  if so, it's the template function.
         uri = TP.uc(TP.TIBET_URN_PREFIX + regName);
-        if (TP.isURIString(uri)) {
+        if (TP.isURI(uri)) {
 
             //  NB: We assume 'async' of false here.
             if (TP.isFunction(func = uri.getResource().get('result'))) {
@@ -989,15 +989,20 @@ function(aDataSource, transformParams) {
                             str + ' does not support transform call.');
         }
     } else {
+
+        urn = str;
+        url = TP.uc(urn);
+
         //  Try to build a URN if we didn't receive one. Set a flag that
         //  says that we've built it so if it fails in lookup we won't error
         //  out, but we'll fall through to 'callBestMethod'.
-        if (!TP.isURIString(urn = str)) {
+        if (!TP.isURI(url)) {
             urnBuilt = true;
             urn = TP.TIBET_URN_PREFIX + str;
+            url = TP.uc(urn);
         }
 
-        if (TP.isURI(url = TP.uc(urn))) {
+        if (TP.isURI(url)) {
 
             //  NB: We assume 'async' of false here.
             if (TP.isValid(template = url.getResource().get('result'))) {
