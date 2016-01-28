@@ -290,7 +290,9 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  Returns an expression that returns an empty String if the
             //  argument is not defined.
 
-            return 'if (!TP.isDefined(' + generators.escapedIdentifier(arg) + ')) { return \'\'; };';
+            return 'if (!TP.isDefined(' +
+                    generators.escapedIdentifier(arg) +
+                    ')) { return \'\'; };';
         },
 
         escape: function(str) {
@@ -315,7 +317,10 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             //  see if it is defined. If so, it will be used - otherwise it will
             //  return an empty Array
 
-            return '!TP.isDefined(' + generators.escapedIdentifier(arg) + ') ? TP.ac() : ' + arg;
+            return '!TP.isDefined(' +
+                    generators.escapedIdentifier(arg) +
+                    ') ? TP.ac() : ' +
+                arg;
         },
 
         getFromArgs: function(propName) {
