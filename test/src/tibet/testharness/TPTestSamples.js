@@ -197,7 +197,8 @@ function() {
 
         this.pass();
     });
-}).only();
+//}).only();    //  Only comment this out if you want these 2 tests to run ;-)
+});
 
 //  Test for test.Case only support. We'll see a fail() when running with
 //  ignore_only set to true due to the first test case below.
