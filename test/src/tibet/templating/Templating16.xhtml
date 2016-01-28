@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+        xmlns:templatetest="urn:test:templatetest">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+</head>
+
+<body>
+
+    <h2>Templating Test #16</h2><br/>
+    <br/>
+    <br/>
+    This test sets up a text node containing various substitution expressions using different context variables.
+    <br/>
+
+    This expression references a type name by using the 'TP.lang.Object.nsPrefix' property and getting the type's namespace prefix into a text node.
+    <br/>
+    <div id="textResults_1">{{TP.lang.Object.nsPrefix}}</div>
+    <br/>
+
+    This expression references a type name by using the 'TP.lang.Object.nsPrefix' prperty and getting the type's namespace prefix into an attribute node.
+    <div id="attrResults_1" value="{{TP.lang.Object.nsPrefix}}"></div>
+    <br/>
+
+    This expression references a type name by using the 'APP.$$id' property and getting the namespace's ID into a text node.
+    <br/>
+    <div id="textResults_2">{{APP.$$id}}</div>
+    <br/>
+
+    This expression references a type name by using the 'APP.$$id' property and getting the namespace's ID into an attribute node.
+    <div id="attrResults_2" value="{{APP.$$id}}"></div>
+    <br/>
+
+    This expression references a strings table entry by using the 'TP.msg.HELLO' property and getting the proper message into a text node.
+    <br/>
+    <div id="textResults_3">{{TP.msg.HELLO}}</div>
+    <br/>
+
+    This expression references a type name by using the 'TP.msg.HELLO' property and getting the proper message into an attribute node.
+    <div id="attrResults_3" value="{{TP.msg.HELLO}}"></div>
+    <br/>
+
+</body>
+</html>

@@ -955,6 +955,149 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: templating various system variable output',
+function() {
+
+    var unloadURI,
+        loadURI;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            //  We use this in the tests below.
+            TP.core.Locale.registerStrings(
+                {
+                    HELLO: 'Hello World!'
+                });
+
+            this.getDriver().showTestGUI();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+            this.getDriver().showTestLog();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+
+            //  Unload the current page by setting it to the
+            //  blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('Substitutions having system variables within standard markup', function(test, options) {
+
+        var driver;
+
+        loadURI = TP.uc('~lib_test/src/tibet/templating/Templating16.xhtml');
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function(result) {
+
+                var windowContext,
+
+                    contentElem,
+
+                    correctVal,
+                    testVal;
+
+                windowContext = driver.get('windowContext');
+
+                //  ---
+
+                //  Test for elements from the templates
+
+                correctVal = 'lang';
+
+                contentElem = TP.byId('textResults_1', windowContext, false);
+                test.assert.isElement(contentElem);
+
+                testVal = TP.nodeGetTextContent(contentElem);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                contentElem = TP.byId('attrResults_1', windowContext, false);
+                test.assert.isElement(contentElem);
+
+                testVal = TP.elementGetAttribute(contentElem, 'value', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                //  ---
+
+                correctVal = 'APP';
+
+                contentElem = TP.byId('textResults_2', windowContext, false);
+                test.assert.isElement(contentElem);
+
+                testVal = TP.nodeGetTextContent(contentElem);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                contentElem = TP.byId('attrResults_2', windowContext, false);
+                test.assert.isElement(contentElem);
+
+                testVal = TP.elementGetAttribute(contentElem, 'value', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                //  ---
+
+                correctVal = 'Hello World!';
+
+                contentElem = TP.byId('textResults_3', windowContext, false);
+                test.assert.isElement(contentElem);
+
+                testVal = TP.nodeGetTextContent(contentElem);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+
+                contentElem = TP.byId('attrResults_3', windowContext, false);
+                test.assert.isElement(contentElem);
+
+                testVal = TP.elementGetAttribute(contentElem, 'value', true);
+
+                test.assert.isEqualTo(
+                    testVal,
+                    correctVal);
+            },
+            function(error) {
+                test.fail(error, TP.sc('Couldn\'t get resource: ',
+                                            loadURI.getLocation()));
+            });
+    });
+
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.describe('TP.core.CollectionNode: tibet:template inline element - JS template',
 function() {
 
