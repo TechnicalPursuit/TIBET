@@ -5157,10 +5157,13 @@ function() {
         var locStr,
             testBody,
 
+            testResponse,
+
             inputVal;
 
         locStr = 'http://www.foo.com/TIBET_endpoints/HTTP_DELETE_TEST';
         testBody = 'DELETE test content';
+        testResponse = 'OK from DELETE';
 
         server.respondWith(
             TP.HTTP_DELETE,
@@ -5174,7 +5177,7 @@ function() {
                     {
                         'Content-Type': TP.PLAIN_TEXT_ENCODED
                     },
-                    'OK from DELETE');
+                    testResponse);
             });
 
         //  Note here how we use '!' on the end of the redirect to make sure
@@ -5187,6 +5190,8 @@ function() {
             test,
             inputVal,
             function(testResult) {
+
+                test.assert.isEqualTo(testResult, testResponse);
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
