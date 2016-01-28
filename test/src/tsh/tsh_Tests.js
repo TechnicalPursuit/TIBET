@@ -5697,7 +5697,7 @@ function() {
 
                 TP.uc(locStr).unregister();
             });
-    }).only();
+    });
 
     //  ---
 
