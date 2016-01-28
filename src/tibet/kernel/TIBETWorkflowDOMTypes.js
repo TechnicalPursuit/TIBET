@@ -1274,6 +1274,10 @@ function(aNode, aProcessor, aRequest) {
 
         result,
 
+        j,
+        resultnodes,
+        attrs,
+
         subPhases,
         subProcessor,
         subProcessingRequest,
@@ -1390,10 +1394,44 @@ function(aNode, aProcessor, aRequest) {
                 //  the original then we only want to process children,
                 //  otherwise we want to process new tag type.
                 if (TP.core.Node.getConcreteType(result) === type) {
+
                     //  The tricky part is we don't want to reprocess the top
-                    //  node since it's already had it's change to alter itself,
+                    //  node since it's already had it's chance to alter itself,
                     //  we only want to descend if necessary.
-                    result = TP.nodeGetChildElements(result);
+
+                    //  If the result is an Element, then we need to see if
+                    //  there are Attributes we should add to our list.
+                    if (TP.isElement(result)) {
+
+                        //  NOTE: Order is important here! We need to make sure
+                        //  to gather any Attribute nodes that might have ACP
+                        //  (i.e. templating) expressions in them first - so
+                        //  that they're processed first *before* any Element
+                        //  replacement might occur.
+                        resultnodes = TP.ac();
+                        attrs = result.attributes;
+                        for (j = 0; j < attrs.length; j++) {
+                            if (TP.regex.HAS_ACP.test(
+                                        TP.nodeGetTextContent(attrs[j]))) {
+                                resultnodes.push(attrs[j]);
+                            }
+                        }
+
+                        //  Now that we have a list of possible Attribute nodes
+                        //  to process, concatenate the list of child *nodes*
+                        //  (i.e. all kinds of Nodes - including Text nodes)
+                        //  onto the end of that.
+                        resultnodes = resultnodes.concat(
+                                                TP.nodeGetChildNodes(result));
+                    } else {
+                        //  Otherwise, we just get the child *nodes* (i.e. all
+                        //  kinds of Nodes - including Text nodes - they might
+                        //  need to be processed too).
+                        resultnodes = TP.nodeGetChildNodes(result);
+                    }
+
+                    result = resultnodes;
+
                     if (result.getSize() === 0) {
                         continue;
                     } else {
