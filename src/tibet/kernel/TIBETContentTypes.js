@@ -5809,6 +5809,14 @@ function(targetObj) {
         thisType.endObservedAddress();
 
         return retVal;
+    } else if (TP.isString(tail) && TP.isPlainObject(val)) {
+        thisType.startObservedAddress(head);
+
+        retVal = val[tail];
+
+        thisType.endObservedAddress();
+
+        return retVal;
     } else {
         return val;
     }
@@ -5937,6 +5945,14 @@ function(targetObj) {
         thisType.startObservedAddress(head);
 
         retVal = val.get(TP.tpc(tail));
+
+        thisType.endObservedAddress();
+
+        return retVal;
+    } else if (TP.isString(tail) && TP.isPlainObject(val)) {
+        thisType.startObservedAddress(head);
+
+        retVal = val[tail];
 
         thisType.endObservedAddress();
 
