@@ -488,9 +488,47 @@ TP.xi.Element.Type.describe('TP.xi.Element Type processing',
 function() {
 
     var unloadURI,
+
+        usingDebugger,
+        oldLogLevel,
+
         loadURI;
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+            //  For now, we turn off triggering the debugger because we know
+            //  that this test case has a XInclude that points to a file
+            //  that won't be found - that part of this test is testing
+            //  'xi:fallback' element.
+            usingDebugger = TP.sys.shouldUseDebugger();
+            TP.sys.shouldUseDebugger(false);
+
+            //  Same for log level
+            oldLogLevel = TP.getLogLevel();
+            TP.setLogLevel(TP.SEVERE);
+
+            //  Suspend raising (since we know - and want - some of these
+            //  validations to fail).
+            TP.raise.$suspended = true;
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+            //  Put log level back to what it was
+            TP.setLogLevel(oldLogLevel);
+
+            //  Put the debugger setting back to what it was
+            TP.sys.shouldUseDebugger(usingDebugger);
+
+            //  Unsuspend raising
+            TP.raise.$suspended = false;
+        });
 
     //  ---
 
@@ -500,11 +538,8 @@ function() {
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
 
-            if (TP.isValid(loadURI)) {
-                //  Unregister the URI to avoid a memory leak
-                loadURI.unregister();
-                loadURI = null;
-            }
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
         });
 
     //  ---
@@ -516,24 +551,10 @@ function() {
         test.getDriver().fetchResource(loadURI, TP.DOM).then(
             function(result) {
 
-                var usingDebugger,
-                    oldLogLevel,
-
-                    tpDoc,
+                var tpDoc,
 
                     server,
                     loc;
-
-                //  For now, we turn off triggering the debugger because we know
-                //  that this test case has a XInclude that points to a file
-                //  that won't be found - that part of this test is testing
-                //  'xi:fallback' element.
-                usingDebugger = TP.sys.shouldUseDebugger();
-                TP.sys.shouldUseDebugger(false);
-
-                //  Same for log level
-                oldLogLevel = TP.getLogLevel();
-                TP.setLogLevel(TP.SEVERE);
 
                 tpDoc = TP.sys.getUICanvas().getDocument();
 
@@ -567,17 +588,7 @@ function() {
                             return !testMatcher.test(url);
                         });
 
-                test.thenPromise(
-                        function(resolver, rejector) {
-
-                            var request;
-
-                            request = TP.request();
-                            request.atPut(TP.ONLOAD, resolver);
-                            request.atPut(TP.ONFAIL, rejector);
-
-                            tpDoc.setContent(result, request);
-                        });
+                tpDoc.setContent(result);
 
                 test.then(
                     function() {
@@ -585,12 +596,6 @@ function() {
                         var windowContext;
 
                         windowContext = test.getDriver().get('windowContext');
-
-                        //  Put log level back to what it was
-                        TP.setLogLevel(oldLogLevel);
-
-                        //  Put the debugger setting back to what it was
-                        TP.sys.shouldUseDebugger(usingDebugger);
 
                         test.assert.isElement(
                             TP.byId('part1Success', windowContext, false));
