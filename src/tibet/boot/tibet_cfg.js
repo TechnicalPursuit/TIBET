@@ -1288,6 +1288,8 @@
 
     TP.sys.setcfg('tds.stop_onerror', true);
 
+    TP.sys.setcfg('tds.job.uri', '/tds/jobs');
+
     TP.sys.setcfg('tds.use.cli', false);
     TP.sys.setcfg('tds.use.couch', false);
     TP.sys.setcfg('tds.use.mocks', false);
