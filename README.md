@@ -27,8 +27,8 @@
 #### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
-our way of saying TIBET is a seamlessly integrated framework; one focused on
-**solving both the technical and business problems** associated with
+our way of saying TIBET is a seamlessly integrated framework; one **focused on
+solving the business and technical problems** associated with
 large-scale web development.
 
 TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
@@ -39,8 +39,13 @@ TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring
 let your team focus on standards-compliant markup, not JavaScript coding,
 reducing the need for costly gurus, ninjas, and rock stars.
 
-<a href="http://www.technicalpursuit.com/html/support.xhtml">Affordable support</a> and
-<a href="http://www.technicalpursuit.com/html/solutions.xhtml">development services</a> are available
+Optional <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">full-stack components</a>
+let you build and deploy collaborative Cloud applications based on a
+fully-supported Node.js server with enhanced CouchDB integration.
+
+<a href="http://www.technicalpursuit.com/html/support.xhtml">Affordable vendor-backed support</a> and
+<a href="http://www.technicalpursuit.com/html/solutions.xhtml">development solutions</a> are available
 from Technical Pursuit Inc., the company behind TIBET since 1999.
 
 ---
@@ -56,6 +61,10 @@ from Technical Pursuit Inc., the company behind TIBET since 1999.
 If you don't have `Node.js` and `npm` installed start with the <a
 href="#prereqs">Prerequisites</a>.
 
+If you prefer to install via `git` see the <a href="#gitinstall">TIBET Git
+Installation</a> instructions.
+
+
 ### Installing TIBET via npm
 
 TIBET should be installed globally using `npm install` with the -g flag:<br/>
@@ -63,63 +72,10 @@ TIBET should be installed globally using `npm install` with the -g flag:<br/>
     npm install -g tibet
 </pre>
 
-That's it. You should now have the latest stable release of TIBET
-installed.
+Once the installation completes you're ready to start building with TIBET.
 
-Follow the <a href="#nextsteps">Next Steps</a> to get started with your first
-TIBET application.
-
-### Installing TIBET via Git
-
-If you prefer working from a git repository you can install TIBET via git.
-
-##### Uninstall any npm-installed version of TIBET
-
-If you have already installed TIBET via npm you need to first remove that
-installation to avoid conflicts with your Git-based installation:
-
-<pre>
-    npm uninstall -g tibet
-</pre>
-
-##### Create a Fork
-
-If you are going to install TIBET via Git we recommend that you first create a
-fork of TIBET so you can manage updates in a stable, predictable fashion.
-
-Follow these instructions to <a target="_blank" href="https://help.github.com/articles/fork-a-repo/">create
-your own fork</a>.
-
-##### Clone your Fork
-
-<pre>
-    git clone {{your_fork_repo_url}}
-</pre>
-
-##### Initialize your Fork
-
-Once your fork has been cloned move into the new fork directory and install the
-package dependencies:
-
-<pre>
-    cd {{your_fork_repo_directory}}
-    npm install .
-</pre>
-
-##### Link TIBET via npm
-
-With your fork initialized you'll need to link the repository via `npm link` so
-that the `tibet` command will function. From the top of your TIBET fork type:
-
-<pre>
-    npm link .
-</pre>
-<br/>
-You should now be able to use the `tibet` command, which means you're ready to
-start working on your first TIBET application.
-
-<a name="nextsteps" href="#"></a>
-# Next Steps
+<a name="quickstart" href="#"></a>
+# Quickstart
 
 Once you have TIBET installed the `tibet` command gives you access to a wide
 range of tools to help streamline your development workflow.
@@ -178,6 +134,10 @@ to clone, initialize, and start your first TIBET application.
 
 </pre>
 
+# Documentation
+
+Use `tibet help` for more information on the TIBET CLI and its command set.
+
 ### Tutorials
 
 The <a
@@ -192,20 +152,24 @@ href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Essentials"
 target="_blank">TIBET Essentials</a> tutorial. This walkthrough will take
 longer but you'll get a complete picture of TIBET and what makes it special.
 
-
-# Documentation
+### Concepts
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
 target="_blank">TIBET Wiki</a> provides extensive tutorials, screencasts,
 whitepapers, and other conceptual and design documentation for TIBET.
 
+### API Reference
+
 API documentation is generated from within TIBET itself via `tibet reflect` at
 the command line and via `:reflect` from within the TIBET shell/Sherpa.
 
-For information on TIBET-related services see <a href="http://www.technicalpursuit.com" target="_blank">www.technicalpursuit.com</a>.
+To explore TIBET documentation use the `tibet apropos` command at the command
+line or `:apropos` from the TIBET Shell.
+
 
 <a name="prereqs" href="#"></a>
 # Prerequisites
+
 
 ### Install Node.js
 
@@ -214,7 +178,14 @@ today's best JavaScript modules. To install TIBET properly first make sure
 you have Node.js <b>version 0.10.x</b>. _TIBET is not yet certified for Node
 0.12_.
 
-To install Node.js follow the instructions at <a href="http://nodejs.org"
+**We strongly recommend you use the Node Version Manager (`nvm`)** to manage
+your Node.js installation. Using `nvm` lets you install multiple versions of
+Node.js and switch between them with ease which is great for development.
+
+To install Node.js via `nvm` see the instructions at <a target="_blank"
+href="https://github.com/creationix/nvm">the nvm GitHub repo</a>.
+
+To install Node.js without `nvm` follow the instructions at <a href="http://nodejs.org"
    target="_blank">nodejs.org</a>.
 
 ### Update npm (optional)
@@ -240,6 +211,59 @@ without PhantomJS installed.
 
 To install PhantomJS follow the instructions at <a
 target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
+
+<a name="gitinstall" href="#"></a>
+# Installing TIBET via Git
+
+If you prefer working from a git repository you can install TIBET via git. This
+approach can take a fair amount of time depending on connection and machine
+speed since you'll need to download all of TIBET's dependencies and build them
+locally.
+
+##### First, uninstall any npm-installed version of TIBET
+
+If you have already installed TIBET via npm you need to first remove that
+installation to avoid conflicts with your Git-based installation:
+
+<pre>
+    npm uninstall -g tibet
+</pre>
+
+##### Create a Fork
+
+If you are going to install TIBET via Git we recommend that you first create a
+fork of TIBET so you can manage updates in a stable, predictable fashion.
+
+Follow these instructions to <a target="_blank" href="https://help.github.com/articles/fork-a-repo/">create
+your own fork</a>.
+
+##### Clone your Fork
+
+<pre>
+    git clone {{your_fork_repo_url}}
+</pre>
+
+##### Initialize your Fork
+
+Once your fork has been cloned move into the new fork directory and install the
+package dependencies:
+
+<pre>
+    cd {{your_fork_repo_directory}}
+    npm install .
+</pre>
+
+##### Link TIBET via npm
+
+With your fork initialized you'll need to link the repository via `npm link` so
+that the `tibet` command will function. From the top of your TIBET fork type:
+
+<pre>
+    npm link .
+</pre>
+<br/>
+You should now be able to use the `tibet` command, which means you're ready to
+start working on your first TIBET application.
 
 # Feedback
 
