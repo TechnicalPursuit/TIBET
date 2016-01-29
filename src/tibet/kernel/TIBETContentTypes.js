@@ -3411,50 +3411,64 @@ function(srcPath, templateArgs) {
                                     '/*';
 
                         if (TP.isValid(exprRecord.value.start)) {
-                            from = exprRecord.value.start.asNumber();
-                            if (!TP.isNaN(from)) {
-                                if (from.isNegative()) {
-                                    fromExpr =
-                                        'position() >= last() + ';
-                                } else {
-                                    fromExpr = 'position() >= ';
-                                }
-
-                                fromExpr += from + 1;
-                            }
+                            from = exprRecord.value.start;
                         }
 
                         if (TP.isValid(exprRecord.value.end)) {
-                            to = exprRecord.value.end.asNumber();
+                            to = exprRecord.value.end;
+                        }
 
-                            if (!TP.isNaN(to)) {
-                                if (to.isNegative()) {
-                                    toExpr =
-                                        'position() < last() - ';
-                                    toExpr += to.abs() - 1;
-                                } else {
-                                    toExpr = 'position() < ';
-                                    toExpr += to + 1;
+                        if (TP.isNumber(from) &&
+                            TP.isNumber(to) &&
+                            to === from + 1) {
+
+                            xmlStr += '[position() = ' + (from + 1) + ']';
+
+                        } else {
+
+                            if (TP.isNumber(from)) {
+                                if (!TP.isNaN(from)) {
+                                    if (from.isNegative()) {
+                                        fromExpr =
+                                            'position() >= last() + ';
+                                    } else {
+                                        fromExpr = 'position() >= ';
+                                    }
+
+                                    fromExpr += from + 1;
                                 }
                             }
+
+                            if (TP.isNumber(to)) {
+                                if (!TP.isNaN(to)) {
+                                    if (to.isNegative()) {
+                                        toExpr =
+                                            'position() < last() - ';
+                                        toExpr += to.abs() - 1;
+                                    } else {
+                                        toExpr = 'position() < ';
+                                        toExpr += to + 1;
+                                    }
+                                }
+                            }
+
+                            xmlStr += '[';
+
+                            if (TP.notEmpty(fromExpr)) {
+                                xmlStr += fromExpr;
+                            }
+
+                            if (TP.notEmpty(fromExpr) &&
+                                TP.notEmpty(toExpr)) {
+                                xmlStr += ' and ';
+                            }
+
+                            if (TP.notEmpty(toExpr)) {
+                                xmlStr += toExpr;
+                            }
+
+                            xmlStr += ']';
                         }
-
-                        xmlStr += '[';
-
-                        if (TP.notEmpty(fromExpr)) {
-                            xmlStr += fromExpr;
-                        }
-
-                        if (TP.notEmpty(fromExpr) &&
-                            TP.notEmpty(toExpr)) {
-                            xmlStr += ' and ';
-                        }
-
-                        if (TP.notEmpty(toExpr)) {
-                            xmlStr += toExpr;
-                        }
-
-                        xmlStr += ']';
 
                         break;
 

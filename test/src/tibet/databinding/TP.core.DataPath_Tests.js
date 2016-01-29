@@ -1868,7 +1868,10 @@ function() {
 
         path = TP.jpc('$.book[1:2]').asString();
         path = TP.core.JSONPath.asXPath(path);
-        test.assert.isEqualTo(path, '/rootObj/book/*[position() >= 2 and position() < 3]');
+
+        //  NB: Note the slightly more efficient expression here since it's just
+        //  a matter of a '1'-sized length
+        test.assert.isEqualTo(path, '/rootObj/book/*[position() = 2]');
 
         path = TP.jpc('$.book[-2:]').asString();
         path = TP.core.JSONPath.asXPath(path);
@@ -1920,7 +1923,9 @@ function() {
 
         path = TP.jpc('$..book[1:2]').asString();
         path = TP.core.JSONPath.asXPath(path);
-        test.assert.isEqualTo(path, '//book[not(@type="array")][position() >= 2 and position() < 3]');
+        //  NB: Note the slightly more efficient expression here since it's just
+        //  a matter of a '1'-sized length
+        test.assert.isEqualTo(path, '//book[not(@type="array")][position() = 2]');
 
         path = TP.jpc('$..book[-2:]').asString();
         path = TP.core.JSONPath.asXPath(path);
