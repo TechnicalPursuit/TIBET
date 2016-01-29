@@ -1591,7 +1591,6 @@ function(aCollectionURI, aDeleteIndex) {
 
         itemParent,
 
-        deleteIndex,
         i,
 
         changedAddresses,

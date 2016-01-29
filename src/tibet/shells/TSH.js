@@ -2179,6 +2179,7 @@ function(aRequest) {
                     func,
                     text,
                     file,
+                    ands,
                     count;
 
                 //  Metadata stores methods as Owner_Track_Name so split here.
