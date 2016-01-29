@@ -42,7 +42,7 @@ reducing the need for costly gurus, ninjas, and rock stars.
 Optional <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">full-stack components</a>
 let you build and deploy collaborative Cloud applications based on a
-fully-supported Node.js server with enhanced CouchDB integration.
+fully-supported Node.js server with lightweight workflow support.
 
 <a href="http://www.technicalpursuit.com/html/support.xhtml">Affordable vendor-backed support</a> and
 <a href="http://www.technicalpursuit.com/html/solutions.xhtml">development solutions</a> are available
