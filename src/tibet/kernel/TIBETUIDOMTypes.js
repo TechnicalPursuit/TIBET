@@ -2941,7 +2941,7 @@ function(attributeName, attributeValue, shouldSignal) {
     }
 
     if (flag) {
-        this.changed('attribute',
+        this.changed('@' + attributeName,
                     hadAttribute ? TP.UPDATE : TP.CREATE,
                     TP.hc(TP.OLDVAL,
                             TP.elementGetAttribute(node, attributeName, true),
