@@ -4763,6 +4763,8 @@ function(attributeName, attributeValue, shouldSignal) {
 
         node,
 
+        hadAttribute,
+
         oldValue,
 
         attr,
@@ -4777,10 +4779,13 @@ function(attributeName, attributeValue, shouldSignal) {
     if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
         boolAttrs.containsString(attributeName) &&
         TP.isFalsey(attributeValue)) {
+
         return this.removeAttribute(attributeName);
     }
 
     node = this.getNativeNode();
+
+    hadAttribute = TP.elementHasAttribute(node, attributeName, true);
 
     if (TP.isDocument(node)) {
         node = node.documentElement;
@@ -4824,7 +4829,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
             if (flag) {
                 this.changed('@' + attributeName,
-                                TP.UPDATE,
+                                hadAttribute ? TP.UPDATE : TP.CREATE,
                                 TP.hc(TP.OLDVAL, oldValue,
                                         TP.NEWVAL, attributeValue));
             }
