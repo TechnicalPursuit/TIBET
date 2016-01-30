@@ -695,12 +695,16 @@ function(attributeName, attributeValue, shouldSignal) {
      * @returns {TP.core.Content} The receiver.
      */
 
-    var retVal;
+    var retVal,
+        attrName;
 
     retVal = this.callNextMethod();
 
-    if (attributeName !== 'data') {
-        this.checkFacets(attributeName);
+    //  This might be an access path
+    attrName = attributeName.asString();
+
+    if (attrName !== 'data') {
+        this.checkFacets(attrName);
     }
 
     return retVal;
