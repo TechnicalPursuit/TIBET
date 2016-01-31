@@ -9257,9 +9257,14 @@ function(anObj) {
         return anObj === '';
     }
 
-    //  if its either a boolean or a number, it can't be empty.
-    if (type === 'boolean' || type === 'number') {
-        return false;
+    //  if its a boolean, it can't be empty.
+    if (type === 'boolean') {
+        return false
+    }
+
+    //  if its a number and its NaN, then it's empty - otherwise, it's not.
+    if (type === 'number') {
+        return TP.isNaN(anObj);
     }
 
     //  'arguments' arrays are handled specially, since they don't act like
