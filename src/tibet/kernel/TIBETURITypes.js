@@ -2697,6 +2697,18 @@ function(aSignal) {
             aSignal.atPut(TP.CHANGE_URIS, changedURIs);
         }
 
+        //  If we have URIs that match the paths that changed, then iterate over
+        //  them and send a change signal for each one.
+        if (TP.notEmpty(changedURIs)) {
+            changedURIs.forEach(
+                    function(aURI) {
+                        aURI.signal(aSignal.getSignalName(),
+                                    aSignal.getPayload(),
+                                    TP.INHERITANCE_FIRING,
+                                    aSignal.getType());
+                    });
+        }
+
         //  Now we signal from ourself with the whole payload, which now
         //  includes the list of changed URIs.
         this.signal(aSignal.getSignalName(),
