@@ -62,8 +62,8 @@ function() {
                 backgroundElem,
                 childElem;
 
-            //  Set up a temporary reference to the top-level window name
-            TP.$$topWindowName = TP.sys.cfg('tibet.uibuffer');
+            //  Set up a temporary reference to the top-level window path
+            TP.$$topWindowPath = TP.sys.cfg('tibet.top_win_path');
 
             //  Draw some test content into the current UI canvas.
             TP.$$uiCanvasName = TP.sys.cfg('tibet.uicanvas');
@@ -1068,7 +1068,7 @@ function() {
             var backgroundElem;
 
             //  Set up a temporary reference to the top-level window name
-            delete TP.$$topWindowName;
+            delete TP.$$topWindowPath;
             delete TP.$$uiCanvasName;
 
             backgroundElem = TP.byId('top_background', this.getDriver().get('windowContext'), false);

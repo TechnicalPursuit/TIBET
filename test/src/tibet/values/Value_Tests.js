@@ -54,7 +54,7 @@ function() {
         'NativeType',                           'Array',
         'NativeFunction',                       /^Function\$(\w+)$/,
 
-        'Window',                               TP.sys.cfg('tibet.uibuffer'),
+        'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
 
         //'Node',                                 'Node',
@@ -88,7 +88,7 @@ function() {
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
-        'TP.core.Window',                       TP.sys.cfg('tibet.uibuffer'),
+        'TP.core.Window',                       TP.sys.cfg('tibet.top_win_name'),
         'TP.core.HTMLDocumentNode',             'document',
         'TP.core.HTMLElementNode',              'body',
 
@@ -221,7 +221,8 @@ function() {
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
 
-    winGID = TP.gid(testData.at('Window'));
+    winGID = TP.sys.cfg('tibet.top_win_path');
+
     docLoc = encodeURI(TP.documentGetLocation(
                             testData.at('HTMLDocument'), false, true));
     docLoc = TP.uriInTIBETFormat(docLoc);
