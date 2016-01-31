@@ -278,7 +278,7 @@ function() {
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
-        'TP.core.Window',                       TP.sys.cfg('tibet.uibuffer'),
+        'TP.core.Window',                       winGID,
         'TP.core.HTMLDocumentNode',             'tibet://' + winGID + '/' + docLoc + '#document',
         'TP.core.HTMLElementNode',              'tibet://' + winGID + '/' + docLoc + '#body',
 
