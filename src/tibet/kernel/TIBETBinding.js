@@ -648,7 +648,11 @@ function(aSignal) {
 
         attrName,
 
-        ownerTPElem;
+        ownerElem,
+        ownerTPElem,
+
+        aspect,
+        facet;
 
     changedPaths = aSignal.at(TP.CHANGE_PATHS);
 
@@ -743,7 +747,6 @@ function(aSignal) {
             attrVal = attrs[j].value;
 
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
-                //(attrVal.indexOf(changedPrimaryLoc) !== TP.NOT_FOUND ||
                 (matcher.test(attrVal) ||
                 TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
                 boundAttrNodes.push(attrs[j])
@@ -824,31 +827,46 @@ function(aSignal) {
 
         var startSetup = Date.now();
 
-        //  Refresh all 'absolute' leafs
+        aspect = aSignal.at('aspect');
+        facet = aSignal.at('facet');
 
-        len = boundAttrNodes.getSize();
-        for (i = 0; i < len; i++) {
+        if (TP.notEmpty(aspect) && facet !== 'value') {
+            //  Refresh all bindings using the aspect from the path, since we're
+            //  updating 'non value facet' bindings..
+            tpDocElem.refreshBranches(
+                    primarySource, aSignal, elems, initialVal,
+                    TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE);
+        } else {
 
-            attrName = boundAttrNodes.at(i).localName;
+            if (TP.isKindOf(sigOrigin, TP.core.URI)) {
 
-            ownerTPElem = TP.wrap(boundAttrNodes.at(i).ownerElement);
+                tpDocElem.refreshBranches(
+                        primarySource, aSignal, elems, initialVal,
+                        null, null, null);
+            } else {
 
-            if (attrName === 'io' || attrName === 'in') {
+                //  Refresh all 'direct GUI' bindings.
 
-                attrVal = boundAttrNodes.at(i).value;
+                len = boundAttrNodes.getSize();
+                for (i = 0; i < len; i++) {
 
-                if (matcher.test(attrVal)) {
-                    ownerTPElem.refreshLeaf(primarySource, aSignal,
-                                            initialVal, boundAttrNodes[i]);
+                    attrName = boundAttrNodes.at(i).localName;
+
+                    if (attrName === 'io' || attrName === 'in') {
+
+                        attrVal = boundAttrNodes.at(i).value;
+
+                        if (matcher.test(attrVal)) {
+
+                            ownerElem = boundAttrNodes.at(i).ownerElement;
+                            ownerTPElem = TP.wrap(ownerElem);
+                            ownerTPElem.refreshLeaf(
+                                    primarySource, aSignal,
+                                    initialVal, boundAttrNodes[i]);
+                        }
+                    }
                 }
             }
-        }
-
-        if (TP.isKindOf(sigOrigin, TP.core.URI)) {
-        //  Refresh all bindings
-        tpDocElem.refreshBranches(
-                primarySource, aSignal, elems, initialVal,
-                null, null, null);
         }
 
         var endSetup = Date.now();
@@ -2401,17 +2419,22 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
         exprs = entry.at('dataExprs');
 
-        if (TP.notEmpty(exprs)) {
+        if (TP.isEmpty(exprs)) {
+            continue;
+        }
 
-            //  This should only have one expression. If it has more than
-            //  one, then we need to raise an exception.
-            if (exprs.getSize() > 1) {
-                //  TODO: Raise
-                continue;
-            }
+        //  This should only have one expression. If it has more than
+        //  one, then we need to raise an exception.
+        if (exprs.getSize() > 1) {
+            //  TODO: Raise
+            continue;
+        }
 
-            expr = exprs.at(0);
+        expr = exprs.at(0);
 
+        if (facet !== 'value') {
+            this.setFacet(aspect, facet, aSignal.at(TP.NEWVAL), true);
+        } else {
             if (TP.regex.BARENAME.test(expr)) {
                 expr = 'tibet://uicanvas' + expr;
             }
@@ -2460,13 +2483,14 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
                 sigOrigin = aSignal.getOrigin();
                 if (TP.isKindOf(sigOrigin, TP.core.URI)) {
+
                     primaryLocation = sigOrigin.getPrimaryLocation();
 
-                if (expr.startsWith(primaryLocation)) {
-                    finalVal = TP.uc(expr).getResource().get('result');
-                } else {
-                    continue;
-                }
+                    if (expr.startsWith(primaryLocation)) {
+                        finalVal = TP.uc(expr).getResource().get('result');
+                    } else {
+                        continue;
+                    }
                 } else {
                     finalVal = initialVal;
                 }
@@ -2544,42 +2568,42 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
              //   TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
               //  finalVal = theVal;
             //}
-        }
 
+            if (TP.isValid(finalVal)) {
+                if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
 
-        if (TP.isValid(finalVal)) {
-            if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
+                    if (TP.isCollection(finalVal)) {
+                        isXMLResource = TP.isXMLNode(TP.unwrap(finalVal.first()));
+                    } else {
+                        isXMLResource = TP.isXMLNode(TP.unwrap(finalVal));
+                    }
 
-                if (TP.isCollection(finalVal)) {
-                    isXMLResource = TP.isXMLNode(TP.unwrap(finalVal.first()));
-                } else {
-                    isXMLResource = TP.isXMLNode(TP.unwrap(finalVal));
+                    //  Important for the logic in the transformation Function to
+                    //  set this to NaN and let the logic below set it if it finds
+                    //  it.
+                    repeatIndex = NaN;
+
+                    if (TP.isValid(
+                                repeatInfo = this.$getRepeatSourceAndIndex())) {
+                        repeatSource = repeatInfo.first();
+                        repeatIndex = repeatInfo.last();
+                    }
+
+                    finalVal = transformFunc(
+                                    aSignal.getSource(),
+                                    finalVal,
+                                    this,
+                                    repeatSource,
+                                    repeatIndex,
+                                    isXMLResource);
                 }
-
-                //  Important for the logic in the transformation Function to
-                //  set this to NaN and let the logic below set it if it finds
-                //  it.
-                repeatIndex = NaN;
-
-                if (TP.isValid(repeatInfo = this.$getRepeatSourceAndIndex())) {
-                    repeatSource = repeatInfo.first();
-                    repeatIndex = repeatInfo.last();
-                }
-
-                finalVal = transformFunc(
-                                aSignal.getSource(),
-                                finalVal,
-                                this,
-                                repeatSource,
-                                repeatIndex,
-                                isXMLResource);
             }
-        }
 
-        if (aspect === 'value') {
-            this.setValue(finalVal, false);
-        } else {
-            this.setFacet(aspect, facet, finalVal, false);
+            if (aspect === 'value') {
+                this.setValue(finalVal, true);
+            } else {
+                this.setFacet(aspect, facet, finalVal, true);
+            }
         }
     }
 
@@ -2861,11 +2885,16 @@ function(aValue, scopeVals, bindingInfoValue) {
 
     var bindingInfo,
 
-        bidiAttrs;
+        bidiAttrs,
+
+        flag;
 
     bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
 
     bidiAttrs = this.getType().get('bidiAttrs');
+
+    flag = this.shouldSignalChange();
+    this.shouldSignalChange(true);
 
     bindingInfo.perform(
         function(bindEntry) {
@@ -2886,7 +2915,9 @@ function(aValue, scopeVals, bindingInfoValue) {
 
                 frag,
 
-                result;
+                result,
+
+                newValue;
 
             attrName = bindEntry.first();
 
@@ -2942,7 +2973,8 @@ function(aValue, scopeVals, bindingInfoValue) {
 
                 if (TP.notValid(
                         result = primaryURI.getResource().get('result'))) {
-                    var newValue = TP.lang.Object.construct();
+
+                    newValue = TP.lang.Object.construct();
                     newValue.defineAttribute('value');
                     newValue.set('value', aValue);
 
@@ -2957,6 +2989,8 @@ function(aValue, scopeVals, bindingInfoValue) {
                 }
             }
         });
+
+    this.shouldSignalChange(flag);
 
     return this;
 });
