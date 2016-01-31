@@ -2697,6 +2697,18 @@ function(aSignal) {
             aSignal.atPut(TP.CHANGE_URIS, changedURIs);
         }
 
+        //  If we have URIs that match the paths that changed, then iterate over
+        //  them and send a change signal for each one.
+        if (TP.notEmpty(changedURIs)) {
+            changedURIs.forEach(
+                    function(aURI) {
+                        aURI.signal(aSignal.getSignalName(),
+                                    aSignal.getPayload(),
+                                    TP.INHERITANCE_FIRING,
+                                    aSignal.getType());
+                    });
+        }
+
         //  Now we signal from ourself with the whole payload, which now
         //  includes the list of changed URIs.
         this.signal(aSignal.getSignalName(),
@@ -4287,8 +4299,8 @@ function(aResource, aRequest) {
 
     if (shouldSignalChange) {
 
-        //  Sub URIs are URIs that have the same primary resource as us, but
-        //  also have a fragment, indicating that they also have a secondary
+        //  Secondary URIs are URIs that have the same primary resource as us,
+        //  but also have a fragment, indicating that they also have a secondary
         //  resource pointed to by the fragment.
         secondaryURIs = this.getSecondaryURIs();
 
@@ -4327,7 +4339,8 @@ function(aResource, aRequest) {
 
                 description.atPut('path', fragText);
 
-                secondaryURIs.at(i).signal('TP.sig.StructureDelete', description);
+                secondaryURIs.at(i).signal('TP.sig.StructureDelete',
+                                            description);
 
                 aResource.checkFacets(fragText);
             }

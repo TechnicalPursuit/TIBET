@@ -8637,9 +8637,12 @@ function() {
                         obsFunction.observe(obsFunction.source, 'ValueChange');
                     }
 
-                    //  Add this observation Function to ourself as an
-                    //  'observation Function'.
-                    this.$addFacetFunction(aspectName, facetName, obsFunction);
+                    if (TP.isCallable(obsFunction)) {
+                        //  Add this observation Function to ourself as an
+                        //  'observation Function'.
+                        this.$addFacetFunction(
+                                aspectName, facetName, obsFunction);
+                    }
                 }
                 /* eslint-enable no-loop-func */
             }
