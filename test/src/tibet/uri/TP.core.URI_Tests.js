@@ -62,8 +62,8 @@ function() {
                 backgroundElem,
                 childElem;
 
-            //  Set up a temporary reference to the top-level window name
-            TP.$$topWindowName = TP.sys.cfg('tibet.uibuffer');
+            //  Set up a temporary reference to the top-level window path
+            TP.$$topWindowPath = TP.sys.cfg('tibet.top_win_path');
 
             //  Draw some test content into the current UI canvas.
             TP.$$uiCanvasName = TP.sys.cfg('tibet.uicanvas');
@@ -103,11 +103,6 @@ function() {
             TP.uc('tibet:///urn:tibet:TP').getResource(params).get('result'),
             TP,
             TP.sc('tibet:///urn:tibet:TP should find the named instance "TP".'));
-
-        test.assert.isIdenticalTo(
-            TP.uc('tibet:///javascript:TP').getResource(params).get('result'),
-            TP,
-            TP.sc('tibet:///javascript:TP should find the named instance "TP".'));
     });
 
     //  ---
@@ -134,28 +129,7 @@ function() {
             TP.uc('tibet:///urn:tibet:FOO').getResource(params).get('result'),
             foo,
             TP.sc('tibet:///urn:tibet:FOO should refer to the FOO object' +
-                    ' in top.'));
-    });
-
-    //  ---
-
-    this.it('TIBETURL: Retrieve object nested in iframe', function(test, options) {
-
-        test.assert.isEqualTo(
-            TP.uc('tibet:///javascript:top.UIROOT.$$globalID').getResource(
-                                                                    params).get('result'),
-            TP.$$topWindowName + '.UIROOT',
-            TP.sc('tibet:///javascript:top.UIROOT.$$globalID should find the',
-                    ' object at "', TP.$$topWindowName,
-                    '".UIROOT.$$globalID".'));
-
-        test.assert.isEqualTo(
-            TP.uc('tibet://top.UIROOT/javascript:$$globalID').getResource(
-                                                                    params).get('result'),
-            TP.$$topWindowName + '.UIROOT',
-            TP.sc('tibet://top.UIROOT/javascript:$$globalID should find',
-                    ' the object at "', TP.$$topWindowName,
-                    '.UIROOT.$$globalID".'));
+                    ' in the code frame.'));
     });
 
     //  ---
@@ -206,9 +180,10 @@ function() {
 
         //  Get the <iframe> element that has an id of UIROOT
         test.assert.isIdenticalTo(
-            TP.uc('tibet://top/#UIROOT').getResource(params).get('result').getNativeNode(),
-            TP.byId('UIROOT', TP.win('top'), false),
-            TP.sc('tibet://top/#UIROOT should find the iframe element with' +
+            TP.uc('tibet://' + TP.$$topWindowPath + '/#UIROOT').getResource(params).get('result').getNativeNode(),
+            TP.byId('UIROOT', TP.win(TP.$$topWindowPath), false),
+            TP.sc('tibet://' + TP.$$topWindowPath +
+                    '/#UIROOT should find the iframe element with' +
                     ' id "UIROOT" in the top-level window\'s document.'));
     });
 
@@ -218,9 +193,10 @@ function() {
 
         //  Get the <iframe> element that has an id of UIROOT
         test.assert.isIdenticalTo(
-            TP.uc('tibet://top#UIROOT').getResource(params).get('result').getNativeNode(),
-            TP.byId('UIROOT', TP.win('top'), false),
-            TP.sc('tibet://top/#UIROOT should find the iframe element with' +
+            TP.uc('tibet://' + TP.$$topWindowPath + '#UIROOT').getResource(params).get('result').getNativeNode(),
+            TP.byId('UIROOT', TP.win(TP.$$topWindowPath), false),
+            TP.sc('tibet://' + TP.$$topWindowPath +
+                    '/#UIROOT should find the iframe element with' +
                     ' id "UIROOT" in the top-level window\'s document.'));
     });
 
@@ -271,9 +247,9 @@ function() {
     this.it('TIBETURL: Retrieve TP.core.Window of named window - extra slash', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.uc('tibet://top.UIROOT/').getResource(params).get('result'),
-            TP.core.Window.construct('top.UIROOT'),
-            TP.sc('tibet://top.UIROOT/ should find the Window named' +
+            TP.uc('tibet://' + TP.$$topWindowPath + '.UIROOT/').getResource(params).get('result'),
+            TP.core.Window.construct(TP.$$topWindowPath + '.UIROOT'),
+            TP.sc('tibet://' + TP.$$topWindowPath + '.UIROOT/ should find the Window named' +
                     ' "UIROOT".'));
     });
 
@@ -282,9 +258,9 @@ function() {
     this.it('TIBETURL: Retrieve TP.core.Window of named window', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.uc('tibet://top.UIROOT').getResource(params).get('result'),
-            TP.core.Window.construct('top.UIROOT'),
-            TP.sc('tibet://top.UIROOT should find the Window named' +
+            TP.uc('tibet://' + TP.$$topWindowPath + '.UIROOT').getResource(params).get('result'),
+            TP.core.Window.construct('' + TP.$$topWindowPath + '.UIROOT'),
+            TP.sc('tibet://' + TP.$$topWindowPath + '.UIROOT should find the Window named' +
                     ' "UIROOT".'));
     });
 
@@ -293,9 +269,9 @@ function() {
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1 - extra slash', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.uc('tibet://top.UIROOT/#document').getResource(params).get('result'),
-            TP.core.Window.construct('top.UIROOT').getDocument(),
-            TP.sc('tibet://top.UIROOT/#document should find the' +
+            TP.uc('tibet://' + TP.$$topWindowPath + '.UIROOT/#document').getResource(params).get('result'),
+            TP.core.Window.construct('' + TP.$$topWindowPath + '.UIROOT').getDocument(),
+            TP.sc('tibet://' + TP.$$topWindowPath + '.UIROOT/#document should find the' +
                     ' document of the Window named "UIROOT".'));
     });
 
@@ -304,9 +280,9 @@ function() {
     this.it('TIBETURL: Retrieve TP.core.HTMLDocumentNode of named window #1', function(test, options) {
 
         test.assert.isIdenticalTo(
-            TP.uc('tibet://top.UIROOT#document').getResource(params).get('result'),
-            TP.core.Window.construct('top.UIROOT').getDocument(),
-            TP.sc('tibet://top.UIROOT#document should find the' +
+            TP.uc('tibet://' + TP.$$topWindowPath + '.UIROOT#document').getResource(params).get('result'),
+            TP.core.Window.construct('' + TP.$$topWindowPath + '.UIROOT').getDocument(),
+            TP.sc('tibet://' + TP.$$topWindowPath + '.UIROOT#document should find the' +
                     ' document of the Window named "UIROOT".'));
     });
 
@@ -1068,7 +1044,7 @@ function() {
             var backgroundElem;
 
             //  Set up a temporary reference to the top-level window name
-            delete TP.$$topWindowName;
+            delete TP.$$topWindowPath;
             delete TP.$$uiCanvasName;
 
             backgroundElem = TP.byId('top_background', this.getDriver().get('windowContext'), false);
@@ -1118,62 +1094,8 @@ function() {
         test.assert.isIdenticalTo(
             TP.uc('urn:tibet:FOO').getResource(params).get('result'),
             foo,
-            TP.sc('urn:tibet:FOO should refer to the FOO object in top.'));
+            TP.sc('urn:tibet:FOO should refer to the FOO object in the code frame.'));
     });
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.JSURI.Inst.describe('getResource',
-function() {
-
-    var params;
-
-    //  NB: The default of TIBETURNs is that they fetch their resources
-    //  synchronously, so we don't need to specify that here.
-    params = TP.request('refresh', true);
-
-    this.before(
-        function() {
-            //  Set up a temporary reference to the top-level window name
-            TP.$$topWindowName = TP.sys.cfg('tibet.uibuffer');
-        });
-
-    //  ---
-
-    this.it('JSURI: Retrieve global objects', function(test, options) {
-
-        test.assert.isIdenticalTo(
-            TP.uc('javascript:TP').getResource(params).get('result'),
-            TP,
-            TP.sc('javascript:TP should find the named instance "TP".'));
-
-        test.assert.isIdenticalTo(
-            TP.uc('javascript:TP.sys').getResource(params).get('result'),
-            TP.sys,
-            TP.sc('javascript:TP.sys should find the named instance' +
-                    ' "TP.sys".'));
-    });
-
-    //  ---
-
-    this.it('JSURI: Retrieve object nested in iframe', function(test, options) {
-
-        test.assert.isEqualTo(
-            TP.uc('javascript:top.UIROOT.$$globalID').getResource(params).get('result'),
-            TP.$$topWindowName + '.UIROOT',
-            TP.sc('javascript:top.UIROOT.$$globalID should find the',
-                    ' object at "', TP.$$topWindowName,
-                    '".UIROOT.$$globalID".'));
-    });
-
-    //  ---
-
-    this.after(
-        function() {
-            //  Set up a temporary reference to the top-level window name
-            delete TP.$$topWindowName;
-        });
 });
 
 //  ------------------------------------------------------------------------

@@ -2293,6 +2293,10 @@ function() {
         driver = test.getDriver();
         driver.setLocation(loadURI);
 
+        //  A short pause for when we're running these in a large group of tests
+        //  gives the GUI a chance to update.
+        test.thenWait(100);
+
         test.then(
             function(result) {
                 var windowContext,

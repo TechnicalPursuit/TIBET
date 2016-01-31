@@ -3962,8 +3962,8 @@ function() {
 
         //  ---
 
-        //  Set up a temporary reference to the top-level window name
-        TP.$$topWindowName = TP.sys.cfg('tibet.uibuffer');
+        //  Set up a temporary reference to the top-level window path
+        TP.$$topWindowPath = TP.sys.cfg('tibet.top_win_path');
 
         //  Draw some test content into the current UI canvas.
         TP.$$uiCanvasName = TP.sys.cfg('tibet.uicanvas');
@@ -4104,99 +4104,6 @@ function() {
 
         inputVal = 'tibet:///urn:tibet:FOO';
         correctResult = foo;
-
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function(testResult) {
-                test.assert.isIdenticalTo(
-                    testResult,
-                    correctResult,
-                    TP.join('"', inputVal, '"',
-                            ' produced: "', testResult, '"',
-                            ' should be: "', correctResult, '".'));
-            });
-    });
-
-    /* eslint-disable no-script-url */
-    this.it('javascript:TP', function(test, options) {
-
-        inputVal = 'javascript:TP';
-
-        correctResult = TP;
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function(testResult) {
-                test.assert.isIdenticalTo(
-                    testResult,
-                    correctResult,
-                    TP.join('"', inputVal, '"',
-                            ' produced: "', testResult, '"',
-                            ' should be: "', correctResult, '".'));
-            });
-    });
-    /* eslint-enable no-script-url */
-
-    this.it('tibet:///javascript:TP', function(test, options) {
-
-        inputVal = 'tibet:///javascript:TP';
-        correctResult = TP;
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function(testResult) {
-                test.assert.isIdenticalTo(
-                    testResult,
-                    correctResult,
-                    TP.join('"', inputVal, '"',
-                            ' produced: "', testResult, '"',
-                            ' should be: "', correctResult, '".'));
-            });
-    });
-
-    /* eslint-disable no-script-url */
-    this.it('javascript:top.UIROOT.$$globalID', function(test, options) {
-
-        inputVal = 'javascript:top.UIROOT.$$globalID';
-        correctResult = TP.$$topWindowName + '.UIROOT';
-
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function(testResult) {
-                test.assert.isIdenticalTo(
-                    testResult,
-                    correctResult,
-                    TP.join('"', inputVal, '"',
-                            ' produced: "', testResult, '"',
-                            ' should be: "', correctResult, '".'));
-            });
-    });
-    /* eslint-enable no-script-url */
-
-    this.it('tibet:///javascript:top.UIROOT.$$globalID', function(test, options) {
-
-        inputVal = 'tibet:///javascript:top.UIROOT.$$globalID';
-        correctResult = TP.$$topWindowName + '.UIROOT';
-
-        shellDriver.execShellTest(
-            test,
-            inputVal,
-            function(testResult) {
-                test.assert.isIdenticalTo(
-                    testResult,
-                    correctResult,
-                    TP.join('"', inputVal, '"',
-                            ' produced: "', testResult, '"',
-                            ' should be: "', correctResult, '".'));
-            });
-    });
-
-    this.it('tibet://top.UIROOT/javascript:$$globalID', function(test, options) {
-
-        inputVal = 'tibet://top.UIROOT/javascript:$$globalID';
-        correctResult = TP.$$topWindowName + '.UIROOT';
 
         shellDriver.execShellTest(
             test,
@@ -4793,7 +4700,7 @@ function() {
             var backgroundElem;
 
             //  Set up a temporary reference to the top-level window name
-            delete TP.$$topWindowName;
+            delete TP.$$topWindowPath;
             delete TP.$$uiCanvasName;
 
             backgroundElem = TP.byId('top_background', this.getDriver().get('windowContext'), false);

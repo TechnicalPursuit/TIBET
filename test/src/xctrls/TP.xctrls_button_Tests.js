@@ -41,11 +41,18 @@ function() {
 
     //  ---
 
+    this.beforeEach(
+        function() {
+            //  A short pause for when we're running these in a large group of
+            //  tests gives the GUI a chance to update.
+            this.thenWait(100);
+        });
+
+    //  ---
+
     this.afterEach(
         function() {
-
             TP.signal.reset();
-
         });
 
     //  ---

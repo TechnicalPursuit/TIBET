@@ -22,6 +22,8 @@
 
 //  ----------------------------------------------------------------------------
 
+    var path;
+
     //  The CLI seems to require this.TP to pick up the global. The browser will
     //  provide a value via root.TP.
     TP = root.TP || this.TP;
@@ -447,18 +449,46 @@
     //  ---
 
     if (typeof window !== 'undefined') {
+
         if (!window.name) {
-            window.name = 'window_0';
+
+            //  NB: This matches logic in the TP.core.Window 'instrument' method
+            //  - if the window doesn't have a name and is inside of an iframe
+            //  and that iframe has an id, we copy that down as the window name.
+            if (window.frameElement && window.frameElement.id) {
+                window.name = window.frameElement.id;
+            } else {
+                window.name = 'window_0';
+            }
         }
 
-        //  the window ID for a getWindowById call which will locate where to
-        //  install buffer IFRAME(s) as needed.
-        TP.sys.setcfg('tibet.uibuffer', window.name);
+        //  If this window isn't the same as the top-level window
+        if (window !== top) {
+
+            //  If the top-level window doesn't have a name, assign one.
+            if (!top.name) {
+                top.name = 'window_0';
+            }
+
+            //  TODO: This only handles one level of nesting from the top down
+            //  to our window.
+            path = top.name + '.' + window.name;
+        } else {
+            path = window.name;
+        }
+
+        //  As far as we're concerned, our 'top level window name' is always our
+        //  window, whether it's 'top' or now.
+        TP.sys.setcfg('tibet.top_win_name', window.name);
+
+        //  The path, however, will take into account if 'top' and our window
+        //  are different.
+        TP.sys.setcfg('tibet.top_win_path', path);
 
     } else {
-        TP.sys.setcfg('tibet.uibuffer', null);
+        TP.sys.setcfg('tibet.top_win_name', null);
+        TP.sys.setcfg('tibet.top_win_path', null);
     }
-
 
     //  ---
     //  logging

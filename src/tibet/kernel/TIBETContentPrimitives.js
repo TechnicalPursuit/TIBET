@@ -55,7 +55,7 @@ function() {
         iframeName,
         iframeElem;
 
-    win = TP.sys.getWindowById(TP.sys.cfg('tibet.uibuffer'));
+    win = TP.sys.getWindowById(TP.sys.cfg('tibet.top_win_name'));
     if (TP.notValid(win)) {
         win = window;
     }
