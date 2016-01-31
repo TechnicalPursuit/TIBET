@@ -1896,8 +1896,11 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @returns {TP.html.inputCheckable} The receiver.
      */
 
+    //  'checked' should be considered as 'value' in terms of an aspect for
+    //  these types of Elements.
     if (aspectName === 'checked') {
-        return this.setValue(facetValue, shouldSignal);
+        return this.callNextMethod(
+                        'value', facetName, facetValue, shouldSignal);
     }
 
     return this.callNextMethod();
