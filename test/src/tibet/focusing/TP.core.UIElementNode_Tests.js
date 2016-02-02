@@ -2218,6 +2218,8 @@ function() {
             $focus_stack = TP.ac();
 
             this.getDriver().showTestGUI();
+
+            this.startTrackingSignals();
         });
 
     this.after(
@@ -2225,18 +2227,21 @@ function() {
             $focus_stack = focusStackPreTest;
 
             this.getDriver().showTestLog();
+
+            this.stopTrackingSignals();
         });
 
     //  ---
 
     this.beforeEach(
         function() {
-            this.getSuite().startTrackingSignals();
+            //  A short pause for when we're running these in a large group of
+            //  tests gives the GUI a chance to update.
+            this.thenWait(500);
         });
 
     this.afterEach(
         function() {
-            this.getSuite().stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
             this.getDriver().setLocation(unloadURI);
