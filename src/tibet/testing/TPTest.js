@@ -1022,30 +1022,23 @@ function(result, options) {
 
         func,
 
-        drivers,
-        thisArg,
-
         retVal;
 
     this.set('msend', Date.now());
 
+    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
+    //  'thenWait()' API to our drivers.
+    //  We need to reset this after executing all of the test cases, since they
+    //  set this to themselves while they're running.
+    this.setPromiseAPIProvider(this);
+
+    //  And the current UI canvas is the GUI driver's window context. Again, we
+    //  reset this in case one of test cases set it to something else.
+    this.setGUIDriverWindowContext(TP.sys.getUICanvas());
+
     //  Run any after() which was registered.
     func = this.get('afterAll');
     if (TP.isCallable(func)) {
-
-        //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-        //  'thenWait()' API to our drivers.
-        thisArg = this;
-
-        drivers = this.$get('drivers');
-        drivers.getKeys().perform(
-                function(driverKey) {
-                    drivers.at(driverKey).set('promiseProvider', thisArg);
-                    if (driverKey === 'gui') {
-                        drivers.at(driverKey).set('windowContext',
-                                                    TP.sys.getUICanvas());
-                    }
-                });
 
         try {
             //  Call the Function with ourself as 'this' and then ourself again
@@ -1165,9 +1158,6 @@ function(result, options) {
 
     var func,
 
-        drivers,
-        thisArg,
-
         retVal;
 
     //  Install a spy on TP.raise() so that any calls to it get tracked during
@@ -1182,23 +1172,16 @@ function(result, options) {
 
     this.set('msstart', Date.now());
 
+    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
+    //  'thenWait()' API to our drivers.
+    this.setPromiseAPIProvider(this);
+
+    //  And the current UI canvas is the GUI driver's window context.
+    this.setGUIDriverWindowContext(TP.sys.getUICanvas());
+
     //  Run any before() which was registered.
     func = this.get('beforeAll');
     if (TP.isCallable(func)) {
-
-        //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-        //  'thenWait()' API to our drivers.
-        thisArg = this;
-
-        drivers = this.$get('drivers');
-        drivers.getKeys().perform(
-                function(driverKey) {
-                    drivers.at(driverKey).set('promiseProvider', thisArg);
-                    if (driverKey === 'gui') {
-                        drivers.at(driverKey).set('windowContext',
-                                                    TP.sys.getUICanvas());
-                    }
-                });
 
         try {
             //  Call the Function with ourself as 'this' and then ourself again
@@ -1970,6 +1953,60 @@ function(options) {
 
     //  'Finally' action for our caselist promise chain, run the 'after' hook.
     return result.then(finalAfterHandler, finalAfterHandler);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('setPromiseAPIProvider',
+function(provider) {
+
+    /**
+     * Sets the 'promise provider' for the drivers that have been set up for
+     * this suite, such as GUI or TSH drivers.
+     * @param {Object} provider The object that will provide Promise objects for
+     *     this suite's drivers.
+     * @returns {TP.test.Suite} The receiver.
+     */
+
+    var drivers;
+
+    //  The provider object provides a 'then()', 'thenAllowGUIRefresh()',
+    //  'thenPromise()' and 'thenWait()' API to our drivers.
+
+    drivers = this.$get('drivers');
+    drivers.getKeys().perform(
+        function(driverKey) {
+            drivers.at(driverKey).set('promiseProvider', provider);
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('setGUIDriverWindowContext',
+function(windowContext) {
+
+    /**
+     * Sets the window context for the GUI driver that has been set up for
+     * this suite.
+     * @param {TP.core.Window} windowContext The Window that will provide a GUI
+     * context to execute any GUI tests in.
+     * @returns {TP.test.Suite} The receiver.
+     */
+
+    var drivers;
+
+    drivers = this.$get('drivers');
+
+    drivers.getKeys().perform(
+        function(driverKey) {
+            if (driverKey === 'gui') {
+                drivers.at(driverKey).set('windowContext', windowContext);
+            }
+        });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2994,8 +3031,6 @@ function() {
 TP.test.Case.Inst.defineMethod('reset',
 function(options) {
 
-    var drivers;
-
     this.callNextMethod();
 
     this.$set('msstart', null);
@@ -3015,18 +3050,6 @@ function(options) {
     if (options && options.at('case_timeout')) {
         this.$set('mslimit', options.at('case_timeout'));
     }
-
-    //  We provide a 'then()', 'thenAllowGUIRefresh()', 'thenPromise()' and
-    //  'thenWait()' API to our drivers, but we need to reset the reference here
-    //  to avoid leaks.
-    drivers = this.getSuite().$get('drivers');
-    drivers.getKeys().perform(
-            function(driverKey) {
-                drivers.at(driverKey).set('promiseProvider', null);
-                if (driverKey === 'gui') {
-                    drivers.at(driverKey).set('windowContext', null);
-                }
-            });
 
     return this;
 });
@@ -3076,8 +3099,6 @@ function(options) {
                     refuter,
                     logAppender,
 
-                    drivers,
-
                     internalPromise,
                     maybe;
 
@@ -3105,18 +3126,14 @@ function(options) {
                 logAppender = testcase.getSuite().get('logAppender');
                 logAppender.$set('currentTestCase', testcase);
 
-                //  The testcase provides a 'then()', 'thenAllowGUIRefresh()',
-                //  'thenPromise()' and 'thenWait()' API to our drivers, so we
-                //  need to reset the reference here to it each time.
-                drivers = testcase.getSuite().$get('drivers');
-                drivers.getKeys().perform(
-                    function(driverKey) {
-                        drivers.at(driverKey).set('promiseProvider', testcase);
-                        if (driverKey === 'gui') {
-                            drivers.at(driverKey).set('windowContext',
-                                                        TP.sys.getUICanvas());
-                        }
-                    });
+                //  The test case provide a 'then()', 'thenAllowGUIRefresh()',
+                //  'thenPromise()' and 'thenWait()' API to the suite's drivers.
+                testcase.getSuite().setPromiseAPIProvider(testcase);
+
+                //  We set this each time a test case is executed in case a
+                //  prior test case set it to something else.
+                testcase.getSuite().setGUIDriverWindowContext(
+                                                    TP.sys.getUICanvas());
 
                 //  Capture references to the resolve/reject operations we can
                 //  use from the test case itself. Do this first so any errors
