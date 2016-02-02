@@ -16,29 +16,34 @@ TP.describe('TP: document lifecycle',
 function() {
 
     var loadURI,
+        unloadURI,
+
         winContext;
 
     loadURI = TP.uc('~lib_test/src/tibet/lifecycle/LoadUnload_Test.xhtml');
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
     //  ---
 
     this.before(
         function() {
             winContext = this.getDriver().get('windowContext');
+
+            this.startTrackingSignals();
         });
 
     //  ---
 
     this.beforeEach(
         function() {
-            this.getSuite().startTrackingSignals();
+            TP.signal.reset();
         });
 
     //  ---
 
-    this.afterEach(
+    this.after(
         function() {
-            this.getSuite().stopTrackingSignals();
+            this.stopTrackingSignals();
         });
 
     //  ---
@@ -59,6 +64,8 @@ function() {
             });
     });
 
+    //  ---
+
     this.it('window - DocumentUnloaded', function(test, options) {
 
         var driver;
@@ -69,9 +76,15 @@ function() {
         test.then(
             function() {
 
-                //  Window throws DocumentLoaded when document unloads
-                test.assert.didSignal(TP.gid(winContext),
-                                        'TP.sig.DocumentUnloaded');
+                //  Now that we're loaded, unload the document
+                driver.setLocation(unloadURI);
+
+                test.then(
+                    function() {
+                        //  Window throws DocumentUnloaded when document unloads
+                        test.assert.didSignal(TP.gid(winContext),
+                                                'TP.sig.DocumentUnloaded');
+                    });
             });
     });
 
@@ -91,6 +104,32 @@ function() {
                 test.assert.didSignal(
                         TP.gid(winContext.getNativeDocument()),
                         'TP.sig.DOMContentLoaded');
+            });
+    });
+
+    //  ---
+
+    this.it('document - DOMContentUnloaded', function(test, options) {
+
+        var driver;
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function() {
+
+                //  Now that we're loaded, unload the document
+                driver.setLocation(unloadURI);
+
+                test.then(
+                    function() {
+                        //  Document throws DOMContentUnloaded when document
+                        //  unloads
+                        test.assert.didSignal(
+                                TP.gid(winContext.getNativeDocument()),
+                                'TP.sig.DOMContentUnloaded');
+                    });
             });
     });
 
