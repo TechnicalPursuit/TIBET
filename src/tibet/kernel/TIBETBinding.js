@@ -1590,11 +1590,15 @@ function(indexes) {
 
     elem = this.getNativeNode();
 
-    mgmtElement = TP.byCSSPath(
-                        '> *[tibet|nomutationtracking]',
-                        elem,
-                        true,
-                        false);
+    if (TP.elementHasAttribute(elem, 'tibet:nomutationtracking', true)) {
+        mgmtElement = elem;
+    } else {
+        mgmtElement = TP.byCSSPath(
+                            '> *[tibet|nomutationtracking]',
+                            elem,
+                            true,
+                            false);
+    }
 
     if (!TP.isElement(mgmtElement)) {
         //  TODO: Raise exception
@@ -1703,11 +1707,15 @@ function(indexes) {
         return this;
     }
 
-    mgmtElement = TP.byCSSPath(
-                        '> *[tibet|nomutationtracking]',
-                        elem,
-                        true,
-                        false);
+    if (TP.elementHasAttribute(elem, 'tibet:nomutationtracking', true)) {
+        mgmtElement = elem;
+    } else {
+        mgmtElement = TP.byCSSPath(
+                            '> *[tibet|nomutationtracking]',
+                            elem,
+                            true,
+                            false);
+    }
 
     if (!TP.isElement(mgmtElement)) {
         //  TODO: Raise exception
@@ -2216,7 +2224,14 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         attrVal === searchPath) {
 
                         if (isRepeatScope) {
-                            ownerElem = ownerElem.parentNode.parentNode;
+                            ownerElem = TP.nodeDetectAncestor(
+                                ownerElem,
+                                function(aNode) {
+                                    return TP.isElement(aNode) &&
+                                            TP.elementHasAttribute(
+                                                    aNode, 'bind:repeat', true);
+                                });
+
                             ownerTPElem = TP.wrap(ownerElem);
                         }
 
@@ -2639,15 +2654,7 @@ function(aCollection, elems) {
 
         i,
 
-        elemsWithIDs,
-        j,
-        elemWithID,
-        oldIdVal,
-        newIdVal,
-
         newElement,
-
-        mgmtElement,
 
         newElems,
         elemIndex,
@@ -2671,6 +2678,7 @@ function(aCollection, elems) {
         return this;
     }
 
+    //  This will be a <span> wrapping our template content.
     if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
         //  TODO: Raise an exception
         return this;
@@ -2719,24 +2727,11 @@ function(aCollection, elems) {
     startIndex = 0;
     endIndex = aCollection.getSize();
 
-    //  Calculate an ID suffix by concatenating any 'bind:scope' numeric values
-    //  up the chain.
-    idSuffix = '';
-
-    TP.nodeAncestorsPerform(
-        elem,
-        function(aNode) {
-
-            var scopeVal;
-
-            if (TP.isElement(aNode) &&
-                TP.notEmpty(scopeVal = TP.elementGetAttribute(
-                                                aNode, 'bind:scope', true))) {
-                if (TP.regex.SIMPLE_NUMERIC_PATH.test(scopeVal)) {
-                    idSuffix += scopeVal.slice(1, -1);
-                }
-            }
-        });
+    //  If the repeat content's child element list has a size of 1, then we
+    //  reach under there and use that element as the repeat content
+    if (TP.nodeGetChildElements(repeatContent).getSize() === 1) {
+        repeatContent = repeatContent.firstElementChild;
+    }
 
     //  Iterate over the resource and build out a chunk of markup for each
     //  item in the resource.
@@ -2751,21 +2746,6 @@ function(aCollection, elems) {
             scopeIndex = i;
         }
 
-        elemsWithIDs = TP.byCSSPath('*[id]', newElement, false, false);
-
-        for (j = 0; j < elemsWithIDs.getSize(); j++) {
-
-            elemWithID = elemsWithIDs.at(j);
-
-            oldIdVal = TP.elementGetAttribute(elemWithID, 'id', true);
-            newIdVal = oldIdVal + idSuffix + scopeIndex;
-
-            TP.elementSetAttribute(elemWithID, 'id', newIdVal, true);
-        }
-
-        //  TODO: Make sure to update any *references* (i.e. IDREFs) to the ID
-        //  that we just changed.
-
         TP.elementSetAttribute(
                 newElement, 'bind:scope', '[' + scopeIndex + ']', true);
 
@@ -2774,22 +2754,18 @@ function(aCollection, elems) {
         bodyFragment.appendChild(newElement);
     }
 
-    //  Append a 'management element' under ourself to manage things like awaken
-    mgmtElement = TP.documentConstructElement(this.getNativeDocument(),
-                                                'span',
-                                                TP.w3.Xmlns.XHTML);
-    TP.elementSetAttribute(mgmtElement, 'tibet:nomutationtracking', true, true);
-
-    //  Append the management element under the receiver element
-    mgmtElement = TP.nodeAppendChild(elem, mgmtElement, false);
+    TP.elementSetAttribute(elem, 'tibet:nomutationtracking', true, true);
 
     //  Finally, append the whole fragment under the receiver element
-    TP.nodeAppendChild(mgmtElement, bodyFragment, false);
+    TP.nodeAppendChild(elem, bodyFragment, false);
 
     //  Bubble any xmlns attributes upward to avoid markup clutter.
-    TP.elementBubbleXMLNSAttributes(mgmtElement);
+    TP.nodeGetElementsByTagName(elem, '*').forEach(
+            function(anElem) {
+                TP.elementBubbleXMLNSAttributes(anElem);
+            });
 
-    TP.nodeAwakenContent(mgmtElement);
+    TP.nodeAwakenContent(elem);
 
     newElems = this.$getBoundElements(false);
 
@@ -2818,6 +2794,11 @@ function() {
         i,
 
         repeatContent,
+
+        elemsWithIDs,
+        len,
+        j,
+        elemWithID,
 
         repeatItems,
 
@@ -2852,26 +2833,53 @@ function() {
         nestedRepeatTPElems.at(i).$registerRepeatContent();
     }
 
-    //  Append a 'wrap element' as the 'root element' of the repeat content.
+    //  Append a 'wrap element' as the container of the repeat content. This is
+    //  especially useful if the repeat content has no root element itself and
+    //  therefore we would end up with 1...n sibling nodes, which are harder to
+    //  manage.
     repeatContent = TP.documentConstructElement(this.getNativeDocument(),
                                                 'span',
                                                 TP.w3.Xmlns.XHTML);
 
+    //  Add a class of 'item' for easier managability.
     TP.elementAddClass(repeatContent, 'item');
+
+    //  Strip out all 'id's on elements... if an Element has an ID, warn here.
+    elemsWithIDs = TP.byCSSPath('*[id]', elem, false, false);
+
+    len = elemsWithIDs.getSize()
+    for (j = 0; j < len; j++) {
+
+        elemWithID = elemsWithIDs.at(j);
+
+        TP.ifWarn() ?
+            TP.warn('Stripping ID from Element in repeat template: ' +
+                    TP.str(elemWithID) + '. ' +
+                    'IDs are supposed to be unique in markup.') : 0;
+
+        TP.elementRemoveAttribute(elemWithID, 'id', true);
+    }
 
     //  Grab the childNodes of the receiver as a DocumentFragment.
     //  NOTE: This *removes* these child nodes from the receiver.
     repeatItems = TP.nodeListAsFragment(elem.childNodes);
 
+    //  Append that DocumentFragment into our repeat content container.
     TP.nodeAppendChild(repeatContent, repeatItems, false);
 
+    //  Generate a unique ID for our repeat content. We'll use this to register
+    //  the repeat content with our TP.core.DocumentNode.
     templateID = TP.genID('bind_repeat_template');
 
-    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+    //  Create a registry on our TP.core.DocumentNode for repeat content if it's
+    //  not already there.
+    if (TP.notValid(
+            templateInfo = this.getDocument().get('$repeatTemplates'))) {
         templateInfo = TP.hc();
         this.getDocument().set('$repeatTemplates', templateInfo);
     }
 
+    //  Register our repeat content under the unique ID we generated.
     templateInfo.atPut(templateID, repeatContent);
     TP.elementSetAttribute(elem, 'tibet:templateID', templateID, true);
 
