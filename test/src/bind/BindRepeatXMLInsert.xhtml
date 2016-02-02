@@ -44,11 +44,18 @@
 
     <span bind:scope="urn:tibet:test_people#xpath1(/people)">
         <span id="repeater" bind:repeat="person">
-            <label>First name: </label>
-            <input type="text" bind:io="{value: firstname}" tabindex="0"/><br/>
+            <label>First name:
+                <input type="text" bind:io="{value: firstname}" tabindex="0"/>
+            </label>
 
-            <label>Last name: </label>
-            <input type="text" bind:io="{value: lastname}" tabindex="0"/><br/>
+            <br/>
+
+            <label>Last name:
+                <input type="text" bind:io="{value: lastname}" tabindex="0"/>
+            </label>
+
+            <br/>
+
         </span>
 
         <button id="insertBeforeBegin" on:click="{signal: CreateItem, origin: 'repeater', payload:{index:1, position:TP.BEFORE}}">Click to insert a row before the beginning</button>

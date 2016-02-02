@@ -56,11 +56,18 @@
     <br/>
 
     <span id="personRepeat" bind:repeat="urn:tibet:test_people#xpath1(/people/person)" bind:repeatindex="1" bind:repeatsize="2">
-        <label for="firstNameField">First name: </label>
-        <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>
+        <label>First name:
+            <input type="text" bind:io="{value: firstname}" tabindex="0"/>
+        </label>
 
-        <label for="lastNameField">Last name: </label>
-        <input type="text" id="lastNameField" bind:io="{value: lastname}" tabindex="0"/><br/>
+        <br/>
+
+        <label>Last name:
+            <input type="text" bind:io="{value: lastname}" tabindex="0"/>
+        </label>
+
+        <br/>
+
     </span>
 
 </body>

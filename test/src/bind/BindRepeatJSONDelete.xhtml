@@ -37,11 +37,18 @@
 
     <span bind:scope="urn:tibet:test_people#json($.people)">
         <span id="repeater" bind:repeat=".">
-            <label>First name: </label>
-            <input type="text" bind:io="{value: firstname}" tabindex="0"/><br/>
+            <label>First name:
+                <input type="text" bind:io="{value: firstname}" tabindex="0"/>
+            </label>
 
-            <label>Last name: </label>
-            <input type="text" bind:io="{value: lastname}" tabindex="0"/><br/>
+            <br/>
+
+            <label>Last name:
+                <input type="text" bind:io="{value: lastname}" tabindex="0"/>
+            </label>
+
+            <br/>
+
         </span>
 
         <button id="deleteFirstRow" on:click="{signal: DeleteItem, origin: 'repeater', payload: {index:0}}">Click to delete the first row</button>

@@ -57,42 +57,72 @@
     <br/>
 
     <span id="xmlrepeater" bind:repeat="urn:tibet:test_people_xml#xpath1(/people/person)">
-        <label>Binding to XML data with $_ variable reference:</label>
-        <input type="text" value="'The first name: [[$_.(.//firstname).value .% upperCase]]'" tabindex="0"/><br/>
+        <label>Binding to XML data with $_ variable reference:
+            <input type="text" value="'The first name: [[$_.(.//firstname).value .% upperCase]]'" tabindex="0"/>
+        </label>
 
-        <label>Binding to XML data with $INDEX variable reference:</label>
-        <input type="text" value="'The index: [[$INDEX]]'" tabindex="0"/><br/>
+        <br/>
 
-        <label>First name: </label>
-        <input type="text" value="'The first name: [[firstname]]'" tabindex="0"/><br/>
+        <label>Binding to XML data with $INDEX variable reference:
+            <input type="text" value="'The index: [[$INDEX]]'" tabindex="0"/>
+        </label>
+
+        <br/>
+
+        <label>First name:
+            <input type="text" value="'The first name: [[firstname]]'" tabindex="0"/>
+        </label>
+
+        <br/>
+
     </span>
 
     <br/>
     <br/>
 
     <span id="jsonrepeater" bind:repeat="urn:tibet:test_people_json#json($.people)">
-        <label>Binding to JSON data with $_ variable reference:</label>
-        <input type="text" value="'The middle name: [[$_.middlename .% upperCase]]'" tabindex="0"/><br/>
+        <label>Binding to JSON data with $_ variable reference:
+            <input type="text" value="'The middle name: [[$_.middlename .% upperCase]]'" tabindex="0"/>
+        </label>
 
-        <label>Binding to JSON data with $INDEX variable reference:</label>
-        <input type="text" value="'The index: [[$INDEX]]'" tabindex="0"/><br/>
+        <br/>
 
-        <label>Middle name: </label>
-        <input type="text" value="'The middle name: [[middlename]]'" tabindex="0"/><br/>
+        <label>Binding to JSON data with $INDEX variable reference:
+            <input type="text" value="'The index: [[$INDEX]]'" tabindex="0"/>
+        </label>
+
+        <br/>
+
+        <label>Middle name:
+            <input type="text" value="'The middle name: [[middlename]]'" tabindex="0"/>
+        </label>
+
+        <br/>
+
     </span>
 
     <br/>
     <br/>
 
     <span id="jsobjrepeater" bind:repeat="urn:tibet:test_people_jsobj#tibet(people)">
-        <label>Binding to JavaScript Object data with $_ variable reference:</label>
-        <input type="text" value="'The last name: [[$_.lastname .% upperCase]]'" tabindex="0"/><br/>
+        <label>Binding to JavaScript Object data with $_ variable reference:
+            <input type="text" value="'The last name: [[$_.lastname .% upperCase]]'" tabindex="0"/>
+        </label>
 
-        <label>Binding to JavaScript Object data with $INDEX variable reference:</label>
-        <input type="text" value="'The index: [[$INDEX]]'" tabindex="0"/><br/>
+        <br/>
 
-        <label>Last name: </label>
-        <input type="text" value="'The last name: [[lastname]]'" tabindex="0"/><br/>
+        <label>Binding to JavaScript Object data with $INDEX variable reference:
+            <input type="text" value="'The index: [[$INDEX]]'" tabindex="0"/>
+        </label>
+
+        <br/>
+
+        <label>Last name:
+            <input type="text" value="'The last name: [[lastname]]'" tabindex="0"/>
+        </label>
+
+        <br/>
+
     </span>
 
 </body>

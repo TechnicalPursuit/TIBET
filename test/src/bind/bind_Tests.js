@@ -3807,10 +3807,18 @@ function() {
 
                 var windowContext,
                     modelObj,
+
+                    inputFields,
+
                     lastNameField1,
                     lastNameField2;
 
                 windowContext = test.getDriver().get('windowContext');
+
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                lastNameField1 = inputFields.at(1);
+                lastNameField2 = inputFields.at(3);
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_people'),
@@ -3823,7 +3831,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
+                    lastNameField1.get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -3831,7 +3839,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField2', windowContext).get('value'),
+                    lastNameField2.get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -3839,8 +3847,6 @@ function() {
                     'Jones');
 
                 //  Change the content via 'user' interaction
-
-                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -3860,8 +3866,6 @@ function() {
                             TP.val(modelObj.get('/people/person[1]/lastname')),
                             'Lyon');
                     });
-
-                lastNameField2 = TP.byId('lastNameField2', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -3904,12 +3908,27 @@ function() {
 
                 var windowContext,
                     modelObj,
+
+                    inputFields,
+
                     lastNameField1,
                     lastNameField2,
                     addressStreetField11,
+                    addressStreetField12,
+                    addressCityField21,
                     addressCityField22;
 
                 windowContext = test.getDriver().get('windowContext');
+
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                lastNameField1 = inputFields.at(1);
+                addressStreetField11 = inputFields.at(2);
+                addressStreetField12 = inputFields.at(4);
+
+                lastNameField2 = inputFields.at(7);
+                addressCityField21 = inputFields.at(9);
+                addressCityField22 = inputFields.at(11);
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_people'),
@@ -3924,7 +3943,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
+                    lastNameField1.get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -3932,7 +3951,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressStreetField11', windowContext).get('value'),
+                    addressStreetField11.get('value'),
                     '111 Main St.');
 
                 test.assert.isEqualTo(
@@ -3940,7 +3959,7 @@ function() {
                     '111 Main St.');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressStreetField12', windowContext).get('value'),
+                    addressStreetField12.get('value'),
                     '222 State St.');
 
                 test.assert.isEqualTo(
@@ -3950,7 +3969,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField2', windowContext).get('value'),
+                    lastNameField2.get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -3958,7 +3977,7 @@ function() {
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressCityField21', windowContext).get('value'),
+                    addressCityField21.get('value'),
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
@@ -3966,7 +3985,7 @@ function() {
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressCityField22', windowContext).get('value'),
+                    addressCityField22.get('value'),
                     'One More Town');
 
                 test.assert.isEqualTo(
@@ -3974,8 +3993,6 @@ function() {
                     'One More Town');
 
                 //  Change the content via 'user' interaction
-
-                lastNameField1 = TP.byId('lastNameField1', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -3996,8 +4013,6 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byId('lastNameField2', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
                         lastNameField2.clearValue();
@@ -4017,8 +4032,6 @@ function() {
                             'Weber');
                     });
 
-                addressStreetField11 = TP.byId('addressStreetField11', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
                         addressStreetField11.clearValue();
@@ -4037,8 +4050,6 @@ function() {
                             TP.val(modelObj.get('/people/person[1]/addresses/address[1]/street')),
                             '555 3rd Av');
                     });
-
-                addressCityField22 = TP.byId('addressCityField22', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -4085,10 +4096,18 @@ function() {
 
                 var windowContext,
                     modelObj,
-                    lastNameField1,
-                    lastNameField2;
+
+                    inputFields,
+
+                    lastNameField0,
+                    lastNameField1;
 
                 windowContext = test.getDriver().get('windowContext');
+
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                lastNameField0 = inputFields.at(1);
+                lastNameField1 = inputFields.at(3);
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_people'),
@@ -4101,7 +4120,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
+                    lastNameField0.get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -4109,7 +4128,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
+                    lastNameField1.get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -4118,22 +4137,20 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byId('lastNameField0', windowContext);
-
-                lastNameField1.clearValue();
+                lastNameField0.clearValue();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField1.clearValue();
+                        lastNameField0.clearValue();
                     }).
-                    sendKeys('Lyon', lastNameField1).
-                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    sendKeys('Lyon', lastNameField0).
+                    sendEvent(TP.hc('type', 'change'), lastNameField0).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField1.get('value'),
+                            lastNameField0.get('value'),
                             'Lyon');
 
                         test.assert.isEqualTo(
@@ -4141,20 +4158,18 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byId('lastNameField1', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField2.clearValue();
+                        lastNameField1.clearValue();
                     }).
-                    sendKeys('Weber', lastNameField2).
-                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    sendKeys('Weber', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField2.get('value'),
+                            lastNameField1.get('value'),
                             'Weber');
 
                         test.assert.isEqualTo(
@@ -4184,12 +4199,27 @@ function() {
 
                 var windowContext,
                     modelObj,
+
+                    inputFields,
+
+                    lastNameField0,
                     lastNameField1,
-                    lastNameField2,
                     addressStreetField00,
+                    addressStreetField01,
+                    addressCityField10,
                     addressCityField11;
 
                 windowContext = test.getDriver().get('windowContext');
+
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                lastNameField0 = inputFields.at(1);
+                addressStreetField00 = inputFields.at(2);
+                addressStreetField01 = inputFields.at(4);
+
+                lastNameField1 = inputFields.at(7);
+                addressCityField10 = inputFields.at(9);
+                addressCityField11 = inputFields.at(11);
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_people'),
@@ -4204,7 +4234,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
+                    lastNameField0.get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -4212,7 +4242,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressStreetField00', windowContext).get('value'),
+                    addressStreetField00.get('value'),
                     '111 Main St.');
 
                 test.assert.isEqualTo(
@@ -4220,7 +4250,7 @@ function() {
                     '111 Main St.');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressStreetField01', windowContext).get('value'),
+                    addressStreetField01.get('value'),
                     '222 State St.');
 
                 test.assert.isEqualTo(
@@ -4230,7 +4260,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
+                    lastNameField1.get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -4238,7 +4268,7 @@ function() {
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressCityField10', windowContext).get('value'),
+                    addressCityField10.get('value'),
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
@@ -4246,7 +4276,7 @@ function() {
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressCityField11', windowContext).get('value'),
+                    addressCityField11.get('value'),
                     'One More Town');
 
                 test.assert.isEqualTo(
@@ -4255,20 +4285,18 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byId('lastNameField0', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField1.clearValue();
+                        lastNameField0.clearValue();
                     }).
-                    sendKeys('Lyon', lastNameField1).
-                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    sendKeys('Lyon', lastNameField0).
+                    sendEvent(TP.hc('type', 'change'), lastNameField0).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField1.get('value'),
+                            lastNameField0.get('value'),
                             'Lyon');
 
                         test.assert.isEqualTo(
@@ -4276,28 +4304,24 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byId('lastNameField1', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField2.clearValue();
+                        lastNameField1.clearValue();
                     }).
-                    sendKeys('Weber', lastNameField2).
-                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    sendKeys('Weber', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField2.get('value'),
+                            lastNameField1.get('value'),
                             'Weber');
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('$.people[1].lastname')),
                             'Weber');
                     });
-
-                addressStreetField00 = TP.byId('addressStreetField00', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -4317,8 +4341,6 @@ function() {
                             TP.val(modelObj.get('$.people[0].addresses[0].street')),
                             '555 3rd Av');
                     });
-
-                addressCityField11 = TP.byId('addressCityField11', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -4361,10 +4383,18 @@ function() {
 
                 var windowContext,
                     modelObj,
-                    lastNameField1,
-                    lastNameField2;
+
+                    inputFields,
+
+                    lastNameField0,
+                    lastNameField1;
 
                 windowContext = test.getDriver().get('windowContext');
+
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                lastNameField0 = inputFields.at(1);
+                lastNameField1 = inputFields.at(3);
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_people'),
@@ -4377,7 +4407,7 @@ function() {
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
+                    lastNameField0.get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -4385,7 +4415,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
+                    lastNameField1.get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -4394,22 +4424,20 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byId('lastNameField0', windowContext);
-
-                lastNameField1.clearValue();
+                lastNameField0.clearValue();
 
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField1.clearValue();
+                        lastNameField0.clearValue();
                     }).
-                    sendKeys('Lyon', lastNameField1).
-                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    sendKeys('Lyon', lastNameField0).
+                    sendEvent(TP.hc('type', 'change'), lastNameField0).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField1.get('value'),
+                            lastNameField0.get('value'),
                             'Lyon');
 
                         test.assert.isEqualTo(
@@ -4417,20 +4445,18 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byId('lastNameField1', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField2.clearValue();
+                        lastNameField1.clearValue();
                     }).
-                    sendKeys('Weber', lastNameField2).
-                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    sendKeys('Weber', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField2.get('value'),
+                            lastNameField1.get('value'),
                             'Weber');
 
                         test.assert.isEqualTo(
@@ -4460,12 +4486,27 @@ function() {
 
                 var windowContext,
                     modelObj,
+
+                    inputFields,
+
+                    lastNameField0,
                     lastNameField1,
-                    lastNameField2,
                     addressStreetField00,
+                    addressStreetField01,
+                    addressCityField10,
                     addressCityField11;
 
                 windowContext = test.getDriver().get('windowContext');
+
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                lastNameField0 = inputFields.at(1);
+                addressStreetField00 = inputFields.at(2);
+                addressStreetField01 = inputFields.at(4);
+
+                lastNameField1 = inputFields.at(7);
+                addressCityField10 = inputFields.at(9);
+                addressCityField11 = inputFields.at(11);
 
                 test.assert.didSignal(
                         TP.uc('urn:tibet:test_people'),
@@ -4480,7 +4521,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
+                    lastNameField0.get('value'),
                     'Smith');
 
                 test.assert.isEqualTo(
@@ -4488,7 +4529,7 @@ function() {
                     'Smith');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressStreetField00', windowContext).get('value'),
+                    addressStreetField00.get('value'),
                     '111 Main St.');
 
                 test.assert.isEqualTo(
@@ -4496,7 +4537,7 @@ function() {
                     '111 Main St.');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressStreetField01', windowContext).get('value'),
+                    addressStreetField01.get('value'),
                     '222 State St.');
 
                 test.assert.isEqualTo(
@@ -4506,7 +4547,7 @@ function() {
                 //  ---
 
                 test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
+                    lastNameField1.get('value'),
                     'Jones');
 
                 test.assert.isEqualTo(
@@ -4514,7 +4555,7 @@ function() {
                     'Jones');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressCityField10', windowContext).get('value'),
+                    addressCityField10.get('value'),
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
@@ -4522,7 +4563,7 @@ function() {
                     'Yet Another Town');
 
                 test.assert.isEqualTo(
-                    TP.byId('addressCityField11', windowContext).get('value'),
+                    addressCityField11.get('value'),
                     'One More Town');
 
                 test.assert.isEqualTo(
@@ -4531,20 +4572,18 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                lastNameField1 = TP.byId('lastNameField0', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField1.clearValue();
+                        lastNameField0.clearValue();
                     }).
-                    sendKeys('Lyon', lastNameField1).
-                    sendEvent(TP.hc('type', 'change'), lastNameField1).
+                    sendKeys('Lyon', lastNameField0).
+                    sendEvent(TP.hc('type', 'change'), lastNameField0).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField1.get('value'),
+                            lastNameField0.get('value'),
                             'Lyon');
 
                         test.assert.isEqualTo(
@@ -4552,28 +4591,24 @@ function() {
                             'Lyon');
                     });
 
-                lastNameField2 = TP.byId('lastNameField1', windowContext);
-
                 test.getDriver().startSequence().
                     exec(function() {
-                        lastNameField2.clearValue();
+                        lastNameField1.clearValue();
                     }).
-                    sendKeys('Weber', lastNameField2).
-                    sendEvent(TP.hc('type', 'change'), lastNameField2).
+                    sendKeys('Weber', lastNameField1).
+                    sendEvent(TP.hc('type', 'change'), lastNameField1).
                     perform();
 
                 test.then(
                     function() {
                         test.assert.isEqualTo(
-                            lastNameField2.get('value'),
+                            lastNameField1.get('value'),
                             'Weber');
 
                         test.assert.isEqualTo(
                             TP.val(modelObj.get('people[1].lastname')),
                             'Weber');
                     });
-
-                addressStreetField00 = TP.byId('addressStreetField00', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
@@ -4593,8 +4628,6 @@ function() {
                             TP.val(modelObj.get('people[0].addresses[0].street')),
                             '555 3rd Av');
                     });
-
-                addressCityField11 = TP.byId('addressCityField11', windowContext);
 
                 test.getDriver().startSequence().
                     exec(function() {
