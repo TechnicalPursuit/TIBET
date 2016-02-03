@@ -4461,10 +4461,6 @@ TP.core.URL.Type.defineConstant('SCHEME', null);
 TP.core.URL.Inst.defineAttribute('path');
 TP.core.URL.Inst.defineAttribute('lastRequest');
 
-//  placeholder for URI handlers to find most recent 'communication' object
-//  (i.e. the native XHR or WebSocket object)
-TP.core.URL.Inst.defineAttribute('commObject');
-
 //  whether or not the URI is being watched for change
 TP.core.URL.Inst.defineAttribute('watched');
 
@@ -4488,34 +4484,6 @@ function() {
      */
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URL.Inst.defineMethod('getCommObject',
-function() {
-
-    /**
-     * @method getCommObject
-     * @summary Returns the last communication channel object leveraged by the
-     *     receiver. Not all URI instances will have this value.
-     * @returns {XHR|WebSocket} The receiver's last communication object.
-     */
-
-    var comm,
-        url;
-
-    comm = this.$get('commObject');
-    if (TP.isValid(comm)) {
-        return comm;
-    }
-
-    url = this.getPrimaryURI();
-    if (url !== this) {
-        return url.getCommObject();
-    }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5782,6 +5750,14 @@ TP.lang.Object.defineSubtype('TP.core.CommURL');
 TP.core.CommURL.isAbstract(true);       //  Always set for a trait.
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+//  the most recent 'communication' object
+//  (i.e. the native XHR or WebSocket object)
+TP.core.CommURL.Inst.defineAttribute('commObject');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -5799,6 +5775,34 @@ TP.core.CommURL.Inst.defineMethod('commDidSucceed', function() {
     comm = this.getCommObject();
     if (TP.isValid(comm)) {
         return TP.httpDidSucceed(comm);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CommURL.Inst.defineMethod('getCommObject',
+function() {
+
+    /**
+     * @method getCommObject
+     * @summary Returns the last communication channel object leveraged by the
+     *     receiver.
+     * @returns {XHR|WebSocket} The receiver's last communication object.
+     */
+
+    var comm,
+        url;
+
+    comm = this.$get('commObject');
+    if (TP.isValid(comm)) {
+        return comm;
+    }
+
+    url = this.getPrimaryURI();
+    if (url !== this) {
+        return url.getCommObject();
     }
 
     return;
