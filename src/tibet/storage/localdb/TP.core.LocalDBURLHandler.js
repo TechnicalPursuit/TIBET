@@ -93,7 +93,8 @@ function(targetURI, aRequest) {
                     'action', action,
                     'dbName', dbName,
                     'securePW', securePW,
-                    'id', resourceID);
+                    'id', resourceID,
+                    'uri', targetURI.getLocation());
 
     //  Construct and initialize a TP.sig.LocalDBStorageRequest
     loadRequest = TP.sig.LocalDBStorageRequest.construct(requestParams);
@@ -167,7 +168,8 @@ function(targetURI, aRequest) {
                     'action', action,
                     'dbName', dbName,
                     'securePW', securePW,
-                    'id', resourceID);
+                    'id', resourceID,
+                    'uri', targetURI.getLocation());
 
     //  Construct and initialize a TP.sig.LocalDBStorageRequest
     nukeRequest = TP.sig.LocalDBStorageRequest.construct(requestParams);
@@ -276,14 +278,16 @@ function(targetURI, aRequest) {
                         'dbName', dbName,
                         'securePW', securePW,
                         'id', resourceID,
-                        'body', content);
+                        'body', content,
+                        'uri', targetURI.getLocation());
     } else {
 
         requestParams = TP.hc(
                         'action', 'createItem',
                         'dbName', dbName,
                         'securePW', securePW,
-                        'body', content);
+                        'body', content,
+                        'uri', targetURI.getLocation());
     }
 
     //  Construct and initialize a TP.sig.LocalDBStorageRequest
