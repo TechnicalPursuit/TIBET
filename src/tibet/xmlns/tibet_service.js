@@ -192,6 +192,9 @@ function(aRequest) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
         }
+    } else {
+        //  No 'result' attribute.
+        return;
     }
 
     //  If the new resource result is a content object of some sort (highly

@@ -141,6 +141,9 @@ function(aRequest) {
                 //  Raise an exception
                 return this.raise('TP.sig.InvalidURI');
             }
+        } else {
+            //  No 'name' attribute.
+            return;
         }
 
         //  If the new resource result is a content object of some sort (highly
@@ -182,6 +185,9 @@ function() {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
         }
+    } else {
+        //  No 'name' attribute.
+        return null;
     }
 
     //  NB: We assume 'async' of false here.
@@ -274,6 +280,9 @@ function(aContentObject, aRequest) {
             //  Raise an exception
             return this.raise('TP.sig.InvalidURI');
         }
+    } else {
+        //  No 'name' attribute.
+        return null;
     }
 
     if (TP.isEmpty(mimeType = this.getAttribute('type'))) {
