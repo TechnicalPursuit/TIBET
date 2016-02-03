@@ -1266,35 +1266,6 @@ TP.core.ElementNode.Inst.defineAttribute('scopeValues');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getTextNodesMatching',
-function(aMatchFunc) {
-
-    var iterator,
-        matchingTextNodes,
-        textNode;
-
-    var startTextQuery = Date.now();
-
-    iterator = this.getDocument().getNativeNode().createNodeIterator(
-                this.getNativeNode(), NodeFilter.SHOW_TEXT, null, false);
-
-    matchingTextNodes = TP.ac();
-    textNode = iterator.nextNode();
-    while (textNode) {
-        if (aMatchFunc(textNode)) {
-            matchingTextNodes.push(textNode);
-        }
-        textNode = iterator.nextNode();
-    }
-
-    var endTextQuery = Date.now();
-    TP.totalTextQueryTime += (endTextQuery - startTextQuery);
-
-    return matchingTextNodes;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
 function(attributeValue) {
 

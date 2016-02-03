@@ -25,6 +25,13 @@
 	<br/>
     <br/>
 
+    Fetch status code: <span bind:in="{value: tibet://uicanvas#googleEndpoint@statuscode}"/>
+	<br/>
+    Fetch status text: <span bind:in="{value: tibet://uicanvas#googleEndpoint@statustext}"/>
+
+	<br/>
+    <br/>
+
     <!-- Set up a 'bind:scope' that points to the URN holding the query results.
          This URN is populated by the <service/> tag below. Note how this uses
          standard W3C XPointer notation, but with an empty scheme. It's easiest
@@ -56,6 +63,16 @@
             </tbody>
         </table>
     </span>
+
+	<br/>
+    <br/>
+
+    Raw JSON data:
+
+	<br/>
+    <br/>
+
+    <code>[[urn:tibet:queryResults#tibet($_) .% JSONSource]]</code>
 
     <!-- Set up a <service/> tag that represent the Google AJAX APIs endpoint.
          Note here the custom 'json://' URL scheme and the query field bound to
