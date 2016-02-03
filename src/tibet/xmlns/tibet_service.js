@@ -216,56 +216,6 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  TEMPORARY METHODS
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineMethod('$getHTTPRequestStatusCode',
-function(aRequest) {
-
-    var descendantJoins,
-
-        i,
-        join;
-
-    //  TODO: A hack until we can get this fixed in request/response
-
-    descendantJoins = aRequest.getDescendantJoins(TP.AND);
-
-    for (i = 0; i < descendantJoins.getSize(); i++) {
-        join = descendantJoins.at(i);
-        if (TP.isKindOf(join, TP.sig.HTTPRequest)) {
-            return join.getResponse().getResponseStatusCode();
-        }
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tibet.service.Inst.defineMethod('$getHTTPRequestStatusText',
-function(aRequest) {
-
-    var descendantJoins,
-
-        i,
-        join;
-
-    //  TODO: A hack until we can get this fixed in request/response
-
-    descendantJoins = aRequest.getDescendantJoins(TP.AND);
-
-    for (i = 0; i < descendantJoins.getSize(); i++) {
-        join = descendantJoins.at(i);
-        if (TP.isKindOf(join, TP.sig.HTTPRequest)) {
-            return join.getResponse().getResponseStatusText();
-        }
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -515,13 +465,17 @@ function() {
                 statusCode,
                 statusText;
 
-            //  If this wasn't an HTTP request, these will return null.
-            statusCode = thisArg.$getHTTPRequestStatusCode(this);
-            statusText = thisArg.$getHTTPRequestStatusText(this);
+            //  If we can retrieve a communications object (an XHR for HTTP
+            //  comm, or an emulated object for others), then we can extract a
+            //  status code and status text from it.
+            if (TP.canInvoke(uri, 'getCommObject')) {
+                statusCode = uri.getCommStatusCode();
+                statusText = uri.getCommStatusText();
 
-            //  TODO: This is a bit hackish and assumes that the request was
-            //  an HTTP request.
-            errorRecord = TP.hc('code', statusCode, 'text', statusText);
+                errorRecord = TP.hc('code', statusCode, 'text', statusText);
+            } else {
+                errorRecord = null;
+            }
 
             thisArg.signal('TP.sig.UIDataFailed', errorRecord);
         });
@@ -532,12 +486,16 @@ function() {
             var statusCode,
                 statusText;
 
-            //  If this wasn't an HTTP request, these will return null.
-            statusCode = thisArg.$getHTTPRequestStatusCode(this);
-            statusText = thisArg.$getHTTPRequestStatusText(this);
+            //  If we can retrieve a communications object (an XHR for HTTP
+            //  comm, or an emulated object for others), then we can extract a
+            //  status code and status text from it.
+            if (TP.canInvoke(uri, 'getCommObject')) {
+                statusCode = uri.getCommStatusCode();
+                statusText = uri.getCommStatusText();
 
-            thisArg.setAttribute('statuscode', statusCode);
-            thisArg.setAttribute('statustext', statusText);
+                thisArg.setAttribute('statuscode', statusCode);
+                thisArg.setAttribute('statustext', statusText);
+            }
         });
 
     dataWillSendSignal = this.signal('TP.sig.UIDataWillSend');
