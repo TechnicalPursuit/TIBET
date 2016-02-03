@@ -157,6 +157,21 @@ function(aRequest) {
                     (TP.isString(resultData) &&
                         TP.regex.JSON_ERRMSG.test(resultData))) {
                 /* eslint-enable no-extra-parens */
+
+                    //  Set the 'comm object' of the url to be a plain Object
+                    //  (to emulate an XHR). The caller can extract information
+                    //  such as status codes, text, etc. from it.
+                    url.set(
+                        'commObject',
+                        {
+                            response: null,
+                            responseText: null,
+                            responseType: '',   //  default value
+                            responseXML: null,
+                            status: 500,
+                            statusText: '500 ' + resultData
+                        });
+
                     response.setSignalName('TP.sig.IOFailed');
                     response.fire();
 
@@ -171,6 +186,21 @@ function(aRequest) {
 
                     request.fail(resultData);
                 } else {
+
+                    //  Set the 'comm object' of the url to be a plain Object
+                    //  (to emulate an XHR). The caller can extract information
+                    //  such as status codes, text, etc. from it.
+                    url.set(
+                        'commObject',
+                        {
+                            response: resultData,
+                            responseText: resultData,
+                            responseType: 'json',
+                            responseXML: null,
+                            status: 200,
+                            statusText: '200 OK'
+                        });
+
                     response.setSignalName('TP.sig.IOSucceeded');
                     response.fire();
 
@@ -221,6 +251,11 @@ function(aRequest) {
                     result = TP.json2js(xhrStr);
                 }
 
+                //  Set the 'comm object' of the url to be the XHR. The caller
+                //  can extract information such as status codes, text, etc.
+                //  from it.
+                url.set('commObject', xhr);
+
                 if (TP.isCallable(callbackFunc)) {
                     callbackFunc(result);
                 }
@@ -246,6 +281,11 @@ function(aRequest) {
                     TP.notEmpty(xhrStr = TP.str(xhr))) {
                     result = TP.sc('Failure: ') + xhrStr;
                 }
+
+                //  Set the 'comm object' of the url to be the XHR. The caller
+                //  can extract information such as status codes, text, etc.
+                //  from it.
+                url.set('commObject', xhr);
 
                 if (TP.isCallable(callbackFunc)) {
                     callbackFunc(result);

@@ -128,6 +128,8 @@
 
 TP.core.URL.defineSubtype('TP.core.PouchDBURL');
 
+TP.core.PouchDBURL.addTraits(TP.core.CommURL);
+
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------

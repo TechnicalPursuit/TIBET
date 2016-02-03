@@ -128,6 +128,8 @@
 
 TP.core.URL.defineSubtype('TP.core.LocalDBURL');
 
+TP.core.LocalDBURL.addTraits(TP.core.CommURL);
+
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------

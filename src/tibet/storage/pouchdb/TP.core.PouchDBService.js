@@ -80,6 +80,8 @@ function(aRequest) {
 
     var request,
 
+        url,
+
         theDB,
 
         id,
@@ -87,12 +89,24 @@ function(aRequest) {
         dbName,
         body,
 
+        commObj,
+
+        resultStr,
+
         info,
         data,
 
         dateStamp;
 
     request = TP.request(aRequest);
+
+    //  Make sure that we have a real URI
+    url = TP.uc(request.at('uri'));
+
+    //  if we don't have a viable URL, we must fail the request.
+    if (TP.notValid(url)) {
+        return request.fail('TP.sig.InvalidURI');
+    }
 
     //  rewrite the mode, whether we're async or sync. This will only change
     //  the value if it hasn't been set to something already, but it may
@@ -112,6 +126,20 @@ function(aRequest) {
         return this;
     }
 
+    //  Set the 'comm object' of the url to be a plain Object (to emulate an
+    //  XHR). The caller can extract information such as status codes, text,
+    //  etc. from it.
+    commObj = {
+        response: null,
+        responseText: null,
+        responseType: 'json',
+        responseXML: null,
+        status: 200,
+        statusText: '200 OK'
+    };
+
+    url.set('commObject', commObj);
+
     switch (request.at('action')) {
 
         case 'createDB':
@@ -120,7 +148,12 @@ function(aRequest) {
             //  database if it didn't already exist. So we just exit here.
 
             //  Mirror what CouchDB returns here.
-            request.complete('{"ok":true}');
+            resultStr = '{"ok":true}';
+
+            commObj.response = resultStr;
+            commObj.responseText = resultStr;
+
+            request.complete(resultStr);
 
             break;
 
@@ -132,19 +165,33 @@ function(aRequest) {
 
                         //  There was an error - fail the request.
                         if (TP.isValid(err)) {
-                            return request.fail(
-                                    TP.sc('Trying to list all databases',
-                                            ' but had an error: ',
-                                            TP.str(err)),
-                                    err);
+
+                            resultStr = TP.sc('Trying to list all databases',
+                                                ' but had an error: ',
+                                                TP.str(err));
+
+                            commObj.responseType = '';
+                            commObj.status = 500;
+                            commObj.statusText = '500 ' + resultStr;
+
+                            return request.fail(resultStr, err);
                         }
 
-                        request.complete(TP.js2json(resp));
+                        resultStr = TP.js2json(resp);
+                        commObj.response = resultStr;
+                        commObj.responseText = resultStr;
+
+                        request.complete(resultStr);
                     });
             } else {
-                return request.fail(
-                        TP.sc('Trying to list all databases but the',
-                                ' pouch-db-alldbs plugin isn\'t loaded'));
+                resultStr = TP.sc('Trying to list all databases but the',
+                                    ' pouch-db-alldbs plugin isn\'t loaded');
+
+                commObj.responseType = '';
+                commObj.status = 500;
+                commObj.statusText = '500 ' + resultStr;
+
+                return request.fail(resultStr);
             }
 
             break;
@@ -156,14 +203,25 @@ function(aRequest) {
 
                     //  There was an error - fail the request.
                     if (TP.isValid(err)) {
+
+                        resultStr = TP.str(err);
+
+                        commObj.responseType = '';
+                        commObj.status = 500;
+                        commObj.statusText = '500 ' + resultStr;
+
                         return request.fail(
                                 TP.sc('Trying to delete database:',
                                         dbName, ' but had an error: ',
-                                        TP.str(err)),
+                                        resultStr),
                                 err);
                     }
 
-                    request.complete(TP.js2json(resp));
+                    resultStr = TP.js2json(resp);
+                    commObj.response = resultStr;
+                    commObj.responseText = resultStr;
+
+                    request.complete(resultStr);
                 });
 
             break;
@@ -184,21 +242,31 @@ function(aRequest) {
 
                     //  If the DB had an error, report it.
                     if (TP.isValid(err)) {
-                        return request.fail(
-                                TP.sc('Trying to delete item with id: ', id,
-                                        ' from database:',
-                                        dbName, ' but had an error: ',
-                                        TP.str(err)),
-                                err);
+                        resultStr = TP.sc('Trying to delete item with id: ', id,
+                                            ' from database:',
+                                            dbName, ' but had an error: ',
+                                            TP.str(err));
+
+                        commObj.responseType = '';
+                        commObj.status = 500;
+                        commObj.statusText = '500 ' + resultStr;
+
+                        return request.fail(resultStr, err);
                     }
 
                     //  If there wasn't a valid response or there was but it
                     //  didn't have a proper revision number, then we can't
                     //  update an object that doesn't exist.
                     if (TP.notValid(resp) || TP.notValid(resp._rev)) {
-                        return request.fail(
-                                TP.sc('There is no existing item with id: ',
-                                        id, ' in database:', dbName, '.'));
+
+                        resultStr = TP.sc('There is no existing item with id: ',
+                                            id, ' in database:', dbName, '.');
+
+                        commObj.responseType = '';
+                        commObj.status = 500;
+                        commObj.statusText = '500 ' + resultStr;
+
+                        return request.fail(resultStr);
                     }
 
                     //  Go ahead and try to 'remove' the data.
@@ -209,17 +277,26 @@ function(aRequest) {
 
                             //  There was an error - fail the request.
                             if (TP.isValid(err2)) {
-                                return request.fail(
-                                    TP.sc('Trying to delete item with id: ', id,
-                                            ' from database:',
-                                            dbName, ' but had an error: ',
-                                            TP.str(err2)),
-                                    err2);
+                                resultStr = TP.sc(
+                                        'Trying to delete item with id: ', id,
+                                        ' from database:',
+                                        dbName, ' but had an error: ',
+                                        TP.str(err2));
+
+                                commObj.responseType = '';
+                                commObj.status = 500;
+                                commObj.statusText = '500 ' + resultStr;
+
+                                return request.fail(resultStr, err2);
                             }
+
+                            resultStr = TP.js2json(resp2);
+                            commObj.response = resultStr;
+                            commObj.responseText = resultStr;
 
                             //  We succeeded! Complete the request with the
                             //  response from PouchDB.
-                            request.complete(TP.js2json(resp2));
+                            request.complete(resultStr);
                         });
                 });
 
@@ -229,10 +306,15 @@ function(aRequest) {
 
             if (TP.isEmpty(id)) {
 
-                return request.fail(
-                    TP.sc('Trying to retrieve an item from the',
-                            ' database:', dbName,
-                            ' but had missing the unique id.'));
+                resultStr = TP.sc('Trying to retrieve an item from the',
+                                    ' database:', dbName,
+                                    ' but had missing the unique id.');
+
+                commObj.responseType = '';
+                commObj.status = 500;
+                commObj.statusText = '500 ' + resultStr;
+
+                return request.fail(resultStr);
             }
 
             theDB.get(
@@ -241,14 +323,23 @@ function(aRequest) {
 
                     //  There was an error - fail the request.
                     if (TP.isValid(err)) {
-                        return request.fail(
-                            TP.sc('Trying to retrieve an item from database:',
+                        resultStr = TP.sc(
+                                    'Trying to retrieve an item from database:',
                                     dbName, ' but had an error: ',
-                                    TP.str(err)),
-                            err);
+                                    TP.str(err));
+
+                        commObj.responseType = '';
+                        commObj.status = 500;
+                        commObj.statusText = '500 ' + resultStr;
+
+                        return request.fail(resultStr, err);
                     }
 
-                    request.complete(TP.js2json(resp));
+                    resultStr = TP.js2json(resp);
+                    commObj.response = resultStr;
+                    commObj.responseText = resultStr;
+
+                    request.complete(resultStr);
                 });
 
             break;
@@ -257,11 +348,15 @@ function(aRequest) {
 
             if (TP.isEmpty(id)) {
 
-                return request.fail(
-                    TP.sc('Trying to retrieve item info from the',
-                            ' database:', dbName,
-                            ' but had missing the unique id.'));
+                resultStr = TP.sc('Trying to retrieve item info from the',
+                                    ' database:', dbName,
+                                    ' but had missing the unique id.');
 
+                commObj.responseType = '';
+                commObj.status = 500;
+                commObj.statusText = '500 ' + resultStr;
+
+                return request.fail(resultStr);
             }
 
             theDB.get(
@@ -272,11 +367,16 @@ function(aRequest) {
 
                     //  There was an error - fail the request.
                     if (TP.isValid(err)) {
-                        return request.fail(
-                            TP.sc('Trying to retrieve item info from database:',
-                                    dbName, ' but had an error: ',
-                                    TP.str(err)),
-                            err);
+                        resultStr = TP.sc(
+                                'Trying to retrieve item info from database:',
+                                dbName, ' but had an error: ',
+                                TP.str(err));
+
+                        commObj.responseType = '';
+                        commObj.status = 500;
+                        commObj.statusText = '500 ' + resultStr;
+
+                        return request.fail(resultStr, err);
                     }
 
                     resultData = TP.json2js(TP.js2json(resp));
@@ -286,7 +386,11 @@ function(aRequest) {
                         'date_created', resultData.at('date_created'),
                         'date_modified', resultData.at('date_modified'));
 
-                    request.complete(TP.js2json(resultData));
+                    resultStr = TP.js2json(resultData);
+                    commObj.response = resultStr;
+                    commObj.responseText = resultStr;
+
+                    request.complete(resultStr);
                 });
 
             break;
@@ -298,14 +402,23 @@ function(aRequest) {
 
                     //  There was an error - fail the request.
                     if (TP.isValid(err)) {
-                        return request.fail(
-                            TP.sc('Trying to retrieve information about the',
-                                    ' database:', dbName, ' but had an error: ',
-                                    TP.str(err)),
-                            err);
+                        resultStr = TP.sc(
+                                'Trying to retrieve information about the',
+                                ' database:', dbName, ' but had an error: ',
+                                TP.str(err)),
+
+                        commObj.responseType = '';
+                        commObj.status = 500;
+                        commObj.statusText = '500 ' + resultStr;
+
+                        return request.fail(resultStr, err);
                     }
 
-                    request.complete(TP.js2json(resp));
+                    resultStr = TP.js2json(resp);
+                    commObj.response = resultStr;
+                    commObj.responseText = resultStr;
+
+                    request.complete(resultStr);
                 });
 
             break;
@@ -335,17 +448,25 @@ function(aRequest) {
 
                         //  There was an error - fail the request.
                         if (TP.isValid(err)) {
-                            return request.fail(
-                                TP.sc('Trying to create an item in the',
-                                        ' database:', dbName,
-                                        ' but had an error: ',
-                                        TP.str(err)),
-                                err);
+                            resultStr = TP.sc('Trying to create an item in the',
+                                                ' database:', dbName,
+                                                ' but had an error: ',
+                                                TP.str(err));
+
+                            commObj.responseType = '';
+                            commObj.status = 500;
+                            commObj.statusText = '500 ' + resultStr;
+
+                            return request.fail(resultStr, err);
                         }
+
+                        resultStr = TP.js2json(resp);
+                        commObj.response = resultStr;
+                        commObj.responseText = resultStr;
 
                         //  We succeeded! Complete the request with the
                         //  response from PouchDB.
-                        request.complete(TP.js2json(resp));
+                        request.complete(resultStr);
                     });
 
             } else {
@@ -363,21 +484,30 @@ function(aRequest) {
                         //  If the DB had an error and it wasn't a 404 (which we
                         //  we're not interested in), report it.
                         if (TP.isValid(err) && err.status !== 404) {
-                            return request.fail(
-                                    TP.sc('Trying to create an item in the',
-                                            ' database:', dbName,
-                                            ' but had an error: ',
-                                            TP.str(err)),
-                                    err);
+                            resultStr = TP.sc('Trying to create an item in the',
+                                                ' database:', dbName,
+                                                ' but had an error: ',
+                                                TP.str(err));
+
+                            commObj.responseType = '';
+                            commObj.status = 500;
+                            commObj.statusText = '500 ' + resultStr;
+
+                            return request.fail(resultStr, err);
                         }
 
                         //  If there was a response and it had a proper revision
                         //  number, then an object under that key already
                         //  existed.
                         if (TP.isValid(resp) && TP.isValid(resp._rev)) {
-                            return request.fail(
-                                    TP.sc('Already had item with id: ', id,
-                                            ' in database:', dbName, '.'));
+                            resultStr = TP.sc('Already had item with id: ', id,
+                                                ' in database:', dbName, '.');
+
+                            commObj.responseType = '';
+                            commObj.status = 500;
+                            commObj.statusText = '500 ' + resultStr;
+
+                            return request.fail(resultStr);
                         }
 
                         //  Go ahead and try to 'put' the data.
@@ -387,17 +517,27 @@ function(aRequest) {
 
                                 //  There was an error - fail the request.
                                 if (TP.isValid(err2)) {
-                                    return request.fail(
+
+                                    resultStr =
                                         TP.sc('Trying to create an item in the',
                                                 ' database:', dbName,
                                                 ' but had an error: ',
-                                                TP.str(err2)),
-                                        err2);
+                                                TP.str(err2));
+
+                                    commObj.responseType = '';
+                                    commObj.status = 500;
+                                    commObj.statusText = '500 ' + resultStr;
+
+                                    return request.fail(resultStr, err2);
                                 }
+
+                                resultStr = TP.js2json(resp2);
+                                commObj.response = resultStr;
+                                commObj.responseText = resultStr;
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.js2json(resp2));
+                                request.complete(resultStr);
                             });
                     });
             }
@@ -408,10 +548,11 @@ function(aRequest) {
 
             if (TP.isEmpty(id)) {
 
-                return request.fail(
-                    TP.sc('Trying to update an item in the',
-                            ' database:', dbName,
-                            ' but had missing the unique id.'));
+                resultStr = TP.sc('Trying to update an item in the',
+                                    ' database:', dbName,
+                                    ' but had missing the unique id.');
+
+                return request.fail(resultStr);
 
             } else {
 
@@ -433,12 +574,17 @@ function(aRequest) {
                         //  we're interested in for auto create), report it.
                         if (TP.isValid(err)) {
                             if (err.status !== 404) {
-                                return request.fail(
-                                        TP.sc('Trying to update an item in the',
-                                                ' database:', dbName,
-                                                ' but had an error: ',
-                                                TP.str(err)),
-                                        err);
+                                resultStr = TP.sc(
+                                            'Trying to update an item in the',
+                                            ' database:', dbName,
+                                            ' but had an error: ',
+                                            TP.str(err));
+
+                                commObj.responseType = '';
+                                commObj.status = 500;
+                                commObj.statusText = '500 ' + resultStr;
+
+                                return request.fail(resultStr, err);
                             } else {
                                 needsCreate = true;
                             }
@@ -452,9 +598,16 @@ function(aRequest) {
                         //  doesn't exist.
                         if (!needsCreate &&
                             (TP.notValid(resp) || TP.notValid(resp._rev))) {
-                            return request.fail(
-                                    TP.sc('There is no existing item with id: ',
-                                            id, ' in database:', dbName, '.'));
+
+                            resultStr = TP.sc(
+                                        'There is no existing item with id: ',
+                                        id, ' in database:', dbName, '.');
+
+                            commObj.responseType = '';
+                            commObj.status = 500;
+                            commObj.statusText = '500 ' + resultStr;
+
+                            return request.fail(resultStr);
                         }
 
                         //  Update the date modified stamp
@@ -506,17 +659,26 @@ function(aRequest) {
 
                                 //  There was an error - fail the request.
                                 if (TP.isValid(err2)) {
-                                    return request.fail(
-                                        TP.sc('Trying to create an item in the',
-                                                ' database:', dbName,
-                                                ' but had an error: ',
-                                                TP.str(err2)),
-                                        err2);
+                                    resultStr = TP.sc(
+                                            'Trying to create an item in the',
+                                            ' database:', dbName,
+                                            ' but had an error: ',
+                                            TP.str(err2));
+
+                                    commObj.responseType = '';
+                                    commObj.status = 500;
+                                    commObj.statusText = '500 ' + resultStr;
+
+                                    return request.fail(resultStr, err2);
                                 }
+
+                                resultStr = TP.js2json(resp2);
+                                commObj.response = resultStr;
+                                commObj.responseText = resultStr;
 
                                 //  We succeeded! Complete the request with the
                                 //  response from PouchDB.
-                                request.complete(TP.js2json(resp2));
+                                request.complete(resultStr);
                             });
                     });
             }

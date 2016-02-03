@@ -40,6 +40,8 @@
 
 TP.core.URL.defineSubtype('JSONPURL');
 
+TP.core.JSONPURL.addTraits(TP.core.CommURL);
+
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------

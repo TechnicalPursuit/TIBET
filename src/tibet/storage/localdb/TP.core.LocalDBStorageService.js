@@ -98,6 +98,8 @@ function(aRequest) {
 
     var request,
 
+        url,
+
         storageInstance,
 
         allDBsValue,
@@ -117,9 +119,20 @@ function(aRequest) {
 
         securePW,
 
-        rowData;
+        rowData,
+
+        str,
+        resultType;
 
     request = TP.request(aRequest);
+
+    //  Make sure that we have a real URI
+    url = TP.uc(request.at('uri'));
+
+    //  if we don't have a viable URL, we must fail the request.
+    if (TP.notValid(url)) {
+        return request.fail('TP.sig.InvalidURI');
+    }
 
     //  rewrite the mode, whether we're async or sync. This will only change
     //  the value if it hasn't been set to something already, but it may
@@ -342,6 +355,30 @@ function(aRequest) {
     if (needsFlush) {
         storageInstance.atPut(TP.LOCALSTORAGE_DB_NAME, TP.js2json(allDBs));
     }
+
+    str = TP.str(resultData);
+    resultType = 'text';
+
+    if (TP.isJSONString(resultData)) {
+        resultType = 'json';
+    } else if (TP.regex.CONTAINS_ELEM_MARKUP.test(resultData)) {
+        resultData = TP.documentFromString(resultData);
+        resultType = 'document';
+    }
+
+    //  Set the 'comm object' of the url to be a plain Object (to emulate an
+    //  XHR). The caller can extract information such as status codes, text,
+    //  etc. from it.
+    url.set(
+        'commObject',
+        {
+            response: resultData,
+            responseText: str,
+            responseType: resultType,
+            responseXML: TP.isDocument(resultData) ? resultData : null,
+            status: 200,
+            statusText: '200 OK'
+        });
 
     request.complete(resultData);
 
