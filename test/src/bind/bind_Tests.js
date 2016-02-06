@@ -4670,48 +4670,55 @@ function() {
 
                 var windowContext,
 
+                    inputFields,
+
+                    lastNameField1,
+                    firstNameField1,
+                    lastNameField2,
+                    firstNameField2,
+                    lastNameField3,
+                    firstNameField3,
+                    lastNameField4,
+                    firstNameField4,
+
                     repeatIndexField,
                     repeatSizeField;
 
                 windowContext = test.getDriver().get('windowContext');
 
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                firstNameField1 = inputFields.at(0);
+                lastNameField1 = inputFields.at(1);
+                firstNameField2 = inputFields.at(2);
+                lastNameField2 = inputFields.at(3);
+                firstNameField3 = inputFields.at(4);
+                lastNameField3 = inputFields.at(5);
+                firstNameField4 = inputFields.at(6);
+                lastNameField4 = inputFields.at(7);
+
                 repeatIndexField = TP.byId('repeatIndexField', windowContext);
                 repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatIndexField', windowContext).get('value'),
+                    repeatIndexField.get('value'),
                     '1');
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    repeatSizeField.get('value'),
                     '2');
 
-                //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField2', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField2', windowContext, false));
+                //  These 4 fields should be visible
+                test.assert.isDisplayed(firstNameField1);
+                test.assert.isDisplayed(lastNameField1);
+                test.assert.isDisplayed(firstNameField2);
+                test.assert.isDisplayed(lastNameField2);
 
-                //  And have the following values
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
-                    'Smith');
-
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField1', windowContext).get('value'),
-                    'Joe');
-
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField2', windowContext).get('value'),
-                    'Jones');
-
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField2', windowContext).get('value'),
-                    'John');
+                //  And these 4 fields should not
+                test.refute.isDisplayed(firstNameField3);
+                test.refute.isDisplayed(lastNameField3);
+                test.refute.isDisplayed(firstNameField4);
+                test.refute.isDisplayed(lastNameField4);
 
                 //  Change the content via 'user' interaction
 
@@ -4731,38 +4738,18 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField4', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField4', windowContext, false));
-
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField3', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField3', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField4', windowContext).get('value'),
-                            'Professional');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField4', windowContext).get('value'),
-                            'Pamela');
+                        //  These 4 fields should now be visible
+                        test.assert.isDisplayed(firstNameField3);
+                        test.assert.isDisplayed(lastNameField3);
+                        test.assert.isDisplayed(firstNameField4);
+                        test.assert.isDisplayed(lastNameField4);
                     });
 
                 test.getDriver().startSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
-                    sendKeys('2', repeatSizeField).
+                    sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
@@ -4778,46 +4765,28 @@ function() {
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
-                            '2');
+                            '1');
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
                             '2');
 
-                        //  Now these fields should be generated and visible
+                        //  Now, these 2 fields should be visible
+                        test.assert.isDisplayed(firstNameField2);
+                        test.assert.isDisplayed(lastNameField2);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField2', windowContext, false));
-
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField1', windowContext).get('value'),
-                            'Jones');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField1', windowContext).get('value'),
-                            'John');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField2', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField2', windowContext).get('value'),
-                            'Billy');
+                        //  And these 6 fields should not
+                        test.refute.isDisplayed(firstNameField3);
+                        test.refute.isDisplayed(lastNameField3);
+                        test.refute.isDisplayed(firstNameField4);
+                        test.refute.isDisplayed(lastNameField4);
                     });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip();
+    });
 
     //  ---
 
@@ -4832,64 +4801,117 @@ function() {
 
                 var windowContext,
 
+                    inputFields,
+
+                    lastNameField1,
+                    firstNameField1,
+                    addressStreetField11,
+                    addressCityField11,
+                    addressStreetField12,
+                    addressCityField12,
+
+                    lastNameField2,
+                    firstNameField2,
+                    addressStreetField21,
+                    addressCityField21,
+                    addressStreetField22,
+                    addressCityField22,
+
+                    lastNameField3,
+                    firstNameField3,
+                    addressStreetField31,
+                    addressCityField31,
+                    addressStreetField32,
+                    addressCityField32,
+
+                    lastNameField4,
+                    firstNameField4,
+                    addressStreetField41,
+                    addressCityField41,
+                    addressStreetField42,
+                    addressCityField42,
+
                     repeatIndexField,
                     repeatSizeField;
 
                 windowContext = test.getDriver().get('windowContext');
 
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                firstNameField1 = inputFields.at(0);
+                lastNameField1 = inputFields.at(1);
+                addressStreetField11 = inputFields.at(2);
+                addressCityField11 = inputFields.at(3);
+                addressStreetField12 = inputFields.at(4);
+                addressCityField12 = inputFields.at(5);
+
+                firstNameField2 = inputFields.at(6);
+                lastNameField2 = inputFields.at(7);
+                addressStreetField21 = inputFields.at(8);
+                addressCityField21 = inputFields.at(9);
+                addressStreetField22 = inputFields.at(10);
+                addressCityField22 = inputFields.at(11);
+
+                firstNameField3 = inputFields.at(12);
+                lastNameField3 = inputFields.at(13);
+                addressStreetField31 = inputFields.at(14);
+                addressCityField31 = inputFields.at(15);
+                addressStreetField32 = inputFields.at(16);
+                addressCityField32 = inputFields.at(17);
+
+                firstNameField4 = inputFields.at(18);
+                lastNameField4 = inputFields.at(19);
+                addressStreetField41 = inputFields.at(20);
+                addressCityField41 = inputFields.at(21);
+                addressStreetField42 = inputFields.at(22);
+                addressCityField42 = inputFields.at(23);
+
+
                 repeatIndexField = TP.byId('repeatIndexField', windowContext);
                 repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatIndexField', windowContext).get('value'),
+                    repeatIndexField.get('value'),
                     '1');
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    repeatSizeField.get('value'),
                     '2');
 
-                //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField2', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField2', windowContext, false));
+                //  These 12 fields should be visible
+                test.assert.isDisplayed(firstNameField1);
+                test.assert.isDisplayed(lastNameField1);
 
-                //  And have the following values
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
-                    'Smith');
+                test.assert.isDisplayed(addressStreetField11);
+                test.assert.isDisplayed(addressCityField11);
+                test.assert.isDisplayed(addressStreetField12);
+                test.assert.isDisplayed(addressCityField12);
 
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField1', windowContext).get('value'),
-                    'Joe');
+                test.assert.isDisplayed(firstNameField2);
+                test.assert.isDisplayed(lastNameField2);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressStreetField11', windowContext).get('value'),
-                    '111 Main St.');
+                test.assert.isDisplayed(addressStreetField21);
+                test.assert.isDisplayed(addressCityField21);
+                test.assert.isDisplayed(addressStreetField22);
+                test.assert.isDisplayed(addressCityField22);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressStreetField12', windowContext).get('value'),
-                    '222 State St.');
+                //  And these 12 fields should not
+                test.refute.isDisplayed(firstNameField3);
+                test.refute.isDisplayed(lastNameField3);
 
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField2', windowContext).get('value'),
-                    'Jones');
+                test.refute.isDisplayed(addressStreetField31);
+                test.refute.isDisplayed(addressCityField31);
+                test.refute.isDisplayed(addressStreetField32);
+                test.refute.isDisplayed(addressCityField32);
 
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField2', windowContext).get('value'),
-                    'John');
+                test.refute.isDisplayed(firstNameField4);
+                test.refute.isDisplayed(lastNameField4);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressCityField21', windowContext).get('value'),
-                    'Yet Another Town');
+                test.refute.isDisplayed(addressStreetField41);
+                test.refute.isDisplayed(addressCityField41);
+                test.refute.isDisplayed(addressStreetField42);
+                test.refute.isDisplayed(addressCityField42);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressCityField22', windowContext).get('value'),
-                    'One More Town');
 
                 //  Change the content via 'user' interaction
 
@@ -4907,65 +4929,29 @@ function() {
                             repeatSizeField.get('value'),
                             '4');
 
-                        //  Now these fields should be generated and visible
+                        //  Now these fields should be visible
+                        test.assert.isDisplayed(firstNameField3);
+                        test.assert.isDisplayed(lastNameField3);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField31', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField32', windowContext, false));
+                        test.assert.isDisplayed(addressStreetField31);
+                        test.assert.isDisplayed(addressCityField31);
+                        test.assert.isDisplayed(addressStreetField32);
+                        test.assert.isDisplayed(addressCityField32);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField4', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField4', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressCityField41', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressCityField42', windowContext, false));
+                        test.assert.isDisplayed(firstNameField4);
+                        test.assert.isDisplayed(lastNameField4);
 
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField3', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField3', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField31', windowContext).get('value'),
-                            '#27 Ritz Ave. Apt A.');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField32', windowContext).get('value'),
-                            '#4 Country Rd.');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField4', windowContext).get('value'),
-                            'Professional');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField4', windowContext).get('value'),
-                            'Pamela');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField41', windowContext).get('value'),
-                            'High Power Place');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField42', windowContext).get('value'),
-                            'Middle Of Nowhere');
+                        test.assert.isDisplayed(addressStreetField41);
+                        test.assert.isDisplayed(addressCityField41);
+                        test.assert.isDisplayed(addressStreetField42);
+                        test.assert.isDisplayed(addressCityField42);
                     });
 
                 test.getDriver().startSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
-                    sendKeys('2', repeatSizeField).
+                    sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
@@ -4981,71 +4967,52 @@ function() {
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
-                            '2');
+                            '1');
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
                             '2');
 
-                        //  Now these fields should be generated and visible
+                        //  These 6 fields should be visible
+                        test.assert.isDisplayed(firstNameField2);
+                        test.assert.isDisplayed(lastNameField2);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField11', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField12', windowContext, false));
+                        test.assert.isDisplayed(addressStreetField21);
+                        test.assert.isDisplayed(addressCityField21);
+                        test.assert.isDisplayed(addressStreetField22);
+                        test.assert.isDisplayed(addressCityField22);
 
-                        test.assert.isDisplayed(
-                                TP.byId('firstNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                                TP.byId('lastNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                                TP.byId('addressCityField21', windowContext, false));
-                        test.assert.isDisplayed(
-                                TP.byId('addressCityField22', windowContext, false));
+                        //  And these 18 fields should not
+                        test.refute.isDisplayed(firstNameField1);
+                        test.refute.isDisplayed(lastNameField1);
 
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField1', windowContext).get('value'),
-                            'Jones');
+                        test.refute.isDisplayed(addressStreetField11);
+                        test.refute.isDisplayed(addressCityField11);
+                        test.refute.isDisplayed(addressStreetField12);
+                        test.refute.isDisplayed(addressCityField12);
 
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField1', windowContext).get('value'),
-                            'John');
+                        test.refute.isDisplayed(firstNameField3);
+                        test.refute.isDisplayed(lastNameField3);
 
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField11', windowContext).get('value'),
-                            '333 1st Av.');
+                        test.refute.isDisplayed(addressStreetField31);
+                        test.refute.isDisplayed(addressCityField31);
+                        test.refute.isDisplayed(addressStreetField32);
+                        test.refute.isDisplayed(addressCityField32);
 
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField12', windowContext).get('value'),
-                            '444 2nd Av.');
+                        test.refute.isDisplayed(firstNameField4);
+                        test.refute.isDisplayed(lastNameField4);
 
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField2', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField2', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField21', windowContext).get('value'),
-                            'In Your Town');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField22', windowContext).get('value'),
-                            'Middle Of Nowhere');
+                        test.refute.isDisplayed(addressStreetField41);
+                        test.refute.isDisplayed(addressCityField41);
+                        test.refute.isDisplayed(addressStreetField42);
+                        test.refute.isDisplayed(addressCityField42);
                     });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000).skip();
+    });
 
     //  ---
 
@@ -5060,48 +5027,55 @@ function() {
 
                 var windowContext,
 
+                    inputFields,
+
+                    lastNameField1,
+                    firstNameField1,
+                    lastNameField2,
+                    firstNameField2,
+                    lastNameField3,
+                    firstNameField3,
+                    lastNameField4,
+                    firstNameField4,
+
                     repeatIndexField,
                     repeatSizeField;
 
                 windowContext = test.getDriver().get('windowContext');
 
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                firstNameField1 = inputFields.at(0);
+                lastNameField1 = inputFields.at(1);
+                firstNameField2 = inputFields.at(2);
+                lastNameField2 = inputFields.at(3);
+                firstNameField3 = inputFields.at(4);
+                lastNameField3 = inputFields.at(5);
+                firstNameField4 = inputFields.at(6);
+                lastNameField4 = inputFields.at(7);
+
                 repeatIndexField = TP.byId('repeatIndexField', windowContext);
                 repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatIndexField', windowContext).get('value'),
-                    '0');
+                    repeatIndexField.get('value'),
+                    '1');
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    repeatSizeField.get('value'),
                     '2');
 
-                //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(
-                    TP.byId('firstNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                    TP.byId('lastNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                    TP.byId('firstNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                    TP.byId('lastNameField1', windowContext, false));
+                //  These 4 fields should be visible
+                test.assert.isDisplayed(firstNameField1);
+                test.assert.isDisplayed(lastNameField1);
+                test.assert.isDisplayed(firstNameField2);
+                test.assert.isDisplayed(lastNameField2);
 
-                //  And have the following values
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
-                    'Smith');
-
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField0', windowContext).get('value'),
-                    'Joe');
-
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
-                    'Jones');
-
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField1', windowContext).get('value'),
-                    'John');
+                //  And these 4 fields should not
+                test.refute.isDisplayed(firstNameField3);
+                test.refute.isDisplayed(lastNameField3);
+                test.refute.isDisplayed(firstNameField4);
+                test.refute.isDisplayed(lastNameField4);
 
                 //  Change the content via 'user' interaction
 
@@ -5121,38 +5095,18 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField3', windowContext, false));
-
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField2', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField2', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField3', windowContext).get('value'),
-                            'Professional');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField3', windowContext).get('value'),
-                            'Pamela');
+                        //  These 4 fields should now be visible
+                        test.assert.isDisplayed(firstNameField3);
+                        test.assert.isDisplayed(lastNameField3);
+                        test.assert.isDisplayed(firstNameField4);
+                        test.assert.isDisplayed(lastNameField4);
                     });
 
                 test.getDriver().startSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
-                    sendKeys('2', repeatSizeField).
+                    sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
@@ -5160,7 +5114,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('1', repeatIndexField).
+                    sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
 
@@ -5168,46 +5122,30 @@ function() {
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
-                            '2');
+                            '1');
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '1');
+                            '2');
 
-                        //  Now these fields should be generated and visible
+                        //  Now, these 2 fields should be visible
+                        test.assert.isDisplayed(firstNameField2);
+                        test.assert.isDisplayed(lastNameField2);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField1', windowContext, false));
-
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField0', windowContext).get('value'),
-                            'Jones');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField0', windowContext).get('value'),
-                            'John');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField1', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField1', windowContext).get('value'),
-                            'Billy');
+                        //  And these 6 fields should not
+                        test.refute.isDisplayed(firstNameField1);
+                        test.refute.isDisplayed(lastNameField1);
+                        test.refute.isDisplayed(firstNameField3);
+                        test.refute.isDisplayed(lastNameField3);
+                        test.refute.isDisplayed(firstNameField4);
+                        test.refute.isDisplayed(lastNameField4);
                     });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip();
+    });
 
     //  ---
 
@@ -5222,64 +5160,117 @@ function() {
 
                 var windowContext,
 
+                    inputFields,
+
+                    lastNameField1,
+                    firstNameField1,
+                    addressStreetField11,
+                    addressCityField11,
+                    addressStreetField12,
+                    addressCityField12,
+
+                    lastNameField2,
+                    firstNameField2,
+                    addressStreetField21,
+                    addressCityField21,
+                    addressStreetField22,
+                    addressCityField22,
+
+                    lastNameField3,
+                    firstNameField3,
+                    addressStreetField31,
+                    addressCityField31,
+                    addressStreetField32,
+                    addressCityField32,
+
+                    lastNameField4,
+                    firstNameField4,
+                    addressStreetField41,
+                    addressCityField41,
+                    addressStreetField42,
+                    addressCityField42,
+
                     repeatIndexField,
                     repeatSizeField;
 
                 windowContext = test.getDriver().get('windowContext');
 
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                firstNameField1 = inputFields.at(0);
+                lastNameField1 = inputFields.at(1);
+                addressStreetField11 = inputFields.at(2);
+                addressCityField11 = inputFields.at(3);
+                addressStreetField12 = inputFields.at(4);
+                addressCityField12 = inputFields.at(5);
+
+                firstNameField2 = inputFields.at(6);
+                lastNameField2 = inputFields.at(7);
+                addressStreetField21 = inputFields.at(8);
+                addressCityField21 = inputFields.at(9);
+                addressStreetField22 = inputFields.at(10);
+                addressCityField22 = inputFields.at(11);
+
+                firstNameField3 = inputFields.at(12);
+                lastNameField3 = inputFields.at(13);
+                addressStreetField31 = inputFields.at(14);
+                addressCityField31 = inputFields.at(15);
+                addressStreetField32 = inputFields.at(16);
+                addressCityField32 = inputFields.at(17);
+
+                firstNameField4 = inputFields.at(18);
+                lastNameField4 = inputFields.at(19);
+                addressStreetField41 = inputFields.at(20);
+                addressCityField41 = inputFields.at(21);
+                addressStreetField42 = inputFields.at(22);
+                addressCityField42 = inputFields.at(23);
+
+
                 repeatIndexField = TP.byId('repeatIndexField', windowContext);
                 repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatIndexField', windowContext).get('value'),
-                    '0');
+                    repeatIndexField.get('value'),
+                    '1');
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    repeatSizeField.get('value'),
                     '2');
 
-                //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField1', windowContext, false));
+                //  These 12 fields should be visible
+                test.assert.isDisplayed(firstNameField1);
+                test.assert.isDisplayed(lastNameField1);
 
-                //  And have the following values
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
-                    'Smith');
+                test.assert.isDisplayed(addressStreetField11);
+                test.assert.isDisplayed(addressCityField11);
+                test.assert.isDisplayed(addressStreetField12);
+                test.assert.isDisplayed(addressCityField12);
 
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField0', windowContext).get('value'),
-                    'Joe');
+                test.assert.isDisplayed(firstNameField2);
+                test.assert.isDisplayed(lastNameField2);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressStreetField00', windowContext).get('value'),
-                    '111 Main St.');
+                test.assert.isDisplayed(addressStreetField21);
+                test.assert.isDisplayed(addressCityField21);
+                test.assert.isDisplayed(addressStreetField22);
+                test.assert.isDisplayed(addressCityField22);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressStreetField01', windowContext).get('value'),
-                    '222 State St.');
+                //  And these 12 fields should not
+                test.refute.isDisplayed(firstNameField3);
+                test.refute.isDisplayed(lastNameField3);
 
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
-                    'Jones');
+                test.refute.isDisplayed(addressStreetField31);
+                test.refute.isDisplayed(addressCityField31);
+                test.refute.isDisplayed(addressStreetField32);
+                test.refute.isDisplayed(addressCityField32);
 
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField1', windowContext).get('value'),
-                    'John');
+                test.refute.isDisplayed(firstNameField4);
+                test.refute.isDisplayed(lastNameField4);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressCityField10', windowContext).get('value'),
-                    'Yet Another Town');
+                test.refute.isDisplayed(addressStreetField41);
+                test.refute.isDisplayed(addressCityField41);
+                test.refute.isDisplayed(addressStreetField42);
+                test.refute.isDisplayed(addressCityField42);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressCityField11', windowContext).get('value'),
-                    'One More Town');
 
                 //  Change the content via 'user' interaction
 
@@ -5297,65 +5288,29 @@ function() {
                             repeatSizeField.get('value'),
                             '4');
 
-                        //  Now these fields should be generated and visible
+                        //  Now these fields should be visible
+                        test.assert.isDisplayed(firstNameField3);
+                        test.assert.isDisplayed(lastNameField3);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField20', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField21', windowContext, false));
+                        test.assert.isDisplayed(addressStreetField31);
+                        test.assert.isDisplayed(addressCityField31);
+                        test.assert.isDisplayed(addressStreetField32);
+                        test.assert.isDisplayed(addressCityField32);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                                TP.byId('addressCityField30', windowContext, false));
-                        test.assert.isDisplayed(
-                                TP.byId('addressCityField31', windowContext, false));
+                        test.assert.isDisplayed(firstNameField4);
+                        test.assert.isDisplayed(lastNameField4);
 
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField2', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField2', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField20', windowContext).get('value'),
-                            '#27 Ritz Ave. Apt A.');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField21', windowContext).get('value'),
-                            '#4 Country Rd.');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField3', windowContext).get('value'),
-                            'Professional');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField3', windowContext).get('value'),
-                            'Pamela');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField30', windowContext).get('value'),
-                            'High Power Place');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField31', windowContext).get('value'),
-                            'Middle Of Nowhere');
+                        test.assert.isDisplayed(addressStreetField41);
+                        test.assert.isDisplayed(addressCityField41);
+                        test.assert.isDisplayed(addressStreetField42);
+                        test.assert.isDisplayed(addressCityField42);
                     });
 
                 test.getDriver().startSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
-                    sendKeys('2', repeatSizeField).
+                    sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
@@ -5363,7 +5318,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('1', repeatIndexField).
+                    sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
 
@@ -5371,71 +5326,52 @@ function() {
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
-                            '2');
+                            '1');
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '1');
+                            '2');
 
-                        //  Now these fields should be generated and visible
+                        //  These 6 fields should be visible
+                        test.assert.isDisplayed(firstNameField2);
+                        test.assert.isDisplayed(lastNameField2);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField00', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField01', windowContext, false));
+                        test.assert.isDisplayed(addressStreetField21);
+                        test.assert.isDisplayed(addressCityField21);
+                        test.assert.isDisplayed(addressStreetField22);
+                        test.assert.isDisplayed(addressCityField22);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressCityField10', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressCityField11', windowContext, false));
+                        //  And these 18 fields should not
+                        test.refute.isDisplayed(firstNameField1);
+                        test.refute.isDisplayed(lastNameField1);
 
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField0', windowContext).get('value'),
-                            'Jones');
+                        test.refute.isDisplayed(addressStreetField11);
+                        test.refute.isDisplayed(addressCityField11);
+                        test.refute.isDisplayed(addressStreetField12);
+                        test.refute.isDisplayed(addressCityField12);
 
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField0', windowContext).get('value'),
-                            'John');
+                        test.refute.isDisplayed(firstNameField3);
+                        test.refute.isDisplayed(lastNameField3);
 
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField00', windowContext).get('value'),
-                            '333 1st Av.');
+                        test.refute.isDisplayed(addressStreetField31);
+                        test.refute.isDisplayed(addressCityField31);
+                        test.refute.isDisplayed(addressStreetField32);
+                        test.refute.isDisplayed(addressCityField32);
 
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField01', windowContext).get('value'),
-                            '444 2nd Av.');
+                        test.refute.isDisplayed(firstNameField4);
+                        test.refute.isDisplayed(lastNameField4);
 
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField1', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField1', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField10', windowContext).get('value'),
-                            'In Your Town');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField11', windowContext).get('value'),
-                            'Middle Of Nowhere');
+                        test.refute.isDisplayed(addressStreetField41);
+                        test.refute.isDisplayed(addressCityField41);
+                        test.refute.isDisplayed(addressStreetField42);
+                        test.refute.isDisplayed(addressCityField42);
                     });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(15000).skip();
+    });
 
     //  ---
 
@@ -5450,48 +5386,55 @@ function() {
 
                 var windowContext,
 
+                    inputFields,
+
+                    lastNameField1,
+                    firstNameField1,
+                    lastNameField2,
+                    firstNameField2,
+                    lastNameField3,
+                    firstNameField3,
+                    lastNameField4,
+                    firstNameField4,
+
                     repeatIndexField,
                     repeatSizeField;
 
                 windowContext = test.getDriver().get('windowContext');
 
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                firstNameField1 = inputFields.at(0);
+                lastNameField1 = inputFields.at(1);
+                firstNameField2 = inputFields.at(2);
+                lastNameField2 = inputFields.at(3);
+                firstNameField3 = inputFields.at(4);
+                lastNameField3 = inputFields.at(5);
+                firstNameField4 = inputFields.at(6);
+                lastNameField4 = inputFields.at(7);
+
                 repeatIndexField = TP.byId('repeatIndexField', windowContext);
                 repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatIndexField', windowContext).get('value'),
-                    '0');
+                    repeatIndexField.get('value'),
+                    '1');
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    repeatSizeField.get('value'),
                     '2');
 
-                //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(
-                    TP.byId('firstNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                    TP.byId('lastNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                    TP.byId('firstNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                    TP.byId('lastNameField1', windowContext, false));
+                //  These 4 fields should be visible
+                test.assert.isDisplayed(firstNameField1);
+                test.assert.isDisplayed(lastNameField1);
+                test.assert.isDisplayed(firstNameField2);
+                test.assert.isDisplayed(lastNameField2);
 
-                //  And have the following values
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
-                    'Smith');
-
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField0', windowContext).get('value'),
-                    'Joe');
-
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
-                    'Jones');
-
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField1', windowContext).get('value'),
-                    'John');
+                //  And these 4 fields should not
+                test.refute.isDisplayed(firstNameField3);
+                test.refute.isDisplayed(lastNameField3);
+                test.refute.isDisplayed(firstNameField4);
+                test.refute.isDisplayed(lastNameField4);
 
                 //  Change the content via 'user' interaction
 
@@ -5511,38 +5454,18 @@ function() {
 
                         //  Now these fields should be generated and visible
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField3', windowContext, false));
-
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField2', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField2', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField3', windowContext).get('value'),
-                            'Professional');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField3', windowContext).get('value'),
-                            'Pamela');
+                        //  These 4 fields should now be visible
+                        test.assert.isDisplayed(firstNameField3);
+                        test.assert.isDisplayed(lastNameField3);
+                        test.assert.isDisplayed(firstNameField4);
+                        test.assert.isDisplayed(lastNameField4);
                     });
 
                 test.getDriver().startSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
-                    sendKeys('2', repeatSizeField).
+                    sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
@@ -5550,7 +5473,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('1', repeatIndexField).
+                    sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
 
@@ -5558,46 +5481,30 @@ function() {
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
-                            '2');
+                            '1');
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '1');
+                            '2');
 
-                        //  Now these fields should be generated and visible
+                        //  Now, these 2 fields should be visible
+                        test.assert.isDisplayed(firstNameField2);
+                        test.assert.isDisplayed(lastNameField2);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField1', windowContext, false));
-
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField0', windowContext).get('value'),
-                            'Jones');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField0', windowContext).get('value'),
-                            'John');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField1', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField1', windowContext).get('value'),
-                            'Billy');
+                        //  And these 6 fields should not
+                        test.refute.isDisplayed(firstNameField1);
+                        test.refute.isDisplayed(lastNameField1);
+                        test.refute.isDisplayed(firstNameField3);
+                        test.refute.isDisplayed(lastNameField3);
+                        test.refute.isDisplayed(firstNameField4);
+                        test.refute.isDisplayed(lastNameField4);
                     });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).skip();
+    });
 
     //  ---
 
@@ -5612,64 +5519,117 @@ function() {
 
                 var windowContext,
 
+                    inputFields,
+
+                    lastNameField1,
+                    firstNameField1,
+                    addressStreetField11,
+                    addressCityField11,
+                    addressStreetField12,
+                    addressCityField12,
+
+                    lastNameField2,
+                    firstNameField2,
+                    addressStreetField21,
+                    addressCityField21,
+                    addressStreetField22,
+                    addressCityField22,
+
+                    lastNameField3,
+                    firstNameField3,
+                    addressStreetField31,
+                    addressCityField31,
+                    addressStreetField32,
+                    addressCityField32,
+
+                    lastNameField4,
+                    firstNameField4,
+                    addressStreetField41,
+                    addressCityField41,
+                    addressStreetField42,
+                    addressCityField42,
+
                     repeatIndexField,
                     repeatSizeField;
 
                 windowContext = test.getDriver().get('windowContext');
 
+                inputFields = TP.byCSSPath('#repeater input[type="text"]',
+                                            windowContext);
+                firstNameField1 = inputFields.at(0);
+                lastNameField1 = inputFields.at(1);
+                addressStreetField11 = inputFields.at(2);
+                addressCityField11 = inputFields.at(3);
+                addressStreetField12 = inputFields.at(4);
+                addressCityField12 = inputFields.at(5);
+
+                firstNameField2 = inputFields.at(6);
+                lastNameField2 = inputFields.at(7);
+                addressStreetField21 = inputFields.at(8);
+                addressCityField21 = inputFields.at(9);
+                addressStreetField22 = inputFields.at(10);
+                addressCityField22 = inputFields.at(11);
+
+                firstNameField3 = inputFields.at(12);
+                lastNameField3 = inputFields.at(13);
+                addressStreetField31 = inputFields.at(14);
+                addressCityField31 = inputFields.at(15);
+                addressStreetField32 = inputFields.at(16);
+                addressCityField32 = inputFields.at(17);
+
+                firstNameField4 = inputFields.at(18);
+                lastNameField4 = inputFields.at(19);
+                addressStreetField41 = inputFields.at(20);
+                addressCityField41 = inputFields.at(21);
+                addressStreetField42 = inputFields.at(22);
+                addressCityField42 = inputFields.at(23);
+
+
                 repeatIndexField = TP.byId('repeatIndexField', windowContext);
                 repeatSizeField = TP.byId('repeatSizeField', windowContext);
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatIndexField', windowContext).get('value'),
-                    '0');
+                    repeatIndexField.get('value'),
+                    '1');
 
                 test.assert.isEqualTo(
-                    TP.byId('repeatSizeField', windowContext).get('value'),
+                    repeatSizeField.get('value'),
                     '2');
 
-                //  These 4 fields should be generated and visible
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField0', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('firstNameField1', windowContext, false));
-                test.assert.isDisplayed(
-                        TP.byId('lastNameField1', windowContext, false));
+                //  These 12 fields should be visible
+                test.assert.isDisplayed(firstNameField1);
+                test.assert.isDisplayed(lastNameField1);
 
-                //  And have the following values
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField0', windowContext).get('value'),
-                    'Smith');
+                test.assert.isDisplayed(addressStreetField11);
+                test.assert.isDisplayed(addressCityField11);
+                test.assert.isDisplayed(addressStreetField12);
+                test.assert.isDisplayed(addressCityField12);
 
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField0', windowContext).get('value'),
-                    'Joe');
+                test.assert.isDisplayed(firstNameField2);
+                test.assert.isDisplayed(lastNameField2);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressStreetField00', windowContext).get('value'),
-                    '111 Main St.');
+                test.assert.isDisplayed(addressStreetField21);
+                test.assert.isDisplayed(addressCityField21);
+                test.assert.isDisplayed(addressStreetField22);
+                test.assert.isDisplayed(addressCityField22);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressStreetField01', windowContext).get('value'),
-                    '222 State St.');
+                //  And these 12 fields should not
+                test.refute.isDisplayed(firstNameField3);
+                test.refute.isDisplayed(lastNameField3);
 
-                test.assert.isEqualTo(
-                    TP.byId('lastNameField1', windowContext).get('value'),
-                    'Jones');
+                test.refute.isDisplayed(addressStreetField31);
+                test.refute.isDisplayed(addressCityField31);
+                test.refute.isDisplayed(addressStreetField32);
+                test.refute.isDisplayed(addressCityField32);
 
-                test.assert.isEqualTo(
-                    TP.byId('firstNameField1', windowContext).get('value'),
-                    'John');
+                test.refute.isDisplayed(firstNameField4);
+                test.refute.isDisplayed(lastNameField4);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressCityField10', windowContext).get('value'),
-                    'Yet Another Town');
+                test.refute.isDisplayed(addressStreetField41);
+                test.refute.isDisplayed(addressCityField41);
+                test.refute.isDisplayed(addressStreetField42);
+                test.refute.isDisplayed(addressCityField42);
 
-                test.assert.isEqualTo(
-                    TP.byId('addressCityField11', windowContext).get('value'),
-                    'One More Town');
 
                 //  Change the content via 'user' interaction
 
@@ -5687,65 +5647,29 @@ function() {
                             repeatSizeField.get('value'),
                             '4');
 
-                        //  Now these fields should be generated and visible
+                        //  Now these fields should be visible
+                        test.assert.isDisplayed(firstNameField3);
+                        test.assert.isDisplayed(lastNameField3);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField2', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField20', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField21', windowContext, false));
+                        test.assert.isDisplayed(addressStreetField31);
+                        test.assert.isDisplayed(addressCityField31);
+                        test.assert.isDisplayed(addressStreetField32);
+                        test.assert.isDisplayed(addressCityField32);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField3', windowContext, false));
-                        test.assert.isDisplayed(
-                                TP.byId('addressCityField30', windowContext, false));
-                        test.assert.isDisplayed(
-                                TP.byId('addressCityField31', windowContext, false));
+                        test.assert.isDisplayed(firstNameField4);
+                        test.assert.isDisplayed(lastNameField4);
 
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField2', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField2', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField20', windowContext).get('value'),
-                            '#27 Ritz Ave. Apt A.');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField21', windowContext).get('value'),
-                            '#4 Country Rd.');
-
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField3', windowContext).get('value'),
-                            'Professional');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField3', windowContext).get('value'),
-                            'Pamela');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField30', windowContext).get('value'),
-                            'High Power Place');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField31', windowContext).get('value'),
-                            'Middle Of Nowhere');
+                        test.assert.isDisplayed(addressStreetField41);
+                        test.assert.isDisplayed(addressCityField41);
+                        test.assert.isDisplayed(addressStreetField42);
+                        test.assert.isDisplayed(addressCityField42);
                     });
 
                 test.getDriver().startSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
-                    sendKeys('2', repeatSizeField).
+                    sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
@@ -5753,7 +5677,7 @@ function() {
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
-                    sendKeys('1', repeatIndexField).
+                    sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
                     perform();
 
@@ -5761,71 +5685,52 @@ function() {
                     function() {
                         test.assert.isEqualTo(
                             repeatSizeField.get('value'),
-                            '2');
+                            '1');
 
                         test.assert.isEqualTo(
                             repeatIndexField.get('value'),
-                            '1');
+                            '2');
 
-                        //  Now these fields should be generated and visible
+                        //  These 6 fields should be visible
+                        test.assert.isDisplayed(firstNameField2);
+                        test.assert.isDisplayed(lastNameField2);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField0', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField00', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressStreetField01', windowContext, false));
+                        test.assert.isDisplayed(addressStreetField21);
+                        test.assert.isDisplayed(addressCityField21);
+                        test.assert.isDisplayed(addressStreetField22);
+                        test.assert.isDisplayed(addressCityField22);
 
-                        test.assert.isDisplayed(
-                            TP.byId('firstNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('lastNameField1', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressCityField10', windowContext, false));
-                        test.assert.isDisplayed(
-                            TP.byId('addressCityField11', windowContext, false));
+                        //  And these 18 fields should not
+                        test.refute.isDisplayed(firstNameField1);
+                        test.refute.isDisplayed(lastNameField1);
 
-                        //  And have the following values
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField0', windowContext).get('value'),
-                            'Jones');
+                        test.refute.isDisplayed(addressStreetField11);
+                        test.refute.isDisplayed(addressCityField11);
+                        test.refute.isDisplayed(addressStreetField12);
+                        test.refute.isDisplayed(addressCityField12);
 
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField0', windowContext).get('value'),
-                            'John');
+                        test.refute.isDisplayed(firstNameField3);
+                        test.refute.isDisplayed(lastNameField3);
 
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField00', windowContext).get('value'),
-                            '333 1st Av.');
+                        test.refute.isDisplayed(addressStreetField31);
+                        test.refute.isDisplayed(addressCityField31);
+                        test.refute.isDisplayed(addressStreetField32);
+                        test.refute.isDisplayed(addressCityField32);
 
-                        test.assert.isEqualTo(
-                            TP.byId('addressStreetField01', windowContext).get('value'),
-                            '444 2nd Av.');
+                        test.refute.isDisplayed(firstNameField4);
+                        test.refute.isDisplayed(lastNameField4);
 
-                        test.assert.isEqualTo(
-                            TP.byId('lastNameField1', windowContext).get('value'),
-                            'Homemaker');
-
-                        test.assert.isEqualTo(
-                            TP.byId('firstNameField1', windowContext).get('value'),
-                            'Billy');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField10', windowContext).get('value'),
-                            'In Your Town');
-
-                        test.assert.isEqualTo(
-                            TP.byId('addressCityField11', windowContext).get('value'),
-                            'Middle Of Nowhere');
+                        test.refute.isDisplayed(addressStreetField41);
+                        test.refute.isDisplayed(addressCityField41);
+                        test.refute.isDisplayed(addressStreetField42);
+                        test.refute.isDisplayed(addressCityField42);
                     });
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',
                                             loadURI.getLocation()));
             });
-    }).timeout(10000).skip();
+    });
 }).timeout(60000).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
