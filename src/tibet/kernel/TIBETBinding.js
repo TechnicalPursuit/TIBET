@@ -609,7 +609,9 @@ function(aSignal) {
 
     /**
      * @method handleFacetChange
-     * @summary
+     * @summary Handles when an object (usually a URI of some sort) changes and
+     *     some components on the receiver surface (i.e. usually GUI widgets)
+     *     need to be updated in response to that change.
      * @param {Change} aSignal The signal instance which triggered this handler.
      */
 
@@ -622,7 +624,6 @@ function(aSignal) {
 
         sigOrigin,
         primarySource,
-        initialVal,
 
         changedPrimaryLoc,
         changedPrimaryURI,
@@ -654,8 +655,17 @@ function(aSignal) {
         aspect,
         facet;
 
+    //  See if the signal has a payload of TP.CHANGE_PATHS. If so, that means
+    //  that there were specific paths to data that changed and we can more
+    //  'intelligent' about updating just the items that are dependent on that
+    //  data.
     changedPaths = aSignal.at(TP.CHANGE_PATHS);
 
+    //  If the underlying machinery that sent this signal supports 'signal
+    //  batching', then we can leverage that to avoid making multiple passes
+    //  through the updating logic.
+
+    //  The first step is to check for a batching ID.
     if (TP.isValid(changedPaths)) {
         if (TP.notValid(ourBatchID = this.get('$signalingBatchID'))) {
 
@@ -674,7 +684,8 @@ function(aSignal) {
                 //  either case, don't update - just return
                 return;
             }
-        } else if (TP.isValid(signalBatchID = aSignal.at(TP.END_SIGNAL_BATCH))) {
+        } else if (TP.isValid(
+                    signalBatchID = aSignal.at(TP.END_SIGNAL_BATCH))) {
             if (ourBatchID !== signalBatchID) {
                 //  The batch is ending, but it didn't match our cached batch ID
                 //  then return
@@ -689,42 +700,77 @@ function(aSignal) {
         }
     }
 
+    //  Turn off any kind of DOM loaded signaling. This just adds overhead and
+    //  is unnecessary - in this mode, dependent items are themselves
+    //  responsible for signaling that their content got replaced.
     signalFlag = TP.sys.shouldSignalDOMLoaded();
     TP.sys.shouldSignalDOMLoaded(false);
 
+    //  Grab the signal origin and do some testing. The signal is either going
+    //  to be coming from a data source URI or an 'on page' item that is in a
+    //  'direct to GUI' binding relationship.
     sigOrigin = aSignal.getOrigin();
 
     if (TP.isKindOf(sigOrigin, TP.core.URI)) {
 
+        //  The changed data source is a URI
+
+        //  The primary source is the overall 'whole data' object that changed.
         primarySource = sigOrigin.getResource().get('result');
         changedPrimaryLoc = sigOrigin.getPrimaryLocation();
 
+        //  Compute a RegExp that will be used to match 'top level' (i.e. not
+        //  nested under further data scopes) binding expressions.
         matcher = TP.rc(TP.regExpEscape(changedPrimaryLoc));
 
     } else {
 
+        //  The changed data source is another item in a 'direct to GUI' binding
+        //  relationship.
+
+        //  Note that, for these kinds of expressions, we only match top-level
+        //  expressions (i.e. 'tibet://#foo' URLs don't respect any sort of
+        //  binding data scope).
+
+        //  The primary source is the value that changed on the signal origin -
+        //  there is no 'larger object' for us to consider.
         primarySource = sigOrigin.get('value');
         changedPrimaryLoc = sigOrigin.getID();
+
         changedPrimaryURI = TP.uc(changedPrimaryLoc);
 
+        //  Grab the 'canvas' from the primary location URI. If it's the same as
+        //  the current GUI canvas window, then we're updating the correct
+        //  window.
         if (changedPrimaryURI.getCanvas() === TP.sys.uiwin(true)) {
 
             if (TP.isKindOf(sigOrigin, TP.core.ElementNode)) {
-                changedPrimaryLoc =
-                    sigOrigin.getLocalID();
+
+                //  If signal origin was a TP.core.ElementNode, then we want to
+                //  use its local ID to compute our RegExp to match 'top level'
+                //  binding expressions.
+                changedPrimaryLoc = sigOrigin.getLocalID();
+
             } else if (TP.isKindOf(sigOrigin, TP.core.AttributeNode)) {
-                changedPrimaryLoc =
-                    sigOrigin.getOwnerElement().getLocalID() +
-                    '@' + sigOrigin.getLocalName();
+
+                //  If signal origin was a TP.core.AttributeNode, then we want
+                //  to use its owner element's local ID and then a '@' separator
+                //  and then its local name to compute our RegExp to match 'top
+                //  level' binding expressions.
+                changedPrimaryLoc = sigOrigin.getOwnerElement().getLocalID() +
+                                    '@' + sigOrigin.getLocalName();
             }
 
+            //  Build a RegExp that will match any of the following:
+            //      'tibet://uicanvas#foo'
+            //      '#foo'
+            //      'tibet://uicanvas#foo@bar'
+            //      '#foo@bar'
             matcher = TP.rc('(tibet://uicanvas#' +
                             TP.regExpEscape(changedPrimaryLoc) + '|' +
                             '#' + TP.regExpEscape(changedPrimaryLoc) + ')');
         }
     }
-
-    initialVal = primarySource;
 
     doc = this.getNativeNode();
 
@@ -736,38 +782,57 @@ function(aSignal) {
 
     elems = TP.ac(doc.documentElement.querySelectorAll(query));
 
-    tpDocElem = this.getDocumentElement();
-
     boundAttrNodes = TP.ac();
+
+    //  Loop over all of the elements that were found.
     for (i = 0; i < elems.length; i++) {
         attrs = elems[i].attributes;
 
+        //  Loop over all of the attributes of the found element.
         for (j = 0; j < attrs.length; j++) {
 
             attrVal = attrs[j].value;
 
+            //  If the attribute was in the BIND namespace and either matched
+            //  our matcher OR contained ACP variables, then add it to our list
+            //  of bound attributes.
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND &&
                 (matcher.test(attrVal) ||
-                TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
+                    TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
+
                 boundAttrNodes.push(attrs[j])
             }
         }
     }
 
+    //  Grab the TP.core.ElementNode that is our document Element.
+    tpDocElem = this.getDocumentElement();
+
+    //  If the signal had a payload of TP.CHANGE_PATHS then we can drive the
+    //  updating process directly from those paths.
     if (TP.isValid(changedPaths)) {
 
         var startUpdate = Date.now();
 
-        changedPathKeys = changedPaths.getKeys();
+        //  Grab the keys of the changed paths and sort them so that the
+        //  'shortest' keys are first. This will cause the 'least specific'
+        //  paths to be sorted to the top.
 
+        changedPathKeys = changedPaths.getKeys();
         changedPathKeys.sort(
             function(a, b) {
-
                 return a.length - b.length;
             });
 
+        //  Start with the shortest path key. This is the 'least specific path'.
         keysToProcess = TP.ac(changedPathKeys.first());
 
+        //  Then iterate over all path keys that have changed. If the key starts
+        //  with any of the keys that are in the keys that we're going to
+        //  process, then it must be a 'more specific' version of that key, so
+        //  we skip it. Otherwise, we add it to the list of keys that we're
+        //  going to process. In this way, we end up with a reasonably
+        //  parsimonious, yet complete, set of paths that we're going to update.
         for (i = 0; i < changedPathKeys.getSize(); i++) {
 
             //  NB: We use getSize() here as we expect that this Array could
@@ -781,39 +846,67 @@ function(aSignal) {
             }
         }
 
-        keysToProcess.perform(
+        //  Iterate over all of the keys and update any items that are dependent
+        //  on them.
+        keysToProcess.forEach(
                 function(changedPath) {
 
                     var actions,
                         actionLen,
                         k,
 
+                        initialVal,
+
                         pathAction,
                         pathParts,
                         pathType;
 
+                    //  This will be a list of actions for the path - TP.CREATE,
+                    //  TP.UPDATE, TP.DELETE, etc.
                     actions = changedPaths.at(changedPath).getKeys();
 
+                    //  We have to iterate for each action.
                     actionLen = actions.getSize();
                     for (k = 0; k < actionLen; k++) {
+
+                        //  The initial value is the primary source, but this
+                        //  might change below.
+                        initialVal = primarySource;
+
                         pathAction = actions.at(k);
 
+                        //  Grab the path parts and type for the path that
+                        //  changed.
                         pathParts = TP.getAccessPathParts(changedPath);
                         pathType = TP.getAccessPathType(changedPath);
 
+                        //  If the path is an XPath and the changed path started
+                        //  with a '/', then update the first part to contain
+                        //  the '/' (TP.getAccessPathParts() will - correctly -
+                        //  not include that '/', but we want it in this
+                        //  context).
                         if (pathType === TP.XPATH_PATH_TYPE &&
                             changedPath.startsWith('/')) {
                             pathParts.atPut(0, '/' + pathParts.at(0));
                         } else if (pathType === TP.TIBET_PATH_TYPE) {
+
+                            //  If it wasn't an XPath, reset the initial value
+                            //  to its 'value'.
                             initialVal = initialVal.get('value');
                         }
 
+                        //  Unshift the pointer scheme onto the front of the
+                        //  list of path parts.
                         pathParts.unshift(
                                 '#' + TP.getPointerScheme(changedPath) + '()');
 
                         //  Unshift the primary location onto the front.
                         pathParts.unshift(changedPrimaryLoc);
 
+                        //  Refresh all 'branches' (i.e. items, including
+                        //  top-level bound expressions and scoped expressions,
+                        //  of course) using all of the information that we
+                        //  compiled.
                         tpDocElem.refreshBranches(
                             primarySource, aSignal, elems, initialVal,
                             pathType, pathParts, pathAction);
@@ -830,28 +923,43 @@ function(aSignal) {
         aspect = aSignal.at('aspect');
         facet = aSignal.at('facet');
 
+        //  If we have an aspect and the facet that we're updating is *not*
+        //  'value', then that means we're updating other facets such as
+        //  'readonly', 'required', etc. This means that we just use the
+        //  singular aspect as the 'path parts' and pretend that this is a
+        //  TIBET-type path, no matter how the 'value' facet is bound.
         if (TP.notEmpty(aspect) && facet !== 'value') {
-            //  Refresh all bindings using the aspect from the path, since we're
-            //  updating 'non value facet' bindings..
+
+            //  Refresh all 'branches' using the aspect from the path, since
+            //  we're updating 'non value facet' bindings..
             tpDocElem.refreshBranches(
-                    primarySource, aSignal, elems, initialVal,
+                    primarySource, aSignal, elems, primarySource,
                     TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE);
         } else {
 
+            //  Otherwise, if the signal's origin is a URI (usually a data-bound
+            //  URI), then (because we don't have 'changed data paths' to go
+            //  by), we just update all of the bind expressions that are on the
+            //  computed bound elements.
             if (TP.isKindOf(sigOrigin, TP.core.URI)) {
 
                 tpDocElem.refreshBranches(
-                        primarySource, aSignal, elems, initialVal,
+                        primarySource, aSignal, elems, primarySource,
                         null, null, null);
             } else {
 
-                //  Refresh all 'direct GUI' bindings.
+                //  Otherwise, the signal's origin was not a URI, so it must've
+                //  been another GUI control within the page. Because we don't
+                //  have 'changed data paths' to go by, we update all 'direct
+                //  GUI' bindings.
 
                 len = boundAttrNodes.getSize();
                 for (i = 0; i < len; i++) {
 
                     attrName = boundAttrNodes.at(i).localName;
 
+                    //  We only worry about updating 'bind:io' and 'bind:in'
+                    //  paths.
                     if (attrName === 'io' || attrName === 'in') {
 
                         attrVal = boundAttrNodes.at(i).value;
@@ -862,7 +970,7 @@ function(aSignal) {
                             ownerTPElem = TP.wrap(ownerElem);
                             ownerTPElem.refreshLeaf(
                                     primarySource, aSignal,
-                                    initialVal, boundAttrNodes[i]);
+                                    primarySource, boundAttrNodes[i]);
                         }
                     }
                 }
@@ -873,6 +981,8 @@ function(aSignal) {
         TP.totalSetupTime += (endSetup - startSetup);
     }
 
+    //  Set the DOM content loaded signaling whatever it was when we entered
+    //  this method.
     TP.sys.shouldSignalDOMLoaded(signalFlag);
 
     return;
@@ -896,224 +1006,15 @@ TP.core.ElementNode.Type.defineAttribute('bidiAttrs', TP.ac());
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('computeTransformationFunction',
-function(attrValue) {
-
-    var finalExpr,
-        isSimpleExpr,
-
-        referencedExprs,
-
-        sigilIndex,
-
-        exprParts,
-        exprWithBrackets,
-        exprWithoutBrackets,
-
-        hasSurroundingContent,
-
-        formatExpr,
-        valueExpr,
-
-        splitURI,
-        computedValueExpr,
-
-        transformFunc;
-
-    //  The final computed expression
-    finalExpr = attrValue;
-
-    isSimpleExpr = true;
-
-    referencedExprs = TP.ac();
-
-    //  While we can still extract binding expressions from the value, keep
-    //  looping. This allows us to have multiple expressions in a single value
-    //  (i.e. 'foo [[bar]] is called: [[baz]]')
-    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
-    while (TP.isValid(exprParts =
-            TP.regex.BINDING_STATEMENT_EXTRACT.exec(attrValue))) {
-
-        //  We want the expression both with and without the surrounding
-        //  brackets ([[...]])
-        exprWithBrackets = exprParts.first();
-        exprWithoutBrackets = exprParts.last();
-
-        hasSurroundingContent = '[[' + exprWithoutBrackets + ']]' !== attrValue;
-
-        if (TP.regex.ACP_FORMAT.test(exprWithoutBrackets)) {
-            sigilIndex = exprWithoutBrackets.indexOf('.%');
-
-            valueExpr = exprWithoutBrackets.slice(0, sigilIndex).trim();
-            formatExpr = ' .% ' + exprWithoutBrackets.slice(
-                                                    sigilIndex + 2).trim();
-        } else {
-            valueExpr = exprWithoutBrackets;
-            formatExpr = '';
-        }
-
-        //  If the expression to execute is a path that contains variables, then
-        //  we just set up an observation on the 'value' of the URI and leverage
-        //  the transformation function installed below to form a final value.
-        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(valueExpr)) {
-
-            isSimpleExpr = false;
-
-            //  If the expression to execute is a fully-formed URI, then we
-            //  don't take the scope values into consideration. We build a
-            //  URI location consisting of the URI's primary href with a
-            //  '#tibet(...)' XPointer that will return the source object
-            //  itself. This is important in the transformation function when we
-            //  run the 'transform' call, because the expression is going to
-            //  expect to run against the core source object itself. We then
-            //  reset the expression to execute to be just the fragment text.
-            if (TP.isURIString(valueExpr)) {
-
-                //  Grab the primary URI from a URI computed from the value
-                //  expression and append a '#tibet(.)' on it (which will
-                //  retrieve the whole value).
-                splitURI = TP.uc(valueExpr);
-                valueExpr = splitURI.getPrimaryLocation() + '#tibet(.)';
-
-                //  Reset the value expression to just the fragment.
-                computedValueExpr = splitURI.getFragmentExpr();
-            } else {
-                computedValueExpr = valueExpr;
-            }
-
-            //  Make sure to replace that expression in the expression to
-            //  execute with a 'formatting expression', so that the templating
-            //  function below will work.
-            finalExpr = finalExpr.replace(
-                            exprWithBrackets,
-                            '{{' + computedValueExpr + formatExpr + '}}');
-            finalExpr = finalExpr.unquoted('"');
-        } else {
-
-            //  If the expression to execute (surrounded by '[['...']]') is not
-            //  the same as the whole attribute value, that means that there's
-            //  surrounding literal content, so we flip the 'isSimpleExpr' flag
-            //  to false and install a more complex transformation function
-            //  below.
-            if (TP.notEmpty(formatExpr) || hasSurroundingContent) {
-                isSimpleExpr = false;
-                finalExpr = finalExpr.replace(
-                                exprWithBrackets,
-                                '{{value' + formatExpr + '}}');
-                finalExpr = finalExpr.unquoted('"');
-            }
-        }
-
-        referencedExprs.push(valueExpr);
-    }
-
-    //  If this is not a simple expression, then we install a transformation
-    //  Function that will transform the data before returning it.
-    if (!isSimpleExpr) {
-
-        transformFunc = function(source, val, targetTPElem,
-                                    repeatSource, index, isXMLResource) {
-            var wrappedVal,
-
-                params,
-
-                repeatResourceResult,
-                last,
-
-                retVal;
-
-            wrappedVal = TP.wrap(val);
-
-            //  Iterating context
-            if (TP.isNumber(index)) {
-
-                if (isXMLResource) {
-
-                    last = repeatSource.getSize();
-
-                    params = TP.hc(
-                        '$REQUEST', null,
-                        'TP', TP,
-                        'APP', APP,
-                        '$TAG', targetTPElem,
-                        '$TARGET', targetTPElem.getDocument(),
-                        '$_', wrappedVal,
-                        '$INPUT', repeatResourceResult,
-                        '$INDEX', index,
-                        '$FIRST', index === 1,
-                        '$MIDDLE', index > 1 && index < last,
-                        '$LAST', index !== last,
-                        '$EVEN', index % 2 === 0,
-                        '$ODD', index % 2 !== 0,
-                        '$#', index);
-                } else {
-
-                    last = repeatSource.getSize() - 1;
-
-                    params = TP.hc(
-                        '$REQUEST', null,
-                        'TP', TP,
-                        'APP', APP,
-                        '$TAG', targetTPElem,
-                        '$TARGET', targetTPElem.getDocument(),
-                        '$_', wrappedVal,
-                        '$INPUT', repeatResourceResult,
-                        '$INDEX', index,
-                        '$FIRST', index === 0,
-                        '$MIDDLE', index > 0 && index < last,
-                        '$LAST', index !== last,
-                        '$EVEN', index % 2 === 0,
-                        '$ODD', index % 2 !== 0,
-                        '$#', index);
-                }
-            } else {
-                //  Non-iterating context
-                params = TP.hc(
-                    '$REQUEST', null,
-                    'TP', TP,
-                    'APP', APP,
-                    '$TAG', targetTPElem,
-                    '$TARGET', targetTPElem.getDocument(),
-                    '$_', wrappedVal,
-                    '$INPUT', val);
-            }
-
-            //  Don't try to template invalid values.
-            if (TP.isValid(val)) {
-                retVal = transformFunc.$$templateFunc.transform(val, params);
-            } else {
-                //  null or undefined, but let's be pendantic
-                retVal = val;
-            }
-
-            return retVal;
-        };
-
-        transformFunc.$$templateFunc = finalExpr.compile();
-
-    } else {
-
-        //  Otherwise, we generated a simple transformation Function that will
-        //  just return the 'reduced value'. This is necessary especially for
-        //  XML where val will be an Element, but we want the text value of
-        //  the Element.
-        transformFunc = function(source, val) {
-            return TP.val(val);
-        };
-    }
-
-    return TP.ac(transformFunc, referencedExprs);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.ElementNode.Type.defineMethod('computeBindingInfo',
 function(targetElement, attributeValue) {
 
     /**
-     * @method getBindingInfoFrom
+     * @method computeBindingInfo
      * @summary Gets binding information from the attribute named by the
      *     supplied attribute name on the receiver.
+     * @param {Element} targetElement The element the attribute is on.
+     * @param {String} attributeValue The element the attribute is on.
      * @returns {TP.core.Hash} A hash of binding information keyed by the
      *     binding target name.
      */
@@ -1173,23 +1074,29 @@ function(targetElement, attributeValue) {
 
     keys = bindEntries.getKeys();
 
+    //  Loop over all of the extracted binding entries.
     len = bindEntries.getSize();
     for (i = 0; i < len; i++) {
-        key = keys.at(i);
 
+        key = keys.at(i);
         entry = bindEntries.at(key);
 
+        //  If the binding statement had embedded [[...]], then
         hadBrackets = TP.regex.BINDING_STATEMENT_DETECT.test(entry);
-
         if (hadBrackets) {
             formatExpr = null;
 
+            //  Slice out the expression from the entry and reset the entry
             preEntry = entry.slice(0, entry.indexOf('[['));
             postEntry = entry.slice(entry.indexOf(']]') + 2);
             entry = entry.slice(entry.indexOf('[[') + 2, entry.indexOf(']]'));
 
+            //  If the entry has a formatting expression, then extract it into a
+            //  separate formatting expression.
             if (TP.regex.ACP_FORMAT.test(entry)) {
+
                 sigilIndex = entry.indexOf('.%');
+
                 formatExpr = entry.slice(sigilIndex);
                 entry = entry.slice(0, sigilIndex).trim();
             }
@@ -1200,8 +1107,7 @@ function(targetElement, attributeValue) {
                 fullExpr += formatExpr;
             }
 
-            fullExpr =
-                preEntry + '[[' + fullExpr + ']]' + postEntry;
+            fullExpr = preEntry + '[[' + fullExpr + ']]' + postEntry;
 
             //  Sometimes the expression is quoted to allow whitespace in the
             //  *value* portion of the 'JSON-y' structure that we use to define
@@ -1209,6 +1115,9 @@ function(targetElement, attributeValue) {
             //  off.
             fullExpr = fullExpr.unquoted();
         } else {
+
+            //  Otherwise, the entry had no embedded brackets and we can just
+            //  use that as the full expression.
             fullExpr = entry;
         }
 
@@ -1224,27 +1133,33 @@ function(targetElement, attributeValue) {
                 fullExpr = '[[' + fullExpr + ']]';
             }
 
-            transformInfo = this.computeTransformationFunction(
-                                                    fullExpr);
+            //  Compute the transform Function and dependent data expressions.
+            transformInfo = this.computeTransformationFunction(fullExpr);
 
             //  The Function object that does the transformation.
             transformFunc = transformInfo.first();
 
-            //  The referenced expressions
+            //  The referenced expressions.
             dataLocs = transformInfo.last();
         } else if (hadBrackets &&
             (!/^\s*\[\[/.test(fullExpr) || !/\]\]\s*$/.test(fullExpr) ||
             TP.regex.ACP_FORMAT.test(fullExpr))) {
 
-            transformInfo = this.computeTransformationFunction(
-                                                    fullExpr);
+            //  The full expression had 'surrounding content' (i.e. literal
+            //  content on either or both sides of the leading or trailing
+            //  square brackets). We need a transformation expression to handle
+            //  this.
+            transformInfo = this.computeTransformationFunction(fullExpr);
 
             //  The Function object that does the transformation.
             transformFunc = transformInfo.first();
 
-            //  The referenced expressions
+            //  The referenced expressions.
             dataLocs = transformInfo.last();
         } else {
+
+            //  Otherwise, the data locations consist of one expression, which
+            //  is the whole entry.
             dataLocs = TP.ac(entry);
         }
 
@@ -1257,6 +1172,251 @@ function(targetElement, attributeValue) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('computeTransformationFunction',
+function(attributeValue) {
+
+    /**
+     * @method computeTransformationFunction
+     * @summary Computes a 'transformation function' for values that are bound
+     *     by virtue of the binding expressions that are in the supplied
+     *     attribute value.
+     * @param {String} attributeValue The attribute value to extract binding
+     *     information to compute the transformation function and data
+     *     expressions from.
+     * @returns {Array} An Array of a Function, which is the Function that will
+     *     transform the values being updated and an Array which contains all of
+     *     the data expressions that are embedded in the attribute value.
+     */
+
+    var finalExpr,
+        isSimpleExpr,
+
+        referencedExprs,
+
+        sigilIndex,
+
+        exprParts,
+        exprWithBrackets,
+        exprWithoutBrackets,
+
+        hasSurroundingContent,
+
+        formatExpr,
+        valueExpr,
+
+        splitURI,
+        computedValueExpr,
+
+        transformFunc;
+
+    finalExpr = attributeValue;
+
+    isSimpleExpr = true;
+
+    referencedExprs = TP.ac();
+
+    //  While we can still extract binding expressions from the value, keep
+    //  looping. This allows us to have multiple expressions in a single value
+    //  (i.e. 'foo [[bar]] is called: [[baz]]')
+    TP.regex.BINDING_STATEMENT_EXTRACT.lastIndex = 0;
+    while (TP.isValid(exprParts =
+            TP.regex.BINDING_STATEMENT_EXTRACT.exec(attributeValue))) {
+
+        //  We want the expression both with and without the surrounding
+        //  brackets ([[...]])
+        exprWithBrackets = exprParts.first();
+        exprWithoutBrackets = exprParts.last();
+
+        //  If the attribute value doesn't exactly equal the expression without
+        //  brackets surrounded by brackets, then it has 'surrounding content'.
+        hasSurroundingContent =
+                '[[' + exprWithoutBrackets + ']]' !== attributeValue;
+
+        //  If the expression without brackets has an ACP format, then we slice
+        //  around and extract separate value and format expressions.
+        if (TP.regex.ACP_FORMAT.test(exprWithoutBrackets)) {
+
+            sigilIndex = exprWithoutBrackets.indexOf('.%');
+
+            valueExpr = exprWithoutBrackets.slice(0, sigilIndex).trim();
+            formatExpr = ' .% ' + exprWithoutBrackets.slice(
+                                                    sigilIndex + 2).trim();
+        } else {
+
+            //  Otherwise, the value expression is the whole expression without
+            //  brackets and the format expression is empty.
+            valueExpr = exprWithoutBrackets;
+            formatExpr = '';
+        }
+
+        //  If the expression to execute is a path that contains variables, then
+        //  we use the 'value' of the URI and leverage the transformation
+        //  function installed below to form a final value.
+        if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(valueExpr)) {
+
+            isSimpleExpr = false;
+
+            //  If the expression to execute is a fully-formed URI, then we
+            //  don't take the scope values into consideration. We build a URI
+            //  location consisting of the URI's primary href with a
+            //  '#tibet(...)' XPointer that will return the source object
+            //  itself. This is important in the transformation function when we
+            //  run the 'transform' call, because the expression is going to
+            //  expect to run against the core source object itself. We then
+            //  reset the expression to execute to be just the fragment text.
+            if (TP.isURIString(valueExpr)) {
+
+                //  Grab the primary URI from a URI computed from the value
+                //  expression and append a '#tibet(.)' on it (which will
+                //  retrieve the whole value).
+                splitURI = TP.uc(valueExpr);
+                valueExpr = splitURI.getPrimaryLocation() + '#tibet(.)';
+
+                //  Set the 'computed' value expression to just the fragment.
+                computedValueExpr = splitURI.getFragmentExpr();
+            } else {
+                //  Set the 'computed' value expression to the whole value
+                //  expression.
+                computedValueExpr = valueExpr;
+            }
+
+            //  Make sure to replace that expression in the expression to
+            //  execute with a 'formatting expression', so that the templating
+            //  function below will work.
+            finalExpr = finalExpr.replace(
+                            exprWithBrackets,
+                            '{{' + computedValueExpr + formatExpr + '}}');
+
+            //  Unquote any final expression (note that this only removes
+            //  surrounding quotes - not embedded ones).
+            finalExpr = finalExpr.unquoted('"');
+        } else {
+
+            //  If the expression has surrounding literal content we flip the
+            //  'isSimpleExpr' flag to false and install a more complex
+            //  transformation function below.
+            if (TP.notEmpty(formatExpr) || hasSurroundingContent) {
+
+                isSimpleExpr = false;
+
+                finalExpr = finalExpr.replace(
+                                exprWithBrackets,
+                                '{{value' + formatExpr + '}}');
+                finalExpr = finalExpr.unquoted('"');
+            }
+        }
+
+        //  Keep a list of the 'referenced value expressions'.
+        referencedExprs.push(valueExpr);
+    }
+
+    //  If this is not a simple expression, then we install a transformation
+    //  Function that will transform the data before returning it.
+    if (!isSimpleExpr) {
+
+        transformFunc = function(source, val, targetTPElem,
+                                    repeatSource, index, isXMLResource) {
+            var wrappedVal,
+
+                params,
+
+                repeatResourceResult,
+                last,
+
+                retVal;
+
+            //  Wrap the value - it helps when trying to extract a value from it
+            //  to get the most 'intelligent' data type.
+            wrappedVal = TP.wrap(val);
+
+            //  Iterating context
+            if (TP.isNumber(index)) {
+
+                if (isXMLResource) {
+
+                    last = repeatSource.getSize();
+
+                    params = TP.hc(
+                                '$REQUEST', null,
+                                'TP', TP,
+                                'APP', APP,
+                                '$TAG', targetTPElem,
+                                '$TARGET', targetTPElem.getDocument(),
+                                '$_', wrappedVal,
+                                '$INPUT', repeatResourceResult,
+                                '$INDEX', index,
+                                '$FIRST', index === 1,
+                                '$MIDDLE', index > 1 && index < last,
+                                '$LAST', index !== last,
+                                '$EVEN', index % 2 === 0,
+                                '$ODD', index % 2 !== 0,
+                                '$#', index);
+                } else {
+
+                    last = repeatSource.getSize() - 1;
+
+                    params = TP.hc(
+                                '$REQUEST', null,
+                                'TP', TP,
+                                'APP', APP,
+                                '$TAG', targetTPElem,
+                                '$TARGET', targetTPElem.getDocument(),
+                                '$_', wrappedVal,
+                                '$INPUT', repeatResourceResult,
+                                '$INDEX', index,
+                                '$FIRST', index === 0,
+                                '$MIDDLE', index > 0 && index < last,
+                                '$LAST', index !== last,
+                                '$EVEN', index % 2 === 0,
+                                '$ODD', index % 2 !== 0,
+                                '$#', index);
+                }
+            } else {
+
+                //  Non-iterating context
+                params = TP.hc(
+                            '$REQUEST', null,
+                            'TP', TP,
+                            'APP', APP,
+                            '$TAG', targetTPElem,
+                            '$TARGET', targetTPElem.getDocument(),
+                            '$_', wrappedVal,
+                            '$INPUT', val);
+            }
+
+            //  Don't try to template invalid values.
+            if (TP.isValid(val)) {
+                retVal = transformFunc.$$templateFunc.transform(val, params);
+            } else {
+                //  null or undefined, but let's be pendantic
+                retVal = val;
+            }
+
+            return retVal;
+        };
+
+        //  Compile the 'final expression' into a templating Function and
+        //  stash a reference to it on our transformation Function.
+        transformFunc.$$templateFunc = finalExpr.compile();
+
+    } else {
+
+        //  Otherwise, we generated a simple transformation Function that will
+        //  just return the 'reduced value'. This is necessary especially for
+        //  XML where val will be an Element, but we want the text value of
+        //  the Element.
+        transformFunc = function(source, val) {
+            return TP.val(val);
+        };
+    }
+
+    //  Return an Array containing the transformation Function and an Array of
+    //  the referenced expressions.
+    return TP.ac(transformFunc, referencedExprs);
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -1266,6 +1426,129 @@ TP.core.ElementNode.Inst.defineAttribute('scopeValues');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
+function(indexes) {
+
+    /**
+     * @method $deleteRepeatRowAt
+     * @summary Removes the rows at the indexes provided.
+     * @description Note that the indexes supplied to this method should match
+     *     the type of data source object of the repeat. If the data source of
+     *     the repeat is an XML object, these indexes should be '1-based' (like
+     *     XPath). If it is an JS or JSON object, these indexes should be
+     *     '0-based' (like JSONPath).
+     * @param {Array.<Number>} indexes An Array of Numbers that indicate the
+     *     indexes of the items to remove.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+
+        wrapperElement,
+
+        len,
+        i,
+        index,
+
+        deletionElement,
+
+        followingScopedSiblings,
+
+        len2,
+        j,
+        scopedSibling,
+        scopeVal;
+
+    elem = this.getNativeNode();
+
+    //  Whichever element has a 'tibet:nomutationtracking' attribute on it is
+    //  acting as a common wrapper for the 'rows' making up the repeat. This may
+    //  be a <tbody> element if we're repeating rows in a <table>, but it
+    //  doesn't have to be.
+    if (TP.elementHasAttribute(elem, 'tibet:nomutationtracking', true)) {
+        wrapperElement = elem;
+    } else {
+        wrapperElement = TP.byCSSPath(
+                            '> *[tibet|nomutationtracking]',
+                            elem,
+                            true,
+                            false);
+    }
+
+    if (!TP.isElement(wrapperElement)) {
+        //  TODO: Raise exception
+        return;
+    }
+
+    //  Loop over all of the supplied indices
+    len = indexes.getSize();
+    for (i = 0; i < len; i++) {
+
+        index = indexes.at(i);
+
+        //  The deletion element would be the element with the same index as the
+        //  row we're deleting. If we find one, we delete that row and decrement
+        //  the number of all numeric scoped elements *at the same level* with
+        //  an index equal to or greater than the delete index.
+        deletionElement = TP.byCSSPath(
+                                '> *[bind|scope="[' + index + ']"]',
+                                wrapperElement,
+                                true,
+                                false);
+
+        //  If we couldn't find the row to delete, then continue to the next
+        //  index to delete.
+        if (!TP.isElement(deletionElement)) {
+            continue;
+        }
+
+        //  Now, grab all of the scoped siblings that follow the element that
+        //  we're going to delete.
+        followingScopedSiblings = TP.byCSSPath(
+                                    '~ *[bind|scope^="["][bind|scope$="]"]',
+                                    deletionElement,
+                                    false,
+                                    false);
+
+        //  Now that we've found the scoped siblings, we can remove the deletion
+        //  element
+        TP.nodeDetach(deletionElement);
+
+        //  Iterate over all of the scoped siblings and adjust their index. Note
+        //  how we start by using the index we just deleted. Then we increment
+        //  that number and advance.
+
+        len2 = followingScopedSiblings.getSize();
+        for (j = 0; j < len2; j++) {
+
+            scopedSibling = followingScopedSiblings.at(j);
+
+            if (TP.notEmpty(scopeVal = TP.elementGetAttribute(
+                                    scopedSibling, 'bind:scope', true))) {
+
+                if (TP.regex.SIMPLE_NUMERIC_PATH.test(scopeVal)) {
+
+                    TP.elementSetAttribute(
+                            scopedSibling,
+                            'bind:scope',
+                            '[' + index + ']',
+                            true);
+
+                    //  Note how we increment this *after* we set the attribute.
+                    //  This is because we're shifting everything 'up' and so we
+                    //  want to start renumbering *at the same index* as the
+                    //  deletion element was.
+                    index += 1;
+                }
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getBindingInfoFrom',
 function(attributeValue) {
 
@@ -1273,6 +1556,8 @@ function(attributeValue) {
      * @method getBindingInfoFrom
      * @summary Gets binding information from the attribute named by the
      *     supplied attribute name on the receiver.
+     * @param {String} attributeValue The attribute value to obtain binding
+     *     information from.
      * @returns {TP.core.Hash} A hash of binding information keyed by the
      *     binding target name.
      */
@@ -1284,20 +1569,29 @@ function(attributeValue) {
 
         bindEntries;
 
+    //  Grab the native Element and Document.
     elem = this.getNativeNode();
-    doc = TP.nodeGetDocument(this.getNativeNode());
+    doc = TP.nodeGetDocument(elem);
 
+    //  If there's no 'bind registry' installed on the Document, then create
+    //  one. This registry is used to avoid computing the binding information
+    //  from the attribute value each time we need it. It's computed once and
+    //  then stored under a key that is the whole attribute value. In this way,
+    //  it can be shared amongst multiple attributes and elements, as long as
+    //  the value of the attribute is exactly the same.
     if (TP.notValid(registry = doc[TP.BIND_INFO_REGISTRY])) {
         registry = TP.hc();
         doc[TP.BIND_INFO_REGISTRY] = registry;
     }
 
+    //  If the attribute value (acting as a key) is already in the registry,
+    //  then just exit here - we don't want dups in the registry.
     if (registry.hasKey(attributeValue)) {
         return registry.at(attributeValue);
     }
 
+    //  Ask the type to compute the binding info and put it into the registry.
     bindEntries = this.getType().computeBindingInfo(elem, attributeValue);
-
     registry.atPut(attributeValue, bindEntries);
 
     return bindEntries;
@@ -1323,6 +1617,8 @@ function() {
 
         scopeVals;
 
+    //  If we've already cached our scope values, then there's no need to
+    //  recompute them - just return the cached values.
     if (TP.notEmpty(scopeVals = this.get('scopeValues'))) {
         return scopeVals;
     }
@@ -1344,7 +1640,7 @@ function() {
         elem,
         function(aNode) {
 
-            var scopeAttrNodes;
+            var scopeAttrVal;
 
             //  Have to check to make sure we're not at the #document node.
             if (TP.isElement(aNode)) {
@@ -1354,20 +1650,20 @@ function() {
 
                 //  First, check to see if there's a 'bind:repeat' attribute. If
                 //  so, we want to use it's value first.
-                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
-                                aNode, 'repeat', TP.w3.Xmlns.BIND);
+                scopeAttrVal = TP.elementGetAttribute(
+                                        aNode, 'bind:repeat', true);
 
-                if (TP.notEmpty(scopeAttrNodes)) {
-                    scopeVals.push(scopeAttrNodes[0].value);
+                if (TP.notEmpty(scopeAttrVal)) {
+                    scopeVals.push(scopeAttrVal);
                 }
 
                 //  Then, check to see if there's a 'bind:scope' attribute. If
                 //  so, we want to use it's value next.
-                scopeAttrNodes = TP.elementGetAttributeNodesInNS(
-                                aNode, 'scope', TP.w3.Xmlns.BIND);
+                scopeAttrVal = TP.elementGetAttribute(
+                                        aNode, 'bind:scope', true);
 
-                if (TP.notEmpty(scopeAttrNodes)) {
-                    scopeVals.push(scopeAttrNodes[0].value);
+                if (TP.notEmpty(scopeAttrVal)) {
+                    scopeVals.push(scopeAttrVal);
                 }
             }
         });
@@ -1376,6 +1672,7 @@ function() {
     //  significant' to be first.
     scopeVals.reverse();
 
+    //  Cache the values.
     this.set('scopeValues', scopeVals);
 
     return scopeVals;
@@ -1384,14 +1681,23 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('$getBoundElements',
-function(wantsShallow) {
+function(wantsShallowScope) {
+
+    /**
+     * @method $getBoundElements
+     * @summary Returns an Array of the bound elements under the receiver.
+     * @param {Boolean} wantsShallowScope Whether or not to produce bound
+     *     elements that are 'under' a nested scope (i.e. either a bind:scope or
+     *     bind:repeat) under the receiver.
+     * @returns {Array} An Array of bound elements.
+     */
 
     var elem,
 
         doc,
 
         subscopeQuery,
-        allSubscopes,
+        allScopes,
         shallowSubscopes,
 
         allBoundQuery,
@@ -1405,19 +1711,23 @@ function(wantsShallow) {
     //  elements that are under subscopes of the receiver. We need to compute
     //  the set of subscopes that *are* under the receiver, so that we can use
     //  them later for filtering.
-    if (wantsShallow) {
-        subscopeQuery = '*[*|scope], *[*|repeat]';
+    if (wantsShallowScope) {
 
-        allSubscopes =
-            TP.ac(doc.documentElement.querySelectorAll(subscopeQuery));
-        shallowSubscopes = allSubscopes.filter(
+        //  Grab all of the scoping elements in the whole document.
+        subscopeQuery = '*[*|scope], *[*|repeat]';
+        allScopes = TP.ac(doc.documentElement.querySelectorAll(subscopeQuery));
+
+        //  Filter all of the scopes in the document so that only those that are
+        //  at the shallowest level (i.e. not containing any other scoping
+        //  elements themselves) are left.
+        shallowSubscopes = allScopes.filter(
                 function(aSubscope) {
 
                     var k;
 
-                    for (k = 0; k < allSubscopes.length; k++) {
-                        if (allSubscopes[k] !== aSubscope &&
-                            allSubscopes[k].contains(aSubscope)) {
+                    for (k = 0; k < allScopes.length; k++) {
+                        if (allScopes[k] !== aSubscope &&
+                            allScopes[k].contains(aSubscope)) {
                             return false;
                         }
                     }
@@ -1426,20 +1736,29 @@ function(wantsShallow) {
                 });
     }
 
+    //  Grab all of the bound elements, including scoping element, in the whole
+    //  document.
     allBoundQuery = '*[*|io], *[*|in], *[*|scope], *[*|repeat]';
-
     boundElems = TP.ac(doc.documentElement.querySelectorAll(allBoundQuery));
+
+    //  Filter all of the bound elements so that they're a) under ourself and
+    //  b) if only shallow scopes are requested that they're only under a
+    //  shallow scope (hence making it so that they're under one of *our*
+    //  shallow scopes).
     boundElems = boundElems.filter(
             function(aNewElem) {
 
                 var k;
 
+                //  We don't want ourself in the list
                 if (aNewElem === elem) {
                     return false;
                 }
 
                 if (elem.contains(aNewElem)) {
-                    if (wantsShallow) {
+
+                    if (wantsShallowScope) {
+
                         for (k = 0; k < shallowSubscopes.length; k++) {
 
                             //  The element was contained in a subscope - return
@@ -1456,6 +1775,7 @@ function(wantsShallow) {
                 return false;
             });
 
+    //  If there are shallow subscopes, then we add them to the result.
     if (TP.notEmpty(shallowSubscopes)) {
         boundElems = boundElems.concat(shallowSubscopes);
     }
@@ -1468,20 +1788,32 @@ function(wantsShallow) {
 TP.core.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
 function() {
 
+    /**
+     * @method $getRepeatSourceAndIndex
+     * @summary Returns the repeating data source and index for the receiver if
+     *     the receiver is under a 'bind:repeat' and is participating in the
+     *     repeating iteration mechanics.
+     * @returns {Array} An Array containing the repeat source and repeat index.
+     */
+
     var elem,
 
         repeatElem,
         repeatAttrVal,
 
-        repeatIndex,
-
         repeatSource,
 
         repeatScopeVals,
-        repeatPath;
+        repeatPath,
+
+        attrVal,
+        repeatIndex;
 
     elem = this.getNativeNode();
 
+    //  Iterate up through the ancestor chain, looking for the nearest ancestor
+    //  with a 'bind:repeat'. If one is found, then grab the value of the
+    //  'bind:repeat' attribute before exiting.
     repeatElem = TP.nodeDetectAncestor(
                     elem,
                     function(aNode) {
@@ -1500,37 +1832,70 @@ function() {
                         return isRepeat;
                     });
 
+    //  If we successfully detected a 'bind:repeat' ancestor, then try to
+    //  calculate a repeat resource and our index within that repeat resource.
     if (TP.isElement(repeatElem)) {
 
-        //  Try to calculate a repeat source
+        //  Try to calculate a repeat resource
+
+        //  If it's a URI String, then we can calculate a TP.core.URI from it
+        //  and just grab that resource's value.
         if (TP.isURIString(repeatAttrVal)) {
             repeatSource = TP.uc(repeatAttrVal).getResource().get('value');
         } else {
+
+            //  Otherwise, get the 'bind:repeat' ancestor's binding scope
+            //  values, compute a path from them and use that as the URI.
             repeatScopeVals = TP.wrap(repeatElem).
                                 getBindingScopeValues().concat(repeatAttrVal);
             repeatPath = TP.uriJoinFragments.apply(TP, repeatScopeVals);
+
             repeatSource = TP.uc(repeatPath).getResource().get('value');
         }
 
         //  Try to calculate a repeat index
-        TP.nodeDetectAncestor(
-            elem,
-            function(aNode) {
-                var attrVal;
 
-                if (TP.isElement(aNode) &&
-                    TP.notEmpty(attrVal = TP.elementGetAttribute(
-                                                aNode, 'bind:scope', true))) {
-                    if (TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal)) {
-                        repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
-                                                    attrVal).at(1).asNumber();
-                        return true;
-                    }
+        //  If we have a numeric 'bind:scope' attribute, then that means that
+        //  we're the actual 'row' in the repeat.
+        if (TP.elementHasAttribute(elem, 'bind:scope', true)) {
+            if (TP.notEmpty(attrVal = TP.elementGetAttribute(
+                                            elem, 'bind:scope', true))) {
+
+                //  If attribute value contains '[N]', where N is an integer,
+                //  then we extract that and convert it to a Number.
+                if (TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal)) {
+                    repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
+                                                attrVal).at(1).asNumber();
                 }
+            }
+        }
 
-                return false;
-            });
+        //  If we could not get a repeat index from ourself, then we look up the
+        //  ancestor chain looking for one.
+        if (!TP.isNumber(repeatIndex)) {
 
+            TP.nodeDetectAncestor(
+                elem,
+                function(aNode) {
+                    if (TP.isElement(aNode) &&
+                        TP.notEmpty(attrVal = TP.elementGetAttribute(
+                                                aNode, 'bind:scope', true))) {
+
+                        //  If attribute value contains '[N]', where N is an
+                        //  integer, then we extract that and convert it to a
+                        //  Number.
+                        if (TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal)) {
+                            repeatIndex = TP.regex.SIMPLE_NUMERIC_PATH.exec(
+                                                    attrVal).at(1).asNumber();
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+        }
+
+        //  Return an Array containing the repeat source and repeat index.
         return TP.ac(repeatSource, repeatIndex);
     }
 
@@ -1539,101 +1904,72 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('$deleteRepeatRowAt',
-function(indexes) {
+TP.core.ElementNode.Inst.defineMethod('$getRepeatValue',
+function() {
+
+    /**
+     * @method $getRepeatValue
+     * @summary Returns the repeating data source for the receiver if the
+     *     receiver is itself a 'bind:repeat'.
+     * @returns {Object} The object representing the receiver's repeat value.
+     *     This should be a Collection that can be iterated on.
+     */
 
     var elem,
 
-        mgmtElement,
+        repeatAttrVal,
 
-        len,
-        i,
-        index,
+        repeatSource,
 
-        deletionElement,
-
-        followingScopedSiblings,
-
-        len2,
-        j,
-        scopedSibling,
-        scopeVal;
+        repeatScopeVals,
+        repeatPath;
 
     elem = this.getNativeNode();
 
-    if (TP.elementHasAttribute(elem, 'tibet:nomutationtracking', true)) {
-        mgmtElement = elem;
-    } else {
-        mgmtElement = TP.byCSSPath(
-                            '> *[tibet|nomutationtracking]',
-                            elem,
-                            true,
-                            false);
-    }
+    //  If we successfully detected a 'bind:repeat' ancestor, then try to
+    //  calculate a repeat resource and our index within that repeat resource.
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
 
-    if (!TP.isElement(mgmtElement)) {
-        //  TODO: Raise exception
-        return;
-    }
+        //  Try to calculate a repeat resource
 
-    //  Loop over all of the supplied indices
-    len = indexes.getSize();
-    for (i = 0; i < len; i++) {
+        //  If it's a URI String, then we can calculate a TP.core.URI from it
+        //  and just grab that resource's value.
+        if (TP.isURIString(repeatAttrVal)) {
+            repeatSource = TP.uc(repeatAttrVal).getResource().get('value');
+        } else {
 
-        index = indexes.at(i);
+            //  Otherwise, get the 'bind:repeat' ancestor's binding scope
+            //  values, compute a path from them and use that as the URI.
+            repeatScopeVals = this.
+                                getBindingScopeValues().concat(repeatAttrVal);
+            repeatPath = TP.uriJoinFragments.apply(TP, repeatScopeVals);
 
-        //  The deletion element would be the element with the same index as the
-        //  row we're deleting. If we find one, we delete that row and decrement
-        //  the number of all numeric scoped elements *at the same level* with
-        //  an index equal to or greater than the delete index.
-        deletionElement = TP.byCSSPath(
-                                '> *[bind|scope="[' + index + ']"]',
-                                mgmtElement,
-                                true,
-                                false);
-
-        followingScopedSiblings = TP.byCSSPath(
-                                    '~ *[bind|scope]',
-                                    deletionElement,
-                                    false,
-                                    false);
-
-        //  Now that we've found the scoped siblings, we can remove the deletion
-        //  element
-        TP.nodeDetach(deletionElement);
-
-        len2 = followingScopedSiblings.getSize();
-        for (j = 0; j < len2; j++) {
-
-            scopedSibling = followingScopedSiblings.at(j);
-
-            if (TP.notEmpty(scopeVal = TP.elementGetAttribute(
-                                    scopedSibling, 'bind:scope', true))) {
-                if (TP.regex.SIMPLE_NUMERIC_PATH.test(scopeVal)) {
-
-                    TP.elementSetAttribute(
-                            scopedSibling,
-                            'bind:scope',
-                            '[' + index + ']',
-                            true);
-
-                    //  Note how we increment this *after* we set the attribute.
-                    //  This is because we're shifting everything 'up' and so we
-                    //  want to start renumbering *at the same index* as the
-                    //  deletion element was.
-                    index += 1;
-                }
-            }
+            repeatSource = TP.uc(repeatPath).getResource().get('value');
         }
+
+        return repeatSource;
     }
 
-    return deletionElement;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('$insertRepeatRowAt',
 function(indexes) {
+
+    /**
+     * @method $insertRepeatRowAt
+     * @summary Insert rows at the indexes provided.
+     * @description Note that the indexes supplied to this method should match
+     *     the type of data source object of the repeat. If the data source of
+     *     the repeat is an XML object, these indexes should be '1-based' (like
+     *     XPath). If it is an JS or JSON object, these indexes should be
+     *     '0-based' (like JSONPath).
+     * @param {Array.<Number>} indexes An Array of Numbers that indicate the
+     *     indexes of the items to insert new items at.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
 
     var elem,
 
@@ -1642,7 +1978,7 @@ function(indexes) {
 
         repeatContent,
 
-        mgmtElement,
+        wrapperElement,
 
         index,
 
@@ -1667,7 +2003,8 @@ function(indexes) {
         return this;
     }
 
-    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+    if (TP.notValid(
+            templateInfo = this.getDocument().get('$repeatTemplates'))) {
         //  TODO: Raise an exception
         return this;
     }
@@ -1678,17 +2015,21 @@ function(indexes) {
         return this;
     }
 
+    //  Whichever element has a 'tibet:nomutationtracking' attribute on it is
+    //  acting as a common wrapper for the 'rows' making up the repeat. This may
+    //  be a <tbody> element if we're repeating rows in a <table>, but it
+    //  doesn't have to be.
     if (TP.elementHasAttribute(elem, 'tibet:nomutationtracking', true)) {
-        mgmtElement = elem;
+        wrapperElement = elem;
     } else {
-        mgmtElement = TP.byCSSPath(
+        wrapperElement = TP.byCSSPath(
                             '> *[tibet|nomutationtracking]',
                             elem,
                             true,
                             false);
     }
 
-    if (!TP.isElement(mgmtElement)) {
+    if (!TP.isElement(wrapperElement)) {
         //  TODO: Raise exception
         return;
     }
@@ -1699,9 +2040,9 @@ function(indexes) {
 
         index = indexes.at(i);
 
-        //  Make sure to clone the content.
+        //  Make sure to clone the content and set it's 'bind:scope' to the
+        //  index that we're inserting at.
         newElement = TP.nodeCloneNode(repeatContent);
-
         TP.elementSetAttribute(newElement,
                                 'bind:scope',
                                 '[' + index + ']',
@@ -1713,25 +2054,32 @@ function(indexes) {
         //  same level* with an index equal to or greater than the insert index.
         insertionPoint = TP.byCSSPath(
                                 '> *[bind|scope="[' + index + ']"]',
-                                mgmtElement,
+                                wrapperElement,
                                 true,
                                 false);
 
         //  There was no insertion point - just append the element.
         if (!TP.isElement(insertionPoint)) {
-            TP.nodeAppendChild(mgmtElement, newElement, false);
+            newElement = TP.nodeAppendChild(wrapperElement, newElement, false);
         } else {
 
             //  Otherwise, go ahead and insert the element and then renumber all
             //  of the ones coming after. Note the reassignment.
             newElement = TP.nodeInsertBefore(
-                            mgmtElement, newElement, insertionPoint, false);
+                            wrapperElement, newElement, insertionPoint, false);
 
+            //  Now, grab all of the scoped siblings that follow the element
+            //  that we're going to insert.
             followingScopedSiblings = TP.byCSSPath(
-                                        '~ *[bind|scope]',
+                                        '~ *[bind|scope^="["][bind|scope$="]"]',
                                         newElement,
                                         false,
                                         false);
+
+            //  Iterate over all of the scoped siblings and adjust their index.
+            //  Note how we start by incrementing the index 1 past where we just
+            //  inserted the new row. Then we set the sibling to that scope
+            //  number and advance.
 
             len2 = followingScopedSiblings.getSize();
             for (j = 0; j < len2; j++) {
@@ -1740,6 +2088,7 @@ function(indexes) {
 
                 if (TP.notEmpty(scopeVal = TP.elementGetAttribute(
                                         scopedSibling, 'bind:scope', true))) {
+
                     if (TP.regex.SIMPLE_NUMERIC_PATH.test(scopeVal)) {
 
                         index += 1;
@@ -1753,6 +2102,7 @@ function(indexes) {
             }
         }
 
+        //  Awaken any content under the newly inserted Element.
         TP.nodeAwakenContent(newElement);
 
         //  Bubble any xmlns attributes upward to avoid markup clutter.
@@ -1773,18 +2123,13 @@ function() {
      * @returns {Boolean} Whether or not the receiver is bound.
      */
 
-    var bindAttrNodes;
+    var elem;
 
-    //  We look for either 'in', 'out', 'io' here to determine if the receiver
-    //  is bound. The 'scope' attribute doesn't indicate that it is bound.
-    bindAttrNodes = TP.elementGetAttributeNodesInNS(
-            this.getNativeNode(), /.*:(in|out|io)/, TP.w3.Xmlns.BIND);
+    elem = this.getNativeNode();
 
-    if (TP.notEmpty(bindAttrNodes)) {
-        return true;
-    }
-
-    return false;
+    return TP.elementHasAttribute(elem, 'bind:in', true) ||
+            TP.elementHasAttribute(elem, 'bind:out', true) ||
+            TP.elementHasAttribute(elem, 'bind:io', true);
 });
 
 //  ------------------------------------------------------------------------
@@ -1823,7 +2168,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         i,
         j,
 
-        ownerWrappers,
+        //ownerWrappers,
 
         theVal,
 
@@ -1874,6 +2219,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         remainderParts,
 
         needsRefresh,
+
+        isRepeatScope,
+        insertParts,
 
         indexes,
         newRowElem,
@@ -1960,6 +2308,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
             attrVal = boundAttr.value;
 
             ownerElem = boundAttr.ownerElement;
+            ownerTPElem = TP.wrap(ownerElem);
 
             //  Nested scope?
             isScopingElement = attrName === 'scope' || attrName === 'repeat';
@@ -2027,12 +2376,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         TP.apc(repeatFragExpr).executeGet(primarySource);
                     }
 
-                    TP.wrap(ownerElem).$regenerateRepeat(branchVal, elems);
+                    //  NB: This modifies the supplied 'elems' Array to add the
+                    //  newly generated elements. They will be refreshed below.
+                    ownerTPElem.$regenerateRepeat(branchVal, elems);
+                    ownerTPElem.$showHideRepeatRows(branchVal);
                 }
 
-                TP.wrap(ownerElem).refreshBranches(
-                    primarySource, aSignal, elems, branchVal,
-                    pathType, null, null);
+                ownerTPElem.refreshBranches(
+                                primarySource, aSignal, elems, branchVal,
+                                pathType, null, null);
             } else {
 
                 //  There are different types of wrappers depending on full tag
@@ -2048,8 +2400,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 //  NB: Primitive and fast way to set native node
                 ownerTPElem.$set('node', ownerElem, false);
                 */
-
-                ownerTPElem = TP.wrap(ownerElem);
 
                 ownerTPElem.refreshLeaf(
                     primarySource, aSignal, theVal, boundAttr, aPathType);
@@ -2123,12 +2473,12 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 attrVal = boundAttr.value;
 
                 ownerElem = boundAttr.ownerElement;
+                ownerTPElem = TP.wrap(ownerElem);
 
-                isScopingElement = attrName === 'scope' || attrName === 'repeat';
+                isScopingElement =
+                        attrName === 'scope' || attrName === 'repeat';
 
                 if (isScopingElement && branchMatcher.test(attrVal)) {
-
-                    ownerTPElem = TP.wrap(ownerElem);
 
                     if (attrVal === '.') {
                         return ownerTPElem.refreshBranches(
@@ -2152,23 +2502,35 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                         }
 
                         if (TP.isXMLNode(theVal)) {
+
                             branchVal = TP.wrap(theVal).get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                            pathType = TP.ifInvalid(aPathType,
+                                                    TP.XPATH_PATH_TYPE);
+
                         } else if (TP.isKindOf(theVal, TP.core.Node)) {
+
                             branchVal = theVal.get(TP.xpc(attrVal));
-                            pathType = TP.ifInvalid(aPathType, TP.XPATH_PATH_TYPE);
+                            pathType = TP.ifInvalid(aPathType,
+                                                    TP.XPATH_PATH_TYPE);
+
                         } else if (TP.regex.JSON_POINTER.test(attrVal) ||
                                     TP.regex.JSON_PATH.test(attrVal)) {
+
                             if (TP.isKindOf(theVal, TP.core.JSONContent)) {
                                 branchVal = TP.jpc(attrVal).executeGet(theVal);
                             } else {
-                                jsonContent = TP.core.JSONContent.construct(theVal);
-                                branchVal = TP.jpc(attrVal).executeGet(jsonContent);
+                                jsonContent = TP.core.JSONContent.construct(
+                                                            theVal);
+                                branchVal = TP.jpc(attrVal).executeGet(
+                                                            jsonContent);
                             }
-                            pathType = TP.ifInvalid(aPathType, TP.JSON_PATH_TYPE);
+
+                            pathType = TP.ifInvalid(aPathType,
+                                                    TP.JSON_PATH_TYPE);
                         } else {
                             branchVal = theVal.get(attrVal);
-                            pathType = TP.ifInvalid(aPathType, TP.TIBET_PATH_TYPE);
+                            pathType = TP.ifInvalid(aPathType,
+                                                    TP.TIBET_PATH_TYPE);
                         }
                     }
 
@@ -2186,7 +2548,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                     needsRefresh = true;
 
-                    var isRepeatScope =
+                    isRepeatScope =
                         TP.regex.SIMPLE_NUMERIC_PATH.test(attrVal) &&
                         TP.elementHasClass(ownerElem, 'item');
 
@@ -2221,9 +2583,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                                                         false);
 
                                     if (isRepeatScope) {
-                                    var insertParts = pathParts.slice(0, -1);
+                                        insertParts = pathParts.slice(0, -1);
                                     } else {
-                                    var insertParts = pathParts;
+                                        insertParts = pathParts;
                                     }
 
                                     ownerTPElem.refreshBranches(
@@ -2239,6 +2601,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                     //  elements. They will be refreshed below.
                                     ownerTPElem.$regenerateRepeat(
                                                     branchVal, elems);
+                                    ownerTPElem.$showHideRepeatRows(branchVal);
                                 }
 
                                 break;
@@ -2284,8 +2647,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     ownerTPElem.$set('node', ownerElem, false);
                     */
 
-                    ownerTPElem = TP.wrap(ownerElem);
-
                     ownerTPElem.refreshLeaf(
                         primarySource, aSignal, theVal, boundAttr, aPathType);
 
@@ -2314,10 +2675,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 } else {
 
-                    //  NB: This modifies the supplied 'elems'
-                    //  Array to add the newly generated
-                    //  elements. They will be refreshed below.
+                    //  NB: This modifies the supplied 'elems' Array to add the
+                    //  newly generated elements. They will be refreshed below.
                     ownerTPElem.$regenerateRepeat(branchVal, elems);
+                    ownerTPElem.$showHideRepeatRows(branchVal);
                 }
             }
 
@@ -2403,24 +2764,27 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         aspect = infoKeys.at(i);
         entry = info.at(aspect);
 
-        exprs = entry.at('dataExprs');
-
-        if (TP.isEmpty(exprs)) {
-            continue;
-        }
-
-        //  This should only have one expression. If it has more than
-        //  one, then we need to raise an exception.
-        if (exprs.getSize() > 1) {
-            //  TODO: Raise
-            continue;
-        }
-
-        expr = exprs.at(0);
-
+        //  If the facet isn't 'value', then we just set the facet using the new
+        //  value extracted from the signal and continue on.
         if (facet !== 'value') {
             this.setFacet(aspect, facet, aSignal.at(TP.NEWVAL), true);
         } else {
+
+            exprs = entry.at('dataExprs');
+
+            if (TP.isEmpty(exprs)) {
+                continue;
+            }
+
+            //  This should only have one expression. If it has more than
+            //  one, then we need to raise an exception.
+            if (exprs.getSize() > 1) {
+                //  TODO: Raise
+                continue;
+            }
+
+            expr = exprs.at(0);
+
             if (TP.regex.BARENAME.test(expr)) {
                 expr = 'tibet://uicanvas' + expr;
             }
@@ -2484,6 +2848,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
             } else if (TP.isValid(pathType)) {
 
                 switch (pathType) {
+
                     case TP.XPATH_PATH_TYPE:
                         path = TP.xpc(expr, pathOptions);
 
@@ -2525,7 +2890,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                     if (TP.isValid(entry.at('transformFunc'))) {
                         finalVal = theVal;
                     } else {
-                        finalVal = TP.wrap(theVal).get(TP.apc(expr, pathOptions));
+                        finalVal =
+                            TP.wrap(theVal).get(TP.apc(expr, pathOptions));
                     }
                 } else if (TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
                     finalVal = theVal;
@@ -2538,10 +2904,12 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 } else if (TP.regex.JSON_POINTER.test(expr) ||
                             TP.regex.JSON_PATH.test(expr)) {
                     if (TP.isKindOf(theVal, TP.core.JSONContent)) {
-                        finalVal = TP.jpc(expr, pathOptions).executeGet(theVal);
+                        finalVal =
+                            TP.jpc(expr, pathOptions).executeGet(theVal);
                     } else {
                         jsonContent = TP.core.JSONContent.construct(theVal);
-                        finalVal = TP.jpc(expr, pathOptions).executeGet(jsonContent);
+                        finalVal =
+                            TP.jpc(expr, pathOptions).executeGet(jsonContent);
                     }
                 } else if (TP.notValid(theVal)) {
                     finalVal = null;
@@ -2559,18 +2927,20 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
 
                     if (TP.isCollection(finalVal)) {
-                        isXMLResource = TP.isXMLNode(TP.unwrap(finalVal.first()));
+                        isXMLResource =
+                            TP.isXMLNode(TP.unwrap(finalVal.first()));
                     } else {
-                        isXMLResource = TP.isXMLNode(TP.unwrap(finalVal));
+                        isXMLResource =
+                            TP.isXMLNode(TP.unwrap(finalVal));
                     }
 
-                    //  Important for the logic in the transformation Function to
-                    //  set this to NaN and let the logic below set it if it finds
-                    //  it.
+                    //  Important for the logic in the transformation Function
+                    //  to set this to NaN and let the logic below set it if it
+                    //  finds it.
                     repeatIndex = NaN;
 
                     if (TP.isValid(
-                                repeatInfo = this.$getRepeatSourceAndIndex())) {
+                            repeatInfo = this.$getRepeatSourceAndIndex())) {
                         repeatSource = repeatInfo.first();
                         repeatIndex = repeatInfo.last();
                     }
@@ -2604,6 +2974,21 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 TP.core.ElementNode.Inst.defineMethod('$regenerateRepeat',
 function(aCollection, elems) {
 
+    /**
+     * @method $regenerateRepeat
+     * @summary Regenerates any repeat content under the receiver, if the
+     *     receiver is configured to have 'repeating content'.
+     * @param {Object} aCollection The collection data model that will be used
+     *     for the repeating content. Note that this method merely generates the
+     *     blank repeating rows - it is up to other methods to refresh the data
+     *     bindings within them.
+     * @param {Array.<Element>} elems The list of elements that the bind engine
+     *     is currently processing, of which is this element. We will splice any
+     *     new content that this method generates into this collection so that
+     *     the engine will recursively process into this new content.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
     var existingItemCount,
 
         elem,
@@ -2616,13 +3001,9 @@ function(aCollection, elems) {
 
         isXMLResource,
 
-        startIndex,
-        endIndex,
-
-        idSuffix,
-
         scopeIndex,
 
+        len,
         i,
 
         newElement,
@@ -2635,6 +3016,9 @@ function(aCollection, elems) {
         return;
     }
 
+    //  If we have already generated items and the count of those generated
+    //  items is the same as the collection, then we don't need to regenerate so
+    //  we can just exit here.
     if (TP.isDefined(existingItemCount = this.get('generatedItemCount'))) {
         if (existingItemCount === aCollection.getSize()) {
             return this;
@@ -2643,20 +3027,22 @@ function(aCollection, elems) {
 
     elem = this.getNativeNode();
 
+    //  Grab the unique templateID that should've been placed on us when our
+    //  template content was captured.
     templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
     if (TP.isEmpty(templateID)) {
         //  TODO: Raise an exception
         return this;
     }
 
-    //  This will be a <span> wrapping our template content.
-    if (TP.notValid(templateInfo = this.getDocument().get('$repeatTemplates'))) {
+    //  The template content was stored on our TP.core.Document when it was
+    //  captured and was stored under our templateID.
+    if (TP.notValid(
+            templateInfo = this.getDocument().get('$repeatTemplates'))) {
         //  TODO: Raise an exception
         return this;
     }
 
-    //  This will be a DocumentFragment that we stuffed away when the receiver
-    //  was rebuilt.
     if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
         //  TODO: Raise an exception
         return this;
@@ -2693,10 +3079,9 @@ function(aCollection, elems) {
 
     bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
 
+    //  Detect whether we're drawing GUI for model which is a chunk of XML data
+    //  - we'll use this information later.
     isXMLResource = TP.isXMLNode(TP.unwrap(aCollection.first()));
-
-    startIndex = 0;
-    endIndex = aCollection.getSize();
 
     //  If the repeat content's child element list has a size of 1, then we
     //  reach under there and use that element as the repeat content
@@ -2706,17 +3091,23 @@ function(aCollection, elems) {
 
     //  Iterate over the resource and build out a chunk of markup for each
     //  item in the resource.
-    for (i = startIndex; i < endIndex; i++) {
+    len = aCollection.getSize();
+    for (i = 0; i < len; i++) {
 
         //  Make sure to clone the content.
         newElement = TP.nodeCloneNode(repeatContent);
 
+        //  If this is an XML resource, then we need to bump the number by 1
+        //  because XPath is 1-based.
         if (isXMLResource) {
             scopeIndex = i + 1;
         } else {
             scopeIndex = i;
         }
 
+        //  Stamp a 'bind:scope' with an attribute containing the numeric
+        //  scoping index (i.e. '[2]'). This will be used in bind scoping
+        //  computations.
         TP.elementSetAttribute(
                 newElement, 'bind:scope', '[' + scopeIndex + ']', true);
 
@@ -2725,6 +3116,9 @@ function(aCollection, elems) {
         bodyFragment.appendChild(newElement);
     }
 
+    //  Put an attribute on ourself that will prevent Mutation signals from
+    //  being sent from content under us. This also marks us as the 'repeating
+    //  body' (i.e. the element containing the repeating content).
     TP.elementSetAttribute(elem, 'tibet:nomutationtracking', true, true);
 
     //  Finally, append the whole fragment under the receiver element
@@ -2736,15 +3130,24 @@ function(aCollection, elems) {
                 TP.elementBubbleXMLNSAttributes(anElem);
             });
 
+    //  Awaken any content that has been inserted under this element.
     TP.nodeAwakenContent(elem);
 
+    //  Grab any bound elements under this element. We will need to splice them
+    //  into the list of elements that the engine is processing, of which we are
+    //  one. This ensures that any nested binding constructs (i.e. nested
+    //  repeats, for instance) are recursively processed.
     newElems = this.$getBoundElements(false);
 
+    //  Splice the new elements just after our spot in the list of elements that
+    //  the engine is currently processing.
     elemIndex = elems.indexOf(elem);
-
     args = TP.ac(elemIndex + 1, 0).concat(newElems);
     Array.prototype.splice.apply(elems, args);
 
+    //  Capture how many repeating rows we generated. We'll use that to compare
+    //  above to see if more rows need to be generated when the data set changes
+    //  and we're called on to redraw.
     this.defineAttribute('generatedItemCount');
     this.set('generatedItemCount', aCollection.getSize());
 
@@ -2755,6 +3158,13 @@ function(aCollection, elems) {
 
 TP.core.ElementNode.Inst.defineMethod('$registerRepeatContent',
 function() {
+
+    /**
+     * @method $registerRepeatContent
+     * @summary Registers the content under the receiver as repeat content with
+     * the receiver's TP.core.Document for iteration purposes.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
 
     var elem,
         doc,
@@ -2779,7 +3189,7 @@ function() {
     elem = this.getNativeNode();
 
     //  If this attribute is present, then we've already register - just bail
-    //  out
+    //  out.
     if (TP.elementHasAttribute(elem, 'tibet:templateID', true)) {
         return this;
     }
@@ -2788,6 +3198,8 @@ function() {
 
     //  Cause any repeats that haven't registered their content to grab it
     //  before we start other processing.
+    //  To do this, we need any repeats that are under us (but only the ones
+    //  under us, which is we need to use the filter here).
     nestedRepeatElems =
             TP.ac(doc.documentElement.querySelectorAll('*[*|repeat]'));
     nestedRepeatElems = nestedRepeatElems.filter(
@@ -2818,6 +3230,7 @@ function() {
     //  Strip out all 'id's on elements... if an Element has an ID, warn here.
     elemsWithIDs = TP.byCSSPath('*[id]', elem, false, false);
 
+    //  Loop over any elements that were found with IDs.
     len = elemsWithIDs.getSize()
     for (j = 0; j < len; j++) {
 
@@ -2859,22 +3272,75 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatindex',
+function(index) {
+
+    /**
+     * @method setAttrBindRepeatindex
+     * @summary Sets the repeat index that the receiver will use to start
+     *     repeating from.
+     * @param {Number} index The index to start repeating from.
+     */
+
+    this.$setAttribute('bind:repeatindex', index);
+
+    this.$showHideRepeatRows();
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setAttrBindRepeatsize',
+function(size) {
+
+    /**
+     * @method setAttrBindRepeatsize
+     * @summary Sets the repeat size that the receiver will use to display
+     *     'pages' of repeating data.
+     * @param {Number} size The size of the data 'page'.
+     */
+
+    this.$setAttribute('bind:repeatsize', size);
+
+    this.$showHideRepeatRows();
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('setBoundValue',
 function(aValue, scopeVals, bindingInfoValue) {
 
+    /**
+     * @method setBoundValue
+     * @summary Sets the bound value of the receiver to the supplied value. This
+     *     takes the supplied value and sets the value onto the model.
+     * @param {Object} aValue The value to set onto the model.
+     * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
+     *     that, when combined, make up the entire bind scoping path.
+     * @param {String} bindingInfoValue A String, usually in a JSON-like format,
+     *     that details the binding information for the receiver. That is, the
+     *     bounds aspects of the receiver and what they're bound to.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
     var bindingInfo,
+        bidiAttrs;
 
-        bidiAttrs,
-
-        flag;
-
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
     bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
 
+    //  Grab the list of our 'bidirectional' attributes. This will tell us which
+    //  aspects can be 'set' from GUI to model.
     bidiAttrs = this.getType().get('bidiAttrs');
 
-    flag = this.shouldSignalChange();
-    this.shouldSignalChange(true);
-
+    //  Iterate over each binding expression in the binding information.
     bindingInfo.perform(
         function(bindEntry) {
 
@@ -2909,8 +3375,9 @@ function(aValue, scopeVals, bindingInfoValue) {
 
             bindVal = bindEntry.last();
 
+            //  There will be 1...n data expressions here. Iterate over them and
+            //  compute a model reference.
             dataExprs = bindVal.at('dataExprs');
-
             for (i = 0; i < dataExprs.getSize(); i++) {
                 dataExpr = dataExprs.at(i);
 
@@ -2927,7 +3394,7 @@ function(aValue, scopeVals, bindingInfoValue) {
                     if (!TP.isURIString(fullExpr)) {
                         this.raise('TP.sig.InvalidURI');
 
-                        return TP.BREAK;
+                        break;
                     }
 
                     wholeURI = TP.uc(fullExpr);
@@ -2941,15 +3408,25 @@ function(aValue, scopeVals, bindingInfoValue) {
                     if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
                         this.raise('TP.sig.InvalidURI');
 
-                        return TP.BREAK;
+                        break;
                     }
 
                     wholeURI = TP.uc(dataExpr);
                 }
 
+                if (!TP.isURI(wholeURI)) {
+                    this.raise('TP.sig.InvalidURI');
+
+                    break;
+                }
+
                 primaryURI = wholeURI.getPrimaryURI();
                 frag = wholeURI.getFragmentExpr();
 
+                //  Grab the result from the 'primary URI'. If the value can't
+                //  be retrieved, then create an Object and set it's 'value'
+                //  value to the value that we're trying to set. Then set that
+                //  as the 'whole resource' of the primary URI.
                 if (TP.notValid(
                         result = primaryURI.getResource().get('result'))) {
 
@@ -2958,18 +3435,128 @@ function(aValue, scopeVals, bindingInfoValue) {
                     newValue.set('value', aValue);
 
                     primaryURI.setResource(newValue);
+
                 } else {
 
+                    //  If no fragment could be computed, then we set the 'whole
+                    //  value'.
                     if (TP.isEmpty(frag)) {
                         result.set('value', aValue);
                     } else {
+                        //  Otherwise, compute an AccessPath from the fragment
+                        //  and use that.
                         result.set(TP.apc(frag), aValue);
                     }
                 }
             }
         });
 
-    this.shouldSignalChange(flag);
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$showHideRepeatRows',
+function(aCollection) {
+
+    /**
+     * @method $showHideRepeatRows
+     * @summary This method shows or hides repeating rows based on the values of
+     *     the receiver's 'bind:repeatindex' and 'bind:repeatsize' attribute
+     *     values.
+     * @description Note that the 'bind:repeatindex' is 1-based, so the first
+     *     row is '1', not '0'. Also, this method will default the
+     *     'bind:repeatsize' to the length of the collection, if one isn't
+     *     specified.
+     * @param {Object} aCollection The collection data model that is used for
+     *     the repeating content.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+
+        collection,
+        resourceLength,
+
+        allRepeatRows,
+
+        startIndex,
+        endIndex,
+        repeatSize,
+
+        indices,
+
+        len,
+        i;
+
+    elem = this.getNativeNode();
+
+    //  If a collection wasn't supplied, then go obtain the 'repeat source'.
+    if (!TP.isCollection(collection = aCollection)) {
+        collection = this.$getRepeatValue();
+    }
+
+    //  The maximum number of rows.
+    resourceLength = collection.getSize();
+
+    allRepeatRows = TP.byCSSPath(
+                        '> *[bind|scope^="["][bind|scope$="]"]',
+                        elem,
+                        false,
+                        false);
+
+    //  If we have a 'bind:repeatindex', then we can compute a starting index
+    //  from it.
+    if (this.hasAttribute('bind:repeatindex')) {
+        if (!TP.isNumber(startIndex =
+                            this.getAttribute('bind:repeatindex').asNumber())) {
+            startIndex = 1;
+        }
+    } else {
+        startIndex = 1;
+    }
+
+    //  If we have a 'bind:repeatsize', then we can compute how many rows we
+    //  should be displaying.
+    if (this.hasAttribute('bind:repeatsize')) {
+
+        //  If we have a 'bind:repeatsize', then we can compute an ending index
+        //  from that and the startIndex
+        if (TP.isNumber(repeatSize =
+                        this.getAttribute('bind:repeatsize').asNumber())) {
+            endIndex = startIndex + repeatSize;
+        } else {
+            endIndex = resourceLength - startIndex;
+        }
+
+        endIndex -= 1;
+    } else {
+        endIndex = resourceLength;
+    }
+
+    //  The startIndex has to be at least 1.
+    startIndex = startIndex.max(1);
+
+    //  The endIndex cannot be larger than the number of rows.
+    endIndex = endIndex.min(resourceLength);
+
+    //  Generate a list of numbers from startIndex...endIndex.
+    indices = Array.generateNumericSequence(startIndex, endIndex);
+
+    //  Itereate over all of the repeating content rows in the receiver and show
+    //  or hide them, depending on whether their index exists in the numeric
+    //  sequence.
+    len = allRepeatRows.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  NB: We add 1 here to account for the fact that our indexes are
+        //  1-based, but the collection here is 0-based.
+        if (indices.indexOf(i + 1) !== TP.NOT_FOUND) {
+            TP.elementShow(allRepeatRows.at(i));
+        } else {
+            TP.elementHide(allRepeatRows.at(i));
+        }
+    }
 
     return this;
 });
