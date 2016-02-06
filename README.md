@@ -31,18 +31,26 @@ our way of saying TIBET is a seamlessly integrated framework; one **focused on
 solving both the business and technical problems** associated with
 large-scale web development.
 
+##### Full Client Stack
+
 TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
 combines best-of-breed technology with unmatched standards support in a
 comprehensive, vendor-supported stack that reduces technical risk.
+
+##### Fully Tooled
 
 TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring tools</a>
 let your team focus on standards-compliant markup, not JavaScript coding,
 reducing the need for costly gurus, ninjas, and rock stars.
 
+##### Full Stack Option
+
 Optional <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">full-stack components</a>
 let you build and deploy collaborative Cloud applications based on a
 fully-supported Node.js server with lightweight workflow support.
+
+##### Fully Supported
 
 <a href="http://www.technicalpursuit.com/support.xhtml">Affordable vendor-backed support</a> and
 <a href="http://www.technicalpursuit.com/solutions.xhtml">development solutions</a> are available
@@ -85,7 +93,7 @@ The `tibet quickstart` command outputs version-specific instructions on how
 to clone, initialize, and start a TIBET application (your output may vary by
 version):
 
-```bash
+<pre>
 tibet quickstart
 
 Welcome to TIBET! This quickstart content is intended to get you up and running
@@ -133,7 +141,7 @@ for your project in an HTML5 browser and you should see text directing you
 on how to take the next step in your TIBET journey.
 
 For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
-```
+</pre>
 
 Following the steps described by `tibet quickstart` for your TIBET version
 should result in a running application. See the <a
