@@ -532,7 +532,7 @@ function() {
      * @method getFilters
      * @summary Returns an array of filters for the receiver. If the receiver
      *     inheritsFilters() the list includes all inherited filters.
-     * @returns {Array<.TP.log.Filter>} The filter list.
+     * @returns {Array.<TP.log.Filter>} The filter list.
      */
 
     return TP.ifInvalid(this.$get('filters'), TP.ac());
@@ -908,7 +908,7 @@ function() {
      * @method getAppenders
      * @summary Returns an array of appenders for the receiver. If the receiver
      *     inheritsAppenders() the list includes all inherited appenders.
-     * @returns {Array<.TP.log.Appender>} The appender list.
+     * @returns {Array.<TP.log.Appender>} The appender list.
      */
 
     var appenders,
@@ -948,7 +948,7 @@ function() {
      * @method getFilters
      * @summary Returns an array of filters for the receiver. If the receiver
      *     inheritsFilters() the list includes all inherited filters.
-     * @returns {Array<.TP.log.Filter>} The filter list.
+     * @returns {Array.<TP.log.Filter>} The filter list.
      */
 
     var filters,
