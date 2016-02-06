@@ -1637,10 +1637,7 @@ function(anObject, aNodeType, aComment) {
 
     //  Strict test - we don't unwrap here.
 
-    isNode = this.assert(
-                TP.isNode(anObject),
-                aComment,
-                TP.sc('Expected ', TP.id(anObject), ' to be a Node.'));
+    isNode = TP.isNode(anObject);
 
     isNodeType = this.assert(
                     anObject.nodeType === aNodeType,
@@ -2312,10 +2309,7 @@ function(anObject, aComment) {
     //  Just in case we got handed a TP.core.ElementNode.
     obj = TP.unwrap(anObject);
 
-    isElem = this.assert(
-                TP.isElement(obj),
-                aComment,
-                TP.sc('Expected ', TP.id(anObject), ' to be an Element.'));
+    isElem = TP.isElement(obj);
 
     isDisplayed = this.assert(
                     TP.elementIsDisplayed(obj),
