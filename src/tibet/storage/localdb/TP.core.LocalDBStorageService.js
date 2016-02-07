@@ -99,6 +99,9 @@ function(aRequest) {
     var request,
 
         url,
+        commObj,
+
+        resultStr,
 
         storageInstance,
 
@@ -134,6 +137,20 @@ function(aRequest) {
         return request.fail('TP.sig.InvalidURI');
     }
 
+    //  Set the 'comm object' of the url to be a plain Object (to emulate an
+    //  XHR). The caller can extract information such as status codes, text,
+    //  etc. from it.
+    commObj = {
+        response: null,
+        responseText: null,
+        responseType: 'text',
+        responseXML: null,
+        status: 200,
+        statusText: '200 OK'
+    };
+
+    url.set('commObject', commObj);
+
     //  rewrite the mode, whether we're async or sync. This will only change
     //  the value if it hasn't been set to something already, but it may
     //  warn when the value appears to be inconsistent with what the service
@@ -141,8 +158,14 @@ function(aRequest) {
     request.atPut('async', this.rewriteRequestMode(request));
 
     if (TP.notValid(storageInstance = TP.core.LocalStorage.construct())) {
-        request.fail(
-                TP.sc('Cannot open local DB storage instance.'));
+
+        resultStr = TP.sc('Cannot open local DB storage instance.');
+
+        commObj.responseType = '';
+        commObj.status = 500;
+        commObj.statusText = '500 ' + resultStr;
+
+        request.fail(resultStr);
 
         return this;
     }
@@ -156,8 +179,13 @@ function(aRequest) {
         needsFlush = true;
     } else {
         if (TP.notValid(allDBs = TP.json2js(allDBsValue))) {
-            request.fail(
-                    TP.sc('Local DB storage instance is corrupted.'));
+            resultStr = TP.sc('Local DB storage instance is corrupted.');
+
+            commObj.responseType = '';
+            commObj.status = 500;
+            commObj.statusText = '500 ' + resultStr;
+
+            request.fail(resultStr);
 
             return this;
         }
@@ -189,10 +217,14 @@ function(aRequest) {
         case 'deleteDB':
 
             if (TP.notValid(allDBs.at(dbName))) {
-                request.fail(
-                        TP.sc(
-                        'Can\'t delete non-existent database named: ',
-                            dbName, '.'));
+                resultStr = TP.sc('Can\'t delete non-existent database named: ',
+                                    dbName, '.');
+
+                commObj.responseType = '';
+                commObj.status = 500;
+                commObj.statusText = '500 ' + resultStr;
+
+                request.fail(resultStr);
 
                 return this;
             }
@@ -210,18 +242,29 @@ function(aRequest) {
         case 'deleteItem':
 
             if (TP.notValid(theDB = allDBs.at(dbName))) {
-                request.fail(
-                        TP.sc(
-                        'Can\'t delete item in non-existent database named: ',
-                            dbName, '.'));
+                resultStr =
+                    TP.sc('Can\'t delete item in non-existent database named: ',
+                            dbName, '.');
+
+                commObj.responseType = '';
+                commObj.status = 500;
+                commObj.statusText = '500 ' + resultStr;
+
+                request.fail(resultStr);
 
                 return this;
             }
 
             if (TP.notValid(resultData = theDB.at(id))) {
-                request.fail(
-                        TP.sc('Can\'t find item with id: ', id,
-                                ' in database:', dbName, ' to delete.'));
+
+                resultStr = TP.sc('Can\'t find item with id: ', id,
+                                    ' in database:', dbName, ' to delete.');
+
+                commObj.responseType = '';
+                commObj.status = 500;
+                commObj.statusText = '500 ' + resultStr;
+
+                request.fail(resultStr);
 
                 return this;
             }
@@ -280,9 +323,15 @@ function(aRequest) {
             }
 
             if (TP.isValid(theDB.at(id))) {
-                request.fail(
-                        TP.sc('Already had item with id: ', id,
-                                ' in database:', dbName, '.'));
+
+                resultStr = TP.sc('Already had item with id: ', id,
+                                    ' in database:', dbName, '.');
+
+                commObj.responseType = '';
+                commObj.status = 500;
+                commObj.statusText = '500 ' + resultStr;
+
+                request.fail(resultStr);
 
                 //  Do not 'return' here - fall through, in case needsFlush is
                 //  true and we want to store DB structure anyway...
@@ -353,7 +402,18 @@ function(aRequest) {
     }
 
     if (needsFlush) {
-        storageInstance.atPut(TP.LOCALSTORAGE_DB_NAME, TP.js2json(allDBs));
+
+        try {
+            storageInstance.atPut(TP.LOCALSTORAGE_DB_NAME, TP.js2json(allDBs));
+        } catch (e) {
+            resultStr = e.message;
+
+            commObj.responseType = '';
+            commObj.status = 500;
+            commObj.statusText = '500 ' + resultStr;
+
+            request.fail(resultStr);
+        }
     }
 
     str = TP.str(resultData);
@@ -366,19 +426,10 @@ function(aRequest) {
         resultType = 'document';
     }
 
-    //  Set the 'comm object' of the url to be a plain Object (to emulate an
-    //  XHR). The caller can extract information such as status codes, text,
-    //  etc. from it.
-    url.set(
-        'commObject',
-        {
-            response: resultData,
-            responseText: str,
-            responseType: resultType,
-            responseXML: TP.isDocument(resultData) ? resultData : null,
-            status: 200,
-            statusText: '200 OK'
-        });
+    commObj.response = resultData;
+    commObj.responseType = resultType;
+    commObj.responseText = str;
+    commObj.responseXML = TP.isDocument(resultData) ? resultData : null,
 
     request.complete(resultData);
 
