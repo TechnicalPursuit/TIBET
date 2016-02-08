@@ -582,7 +582,7 @@ function(fileURL, fileContent, onsuccess, onfailure) {
 
     url = TP.uc(webDavSaveLocation);
 
-    params = TP.hc('refresh', true, 'async', true, 'verb', TP.HTTP_PUT);
+    params = TP.hc('refresh', true, 'async', true, 'method', TP.HTTP_PUT);
     request = url.constructRequest(params);
 
     url.setResource(fileContent);

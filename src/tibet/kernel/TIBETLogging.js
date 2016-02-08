@@ -2921,7 +2921,7 @@ function(anObject, aLogLevel) {
      *
      *     'headers'        http headers, or response headers,
      *     'async'          true or false
-     *     'verb'           the command verb (GET/POST/PUT/DELETE etc)
+     *     'method'         the command method (GET/POST/PUT/DELETE etc)
      *     'body'           any data content for the call,
      *
      *     'noencode'       turns off body content encoding 'mimetype'

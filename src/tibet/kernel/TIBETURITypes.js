@@ -10062,9 +10062,9 @@ function(targetURI, aRequest) {
     //  ensure the required settings are available for this operation
     loadRequest.atPut('uri', targetLoc);
     if (TP.notEmpty(loadRequest.at('body'))) {
-        loadRequest.atPutIfAbsent('verb', TP.HTTP_POST);
+        loadRequest.atPutIfAbsent('method', TP.HTTP_POST);
     } else {
-        loadRequest.atPutIfAbsent('verb', TP.HTTP_GET);
+        loadRequest.atPutIfAbsent('method', TP.HTTP_GET);
     }
 
     //  this could be either sync or async, but the TP.sig.HTTPLoadRequest's
@@ -10139,18 +10139,18 @@ function(targetURI, aRequest) {
 
     //  ensure the required settings are available for this operation
     nukeRequest.atPut('uri', targetLoc);
-    if (TP.isEmpty(nukeRequest.at('verb'))) {
-        //  when webdav is enabled we can set the 'verb' to a TP.HTTP_DELETE
+    if (TP.isEmpty(nukeRequest.at('method'))) {
+        //  when webdav is enabled we can set the 'method' to a TP.HTTP_DELETE
         useWebDAV = TP.ifInvalid(nukeRequest.at('iswebdav'),
                                     TP.sys.cfg('http.use_webdav'));
 
         if (useWebDAV) {
-            nukeRequest.atPut('verb', TP.HTTP_DELETE);
+            nukeRequest.atPut('method', TP.HTTP_DELETE);
         } else {
-            //  all other situations require a 'verb' of TP.HTTP_POST, and a
+            //  all other situations require a 'method' of TP.HTTP_POST, and a
             //  'method' of TP.HTTP_DELETE (which eventually translates into
             //  the increasingly standard 'X-HTTP-Method-Override' header).
-            nukeRequest.atPut('verb', TP.HTTP_POST);
+            nukeRequest.atPut('method', TP.HTTP_POST);
 
             nukeRequest.atPut('method', TP.HTTP_DELETE);
         }
@@ -10174,8 +10174,8 @@ function(targetURI, aRequest) {
     /**
      * @method save
      * @summary Saves URI data content. This is the default data persistence
-     *     method for most URI content. Important request keys include 'verb',
-     *     'crud', and 'body'. Verb will typically default to a POST unless
+     *     method for most URI content. Important request keys include 'method',
+     *     'crud', and 'body'. Method will typically default to a POST unless
      *     TP.sys.cfg(http.use_webdav) is true and the crud parameter is set to
      *     'insert', in which case a PUT is used. The crud parameter effectively
      *     defaults to 'update' so you should set it to 'insert' when new
@@ -10236,24 +10236,24 @@ function(targetURI, aRequest) {
 
     //  ensure the required settings are available for this operation
     saveRequest.atPut('uri', targetLoc);
-    if (TP.isEmpty(saveRequest.at('verb'))) {
-        //  when webdav is enabled we can set the 'verb' to a TP.HTTP_PUT
+    if (TP.isEmpty(saveRequest.at('method'))) {
+        //  when webdav is enabled we can set the 'method' to a TP.HTTP_PUT
         //  for insert or use TP.HTTP_POST as our default.
         useWebDAV = TP.ifInvalid(saveRequest.at('iswebdav'),
                                     TP.sys.cfg('http.use_webdav'));
 
         if (useWebDAV) {
             if (saveRequest.at('crud') === TP.CREATE) {
-                saveRequest.atPut('verb', TP.HTTP_PUT);
+                saveRequest.atPut('method', TP.HTTP_PUT);
             } else {
-                saveRequest.atPut('verb', TP.HTTP_POST);
+                saveRequest.atPut('method', TP.HTTP_POST);
             }
         } else {
-            //  all other situations require a 'verb' of TP.HTTP_POST, and a
+            //  all other situations require a 'method' of TP.HTTP_POST, and a
             //  'method' of TP.HTTP_PUT or TP.HTTP_POST (which eventually
             //  translates into the increasingly standard
             //  'X-HTTP-Method-Override' header).
-            saveRequest.atPut('verb', TP.HTTP_POST);
+            saveRequest.atPut('method', TP.HTTP_POST);
 
             if (saveRequest.at('crud') === TP.CREATE) {
                 saveRequest.atPut('method', TP.HTTP_PUT);

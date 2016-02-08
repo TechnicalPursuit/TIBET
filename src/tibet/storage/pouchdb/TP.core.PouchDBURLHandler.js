@@ -79,7 +79,7 @@ function(targetURI, aRequest) {
 
     if (dbName === '_all_dbs') {
         action = 'listDBs';
-    } else if (request.at('verb') === TP.HTTP_HEAD) {
+    } else if (request.at('method') === TP.HTTP_HEAD) {
         action = 'retrieveItemInfo';
     } else if (TP.isValid(resourceID)) {
         if (resourceID === '_all_docs') {
@@ -222,7 +222,7 @@ function(targetURI, aRequest) {
         queryDict,
         securePW,
 
-        verb,
+        method,
 
         cmdAction,
         resp,
@@ -276,23 +276,23 @@ function(targetURI, aRequest) {
         securePW = queryDict.at('securePW');
     }
 
-    verb = request.at('verb');
+    method = request.at('method');
 
-    //  If we weren't given a verb, try to 'do the right thing' here. If a valid
-    //  resource ID wasn't supplied, then use POST (which PouchDB will interpret
-    //  as an indication to generate the ID). Otherwise, use PUT.
-    if (TP.notValid(verb)) {
+    //  If we weren't given a method, try to 'do the right thing' here. If a
+    //  valid resource ID wasn't supplied, then use POST (which PouchDB will
+    //  interpret as an indication to generate the ID). Otherwise, use PUT.
+    if (TP.notValid(method)) {
         if (TP.notValid(resourceID)) {
-            verb = TP.HTTP_POST;
+            method = TP.HTTP_POST;
         } else {
-            verb = TP.HTTP_PUT;
+            method = TP.HTTP_PUT;
         }
     }
 
     //  If the user forces a POST, then we go ahead and configure the request to
-    //  be 'createItem' - otherwise, we specify 'updateOrConstructItem' and let the
-    //  service object handle the case where an item needs to be created.
-    if (verb === TP.HTTP_POST) {
+    //  be 'createItem' - otherwise, we specify 'updateOrConstructItem' and let
+    //  the service object handle the case where an item needs to be created.
+    if (method === TP.HTTP_POST) {
 
         requestParams = TP.hc(
                         'action', 'createItem',

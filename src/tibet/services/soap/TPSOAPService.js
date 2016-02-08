@@ -127,16 +127,16 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SOAPService.Inst.defineMethod('rewriteRequestVerb',
+TP.core.SOAPService.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**
-     * @method rewriteRequestVerb
-     * @summary Returns the HTTP verb to use for the request. For SOAP this
+     * @method rewriteRequestMethod
+     * @summary Returns the HTTP method to use for the request. For SOAP this
      *     always returns TP.HTTP_POST per the specification.
      * @param {TP.sig.SOAPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
+     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
     return TP.HTTP_POST;

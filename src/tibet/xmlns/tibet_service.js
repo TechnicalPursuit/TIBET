@@ -332,7 +332,7 @@ function() {
         }
     }
 
-    request.atPut('verb', method);
+    request.atPut('method', method);
 
     //  Mark the URI as 'not loaded' to ensure that it will force TIBET to
     //  load data from the underlying source.
@@ -519,8 +519,8 @@ function() {
         }
     }
 
-    //  Process the verb
-    switch (request.at('verb')) {
+    //  Process the method
+    switch (request.at('method')) {
         case TP.HTTP_GET:
             uri.getResource(request);
             break;

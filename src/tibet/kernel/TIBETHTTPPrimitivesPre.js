@@ -729,12 +729,18 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
      *     error condition.
      * @description aRequest could contain 1 or more of the following keys:
      *
-     *     'uri' - the targetUrl 'uriparams' - URI query parameters 'headers' -
-     *     call headers 'verb' - the command verb 'body' - string content 'xhr'
-     *     - xml http request 'response' - TP.sig.Response 'object' - any error
-     *     object 'message' - error string 'direction' - send/recv 'async' -
-     *     true/false 'redirect' - boolean
-     *
+     *     'uri' - the targetUrl
+     *     'uriparams' - URI query parameters
+     *     'headers' - call headers
+     *     'method' - the command method
+     *     'body' - string content
+     *     'xhr' - xml http request
+     *     'response' - TP.sig.Response
+     *     'object' - any error object
+     *     'message' - error string
+     *     'direction' - send/recv
+     *     'async' - true/false
+     *     'redirect' - boolean
      *
      * @param {String} targetUrl The URL being accessed when the error occurred.
      * @param {String|TP.sig.Signal} aSignal The signal which should be raised
@@ -886,7 +892,7 @@ function(targetUrl, aRequest, httpObj) {
     /**
      * @method httpSetHeaders
      * @summary Sets the HTTP headers on httpObj for the URL, call type (HTTP
-     *     Verb), and header collection provided.
+     *     method), and header collection provided.
      * @description TIBET manages certain headers by default, in particular
      *     Cache-control and Pragma headers that help ensure that requests for
      *     data get current data whenever possible. You can override this by
@@ -1000,7 +1006,7 @@ function(targetUrl, aRequest, httpObj) {
     }
 
     if (TP.notDefined(headers.at('X-HTTP-Method-Override'))) {
-        if (request.at('verb') === TP.HTTP_POST &&
+        if (request.at('method') === TP.HTTP_POST &&
                 TP.notEmpty(method = request.at('method'))) {
             headers.atPut('X-HTTP-Method-Override', method);
         }

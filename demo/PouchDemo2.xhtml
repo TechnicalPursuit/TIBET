@@ -82,7 +82,7 @@
 
         //  pouchdb:// URLs are asynchronous
         pouchRequest = TP.request(TP.hc('uri', pouchURL,
-                                        'verb', TP.HTTP_PUT,
+                                        'method', TP.HTTP_PUT,
                                         'async', true));
 
         pouchURL.setResource(googleDogData);
@@ -101,7 +101,7 @@
 
         //  pouchdb:// URLs are asynchronous
         pouchRequest = TP.request(TP.hc('uri', pouchURL,
-                                        'verb', TP.HTTP_DELETE,
+                                        'method', TP.HTTP_DELETE,
                                         'async', true));
 
         pouchURL.setResource(null);

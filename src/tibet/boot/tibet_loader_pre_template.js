@@ -392,7 +392,7 @@ TP.MOZ_FILE_TRUNCATE = 0x20;
 TP.MOZ_FILE_SYNC = 0x40;
 TP.MOZ_FILE_EXCL = 0x80;
 
-//  HTTP verb/call types
+//  HTTP method/call types
 TP.HTTP_DELETE = 'DELETE';
 TP.HTTP_GET = 'GET';
 TP.HTTP_HEAD = 'HEAD';

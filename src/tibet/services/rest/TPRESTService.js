@@ -34,7 +34,7 @@
  *
  *     // To leverage the REST service simply construct request // objects
  *     configured to match the parameters the service // type expects. The key
- *     ones are 'uri' and 'verb' which // are sufficient for GET requests. Add
+ *     ones are 'uri' and 'method' which // are sufficient for GET requests. Add
  *     'uriparams' to put // additional qualifiers on the query portion of the
  *     URI. // Add 'body' to provide content for a POST, PUT, etc.
  *

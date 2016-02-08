@@ -223,17 +223,17 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amazon.AmazonS3Service.Inst.defineMethod('rewriteRequestVerb',
+TP.amazon.AmazonS3Service.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**
-     * @method rewriteRequestVerb
-     * @summary Returns the HTTP verb to use for the request. For the Amazon S3
-     *     service the verb used depends on the 'action' that the request is
-     *     configured for.
+     * @method rewriteRequestMethod
+     * @summary Returns the HTTP method to use for the request. For the Amazon
+     *     S3 service the method used depends on the 'action' that the request
+     *     is configured for.
      * @param {TP.sig.AmazonS3Request} aRequest The request whose parameters
      *     define the HTTP request.
-     * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
+     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
     //  Switch based on the request's action.
@@ -329,7 +329,7 @@ function(aRequest) {
      */
 
     var headers,
-        verb,
+        method,
         resource,
         key,
         secretKey,
@@ -345,10 +345,10 @@ function(aRequest) {
     //  Do whatever our supertype does to configure the header hash.
     headers = this.callNextMethod();
 
-    //  No verb? Then fail the request and return.
-    if (TP.isEmpty(verb = aRequest.at('verb'))) {
+    //  No method? Then fail the request and return.
+    if (TP.isEmpty(method = aRequest.at('method'))) {
         aRequest.fail(
-            'No verb in TP.amazon.AmazonS3Service::rewriteRequestHeaders');
+            'No method in TP.amazon.AmazonS3Service::rewriteRequestHeaders');
 
         return null;
     }
@@ -382,9 +382,9 @@ function(aRequest) {
     //  If a specific contentType wasn't defined
     if (TP.notValid(contentType = aRequest.at('contentType'))) {
 
-        //  If the verb is PUT, then we try to guess a MIME type given the body
-        //  content. This method will default to TP.ietf.Mime.PLAIN.
-        if (verb === TP.HTTP_PUT) {
+        //  If the method is PUT, then we try to guess a MIME type given the
+        //  body content. This method will default to TP.ietf.Mime.PLAIN.
+        if (method === TP.HTTP_PUT) {
 
             contentType = TP.ietf.Mime.guessMIMEType(aRequest.at('body'));
 
@@ -464,14 +464,14 @@ function(aRequest) {
     //  specific String, newlines and all, that gets hashed for authentication
     //  purposes.
     authenticationInfo = TP.join(
-        verb, '\n',             //  verb
+        method, '\n',           //  method
 
         '', '\n',               //  content MD5
 
         contentType, '\n',      //  content type
 
-        '', '\n',               //  date (we use 'x-amz-date' instead, so this is
-                                //  left blank per S3 documentation)
+        '', '\n',               //  date (we use 'x-amz-date' instead, so this
+                                //  is left blank per S3 documentation)
 
         aclAuthStr,             //  ACL header to sign
 

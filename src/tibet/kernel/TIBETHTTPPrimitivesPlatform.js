@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @Platform-specific HTTP verb support via XMLHttpRequest.
+ * @Platform-specific HTTP method support via XMLHttpRequest.
  * @discussion Note how we do *not* wrap ANY of the debugging messages below
  *     into TP.sc() calls, because when localization occurs, and we've booted
  *     over an HTTP-based URL, it tries to use this routine to do the
@@ -234,7 +234,7 @@ TP.hc(
             url,
             query,
 
-            verb,
+            method,
             async,
 
             content,
@@ -288,8 +288,8 @@ TP.hc(
         //  TODO: if nocache is true we want to add a unique ID to the
         //  query/url
 
-        request.addIfAbsent('verb', TP.HTTP_GET);
-        verb = request.at('verb');
+        request.addIfAbsent('method', TP.HTTP_GET);
+        method = request.at('method');
 
         request.addIfAbsent('async', true);
         async = request.at('async');
@@ -320,7 +320,7 @@ TP.hc(
                 password = null;
             }
 
-            httpObj.open(verb, url, async, username, password);
+            httpObj.open(method, url, async, username, password);
         } catch (e) {
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
@@ -496,7 +496,7 @@ TP.hc(
             url,
             query,
 
-            verb,
+            method,
             async,
 
             content,
@@ -548,8 +548,8 @@ TP.hc(
         //  TODO: if nocache is true we want to add a unique ID to the
         //  query/url
 
-        request.addIfAbsent('verb', TP.HTTP_GET);
-        verb = request.at('verb');
+        request.addIfAbsent('method', TP.HTTP_GET);
+        method = request.at('method');
 
         request.addIfAbsent('async', true);
         async = request.at('async');
@@ -580,7 +580,7 @@ TP.hc(
                 password = null;
             }
 
-            httpObj.open(verb, url, async, username, password);
+            httpObj.open(method, url, async, username, password);
         } catch (e) {
             request.atPut('object', e);
             request.atPut('message', TP.str(e));
@@ -713,7 +713,7 @@ TP.hc(
             url,
             query,
 
-            verb,
+            method,
             async,
 
             content,
@@ -779,8 +779,8 @@ TP.hc(
         //  TODO: if nocache is true we want to add a unique ID to the
         //  query/url
 
-        request.addIfAbsent('verb', TP.HTTP_GET);
-        verb = request.at('verb');
+        request.addIfAbsent('method', TP.HTTP_GET);
+        method = request.at('method');
 
         request.addIfAbsent('async', true);
         async = request.at('async');
@@ -811,7 +811,7 @@ TP.hc(
                 password = null;
             }
 
-            httpObj.open(verb, url, async, username, password);
+            httpObj.open(method, url, async, username, password);
         } catch (e) {
             request.atPut('object', e);
             request.atPut('message', TP.str(e));

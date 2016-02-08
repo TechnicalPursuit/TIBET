@@ -71,7 +71,7 @@ function(targetURI, aRequest) {
 
     resourceID = targetURI.get('resourceID');
 
-    if (request.at('verb') === TP.HTTP_HEAD) {
+    if (request.at('method') === TP.HTTP_HEAD) {
         action = 'retrieveItemInfo';
     } else if (TP.isValid(resourceID)) {
         if (resourceID === '_all_docs') {
@@ -265,7 +265,7 @@ function(targetURI, aRequest) {
         securePW = queryDict.at('securePW');
     }
 
-    if (request.at('verb') === TP.HTTP_PUT) {
+    if (request.at('method') === TP.HTTP_PUT) {
 
         if (TP.notValid(resourceID)) {
             request.fail('No resource ID specified for: ' + TP.str(targetURI));

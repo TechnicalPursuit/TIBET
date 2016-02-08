@@ -1270,8 +1270,8 @@ function() {
         //  from the underlying source.
         url.isLoaded(false);
 
-        //  Implied verb here is TP.HTTP_GET. Also, by default, localdb:// URLs
-        //  are synchronous and configure their request to 'refresh'
+        //  Implied method here is TP.HTTP_GET. Also, by default, localdb://
+        //  URLs are synchronous and configure their request to 'refresh'
         //  automatically.
         obj = url.getResource().get('result').at('_body');
 
@@ -1318,7 +1318,7 @@ function() {
 
         //  By default, localdb:// URLs are synchronous and configure their
         //  request to 'refresh' automatically.
-        obj = url.getResource(TP.hc('verb', TP.HTTP_HEAD)).get('result');
+        obj = url.getResource(TP.hc('method', TP.HTTP_HEAD)).get('result');
 
         test.assert.isTrue(
             obj.hasKey('_date_created'),
@@ -1349,8 +1349,8 @@ function() {
         //  from the underlying source.
         url.isLoaded(false);
 
-        //  Implied verb here is TP.HTTP_GET. Also, by default, localdb:// URLs
-        //  are synchronous and configure their request to 'refresh'
+        //  Implied method here is TP.HTTP_GET. Also, by default, localdb://
+        //  URLs are synchronous and configure their request to 'refresh'
         //  automatically.
         obj = url.getResource().get('result');
 
@@ -1437,7 +1437,7 @@ function() {
             function(resolver, rejector) {
                 var pouchRequest;
 
-                //  Implied verb here is TP.HTTP_GET. Also, pouchdb://
+                //  Implied method here is TP.HTTP_GET. Also, pouchdb://
                 //  URLs are asynchronous and configure their request to
                 //  'refresh' automatically.
                 pouchRequest = TP.request(TP.hc('uri', url,
@@ -1511,12 +1511,12 @@ function() {
             function(resolver, rejector) {
                 var pouchRequest;
 
-                //  Implied verb here is TP.HTTP_GET, which means we need to
+                //  Implied method here is TP.HTTP_GET, which means we need to
                 //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                 //  URLs are asynchronous and configure their request to
                 //  'refresh' automatically.
                 pouchRequest = TP.request(TP.hc('uri', url,
-                                                'verb', TP.HTTP_HEAD,
+                                                'method', TP.HTTP_HEAD,
                                                 'async', true));
 
                 pouchRequest.defineHandler('RequestSucceeded',
@@ -1574,7 +1574,7 @@ function() {
             function(resolver, rejector) {
                 var pouchRequest;
 
-                //  Implied verb here is TP.HTTP_GET, which means we need to
+                //  Implied method here is TP.HTTP_GET, which means we need to
                 //  specify TP.HTTP_HEAD to be the *info*. Also, pouchdb://
                 //  URLs are asynchronous and configure their request to
                 //  'refresh' automatically.
@@ -1803,7 +1803,7 @@ function() {
                 var putParams,
                     putRequest;
 
-                putParams = params.copy().atPut('verb', TP.HTTP_PUT);
+                putParams = params.copy().atPut('method', TP.HTTP_PUT);
                 putRequest = url.constructRequest(putParams);
 
                 putRequest.defineHandler('RequestSucceeded',
@@ -2199,7 +2199,7 @@ function() {
         //  request to 'refresh' automatically.
 
         url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
-        saveResult = url.save(TP.hc('verb', TP.HTTP_PUT)).get('result');
+        saveResult = url.save(TP.hc('method', TP.HTTP_PUT)).get('result');
 
         test.assert.isValid(
             saveResult.at('ok'),
@@ -2247,8 +2247,8 @@ function() {
 
         url = TP.uc('localdb://local_test/');
 
-        //  Implied verb here is TP.HTTP_POST. Also, by default, localdb:// URLs
-        //  are synchronous and configure their request to 'refresh'
+        //  Implied method here is TP.HTTP_POST. Also, by default, localdb://
+        //  URLs are synchronous and configure their request to 'refresh'
         //  automatically.
 
         url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
@@ -2304,7 +2304,7 @@ function() {
         //  request to 'refresh'.
 
         url.setResource(null);
-        nukeResult = url.nuke(TP.hc('verb', TP.HTTP_DELETE)).get('result');
+        nukeResult = url.nuke(TP.hc('method', TP.HTTP_DELETE)).get('result');
 
         test.assert.isValid(
             nukeResult.at('ok'),
@@ -2339,7 +2339,7 @@ function() {
         //  request to 'refresh'.
 
         url.setResource(null);
-        nukeResult = url.nuke(TP.hc('verb', TP.HTTP_DELETE)).get('result');
+        nukeResult = url.nuke(TP.hc('method', TP.HTTP_DELETE)).get('result');
 
         test.assert.isValid(
             nukeResult.at('ok'),
@@ -2420,7 +2420,7 @@ function() {
             function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
-                                                'verb', TP.HTTP_PUT,
+                                                'method', TP.HTTP_PUT,
                                                 'async', true));
 
                 url.setResource(TP.hc('firstName', 'November', 'lastName', 'Jones'));
@@ -2472,7 +2472,7 @@ function() {
             function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
-                                                'verb', TP.HTTP_POST,
+                                                'method', TP.HTTP_POST,
                                                 'async', true));
 
                 url.setResource(TP.hc('firstName', 'John', 'lastName', 'Smith'));
@@ -2523,7 +2523,7 @@ function() {
             function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
-                                                'verb', TP.HTTP_DELETE,
+                                                'method', TP.HTTP_DELETE,
                                                 'async', true));
 
                 url.setResource(null);
@@ -2575,7 +2575,7 @@ function() {
             function(resolver, rejector) {
                 //  pouchdb:// URLs are asynchronous
                 pouchRequest = TP.request(TP.hc('uri', url,
-                                                'verb', TP.HTTP_DELETE,
+                                                'method', TP.HTTP_DELETE,
                                                 'async', true));
 
                 url.setResource(null);

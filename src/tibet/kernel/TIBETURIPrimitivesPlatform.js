@@ -1287,7 +1287,7 @@ TP.hc(
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
          *     written to. backup Boolean True if a backup '~' file should be
-         *     created. Ignored by the HTTP scheme versions. verb String
+         *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
          * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
@@ -1493,7 +1493,7 @@ TP.hc(
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
          *     written to. backup Boolean True if a backup '~' file should be
-         *     created. Ignored by the HTTP scheme versions. verb String
+         *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
          * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
@@ -1622,7 +1622,7 @@ TP.hc(
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
          *     written to. backup Boolean True if a backup '~' file should be
-         *     created. Ignored by the HTTP scheme versions. verb String
+         *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
          * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
@@ -1652,7 +1652,7 @@ TP.hc(
          *     content of the file to save. append Boolean True to append to an
          *     existing file, otherwise the file will be created if needed and
          *     written to. backup Boolean True if a backup '~' file should be
-         *     created. Ignored by the HTTP scheme versions. verb String
+         *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
          * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,

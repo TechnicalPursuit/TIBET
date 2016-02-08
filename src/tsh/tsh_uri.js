@@ -164,8 +164,8 @@ function(aRequest) {
             case 'tsh:href':
                 //  Already processed.
                 break;
-            case 'tsh:verb':
-                params.atPut('verb', value.toUpperCase());
+            case 'tsh:method':
+                params.atPut('method', value.toUpperCase());
                 break;
             case 'tsh:mimetype':
                 params.atPut('mimetype', value);

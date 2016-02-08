@@ -212,16 +212,16 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.google.GoogleDocsService.Inst.defineMethod('rewriteRequestVerb',
+TP.google.GoogleDocsService.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**
-     * @method rewriteRequestVerb
-     * @summary Returns the HTTP verb to use for the request. For Docs
+     * @method rewriteRequestMethod
+     * @summary Returns the HTTP method to use for the request. For Docs
      *     requests, this varies depending on operation.
      * @param {TP.sig.GoogleDocsRequest} aRequest The request whose parameters
      *     define the HTTP request.
-     * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
+     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
     switch (aRequest.at('action')) {
