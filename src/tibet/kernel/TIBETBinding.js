@@ -3346,7 +3346,7 @@ function(size) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('setBoundValue',
-function(aValue, scopeVals, bindingInfoValue) {
+function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
 
     /**
      * @method setBoundValue
@@ -3358,6 +3358,10 @@ function(aValue, scopeVals, bindingInfoValue) {
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
      *     that details the binding information for the receiver. That is, the
      *     bounds aspects of the receiver and what they're bound to.
+     * @param {Boolean} [ignoreBidiInfo=false] Whether or not to ignore the
+     *     receiver's bidirectional attribute information. If this parameter is
+     *     true, this method will always set the bound value whether or not the
+     *     bound attribute is considered to be both a getter and setter.
      * @returns {TP.core.ElementNode} The receiver.
      */
 
@@ -3369,9 +3373,11 @@ function(aValue, scopeVals, bindingInfoValue) {
     //  case we get the cached values back.
     bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
 
-    //  Grab the list of our 'bidirectional' attributes. This will tell us which
-    //  aspects can be 'set' from GUI to model.
-    bidiAttrs = this.getType().get('bidiAttrs');
+    if (TP.notTrue(ignoreBidiInfo)) {
+        //  Grab the list of our 'bidirectional' attributes. This will tell us
+        //  which aspects can be 'set' from GUI to model.
+        bidiAttrs = this.getType().get('bidiAttrs');
+    }
 
     //  Iterate over each binding expression in the binding information.
     bindingInfo.perform(
@@ -3402,7 +3408,8 @@ function(aValue, scopeVals, bindingInfoValue) {
             //  If the attribute isn't one of the bidi attributes, then we can
             //  just exit here (i.e. its not an attribute that we can 'set' from
             //  the UI)
-            if (!bidiAttrs.contains(attrName)) {
+            if (TP.notTrue(ignoreBidiInfo) &&
+                !bidiAttrs.contains(attrName)) {
                 return;
             }
 
