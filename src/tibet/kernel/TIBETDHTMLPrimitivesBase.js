@@ -1891,14 +1891,8 @@ function(aNode) {
         win = doc.defaultView;
     } else if (TP.isDocument(doc = aNode.ownerDocument)) {
         win = doc.defaultView;
-    }
-
-    if (!win) {
-        try {
-            win = aNode.currentScript.ownerDocument.defaultView;
-        } catch (e) {
-            void 0;
-        }
+    } else {
+        win = null;
     }
 
     return win;
