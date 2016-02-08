@@ -16,7 +16,7 @@
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
 
-	<h2>Couch Football Results</h2><br/>
+	<h2>CouchDB Football Results</h2><br/>
 	<br/>
 
     <button on:click="{signal: UIActivate, origin:'loadProvider'}">Refresh it!</button>
@@ -56,9 +56,9 @@
                  of data. In this case, there is a template nested under the
                  element with the bind:repeat attribute that will pluck each
                  named field out of each record as it iterates. Note also the
-                 'bind:editable' attribute. This configures "double click to
-                 edit" behavior. -->
-            <tbody id="people" bind:repeat="responseData.results" bind:editable="true">
+                 'on:dbclick' attribute that fires a 'UIEdit' signal. This
+                 configures "double click to edit" behavior. -->
+            <tbody id="people" bind:repeat="responseData.results" on:dblclick="UIEdit">
                 <tr>
                     <td>[[unescapedUrl]]</td>
                     <td>[[titleNoFormatting]]</td>
