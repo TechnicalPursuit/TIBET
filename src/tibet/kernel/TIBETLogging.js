@@ -871,7 +871,7 @@ function() {
 
     appenders = this.$get('appenders');
     if (TP.isValid(appenders)) {
-        appenders.length = 0;
+        appenders.empty();
     }
 
     return this;
@@ -893,7 +893,7 @@ function() {
 
     filters = this.$get('filters');
     if (TP.isValid(filters)) {
-        filters.length = 0;
+        filters.empty();
     }
 
     return this;
