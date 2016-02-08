@@ -800,7 +800,7 @@ function(aSignal) {
                 (matcher.test(attrVal) ||
                     TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal))) {
 
-                boundAttrNodes.push(attrs[j])
+                boundAttrNodes.push(attrs[j]);
             }
         }
     }
@@ -970,7 +970,7 @@ function(aSignal) {
                             ownerTPElem = TP.wrap(ownerElem);
                             ownerTPElem.refreshLeaf(
                                     primarySource, aSignal,
-                                    primarySource, boundAttrNodes[i]);
+                                    primarySource, boundAttrNodes[i], null);
                         }
                     }
                 }
