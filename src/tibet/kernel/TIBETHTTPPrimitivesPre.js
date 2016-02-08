@@ -176,7 +176,6 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
      *     multipart/form-data
      *     multipart/related
      *
-     *
      * @param {Object} aPayload The call data to encode along with the URL. Note
      *     that when this is a string it won't be altered in any form.
      * @param {String} aMIMEType One of the standard HTTP MIME type formats such
@@ -480,8 +479,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                             }
                         }
 
-                        itemEncoding =
-                                anItem.atIfInvalid('encoding', charset);
+                        itemEncoding = anItem.atIfInvalid('encoding', charset);
 
                         if (TP.notEmpty(itemMIMEType)) {
                             arr.push(
