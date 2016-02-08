@@ -1904,6 +1904,86 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$getRepeatTemplate',
+function() {
+
+    /**
+     * @method $getRepeatTemplate
+     * @summary Returns the repeat template Element for the receiver.
+     * @returns {Element} The repeat template Element.
+     */
+
+    var elem,
+
+        templateID,
+        templateInfo,
+
+        repeatContent;
+
+    elem = this.getNativeNode();
+
+    //  If we successfully detected a 'bind:repeat' ancestor, then try to
+    //  calculate a repeat resource and our index within that repeat resource.
+    if (TP.elementHasAttribute(elem, 'bind:repeat', true)) {
+
+        //  Grab the unique templateID that should've been placed on us when our
+        //  template content was captured.
+        templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
+        if (TP.isEmpty(templateID)) {
+            //  TODO: Raise an exception
+            return null;
+        }
+
+        //  The template content was stored on our TP.core.Document when it was
+        //  captured and was stored under our templateID.
+        if (TP.notValid(
+                templateInfo = this.getDocument().get('$repeatTemplates'))) {
+            //  TODO: Raise an exception
+            return null;
+        }
+
+        if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
+            //  TODO: Raise an exception
+            return null;
+            /*
+            repeatContent = this.$captureRepeatContent(elems);
+            if (!TP.owns(this, 'addContent')) {
+                this.defineMethod(
+                    'addContent',
+                    function(newContent, aRequest, stdinContent) {
+                        this.callNextMethod();
+                        this.$captureRepeatContent();
+                    });
+                this.defineMethod(
+                    'insertContent',
+                    function(newContent, aRequest, stdinContent) {
+                        this.callNextMethod();
+                        this.$captureRepeatContent();
+                    });
+                this.defineMethod(
+                    'replaceContent',
+                    function(newContent, aRequest, stdinContent) {
+                        this.callNextMethod();
+                        this.$captureRepeatContent();
+                    });
+                this.defineMethod(
+                    'setContent',
+                    function(newContent, aRequest, stdinContent) {
+                        this.callNextMethod();
+                        this.$captureRepeatContent();
+                    });
+            }
+            */
+        }
+
+        return repeatContent;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('$getRepeatValue',
 function() {
 
@@ -2993,8 +3073,6 @@ function(aCollection, elems) {
 
         elem,
 
-        templateInfo,
-        templateID,
         repeatContent,
 
         bodyFragment,
@@ -3027,54 +3105,9 @@ function(aCollection, elems) {
 
     elem = this.getNativeNode();
 
-    //  Grab the unique templateID that should've been placed on us when our
-    //  template content was captured.
-    templateID = TP.elementGetAttribute(elem, 'tibet:templateID', true);
-    if (TP.isEmpty(templateID)) {
+    if (TP.notValid(repeatContent = this.$getRepeatTemplate())) {
         //  TODO: Raise an exception
         return this;
-    }
-
-    //  The template content was stored on our TP.core.Document when it was
-    //  captured and was stored under our templateID.
-    if (TP.notValid(
-            templateInfo = this.getDocument().get('$repeatTemplates'))) {
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    if (TP.notValid(repeatContent = templateInfo.at(templateID))) {
-        //  TODO: Raise an exception
-        return this;
-        /*
-        repeatContent = this.$captureRepeatContent(elems);
-        if (!TP.owns(this, 'addContent')) {
-            this.defineMethod(
-                'addContent',
-                function(newContent, aRequest, stdinContent) {
-                    this.callNextMethod();
-                    this.$captureRepeatContent();
-                });
-            this.defineMethod(
-                'insertContent',
-                function(newContent, aRequest, stdinContent) {
-                    this.callNextMethod();
-                    this.$captureRepeatContent();
-                });
-            this.defineMethod(
-                'replaceContent',
-                function(newContent, aRequest, stdinContent) {
-                    this.callNextMethod();
-                    this.$captureRepeatContent();
-                });
-            this.defineMethod(
-                'setContent',
-                function(newContent, aRequest, stdinContent) {
-                    this.callNextMethod();
-                    this.$captureRepeatContent();
-                });
-        }
-        */
     }
 
     bodyFragment = TP.nodeGetDocument(elem).createDocumentFragment();
