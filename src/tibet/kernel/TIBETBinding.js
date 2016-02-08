@@ -3602,5 +3602,262 @@ function(aCollection) {
 });
 
 //  ------------------------------------------------------------------------
+//  TP.core.UIElementNode
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineHandler('UIEdit',
+function(aSignal) {
+
+    /**
+     * @method handleUIEdit
+     * @summary Handles when the user wants to edit the underlying data source.
+     *     For now, this method a) only works for bind:repeat and b) only uses a
+     *     simple text field to allow editing.
+     * @param {TP.sig.UIEdit} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    var event,
+
+        targetElem,
+        textNode,
+
+        removeEditorAndSetValue,
+        moveEditorTo,
+
+        editor,
+
+        keydownHandler;
+
+    //  It is important to remember that this code is shared by all
+    //  TP.core.Element nodes. Therefore, we need to use other checking logic
+    //  (like whether or not we have this attribute) to see if we handle this.
+
+    if (!this.hasAttribute('bind:repeat')) {
+        return this;
+    }
+
+    //  We can handle this - stop propagation so that ancestors up the chain
+    //  don't get notified.
+    aSignal.stopPropagation();
+
+    //  Compute the target element from the native Event
+    event = aSignal.getPayload().at('event');
+    if (!TP.isEvent(event)) {
+        //  Didn't have a real Event here - bail out
+        return this;
+    }
+    targetElem = TP.eventGetTarget(event);
+
+    //  If the target was a Text node, then we use its parent node.
+    if (TP.isTextNode(targetElem)) {
+        textNode = targetElem;
+        targetElem = targetElem.parentNode;
+    } else {
+        textNode = targetElem.firstChild;
+    }
+
+    //  A Function that tears down the editor and sets the bound value.
+    removeEditorAndSetValue = function() {
+
+        var newText,
+            newTextNode,
+
+            boundElem,
+            boundTPElem;
+
+        //  Grab the value from the editor and create a new Text node from it.
+        newText = editor.value;
+        newTextNode = editor.ownerDocument.createTextNode(newText);
+
+        //  Now, starting from the editor, we need to determine the nearest
+        //  'bound element' up our chain. This is the one we'll be setting the
+        //  value for.
+        boundElem = TP.nodeDetectAncestor(
+                        editor,
+                        function(aNode) {
+                            return TP.isElement(aNode) &&
+                                    TP.wrap(aNode).isBoundElement();
+                        });
+
+        //  Replace the editor with the newly generated text node
+        TP.nodeReplaceChild(editor.parentNode,
+                            newTextNode,
+                            editor,
+                            false);
+
+        //  Wrap the element that we're really setting the value for and set its
+        //  bound value.
+        boundTPElem = TP.wrap(boundElem);
+        boundTPElem.setBoundValue(
+                        newText,
+                        boundTPElem.getBindingScopeValues(),
+                        boundTPElem.getAttribute('bind:in'),
+                        true);
+    };
+
+    //  A Function that moves the editor to the supplied Element
+    moveEditorTo = function(anElem) {
+
+        var elemTextContent,
+            elemTextNode;
+
+        //  Grab the text content from the element
+        elemTextContent = TP.nodeGetTextContent(anElem);
+
+        //  Replace the underlying text node with the editor.
+        elemTextNode = anElem.firstChild;
+        editor = TP.nodeReplaceChild(anElem,
+                                        editor,
+                                        elemTextNode,
+                                        false);
+
+        //  Set the value of the editor to the element's text content.
+        editor.value = elemTextContent;
+
+        //  Select the text in the editor, but fork() to allow the GUI to
+        //  refresh, which seems to help out focusing mechanics.
+        (function() {
+            editor.select();
+        }).fork(50);
+    }
+
+    //  Replace the text node with an editor and style it.
+    editor = TP.nodeReplaceTextWithEditor(textNode);
+    TP.elementSetStyleString(editor, 'width: 100%; height: 100%;');
+
+    //  Set up a 'keydown' handler on the editor.
+    editor.addEventListener(
+            'keydown',
+            keydownHandler = function(evt) {
+                var editorTargetElem,
+                    editorTargetType,
+
+                    keyName,
+                    sigName,
+
+                    repeatElem,
+                    allBindIns,
+
+                    destinationElement;
+
+                //  NB: We don't use variables captured from the enclosing scope
+                //  (except for 'editor') in this handler function, since
+                //  closure semantics can cause problems. Therefore, we obtain
+                //  everything from 'editor' or from the event parameter.
+
+                //  The current target element is the parent node of the editor.
+                editorTargetElem = editor.parentNode;
+
+                //  Get the TIBET type for the editor element.
+                editorTargetType = TP.wrap(editorTargetElem).getType();
+
+                //  Grab the key name and consult the editor type's key binding
+                //  map for a signal name. This will tell us whether we should
+                //  just keep processing keys or move the editor or dismiss the
+                //  editor.
+                keyName = TP.eventGetDOMSignalName(evt);
+                sigName = editorTargetType.getKeybinding(keyName);
+
+                //  If we didn't have a mapping signal, and the key name wasn't
+                //  an 'Enter' then we will just keep processing keys
+                if (TP.notValid(sigName) && keyName !== 'DOM_Enter_Down') {
+                    return;
+                }
+
+                //  Grab our ancestor that contains the 'bind:repeat' attribute.
+                repeatElem = TP.nodeDetectAncestor(
+                                editorTargetElem,
+                                function(aNode) {
+                                    return TP.isElement(aNode) &&
+                                            TP.elementHasAttribute(
+                                                aNode, 'bind:repeat', true);
+                                });
+
+                //  Grab all of the elements under the element with the
+                //  'bind:repeat' that have 'bind:in' attributes.
+                allBindIns = TP.byCSSPath('*[bind|in]',
+                                            repeatElem,
+                                            false,
+                                            false);
+
+                //  Based on the signal name, compute the element we should be
+                //  going to.
+                switch (sigName) {
+
+                    case 'TP.sig.UIFocusFirst':
+
+                        destinationElement = allBindIns.first();
+                        break;
+
+                    case 'TP.sig.UIFocusLast':
+
+                        destinationElement = allBindIns.last();
+                        break;
+
+                    case 'TP.sig.UIFocusNext':
+
+                        destinationElement =
+                                allBindIns.after(editorTargetElem);
+                        //  If we couldn't find an element following the target
+                        //  element, then we wrap around to the first one.
+                        if (!TP.isElement(destinationElement)) {
+                            destinationElement = allBindIns.first();
+                        }
+                        break;
+
+                    case 'TP.sig.UIFocusPrevious':
+
+                        destinationElement =
+                                allBindIns.before(editorTargetElem);
+
+                        //  If we couldn't find an element preceding the target
+                        //  element, then we wrap around to the last one.
+                        if (!TP.isElement(destinationElement)) {
+                            destinationElement = allBindIns.last();
+                        }
+                        break;
+
+                    default:
+
+                        //  No destination element could be computed - just
+                        //  dismiss the editor and remove this handler. See
+                        //  below.
+                        destinationElement = TP.NOT_FOUND;
+                        break;
+                }
+
+                //  Make sure to both prevent default and stop propagation of
+                //  the native event. We don't want keypresses or keyups.
+                evt.preventDefault();
+                evt.stopPropagation();
+
+                //  If we truly didn't find any destination element, then the
+                //  user did something like hit Enter, which means they just
+                //  wanted to dismiss the editor.
+                if (destinationElement === TP.NOT_FOUND) {
+
+                    //  Remove the editor and set the value.
+                    removeEditorAndSetValue();
+
+                    //  Remove the 'keydown' listener handler.
+                    this.removeEventListener('keydown', keydownHandler, false);
+                } else {
+
+                    //  Otherwise, the user wants to move the editor to another
+                    //  element.
+
+                    //  Remove the editor and set the value.
+                    removeEditorAndSetValue();
+
+                    //  Move the editor to the destination element.
+                    moveEditorTo(destinationElement);
+                }
+            });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
