@@ -1199,7 +1199,7 @@ function(aPath, aFragment) {
                 break;
 
             case 'tibet':
-            case 'json':
+            case 'jpath':
                 if (expr.charAt(0) === '[') {
                     joinChar = '';
                 } else {

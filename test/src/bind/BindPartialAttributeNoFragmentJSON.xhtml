@@ -41,9 +41,9 @@
     <span bind:scope="urn:tibet:test_people">
 
         <label for="colorField">Color: </label>
-        John's Favorite Color: <input type="text" id="colorField" value="[[#json($.people[1].color)]]" tabindex="0"/><br/>
+        John's Favorite Color: <input type="text" id="colorField" value="[[#jpath($.people[1].color)]]" tabindex="0"/><br/>
 
-        <span id="colorSpan" style="background-color: [[#json($.people[1].color)]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
+        <span id="colorSpan" style="background-color: [[#jpath($.people[1].color)]]; font-weight: bold">This text should have a background color that is specified in the text field.</span>
 
     </span>
 

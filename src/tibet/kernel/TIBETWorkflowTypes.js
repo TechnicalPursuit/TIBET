@@ -5682,7 +5682,7 @@ function(resourceID, aRequest) {
             'iswebdav',
                 TP.ac(
                 'iswebdav',
-                'Should server comm use WebDAV verbs ("true or "false"): ')
+                'Should server comm use WebDAV methods ("true or "false"): ')
             ),
         paramDict);
 

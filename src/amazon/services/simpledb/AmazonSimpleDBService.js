@@ -328,10 +328,11 @@ function(aRequest) {
     uri = TP.uc(aRequest.at('uri'));
     uriPath = uri.get('path');
 
-    //  Start with the verb, the host from the URI and either the path or
+    //  Start with the method, the host from the URI and either the path or
     //  just a '/' if the path is empty.
-    signatureString = TP.ac(aRequest.at('verb'), '\n',
-        uri.get('host'), '\n', TP.isEmpty(uriPath) ? '/' : uriPath, '\n');
+    signatureString = TP.ac(aRequest.at('method'), '\n',
+                            uri.get('host'), '\n',
+                            TP.isEmpty(uriPath) ? '/' : uriPath, '\n');
 
     //  Loop over all of the keys in the resource and add them to the
     //  signature string, sandwiching them with '=' and '&'.
@@ -535,16 +536,16 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.amazon.AmazonSimpleDBService.Inst.defineMethod('rewriteRequestVerb',
+TP.amazon.AmazonSimpleDBService.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**
-     * @method rewriteRequestVerb
-     * @summary Returns the HTTP verb to use for the request. For the Amazon
-     *     SimpleDB service the verb used is always TP.HTTP_GET.
+     * @method rewriteRequestMethod
+     * @summary Returns the HTTP method to use for the request. For the Amazon
+     *     SimpleDB service the method used is always TP.HTTP_GET.
      * @param {TP.sig.AmazonSimpleDBRequest} aRequest The request whose
      *     parameters define the HTTP request.
-     * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
+     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
     return TP.HTTP_GET;

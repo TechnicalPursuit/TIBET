@@ -623,7 +623,7 @@ targets.rollup_pouchdb = function(make) {
 
     npmdir = path.join(__dirname, 'node_modules');
     sh.cd(path.join(npmdir, 'pouchdb'));
-    sh.exec('npm install -d');
+
     sh.exec('cp -f dist/pouchdb.js ../../deps/pouchdb-tpi.js');
     sh.exec('cp -f dist/pouchdb.min.js ../../deps/pouchdb-tpi.min.js');
 

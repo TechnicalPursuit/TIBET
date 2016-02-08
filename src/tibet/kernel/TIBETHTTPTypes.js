@@ -717,8 +717,8 @@ TP.core.URIService.defineSubtype('HTTPService');
 //  the default MIME type to use for encoding the body
 TP.core.HTTPService.Type.defineAttribute('mimetype', TP.PLAIN_TEXT_ENCODED);
 
-//  the default verb to use for services of this type
-TP.core.HTTPService.Type.defineAttribute('verb', TP.HTTP_GET);
+//  the default method to use for services of this type
+TP.core.HTTPService.Type.defineAttribute('method', TP.HTTP_GET);
 
 //  HTTP services can support access via either sync or async requests
 TP.core.HTTPService.Type.defineAttribute('supportedModes',
@@ -798,18 +798,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('getVerb',
+TP.core.HTTPService.Inst.defineMethod('getMethod',
 function() {
 
     /**
-     * @method getVerb
-     * @summary Returns the HTTP verb used for this service type by default. In
-     *     some cases this value isn't simply a default, it's the value used for
-     *     all requests made via this service.
-     * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
+     * @method getMethod
+     * @summary Returns the HTTP method used for this service type by default.
+     *     In some cases this value isn't simply a default, it's the value used
+     *     for all requests made via this service.
+     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
-    return TP.ifInvalid(this.$get('verb'), this.getType().get('verb'));
+    return TP.ifInvalid(this.$get('method'), this.getType().get('method'));
 });
 
 //  ------------------------------------------------------------------------
@@ -856,8 +856,8 @@ function(aRequest) {
         return request.fail('TP.sig.InvalidURI');
     }
 
-    //  rewrite the verb as needed. some services require POST etc.
-    request.atPut('verb', this.rewriteRequestVerb(request));
+    //  rewrite the method as needed. some services require POST etc.
+    request.atPut('method', this.rewriteRequestMethod(request));
 
     //  rewrite the mode, whether we're async or sync. This will only change
     //  the value if it hasn't been set to something already, but it may
@@ -1033,21 +1033,21 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('rewriteRequestVerb',
+TP.core.HTTPService.Inst.defineMethod('rewriteRequestMethod',
 function(aRequest) {
 
     /**
-     * @method rewriteRequestVerb
-     * @summary Returns the HTTP verb to use for the request. For many services
-     *     the value in the request will be used, but some services force the
-     *     verb to be a specific one, such as XML-RPC where POST is a
-     *     requirement.
+     * @method rewriteRequestMethod
+     * @summary Returns the HTTP method to use for the request. For many
+     *     services the value in the request will be used, but some services
+     *     force the method to be a specific one, such as XML-RPC where POST is
+     *     a requirement.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @returns {Constant} A TIBET HTTP Verb constant such as TP.HTTP_GET.
+     * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
-    return TP.ifEmpty(aRequest.at('verb'), this.getVerb());
+    return TP.ifEmpty(aRequest.at('method'), this.getMethod());
 });
 
 //  ========================================================================

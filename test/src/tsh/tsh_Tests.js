@@ -4807,9 +4807,9 @@ function() {
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the
-        //  verb here and don't allow TIBET to choose the verb based on its
+        //  method here and don't allow TIBET to choose the method based on its
         //  criteria, because we want to force the test above.
-        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="put"';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="put"';
 
         shellDriver.execShellTest(
             test,
@@ -4851,9 +4851,9 @@ function() {
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the
-        //  verb here and don't allow TIBET to choose the verb based on its
+        //  method here and don't allow TIBET to choose the method based on its
         //  criteria, because we want to force the test above.
-        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="post"';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="post"';
 
         shellDriver.execShellTest(
             test,
@@ -4895,10 +4895,10 @@ function() {
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the
-        //  verb here and don't allow TIBET to choose the verb based on its
+        //  method here and don't allow TIBET to choose the method based on its
         //  criteria, because we want to force the test above.
         inputVal = testBody.asSource() + ' .>! ' + locStr +
-                    ' --verb="post"' +
+                    ' --method="post"' +
                     ' --mimetype="application/x-www-form-urlencoded"';
 
         shellDriver.execShellTest(
@@ -4942,10 +4942,10 @@ function() {
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the
-        //  verb here and don't allow TIBET to choose the verb based on its
+        //  method here and don't allow TIBET to choose the method based on its
         //  criteria, because we want to force the test above.
         inputVal = testBody.asSource() + ' .>! ' + locStr +
-                    ' --verb="post"' +
+                    ' --method="post"' +
                     ' --mimetype="multipart/form-data"';
 
         shellDriver.execShellTest(
@@ -4989,10 +4989,10 @@ function() {
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the
-        //  verb here and don't allow TIBET to choose the verb based on its
+        //  method here and don't allow TIBET to choose the method based on its
         //  criteria, because we want to force the test above.
         inputVal = testBody.asXMLString().quoted() + ' .>! ' + locStr +
-                    ' --verb="post"' +
+                    ' --method="post"' +
                     ' --mimetype="multipart/form-data"';
 
         shellDriver.execShellTest(
@@ -5040,10 +5040,10 @@ function() {
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the
-        //  verb here and don't allow TIBET to choose the verb based on its
+        //  method here and don't allow TIBET to choose the method based on its
         //  criteria, because we want to force the test above.
         inputVal = testBody.asSource() + ' .>! ' + locStr +
-                    ' --verb="post"' +
+                    ' --method="post"' +
                     ' --mimetype="multipart/related"';
 
         shellDriver.execShellTest(
@@ -5089,9 +5089,9 @@ function() {
 
         //  Note here how we use '!' on the end of the redirect to make sure
         //  that TIBET flushes changes to the 'server'. Also, we specify the
-        //  verb here and don't allow TIBET to choose the verb based on its
+        //  method here and don't allow TIBET to choose the method based on its
         //  criteria, because we want to force the test above.
-        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
         shellDriver.execShellTest(
             test,
@@ -5260,7 +5260,7 @@ function() {
 
         locStr = 'localdb://local_test/author_info';
 
-        inputVal = locStr + ' -refresh --verb="head"';
+        inputVal = locStr + ' -refresh --method="head"';
 
         shellDriver.execShellTest(
             test,
@@ -5333,9 +5333,9 @@ function() {
         testBody = TP.hc('firstName', 'November', 'lastName', 'Jones');
 
         //  Note here how we use '!' on the end of the redirect to make sure
-        //  that TIBET flushes changes to the 'server'. Also, we specify the verb
-        //  here since the default for localdb: URLs is POST.
-        inputVal = testBody.asSource() + ' .>! ' + locStr + ' --verb="put"';
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  method here since the default for localdb: URLs is POST.
+        inputVal = testBody.asSource() + ' .>! ' + locStr + ' --method="put"';
 
         shellDriver.execShellTest(
             test,
@@ -5465,7 +5465,7 @@ function() {
         locStr = 'localdb://local_test/author_info';
 
         testBody = 'DELETE test content';
-        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
         shellDriver.execShellTest(
             test,
@@ -5492,7 +5492,7 @@ function() {
         locStr = 'localdb://local_test';
 
         testBody = 'DELETE test content';
-        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
         shellDriver.execShellTest(
             test,
@@ -5616,7 +5616,7 @@ function() {
 
         locStr = 'pouchdb://pouch_test/author_info';
 
-        inputVal = locStr + ' -refresh --verb="head"';
+        inputVal = locStr + ' -refresh --method="head"';
 
         shellDriver.execShellTest(
             test,
@@ -5698,9 +5698,9 @@ function() {
         testBody = TP.hc('firstName', 'November', 'lastName', 'Jones');
 
         //  Note here how we use '!' on the end of the redirect to make sure
-        //  that TIBET flushes changes to the 'server'. Also, we specify the verb
-        //  here since the default for pouchdb: URLs is POST.
-        inputVal = testBody.asSource() + ' .>! ' + locStr + ' --verb="put"';
+        //  that TIBET flushes changes to the 'server'. Also, we specify the
+        //  method here since the default for pouchdb: URLs is POST.
+        inputVal = testBody.asSource() + ' .>! ' + locStr + ' --method="put"';
 
         shellDriver.execShellTest(
             test,
@@ -5843,7 +5843,7 @@ function() {
         locStr = 'pouchdb://pouch_test/author_info';
 
         testBody = 'DELETE test content';
-        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
         shellDriver.execShellTest(
             test,
@@ -5875,7 +5875,7 @@ function() {
         locStr = 'pouchdb://pouch_test';
 
         testBody = 'DELETE test content';
-        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --verb="delete"';
+        inputVal = testBody.quoted() + ' .>! ' + locStr + ' --method="delete"';
 
         shellDriver.execShellTest(
             test,

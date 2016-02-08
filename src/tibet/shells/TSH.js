@@ -3502,7 +3502,7 @@ function(aRequest) {
     aRequest.stdout(content);
     url.setContent(content, TP.request('resultType', TP.TEXT));
 
-    url.save(TP.request('verb', TP.HTTP_PUT));
+    url.save(TP.request('method', TP.HTTP_PUT));
 
     return;
 });

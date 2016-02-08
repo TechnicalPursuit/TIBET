@@ -81,15 +81,14 @@ function(aRequest) {
     var request,
 
         url,
-
-        theDB,
+        commObj,
 
         id,
         rev,
         dbName,
         body,
 
-        commObj,
+        theDB,
 
         resultStr,
 
@@ -108,24 +107,6 @@ function(aRequest) {
         return request.fail('TP.sig.InvalidURI');
     }
 
-    //  rewrite the mode, whether we're async or sync. This will only change
-    //  the value if it hasn't been set to something already, but it may
-    //  warn when the value appears to be inconsistent with what the service
-    //  is capable of processing.
-    request.atPut('async', this.rewriteRequestMode(request));
-
-    id = request.at('id');
-    rev = request.at('rev');
-    dbName = request.at('dbName');
-    body = request.at('body');
-
-    if (TP.notValid(theDB = new TP.extern.PouchDB(dbName))) {
-        request.fail(
-                TP.sc('Cannot open pouchDB database named: ' + dbName));
-
-        return this;
-    }
-
     //  Set the 'comm object' of the url to be a plain Object (to emulate an
     //  XHR). The caller can extract information such as status codes, text,
     //  etc. from it.
@@ -139,6 +120,30 @@ function(aRequest) {
     };
 
     url.set('commObject', commObj);
+
+    //  rewrite the mode, whether we're async or sync. This will only change
+    //  the value if it hasn't been set to something already, but it may
+    //  warn when the value appears to be inconsistent with what the service
+    //  is capable of processing.
+    request.atPut('async', this.rewriteRequestMode(request));
+
+    id = request.at('id');
+    rev = request.at('rev');
+    dbName = request.at('dbName');
+    body = request.at('body');
+
+    if (TP.notValid(theDB = new TP.extern.PouchDB(dbName))) {
+
+        resultStr = TP.sc('Cannot open PouchDB database named: ' + dbName);
+
+        commObj.responseType = '';
+        commObj.status = 500;
+        commObj.statusText = '500 ' + resultStr;
+
+        request.fail(resultStr);
+
+        return this;
+    }
 
     switch (request.at('action')) {
 

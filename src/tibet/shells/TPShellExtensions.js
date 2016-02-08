@@ -1159,7 +1159,7 @@ function(aRequest, cmdType) {
             if (/!/.test(pipe)) {
                 result = null;
                 subrequest.atPut('crud', crud);
-                if (subrequest.at('verb') === TP.HTTP_DELETE) {
+                if (subrequest.at('method') === TP.HTTP_DELETE) {
                     obj.nuke(subrequest);
                 } else {
                     obj.save(subrequest);
@@ -1250,7 +1250,7 @@ function(aRequest, cmdType) {
 
         default:
 
-            if (subrequest.at('verb') === TP.HTTP_DELETE) {
+            if (subrequest.at('method') === TP.HTTP_DELETE) {
                 obj.nuke(subrequest);
                 break;
             }

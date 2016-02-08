@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /*
-Common HTTP verb support. Each of the calls in this file ultimately relies
+Common HTTP method support. Each of the calls in this file ultimately relies
 on the low-level TP.httpCall function in one of the browser-specific HTTP
 support files. The value of these wrappers lies in their pre-built request
 configuration logic, which helps keep things easier for callers and in their
@@ -70,7 +70,7 @@ function(targetUrl, aRequest) {
 
     var request;
 
-    //  we use httpSend which is used for state-change verbs and their
+    //  we use httpSend which is used for state-change methods and their
     //  processing. but we make sure the request says noredirect for DELETE
     //  and we also turn off query and payload processing
     request = TP.ifInvalid(aRequest, TP.request());
@@ -236,18 +236,18 @@ function(targetUrl, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$httpQuery',
-function(httpVerb, targetUrl, aRequest) {
+function(httpMethod, targetUrl, aRequest) {
 
     /**
      * @method $httpQuery
      * @summary Returns an XMLHttpRequest containing the result of an HTTP
      *     "query", meaning a non-state-changing request, with the specified
-     *     verb, URL, and associated parameters. This routine is the common
+     *     method, URL, and associated parameters. This routine is the common
      *     handler for GET, HEAD, OPTIONS, and TRACE. You can pass parameters to
      *     the root url by using the query parameter of aRequest. The query's
      *     key/value pairs are then application/x-www-form-urlencoded and
      *     appended to the URL.
-     * @param {String} httpVerb TP.HTTP_GET, TP.HTTP_HEAD, TP.HTTP_OPTIONS, or
+     * @param {String} httpMethod TP.HTTP_GET, TP.HTTP_HEAD, TP.HTTP_OPTIONS, or
      *     TP.HTTP_TRACE.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
@@ -263,7 +263,7 @@ function(httpVerb, targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.request());
 
     request.atPut('uri', targetUrl);
-    request.atPut('verb', httpVerb);
+    request.atPut('method', httpMethod);
 
     if (TP.isEmpty(targetUrl)) {
         return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
@@ -290,14 +290,14 @@ function(httpVerb, targetUrl, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$httpSend',
-function(httpVerb, targetUrl, aRequest) {
+function(httpMethod, targetUrl, aRequest) {
 
     /**
      * @method $httpSend
      * @summary Sends the data contained in the 'body' parameter of the request
-     *     to the targetUrl using the command verb provided (normally
+     *     to the targetUrl using the command method provided (normally
      *     TP.HTTP_POST or TP.HTTP_PUT).
-     * @param {String} httpVerb TP.HTTP_POST, TP.HTTP_PUT, etc.
+     * @param {String} httpMethod TP.HTTP_POST, TP.HTTP_PUT, etc.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
@@ -312,7 +312,7 @@ function(httpVerb, targetUrl, aRequest) {
 
     request = TP.ifInvalid(aRequest, TP.request());
     request.atPut('uri', targetUrl);
-    request.atPut('verb', httpVerb);
+    request.atPut('method', httpMethod);
 
     if (TP.isEmpty(targetUrl)) {
         return TP.httpError(targetUrl, 'TP.sig.InvalidURI',

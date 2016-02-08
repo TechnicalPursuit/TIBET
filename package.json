@@ -77,7 +77,7 @@
     "node-forge": "TechnicalPursuit/forge",
     "opener": "^1.4.1",
     "phantomjs": "*",
-    "pouchdb": "TechnicalPursuit/pouchdb#4.0.3",
+    "pouchdb": "TechnicalPursuit/pouchdb#5.2.1",
     "pouchdb-all-dbs": "TechnicalPursuit/pouchdb-all-dbs",
     "readline-sync": "^1.2.19",
     "shelljs": "TechnicalPursuit/shelljs",

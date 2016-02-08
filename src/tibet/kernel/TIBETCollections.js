@@ -360,6 +360,33 @@ TP.api.IterationAPI =
  */
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+Array.Type.defineMethod('generateNumericSequence',
+function(fromIndex, toIndex) {
+
+    /**
+     * @method generateNumericSequence
+     * @summary Generates a simple monotonic sequence of numbers from the
+           starting index to the ending index (inclusive).
+     * @returns {Array} An Array of Numbers from the start to the end index,
+     *     inclusive.
+     */
+
+    var nums,
+        i;
+
+    nums = TP.ac();
+
+    for (i = fromIndex; i <= toIndex; i++) {
+        nums.push(i);
+    }
+
+    return nums;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

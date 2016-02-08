@@ -47,7 +47,7 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Turn on support for webdav verbs? Off by default for profiles other
+        //  Turn on support for webdav methods? Off by default for profiles other
         //  than 'development' since this adds PUT, DELETE, etc.
         if (TDS.cfg('tds.use.webdav') !== true) {
             return;

@@ -226,7 +226,7 @@ function(aRequest) {
         //  Otherwise, we're fetching JSON over HTTP
 
         //  'uri' and 'finaluri' got set above
-        //  'verb' defaults to TP.HTTP_GET
+        //  'method' defaults to TP.HTTP_GET
         //  'body' and 'finalbody' are not set
 
         //  We default 'async' to true

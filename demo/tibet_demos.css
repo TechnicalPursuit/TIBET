@@ -24,6 +24,10 @@ table {
     box-shadow: 0 1px 2px #d1d1d1;
 }
 
+code {
+    font-size: 85%;
+}
+
 a:link {
     color: #666;
     font-weight: bold;

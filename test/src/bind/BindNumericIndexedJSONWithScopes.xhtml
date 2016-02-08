@@ -38,7 +38,7 @@
 
     <span bind:scope="urn:tibet:test_people">
 
-        <span bind:scope="#json($.people[0])">
+        <span bind:scope="#jpath($.people[0])">
             First record:<br/>
 
             <label for="firstNameField1">First name: </label>
@@ -49,7 +49,7 @@
             <br/>
         </span>
 
-        <span bind:scope="#json($.people[1])">
+        <span bind:scope="#jpath($.people[1])">
             Second record:<br/>
 
             <label for="firstNameField2">First name: </label>

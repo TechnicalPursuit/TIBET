@@ -39,7 +39,7 @@
     <br/>
     <br/>
 
-    <span id="repeater" bind:repeat="urn:tibet:test_people#json($.people)">
+    <span id="repeater" bind:repeat="urn:tibet:test_people#jpath($.people)">
         <label>First name:
             <input type="text" bind:io="{value: firstname}" tabindex="0"/>
         </label>

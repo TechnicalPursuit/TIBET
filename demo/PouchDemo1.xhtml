@@ -10,19 +10,28 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
 
-    <tibet:style type="less" href="tibet_demos.less"/>
+    <link type="text/css" rel="stylesheet" href="tibet_demos.css"/>
 
 </head>
 
 <body xmlns:bind="http://www.technicalpursuit.com/2005/binding">
 
-	<h2>Pouch Demo #1</h2><br/>
+	<h2>PouchDB Show All Databases</h2><br/>
 	<br/>
 
-    <!--Status: <span id="status" bind:in="{content:
-         tibet://uicanvas#tibet((#dbProvider).status)}"/> -->
+    <!-- Send a 'UIActivate' signal to the element with ID 'dbProvider'. Because
+         this is a <tibet:service/> tag, this will cause it to refresh. -->
+    <button on:click="{signal: UIActivate, origin: 'dbProvider'}">Refresh it!</button>
 
-    <button on:click="{signal: UIActivate, origin:'dbProvider'}">Refresh it!</button>
+	<br/>
+    <br/>
+
+    Fetch status code: <span bind:in="{value: tibet://uicanvas#dbProvider@statuscode}"/>
+	<br/>
+    Fetch status text: <span bind:in="{value: tibet://uicanvas#dbProvider@statustext}"/>
+
+	<br/>
+    <br/>
 
     <div>Databases:</div>
     <table>
@@ -31,16 +40,26 @@
                 <th>Name</th>
             </tr>
         </thead>
-        <tbody id="people" bind:repeat="urn:tibet:dbData#tibet()" bind:editable="true">
+        <tbody id="people" bind:repeat="urn:tibet:dbData#tibet()">
             <tr>
                 <td>[[value .% upperCase]]</td>
             </tr>
         </tbody>
     </table>
 
+    <!-- Set up a <service/> tag that will get the names of 'all databases' from
+         the current PouchDB installation by accessing the special '_all_dbs'
+         URL. -->
     <tibet:service id="dbProvider"
                     href="pouchdb://_all_dbs"
                     result="urn:tibet:dbData"/>
+
+    <ev:script type="text/javascript" event="DOMContentLoaded" observer="#document">
+        <![CDATA[
+        //  Make sure we have at least one instance of a database to see.
+        new TP.extern.PouchDB('pouch_test');
+        ]]>
+    </ev:script>
 
 </body>
 </html>

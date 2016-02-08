@@ -32,7 +32,7 @@
     <br/>
     Scoped - left-hand scheme
     <br/>
-    <span bind:scope="urn:tibet:test_people#json($.people[0])">
+    <span bind:scope="urn:tibet:test_people#jpath($.people[0])">
         First name (bind:io): <textarea id="firstNameField1" bind:io="{value: firstname}" tabindex="0"></textarea>
     </span>
 
@@ -41,7 +41,7 @@
     Scoped - right-hand scheme
     <br/>
     <span bind:scope="urn:tibet:test_people">
-        First name (bind:io): <textarea id="firstNameField2" bind:io="{value: #json($.people[0].firstname)}" tabindex="0"></textarea>
+        First name (bind:io): <textarea id="firstNameField2" bind:io="{value: #jpath($.people[0].firstname)}" tabindex="0"></textarea>
     </span>
 
     <br/>
@@ -49,7 +49,7 @@
     Scoped - two-level-descent - empty scheme:
     <br/>
     <span bind:scope="urn:tibet:test_people">
-        <span bind:scope="#json()">
+        <span bind:scope="#jpath()">
         First name (bind:io): <textarea id="firstNameField3" bind:io="{value: $.people[0].firstname}" tabindex="0"></textarea>
         </span>
     </span>
@@ -59,7 +59,7 @@
     Scoped - two-level-descent - left-hand short part:
     <br/>
     <span bind:scope="urn:tibet:test_people">
-        <span bind:scope="#json($)">
+        <span bind:scope="#jpath($)">
         First name (bind:io): <textarea id="firstNameField4" bind:io="{value: people[0].firstname}" tabindex="0"></textarea>
         </span>
     </span>
@@ -69,7 +69,7 @@
     Scoped - two-level-descent - right-hand short part:
     <br/>
     <span bind:scope="urn:tibet:test_people">
-        <span bind:scope="#json($.people[0])">
+        <span bind:scope="#jpath($.people[0])">
         First name (bind:io): <textarea id="firstNameField5" bind:io="{value: firstname}" tabindex="0"></textarea>
         </span>
     </span>

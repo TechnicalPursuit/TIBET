@@ -80,7 +80,7 @@
     <br/>
     <br/>
 
-    <span id="jsonrepeater" bind:repeat="urn:tibet:test_people_json#json($.people)">
+    <span id="jsonrepeater" bind:repeat="urn:tibet:test_people_json#jpath($.people)">
         <label>Binding to JSON data with $_ variable reference:
             <input type="text" bind:io="{value: 'The middle name: [[$_.middlename .% upperCase]]'}" tabindex="0"/>
         </label>

@@ -4826,8 +4826,8 @@ function(aNode) {
 
     //  Create the 'input' field.
     textInputElement = TP.documentConstructElement(nodeDoc,
-                                                'input',
-                                                TP.w3.Xmlns.XHTML);
+                                                    'input',
+                                                    TP.w3.Xmlns.XHTML);
 
     //  Replace the node with the text input. Note here how we pass false to
     //  avoid awakening this content.

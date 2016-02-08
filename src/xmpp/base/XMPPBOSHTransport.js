@@ -1047,7 +1047,7 @@ function(logInfo) {
             TP.sys.logIO(
                 TP.hc('uri', this.get('httpServerURI'),
                         'direction', TP.RECV,
-                        'verb', TP.HTTP_POST,
+                        'method', TP.HTTP_POST,
                         'async', logInfo.at('async'),
                         'body', logInfo.at('body'),
                         'xhr', logInfo.at('xhr'),
@@ -1087,7 +1087,7 @@ function(logInfo) {
             TP.sys.logIO(
                 TP.hc('uri', this.get('httpServerURI'),
                         'direction', TP.SEND,
-                        'verb', TP.HTTP_POST,
+                        'method', TP.HTTP_POST,
                         'async', logInfo.at('async'),
                         'body', logInfo.at('body'),
                         'xhr', logInfo.at('xhr'),

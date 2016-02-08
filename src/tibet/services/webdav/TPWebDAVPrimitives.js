@@ -62,7 +62,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_REPORT);
+    request.atPut('method', TP.WEBDAV_REPORT);
 
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
@@ -252,7 +252,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_REPORT);
+    request.atPut('method', TP.WEBDAV_REPORT);
 
     content = TP.join(
                 TP.XML_10_UTF8_HEADER, '\n',
@@ -295,7 +295,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_REPORT);
+    request.atPut('method', TP.WEBDAV_REPORT);
 
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
@@ -342,7 +342,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_REPORT);
+    request.atPut('method', TP.WEBDAV_REPORT);
 
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
@@ -478,7 +478,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_REPORT);
+    request.atPut('method', TP.WEBDAV_REPORT);
 
     content = TP.join(TP.XML_10_UTF8_HEADER, '\n',
                         '<D:version-tree xmlns:D="DAV:">\n',
@@ -623,17 +623,17 @@ function(targetUrl, aRequest, useQuery) {
      */
 
     var request,
-        verb,
+        method,
         headers;
 
     request = TP.ifInvalid(aRequest, TP.hc());
 
-    //  have to have a verb for the operation
-    verb = request.at('verb');
+    //  have to have a method for the operation
+    method = request.at('method');
 
-    if (TP.notValid(verb)) {
+    if (TP.notValid(method)) {
         TP.raise('TP.sig.InvalidParameter',
-                    'Must provide verb for WebDAV operation.');
+                    'Must provide method for WebDAV operation.');
 
         return;
     }
@@ -655,10 +655,10 @@ function(targetUrl, aRequest, useQuery) {
 
     if (TP.isTrue(useQuery)) {
         //  use httpQuery since its NOT a state-changing request
-        return TP.$httpQuery(verb, targetUrl, request);
+        return TP.$httpQuery(method, targetUrl, request);
     } else {
         //  use httpSend since its a state-changing request
-        return TP.$httpSend(verb, targetUrl, request);
+        return TP.$httpSend(method, targetUrl, request);
     }
 });
 
@@ -683,7 +683,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_CHECKIN);
+    request.atPut('method', TP.WEBDAV_CHECKIN);
 
     //  call our standardized TP.webdevCall() routine to actually talk to
     //  the server
@@ -711,7 +711,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_CHECKOUT);
+    request.atPut('method', TP.WEBDAV_CHECKOUT);
 
     //  call our standardized TP.webdevCall() routine to actually talk to
     //  the server
@@ -757,7 +757,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_COPY);
+    request.atPut('method', TP.WEBDAV_COPY);
 
     //  have to have a destination url for the copy
     destination = request.at('destination');
@@ -855,7 +855,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_LOCK);
+    request.atPut('method', TP.WEBDAV_LOCK);
 
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
@@ -928,7 +928,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_MKCOL);
+    request.atPut('method', TP.WEBDAV_MKCOL);
 
     //  call our standardized TP.webdevCall() routine to actually talk to
     //  the server
@@ -976,7 +976,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_MOVE);
+    request.atPut('method', TP.WEBDAV_MOVE);
 
     //  have to have a destination url for the move
     destination = request.at('destination');
@@ -1049,7 +1049,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_PROPFIND);
+    request.atPut('method', TP.WEBDAV_PROPFIND);
 
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
@@ -1122,7 +1122,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_PROPPATCH);
+    request.atPut('method', TP.WEBDAV_PROPPATCH);
 
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
@@ -1192,7 +1192,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_REPORT);
+    request.atPut('method', TP.WEBDAV_REPORT);
 
     //  call our standardized TP.webdevCall() routine to actually talk to
     //  the server
@@ -1237,7 +1237,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_UNLOCK);
+    request.atPut('method', TP.WEBDAV_UNLOCK);
 
     headers = TP.ifKeyInvalid(request, 'headers', TP.hc());
     request.atPut('headers', headers);
@@ -1280,7 +1280,7 @@ function(targetUrl, aRequest) {
     request = TP.ifInvalid(aRequest, TP.hc());
 
     //  make sure we're aiming the desired target/operation
-    request.atPut('verb', TP.WEBDAV_VERSIONCONTROL);
+    request.atPut('method', TP.WEBDAV_VERSIONCONTROL);
 
     //  call our standardized TP.webdevCall() routine to actually talk to
     //  the server

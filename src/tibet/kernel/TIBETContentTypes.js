@@ -1841,7 +1841,7 @@ function(aPath) {
         path = aPath.replace(TP.regex.ACP_NUMERIC, '0');
     }
 
-    //  If we're handed a '#json(...)' pointer, then we know what kind of
+    //  If we're handed a '#jpath(...)' pointer, then we know what kind of
     //  path it is (or should be, anyway)
     if (TP.regex.JSON_POINTER.test(path)) {
         return TP.core.JSONPath;
@@ -4318,7 +4318,7 @@ function() {
      * @returns {Array} An Array of the receiver's parts.
      */
 
-    return TP.getAccessPathParts(this.get('srcPath'), 'json');
+    return TP.getAccessPathParts(this.get('srcPath'), 'jpath');
 });
 
 //  ------------------------------------------------------------------------
