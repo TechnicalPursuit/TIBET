@@ -1000,7 +1000,39 @@ function(aSignal) {
      *     this handler.
      */
 
-    return TP.todo();
+    this.refresh();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('refresh',
+function() {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound elements
+     *     in the document. For an HTML document this will refresh content under
+     *     the body, while in an XML document all elements including the
+     *     documentElement are refreshed.
+     * @returns {TP.core.DocumentNode} The receiver.
+     */
+
+    var node,
+        body;
+
+    node = this.getNativeNode();
+
+    if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
+        if (TP.isElement(body = TP.documentGetBody(node))) {
+            TP.tpnode(body).refresh();
+        }
+    } else {
+        TP.tpnode(node.documentElement).refresh();
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3628,6 +3660,26 @@ function(aSignal) {
      *     this handler.
      */
 
+    this.refresh();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('refresh',
+function() {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound elements
+     *     in the document. For an HTML document this will refresh content under
+     *     the body, while in an XML document all elements including the
+     *     documentElement are refreshed.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    //  TODO: Call the receiver's FacetChange handler with a faked signal
     return TP.todo();
 });
 
