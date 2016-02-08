@@ -989,6 +989,21 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineHandler('UIRefresh',
+function(aSignal) {
+
+    /**
+     * @method handleUIRefresh
+     * @summary Refreshes the receiver's bound data.
+     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    return TP.todo();
+});
+
+//  ------------------------------------------------------------------------
 //  TP.core.ElementNode
 //  ------------------------------------------------------------------------
 
@@ -3599,6 +3614,21 @@ function(aCollection) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineHandler('UIRefresh',
+function(aSignal) {
+
+    /**
+     * @method handleUIRefresh
+     * @summary Refreshes the receiver's bound data.
+     * @param {TP.sig.UIRefresh} aSignal The signal instance which triggered
+     *     this handler.
+     */
+
+    return TP.todo();
 });
 
 //  ------------------------------------------------------------------------
