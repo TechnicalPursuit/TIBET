@@ -1211,107 +1211,107 @@ function() {
 
     this.it('JSON path', function(test, options) {
 
-        path = TP.apc('#json($.store.book[*].author)');
+        path = TP.apc('#jpath($.store.book[*].author)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..author)');
+        path = TP.apc('#jpath($..author)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($.store.*)');
+        path = TP.apc('#jpath($.store.*)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($.store..price)');
+        path = TP.apc('#jpath($.store..price)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($.store..price.^)');
+        path = TP.apc('#jpath($.store..price.^)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[2])');
+        path = TP.apc('#jpath($..book[2])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[(@.length-1)])');
+        path = TP.apc('#jpath($..book[(@.length-1)])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[:-1])');
+        path = TP.apc('#jpath($..book[:-1])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[:2])');
+        path = TP.apc('#jpath($..book[:2])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[1:2])');
+        path = TP.apc('#jpath($..book[1:2])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[-2:])');
+        path = TP.apc('#jpath($..book[-2:])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[2:])');
+        path = TP.apc('#jpath($..book[2:])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[?(@.isbn)])');
+        path = TP.apc('#jpath($..book[?(@.isbn)])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[?(@.price < 10)])');
+        path = TP.apc('#jpath($..book[?(@.price < 10)])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[?(@.isbn && @.price < 10)])');
+        path = TP.apc('#jpath($..book[?(@.isbn && @.price < 10)])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..book[?(@.isbn || @.price < 10)])');
+        path = TP.apc('#jpath($..book[?(@.isbn || @.price < 10)])');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($..*)');
+        path = TP.apc('#jpath($..*)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($)');
+        path = TP.apc('#jpath($)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($.store)');
+        path = TP.apc('#jpath($.store)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($.children[0].^)');
+        path = TP.apc('#jpath($.children[0].^)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));
 
-        path = TP.apc('#json($.store.book[*].reviews[?(@.nyt == @.cst)].^.title)');
+        path = TP.apc('#jpath($.store.book[*].reviews[?(@.nyt == @.cst)].^.title)');
         test.assert.isKindOf(
                 path, TP.core.JSONPath,
                 'Wrong path type for: ' + TP.str(path));

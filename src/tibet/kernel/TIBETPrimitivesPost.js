@@ -4948,7 +4948,7 @@ function(aPath, aScheme) {
             break;
 
         case 'tibet':
-        case 'json':
+        case 'jpath':
 
             if (aPath === '.') {
                 return TP.ac('.');
@@ -5253,7 +5253,7 @@ function(aPath) {
      *     current return values:
      *
      *     TP.TIBET_PATH_TYPE               ->      'tibet'
-     *     TP.JSON_PATH_TYPE                ->      'json'
+     *     TP.JSON_PATH_TYPE                ->      'jpath'
      *     TP.CSS_PATH_TYPE                 ->      'css'
      *     TP.XPATH_PATH_TYPE               ->      'xpath1'
      *     TP.BARENAME_PATH_TYPE            ->      ''
@@ -5280,9 +5280,9 @@ function(aPath) {
         return 'tibet';
     }
 
-    //  If the path only contains a dollar character, is 'json'.
+    //  If the path only contains a dollar character, is 'jpath'.
     if (TP.regex.ONLY_DOLLAR.test(aPath)) {
-        return 'json';
+        return 'jpath';
     }
 
     pathType = TP.getAccessPathType(aPath);
@@ -5291,7 +5291,7 @@ function(aPath) {
         case TP.TIBET_PATH_TYPE:
             return 'tibet';
         case TP.JSON_PATH_TYPE:
-            return 'json';
+            return 'jpath';
         case TP.CSS_PATH_TYPE:
             return 'css';
         case TP.XPATH_PATH_TYPE:

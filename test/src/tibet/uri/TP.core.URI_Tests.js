@@ -3276,7 +3276,7 @@ function() {
 
     this.it('change along a single path', function(test, options) {
 
-        jsonURI2 = TP.uc('urn:tibet:jsonData#json($.foo[3].bar)');
+        jsonURI2 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].bar)');
         jsonURI2.set('shouldCreateContent', true);
 
         jsonURI2.setResource('goo', TP.hc('observeResource', true));
@@ -3295,7 +3295,7 @@ function() {
 
     this.it('change along a branching path', function(test, options) {
 
-        jsonURI3 = TP.uc('urn:tibet:jsonData#json($.foo[3][bar,moo,too].roo)');
+        jsonURI3 = TP.uc('urn:tibet:jsonData#jpath($.foo[3][bar,moo,too].roo)');
         jsonURI3.set('shouldCreateContent', true);
 
         jsonURI3.setResource(TP.ac(), TP.hc('observeResource', true));
@@ -3322,10 +3322,10 @@ function() {
 
     this.it('change of an end aspect of a branching path', function(test, options) {
 
-        jsonURI4 = TP.uc('urn:tibet:jsonData#json($.foo[3].bar.roo)');
+        jsonURI4 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].bar.roo)');
         jsonURI4.getResource();
 
-        jsonURI5 = TP.uc('urn:tibet:jsonData#json($.foo[3].moo.roo)');
+        jsonURI5 = TP.uc('urn:tibet:jsonData#jpath($.foo[3].moo.roo)');
         jsonURI5.set('shouldCreateContent', true);
 
         jsonURI5.setResource(42, TP.hc('observeResource', true));
@@ -3360,7 +3360,7 @@ function() {
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
 
-        jsonURI6 = TP.uc('urn:tibet:jsonData#json($.foo[3])');
+        jsonURI6 = TP.uc('urn:tibet:jsonData#jpath($.foo[3])');
         jsonURI6.set('shouldCreateContent', true);
 
         jsonURI6.setResource('fluffy', TP.hc('observeResource', true));
@@ -3408,7 +3408,7 @@ function() {
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
 
-        jsonURI7 = TP.uc('urn:tibet:jsonData#json($.foo[2])');
+        jsonURI7 = TP.uc('urn:tibet:jsonData#jpath($.foo[2])');
         jsonURI7.set('shouldCreateContent', true);
 
         jsonURI7.setResource(TP.ac(), TP.hc('observeResource', true));

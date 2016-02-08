@@ -33,7 +33,7 @@
     <br/>
 
     <!-- Set up a span to define the binding scope -->
-    <span bind:scope="urn:tibet:test_person#json($.person)">
+    <span bind:scope="urn:tibet:test_person#jpath($.person)">
 
         <label for="firstNameField">First name: </label>
         <input type="text" id="firstNameField" bind:io="{value: firstname}" tabindex="0"/><br/>

@@ -42,7 +42,7 @@
     <!-- Set up a span to define the binding scope -->
     <span bind:scope="urn:tibet:test_people">
 
-        John's Favorite Color: <input type="text" id="colorField" value="[[#json($.people[1].color)]]" tabindex="0"/><br/>
+        John's Favorite Color: <input type="text" id="colorField" value="[[#jpath($.people[1].color)]]" tabindex="0"/><br/>
 
     </span>
 

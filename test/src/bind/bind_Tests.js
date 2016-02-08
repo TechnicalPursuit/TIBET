@@ -4114,7 +4114,7 @@ function() {
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_people#json($.people)'),
+                        TP.uc('urn:tibet:test_people#jpath($.people)'),
                         'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
@@ -4226,7 +4226,7 @@ function() {
                         'TP.sig.ValueChange');
 
                 test.assert.didSignal(
-                        TP.uc('urn:tibet:test_people#json($.people)'),
+                        TP.uc('urn:tibet:test_people#jpath($.people)'),
                         'TP.sig.StructureChange');
 
                 modelObj = TP.uc('urn:tibet:test_people').getResource().get('result');
