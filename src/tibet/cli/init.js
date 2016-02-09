@@ -89,6 +89,7 @@ Cmd.prototype.execute = function() {
         child,  // The child_process module.
         cmd,    // Closure'd var providing access to the command object.
         dna,
+        lnflags,
         lnerr,
         rmerr;
 
@@ -102,6 +103,11 @@ Cmd.prototype.execute = function() {
         this.error(
             'Cannot init. No package.json found. Are you in a project?');
         return 1;
+    }
+
+    lnflags = '-s';
+    if (this.options.force) {
+        lnflags += 'f';
     }
 
     // If the node_modules directory doesn't exist (but we know there's a
@@ -159,7 +165,7 @@ Cmd.prototype.execute = function() {
                 //  to avoid pointing down into node_modules or having
                 //  node_modules be a location potentially pushed to a remote
                 //  deployment target.
-                sh.ln('-s', path.join(
+                sh.ln(lnflags, path.join(
                     CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
                     path.join(
                     CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
@@ -188,7 +194,7 @@ Cmd.prototype.execute = function() {
             //  We also link TIBET library code into the TIBET-INF location to
             //  avoid pointing down into node_modules or having node_modules be
             //  a location potentially pushed to a remote deployment target.
-            sh.ln('-s', path.join(
+            sh.ln(lnflags, path.join(
                 CLI.expandPath(CLI.getAppHead()), 'node_modules/tibet'),
                 path.join(
                 CLI.expandPath(CLI.getAppRoot()), 'TIBET-INF/tibet'));
@@ -209,3 +215,4 @@ Cmd.prototype.execute = function() {
 module.exports = Cmd;
 
 }());
+
