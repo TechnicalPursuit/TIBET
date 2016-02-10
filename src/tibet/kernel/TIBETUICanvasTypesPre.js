@@ -2282,20 +2282,16 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Window.Inst.defineMethod('refresh',
-function(aSignalOrHash) {
+function() {
 
     /**
      * @method refresh
      * @summary Updates the receiver's content by refreshing all bound elements
      *     in the window's document.
-     * @param {TP.sig.UIRefresh|TP.core.Hash} aSignalOrHash An optional signal
-     *     which triggered this action or a hash.
-     *     This signal or hash should include a key of 'deep' and a value
-     *     of true to cause a deep refresh that updates all nodes.
      * @returns {TP.core.Window} The receiver.
      */
 
-    this.getContentDocument().refresh(aSignalOrHash);
+    this.getContentDocument().refresh();
 
     return;
 });

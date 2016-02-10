@@ -35,7 +35,7 @@ TP.defineNamespace('TP.log');
 /* eslint-enable no-unused-vars */
 
 //  ============================================================================
-//  Manager
+//  TP.log.Manager
 //  ============================================================================
 
 /**
@@ -226,7 +226,7 @@ function(aLogger) {
 });
 
 //  ============================================================================
-//  Nestable
+//  TP.log.Nestable
 //  ============================================================================
 
 /**
@@ -235,8 +235,8 @@ function(aLogger) {
  */
 TP.lang.Object.defineSubtype('log.Nestable');
 
-// TP.log.Nestable is an abstract supertype. You can't create instances
-// directly.
+//  TP.log.Nestable is an abstract supertype. You can't create instances
+//  directly.
 TP.log.Nestable.isAbstract(true);
 
 //  ----------------------------------------------------------------------------
@@ -415,7 +415,7 @@ function() {
 });
 
 //  ============================================================================
-//  Filtered
+//  TP.log.Filtered
 //  ============================================================================
 
 /**
@@ -511,9 +511,10 @@ function(anEntry) {
 
     filters = this.getFilters();
     if (TP.notEmpty(filters)) {
-        results = filters.map(function(filter) {
-            return filter.filter(anEntry);
-        });
+        results = filters.map(
+                    function(filter) {
+                        return filter.filter(anEntry);
+                    });
 
         if (results.contains(false)) {
             return false;
@@ -539,7 +540,7 @@ function() {
 });
 
 //  ============================================================================
-//  Leveled
+//  TP.log.Leveled
 //  ============================================================================
 
 /**
@@ -612,7 +613,7 @@ function(aLevel) {
 });
 
 //  ============================================================================
-//  Logger
+//  TP.log.Logger
 //  ============================================================================
 
 /**
@@ -707,7 +708,7 @@ function() {
     }
 
     name = TP.ifInvalid(this.$get('defaultAppenderType'),
-        TP.sys.cfg('log.appender'));
+                        TP.sys.cfg('log.appender'));
 
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
@@ -871,7 +872,7 @@ function() {
 
     appenders = this.$get('appenders');
     if (TP.isValid(appenders)) {
-        appenders.length = 0;
+        appenders.empty();
     }
 
     return this;
@@ -893,7 +894,7 @@ function() {
 
     filters = this.$get('filters');
     if (TP.isValid(filters)) {
-        filters.length = 0;
+        filters.empty();
     }
 
     return this;
@@ -1055,7 +1056,7 @@ function(aFlag) {
      * @returns {Boolean} The current inherited appender state.
      */
 
-    if (aFlag !== undefined) {
+    if (TP.isDefined(aFlag)) {
         this.set('additiveAppenders', aFlag);
     }
 
@@ -1075,7 +1076,7 @@ function(aFlag) {
      * @returns {Boolean} The current inherited filter state.
      */
 
-    if (aFlag !== undefined) {
+    if (TP.isDefined(aFlag)) {
         this.set('additiveFilters', aFlag);
     }
 
@@ -1334,7 +1335,7 @@ function(varargs) {
 });
 
 //  ============================================================================
-//  Appender
+//  TP.log.Appender
 //  ============================================================================
 
 /**
@@ -1492,7 +1493,7 @@ function(aLayout) {
 });
 
 //  ============================================================================
-//  Entry
+//  TP.log.Entry
 //  ============================================================================
 
 /**
@@ -1551,7 +1552,8 @@ TP.log.Entry.Inst.defineMethod('getArglist',
 function() {
 
     /**
-     * Returns the original arguments passed to the logging function.
+     * @method getArgList
+     * @summary Returns the original arguments passed to the logging function.
      * @returns {Array.<Object>} The argument list in array form.
      */
 
@@ -1564,9 +1566,10 @@ TP.log.Entry.Inst.defineMethod('getDate',
 function() {
 
     /**
-     * Returns the entry date. The millisecond data from this is often used as
-     * part of logging output, or to compute log entry delta times.
-     * @returns {Date}
+     * @method getDate
+     * @summary Returns the entry date. The millisecond data from this is often
+     *     used as part of logging output, or to compute log entry delta times.
+     * @returns {Date} The entry's date.
      */
 
     return this.$get('date');
@@ -1606,8 +1609,10 @@ TP.log.Entry.Inst.defineMethod('getMarker',
 function() {
 
     /**
-     * Returns the entry marker, which contains possible data for filtering.
-     * @returns {TP.log.Marker}
+     * @method getMarker
+     * @summary Returns the entry marker, which contains possible data for
+     *     filtering.
+     * @returns {TP.log.Marker} The entry's marker.
      */
 
     return this.$get('marker');
@@ -1684,8 +1689,10 @@ TP.log.Entry.Inst.defineMethod('isError',
 function() {
 
     /**
-     * Returns whether or not this log entry represents an error condition.
-     * @returns {Boolean}
+     * @method isError
+     * @summary Returns whether or not this log entry represents an error
+     *     condition.
+     * @returns {Boolean} Whether or not this entry represents an error.
      */
 
     //  NB: The boot system expects to see these in all uppercase. For example,
@@ -1694,7 +1701,7 @@ function() {
 });
 
 //  ============================================================================
-//  Filter
+//  TP.log.Filter
 //  ============================================================================
 
 /**
@@ -1723,7 +1730,7 @@ function(anEntry) {
 });
 
 //  ============================================================================
-//  Layout
+//  TP.log.Layout
 //  ============================================================================
 
 /**
@@ -1753,7 +1760,7 @@ function(anEntry) {
 });
 
 //  ============================================================================
-//  Level
+//  TP.log.Level
 //  ============================================================================
 
 /**
@@ -1800,7 +1807,7 @@ function(aName, anIndex) {
         }
     }
 
-    // Verify we can place the new level key on TP.log for access.
+    //  Verify we can place the new level key on TP.log for access.
     if (TP.log.hasOwnProperty(key)) {
         return this.raise('InvalidLevel',
             'TP.log[' + key + '] already exists.');
@@ -1808,10 +1815,10 @@ function(aName, anIndex) {
 
     level = this.callNextMethod();
 
-    // Register the new instance.
+    //  Register the new instance.
     this.levels.atPut(key, level);
 
-    // NOTE we also put the instance on TP.log as a pseudo-constant value.
+    //  NOTE we also put the instance on TP.log as a pseudo-constant value.
     TP.log[key] = level;
 
     return level;
@@ -1823,9 +1830,10 @@ TP.log.Level.Type.defineMethod('getLevel',
 function(aName) {
 
     /**
-     * Returns the Level instance with the given name, if it exists.
+     * @method getLevel
+     * @summary Returns the Level instance with the given name, if it exists.
      * @param {String} aName The level name to retrieve.
-     * @returns {TP.log.Level}
+     * @returns {TP.log.Level} The level instance with the given name.
      */
 
     var key;
@@ -1952,8 +1960,8 @@ function(aLevel) {
      * @method isVisibleAt
      * @summary Returns true if the receiver is visible when the level
      *     threshold is set to the level provided.
-     * @returns {Boolean} True if the the level is "greater than or equal to" the
-     *     receiving level.
+     * @returns {Boolean} True if the the level is "greater than or equal to"
+     *     the receiving level.
      */
 
     if (this === TP.log.OFF) {
@@ -1964,13 +1972,13 @@ function(aLevel) {
         return true;
     }
 
-    // If the receiver's index is greater than or equal to the threshold the
-    // receiver should be visible.
+    //  If the receiver's index is greater than or equal to the threshold the
+    //  receiver should be visible.
     return this.compareTo(aLevel) >= 0;
 });
 
 //  ============================================================================
-//  Level - Standard Instances
+//  TP.log.Level - Standard Instances
 //  ============================================================================
 
 TP.log.Level.construct('ALL', Number.NEGATIVE_INFINITY);
@@ -1986,7 +1994,7 @@ TP.log.Level.construct('FATAL', 700);
 TP.log.Level.construct('SYSTEM', 800);
 
 //  ============================================================================
-//  Marker
+//  TP.log.Marker
 //  ============================================================================
 
 /**
@@ -2038,8 +2046,9 @@ TP.log.Marker.Type.defineMethod('getInstanceByName',
 function(aName) {
 
     /**
-     * Returns the instance whose name matches the name provided. If the
-     * instance doesn't exist this method will not create it.
+     * @method getInstanceByName
+     * @summary Returns the instance whose name matches the name provided. If
+     *     the instance doesn't exist this method will not create it.
      * @returns {TP.log.Logger} The named instance.
      */
 
@@ -2055,7 +2064,7 @@ function(aName) {
      * @method getMarker
      * @summary Returns the Marker instance with the given name, if it exists.
      * @param {String} aName The marker name to search for.
-     * @returns {TP.log.Marker}
+     * @returns {TP.log.Marker} The marker instance with the given name.
      */
 
     if (TP.isEmpty(aName)) {
@@ -2075,7 +2084,7 @@ function(nameOrMarker) {
      * @summary Returns true if the marker is a "more specific category" of the
      *     marker or marker name provided.
      * @param {String|Marker} nameOrMarker The marker or marker name to test.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the marker is a more specific category.
      */
 
     if (TP.isString(name)) {
@@ -2088,7 +2097,7 @@ function(nameOrMarker) {
 });
 
 //  ============================================================================
-//  Timer
+//  TP.log.Timer
 //  ============================================================================
 
 /**
@@ -2184,7 +2193,8 @@ TP.log.Timer.Inst.defineMethod('init',
 function(aName) {
 
     /**
-     * Creates a new instance.
+     * @method init
+     * @summary Initializes a new instance.
      * @param {String} aName The new timer's name.
      * @returns {TP.log.Timer} The receiver.
      */
@@ -2237,7 +2247,7 @@ function() {
 });
 
 //  ============================================================================
-//  MOP Logging Methods
+//  TP Logging Methods
 //  ============================================================================
 
 TP.defineMetaInstMethod('shouldLog',
@@ -2897,9 +2907,9 @@ function(anObject, aLogLevel) {
 //  ----------------------------------------------------------------------------
 
 /*
-The IO log tracks activity of communication primitives for both file and
-http access. All messages generated by communication calls show up here
-allowing you to see a single view of all server or host communication.
+The IO log tracks activity of communication primitives for both file and http
+access. All messages generated by communication calls show up here allowing you
+to see a single view of all server or host communication.
 */
 
 //  ----------------------------------------------------------------------------
@@ -2941,8 +2951,8 @@ function(anObject, aLogLevel) {
      *     'finaluri'       the fully expanded uri w/parameters
      *     'finalbody'      the TP.str(body) value actually sent
      *
-     *     Note that IO log entries will only be pushed to the activity log
-     *     (and stdout) when the logging level is INFO.
+     *     Note that IO log entries will only be pushed to the activity log (and
+     *     stdout) when the logging level is INFO.
      * @param {Object} anObject The message/object to log.
      * @param {Number} aLogLevel The logging level, from TP.TRACE through
      *     TP.SYSTEM.
@@ -2963,9 +2973,9 @@ function(anObject, aLogLevel) {
 //  ----------------------------------------------------------------------------
 
 /*
-The job log contains information on all TP.core.Job processing done by
-TIBET. The TP.core.Job type manages virtually all setInterval/setTimeout
-style processing in TIBET so that all asynchronous processing can be managed
+The job log contains information on all TP.core.Job processing done by TIBET.
+The TP.core.Job type manages virtually all setInterval/setTimeout style
+processing in TIBET so that all asynchronous processing can be managed
 consistently.
 */
 
@@ -2998,8 +3008,8 @@ function(anObject, aLogLevel) {
 //  ----------------------------------------------------------------------------
 
 /*
-The key log contains information on all key events being logged. Logging
-keys can be a useful way to help adjust keyboard map entries.
+The key log contains information on all key events being logged. Logging keys
+can be a useful way to help adjust keyboard map entries.
 */
 
 //  ----------------------------------------------------------------------------
@@ -3132,9 +3142,9 @@ function(anObject, aLogLevel) {
 //  ----------------------------------------------------------------------------
 
 /*
-The signal log tracks the activity of the TIBET signaling engine. This
-subset of log entries can be critical to understanding how your application
-operates. The log entries typically contain the signal object itself.
+The signal log tracks the activity of the TIBET signaling engine. This subset of
+log entries can be critical to understanding how your application operates. The
+log entries typically contain the signal object itself.
 */
 
 //  ----------------------------------------------------------------------------
@@ -3167,9 +3177,8 @@ function(anObject, aLogLevel) {
 //  ----------------------------------------------------------------------------
 
 /*
-The transform log contains all output from the content processing system.
-The TP.sys.shouldLogTransforms() method controls whether logging actually
-occurs.
+The transform log contains all output from the content processing system. The
+TP.sys.shouldLogTransforms() method controls whether logging actually occurs.
 */
 
 //  ----------------------------------------------------------------------------
@@ -3221,8 +3230,8 @@ function(anEntry) {
 
     /**
      * @method append
-     * @summary Formats the entry data using the receiver's layout and writes
-     *     it to the console using the best console API method possible.
+     * @summary Formats the entry data using the receiver's layout and writes it
+     *     to the console using the best console API method possible.
      * @param {TP.log.Entry} anEntry The log entry to format and append.
      * @returns {TP.log.Appender} The receiver.
      */
@@ -3332,7 +3341,7 @@ function(anEntry) {
             str += ' ';
         });
         str = str.trim();
-        if (str.charAt(str.length - 1) !== '.') {
+        if (str.charAt(str.getSize() - 1) !== '.') {
             str += '.';
         }
     }
@@ -3438,9 +3447,9 @@ function(anEntry) {
 
     /**
      * @method append
-     * @summary Formats the entry data using the receiver's layout and writes
-     *     it to the console. Logging is always done using the default 'log'
-     *     call rather than a call which might alter the output in any form.
+     * @summary Formats the entry data using the receiver's layout and writes it
+     *     to the console. Logging is always done using the default 'log' call
+     *     rather than a call which might alter the output in any form.
      * @param {TP.log.Entry} anEntry The log entry to format and append.
      * @returns {TP.log.Appender} The receiver.
      */
@@ -3503,6 +3512,7 @@ function(anObject, aLogLevel) {
     if (TP.isString(anObject)) {
         TP.sys.$$log(TP.ac(TP.TEST_LOG,
             TP.hc('statusCode', TP.ACTIVE, 'statusText', anObject)), aLogLevel);
+
         return true;
     }
 
