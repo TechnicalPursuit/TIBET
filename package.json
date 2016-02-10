@@ -36,7 +36,8 @@
     "email": "tibet@technicalpursuit.com"
   },
   "license": "RPL-1.5",
-  "main": "./bin/tibet",
+  "main": "./lib/tibet.js",
+  "bin": { "tibet": "./bin/tibet" },
   "directories": {
     "bin": "./bin",
     "doc": "./doc/markdown",
