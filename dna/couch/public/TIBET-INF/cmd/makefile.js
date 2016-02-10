@@ -30,7 +30,7 @@
 
     //beautify = require('js-beautify');
     crypto = require('crypto');
-    helpers = require('tibet/src/tibet/cli/_make_helpers');
+    helpers = require('tibet/etc/cli/make_helpers');
 
     Promise = require('bluebird');
 

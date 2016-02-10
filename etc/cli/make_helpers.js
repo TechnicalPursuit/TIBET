@@ -26,7 +26,7 @@ var CLI,
     helpers;
 
 
-CLI = require('./_cli');
+CLI = require('../../src/tibet/cli/_cli');
 fs = require('fs');
 hb = require('handlebars');
 sh = require('shelljs');
@@ -112,7 +112,7 @@ helpers.rollup = function(make, options) {
     // The big path construction here is to locate the tibet command relative to
     // the current module. This is necessary for the npm prepublish step (used
     // by TravisCI etc) so they can build tibet without having it installed yet.
-    cmd = path.join(module.filename, '..', '..', '..', '..', 'bin', 'tibet') +
+    cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
         ' rollup --package \'' + pkg +
         '\' --config ' + config +
         ' --phase ' + phase +

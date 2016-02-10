@@ -13,7 +13,7 @@
         targets;
 
     sh = require('shelljs');
-    helpers = require('tibet/src/tibet/cli/_make_helpers');
+    helpers = require('tibet/etc/cli/make_helpers');
 
     /**
      * Canonical `targets` object for exporting the various target functions.
