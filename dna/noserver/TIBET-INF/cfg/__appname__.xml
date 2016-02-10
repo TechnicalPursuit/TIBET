@@ -31,7 +31,7 @@
 
 <config id="test" if="boot.phase_two">
     <config ref="developer"/>
-    <config ref="tests"/>
+    <config ref="app_tests"/>
 </config>
 
 </package>
