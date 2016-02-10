@@ -123,7 +123,8 @@
     //  ---
 
     Package = function(options) {
-        var pkg;
+        var pkg,
+            origTP;
 
         this.packageStack = [];
         this.configs = [];
@@ -144,6 +145,7 @@
 
         // NOTE, this is a global. Defined so we can load tibet_cfg.js via require()
         // and have it work. Also used to process tibet.json properties.
+        origTP = global.TP;
         TP = {};
         TP.sys = {};
         TP.sys.setcfg = function(property, value) {
@@ -183,6 +185,8 @@
                 }
             }
             return this;
+        } finally {
+            TP = origTP;
         }
 
         // Process local project file content into proper configuration data. This
@@ -2241,7 +2245,7 @@
             if (Object.prototype.toString.call(value) === '[object Object]') {
                 pkg.overlayProperties(value, name);
             } else {
-                TP.sys.setcfg(name, value);
+                pkg.setcfg(name, value);
             }
         });
     };
@@ -2438,7 +2442,7 @@
             }
 
             //  Map over anything we want from the library package.
-            TP.sys.setcfg('tibet.version', tibet_npm.version);
+            this.setcfg('tibet.version', tibet_npm.version);
         }
     };
 
@@ -2482,7 +2486,7 @@
                     //  which have no value in the current configuration. This
                     //  avoids cases where we overlay a config file value with a
                     //  value defaulted by the command line processor.
-                    current = TP.sys.getcfg(name);
+                    current = pkg.getcfg(name);
                     if (isValid(current)) {
                         //  Has a value. We have to see an explicit key to override.
                         if (args.indexOf('--' + name) === -1 &&
@@ -2491,7 +2495,7 @@
                         }
                     }
                 }
-                TP.sys.setcfg(name, value);
+                pkg.setcfg(name, value);
             }
         });
     };
