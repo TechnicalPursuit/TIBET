@@ -93,7 +93,7 @@
         if (TDS.cfg('tds.use.tasks') !== true) {
             return;
         }
-        logger.debug('Integrating TDS workflow interface.');
+        logger.debug('Integrating TDS workflow system.');
 
         //  ---
         //  Requires
@@ -916,7 +916,7 @@
             }
 
             dbSave(job).then(function(result) {
-                res.status(201);    //  created :)
+                res.status(201).end();    //  created :)
             },
             function(err) {
                 //  TODO:   refine error code here based on actual error.
@@ -930,7 +930,7 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tds.job.uri'), loggedIn, TDS.workflow.job);
+        app.post(TDS.cfg('tds.job.uri'), loggedIn, options.parsers.json, TDS.workflow.job);
     };
 
 }(this));
