@@ -905,7 +905,7 @@
                         return;
                     }
                     break;
-                case undefined:
+                case 'undefined':
                     //  Something went wrong in request.
                     res.status(400).send('Undefined request body.');
                     return;
