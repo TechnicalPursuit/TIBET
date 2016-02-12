@@ -9,15 +9,11 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-//  TODO    ensure params work for a job (and tasks in job by key)
 //  TODO    add quiet param to dbSave to say ignore errors
-//  TODO    ensure catch() blocks for all promises, esp. dbSave.
 //  TODO    how to time out the entire job after 60000 or whatever
 //  TODO    test error processing
 //  TODO    capture task runner results as appropriate.
 //  TODO    add machine/node name to pid capture
-//  TODO    add $$cancelled state to support job cancellation
-//  TODO    add $$paused state to support pause at next step
 //  TODO    add scan for timed out job documents
 
 (function(root) {
@@ -41,6 +37,7 @@
             shouldTaskTimeOut,
             isJobComplete,
             loggedIn,
+            failJob,
             failTask,
             retrieveFlow,
             retrieveTask,
@@ -199,7 +196,7 @@
                     if (!task) {
                         logger.error('TWS ' + job._id +
                             ' missing task: ' + taskname);
-                        //  TODO:   cancel/close out job?
+                        failJob(job, 'Missing task ' + taskname);
                         return;
                     }
                     acceptTask(job, task);
@@ -288,7 +285,7 @@
                     if (!errtask) {
                         logger.error('TWS ' + job._id +
                             ' missing task: ' + job.error);
-                        //  TODO:   cancel/close out job?
+                        failJob(job, 'Missing task ' + job.error);
                         return;
                     }
                     acceptTask(job, errtask);
@@ -338,7 +335,7 @@
                     if (!errtask) {
                         logger.error('TWS ' + job._id +
                             ' missing task: ' + task.error);
-                        //  TODO:   cancel/close out job?
+                        failJob(job, 'Missing task ' + task.error);
                         return;
                     }
                     acceptTask(job, errtask);
@@ -357,6 +354,17 @@
                 //  NOTE we pass task state here to simplify update of job.
                 cleanupJob(job, task.state);
             }
+        };
+
+        /*
+         */
+        failJob = function(job, reason) {
+            logger.debug('TWS ' + job._id + ' failJob');
+
+            job.state = '$$failed';
+            job.result = reason;
+
+            dbSave(job);
         };
 
         /*
@@ -541,7 +549,7 @@
                 if (!flow) {
                     logger.error('TWS ' + job._id +
                         ' missing flow: ' + job.flow + '::' + job.owner);
-                    //  TODO:   cancel/close out job?
+                    failJob(job, 'Missing flow ' + job.flow + '::' + job.owner);
                     return;
                 }
 
@@ -867,6 +875,19 @@
                     } else {
                         cleanupJob(job);
                     }
+                    break;
+                case '$$cancelled':
+                    //  No work to do, job cancelled.
+                    logger.debug('TWS ' + job._id + ' cancelled');
+                    break;
+                case '$$paused':
+                    //  No work to do..at present. Job is paused. Needs state
+                    //  change to trigger a new review and job continuation.
+                    logger.debug('TWS ' + job._id + ' paused');
+                    break;
+                case '$$failed':
+                    //  Failed means missing task or error handler. No retry.
+                    logger.debug('TWS ' + job._id + ' failed');
                     break;
                 case '$$complete':
                     logger.debug('TWS ' + job._id + ' complete');
