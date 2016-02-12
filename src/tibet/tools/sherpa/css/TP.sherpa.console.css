@@ -29,7 +29,7 @@ sherpa|console {
     /*max-height: calc(100% - 100px);*/
 
     /* This should match TIBET's CONSOLE_TIER constant */
-    z-index: 15000;
+    z-index: 20000;
 
     /*border: 1px solid #AAAAAA;*/
     border-radius: 3px;
@@ -146,7 +146,7 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
     overflow: auto;
 
     /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER */
-    z-index: 25000;
+    z-index: 27500;
 }
 
 #SherpaConsoleOutput * {

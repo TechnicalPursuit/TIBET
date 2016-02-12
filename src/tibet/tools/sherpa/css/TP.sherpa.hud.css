@@ -51,43 +51,47 @@ div#toggleLog {
     background-image: url(../media/log.svg);
 }
 
-.north, .south {
+/* HUD edges */
 
-    transition: height .5s;
+.framing.v-edge.east, .framing.v-edge.west {
+
+    /* This is situated below CONNECTOR_TIER and *above* the console output */
+    z-index: 22500;
 }
 
-.south {
+.framing.h-edge.north, .framing.h-edge.south {
 
     /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
         the console output */
     z-index: 27500;
 }
 
-.east, .west {
-
-    transition: width .5s;
+.framing.h-edge.north, .framing.h-edge.south {
+    transition: height 0.25s;
 }
 
-.north[pclass|hidden] {
-
-    top: -2px;
-    height: 0px;
+.framing.v-edge.east, .framing.v-edge.west {
+    transition: width 0.25s;
 }
 
-.west[pclass|hidden] {
+/* HUD corners */
 
-    left: -2px;
-    width: 0px;
+.framing.corner {
+
+    /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
+        both edges */
+    z-index: 28750;
 }
 
-.south[pclass|hidden] {
+.framing.north.west, .framing.north.east, .framing.south.west, .framing.south.east {
 
-    bottom: -2px;
-    height: 0px;
+    transition: width 0.25s, height 0.25s;
 }
 
-.east[pclass|hidden] {
-
-    right: -2px;
-    width: 0px;
+.framing.north.west {
+    border: 0;
+    border-right: 1px solid #666;
+    border-bottom: 1px solid #666;
+    border-bottom-right-radius: 5px;
+    background: #eee;
 }

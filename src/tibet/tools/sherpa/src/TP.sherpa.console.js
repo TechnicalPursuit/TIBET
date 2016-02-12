@@ -854,6 +854,8 @@ function(aSignal, statusOutID) {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
+    return this;
+
     var statID,
 
         canvasWin,

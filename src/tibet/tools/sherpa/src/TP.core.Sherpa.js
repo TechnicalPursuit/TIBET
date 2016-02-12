@@ -228,8 +228,8 @@ function() {
         sherpaEastDrawer,
         tileDockTPElem,
 
-        sherpaWestDrawer,
-        snippetBarTPElem;
+        sherpaWestDrawer;
+        //snippetBarTPElem;
 
     //  Set up the HUD
     this.setupHUD();
@@ -274,6 +274,7 @@ function() {
             TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
     */
 
+    /*
     sherpaEastDrawer = TP.byCSSPath('#east > .drawer', viewDoc, true);
 
     tileDockTPElem = sherpaEastDrawer.addContent(
@@ -294,6 +295,7 @@ function() {
     snippetBarTPElem.setID('snippetBar');
     //snippetBarTPElem.awaken();
     //snippetBarTPElem.render();
+    */
 
     (function() {
         var tpElem;

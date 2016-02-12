@@ -47,6 +47,7 @@ function() {
      * @method setup
      */
 
+    /*
     var toolbarElem;
 
     //  Set up the console output toolbar
@@ -58,6 +59,7 @@ function() {
                     toggleOutputMode(
                         TP.elementGetAttribute(aSignal.getTarget(), 'mode'));
         }.bind(this));
+    */
 
     return this;
 });

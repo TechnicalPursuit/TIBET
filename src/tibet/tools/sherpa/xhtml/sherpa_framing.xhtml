@@ -6,7 +6,13 @@
 
     <title>TIBET 5.0</title>
 
+    <!-- Resets for various browsers -->
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet_reset.css"/>
+
+    <!-- Baseline TIBET CSS -->
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <!-- app/devtool framing -->
     <link type="text/css" rel="stylesheet" href="~lib_styles/tibet_framing.css"/>
 
     <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/lib/codemirror.css"/>
@@ -15,22 +21,16 @@
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
+    <!-- TODO: Make into sherpa.css -->
+
     <tibet:style type="less">
         <![CDATA[
         @namespace pclass url(urn:tibet:pseudoclass);
+        @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+        @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 
         *|div.framing[pclass|hidden] {
             display: block;
-        }
-
-        #north > .drawer {
-            display: flex;
-            flex-wrap: wrap;
-            align-content: space-between;
-
-            & > * {
-                width: 33.3%
-            }
         }
 
         .toolbarButton {
@@ -218,89 +218,255 @@
             text-decoration: underline;
         }
 
+        /* Misc content styles, etc */
+
+        .tagline {
+          position: relative;
+          z-index: 1;
+          font-size: 100%;
+          line-height: 30px;
+        }
+
+        /** TPI theme for XHTML controls **/
+        button {
+            margin: 0.25em;
+            padding: 0.25em 0.5em;
+            height: 2em;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            box-shadow: inset 0 0 0.5em #ddd;
+            background: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        button:hover {
+            background: #ddd;
+        }
+
+        input {
+            margin: 0.25em;
+            padding: 0.25em;
+            height: 1.5em;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        input:focus {
+            background-color: gold;
+        }
+
+        input[type="button"] {
+            margin: 0.25em;
+            padding: 0.25em 0.5em;
+            height: 2em;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            box-shadow: inset 0 0 0.5em #ddd;
+            background: white;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        input[type="button"]:hover {
+            background: #ddd;
+        }
+
+        input[type="checkbox"] {
+            vertical-align: middle;
+        }
+
+        select {
+            margin: 0.25em;
+            padding: 0.25em;
+            height: 2em;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            line-height: 2em;
+
+            width: 12em;
+        }
+        option {
+            /* often worthless...select is still a piece of junk...20 years on */
+            padding: 0.25em;
+        }
+
+        textarea {
+            margin: 0.25em;
+            padding: 0.25em;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            resize: none;
+
+            width: 12em;
+            height: 5em;
+        }
+        textarea:focus {
+            background-color: #eee;
+        }
+
+        button:focus, select:focus, input:focus, textarea:focus {
+            outline: none;
+        }
+
+        hr.clear {
+            height: 20px;
+            margin: 5px 0;
+            clear: both;
+            border: 0px;
+        }
+
+        /** HUD customization for Sherpa controls **/
+
+        /* -----------------------------*
+         * opener
+         * ---------------------------- */
+
+        .v-edge.west sherpa|opener {
+            float: left;
+            margin-left: 14px;
+        }
+        .v-edge.east sherpa|opener {
+            float: right;
+            margin-right: 14px;
+        }
+
+        .v-edge sherpa|opener:last-child {
+            position: absolute;
+            bottom: 4px;
+        }
+        .v-edge.west sherpa|opener:last-child {
+            left: 0;
+        }
+        .v-edge.east sherpa|opener:last-child {
+            right: 0;
+            left: auto;
+            margin-right: 14px;
+        }
+
+        /* -----------------------------*
+         * readout
+         * ---------------------------- */
+
+        /* TEMPORARY FOR DEMO PURPOSES */
+        sherpa|readout > .content.keyboard {
+            display: block;
+        }
+        sherpa|readout > .content.mouse {
+            display: none;
+        }
+
+        sherpa|readout:hover > .content {
+            background: gold;
+        }
+
+        sherpa|readout:hover > .content.mouse {
+            display: block;
+        }
+        sherpa|readout:hover > .content.keyboard {
+            display: none;
+        }
+
+        /* -----------------------------*
+         * splitbox
+         * ---------------------------- */
+
+        /* TEMPORARY FOR DEMO PURPOSES */
+        sherpa|splitbox {
+            margin: 30px 0;
+        }
+
         ]]>
     </tibet:style>
 
 </head>
 <body xmlns:pclass="urn:tibet:pseudoclass">
 
-<div id="background">
+<div id="background" class="noselect">
 
-  <div id="northwest" class="framing corner north west" pclass:hidden="true">
-    <div class="drawer">
-      <div class="home">
-        <a href="#"><img src="~lib_media/tibet_logo.svg" alt="TIBET Logo"/></a>
-      </div>
+    <div id="northwest" tibet:tag="sherpa:drawer" class="framing corner overlay north west" pclass:closed="true" pclass:hidden="true">
+        <sherpa:about/>
     </div>
-  </div>
 
-  <div id="north" class="framing h-edge north center" pclass:hidden="true">
-      <div class="drawer">
-
-        <!-- The markup used for current canvas name -->
-        <div id="currentCanvasInfo" class="info"/>
-
-        <!-- The markup used for current keyboard info -->
-        <div id="keyboardInfo" class="info"/>
-
-        <!-- The markup used for current log info -->
-        <div id="logLevelInfo" class="info"/>
-
-        <!-- The markup used for command toolbar -->
-        <div id="SherpaConsoleCommandToolbar" tibet:ctrl="SherpaConsoleService">
-            <div id="clearButton" class="toolbarButton"
-                on:click="{signal: ConsoleCommand, payload: {cmdText:':clear'}}"/>
-            <div id="watchButton" class="toolbarButton"
-                on:click="{signal: ConsoleCommand, payload: {cmdText:':toggleRemoteWatch'}}"/>
-        </div>
-
-        <!-- The markup used for current mouse info -->
-        <div id="mouseInfo" class="info"/>
-
-        <!-- The markup used for output toolbar -->
-        <div id="SherpaConsoleOutputToolbar">
-            <div id="splitBottomButton" class="toolbarButton" mode="h_split_bottom"/>
-            <div id="splitTopButton" class="toolbarButton" mode="h_split_top"/>
-            <div id="splitLeftButton" class="toolbarButton" mode="v_split_left"/>
-            <div id="splitRightButton" class="toolbarButton" mode="v_split_right"/>
-            <div id="allConsoleScreenButton" class="toolbarButton" mode="allconsole"/>
-            <div id="allWorldScreenButton" class="toolbarButton" mode="allworld"/>
-        </div>
-
-      </div>
-  </div>
-
-  <div id="northeast" class="framing corner north east" pclass:hidden="true">
-    <div class="drawer" tibet:ctrl="TP.sherpa.ctrl"></div>
-  </div>
-
-  <div id="west" class="framing v-edge middle west" pclass:hidden="true">
-    <div class="drawer"></div>
-  </div>
-
-  <div id="center" class="middle center fullscreen">
-    <div id="content">
-        <!-- This will be moved with the arrival of the <sherpa:world/> tag. SCREEN_O will remain the default screen -->
-        <iframe id="SCREEN_0" frameborder="0"></iframe>
-        <iframe id="SCREEN_1" frameborder="0"></iframe>
+    <div id="north" tibet:tag="sherpa:drawer" class="framing h-edge overlay north center" pclass:closed="true" pclass:hidden="true">
+        <sherpa:toolbar/>
     </div>
-  </div>
 
-  <div id="east" class="framing v-edge middle east" pclass:hidden="true">
-    <div class="drawer"></div>
-  </div>
+    <div id="northeast" tibet:tag="sherpa:drawer" class="framing corner overlay north east" pclass:closed="true" pclass:hidden="true">
+       <sherpa:thumbnail/>
+    </div>
 
-  <div id="southwest" class="framing corner south west" pclass:hidden="true">
-    <div class="drawer"></div>
-  </div>
+    <div id="west" tibet:tag="sherpa:drawer" class="framing v-edge overlay middle west" pclass:closed="true" pclass:hidden="true">
+        <sherpa:opener class="west"/>
+        <sherpa:splitbox>
+            <sherpa:shelf>
+                <div class="title">snippets</div>
+                <ul tibet:ctrl="SherpaConsoleService">
+                    <li on:click="{signal: ConsoleCommand, payload: {cmdText:':clear'}}">watch</li>
+                    <li on:click="{signal: ConsoleCommand, payload: {cmdText:':clear'}}">unwatch</li>
+                    <li>push</li>
+                    <li on:click="{signal: ConsoleCommand, payload: {cmdText:':clear'}}">clear</li>
+                </ul>
+            </sherpa:shelf>
+            <sherpa:splitbar/>
+            <sherpa:logger>
+                <div class="title">history</div>
+                <ul>
+                    <li>:tds --watch</li>
+                    <li>:clear</li>
+                    <li>:history</li>
+                </ul>
+            </sherpa:logger>
+        </sherpa:splitbox>
+        <sherpa:opener class="west"/>
+    </div>
 
-  <div id="south" class="framing h-edge south center" pclass:hidden="true">
-    <div class="drawer"></div>
-  </div>
+    <div id="center" class="middle center overlay fullscreen">
+        <div id="content">
+            <!-- This will be moved with the arrival of the <sherpa:world/> tag. SCREEN_O will remain the default screen -->
+            <iframe id="SCREEN_0" frameborder="0"></iframe>
+            <iframe id="SCREEN_1" frameborder="0"></iframe>
+        </div>
+    </div>
 
-  <div id="southeast" class="framing corner south east" pclass:hidden="true">
-    <div class="drawer"></div>
-  </div>
+    <div id="east" tibet:tag="sherpa:drawer" class="framing v-edge middle overlay east" pclass:closed="true" pclass:hidden="true">
+        <sherpa:opener class="east"/>
+        <sherpa:splitbox>
+            <sherpa:shelf>
+                <div class="title">urls</div>
+                <ul>
+                    <li>~app/foo</li>
+                    <li>~app/bar</li>
+                    <li>~app/baz</li>
+                </ul>
+            </sherpa:shelf>
+            <sherpa:splitbar/>
+            <sherpa:logger>
+                <div class="title">logs</div>
+                <ul>
+                    <li class="info">blah blah blah</li>
+                    <li class="error">failure to launch</li>
+                    <li class="warn">very confused</li>
+                    <li class="info">other blah</li>
+                    <li class="info">more blah</li>
+                    <li class="info">some info</li>
+                    <li class="info">nit nit</li>
+                </ul>
+            </sherpa:logger>
+        </sherpa:splitbox>
+        <sherpa:opener class="east"/>
+    </div>
+
+    <div id="southwest" tibet:tag="sherpa:drawer" class="framing corner overlay south west" pclass:closed="true" pclass:hidden="true">
+        <sherpa:changes/>
+    </div>
+
+    <div id="south" class="framing h-edge overlay south center" pclass:closed="true" pclass:hidden="true">
+        <div class="drawer"></div>
+    </div>
+
+    <div id="southeast" tibet:tag="sherpa:drawer" class="framing corner overlay south east" pclass:closed="true" pclass:hidden="true">
+        <sherpa:testing/>
+    </div>
 
 </div>
 
