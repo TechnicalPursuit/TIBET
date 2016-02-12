@@ -19,9 +19,11 @@
     module.exports = function(options) {
         var app,
             logger,
-            mandrill,
-            nodemailer,
             TDS,
+
+            nodemailer,
+            mandrill,
+
             transport;
 
         //  ---
@@ -35,8 +37,6 @@
 
         logger = options.logger;
         TDS = app.TDS;
-
-        logger = options.logger;
 
         //  ---
         //  Requires
@@ -67,7 +67,7 @@
          * The actual task execution function which will be invoked by the task
          * runner.
          */
-        return function(job, step, options) {
+        return function(job, step, taskOptions) {
             var params;
 
             logger.debug('\n');
@@ -80,7 +80,7 @@
             //  here configurable.
             transport.sendMail({
                 from: params.from || 'defaultmailer@formsanity.com',
-                to: 'ss@technicalpursuit.com',
+                to: 'bedney@technicalpursuit.com',
                 subject: 'Test',
                 html: 'Sending FS doc: ' +
                     '<code>' + TDS.beautify(JSON.stringify(step)) + '</code>'
@@ -96,8 +96,8 @@
 
                 logger.debug('email succeeded: ' + JSON.stringify(info));
 
-                nano = require('nano')(options.db_url);
-                db = nano.use(options.db_name);
+                nano = require('nano')(taskOptions.db_url);
+                db = nano.use(taskOptions.db_name);
 
                 step.end = Date.now();
                 step.state = '$$complete';
