@@ -793,7 +793,8 @@
          */
         retryTask = function(job, task) {
             var count,
-                retryStep;
+                retryStep,
+                params;
 
             logger.debug('TWS ' + job._id + ' retryTask: ' + task.name);
 
@@ -810,8 +811,15 @@
             retryStep.end = undefined;
             retryStep.retry = count - 1;
 
-            //  TODO:   params for the step need to be blended from the job so
-            //          each step gets params.
+            params = {};
+            if (job.params && job.params[task.name]) {
+                TDS.blend(params, job.params[task.name]);
+            }
+            if (task.params) {
+                TDS.blend(params, task.params);
+            }
+            retryStep.params = params;
+
             job.steps.push(retryStep);
 
             //  Saving the job with the new step in place should trigger a
