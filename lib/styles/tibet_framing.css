@@ -59,7 +59,7 @@ div {
  * Corner definition            *
  * ---------------------------- */
 
-.corner {
+.framing.corner {
     text-align: center;
     font-weight: bold;
     font-size: 138.5%;
@@ -68,7 +68,7 @@ div {
     background-color: #ddd;
 }
 
-.corner > * {
+.framing.corner > * {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -131,7 +131,7 @@ div {
  * Compass div layout           *
  * ---------------------------- */
 
-.north {
+.framing.north {
     top: 0;
     height: 32px;
     line-height: 32px;
@@ -141,7 +141,7 @@ div {
     border-bottom: 1px solid #666;
 }
 
-.north .drawer {
+.framing.north .drawer {
     margin-top: 0;
 }
 
@@ -156,7 +156,7 @@ div {
     border-bottom-right-radius: 5px;
 }
 
-.south {
+.framing.south {
     bottom: 0;
     height: 32px;
     border-bottom: 0;
@@ -165,17 +165,17 @@ div {
     margin-bottom: 0;
 }
 
-.south .drawer {
+.framing.south .drawer {
     margin-bottom: 0;
 }
 
-.west {
+.framing.west {
     left: 0;
     width: 48px;
     border-left: 0;
 }
 
-.west .drawer {
+.framing.west .drawer {
     margin-left: 0;
 }
 
@@ -185,25 +185,25 @@ div {
     width: auto;
 }
 
-.east {
+.framing.east {
     right: 0;
     width: 48px;
     border-right: 0;
 }
 
-.east .drawer {
+.framing.east .drawer {
     margin-right: 0;
 }
 
-.north.west {
+.framing.north.west {
     border-bottom-left-radius: 0;
 }
 
-.north.center {
+.framing.north.center {
     text-align: center;
 }
 
-.north.east {
+.framing.north.east {
     border-bottom-right-radius: 0;
 }
 
@@ -224,17 +224,17 @@ div {
     border-bottom-right-radius: 0;
 }
 
-.south.west {
+.framing.south.west {
     border-top-left-radius: 0;
 }
 
-.south.center {
+.framing.south.center {
     text-align: center;
     font-weight: normal;
     font-size: 108%;
 }
 
-.south.east {
+.framing.south.east {
     border-top-right-radius: 0;
 }
 
@@ -242,53 +242,53 @@ div {
  * Drawer refinements           *
  * ---------------------------- */
 
-.north .drawer {
+.framing.north .drawer {
     border-top: 0;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
 }
 
-.south .drawer {
+.framing.south .drawer {
     border-bottom: 0;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
 
-.middle .drawer {
+.framing.middle .drawer {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
 }
 
-.west .drawer {
+.framing.west .drawer {
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.east .drawer {
+.framing.east .drawer {
     border-right: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.north.west .drawer {
+.framing.north.west .drawer {
     border-top: 0;
     border-left: 0;
 }
 
-.north.east .drawer {
+.framing.north.east .drawer {
     border-top: 0;
     border-right: 0;
 }
 
-.south.west .drawer {
+.framing.south.west .drawer {
     border-bottom: 0;
     border-left: 0;
 }
 
-.south.east .drawer {
+.framing.south.east .drawer {
     border-bottom: 0;
     border-right: 0;
     border-top-right-radius: 0;
@@ -356,38 +356,38 @@ div {
     right: 0;
 }
 
-.north, .south {
+.framing.north, .framing.south {
     transition: height .5s;
 }
 
-.north.no_transition, .south.no_transition {
+.framing.north.no_transition, .framing.south.no_transition {
     transition: none;
 }
 
-.east, .west {
+.framing.east, .framing.west {
     transition: width .5s;
 }
 
-.east.no_transition, .west.no_transition {
+.framing.east.no_transition, .framing.west.no_transition {
     transition: none;
 }
 
-.north[pclass|hidden] {
+.framing.north[pclass|hidden] {
     top: -2px;
     height: 0px;
 }
 
-.west[pclass|hidden] {
+.framing.west[pclass|hidden] {
     left: -2px;
     width: 0px;
 }
 
-.south[pclass|hidden] {
+.framing.south[pclass|hidden] {
     bottom: -2px;
     height: 0px;
 }
 
-.east[pclass|hidden] {
+.framing.east[pclass|hidden] {
     right: -2px;
     width: 0px;
 }
