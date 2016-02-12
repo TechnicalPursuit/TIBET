@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:tile');
+TP.sherpa.Element.defineSubtype('tile');
 
 TP.sherpa.tile.Inst.defineAttribute(
         'header',

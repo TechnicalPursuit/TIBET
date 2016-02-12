@@ -113,7 +113,7 @@ function(rawData, searchTerm, extract) {
 //  TP.core.CSSPropertyMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('core.CSSPropertyMatcher');
+TP.core.Matcher.defineSubtype('CSSPropertyMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -144,7 +144,7 @@ function(searchTerm) {
 //  TP.core.ListMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('core.ListMatcher');
+TP.core.Matcher.defineSubtype('ListMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -221,7 +221,7 @@ function(searchTerm) {
 //  TP.core.CustomTypeMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('core.CustomTypeMatcher');
+TP.core.Matcher.defineSubtype('CustomTypeMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -252,7 +252,7 @@ function(searchTerm) {
 //  TP.core.KeyedSourceMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('core.KeyedSourceMatcher');
+TP.core.Matcher.defineSubtype('KeyedSourceMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -368,7 +368,7 @@ function() {
 //  TP.core.URIMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('core.URIMatcher');
+TP.core.Matcher.defineSubtype('URIMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -405,7 +405,7 @@ function(searchTerm) {
 //  TP.core.MethodMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('core.MethodMatcher');
+TP.core.Matcher.defineSubtype('MethodMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -476,7 +476,7 @@ function() {
 //  TP.core.NamespaceMatcher
 //  ========================================================================
 
-TP.core.Matcher.defineSubtype('core.NamespaceMatcher');
+TP.core.Matcher.defineSubtype('NamespaceMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

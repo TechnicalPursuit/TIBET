@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:methodeditor');
+TP.sherpa.Element.defineSubtype('methodeditor');
 
 TP.sherpa.methodeditor.Inst.defineAttribute('didSetup');
 

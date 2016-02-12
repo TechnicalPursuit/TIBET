@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:urieditor');
+TP.sherpa.Element.defineSubtype('urieditor');
 
 TP.sherpa.urieditor.Inst.defineAttribute('didSetup');
 

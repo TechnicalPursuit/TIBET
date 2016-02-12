@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:elementeditor');
+TP.sherpa.Element.defineSubtype('elementeditor');
 
 TP.sherpa.elementeditor.Inst.defineAttribute('didSetup');
 

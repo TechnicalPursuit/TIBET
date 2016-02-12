@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:typedisplay');
+TP.sherpa.Element.defineSubtype('typedisplay');
 
 TP.sherpa.typedisplay.Inst.defineAttribute('sourceObject');
 

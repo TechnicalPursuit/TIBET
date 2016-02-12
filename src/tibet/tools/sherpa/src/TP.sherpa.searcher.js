@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:searcher');
+TP.sherpa.Element.defineSubtype('searcher');
 
 TP.sherpa.searcher.Inst.defineAttribute('didSetup');
 TP.sherpa.searcher.Inst.defineAttribute('sourceObject');

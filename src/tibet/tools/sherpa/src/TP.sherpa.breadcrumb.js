@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:breadcrumb');
+TP.sherpa.Element.defineSubtype('breadcrumb');
 
 TP.sherpa.breadcrumb.Inst.defineAttribute('sourceID');
 TP.sherpa.breadcrumb.Inst.defineAttribute('sourceObject');

@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:snippetbar');
+TP.sherpa.Element.defineSubtype('snippetbar');
 
 TP.sherpa.snippetbar.Inst.defineAttribute(
         'body',

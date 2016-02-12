@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:logview');
+TP.sherpa.Element.defineSubtype('logview');
 
 TP.sherpa.logview.Inst.defineAttribute(
         'body',

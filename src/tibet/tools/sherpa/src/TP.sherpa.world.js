@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:world');
+TP.sherpa.Element.defineSubtype('world');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

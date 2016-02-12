@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:hud');
+TP.sherpa.Element.defineSubtype('hud');
 
 TP.sherpa.hud.addTraits(TP.core.TemplatedNode);
 

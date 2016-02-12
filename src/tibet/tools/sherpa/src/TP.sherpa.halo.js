@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:halo');
+TP.sherpa.Element.defineSubtype('halo');
 
 //  ------------------------------------------------------------------------
 //  Type Methods

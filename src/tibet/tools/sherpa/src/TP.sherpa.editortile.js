@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.defineSubtype('sherpa:editortile');
+TP.sherpa.tile.defineSubtype('editortile');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

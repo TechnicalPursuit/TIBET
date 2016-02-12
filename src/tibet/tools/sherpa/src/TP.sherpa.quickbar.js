@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('sherpa:quickbar');
+TP.sherpa.Element.defineSubtype('quickbar');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
