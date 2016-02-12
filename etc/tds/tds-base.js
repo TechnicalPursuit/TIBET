@@ -53,6 +53,53 @@
      */
     TDS.beautify = beautify;
 
+    //  ---
+    //  Value checks
+    //  ---
+
+    TDS.isEmpty = function(aReference) {
+        /* eslint-disable no-extra-parens */
+        return aReference === null ||
+            aReference === undefined ||
+            aReference.length === 0 ||
+            (typeof aReference === 'object' &&
+            Object.keys(aReference).length === 0);
+        /* eslint-enable no-extra-parens */
+    };
+
+    TDS.isFalse = function(aReference) {
+        return aReference === false;
+    };
+
+    /**
+     * Returns true if the object provided is an 'Object' as opposed to a string,
+     * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
+     * hash of keys.
+     * @param {Object} obj The object to test.
+     * @returns {Boolean} True if the object is an Object.
+     */
+    TDS.isObject = function(obj) {
+        return typeof obj === 'object' &&
+            Object.prototype.toString.call(obj) === '[object Object]';
+    };
+
+    TDS.isTrue = function(aReference) {
+        return aReference === true;
+    };
+
+    TDS.isValid = function(aReference) {
+        return aReference !== null && aReference !== undefined;
+    };
+
+    TDS.notEmpty = function(aReference) {
+        return aReference !== null && aReference !== undefined &&
+            aReference.length !== 0;
+    };
+
+    TDS.notValid = function(aReference) {
+        return aReference === null || aReference === undefined;
+    };
+
     /**
      * A useful variation on extend from other libs sufficient for parameter
      * block copies. The objects passed are expected to be simple JavaScript
@@ -65,7 +112,7 @@
      */
     TDS.blend = function(target, source) {
 
-        if (!isValid(source)) {
+        if (!TDS.isValid(source)) {
             return target;
         }
 
@@ -85,14 +132,14 @@
             return target;
         }
 
-        if (isValid(target)) {
+        if (TDS.isValid(target)) {
             //  Target is primitive value. Don't replace.
-            if (!isObject(target)) {
+            if (!TDS.isObject(target)) {
                 return target;
             }
 
             //  Target is complex object, but source isn't.
-            if (!isObject(source)) {
+            if (!TDS.isObject(source)) {
                 return target;
             }
         } else {
@@ -102,7 +149,7 @@
 
         Object.keys(source).forEach(function(key) {
             if (key in target) {
-                if (isObject(target[key])) {
+                if (TDS.isObject(target[key])) {
                     blend(target[key], source[key]);
                 } else if (Array.isArray(target[key])) {
                     blend(target[key], source[key]);
@@ -114,7 +161,7 @@
             if (Array.isArray(source[key])) {
                 // Copy array/object slots deeply as needed.
                 target[key] = blend([], source[key]);
-            } else if (isObject(source[key])) {
+            } else if (TDS.isObject(source[key])) {
                 // Deeply copy other non-primitive objects.
                 target[key] = blend({}, source[key]);
             } else {

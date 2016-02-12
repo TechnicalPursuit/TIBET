@@ -80,9 +80,9 @@
             //  here configurable.
             transport.sendMail({
                 from: params.from || 'defaultmailer@formsanity.com',
-                to: 'bedney@technicalpursuit.com',
-                subject: 'Test',
-                html: 'Sending FS doc: ' +
+                to: params.to || 'ss@technicalpursuit.com',
+                subject: params.subject || 'Test',
+                html: params.body || 'Sending FS doc: ' +
                     '<code>' + TDS.beautify(JSON.stringify(step)) + '</code>'
             },
             function(err, info) {

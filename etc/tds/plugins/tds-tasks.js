@@ -14,7 +14,6 @@
 //  TODO    ensure catch() blocks for all promises, esp. dbSave.
 //  TODO    how to time out the entire job after 60000 or whatever
 //  TODO    test error processing
-//  TODO    clean up logging around pid, task/step name, etc.
 //  TODO    capture task runner results as appropriate.
 //  TODO    add machine/node name to pid capture
 //  TODO    add $$cancelled state to support job cancellation
@@ -36,7 +35,6 @@
             acceptTask,
             cleanupJob,
             cleanupTask,
-            expandParams,
             getCurrentTasks,
             getNextTasks,
             isTaskComplete,
@@ -93,7 +91,7 @@
         if (TDS.cfg('tds.use.tasks') !== true) {
             return;
         }
-        logger.debug('Integrating TDS workflow system.');
+        logger.debug('Integrating TDS workflow system (TWS).');
 
         //  ---
         //  Requires
@@ -188,17 +186,27 @@
             var tasks,
                 taskname;
 
-            logger.debug('TDS workflow acceptNextTask: ' + job._id);
+            logger.debug('TWS ' + job._id + ' acceptNextTask');
 
             tasks = getNextTasks(job);
-            logger.debug(TDS.beautify(JSON.stringify(tasks)));
+            //logger.trace(TDS.beautify(JSON.stringify(tasks)));
 
             taskname = tasks[0];
             if (taskname) {
                 //  NOTE the task here is just a task name...we now need to
                 //  fetch the actual task specification and work from there.
-                retrieveTask(taskname).then(function(task) {
+                retrieveTask(job, taskname).then(function(task) {
+                    if (!task) {
+                        logger.error('TWS ' + job._id +
+                            ' missing task: ' + taskname);
+                        //  TODO:   cancel/close out job?
+                        return;
+                    }
                     acceptTask(job, task);
+                }).catch(function(err) {
+                    logger.error('TWS ' + job._id +
+                        ' error: ' + err +
+                        ' fetching task: ' + taskname);
                 });
             }
         };
@@ -208,10 +216,10 @@
         acceptTask = function(job, task) {
             var step,
                 plugin,
-                runner;
+                runner,
+                params;
 
-            logger.debug('TDS workflow acceptTask: ' +
-                job._id + ' (' + task.name + ')');
+            logger.debug('TWS ' + job._id + ' acceptTask: ' + task.name);
 
             //  See if the task uses a different plugin for require().
             if (task.plugin) {
@@ -233,6 +241,21 @@
             step.pid = process.pid;
             step.start = Date.now();
             step.state = '$$ready';
+
+            //  Blend any task-specific parameters from the job into the
+            //  step logic. The step data ultimately drives task runners. NOTE
+            //  the order here matters since TDS.blend will _not_ replace
+            //  existing values, so we want to put in job values first, then any
+            //  task values so they act as defaults for missing values only.
+            params = {};
+            if (job.params && job.params[task.name]) {
+                TDS.blend(params, job.params[task.name]);
+            }
+            if (task.params) {
+                TDS.blend(params, task.params);
+            }
+            step.params = params;
+
             job.steps.push(step);
 
             job.state = task.name + '-' + job.steps.length;
@@ -243,8 +266,7 @@
         /*
          */
         canRetry = function(obj) {
-
-            logger.debug('TDS workflow canRetry: ' + (obj._id || obj.name));
+            logger.debug('TWS ' + (obj._id || obj.name) + ' canRetry');
 
             return obj && obj.retry !== undefined && obj.retry > 0;
         };
@@ -254,7 +276,7 @@
         cleanupJob = function(job) {
             var code;
 
-            logger.debug('TDS workflow cleanupJob: ' + job._id);
+            logger.debug('TWS ' + job._id + ' cleanupJob');
 
             //  Job is "done" in that it's either timed out or errored out and
             //  it can't be retried (or it did retry but is out of chances now).
@@ -262,10 +284,18 @@
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
             if (job.error) {
-                retrieveTask(job.error).then(function(errtask) {
+                retrieveTask(job, job.error).then(function(errtask) {
+                    if (!errtask) {
+                        logger.error('TWS ' + job._id +
+                            ' missing task: ' + job.error);
+                        //  TODO:   cancel/close out job?
+                        return;
+                    }
                     acceptTask(job, errtask);
                 }).catch(function(err) {
-                    logger.error('TDS workflow missing error task: ' + job.error);
+                    logger.error('TWS ' + job._id +
+                        ' error: ' + err +
+                        ' fetching task: ' + job.error);
                 });
                 return;
             }
@@ -296,8 +326,7 @@
          */
         cleanupTask = function(job, task) {
 
-            logger.debug('TDS workflow cleanupTask: ' +
-                job._id + ' (' + task.name + ')');
+            logger.debug('TDS ' + job._id + ' cleanupTask: ' + task.name);
 
             //  Task is "done" in that it's either timed out or errored out and
             //  it can't be retried (or it did retry but is out of chances now).
@@ -305,8 +334,18 @@
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
             if (task.error) {
-                retrieveTask(task.error).then(function(errtask) {
+                retrieveTask(job, task.error).then(function(errtask) {
+                    if (!errtask) {
+                        logger.error('TWS ' + job._id +
+                            ' missing task: ' + task.error);
+                        //  TODO:   cancel/close out job?
+                        return;
+                    }
                     acceptTask(job, errtask);
+                }).catch(function(err) {
+                    logger.error('TWS ' + job._id +
+                        ' error: ' + err +
+                        ' fetching task: ' + task.error);
                 });
                 return;
             }
@@ -322,27 +361,8 @@
 
         /*
          */
-        expandParams = function(target, source) {
-
-            if (!target.params) {
-                target.params = source.params;
-                return target;
-            }
-
-            if (!source.params) {
-                return target;
-            }
-
-            TDS.blend(target.params, source.params);
-            return target;
-        };
-
-        /*
-         */
         failTask = function(job, task, reason) {
-
-            logger.debug('TDS workflow failTask: ' +
-                job._id + ' (' + task.name + ')');
+            logger.debug('TWS ' + job._id + ' failTask: ' + task.name);
 
             task.state = '$$error';
             task.result = reason;
@@ -363,7 +383,7 @@
         getCurrentTasks = function(job) {
             var steps;
 
-            logger.debug('TDS workflow getCurrentTasks: ' + job._id);
+            logger.debug('TWS ' + job._id + ' getCurrentTasks');
 
             steps = job.steps;
             if (!steps) {
@@ -394,7 +414,7 @@
                 list,
                 arr;
 
-            logger.debug('TDS workflow getNextTasks: ' + job._id);
+            logger.debug('TWS ' + job._id + ' getNextTasks');
 
             steps = job.steps;
             arr = [];
@@ -492,16 +512,16 @@
                         default:
 
                             //  Something unexpected.
-                            logger.error('TWS workflow unexpected task state: ' +
-                                job._id + ' (' + last.name + ' )' + ' -> ' +
-                                last.state);
+                            logger.error('TWS ' + job._id +
+                                ' unexpected task state: ' +
+                                last.name + ' -> ' + last.state);
                             break;
                     }
 
                     break;
                 default:
-                    logger.error('TWS workflow unsupported task structure: ' +
-                        tasks.structure);
+                    logger.error('TWS ' + job._id +
+                        ' unsupported task structure: ' + tasks.structure);
                     break;
             }
 
@@ -512,11 +532,18 @@
          */
         initializeJob = function(job) {
 
-            logger.debug('TDS workflow initializeJob: ' + job._id);
+            logger.debug('TWS ' + job._id + ' initializeJob');
 
             //  Get the job's flow document. We need to copy the current task
             //  definition for the flow into the job instance.
-            retrieveFlow(job.flow, job.owner).then(function(flow) {
+            retrieveFlow(job, job.flow, job.owner).then(function(flow) {
+
+                if (!flow) {
+                    logger.error('TWS ' + job._id +
+                        ' missing flow: ' + job.flow + '::' + job.owner);
+                    //  TODO:   cancel/close out job?
+                    return;
+                }
 
                 //  Snapshot the flow properties. This ensures we don't allow
                 //  job submissions to alter the configured nature of the flow
@@ -526,8 +553,15 @@
                 job.retry = flow.retry;
                 job.timeout = flow.timeout;
 
-                //  Expand any initial parameters along with any flow defaults.
-                expandParams(job, flow);
+                //  Map any flow parameter defaults into the job. Additional
+                //  params processing will occur as steps are processed.
+                if (flow.params) {
+                    if (job.params) {
+                        TDS.blend(job.params, flow.params);
+                    } else {
+                        job.params = flow.params;
+                    }
+                }
 
                 job.state = '$$ready';
                 job.start = Date.now();
@@ -536,16 +570,14 @@
                 dbSave(job);
 
             }).catch(function(err) {
-                logger.error('TDS workflow error for job ' +
-                    job._id + ': ' + err);
+                logger.error('TWS ' + job._id + ' error: ' + err);
             });
         };
 
         /*
          */
         isJobComplete = function(job) {
-
-            logger.debug('TDS workflow isJobComplete: ' + job._id);
+            logger.debug('TWS ' + job._id + ' isJobComplete');
 
             return job.state === '$$complete';
         };
@@ -553,8 +585,7 @@
         /*
          */
         isJobInitialized = function(job) {
-
-            logger.debug('TDS workflow isJobInitialized: ' + job._id);
+            logger.debug('TWS ' + job._id + ' isJobInitialized');
 
             return job.state !== undefined && job.start !== undefined;
         }
@@ -564,7 +595,7 @@
         isOnTaskBoundary = function(job) {
             var actives;
 
-            logger.debug('TDS workflow isOnTaskBoundary: ' + job._id);
+            logger.debug('TWS ' + job._id + ' isOnTaskBoundary');
 
             //  Not initialized? Not ready for work yet.
             if (!isJobInitialized(job)) {
@@ -589,9 +620,7 @@
         /*
          */
         isTaskComplete = function(job, task) {
-
-            logger.debug('TDS workflow isTaskComplete: ' +
-                job._id + ' (' + task.name + ')');
+            logger.debug('TWS ' + job._id + ' isTaskComplete: ' + task.name);
 
             //  Tasks don't proceed after being set to an error or timeout, they
             //  can retry but that creates a new task, it doesn't continue using
@@ -603,9 +632,7 @@
         /*
          */
         shouldTaskTimeOut = function(job, task) {
-
-            logger.debug('TDS workflow shouldTaskTimeOut: ' +
-                job._id + ' (' + task.name + ')');
+            logger.debug('TWS ' + job._id + ' shouldTaskTimeOut: ' + task.name);
 
             //  States like $$ready and $$active could wait forever, but other
             //  concrete states imply the task is finished in some form and can
@@ -629,8 +656,8 @@
             var steps,
                 pid;
 
-            logger.debug('TDS workflow processOwnedTasks: ' + job._id +
-                ' (' + process.pid + ')');
+            logger.debug('TWS ' + job._id + ' processOwnedTasks: ' +
+                    process.pid);
 
             pid = process.pid;
 
@@ -646,8 +673,9 @@
 
                 runner = TDS.workflow.tasks[step.name];
                 if (!runner) {
-                    logger.error('TDS workflow ' + process.pid +
-                        ' unable to locate runner for: ' + step.name);
+                    logger.error('TWS ' + job._id +
+                        ' process ' + process.pid +
+                        ' unable to find runner for: ' + step.name);
                     failTask(job, step, 'Unable to locate task runner.');
                     return;
                 }
@@ -686,7 +714,7 @@
         refreshTaskState = function(job) {
             var steps;
 
-            logger.debug('TDS workflow refreshTaskState: ' + job._id);
+            logger.debug('TWS ' + job._id + ' refreshTaskState');
 
             //  If we find tasks with incorrect state (they've timed out
             //  basically) we update and save, returning true to tell callers
@@ -698,10 +726,10 @@
             });
 
             if (steps.length > 0) {
-                logger.debug('TDS workflow found timed out tasks: ' + job._id +
-                    ' (' +
+                logger.debug('TWS ' + job._id + ' found timed out tasks: ' +
+                    ' [' +
                     steps.map(function(step) { return step.name }).join(', ') +
-                    ')');
+                    ']');
 
                 steps.forEach(function(step) {
                     step.state = '$$timeout';
@@ -717,9 +745,9 @@
 
         /*
          */
-        retrieveFlow = function(flow, owner) {
-
-            logger.debug('TDS workflow retrieveFlow: ' + flow + '::' + owner);
+        retrieveFlow = function(job, flow, owner) {
+            logger.debug('TWS ' + job._id + ' retrieveFlow: ' + flow + '::' +
+                    owner);
 
             return dbView(db_app, 'flows', {keys: [flow + '::' + owner]}).then(
             function(result) {
@@ -727,15 +755,17 @@
                 //  There should be only one so pass first one along.
                 return result[0];
             }).catch(function(err) {
-                return err;
+                logger.error('TWS ' + job._id +
+                    ' error: ' + err +
+                    ' fetching flow: ' + flow + '::' + owner);
+                return;
             });
         };
 
         /*
          */
-        retrieveTask = function(taskname) {
-
-            logger.debug('TDS workflow retrieveTask: ' + taskname);
+        retrieveTask = function(job, taskname) {
+            logger.debug('TWS ' + job._id + ' retrieveTask: ' + taskname);
 
             return dbView(db_app, 'tasks', {keys: [taskname]}).then(
             function(result) {
@@ -743,7 +773,10 @@
                 //  There should be only one so pass first one along.
                 return result[0];
             }).catch(function(err) {
-                return err;
+                logger.error('TWS ' + job._id +
+                    ' error: ' + err +
+                    ' fetching task: ' + taskname);
+                return;
             });
         };
 
@@ -751,7 +784,7 @@
          */
         retryJob = function(job) {
             //  TODO
-            logger.debug('TDS workflow retryJob: ' + job._id);
+            logger.debug('TWS ' + job._id + ' retryJob');
 
 
         };
@@ -762,8 +795,7 @@
             var count,
                 retryStep;
 
-            logger.debug('TDS workflow retryTask: ' +
-                job._id + ' (' + task.name + ')');
+            logger.debug('TWS ' + job._id + ' retryTask: ' + task.name);
 
             count = task.retry;
             if (count === undefined || count <= 0) {
@@ -778,6 +810,8 @@
             retryStep.end = undefined;
             retryStep.retry = count - 1;
 
+            //  TODO:   params for the step need to be blended from the job so
+            //          each step gets params.
             job.steps.push(retryStep);
 
             //  Saving the job with the new step in place should trigger a
@@ -801,8 +835,8 @@
             }
             job = json;
 
-            logger.debug('TDS workflow processing request: ' +
-                TDS.beautify(JSON.stringify(job)));
+            logger.debug('TWS ' + job._id + ' changed');
+            //logger.trace(TDS.beautify(JSON.stringify(job)));
 
             switch (job.state) {
                 case '$$ready':
@@ -827,14 +861,13 @@
                     }
                     break;
                 case '$$complete':
-                    logger.debug('TDS workflow received completion notice.');
+                    logger.debug('TWS ' + job._id + ' complete');
                     break;
                 case undefined:
                     if (!isJobInitialized(job)) {
                         initializeJob(job);
                     } else {
-                        logger.error('TDS workflow invalid job state: ' +
-                            job._id);
+                        logger.error('TWS ' + job._id + ' undefined job state');
                     }
                     break;
                 default:
@@ -878,7 +911,7 @@
 
                 name = file.slice(0, file.lastIndexOf('.'));
 
-                logger.debug('Loading workflow for ' + name);
+                logger.debug('TWS loading task runner: ' + name);
 
                 TDS.workflow.tasks[name] =
                     require(path.join(taskdir, file))(options);
