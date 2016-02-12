@@ -79,11 +79,11 @@
             //  TODO:   read a template from somewhere. and make the targets
             //  here configurable.
             transport.sendMail({
-                from: params.from || 'defaultmailer@formsanity.com',
-                to: params.to || 'ss@technicalpursuit.com',
-                subject: params.subject || 'Test',
-                html: params.body || 'Sending FS doc: ' +
-                    '<code>' + TDS.beautify(JSON.stringify(step)) + '</code>'
+                from: params.from || 'defaultmailer@technicalpursuit.com',
+                to: params.to || 'tibet@technicalpursuit.com',
+                subject: params.subject || 'TWS Mail Task Test',
+                html: params.body || 'Job content' +
+                    '<code>' + TDS.beautify(JSON.stringify(job)) + '</code>'
             },
             function(err, info) {
                 var nano,
