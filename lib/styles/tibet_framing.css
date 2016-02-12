@@ -68,9 +68,6 @@ div {
     background-color: #ddd;
 }
 
-.corner:hover {
-}
-
 .corner > * {
     position: absolute;
     top: 0;
@@ -92,9 +89,6 @@ div {
 
     border: 1px solid #666;
     background-color: #ddd;
-}
-
-.h-edge:hover {
 }
 
 .h-edge > * {
@@ -120,9 +114,6 @@ div {
 
     border: 1px solid #666;
     background-color: #ddd;
-}
-
-.v-edge:hover {
 }
 
 .v-edge > * {
