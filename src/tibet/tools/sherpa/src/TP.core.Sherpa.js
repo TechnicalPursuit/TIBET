@@ -79,7 +79,7 @@ function(aName) {
             if (!TP.sys.cfg('boot.show_ide')) {
 
                 win = TP.win('UIROOT');
-                drawerElement = TP.byCSSPath('div#south', win, true, false);
+                drawerElement = TP.byId('south', win, false);
 
                 (sherpaFinishSetupFunc = function(aSignal) {
                     sherpaFinishSetupFunc.ignore(
