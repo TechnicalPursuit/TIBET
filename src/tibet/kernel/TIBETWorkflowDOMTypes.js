@@ -1095,8 +1095,14 @@ function(aNode, aRequest) {
 
     var phases,
 
+        currentNode,
+
         len,
-        i;
+        i,
+
+        wasACPTextNode,
+
+        parentNode;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode');
@@ -1108,10 +1114,33 @@ function(aNode, aRequest) {
 
     phases = this.get('phases');
 
+    currentNode = aNode;
+
     //  Iterate over the phases, processing the content through each one.
     len = phases.getSize();
     for (i = 0; i < len; i++) {
-        phases.at(i).processNode(aNode, this, aRequest);
+
+        //  A flag that is used if the currently processing node is a Text node
+        //  containing ACP expressions.
+        wasACPTextNode = false;
+
+        //  If the node is a Text node and had ACP expressions, flag it and
+        //  capture it's parent node.
+        if (TP.isTextNode(currentNode) &&
+            TP.regex.HAS_ACP.test(TP.nodeGetTextContent(currentNode))) {
+
+            wasACPTextNode = true;
+            parentNode = currentNode.parentNode;
+        }
+
+        phases.at(i).processNode(currentNode, this, aRequest);
+
+        //  If we were processing a Text node containing ACP expressions and
+        //  it's now detached, then we resume the next phase at it's (former)
+        //  parent node (since it might have been replaced by a whole fragment).
+        if (wasACPTextNode && TP.nodeIsDetached(currentNode)) {
+            currentNode = parentNode;
+        }
     }
 
     return this;
