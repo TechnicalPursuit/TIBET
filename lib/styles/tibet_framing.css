@@ -1,3 +1,4 @@
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 @namespace pclass url(urn:tibet:pseudoclass);
 
 html, body, #background, iframe {
@@ -61,8 +62,6 @@ div {
 
 .framing.corner {
     text-align: center;
-    font-weight: bold;
-    font-size: 138.5%;
 
     border: 1px solid #666;
     background-color: #ddd;
@@ -134,7 +133,6 @@ div {
 .framing.north {
     top: 0;
     height: 32px;
-    line-height: 32px;
     border-top: 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
