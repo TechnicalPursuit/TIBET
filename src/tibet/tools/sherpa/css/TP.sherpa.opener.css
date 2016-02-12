@@ -1,0 +1,91 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+sherpa|opener {
+    display: block;
+
+    margin: 0.25em auto;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border: 1px solid #666;
+    border-radius: 9px;
+    color: #333;
+    line-height: 14px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+sherpa|opener > .icon {
+    margin-left: 0;
+}
+
+/* Drawer is closed, opener is from the east */
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|opener[class~="east"] > .icon::after {
+    /* This is the same as '&#8592' */
+    content: "\2190";
+}
+
+/* Drawer is open, opener is from the east */
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]) sherpa|opener[class~="east"] > .icon::after {
+    /* This is the same as '&#8594' */
+    content: "\2192";
+}
+
+/* Drawer is closed, opener is from the west */
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|opener[class~="west"] > .icon::after {
+    /* This is the same as '&#8594' */
+    content: "\2192";
+}
+
+/* Drawer is open, opener is from the west */
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]) sherpa|opener[class~="west"] > .icon::after {
+    /* This is the same as '&#8592' */
+    content: "\2190";
+}
+
+/* Drawer is closed, opener is from the north */
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|opener[class~="north"] > .icon::after {
+    /* This is the same as '&#8595' */
+    content: "\2193";
+}
+
+/* Drawer is open, opener is from the north */
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]) sherpa|opener[class~="north"] > .icon::after {
+    /* This is the same as '&#8593' */
+    content: "\2191";
+}
+
+/* Drawer is closed, opener is from the south */
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|opener[class~="south"] > .icon::after {
+    /* This is the same as '&#8593' */
+    content: "\2191";
+}
+
+/* Drawer is open, opener is from the south */
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]) sherpa|opener[class~="south"] > .icon::after {
+    /* This is the same as '&#8595' */
+    content: "\2193";
+}
+
+sherpa|opener:hover {
+    border: 1px solid #666;
+    background: gold;
+    color: #333;
+}
+
+sherpa|opener[class~="west"] {
+    float: left;
+    margin-top: 6px;
+    margin-left: 6px;
+}
+
+sherpa|opener[class~="east"] {
+    float: right;
+    margin-top: 6px;
+    margin-right: 6px;
+    margin-left: 0.5em;
+}
+

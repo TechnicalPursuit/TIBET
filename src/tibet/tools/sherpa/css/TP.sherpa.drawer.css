@@ -1,0 +1,20 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]).corner {
+
+    width: 48%;
+    height: 48%;
+}
+
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]).h-edge {
+
+    height: 200px;
+}
+
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]).v-edge {
+
+    width: 200px;
+}
+

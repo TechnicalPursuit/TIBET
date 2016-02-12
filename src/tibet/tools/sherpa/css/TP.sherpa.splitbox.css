@@ -1,0 +1,51 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+sherpa|splitbox {
+    display: block;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: auto;
+    width: auto;
+}
+
+sherpa|splitbox > * > .title {
+    position: absolute;
+    line-height: 2em;
+    height: 2em;
+    left: 0;
+    right: 0;
+    font-weight: normal;
+    font-size: 77%;
+    color: #999;
+    text-align: center;
+    margin: 4px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+sherpa|splitbox > *:first-child {
+    position: absolute;
+    top: 0;
+    height: 50%;
+}
+sherpa|splitbox > *:first-child > .title {
+    bottom: 0;
+    border-top: 1px solid #aaa;
+}
+
+sherpa|splitbox > *:last-child {
+    position: absolute;
+    bottom: 0;
+    height: 50%;
+}
+sherpa|splitbox > *:last-child > .title {
+    top: 0;
+    border-bottom: 1px solid #aaa;
+}
+

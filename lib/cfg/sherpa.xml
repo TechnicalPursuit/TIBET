@@ -93,6 +93,63 @@
     <property name="path.TP.sherpa.searcher.template" value="~ide_root/xhtml/TP.sherpa.searcher.xhtml"/>
     <property name="path.TP.sherpa.searcher.style" value="~ide_root/css/TP.sherpa.searcher.css"/>
 
+
+    <script src="./src/TP.sherpa.drawer.js"/>
+    <property name="path.TP.sherpa.drawer.template" value="~ide_root/xhtml/TP.sherpa.drawer.xhtml"/>
+    <property name="path.TP.sherpa.drawer.style" value="~ide_root/css/TP.sherpa.drawer.css"/>
+
+    <script src="./src/TP.sherpa.about.js"/>
+    <property name="path.TP.sherpa.about.template" value="~ide_root/xhtml/TP.sherpa.about.xhtml"/>
+    <property name="path.TP.sherpa.about.style" value="~ide_root/css/TP.sherpa.about.css"/>
+
+    <script src="./src/TP.sherpa.thumbnail.js"/>
+    <property name="path.TP.sherpa.thumbnail.template" value="~ide_root/xhtml/TP.sherpa.thumbnail.xhtml"/>
+    <property name="path.TP.sherpa.thumbnail.style" value="~ide_root/css/TP.sherpa.thumbnail.css"/>
+
+    <script src="./src/TP.sherpa.toolbar.js"/>
+    <property name="path.TP.sherpa.toolbar.template" value="~ide_root/xhtml/TP.sherpa.toolbar.xhtml"/>
+    <!--<property name="path.TP.sherpa.toolbar.style" value="~ide_root/css/TP.sherpa.toolbar.css"/>-->
+
+    <script src="./src/TP.sherpa.testing.js"/>
+    <property name="path.TP.sherpa.testing.template" value="~ide_root/xhtml/TP.sherpa.testing.xhtml"/>
+    <property name="path.TP.sherpa.testing.style" value="~ide_root/css/TP.sherpa.testing.css"/>
+
+    <script src="./src/TP.sherpa.changes.js"/>
+    <property name="path.TP.sherpa.changes.template" value="~ide_root/xhtml/TP.sherpa.changes.xhtml"/>
+    <property name="path.TP.sherpa.changes.style" value="~ide_root/css/TP.sherpa.changes.css"/>
+
+    <script src="./src/TP.sherpa.shelf.js"/>
+    <property name="path.TP.sherpa.shelf.template" value="~ide_root/xhtml/TP.sherpa.shelf.xhtml"/>
+    <property name="path.TP.sherpa.shelf.style" value="~ide_root/css/TP.sherpa.shelf.css"/>
+
+    <script src="./src/TP.sherpa.logger.js"/>
+    <property name="path.TP.sherpa.logger.template" value="~ide_root/xhtml/TP.sherpa.logger.xhtml"/>
+    <property name="path.TP.sherpa.logger.style" value="~ide_root/css/TP.sherpa.logger.css"/>
+
+    <script src="./src/TP.sherpa.opener.js"/>
+    <property name="path.TP.sherpa.opener.template" value="~ide_root/xhtml/TP.sherpa.opener.xhtml"/>
+    <property name="path.TP.sherpa.opener.style" value="~ide_root/css/TP.sherpa.opener.css"/>
+
+    <script src="./src/TP.sherpa.splitbox.js"/>
+    <property name="path.TP.sherpa.splitbox.template" value="~ide_root/xhtml/TP.sherpa.splitbox.xhtml"/>
+    <property name="path.TP.sherpa.splitbox.style" value="~ide_root/css/TP.sherpa.splitbox.css"/>
+
+    <script src="./src/TP.sherpa.splitbar.js"/>
+    <property name="path.TP.sherpa.splitbar.template" value="~ide_root/xhtml/TP.sherpa.splitbar.xhtml"/>
+    <property name="path.TP.sherpa.splitbar.style" value="~ide_root/css/TP.sherpa.splitbar.css"/>
+
+    <script src="./src/TP.sherpa.dispenser.js"/>
+    <property name="path.TP.sherpa.dispenser.template" value="~ide_root/xhtml/TP.sherpa.dispenser.xhtml"/>
+    <property name="path.TP.sherpa.dispenser.style" value="~ide_root/css/TP.sherpa.dispenser.css"/>
+
+    <script src="./src/TP.sherpa.notifier.js"/>
+    <property name="path.TP.sherpa.notifier.template" value="~ide_root/xhtml/TP.sherpa.notifier.xhtml"/>
+    <property name="path.TP.sherpa.notifier.style" value="~ide_root/css/TP.sherpa.notifier.css"/>
+
+    <script src="./src/TP.sherpa.readout.js"/>
+    <property name="path.TP.sherpa.readout.template" value="~ide_root/xhtml/TP.sherpa.readout.xhtml"/>
+    <property name="path.TP.sherpa.readout.style" value="~ide_root/css/TP.sherpa.readout.css"/>
+
 </config>
 
 </package>

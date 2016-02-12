@@ -1,0 +1,35 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+sherp|notifier {
+    position: absolute;
+    left: 136px;
+    right: 136px;
+    bottom: 0;
+    margin-bottom: 4px;
+    height: 18px;
+    line-height: 18px;
+    border: 1px solid #666;
+    border-radius: 5px;
+    background: #eee;
+}
+
+sherpa|notifier > .content {
+    min-width: 0;
+    max-width: none;
+    border-radius: 5px;
+    background: #eee;
+
+    font-size: 10px;
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+}
+
+sherpa|notifier:hover > .content {
+    background: gold;
+}
+
+sherpa|notifier.active > .content {
+    background: gold;
+}
+
