@@ -40,6 +40,21 @@ function(aHalo, aSignal) {
     return false;
 });
 
+//  ========================================================================
+//  TP.sherpa.TemplatedTag
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TemplatedTag}
+ * @summary A tag type that is templated and also has the common aspect of all
+ *     XControls tags.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.defineSubtype('sherpa.TemplatedTag');
+TP.sherpa.TemplatedTag.addTraits(TP.sherpa.Element);
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
