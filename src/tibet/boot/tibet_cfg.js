@@ -1223,6 +1223,11 @@
     //  editing (in ms) ?
     TP.sys.setcfg('sherpa.eval_mark_time', 1500);
 
+    //  how long should the HUD wait after the last key up before resetting the
+    //  keyboard/mouse readout back to info from the last mouse move event (in
+    //  ms) ?
+    TP.sys.setcfg('sherpa.readout_mouse_reset_time', 1000);
+
     //  the id of the element under the mark holding the prompt
     TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
 
