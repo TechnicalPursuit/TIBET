@@ -221,6 +221,8 @@ function() {
 
     var keyboardSM,
 
+        consoleGUI,
+
         normalResponder,
         evalMarkingResponder,
         autocompleteResponder;
@@ -232,6 +234,8 @@ function() {
     keyboardSM.setTriggerSignals(TP.ac('TP.sig.DOMKeyDown', 'TP.sig.DOMKeyUp'));
     keyboardSM.setTriggerOrigins(TP.ac(TP.core.Keyboard));
 
+    consoleGUI = this.get('$consoleGUI');
+
     //  NB: In addition to being responders for state transition signals,
     //  KeyResponder objects also supply handlers for keyboard signals.
 
@@ -241,12 +245,15 @@ function() {
 
     normalResponder = TP.sherpa.NormalKeyResponder.construct(keyboardSM);
     normalResponder.set('$consoleService', this);
-    normalResponder.set('$consoleGUI', this.get('$consoleGUI'));
+    normalResponder.set('$consoleGUI', consoleGUI);
 
     keyboardSM.defineHandler('NormalInput', function(aSignal) {
         var triggerSignal;
 
         triggerSignal = aSignal.getPayload().at('trigger');
+
+        //  Update the 'keyboardInfo' part of the status.
+        consoleGUI.updateStatus(triggerSignal, 'keyboardInfo');
 
         if (normalResponder.isSpecialSignal(triggerSignal)) {
             normalResponder.executeTriggerSignalHandler(triggerSignal);
@@ -263,7 +270,7 @@ function() {
 
     evalMarkingResponder = TP.sherpa.EvalMarkingKeyResponder.construct(keyboardSM);
     evalMarkingResponder.set('$consoleService', this);
-    evalMarkingResponder.set('$consoleGUI', this.get('$consoleGUI'));
+    evalMarkingResponder.set('$consoleGUI', consoleGUI);
 
     keyboardSM.defineHandler('EvalmarkingInput', function(aSignal) {
 
@@ -272,6 +279,9 @@ function() {
 
         triggerSignal = aSignal.getPayload().at('trigger');
         triggerEvent = triggerSignal.getEvent();
+
+        //  Update the 'keyboardInfo' part of the status.
+        consoleGUI.updateStatus(triggerSignal, 'keyboardInfo');
 
         if (normalResponder.isCommandEvent(triggerEvent)) {
             normalResponder.executeTriggerSignalHandler(triggerSignal);
@@ -289,7 +299,7 @@ function() {
     autocompleteResponder =
             TP.sherpa.AutoCompletionKeyResponder.construct(keyboardSM);
     autocompleteResponder.set('$consoleService', this);
-    autocompleteResponder.set('$consoleGUI', this.get('$consoleGUI'));
+    autocompleteResponder.set('$consoleGUI', consoleGUI);
 
     return this;
 });
@@ -2045,9 +2055,6 @@ function(aSignal) {
             if (!consoleGUI.eventIsInInput(evt)) {
                 return this;
             }
-
-            //  Update the 'keyboardInfo' part of the status.
-            consoleGUI.updateStatus(aSignal, 'keyboardInfo');
 
             handlerName = TP.composeHandlerName(aSignal.getKeyName());
 
