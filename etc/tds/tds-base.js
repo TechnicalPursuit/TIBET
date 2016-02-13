@@ -13,9 +13,11 @@
 
     var beautify,
         Package,
+        sh,
         TDS;
 
     beautify = require('js-beautify');
+    sh = require('shelljs');
 
     // Load the CLI's package support to help with option/configuration data.
     Package = require('../cli/tibet-package');
@@ -99,6 +101,10 @@
     TDS.notValid = function(aReference) {
         return aReference === null || aReference === undefined;
     };
+
+    //  ---
+    //  Core Utilities
+    //  ---
 
     /**
      * A useful variation on extend from other libs sufficient for parameter
@@ -230,6 +236,54 @@
         }
 
         this._package = new Package(options);
+    };
+
+    /**
+     * Save a property value to the TDS server configuration file. Note that
+     * this only operates on keys prefixed with 'tds'.
+     * @param {String} property The property name to set/save.
+     * @param {String} value The value to set.
+     * @param {String} env The environment context ('development' etc).
+     */
+    TDS.savecfg = function(property, value, env) {
+        var cfg,
+            parts,
+            part,
+            i,
+            len,
+            chunk;
+
+        if (property.indexOf('tds.') !== 0) {
+            return;
+        }
+
+        this.initPackage();
+
+        //  Get current environment block.
+        cfg = TDS._package.getServerConfig();
+        chunk = cfg[env];
+
+        //  Get list of property path entries without 'tds'.
+        parts = property.split('.');
+        parts.shift();
+
+        //  Work through parts, building as we need to.
+        part = parts.shift();
+        while (part) {
+            if (parts.length === 0) {
+                //  part we have is 'leaf' level
+                chunk[part] = value;
+            } else {
+                if (TDS.notValid(chunk[part])) {
+                    chunk[part] = {};
+                }
+                chunk = chunk[part];
+            }
+            part = parts.shift();
+        }
+
+        //  Save the file content back out via shelljs interface.
+        TDS.beautify(JSON.stringify(cfg)).to(TDS.expandPath('~/tds.json'));
     };
 
     module.exports = TDS;
