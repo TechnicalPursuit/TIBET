@@ -1221,7 +1221,7 @@
 
     //  how long should the sherpa console wait before allowing 'eval mark'
     //  editing (in ms) ?
-    TP.sys.setcfg('sherpa.eval_mark_time', 1500);
+    TP.sys.setcfg('sherpa.eval_mark_time', 5000);
 
     //  how long should the HUD wait after the last key up before resetting the
     //  keyboard/mouse readout back to info from the last mouse move event (in
