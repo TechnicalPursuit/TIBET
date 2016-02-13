@@ -869,6 +869,7 @@ function() {
                     });
 
                 this.set('history', newHistory);
+                this.set('historyIndex', newHistory.getSize());
             }
         }
     }
