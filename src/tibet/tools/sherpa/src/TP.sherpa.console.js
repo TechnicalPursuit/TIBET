@@ -56,6 +56,10 @@ TP.sherpa.console.Inst.defineAttribute('rawOutEntryTemplate');
 TP.sherpa.console.Inst.defineAttribute('outputCoalesceRecords');
 TP.sherpa.console.Inst.defineAttribute('outputCoalesceTimer');
 
+//  A timer that will flip the status readout back to mouse coordinates after a
+//  period of time.
+TP.sherpa.console.Inst.defineAttribute('statusReadoutTimer');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -854,18 +858,26 @@ function(aSignal, statusOutID) {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    return this;
-
     var statID,
+
+        hudWin,
+
+        timer,
 
         canvasWin,
 
         str,
         arr,
-        evt;
+        evt,
+
+        keyboardStatusTPElem,
+        mouseStatusTPElem;
 
     statID = TP.ifEmpty(statusOutID, TP.ALL);
 
+    hudWin = this.getNativeWindow();
+
+    /*
     //  ---
     //  status context ID (execution window's global ID)
     //  ---
@@ -874,8 +886,7 @@ function(aSignal, statusOutID) {
         if (TP.isWindow(canvasWin = TP.sys.getUICanvas(true))) {
             str = TP.gid(canvasWin).sliceFrom('.', false, true);
 
-            TP.byId('currentCanvasInfo',
-                    this.getNativeWindow()).setRawContent(str);
+            TP.byId('currentCanvasInfo', hudWin).setRawContent(str);
         }
     }
 
@@ -886,8 +897,19 @@ function(aSignal, statusOutID) {
     if (statID === 'logLevelInfo' || statID === TP.ALL) {
         str = TP.getLogLevel().getName() + '::' + APP.getLogLevel().getName();
 
-        TP.byId('logLevelInfo', this.getNativeWindow()).setRawContent(str);
+        TP.byId('logLevelInfo', hudWin).setRawContent(str);
     }
+    */
+
+    if (TP.isValid(timer = this.get('statusReadoutTimer'))) {
+        clearTimeout(timer);
+        this.set('statusReadoutTimer', null);
+    }
+
+    keyboardStatusTPElem =
+        TP.byCSSPath('#keyAndMouseReadout .keyboard', hudWin, true);
+    mouseStatusTPElem =
+        TP.byCSSPath('#keyAndMouseReadout .mouse', hudWin, true);
 
     //  ---
     //  keyboard key pressed
@@ -911,8 +933,37 @@ function(aSignal, statusOutID) {
 
             str = arr.join(' : ');
 
-            TP.byId('keyboardInfo', this.getNativeWindow()).setRawContent(str);
+            keyboardStatusTPElem.setRawContent(str);
+
+            if (TP.isKindOf(aSignal, TP.sig.DOMKeyUp)) {
+                timer = function() {
+                    var lastMove;
+
+                    lastMove = TP.core.Mouse.$get('lastMove');
+
+                    if (TP.isEvent(lastMove) &&
+                        TP.eventGetWindow(lastMove) ===
+                        TP.sys.getUICanvas(true)) {
+                        this.updateStatus(
+                                TP.sig.DOMMouseMove.construct(lastMove),
+                                'mouseInfo');
+                    } else {
+                        this.updateStatus(
+                                null,
+                                'mouseInfo');
+                    }
+
+                }.bind(this).fork(
+                    TP.ifInvalid(
+                        TP.sys.cfg('sherpa.readout_mouse_reset_time'),
+                        1000));
+                this.set('statusReadoutTimer', timer);
+            }
+        } else {
+            keyboardStatusTPElem.clearTextContent();
         }
+
+        mouseStatusTPElem.hide();
     }
 
     //  ---
@@ -930,10 +981,12 @@ function(aSignal, statusOutID) {
                 str = aSignal.getPageX() + ' :: ' + aSignal.getPageY();
             }
 
-            TP.byId('mouseInfo', this.getNativeWindow()).setRawContent(str);
+            mouseStatusTPElem.setRawContent(str);
         } else {
-            TP.byId('mouseInfo', this.getNativeWindow()).clearTextContent();
+            mouseStatusTPElem.clearTextContent();
         }
+
+        mouseStatusTPElem.show();
     }
 
     return this;
