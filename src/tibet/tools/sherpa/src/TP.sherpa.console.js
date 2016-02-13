@@ -939,6 +939,8 @@ function(aSignal, statusOutID) {
                 timer = function() {
                     var lastMove;
 
+                    this.set('statusReadoutTimer', null);
+
                     lastMove = TP.core.Mouse.$get('lastMove');
 
                     if (TP.isEvent(lastMove) &&
