@@ -174,8 +174,8 @@ Cmd.prototype.execute = function() {
     this.options.profile = this.getProfile();
 
     //  Push values into the config or we won't get them back in the arglist.
-    TP.sys.setcfg('script', this.options.script);
-    TP.sys.setcfg('profile', this.options.profile);
+    CLI.setcfg('script', this.options.script);
+    CLI.setcfg('profile', this.options.profile);
 
     // Access the argument list. Subtypes can adjust how they assemble this to
     // alter the default behavior.

@@ -873,6 +873,19 @@ CLI.rpad = function(obj, length, padChar) {
 
 
 /**
+ * Sets a configuration value. Leverages the logic in a TIBET Package object for
+ * the processing of TIBET configuration data.
+ * @param {string} property A specific property name to be updated.
+ * @param {string} value A specific property value to set.
+ */
+CLI.setcfg = function(property, value) {
+    this.initPackage();
+
+    return this._package.setcfg(property, value);
+};
+
+
+/**
  * Parses a string and attempts to produce a workable regular expression which
  * would match that string. This is primarily used to take input parameters of
  * the form /foo/gi etc. (Javascript source code format) and produce RegExp's.
