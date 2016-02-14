@@ -286,6 +286,12 @@
         TDS.beautify(JSON.stringify(cfg)).to(TDS.expandPath('~/tds.json'));
     };
 
+    TDS.setcfg = function(property, value) {
+        this.initPackage();
+
+        return TDS._package.setcfg(property, value);
+    };
+
     module.exports = TDS;
 
 }(this));
