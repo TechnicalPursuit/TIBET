@@ -303,6 +303,26 @@ TP.sig.Signal.Type.defineAttribute('signalRoot', null);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.sig.Signal.Type.defineMethod('fire',
+function(anOrigin, aPayload, aPolicy) {
+
+    /**
+     * @method fire
+     * @summary Activates a signal instance via the policy specified. The
+     *     instance in question will be whatever the receiver returns in
+     *     response to an empty construct() call. Use construct().fire()
+     *     directly if you need to configure the signal instance manually.
+     * @param {Object} anOrigin Optional origin for this call.
+     * @param {Array} aPayload Optional signal arguments.
+     * @param {Function} aPolicy A firing policy function.
+     * @returns {TP.sig.Signal} The signal.
+     */
+
+    return this.construct().fire(anOrigin, aPayload, aPolicy);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Signal.Type.defineMethod('getDefaultPolicy',
 function() {
 
@@ -2354,12 +2374,6 @@ function(anError, aMessage) {
 });
 
 //  ------------------------------------------------------------------------
-//  Type Local Attributes
-//  ------------------------------------------------------------------------
-
-TP.sig.Exception.defineAttribute('$handled', false);
-
-//  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
@@ -2810,30 +2824,6 @@ function() {
      */
 
     return this.at('message');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Exception.Inst.defineMethod('preventDefault',
-function(aFlag) {
-
-    /**
-     * @method preventDefault
-     * @summary Turns off default processing for the receiver. In the case of a
-     *     TP.sig.Exception this means that the standard throw call that would
-     *     follow signaling the lightweight exception will not occur. This
-     *     should be done whenever you've handled an exception in a way that
-     *     should allow processing to continue.
-     * @param {Boolean} aFlag True to signify that this exception has been
-     *     handled.
-     * @returns {Boolean} False, since default processing has been switched off.
-     */
-
-    //  set global handled flag so other external processing can see that
-    //  we've been properly managed. the result for an
-    this.getType().set('$handled', true);
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -5100,7 +5090,6 @@ function(originSet, aSignal, aPayload, aType) {
     //  ---
     //  Process CAPTURING
     //  ---
-
 
     //  set the phase to capturing to get started
     sig.setPhase(TP.CAPTURING);
@@ -7374,6 +7363,7 @@ function(anOrigin, anException, aPayload) {
         aSignal,
         exceptions,
         flag,
+        inst,
         eType,
         level;
 
@@ -7537,20 +7527,24 @@ function(anOrigin, anException, aPayload) {
         }
     }
 
-    //  dispatch with EXCEPTION firing policy. Firing policies are
-    //  functions which define the logic which controls how a particular
-    //  signal is going to be processed. The TP.EXCEPTION_FIRING policy
+    //  dispatch with EXCEPTION firing policy. The TP.EXCEPTION_FIRING policy
     //  performs a list-oriented process which stops when the signal is
     //  "handled" at a particular exception.
-    TP.sig.Exception.set('$handled', false);
-    TP.signal(orig, exceptions, aPayload, TP.EXCEPTION_FIRING);
+    inst = TP.signal(orig, exceptions, aPayload, TP.EXCEPTION_FIRING);
 
     //  if the type's handled flag is still false then we throw a real error
-    if (TP.sys.shouldThrowExceptions() && !TP.sig.Exception.get('handled')) {
+    if (TP.sys.shouldThrowExceptions()) {
+
         //  one issue is that we want assertion throwing managed by its own
         //  flag so we do a secondary check here
         if (aSignal.getSignalName() !== 'AssertionFailed') {
-            TP.sig.Exception.set('$handled', true);
+
+            //  If the signal instance was handled (preventDefault() was
+            //  invoked) then we don't want to throw.
+            if (inst.shouldPrevent()) {
+                return;
+            }
+
             str = aSignal.asString();
             if (TP.isValid(aPayload)) {
                 str += ' - ' + TP.str(aPayload);
@@ -8662,6 +8656,26 @@ function(aSignal) {
     }
 
     return inst.handle(aSignal);
+});
+
+//  ========================================================================
+//  Native Type Extensions
+//  ========================================================================
+
+String.Inst.defineMethod('fire',
+function(anOrigin, aPayload, aPolicy) {
+
+    /**
+     * @method fire
+     * @summary Creates and activates the signal instance via the policy
+     *     specified. The signal name will be set to the string value.
+     * @param {Object} anOrigin Optional origin for this call.
+     * @param {Array} aPayload Optional signal arguments.
+     * @param {Function} aPolicy A firing policy function.
+     * @returns {TP.sig.Signal} The signal.
+     */
+
+    return TP.signal(anOrigin, '' + this, aPayload, aPolicy);
 });
 
 //  ------------------------------------------------------------------------
