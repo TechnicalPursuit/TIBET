@@ -4359,7 +4359,7 @@ function(anOrigin, aSignal, captureState) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.Type.defineMethod('notifyControllers',
-function(aSignal) {
+function(aSignal, handlerFlags) {
 
     /**
      * @method notifyControllers
@@ -4368,6 +4368,24 @@ function(aSignal) {
      *     standard observe/ignore signal notification process and the
      *     larger-scale application responder-chain notification sequence.
      * @param {TP.sig.Signal} aSignal The signal passed to handlers.
+     * @param {Object} [handlerFlags] A method parameter set.
+     *     Properties can be any combination of the following:
+     *          {String} [startSignal] The signal name to start considering
+     *                  handlers if the supplied signal has more than one signal
+     *                  name. This parameter is optional and, if not supplied,
+     *                  all of the signal names as computed from the supplied
+     *                  signal will be used.
+     *          {Boolean} [dontTraverseSpoofs=false] True will mean that
+     *                  traversing up the supertype chain will be disabled for
+     *                  'spoofed' signals (i.e. signals where the signal name
+     *                  doesn't match the type name).
+     *          {Boolean} [dontTraverseHierarchy=false] True will turn off any
+     *                  form of signal hierarchy traversal.
+     *          {String} [skipName] A string used to mask off certain handler
+     *                  names such as high-level default handlers.
+     *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
+     *                  TP.BUBBLING). The default is whatever phase the supplied
+     *                  signal is in.
      */
 
     var app,
@@ -4400,7 +4418,7 @@ function(aSignal) {
 
         //  Find/fire best handler for each controller.
         controller = controllers.at(i);
-        handler = controller.getBestHandler(aSignal);
+        handler = controller.getBestHandler(aSignal, handlerFlags);
         if (TP.isCallable(handler)) {
             try {
                 handler.call(controller, aSignal);
@@ -5802,7 +5820,7 @@ function(anOrigin, signalSet, aPayload, aType) {
             fixedName = sig.getSignalName();
             sig.setSignalName(signame);
 
-            TP.sig.SignalMap.notifyControllers(sig);
+            TP.sig.SignalMap.notifyControllers(sig, {dontTraverseSpoofs: true});
         } catch (e) {
             //  Catch is required for older IE versions and void is needed to
             //  keep lint happy. The notify call handles error reporting.
