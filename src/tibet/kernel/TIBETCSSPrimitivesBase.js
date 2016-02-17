@@ -670,6 +670,59 @@ function(aDocument, anHref) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentGetUnusedStyleRules',
+function(aDocument) {
+
+    /**
+     * @method documentGetUnusedStyleRules
+     * @summary Returns all of the unused CSS style rules for the supplied
+     *     document.
+     * @description This method will get all of the CSS style rules referenced
+     *     in a particular Document and see if any elements in that Document
+     *     match those rules at the point in time that this method is invoked.
+     * @param {HTMLDocument} aDocument The document to retrieve all unused style
+     *     rules for.
+     * @exception TP.sig.InvalidDocument
+     * @returns {Array} An Array of native browser 'rule' objects representing
+     *     the unused CSS rules for the supplied document.
+     */
+
+    var unusedRules,
+        allRules,
+
+        selectorText,
+
+        i;
+
+    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    unusedRules = TP.ac();
+
+    allRules = TP.documentGetStyleRules(aDocument);
+
+    for (i = 0; i < allRules.getSize(); i++) {
+
+        //  If this is not a STYLE_RULE, then it's probably some kind of '@'
+        //  rule and we can't determine whether those are unused or not without
+        //  a *much* more sophisticated analysis.
+        if (allRules.at(i).type !== CSSRule.STYLE_RULE) {
+            continue;
+        }
+
+        selectorText = allRules.at(i).selectorText;
+
+        if (TP.isEmpty(TP.nodeEvaluateCSS(aDocument, selectorText))) {
+            unusedRules.push(allRules.at(i));
+        }
+    }
+
+    return unusedRules;
+});
+
+//  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
