@@ -2597,7 +2597,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineHandler',
-function(aDescriptor, aHandler) {
+function(aDescriptor, aHandler, isCapturing) {
 
     /**
      * @method defineHandler
@@ -2615,10 +2615,14 @@ function(aDescriptor, aHandler) {
      *          state (String state name)
      *          phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING (default)).
      * @param {Function} aHandler The function body for the event handler.
+     * @param {Boolean} [isCapturing=false] Should this be considered a
+     *     capturing handler? Can also be specified via 'phase: TP.CAPTURING' in
+     *     the descriptor property.
      * @return {Object} The receiver.
      */
 
-    var name;
+    var name,
+        desc;
 
     if (!TP.isFunction(aHandler)) {
         return this.raise('InvalidFunction');
@@ -2629,8 +2633,20 @@ function(aDescriptor, aHandler) {
         return this.raise('InvalidParameter');
     }
 
+    desc = aDescriptor;
+    if (isCapturing)  {
+        if (TP.isString(aDescriptor)) {
+            desc = {
+                signal: aDescriptor,
+                phase: TP.CAPTURING
+            }
+        } else {
+            desc.phase = TP.CAPTURING;
+        }
+    }
+
     //  NOTE this will throw if things aren't proper in the descriptor.
-    name = TP.composeHandlerName(aDescriptor);
+    name = TP.composeHandlerName(desc);
 
     //  Simple method definition once we have a normalized handler name. Note
     //  however that we need to pass a special flag to keep defineMethod from
