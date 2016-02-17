@@ -138,6 +138,7 @@
 <config id="tsh">
     <script src="tsh/tsh_.js"/>
     <script src="tsh/tsh_Element.js"/>
+    <script src="tsh/tsh_audit.js"/>
     <script src="tsh/tsh_cmd.js"/>
     <script src="tsh/tsh_history.js"/>
     <script src="tsh/tsh_pp.js"/>
