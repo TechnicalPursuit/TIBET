@@ -74,7 +74,6 @@ function(aRequest) {
 
         shell.get('history').perform(
                         function(aShellReq) {
-
                             entries.atPut(count++, aShellReq.at('cmd'));
                         });
 
