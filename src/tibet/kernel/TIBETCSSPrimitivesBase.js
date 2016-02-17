@@ -1379,6 +1379,49 @@ function(aStyleRule) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleRuleGetStyleSheetAndIndex',
+function(aStyleRule) {
+
+    /**
+     * @method styleRuleGetStyleSheetAndIndex
+     * @summary Returns the native style sheet object associated with the
+     *     supplied style rule and the index that the rule can be found within
+     *     that style sheet.
+     * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
+     *     stylesheet of.
+     * @exception TP.sig.InvalidParameter
+     * @returns {Array} An Array of the stylesheet object containing the rule
+     *     and the index the rule can be found in the sheet.
+     */
+
+    var styleSheet,
+        allRules,
+        i;
+
+    if (TP.notValid(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    styleSheet = TP.styleRuleGetStyleSheet(aStyleRule);
+
+    if (TP.notValid(styleSheet)) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    //  NB: Note how we do *not* expand imports here
+    allRules = TP.styleSheetGetStyleRules(styleSheet, false);
+
+    for (i = 0; i < allRules.getSize(); i++) {
+        if (allRules.at(i) === aStyleRule) {
+            return TP.ac(styleSheet, i);
+        }
+    }
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleSheetGetImportSheets',
 function(aStylesheet, expandImports) {
 
