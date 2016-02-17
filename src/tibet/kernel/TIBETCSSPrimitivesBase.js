@@ -1407,6 +1407,191 @@ function(anElement, styleText) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleRuleGetSourceInfo',
+function(aStyleRule, sourceASTs) {
+
+    /**
+     * @method styleRuleGetSourceInfo
+     * @summary Returns source information for the supplied style rule.
+     * @param {CSSStyleRule} aStyleRule The style rule to retrieve the source
+     *     information for.
+     * @param {TP.core.Hash} sourceASTs A cache, supplied by the caller, that
+     *     this method will use to generate the AST for a particular sheet only
+     *     once and then cache in this object. In this way, this method can be
+     *     called more than once (maybe in a loop) and the ASTs will not be
+     *     generated for each rule in each sheet.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Hash} A hash containing the source information for the
+     *     supplied rule.
+     */
+
+    var results,
+
+        ownerSheet,
+        nativeRuleIndex,
+
+        sheetLoc,
+        styleElem,
+
+        httpObj,
+        srcText,
+
+        sheetAST,
+
+        vendorPrefix,
+
+        rules,
+
+        index,
+        len,
+        i,
+        rule,
+
+        embeddedRules,
+        embeddedLength,
+
+        args,
+
+        ruleInfo;
+
+    if (TP.notValid(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  First, we need to get the stylesheet of the style rule and its index
+    //  in the stylesheet
+    results = TP.styleRuleGetStyleSheetAndIndex(aStyleRule);
+
+    ownerSheet = results.first();
+    nativeRuleIndex = results.last();
+
+    sheetLoc = ownerSheet.href;
+
+    //  See if a Hash was passed into that caches sheet ASTs. This allows the
+    //  caller to process an entire batch of rules without fetching the source
+    //  and building an AST for the entire CSS sheet for each call into this
+    //  method, which only processes a single rule.
+
+    /* eslint-disable no-extra-parens */
+    if (!TP.isHash(sourceASTs) ||
+        (TP.isHash(sourceASTs) &&
+            TP.notValid(sheetAST = sourceASTs.at(sheetLoc)))) {
+    /* eslint-enable no-extra-parens */
+
+        //  If there is no sheet location, then it must be a sheet that was
+        //  generated for an inline 'style' element.
+        if (!TP.isString(sheetLoc)) {
+            if (!TP.isElement(styleElem = ownerSheet.ownerNode)) {
+                return TP.hc();
+            }
+
+            //  The sheet location is the global ID of the style element and the
+            //  source text to process is the content of that element.
+            sheetLoc = TP.gid(styleElem);
+            srcText = TP.nodeGetTextContent(styleElem);
+        } else {
+
+            //  Otherwise, it's an external sheet - fetch it's contents
+            //  *synchronously*.
+            httpObj = TP.httpGet(sheetLoc, TP.request('async', false));
+            srcText = httpObj.responseText;
+        }
+
+        //  If we couldn't get source text, then we return an empty Hash.
+        if (TP.isEmpty(srcText)) {
+            return TP.hc();
+        }
+
+        //  Generate an AST from the CSS text.
+        sheetAST = TP.extern.cssParser.parse(
+            srcText,
+            {
+                source: sheetLoc
+            });
+
+        if (TP.isHash(sourceASTs)) {
+            sourceASTs.atPut(sheetLoc, sheetAST);
+        }
+    }
+
+    //  Compute a vendor prefix.
+    if (TP.sys.isUA('GECKO')) {
+        vendorPrefix = '-moz-'
+    } else if (TP.sys.isUA('IE')) {
+        vendorPrefix = '-ms-'
+    } else if (TP.sys.isUA('WEBKIT')) {
+        vendorPrefix = '-webkit-'
+    }
+
+    //  Now iterate through all results in the AST, looking for the style rule
+    //  with the same index.
+
+    //  Note here how we make a copy of this Array, in case we modify it below
+    //  by splicing @media rules into it.
+    rules = TP.copy(sheetAST.stylesheet.rules);
+
+    index = 0;
+
+    len = rules.getSize();
+    for (i = 0; i < len; i++) {
+        rule = rules.at(i);
+
+        //  We process @media rules by grabbing their inner style rules and
+        //  splicing them into the Array and adjusting our 'len' to count to the
+        //  end. This is important because our native rule index will have been
+        //  computed taking these rules into account and so we need to do so
+        //  here.
+        if (rule.type === 'media') {
+
+            embeddedRules = rule.rules;
+            embeddedLength = embeddedRules.length;
+
+            args = TP.ac(i + 1, 0).concat(embeddedRules);
+            Array.prototype.splice.apply(rules, args);
+            len += embeddedLength;
+
+            continue;
+        }
+
+        //  We skip comments
+        if (rule.type === 'comment') {
+            continue;
+        }
+
+        //  We skip @keyframes rules that don't pertain to our platform. The
+        //  native rule index, as calculated by the browser, won't have counted
+        //  rules that are not for our current platform.
+        if (rule.type === 'keyframes' && rule.vendor !== vendorPrefix) {
+            continue;
+        }
+
+        //  We skip @document rules that don't pertain to our platform. The
+        //  native rule index, as calculated by the browser, won't have counted
+        //  rules that are not for our current platform.
+        if (rule.type === 'document' && rule.vendor !== vendorPrefix) {
+            continue;
+        }
+
+        //  If the index is the same as the native index calculated for our
+        //  rule, then we break and exit.
+        if (index === nativeRuleIndex) {
+
+            ruleInfo = rule;
+            break;
+        }
+
+        index++;
+    }
+
+    if (TP.isValid(ruleInfo)) {
+        return TP.hc(ruleInfo);
+    }
+
+    return TP.hc();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleRuleGetStyleSheet',
 function(aStyleRule) {
 
