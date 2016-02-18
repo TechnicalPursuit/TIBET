@@ -61,15 +61,19 @@
         //  ---
 
         Object.keys(routes).forEach(function(route) {
+            var middleware;
+
+            //  Allow each route to capture info from options by activating.
+            middleware = routes[route](options);
 
             //  If the route name (file name) starts with public then we skip
             //  having the loggedIn middleware in the pipeline for the route.
             if (route.indexOf('public[_.-]') === 0) {
-                app.use('/', parsers.json, parsers.urlencoded, routes[route]);
+                app.use('/', parsers.json, parsers.urlencoded, middleware);
             } else {
                 //  NOTE the use of the loggedIn helper here. All routes loaded in
                 //  this fashion are assumed to require a login to access them.
-                app.use('/', parsers.json, parsers.urlencoded, loggedIn, routes[route]);
+                app.use('/', parsers.json, parsers.urlencoded, loggedIn, middleware);
             }
         });
     };
