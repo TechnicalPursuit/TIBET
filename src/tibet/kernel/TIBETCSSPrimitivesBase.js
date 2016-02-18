@@ -670,6 +670,59 @@ function(aDocument, anHref) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentGetUnusedStyleRules',
+function(aDocument) {
+
+    /**
+     * @method documentGetUnusedStyleRules
+     * @summary Returns all of the unused CSS style rules for the supplied
+     *     document.
+     * @description This method will get all of the CSS style rules referenced
+     *     in a particular Document and see if any elements in that Document
+     *     match those rules at the point in time that this method is invoked.
+     * @param {HTMLDocument} aDocument The document to retrieve all unused style
+     *     rules for.
+     * @exception TP.sig.InvalidDocument
+     * @returns {Array} An Array of native browser 'rule' objects representing
+     *     the unused CSS rules for the supplied document.
+     */
+
+    var unusedRules,
+        allRules,
+
+        selectorText,
+
+        i;
+
+    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    unusedRules = TP.ac();
+
+    allRules = TP.documentGetStyleRules(aDocument);
+
+    for (i = 0; i < allRules.getSize(); i++) {
+
+        //  If this is not a STYLE_RULE, then it's probably some kind of '@'
+        //  rule and we can't determine whether those are unused or not without
+        //  a *much* more sophisticated analysis.
+        if (allRules.at(i).type !== CSSRule.STYLE_RULE) {
+            continue;
+        }
+
+        selectorText = allRules.at(i).selectorText;
+
+        if (TP.isEmpty(TP.nodeEvaluateCSS(aDocument, selectorText))) {
+            unusedRules.push(allRules.at(i));
+        }
+    }
+
+    return unusedRules;
+});
+
+//  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES
 //  ------------------------------------------------------------------------
 
@@ -1354,6 +1407,191 @@ function(anElement, styleText) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleRuleGetSourceInfo',
+function(aStyleRule, sourceASTs) {
+
+    /**
+     * @method styleRuleGetSourceInfo
+     * @summary Returns source information for the supplied style rule.
+     * @param {CSSStyleRule} aStyleRule The style rule to retrieve the source
+     *     information for.
+     * @param {TP.core.Hash} sourceASTs A cache, supplied by the caller, that
+     *     this method will use to generate the AST for a particular sheet only
+     *     once and then cache in this object. In this way, this method can be
+     *     called more than once (maybe in a loop) and the ASTs will not be
+     *     generated for each rule in each sheet.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Hash} A hash containing the source information for the
+     *     supplied rule.
+     */
+
+    var results,
+
+        ownerSheet,
+        nativeRuleIndex,
+
+        sheetLoc,
+        styleElem,
+
+        httpObj,
+        srcText,
+
+        sheetAST,
+
+        vendorPrefix,
+
+        rules,
+
+        index,
+        len,
+        i,
+        rule,
+
+        embeddedRules,
+        embeddedLength,
+
+        args,
+
+        ruleInfo;
+
+    if (TP.notValid(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  First, we need to get the stylesheet of the style rule and its index
+    //  in the stylesheet
+    results = TP.styleRuleGetStyleSheetAndIndex(aStyleRule);
+
+    ownerSheet = results.first();
+    nativeRuleIndex = results.last();
+
+    sheetLoc = ownerSheet.href;
+
+    //  See if a Hash was passed into that caches sheet ASTs. This allows the
+    //  caller to process an entire batch of rules without fetching the source
+    //  and building an AST for the entire CSS sheet for each call into this
+    //  method, which only processes a single rule.
+
+    /* eslint-disable no-extra-parens */
+    if (!TP.isHash(sourceASTs) ||
+        (TP.isHash(sourceASTs) &&
+            TP.notValid(sheetAST = sourceASTs.at(sheetLoc)))) {
+    /* eslint-enable no-extra-parens */
+
+        //  If there is no sheet location, then it must be a sheet that was
+        //  generated for an inline 'style' element.
+        if (!TP.isString(sheetLoc)) {
+            if (!TP.isElement(styleElem = ownerSheet.ownerNode)) {
+                return TP.hc();
+            }
+
+            //  The sheet location is the global ID of the style element and the
+            //  source text to process is the content of that element.
+            sheetLoc = TP.gid(styleElem);
+            srcText = TP.nodeGetTextContent(styleElem);
+        } else {
+
+            //  Otherwise, it's an external sheet - fetch it's contents
+            //  *synchronously*.
+            httpObj = TP.httpGet(sheetLoc, TP.request('async', false));
+            srcText = httpObj.responseText;
+        }
+
+        //  If we couldn't get source text, then we return an empty Hash.
+        if (TP.isEmpty(srcText)) {
+            return TP.hc();
+        }
+
+        //  Generate an AST from the CSS text.
+        sheetAST = TP.extern.cssParser.parse(
+            srcText,
+            {
+                source: sheetLoc
+            });
+
+        if (TP.isHash(sourceASTs)) {
+            sourceASTs.atPut(sheetLoc, sheetAST);
+        }
+    }
+
+    //  Compute a vendor prefix.
+    if (TP.sys.isUA('GECKO')) {
+        vendorPrefix = '-moz-'
+    } else if (TP.sys.isUA('IE')) {
+        vendorPrefix = '-ms-'
+    } else if (TP.sys.isUA('WEBKIT')) {
+        vendorPrefix = '-webkit-'
+    }
+
+    //  Now iterate through all results in the AST, looking for the style rule
+    //  with the same index.
+
+    //  Note here how we make a copy of this Array, in case we modify it below
+    //  by splicing @media rules into it.
+    rules = TP.copy(sheetAST.stylesheet.rules);
+
+    index = 0;
+
+    len = rules.getSize();
+    for (i = 0; i < len; i++) {
+        rule = rules.at(i);
+
+        //  We process @media rules by grabbing their inner style rules and
+        //  splicing them into the Array and adjusting our 'len' to count to the
+        //  end. This is important because our native rule index will have been
+        //  computed taking these rules into account and so we need to do so
+        //  here.
+        if (rule.type === 'media') {
+
+            embeddedRules = rule.rules;
+            embeddedLength = embeddedRules.length;
+
+            args = TP.ac(i + 1, 0).concat(embeddedRules);
+            Array.prototype.splice.apply(rules, args);
+            len += embeddedLength;
+
+            continue;
+        }
+
+        //  We skip comments
+        if (rule.type === 'comment') {
+            continue;
+        }
+
+        //  We skip @keyframes rules that don't pertain to our platform. The
+        //  native rule index, as calculated by the browser, won't have counted
+        //  rules that are not for our current platform.
+        if (rule.type === 'keyframes' && rule.vendor !== vendorPrefix) {
+            continue;
+        }
+
+        //  We skip @document rules that don't pertain to our platform. The
+        //  native rule index, as calculated by the browser, won't have counted
+        //  rules that are not for our current platform.
+        if (rule.type === 'document' && rule.vendor !== vendorPrefix) {
+            continue;
+        }
+
+        //  If the index is the same as the native index calculated for our
+        //  rule, then we break and exit.
+        if (index === nativeRuleIndex) {
+
+            ruleInfo = rule;
+            break;
+        }
+
+        index++;
+    }
+
+    if (TP.isValid(ruleInfo)) {
+        return TP.hc(ruleInfo);
+    }
+
+    return TP.hc();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleRuleGetStyleSheet',
 function(aStyleRule) {
 
@@ -1375,6 +1613,49 @@ function(aStyleRule) {
     //  the rule.
 
     return aStyleRule.parentStyleSheet;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('styleRuleGetStyleSheetAndIndex',
+function(aStyleRule) {
+
+    /**
+     * @method styleRuleGetStyleSheetAndIndex
+     * @summary Returns the native style sheet object associated with the
+     *     supplied style rule and the index that the rule can be found within
+     *     that style sheet.
+     * @param {CSSStyleRule} aStyleRule The style rule to retrieve the
+     *     stylesheet of.
+     * @exception TP.sig.InvalidParameter
+     * @returns {Array} An Array of the stylesheet object containing the rule
+     *     and the index the rule can be found in the sheet.
+     */
+
+    var styleSheet,
+        allRules,
+        i;
+
+    if (TP.notValid(aStyleRule)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    styleSheet = TP.styleRuleGetStyleSheet(aStyleRule);
+
+    if (TP.notValid(styleSheet)) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    //  NB: Note how we do *not* expand imports here
+    allRules = TP.styleSheetGetStyleRules(styleSheet, false);
+
+    for (i = 0; i < allRules.getSize(); i++) {
+        if (allRules.at(i) === aStyleRule) {
+            return TP.ac(styleSheet, i);
+        }
+    }
+
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
@@ -1485,7 +1766,7 @@ function(aStylesheet, expandImports) {
         //  on the rule's 'stylesheet' property (which will be the actual
         //  stylesheet object of the stylesheet being imported) and add all
         //  of the rules found there to our result array.
-        if (shouldExpand && sheetRules[i].type === sheetRules[i].IMPORT_RULE) {
+        if (shouldExpand && sheetRules[i].type === CSSRule.IMPORT_RULE) {
             resultRules.addAll(
                 TP.styleSheetGetStyleRules(sheetRules[i].styleSheet));
         } else {
@@ -1541,7 +1822,7 @@ function(aStylesheet, selectorText) {
         //  on the rule's 'stylesheet' property (which will be the actual
         //  stylesheet object of the stylesheet being imported) and add all
         //  of the rules found there to our result array.
-        if (sheetRules[i].type === sheetRules[i].IMPORT_RULE) {
+        if (sheetRules[i].type === CSSRule.IMPORT_RULE) {
             resultRules.addAll(
                     TP.styleSheetGetStyleRulesMatching(
                                     sheetRules[i].styleSheet,
