@@ -477,8 +477,7 @@ function(aRequest) {
 
         //  start login message thread...
         TP.sig.UserOutputRequest.construct(
-            TP.hc('output', '\n' +
-                            'Loading and initializing user profile' +
+            TP.hc('output', 'Loading and initializing user profile' +
                             ' data for user "' + userName + '"...',
                     'cssClass', 'inbound_announce',
                     'cmdAsIs', true

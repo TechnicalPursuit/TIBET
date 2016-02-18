@@ -121,7 +121,7 @@ function(aRequest) {
                             start.at('line') + ',' + start.at('column') +
                             '...' +
                             end.at('line') + ',' + end.at('column') +
-                            '\n\n';
+                            '\n';
             });
 
     aRequest.complete(results);
