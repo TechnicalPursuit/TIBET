@@ -1888,7 +1888,6 @@ function(aRequest) {
     aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
-
 });
 
 //  ------------------------------------------------------------------------
