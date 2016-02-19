@@ -191,8 +191,7 @@ function(aResourceID, aRequest) {
         TP.notEmpty(userName = user.get('vCard').get('shortname'))) {
 
         TP.sig.UserOutputRequest.construct(
-            TP.hc('output', '\n' +
-                            'Sherpa auto-login configured to log in current' +
+            TP.hc('output', 'Sherpa auto-login configured to log in current' +
                             ' effective user "' + userName + '"',
                     'cssClass', 'inbound_announce',
                     'cmdAsIs', true
