@@ -4567,6 +4567,8 @@ function() {
         keys,
         len,
 
+        val,
+
         newHash;
 
     this.callNextMethod();
@@ -4624,26 +4626,13 @@ function() {
             } else if (TP.isHash(obj)) {
                 return obj;
             } else {
-                if (TP.isPlainObject(obj)) {
-                    newHash = TP.constructOrphanObject();
-                    this.$set('$$hash', newHash);
-                    Object.keys(obj).forEach(
-                            function(aKey) {
-                                newHash[aKey] = obj[aKey];
-                            });
-                } else {
-                    //  allocate internal hash - note that it is a
-                    //  prototype-less object.
-                    this.$set('$$hash', TP.constructOrphanObject(), false);
 
-                    //  NB: We're only interested in the local keys here.
-                    keys = TP.$getOwnKeys(obj);
-                    len = keys.getSize();
+                val = TP.js2json(obj);
+                val = TP.json2js(val);
 
-                    for (i = 0; i < len; i++) {
-                        this.atPut(keys.at(i), obj[keys.at(i)], false);
-                    }
-                }
+                //  Note how we grab the '$$hash' prototype-less object and make
+                //  that *our* $$hash.
+                this.$set('$$hash', val.$$hash, false);
             }
             break;
         default:
