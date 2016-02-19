@@ -1742,6 +1742,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Rect.Inst.defineMethod('getXYPoint',
+function() {
+
+    /**
+     * @method getXYPoint
+     * @summary Returns the X,Y (i.e. left, top)  point of the receiver.
+     * @returns {TP.core.Point} The X,Y point of the receiver.
+     */
+
+    var data;
+
+    data = this.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    return TP.core.Point.construct(data.x, data.y);
+    /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Rect.Inst.defineMethod('getY',
 function() {
 
