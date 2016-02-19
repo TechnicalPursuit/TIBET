@@ -393,9 +393,6 @@ function() {
 
         testAppender;
 
-        //worldTPElem,
-        //consoleOutTPElem;
-
     uiDoc = this.get('vWin').document;
 
     //  We *must* set up the output first, since setting up the input will cause
