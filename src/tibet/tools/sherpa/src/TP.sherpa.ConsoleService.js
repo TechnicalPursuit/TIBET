@@ -223,7 +223,7 @@ function() {
         consoleGUI,
 
         normalResponder,
-        evalMarkingResponder,
+        //evalMarkingResponder,
         autocompleteResponder;
 
     keyboardSM = TP.core.StateMachine.construct();
@@ -267,6 +267,9 @@ function() {
 
     //  'evalmarking' is the state used...
 
+    //  NB: For now, this responder is commented out until we figure a better
+    //  mechanism
+    /*
     evalMarkingResponder = TP.sherpa.EvalMarkingKeyResponder.construct(
                                                                 keyboardSM);
     evalMarkingResponder.set('$consoleService', this);
@@ -291,6 +294,7 @@ function() {
 
         return;
     });
+    */
 
     //  ---  autocomplete
 
