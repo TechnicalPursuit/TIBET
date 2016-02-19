@@ -267,7 +267,8 @@ function() {
 
     //  'evalmarking' is the state used...
 
-    evalMarkingResponder = TP.sherpa.EvalMarkingKeyResponder.construct(keyboardSM);
+    evalMarkingResponder = TP.sherpa.EvalMarkingKeyResponder.construct(
+                                                                keyboardSM);
     evalMarkingResponder.set('$consoleService', this);
     evalMarkingResponder.set('$consoleGUI', consoleGUI);
 
@@ -389,7 +390,8 @@ function(aSignal) {
      * @method handleHiddenChangeFromSherpaConsole
      * @summary Handles notifications of when the 'hidden' state of the
      *     SherpaConsole object changes.
-     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this method.
+     * @param {TP.sig.Change} aSignal The TIBET signal which triggered this
+     *     method.
      */
 
     var isHidden;
@@ -460,7 +462,6 @@ function(aSignal) {
     var cmdText;
 
     if (TP.notEmpty(cmdText = aSignal.at('cmdText'))) {
-
         this.sendConsoleRequest(cmdText);
     }
 
@@ -2299,7 +2300,8 @@ TP.sherpa.NormalKeyResponder.defineSubtype('AutoCompletionKeyResponder');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$changeHandler');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$finishedCompletion');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
+                                                    '$finishedCompletion');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$popupContainer');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$showingHint');
 
@@ -2499,7 +2501,8 @@ function(cm, options) {
                                 head: {line: cursor.line, ch: cursor.ch}
                             };
 
-                    marker = consoleGUI.generateCompletionMarkAt(range, theText);
+                    marker = consoleGUI.generateCompletionMarkAt(
+                                                        range, theText);
                     consoleGUI.set('currentCompletionMarker', marker);
                 }
             }
@@ -2620,10 +2623,12 @@ function(editor, options) {
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(resolvedObj),
                         TP.core.KeyedSourceMatcher.construct(
-                            TP.core.TSH.getDefaultInstance().getExecutionInstance()),
+                            TP.core.TSH.getDefaultInstance().
+                                                getExecutionInstance()),
                         TP.core.ListMatcher.construct(
-                            TP.boot.$keywords.concat(
-                                TP.boot.$futurereservedwords), 'match_keyword'));
+                                TP.boot.$keywords.concat(
+                                    TP.boot.$futurereservedwords),
+                            'match_keyword'));
                 }
 
                 break;

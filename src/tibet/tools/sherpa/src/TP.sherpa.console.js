@@ -1459,8 +1459,8 @@ function() {
             //  We want the 'to', since that's the end of the '^\s*>' match
             retVal = searchCursor.to();
         } else {
-            //  Couldn't find a starting '>', so we just use the beginning of the
-            //  editor
+            //  Couldn't find a starting '>', so we just use the beginning of
+            //  the editor
             retVal = {line: 0, ch: 0};
         }
 
@@ -1471,8 +1471,8 @@ function() {
             retVal = marks[marks.length - 1].find().to;
         }
 
-        //  If the 'ch' is at the end of the line, increment the line and set the
-        //  'ch' to 0
+        //  If the 'ch' is at the end of the line, increment the line and set
+        //  the 'ch' to 0
         lineInfo = editor.lineInfo(retVal.line);
 
         //  If we matched one of the TSH operator characters then it was a TSH
