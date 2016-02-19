@@ -469,7 +469,6 @@ function(anObject, optFormat) {
 
     if (formatInLoop) {
 
-        keys.sort();
         keys.compact();
         len = keys.getSize();
 
@@ -751,7 +750,6 @@ function(anObject, optFormat) {
     output.push('<span class="sherpa_pp TP_core_Hash">');
 
     keys = TP.keys(anObject);
-    keys.sort();
     keys.compact();
     len = keys.getSize();
 
