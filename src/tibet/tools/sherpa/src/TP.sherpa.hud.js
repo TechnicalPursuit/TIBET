@@ -77,7 +77,7 @@ function(beHidden) {
 
     var drawerElement,
 
-        toolbarElem,
+        //toolbarElem,
 
         drawerFinishedFunc;
 
@@ -146,9 +146,7 @@ function() {
      */
 
     var win,
-        hudDrawers,
-
-        centerElem;
+        hudDrawers;
 
     win = this.getNativeWindow();
     hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
@@ -157,19 +155,6 @@ function() {
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(true);
         });
-
-    centerElem = TP.byId('center', win, false);
-
-    TP.elementAddClass(centerElem, 'fullscreen');
-
-    TP.elementRemoveClass(centerElem, 'all-console');
-
-    TP.elementRemoveClass(centerElem, 'v-split-left');
-    TP.elementRemoveClass(centerElem, 'v-split-right');
-    TP.elementRemoveClass(centerElem, 'h-split-top');
-    TP.elementRemoveClass(centerElem, 'h-split-bottom');
-
-    TP.elementRemoveClass(centerElem, 'all-world');
 
     return this;
 });
@@ -186,9 +171,7 @@ function() {
      */
 
     var win,
-        hudDrawers,
-
-        centerElem;
+        hudDrawers;
 
     win = this.getNativeWindow();
     hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
@@ -197,12 +180,6 @@ function() {
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(false);
         });
-
-    centerElem = TP.byId('center', win, false);
-
-    TP.elementRemoveClass(centerElem, 'fullscreen');
-
-    TP.elementAddClass(centerElem, 'h-split-bottom');
 
     return this;
 });

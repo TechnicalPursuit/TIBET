@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 
 <span>
-    <div id="{{id}}" name="consoleEntry" class="consolecellgroup">
-        <!-- The template used for the 'input' part of a piece of console output -->
-        <div class="inputcell {{inputclass}}">
-            <span class="hid"><a href="#" onclick="TP.bySystemId('SherpaConsoleService').sendConsoleRequest('{{hid}}'); return false;">{{hid}}</a></span>
-            <span class="content">{{cmdtext}}</span>
-            <span class="typeinfo {{empty}}">{{resulttype}}</span>
-            <span class="stats {{empty}}">{{stats}}</span>
+    <sherpa:consoleoutputitem id="{{id}}" name="consoleEntry">
+        <div class="flex-card">
+            <!-- The template used for the 'input' part of a piece of console output -->
+            <div class="header {{inputclass}}">
+                <span class="hid"><a href="#" onclick="TP.bySystemId('SherpaConsoleService').sendConsoleRequest('{{hid}}'); return false;">{{hid}}</a></span>
+                <span class="content">{{cmdtext}}</span>
+                <span class="typeinfo {{empty}}">{{resulttype}}</span>
+                <span class="stats {{empty}}">{{stats}}</span>
+            </div>
+            <!-- the output entry will be injected here after it is templated -->
         </div>
-        <!-- the output entry will be injected here after it is templated -->
-    </div>
+    </sherpa:consoleoutputitem>
 
     <!-- The template used for the 'output' part of a piece of raw output -->
-    <div class="outputcell {{outputclass}} cm-s-zenburn" name="raw_outputEntry" tibet:nocompile="true">
+    <div class="content {{outputclass}} cm-s-elegant" name="raw_outputEntry" tibet:nocompile="true">
         <span class="result">{{output}}</span>
     </div>
 
     <!-- The template used for the 'output' part of a piece of structured output -->
-    <div class="outputcell {{outputclass}} cm-s-zenburn" name="structured_outputEntry">
+    <div class="content {{outputclass}} cm-s-elegant" name="structured_outputEntry">
         {{output}}
     </div>
 </span>

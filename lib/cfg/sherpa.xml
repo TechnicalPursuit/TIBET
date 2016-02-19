@@ -150,6 +150,10 @@
     <property name="path.TP.sherpa.readout.template" value="~ide_root/xhtml/TP.sherpa.readout.xhtml"/>
     <property name="path.TP.sherpa.readout.style" value="~ide_root/css/TP.sherpa.readout.css"/>
 
+    <script src="./src/TP.sherpa.consoleoutput.js"/>
+    <property name="path.TP.sherpa.consoleoutput.template" value="~ide_root/xhtml/TP.sherpa.consoleoutput.xhtml"/>
+    <property name="path.TP.sherpa.consoleoutput.style" value="~ide_root/css/TP.sherpa.consoleoutput.css"/>
+
 </config>
 
 </package>

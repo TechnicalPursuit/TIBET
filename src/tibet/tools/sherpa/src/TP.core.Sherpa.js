@@ -64,7 +64,9 @@ function(aName) {
 
             sherpaFinishSetupFunc,
 
-            contentElem;
+            contentElem,
+
+            allDrawers;
 
         //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
         //  handler Function. This is because, once we finish set up of the
@@ -122,10 +124,15 @@ function(aName) {
 
                 TP.elementShow(contentElem);
                 TP.elementShowBusyMessage(contentElem,
-                    '...initializing TIBET Sherpa...');
+                                            '...initializing TIBET Sherpa...');
+
+                allDrawers = TP.byCSSPath('.north, .south, .east, .west',
+                                            win,
+                                            false,
+                                            false);
 
                 //  Show the drawers.
-                TP.byCSSPath('.north, .south, .east, .west', win, false, false).perform(
+                allDrawers.perform(
                             function(anElem) {
                                 TP.elementRemoveAttribute(
                                             anElem, 'pclass:hidden', true);
@@ -182,7 +189,9 @@ function() {
      */
 
     var uiBootIFrameElem,
-        win;
+        win,
+
+        allDrawers;
 
     //  Manually 'display: none' the boot iframe. It's already
     //  'visibility:hidden', but we need to get it out of the way.
@@ -203,8 +212,15 @@ function() {
     //  the drawers (the HUD isn't real until we finish setup, so we do it
     //  manually here).
     if (TP.sys.cfg('boot.show_ide')) {
+
         TP.elementRemoveClass(TP.byId('center', win, false), 'fullscreen');
-        TP.byCSSPath('.north, .south, .east, .west', win, false, false).perform(
+
+        allDrawers = TP.byCSSPath('.north, .south, .east, .west',
+                                    win,
+                                    false,
+                                    false);
+
+        allDrawers.perform(
                     function(anElem) {
                         TP.elementRemoveAttribute(
                                     anElem, 'pclass:hidden', true);
@@ -223,12 +239,12 @@ function() {
 
         worldTPElem,
 
-        toggleKey,
+        toggleKey;
 
-        sherpaEastDrawer,
-        tileDockTPElem,
+        //sherpaEastDrawer,
+        //tileDockTPElem,
 
-        sherpaWestDrawer;
+        //sherpaWestDrawer;
         //snippetBarTPElem;
 
     //  Set up the HUD
@@ -265,8 +281,8 @@ function() {
     (function () {
 
         var testTile = TP.byId('Sherpa', this.get('vWin')).makeTile(
-                                    'detailTile',
-                                    TP.documentGetBody(this.get('vWin').document));
+                                'detailTile',
+                                TP.documentGetBody(this.get('vWin').document));
 
         testTile.toggle('hidden');
 
@@ -308,6 +324,9 @@ function() {
 
         tpElem = TP.byId('center', viewDoc);
         tpElem.setAttribute('tibet:nomutationtracking', true);
+
+        //  Hide the 'content' div
+        TP.elementHide(TP.byId('content', viewDoc, false));
 
     }).fork(500);
 
@@ -365,36 +384,55 @@ function(anID, tileParent) {
 TP.core.Sherpa.Inst.defineMethod('setupConsole',
 function() {
 
-    var sherpaSouthDrawer,
-        consoleTPElem,
+    var uiDoc,
+
+        consoleOutputTPElem,
+
+        sherpaSouthDrawer,
+        consoleInputTPElem,
+
         testAppender;
 
         //worldTPElem,
         //consoleOutTPElem;
 
-    sherpaSouthDrawer = TP.byCSSPath('#south > .drawer',
-                                    this.get('vWin').document,
-                                    true);
+    uiDoc = this.get('vWin').document;
 
-    consoleTPElem = sherpaSouthDrawer.addContent(
+    //  We *must* set up the output first, since setting up the input will cause
+    //  output to be logged.
+
+    //  Create the <sherpa:consoleoutput> tag
+    consoleOutputTPElem =
+            TP.byId('center', uiDoc).addContent(
+                    TP.sherpa.consoleoutput.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
+
+    consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
+    consoleOutputTPElem.setAttribute('panes', 'all');
+
+    consoleOutputTPElem.awaken();
+
+    //  Now we can set up the input
+
+    sherpaSouthDrawer = TP.byCSSPath('#south > .drawer', uiDoc, true);
+
+    consoleInputTPElem = sherpaSouthDrawer.addContent(
                     TP.sherpa.console.getResourceElement('template',
                         TP.ietf.Mime.XHTML));
 
-    consoleTPElem.setup();
+    consoleInputTPElem.setup();
 
     //  NB: The console observes the HUD when it's done loading it's editor,
     //  etc.
 
-    /*
-    worldTPElem = TP.byId('SherpaWorld', this.get('vWin'));
-
-    consoleOutTPElem = worldTPElem.createSlotElement('SherpaConsoleSlot');
-    */
+    //  Install log appenders that know how to render logging entries to the
+    //  Sherpa.
 
     TP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
     APP.getDefaultLogger().addAppender(TP.log.SherpaAppender.construct());
 
     //  Effectively replace the test logger's appenders with just ours.
+
     TP.getLogger(TP.TEST_LOG).clearAppenders();
 
     testAppender = TP.log.SherpaAppender.construct();
@@ -469,7 +507,8 @@ function() {
     uiDoc = uiScreensWin.document;
 
     //  Create the <sherpa:world> tag
-    worldElem = TP.documentConstructElement(uiDoc, 'sherpa:world', TP.w3.Xmlns.SHERPA);
+    worldElem = TP.documentConstructElement(
+                    uiDoc, 'sherpa:world', TP.w3.Xmlns.SHERPA);
     TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld');
 
     //  Append the <sherpa:world> tag into the loaded Sherpa document.
