@@ -146,7 +146,9 @@ function() {
      */
 
     var win,
-        hudDrawers;
+
+        hudDrawers,
+        centerElem;
 
     win = this.getNativeWindow();
     hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
@@ -155,6 +157,10 @@ function() {
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(true);
         });
+
+    centerElem = TP.byId('center', win, false);
+
+    TP.elementAddClass(centerElem, 'fullscreen');
 
     return this;
 });
@@ -171,7 +177,9 @@ function() {
      */
 
     var win,
-        hudDrawers;
+
+        hudDrawers,
+        centerElem;
 
     win = this.getNativeWindow();
     hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
@@ -180,6 +188,10 @@ function() {
         function(aHUDDrawer) {
             aHUDDrawer.setAttrHidden(false);
         });
+
+    centerElem = TP.byId('center', win, false);
+
+    TP.elementRemoveClass(centerElem, 'fullscreen');
 
     return this;
 });
