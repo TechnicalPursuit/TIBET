@@ -732,12 +732,27 @@ function(statusOutID) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var statusTPElem;
+    var statID,
 
-    if (TP.notEmpty(statusOutID) &&
-        TP.isValid(statusTPElem = TP.byId(
-                                    statusOutID, this.getNativeWindow()))) {
-        statusTPElem.setRawContent('');
+        hudWin,
+
+        keyboardStatusTPElem,
+        mouseStatusTPElem;
+
+    statID = TP.ifEmpty(statusOutID, TP.ALL);
+
+    hudWin = this.getNativeWindow();
+
+    if (statID === 'keyboardInfo' || statID === TP.ALL) {
+        keyboardStatusTPElem =
+            TP.byCSSPath('#keyAndMouseReadout .keyboard', hudWin, true);
+        keyboardStatusTPElem.setRawContent('');
+    }
+
+    if (statID === 'mouseInfo' || statID === TP.ALL) {
+        mouseStatusTPElem =
+            TP.byCSSPath('#keyAndMouseReadout .mouse', hudWin, true);
+        mouseStatusTPElem.setRawContent('');
     }
 
     return this;
