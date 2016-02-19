@@ -89,7 +89,6 @@ function(beHidden) {
 
     /**
      * @method setAttrHidden
-     * @abstract
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -122,7 +121,6 @@ function() {
     /**
      * @method blur
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
      */
 
     var currentTargetTPElem;
@@ -149,7 +147,6 @@ function(target) {
      * @method focusOn
      * @param {TP.core.Node} target
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
      */
 
     if (TP.isKindOf(target, TP.core.ElementNode)) {
@@ -258,7 +255,6 @@ function(aSignal) {
      * @method handleDOMMouseMove
      * @param {TP.sig.DOMMouseMove} aSignal
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
      */
 
     this.showHaloCorner(aSignal);
@@ -275,7 +271,6 @@ function(aSignal) {
      * @method handleDOMMouseOver
      * @param {TP.sig.DOMMouseOver} aSignal
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
      */
 
     //this.showHaloCorner(aSignal);
@@ -292,7 +287,6 @@ function(aSignal) {
      * @method handleDOMMouseOut
      * @param {TP.sig.DOMMouseOut} aSignal
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
      */
 
     //this.hideHaloCorner();
@@ -309,7 +303,6 @@ function(aSignal) {
      * @method handleDOMMouseWheel
      * @param {TP.sig.DOMMouseWheel} aSignal
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
      */
 
     var currentTargetTPElem,
@@ -375,10 +368,7 @@ function(aTarget) {
     /**
      * @method moveAndSizeToTarget
      * @param {undefined} aTarget
-
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
-
      */
 
     var currentTargetTPElem,
@@ -422,7 +412,6 @@ function(aSignal) {
     /**
      * @method showHaloCorner
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
      */
 
     var currentTargetTPElem,
@@ -480,8 +469,6 @@ function(aSignal) {
     /**
      * @method changeHaloFocus
      * @returns {TP.sherpa.halo} The receiver.
-     * @abstract
-
      */
 
     var sigTarget,
