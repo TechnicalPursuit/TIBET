@@ -526,10 +526,12 @@ function() {
      * @method computeOffsetPoint
      * @summary Computes the gestures initial 'offset point'.
      * @description When computing the offset point, this method takes into
-     *     account the following parameters: - The initial starting point - The
-     *     offset from the action element's offset parent to the action element.
-     *     - The border of the action element. - The 'drag corner' that was
-     *     configured for the gesture.
+     *     account the following parameters:
+     *     - The initial starting point
+     *     - The offset from the action element's offset parent to the action
+     *     element.
+     *     - The border of the action element.
+     *     - The 'drag corner' that was configured for the gesture.
      * @returns {TP.core.DragResponder} The receiver.
      */
 
@@ -852,7 +854,10 @@ function(aSignal, aPoint) {
         return this;
     }
 
+    //  Iterate over all of the 'modifier' Functions and invoke them on the
+    //  signal and/or point data.
     for (i = 0; i < modifiers.getSize(); i++) {
+
         if (TP.isCallable(modifierFunc = modifiers.at(i))) {
             try {
                 switch (arguments.length) {
@@ -945,8 +950,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
             //  If there was actually more than one element that matched, then
             //  autoCollapse won't matter - we got an Array. Get the element
             //  under the mouse point of the current 'down' event (using
-            //  clientX/clientY since we're computing relative to the
-            //  srcElement within the overall window/document).
+            //  clientX/clientY since we're computing relative to the srcElement
+            //  within the overall window/document).
             if (TP.isArray(actionElems = actionElem)) {
                 actionElem = null;
                 eventClientXY = TP.eventGetClientXY(lastDown);
