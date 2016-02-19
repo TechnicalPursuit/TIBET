@@ -68,7 +68,12 @@
         env = app.get('env');
         if (env === 'development' || env === 'test') {
             Object.keys(mocks).forEach(function(mock) {
-                app.use('/', parsers.json, parsers.urlencoded, mocks[mock]);
+                var middleware;
+
+                middleware = mocks[mock](options);
+                if (typeof middleware === 'function') {
+                    app.use('/', parsers.json, parsers.urlencoded, middleware);
+                }
             });
         }
     };
