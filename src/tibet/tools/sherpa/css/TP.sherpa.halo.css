@@ -12,10 +12,12 @@ sherpa|halo {
 	/* This should match TIBET's HALO_TIER constant */
 	z-index: 10000;
 
-    border: dashed 2px red;
+    border: dashed 1px #666;
     border-radius: 5px;
 
     pointer-events: none;
+
+    box-shadow: 3px 3px 3px #AAA;
 }
 
 sherpa|halo:not([pclass|hidden]) {
@@ -34,10 +36,11 @@ sherpa|halo > div {
 
 .haloCorner {
 
-    border: dashed 1px black;
-    border-radius: 16px;
+    border: solid 1px black;
+    border-radius: 0.7em;
 
-    opacity: 0.2;
+    background-color: #ACD;
+
     transition: opacity .25s ease-out;
 
     pointer-events: auto;
@@ -53,8 +56,6 @@ sherpa|halo > div {
 
     top: -12px;
     left: -12px;
-
-    background-color: gray;
 }
 
 /* TP.NORTH */
@@ -62,8 +63,6 @@ sherpa|halo > div {
 
     top: -12px;
     left: calc(50% - 12px);
-
-    background-color: black;
 }
 
 /* TP.NORTHEAST */
@@ -71,8 +70,6 @@ sherpa|halo > div {
 
     top: -12px;
     right: -12px;
-
-    background-color: green;
 }
 
 /* TP.WEST */
@@ -80,8 +77,6 @@ sherpa|halo > div {
 
     left: -12px;
     top: calc(50% - 12px);
-
-    background-color: orange;
 }
 
 /* TP.EAST */
@@ -89,8 +84,6 @@ sherpa|halo > div {
 
     right: -12px;
     top: calc(50% - 12px);
-
-    background-color: purple;
 }
 
 /* TP.SOUTHWEST */
@@ -98,8 +91,6 @@ sherpa|halo > div {
 
 	bottom: -12px;
 	left: -12px;
-
-    background-color: blue;
 }
 
 /* TP.SOUTH */
@@ -107,8 +98,6 @@ sherpa|halo > div {
 
     left: calc(50% - 12px);
     bottom: -12px;
-
-    background-color: red;
 }
 
 /* TP.SOUTHEAST */
@@ -116,7 +105,5 @@ sherpa|halo > div {
 
 	bottom: -12px;
 	right: -12px;
-
-    background-color: yellow;
 }
 

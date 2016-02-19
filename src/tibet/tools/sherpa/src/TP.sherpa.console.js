@@ -85,7 +85,7 @@ function() {
 
     editorObj = consoleInputTPElem.$get('$editorObj');
 
-    editorObj.setOption('theme', 'zenburn');
+    editorObj.setOption('theme', 'elegant');
     editorObj.setOption('mode', 'javascript');
     editorObj.setOption('tabMode', 'indent');
     editorObj.setOption('lineNumbers', false);

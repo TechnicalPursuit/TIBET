@@ -358,7 +358,7 @@ div {
     transition: height .5s;
 }
 
-.framing.north.no_transition, .framing.south.no_transition {
+.framing.h-edge.north.no_transition, .framing.h-edge.south.no_transition {
     transition: none;
 }
 
@@ -366,7 +366,7 @@ div {
     transition: width .5s;
 }
 
-.framing.east.no_transition, .framing.west.no_transition {
+.framing.v-edge.east.no_transition, .framing.v-edge.west.no_transition {
     transition: none;
 }
 

@@ -125,7 +125,7 @@ function() {
 
     editorObj = this.get('editor').$get('$editorObj');
 
-    editorObj.setOption('theme', 'zenburn');
+    editorObj.setOption('theme', 'elegant');
     editorObj.setOption('tabMode', 'indent');
     editorObj.setOption('lineNumbers', true);
     editorObj.setOption('lineWrapping', true);

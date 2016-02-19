@@ -1,15 +1,8 @@
 @import url("sherpa_pp.css");
 
-/* NB: This should match the theme that is used in the console input editor
-HTML stub file */
-
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
-
-#south.center .drawer {
-    background: #3f3f3f;
-}
 
 sherpa|console {
 
@@ -18,7 +11,7 @@ sherpa|console {
 
     top: 2px;
     right: 0px;
-    bottom: 4px;
+    bottom: 2px;
     left: 0px;
 
     /* Because we're display: relative, we need use margins for left and
@@ -26,16 +19,14 @@ sherpa|console {
     margin-left: 3px;
     margin-right: 3px;
 
-    /*max-height: calc(100% - 100px);*/
-
     /* This should match TIBET's CONSOLE_TIER constant */
     z-index: 20000;
 
-    /*border: 1px solid #AAAAAA;*/
+    border: 1px solid black;
     border-radius: 3px;
-    background: #3f3f3f;
     padding: 2px;
-    padding-bottom: 4px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 
     text-align: left;
     line-height: 1.0;
@@ -48,12 +39,25 @@ sherpa|console[pclass|hidden] {
 
 sherpa|console > xctrls|codeeditor {
 
+    margin: 1px;
+
     /*border-radius: 3px;*/
 }
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
 
+    background-color: transparent;
     height: 100%;
+}
+
+sherpa|console > xctrls|codeeditor[pclass|focus] > .CodeMirror {
+
+    background-color: white;
+}
+
+sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
+
+    background-color: gold;
 }
 
 sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
@@ -83,7 +87,6 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
     font-size: 12px;
 
     white-space: nowrap;
-    color: orange;
 }
 
 #sherpaPrompt > .indicator {
@@ -114,198 +117,5 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
     left: 0px;
 
     background-color: #BFEBBF;
-}
-
-#SherpaConsoleOutput {
-
-    position: absolute;
-
-    display: flex;
-    flex-direction: column;
-
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    left: 0px;
-
-    padding-left: 5px;
-    padding-right: 5px;
-
-    background-color: #3F3F3F;
-
-    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
-    font-size: 92%;
-
-    text-align: left;
-
-    color: white;
-    white-space: nowrap;
-
-    line-height: 1.5em;
-
-    overflow: auto;
-
-    /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER */
-    z-index: 27500;
-}
-
-#SherpaConsoleOutput * {
-
-    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
-}
-
-
-#SherpaConsoleOutput a {
-
-    color: LightSkyBlue;
-}
-
-span[name="inputEntry"] {
-
-    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
-}
-
-.consolecellgroup {
-
-    min-height: -webkit-min-content;
-    min-height: -moz-min-content;
-}
-
-#SherpaConsoleOutput .inputcell {
-    font-size: inherit;
-}
-
-.inputcell {
-
-    position: relative;
-
-    margin-top: 12px;
-    margin-bottom: 8px;
-}
-
-.inputcell .hid {
-
-    text-decoration: none;
-    display: inline-block;
-    min-width: 32px;
-}
-
-.inputcell .hid:hover {
-
-    font-weight: bold;
-}
-
-.inputcell .content {
-
-    position: relative;
-    display: inline-block;
-
-    color: #ccc;
-
-    white-space: pre-wrap;
-}
-
-.inputcell .stats {
-
-    float: right;
-    margin: 0 8px;
-    display: inline-block;
-
-    color: grey;
-
-    white-space: pre-wrap;
-}
-
-.inputcell .typeinfo {
-
-    float: right;
-    display: inline-block;
-    margin: 0 8px;
-
-    color: orange;
-
-    white-space: pre-wrap;
-}
-
-#SherpaConsoleOutput .outputcell {
-    font-size: inherit;
-}
-
-.outputcell {
-    padding: 2px 0;
-}
-
-.outputcell .result {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-
-    white-space: pre-wrap;
-}
-
-.outputcell .stats {
-    float: right;
-    margin: -24px 8px;
-    display: inline-block;
-
-    color: grey;
-
-    white-space: pre-wrap;
-}
-
-.outputcell .typeinfo {
-    float: right;
-    display: inline-block;
-    margin: -24px 8px;
-
-    color: orange;
-
-    white-space: pre-wrap;
-}
-
-.outputcell .empty {
-    display:none;
-}
-
-.outputcell.trace {
-    color: #aaa;
-}
-.outputcell.debug {
-    color: magenta;
-}
-.outputcell.info {
-    color: white;
-}
-.outputcell.warn {
-    color: orange;
-}
-.outputcell.error {
-    color: red;
-}
-.outputcell.severe {
-    color: red;
-}
-.outputcell .fatal {
-    color: red;
-}
-.outputcell .system {
-    color: cyan;
-}
-
-
-.outputcell.tap-pass {
-    color: cyan;
-}
-
-.outputcell.tap-fail {
-    color: orange;
-}
-
-.outputcell.tap-comment {
-    color: #aaa;
-}
-
-.outputcell.tap-unknown {
-    color: #fff;
 }
 

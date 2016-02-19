@@ -17,7 +17,7 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/lib/codemirror.css"/>
     <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/addon/hint/show-hint.css"/>
-    <link type="text/css" rel="stylesheet" href="~ide_root/cm_theme/zenburn.css"/>
+    <link type="text/css" rel="stylesheet" href="~ide_root/cm_theme/elegant.css"/>
 
     <script src="~lib_build/tibet_hook.min.js"></script>
 
@@ -31,97 +31,6 @@
 
         *|div.framing[pclass|hidden] {
             display: block;
-        }
-
-        .toolbarButton {
-            cursor: pointer;
-
-            width: 15px;
-            height: 15px;
-        }
-
-        #SherpaConsoleCommandToolbar {
-
-            display: flex;
-
-            &[pclass|hidden] {
-                display: none;
-            }
-
-            #clearButton {
-                background-image: url("@{ide_root}/media/rounded60.svg");
-            }
-
-            #watchButton {
-                background-image: url("@{ide_root}/media/eye.svg");
-            }
-        }
-
-        #SherpaConsoleOutputToolbar {
-
-            display: flex;
-            justify-content: flex-end;
-
-            &[pclass|hidden] {
-                display: none;
-            }
-
-            & > .toolbarButton {
-                background-size: 20px 20px;
-                background-position: -2px -2px;
-            }
-
-            #splitBottomButton {
-                background-image: url("@{ide_root}/media/h_split_bottom.svg");
-            }
-            #splitTopButton {
-                background-image: url("@{ide_root}/media/h_split_top.svg");
-            }
-            #splitLeftButton {
-                background-image: url("@{ide_root}/media/v_split_left.svg");
-            }
-            #splitRightButton {
-                background-image: url("@{ide_root}/media/v_split_right.svg");
-            }
-            #allConsoleScreenButton {
-                border: solid 1px black;
-                background-color: black;
-
-                width: 8px;
-                height: 8px;
-                margin-top: 3px;
-                margin-left: 3px;
-            }
-            #allWorldScreenButton {
-                border: solid 1px black;
-                background-color: white;
-
-                width: 8px;
-                height: 8px;
-                margin-top: 3px;
-                margin-left: 3px;
-            }
-        }
-
-        .info {
-            cursor: default;
-
-            font-size: 10px;
-            line-height: 1em;
-        }
-
-        #currentCanvasInfo {
-            text-align: left;
-        }
-
-        #logLevelInfo {
-            text-align: right;
-        }
-
-        #keyboardInfo {
-        }
-
-        #mouseInfo {
         }
 
         .input-mark {
@@ -155,8 +64,8 @@
 
         .CodeMirror-hints {
 
-            border: dotted 1px orange;
-            background-color: #3F3F3F;
+            border: dotted 1px black;
+            background-color: white;
 
             z-index: 30000;
 
@@ -167,16 +76,16 @@
             font-size: 9.6px;
         }
 
-        .CodeMirror-hint {
+        li.CodeMirror-hint {
 
-            color: orange;
+            color: #762;
             max-width: 25em;
         }
 
-        .CodeMirror-hint-active {
+        li.CodeMirror-hint-active {
 
             color: black;
-            background-color: orange;
+            background-color: gray;
         }
 
         /* Fake */
@@ -214,7 +123,7 @@
         /* Individual character match */
         .match_result {
 
-            color: white;
+            color: black;
             text-decoration: underline;
         }
 

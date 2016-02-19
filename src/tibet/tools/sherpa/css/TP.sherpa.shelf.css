@@ -26,6 +26,7 @@ sherpa|shelf > ul > li {
     border-radius: 9px;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
 }
 
 sherpa|shelf > ul > li:hover {
