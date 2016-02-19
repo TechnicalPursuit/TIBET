@@ -447,12 +447,12 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHalo',
 function() {
 
-    var sherpaFrameBody,
+    var uiDoc,
         haloTPElem;
 
-    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
+    uiDoc = this.get('vWin').document;
 
-    haloTPElem = TP.wrap(sherpaFrameBody).addContent(
+    haloTPElem = TP.byId('center', uiDoc).addContent(
                     TP.sherpa.halo.getResourceElement('template',
                         TP.ietf.Mime.XHTML));
 
