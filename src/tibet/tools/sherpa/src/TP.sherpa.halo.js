@@ -173,7 +173,11 @@ function(target) {
 TP.sherpa.halo.Inst.defineHandler('DOMScroll',
 function(aSignal) {
 
-    this.moveAndSizeToTarget();
+    var currentTargetTPElem;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    this.moveAndSizeToTarget(currentTargetTPElem);
 });
 
 //  ------------------------------------------------------------------------
@@ -372,7 +376,9 @@ function(aTarget) {
      */
 
     var currentTargetTPElem,
-        theRect;
+
+        theRect,
+        ourRect;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
@@ -384,7 +390,7 @@ function(aTarget) {
             return;
         }
 
-        //  Grab rect for existing target and adjust to be in halves
+        //  Grab rect for existing target
         theRect = currentTargetTPElem.getHaloRect(this);
     } else {
         theRect = aTarget.getHaloRect(this);
@@ -395,6 +401,14 @@ function(aTarget) {
 
         this.set('haloRect', null);
     } else {
+
+        //  Make sure to adjust for the fact that the halo itself might be
+        //  in a container that's positioned. We go to our offset parent and get
+        //  it's global rectangle.
+        ourRect = this.getOffsetParent().getGlobalRect(true);
+
+        theRect.subtractByPoint(ourRect.getXYPoint());
+
         this.setPagePositionAndSize(theRect);
         this.setAttribute('hidden', false);
 
