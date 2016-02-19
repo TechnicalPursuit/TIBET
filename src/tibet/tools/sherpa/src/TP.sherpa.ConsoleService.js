@@ -1888,6 +1888,11 @@ function(anEvent) {
         case 'DOM_Shift_Enter_Press':
         case 'DOM_Shift_Enter_Up':
 
+        case 'DOM_Ctrl_Down_Down':
+        case 'DOM_Ctrl_Down_Up':
+        case 'DOM_Ctrl_Up_Down':
+        case 'DOM_Ctrl_Up_Up':
+
         case 'DOM_Shift_Down_Down':
         case 'DOM_Shift_Down_Up':
         case 'DOM_Shift_Up_Down':
@@ -2067,6 +2072,64 @@ function(aSignal) {
     aSignal.stopPropagation();
 
     return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Down_Up',
+function(aSignal) {
+
+    var consoleGUI,
+
+        outputModeVal,
+        newOutputModeVal;
+
+    consoleGUI = this.get('$consoleGUI');
+    outputModeVal = consoleGUI.getOutputDisplayMode();
+
+    switch (outputModeVal) {
+        case 'all':
+            newOutputModeVal = 'one';
+            break;
+        case 'one':
+            newOutputModeVal = 'none';
+            break;
+        default:
+            break;
+    }
+
+    if (TP.notEmpty(newOutputModeVal)) {
+        consoleGUI.setOutputDisplayMode(newOutputModeVal);
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Up_Up',
+function(aSignal) {
+
+    var consoleGUI,
+
+        outputModeVal,
+        newOutputModeVal;
+
+    consoleGUI = this.get('$consoleGUI');
+    outputModeVal = consoleGUI.getOutputDisplayMode();
+
+    switch (outputModeVal) {
+        case 'none':
+            newOutputModeVal = 'one';
+            break;
+        case 'one':
+            newOutputModeVal = 'all';
+            break;
+        default:
+            break;
+    }
+
+    if (TP.notEmpty(newOutputModeVal)) {
+        consoleGUI.setOutputDisplayMode(newOutputModeVal);
+    }
 });
 
 //  ----------------------------------------------------------------------------
