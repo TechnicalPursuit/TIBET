@@ -411,6 +411,33 @@ function() {
 //  View Management Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('clear',
+function(resetPrompt, newPrompt) {
+
+    /**
+     * @method clear
+     * @summary Clears the receiver's content, removing all output and
+     *     resetting the console input to an empty input field.
+     * @param {Boolean} [resetPrompt=false] Whether or not to reset the prompt.
+     * @param {String} [newPrompt] The text to reset the prompt to.
+     * @returns {TP.sherpa.ConsoleService} The receiver.
+     */
+
+    //  Refocus the input cell and set its cursor to the end.
+    this.clearAllContent();
+
+    this.focusInput();
+    this.setInputCursorToEnd();
+
+    if (resetPrompt) {
+        this.setPrompt(newPrompt);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('clearAllContent',
 function() {
 
@@ -1391,6 +1418,8 @@ function(uniqueID, dataRecord) {
     /**
      * @method updateOutputEntry
      */
+
+    this.teardownInputMark();
 
     return this.get('consoleOutput').updateOutputEntry(uniqueID, dataRecord);
 });

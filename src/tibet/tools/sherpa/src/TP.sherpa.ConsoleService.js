@@ -639,6 +639,7 @@ function(aRequest) {
      */
 
     var cmd,
+        consoleGUI,
         response;
 
     //  consoles only work in response to their model's ID
@@ -652,15 +653,17 @@ function(aRequest) {
         return;
     }
 
+    consoleGUI = this.get('$consoleGUI');
+
     //  If the command is one of the 'built ins' for the console, then perform
     //  the action. Otherwise, it's not one we recognize so we do nothing.
     switch (cmd) {
         case 'clear':
-            this.clearConsole();
+            consoleGUI.clear();
             break;
 
         case 'input':
-            this.get('$consoleGUI').setInputContent(aRequest.at('body'));
+            consoleGUI.setInputContent(aRequest.at('body'));
             break;
 
         default:
@@ -1132,38 +1135,6 @@ function(anEvent) {
 });
 
 //  ------------------------------------------------------------------------
-//  Console Request Handling
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineMethod('clearConsole',
-function(resetPrompt) {
-
-    /**
-     * @method clearConsole
-     * @summary Clears the receiver's content, removing all HTML elements and
-     *     resetting the console to an empty input field.
-     * @param {Boolean} [resetPrompt=false] Whether or not to reset the prompt.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
-     */
-
-    var consoleGUI;
-
-    consoleGUI = this.get('$consoleGUI');
-
-    //  Refocus the input cell and set its cursor to the end.
-    consoleGUI.clearAllContent();
-
-    consoleGUI.focusInput();
-    consoleGUI.setInputCursorToEnd();
-
-    if (resetPrompt) {
-        this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  General Purpose
 //  ------------------------------------------------------------------------
 
@@ -1178,10 +1149,14 @@ function(rawInput) {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    var text,
+    var consoleGUI,
+
+        text,
         req;
 
     if (TP.notEmpty(rawInput)) {
+
+        consoleGUI = this.get('$consoleGUI');
 
         text = rawInput.stripEnclosingQuotes();
 
@@ -1196,10 +1171,10 @@ function(rawInput) {
                                         'cmdSilent', true));
             req.fire(this.get('model'));
 
-            this.get('$consoleGUI').setPrompt(this.get('model').getPrompt());
+            consoleGUI.setPrompt(this.get('model').getPrompt());
         }
 
-        this.get('$consoleGUI').focusInput();
+        consoleGUI.focusInput();
     }
 
     return this;
