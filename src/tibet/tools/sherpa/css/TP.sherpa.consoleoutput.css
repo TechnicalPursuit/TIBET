@@ -175,11 +175,11 @@ sherpa|consoleoutputitem {
 .flex-card > .content {
 
     top: 31px;
-    bottom: 9px;
     right: 0;
+    bottom: 9px;
     left: 0;
 
-    background: #fff;
+    background: #FFF;
 
     min-width: auto;
 
@@ -191,6 +191,10 @@ sherpa|consoleoutputitem {
     text-align: left;
 
     color: black;
+
+    -ms-user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
 }
 
 .flex-card > .content > * {
