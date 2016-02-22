@@ -42,15 +42,35 @@ function() {
 
     /* eslint-disable no-wrap-func,no-extra-parens */
     (function(aSignal) {
+
+        var signalGlobalPoint,
+            haloGlobalRect;
+
         if (aSignal.getShiftKey()) {
+
             //  Make sure to prevent default to avoid having the context menu
             //  pop up.
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
             this.changeHaloFocus(aSignal);
+        } else {
 
-            return;
+            //  NB: We use global coordinates here as the halo and the signal
+            //  that we're testing very well might have occurred in different
+            //  documents.
+
+            signalGlobalPoint = aSignal.getGlobalPoint();
+            haloGlobalRect = this.getGlobalRect();
+
+            if (haloGlobalRect.containsPoint(signalGlobalPoint)) {
+                //  Make sure to prevent default to avoid having the context
+                //  menu pop up.
+                aSignal.preventDefault();
+                aSignal.stopPropagation();
+
+                TP.info('Show the halo menu!');
+            }
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
 
