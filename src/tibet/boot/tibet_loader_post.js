@@ -751,6 +751,8 @@ TP.boot.installPatches = function(aWindow) {
             $$pageY: this.$$pageY,
             $$pagePt: this.$$pagePt,
 
+            $$globalPt: this.$$globalPt,
+
             resolvedTarget: this.resolvedTarget,
             $$_resolvedTarget: this.$$_resolvedTarget,
 

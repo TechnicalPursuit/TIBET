@@ -28,6 +28,7 @@ TP.TIBET_EVENT_PROPERTIES = TP.ac(
     '$$clientX',
     '$$clientY',
     '$$clientPt',
+    '$$globalPt',
     '$$offsetX',
     '$$offsetY',
     '$$offsetPt',

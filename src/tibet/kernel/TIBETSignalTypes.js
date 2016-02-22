@@ -1783,6 +1783,110 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.DOMMouseSignal.Inst.defineMethod('getGlobalX',
+function(wantsTransformed) {
+
+    /**
+     * @method getGlobalX
+     * @summary Returns the X coordinate of the signal relative to its overall
+     *     *top level* window.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The X coordinate of the signal relative to its overall
+     *     top level window.
+     */
+
+    var globalPoint;
+
+    if (TP.isValid(globalPoint = this.getGlobalPoint())) {
+        return globalPoint.getX();
+    }
+
+    return -1;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMMouseSignal.Inst.defineMethod('getGlobalY',
+function(wantsTransformed) {
+
+    /**
+     * @method getGlobalY
+     * @summary Returns the Y coordinate of the signal relative to its overall
+     *     *top level* window.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {Number} The Y coordinate of the signal relative to its overall
+     *     top level window.
+     */
+
+    var globalPoint;
+
+    if (TP.isValid(globalPoint = this.getGlobalPoint())) {
+        return globalPoint.getY();
+    }
+
+    return -1;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMMouseSignal.Inst.defineMethod('getGlobalPoint',
+function(wantsTransformed) {
+
+    /**
+     * @method getPagePoint
+     * @summary Returns the X/Y TP.core.Point of the signal as a global
+     *     position. The global position is the signal's mouse position
+     *     relative to its overall *top level* window.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to return 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {TP.core.Point} The X/Y point of the signal relative to its
+     *     overall top level window.
+     */
+
+    var evt,
+        point,
+
+        evtWin,
+
+        winFrameElem,
+
+        eventOffsetXAndY;
+
+    evt = this.getEvent();
+
+    if (TP.isValid(point = evt.$$globalPt)) {
+        return point;
+    }
+
+    evtWin = TP.eventGetWindow(this.getEvent());
+
+    if (TP.isElement(winFrameElem = evtWin.frameElement)) {
+        //  Note here that we pass 'top' as the first argument since we
+        //  really just want the offset of winFrameElem from the top (which
+        //  will be 0,0 offset from itself).
+        eventOffsetXAndY = TP.windowComputeWindowOffsets(
+                            top,
+                            TP.elementGetIFrameWindow(winFrameElem),
+                            wantsTransformed);
+    } else {
+        eventOffsetXAndY = TP.ac(0, 0);
+    }
+
+    point = TP.pc(this.getPageX() + eventOffsetXAndY.first(),
+                    this.getPageY() + eventOffsetXAndY.last());
+
+    evt.$$globalPt = point;
+
+    return point;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.DOMMouseSignal.Inst.defineMethod('getOffsetX',
 function() {
 
