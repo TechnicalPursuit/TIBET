@@ -3093,14 +3093,164 @@ function(aHeight) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setPagePosition',
+TP.core.UIElementNode.Inst.defineMethod('setGlobalPosition',
 function(aPointOrObject) {
 
     /**
-     * @method setPagePosition
-     * @summary Sets the position of the receiver by manipulating its top, and
-     *     left style properties. This method assumes the receiver is positioned
-     *     in some fashion.
+     * @method setGlobalPosition
+     * @summary Sets the position of the receiver by manipulating its top and
+     *     left style properties. This method expects that these values are
+     *     provided *relative to the top-level window containing the receiver*
+     *     and that the receiver is positioned in some fashion.
+     * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
+     *     to use or an object that has 'x' and 'y', slots or an Array that has
+     *     x in the first position, and y in the second position.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var elem,
+        elemWin,
+
+        xVal,
+        yVal,
+
+        winFrameElem,
+        frameOffsetXAndY,
+
+        pagePosition;
+
+    elem = this.getNativeNode();
+
+    if (!TP.isWindow(elemWin = TP.nodeGetWindow(elem))) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+        xVal = aPointOrObject.getX();
+        yVal = aPointOrObject.getY();
+    } else if (TP.isHash(aPointOrObject)) {
+        xVal = aPointOrObject.at('x');
+        yVal = aPointOrObject.at('y');
+    } else if (TP.isArray(aPointOrObject)) {
+        xVal = aPointOrObject.at(0);
+        yVal = aPointOrObject.at(1);
+    } else {
+        xVal = aPointOrObject.x;
+        yVal = aPointOrObject.y;
+    }
+
+    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+        //  Note here that we pass 'top' as the first argument since we
+        //  really just want the offset of winFrameElem from the top (which
+        //  will be 0,0 offset from itself).
+        frameOffsetXAndY = TP.windowComputeWindowOffsets(
+                            top,
+                            TP.elementGetIFrameWindow(winFrameElem));
+    } else {
+        frameOffsetXAndY = TP.ac(0, 0);
+    }
+
+    pagePosition = TP.pc(xVal - frameOffsetXAndY.first(),
+                            yVal - frameOffsetXAndY.last());
+
+    this.setPagePosition(pagePosition);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('setGlobalPositionAndSize',
+function(aRectOrObject) {
+
+    /**
+     * @method setGlobalPositionAndSize
+     * @summary Sets the position of the receiver by manipulating its top and
+     *     left style properties. This method expects that these values are
+     *     provided *relative to the top-level window containing the receiver*
+     *     and that the receiver is positioned in some fashion. It also sets the
+     *     width and height according to the data supplied.
+     * @param {TP.core.Rect|TP.core.Hash|Array} aRectOrObject A TP.core.Rect to
+     *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
+     *     Array that has x in the first position, y in the second position,
+     *     width in the third position and height in the fourth position.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var elem,
+        elemWin,
+
+        xVal,
+        yVal,
+        widthVal,
+        heightVal,
+
+        winFrameElem,
+        frameOffsetXAndY,
+
+        pagePositionAndSize;
+
+    elem = this.getNativeNode();
+
+    if (!TP.isWindow(elemWin = TP.nodeGetWindow(elem))) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    if (TP.isKindOf(aRectOrObject, TP.core.Rect)) {
+        xVal = aRectOrObject.getX();
+        yVal = aRectOrObject.getY();
+        widthVal = aRectOrObject.getWidth();
+        heightVal = aRectOrObject.getHeight();
+    } else if (TP.isHash(aRectOrObject)) {
+        xVal = aRectOrObject.at('x');
+        yVal = aRectOrObject.at('y');
+        widthVal = aRectOrObject.at('width');
+        heightVal = aRectOrObject.at('height');
+    } else if (TP.isArray(aRectOrObject)) {
+        xVal = aRectOrObject.at(0);
+        yVal = aRectOrObject.at(1);
+        widthVal = aRectOrObject.at(2);
+        heightVal = aRectOrObject.at(3);
+    } else {
+        xVal = aRectOrObject.x;
+        yVal = aRectOrObject.y;
+        widthVal = aRectOrObject.width;
+        heightVal = aRectOrObject.height;
+    }
+
+    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+        //  Note here that we pass 'top' as the first argument since we
+        //  really just want the offset of winFrameElem from the top (which
+        //  will be 0,0 offset from itself).
+        frameOffsetXAndY = TP.windowComputeWindowOffsets(
+                            top,
+                            TP.elementGetIFrameWindow(winFrameElem));
+    } else {
+        frameOffsetXAndY = TP.ac(0, 0);
+    }
+
+    pagePositionAndSize = TP.rtc(
+                            xVal - frameOffsetXAndY.first(),
+                            yVal - frameOffsetXAndY.last(),
+                            widthVal,
+                            heightVal);
+
+    this.setPagePositionAndSize(pagePositionAndSize);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('setOffsetPosition',
+function(aPointOrObject) {
+
+    /**
+     * @method setOffsetPosition
+     * @summary Sets the position of the receiver by manipulating its top and
+     *     left style properties. This method expects that these values are
+     *     provided *relative to the offset parent of the receiver* and that the
+     *     receiver is positioned in some fashion.
      * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
      *     to use or an object that has 'x' and 'y', slots or an Array that has
      *     x in the first position, and y in the second position.
@@ -3130,14 +3280,16 @@ function(aPointOrObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('setPagePositionAndSize',
+TP.core.UIElementNode.Inst.defineMethod('setOffsetPositionAndSize',
 function(aRectOrObject) {
 
     /**
-     * @method setPagePositionAndSize
-     * @summary Sets the position of the receiver by manipulating its top,
-     *     right, bottom and left style properties. This method assumes the
-     *     receiver is positioned in some fashion.
+     * @method setOffsetPositionAndSize
+     * @summary Sets the position of the receiver by manipulating its top and
+     *     left style properties. This method expects that these values are
+     *     provided *relative to the offset parent of the receiver* and that the
+     *     receiver is positioned in some fashion. It also sets the width and
+     *     height according to the data supplied.
      * @param {TP.core.Rect|TP.core.Hash|Array} aRectOrObject A TP.core.Rect to
      *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
      *     Array that has x in the first position, y in the second position,
@@ -3170,6 +3322,120 @@ function(aRectOrObject) {
         styleObj.width = aRectOrObject.width + 'px';
         styleObj.height = aRectOrObject.height + 'px';
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('setPagePosition',
+function(aPointOrObject) {
+
+    /**
+     * @method setPagePosition
+     * @summary Sets the position of the receiver by manipulating its top and
+     *     left style properties. This method expects that these values are
+     *     provided *relative to the whole page of the receiver* and that the
+     *     receiver is positioned in some fashion.
+     * @param {TP.core.Point|TP.core.Hash|Array} aPointOrObject A TP.core.Point
+     *     to use or an object that has 'x' and 'y', slots or an Array that has
+     *     x in the first position, and y in the second position.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var xVal,
+        yVal,
+
+        elem,
+        offsets,
+        styleObj;
+
+    if (TP.isKindOf(aPointOrObject, TP.core.Point)) {
+        xVal = aPointOrObject.getX();
+        yVal = aPointOrObject.getY();
+    } else if (TP.isHash(aPointOrObject)) {
+        xVal = aPointOrObject.at('x');
+        yVal = aPointOrObject.at('y');
+    } else if (TP.isArray(aPointOrObject)) {
+        xVal = aPointOrObject.at(0);
+        yVal = aPointOrObject.at(1);
+    } else {
+        xVal = aPointOrObject.x;
+        yVal = aPointOrObject.y;
+    }
+
+    elem = this.getNativeNode();
+
+    offsets = TP.elementGetOffsetFromContainer(TP.elementGetOffsetParent(elem));
+
+    styleObj = TP.elementGetStyleObj(elem);
+
+    /* eslint-disable no-extra-parens */
+    styleObj.left = (xVal - offsets.first()) + 'px';
+    styleObj.top = (yVal - offsets.last()) + 'px';
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('setPagePositionAndSize',
+function(aRectOrObject) {
+
+    /**
+     * @method setPagePositionAndSize
+     * @summary Sets the position of the receiver by manipulating its top and
+     *     left style properties. This method expects that these values are
+     *     provided *relative to the whole page of the receiver* and that the
+     *     receiver is positioned in some fashion. It also sets the width and
+     *     height according to the data supplied.
+     * @param {TP.core.Rect|TP.core.Hash|Array} aRectOrObject A TP.core.Rect to
+     *     use or an object that has 'x', 'y', 'width' and 'height' slots or an
+     *     Array that has x in the first position, y in the second position,
+     *     width in the third position and height in the fourth position.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var xVal,
+        yVal,
+
+        elem,
+        offsets,
+        styleObj;
+
+    styleObj = TP.elementGetStyleObj(this.getNativeNode());
+
+    if (TP.isKindOf(aRectOrObject, TP.core.Rect)) {
+        xVal = aRectOrObject.getX();
+        yVal = aRectOrObject.getY();
+        styleObj.width = aRectOrObject.getWidth() + 'px';
+        styleObj.height = aRectOrObject.getHeight() + 'px';
+    } else if (TP.isHash(aRectOrObject)) {
+        xVal = aRectOrObject.at('x');
+        yVal = aRectOrObject.at('y');
+        styleObj.width = aRectOrObject.at('width') + 'px';
+        styleObj.height = aRectOrObject.at('height') + 'px';
+    } else if (TP.isArray(aRectOrObject)) {
+        xVal = aRectOrObject.at(0);
+        yVal = aRectOrObject.at(1);
+        styleObj.width = aRectOrObject.at(2) + 'px';
+        styleObj.height = aRectOrObject.at(3) + 'px';
+    } else {
+        xVal = aRectOrObject.x;
+        yVal = aRectOrObject.y;
+        styleObj.width = aRectOrObject.width + 'px';
+        styleObj.height = aRectOrObject.height + 'px';
+    }
+
+    elem = this.getNativeNode();
+
+    offsets = TP.elementGetOffsetFromContainer(elem);
+
+    /* eslint-disable no-extra-parens */
+    styleObj.left = (xVal - offsets.first()) + 'px';
+    styleObj.top = (yVal - offsets.last()) + 'px';
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
