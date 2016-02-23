@@ -531,14 +531,42 @@ TP.boot.installPatches = function(aWindow) {
             'offsetTop',
             function() {
 
-                return Math.round(this.getBoundingClientRect().top);
+                var myTop,
+
+                    offsetParentTop;
+
+                //  TODO: These calculations use getBoundingClientRect(), which
+                //  takes into account any kind of CSS transformation done to
+                //  the receiver, whereas 'offsetTop' guarantees its value
+                //  without taking CSS transformations into account. This needs
+                //  to be fixed, probably by manually doing the matrix
+                //  computation if the receiver is transformed.
+                myTop = this.getBoundingClientRect().top;
+
+                offsetParentTop = this.offsetParent.offsetTop;
+
+                return Math.round(myTop - offsetParentTop);
             });
 
         aWindow.Element.prototype.__defineGetter__(
             'offsetLeft',
             function() {
 
-                return Math.round(this.getBoundingClientRect().left);
+                var myLeft,
+
+                    offsetParentLeft;
+
+                //  TODO: These calculations use getBoundingClientRect(), which
+                //  takes into account any kind of CSS transformation done to
+                //  the receiver, whereas 'offsetLeft' guarantees its value
+                //  without taking CSS transformations into account. This needs
+                //  to be fixed, probably by manually doing the matrix
+                //  computation if the receiver is transformed.
+                myLeft = this.getBoundingClientRect().left;
+
+                offsetParentLeft = this.offsetParent.offsetLeft;
+
+                return Math.round(myLeft - offsetParentLeft);
             });
 
         aWindow.Element.prototype.__defineGetter__(
