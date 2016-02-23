@@ -1837,7 +1837,7 @@ TP.sig.DOMMouseSignal.Inst.defineMethod('getGlobalPoint',
 function(wantsTransformed) {
 
     /**
-     * @method getPagePoint
+     * @method getGlobalPoint
      * @summary Returns the X/Y TP.core.Point of the signal as a global
      *     position. The global position is the signal's mouse position
      *     relative to its overall *top level* window.
