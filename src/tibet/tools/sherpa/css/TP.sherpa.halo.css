@@ -30,8 +30,8 @@ sherpa|halo > div {
 
 	position: absolute;
 
-	width: 16px;
-	height: 16px;
+	width: 10px;
+	height: 10px;
 }
 
 .haloCorner {
@@ -54,56 +54,56 @@ sherpa|halo > div {
 /* TP.NORTHWEST */
 #haloCorner-Northwest {
 
-    top: -12px;
-    left: -12px;
+    top: -7px;
+    left: -7px;
 }
 
 /* TP.NORTH */
 #haloCorner-North {
 
-    top: -12px;
-    left: calc(50% - 12px);
+    top: -7px;
+    left: calc(50% - 7px);
 }
 
 /* TP.NORTHEAST */
 #haloCorner-Northeast {
 
-    top: -12px;
-    right: -12px;
+    top: -7px;
+    right: -7px;
 }
 
 /* TP.WEST */
 #haloCorner-West {
 
-    left: -12px;
-    top: calc(50% - 12px);
+    left: -7px;
+    top: calc(50% - 6px);
 }
 
 /* TP.EAST */
 #haloCorner-East {
 
-    right: -12px;
-    top: calc(50% - 12px);
+    right: -7px;
+    top: calc(50% - 6px);
 }
 
 /* TP.SOUTHWEST */
 #haloCorner-Southwest {
 
-	bottom: -12px;
-	left: -12px;
+	bottom: -7px;
+	left: -7px;
 }
 
 /* TP.SOUTH */
 #haloCorner-South {
 
-    left: calc(50% - 12px);
-    bottom: -12px;
+    left: calc(50% - 7px);
+    bottom: -7px;
 }
 
 /* TP.SOUTHEAST */
 #haloCorner-Southeast {
 
-	bottom: -12px;
-	right: -12px;
+	bottom: -7px;
+	right: -7px;
 }
 
