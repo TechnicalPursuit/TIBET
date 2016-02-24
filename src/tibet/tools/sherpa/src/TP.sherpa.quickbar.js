@@ -333,7 +333,7 @@ function() {
     if (this.hasAttribute('showresults')) {
         detailTile.setAttribute('hidden', false);
 
-        detailTile.setPagePositionAndSize(
+        detailTile.setOffsetPositionAndSize(
                         this.get('resultDetail').getPageRect());
 
         detailTile.setRawContent('<h2>Hi there</h2>');

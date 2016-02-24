@@ -429,7 +429,7 @@ function(aTarget) {
 
         theRect.subtractByPoint(ourRect.getXYPoint());
 
-        this.setPagePositionAndSize(theRect);
+        this.setOffsetPositionAndSize(theRect);
         this.setAttribute('hidden', false);
 
         this.set('haloRect', theRect);
