@@ -25,8 +25,8 @@ TP.sherpa.tile.Inst.defineAttribute(
         {value: TP.cpc('> .header > .header_text', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
-        'detachMark',
-        {value: TP.cpc('> .header > .detach_mark', TP.hc('shouldCollapse', true))});
+        'minimizeMark',
+        {value: TP.cpc('> .header > .minimize_mark', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.tile.Inst.defineAttribute(
         'closeMark',
@@ -40,41 +40,10 @@ TP.sherpa.tile.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.Inst.defineMethod('init',
-function() {
-
-    this.callNextMethod();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.tile.Inst.defineHandler('DetachTile',
+TP.sherpa.tile.Inst.defineHandler('MinimizeTile',
 function(aSignal) {
 
-    var docBody,
-
-        header;
-
-    //  Once it's detached, you cannot redock it into the console GUI stream.
-    if (!this.hasAttribute('attachedto')) {
-        this.toggle('hidden');
-
-        return this;
-    }
-
-    docBody = TP.documentGetBody(this.getNativeWindow().document);
-    TP.nodeAppendChild(docBody, this.getNativeNode(), false);
-    this.removeAttribute('attachedto');
-
-    //  Configure the header to be draggable
-    header = this.get('header');
-    header.setAttribute('drag:mover', true);
-    header.setAttribute('drag:item', '..');
-
-    TP.byId('tileDock', this.getNativeWindow()).addTileEntry(
-                            this.getID(), 'tile 1');
+    this.toggle('hidden');
 
     return this;
 });
