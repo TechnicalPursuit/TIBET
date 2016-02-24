@@ -4,22 +4,26 @@
 
 sherpa|methodeditor {
 
-    display: block;
-	position: relative;
+    display: flex;
+    flex-direction: column;
 
-	top: 18px;
+	position: absolute;
+
+	top: 0px;
 	left: 0px;
-	height: 280px;
+	bottom: 0px;
+    right: 0px;
 }
 
 sherpa|methodeditor > .body {
 
-    position: absolute;
+    position: relative;
+
+    flex-grow: 1;
 
     top: 0px;
     left: 0px;
     right: 0px;
-    bottom: 16px;
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -27,15 +31,11 @@ sherpa|methodeditor > .body {
 
 sherpa|methodeditor > .head {
 
-    position: absolute;
-
     left: 0px;
     right: 0px;
 }
 
 sherpa|methodeditor > .foot {
-
-    position: absolute;
 
     display: flex;
     justify-content: flex-end;
@@ -44,7 +44,7 @@ sherpa|methodeditor > .foot {
     right: 0px;
     bottom: 0px;
 
-    height: 16px;
+    border-top: dotted 1px black;
 }
 
 sherpa|methodeditor > .foot > button {
@@ -56,9 +56,7 @@ sherpa|methodeditor > .foot > button {
 
     line-height: 0.8;
 
-    color: orange;
-
-    border: dotted 1px orange;
+    border: dotted 1px black;
     background-color: transparent;
 }
 
