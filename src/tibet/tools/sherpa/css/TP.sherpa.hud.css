@@ -1,6 +1,13 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
 
+sherpa|hud {
+
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
 #background {
 /*    pointer-events: none; */
 }

@@ -26,6 +26,9 @@ sherpa|tile {
 	/* This should match TIBET's HUD_POPUP_TIER constant */
 	z-index: 17500;
 
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
 sherpa|tile[attachedto="console"] {
