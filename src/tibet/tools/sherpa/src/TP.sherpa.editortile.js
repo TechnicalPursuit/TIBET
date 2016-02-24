@@ -55,13 +55,6 @@ function(anObject) {
 
     var retVal;
 
-    //  Once it's detached, you cannot redock it into the console GUI stream.
-    if (!this.hasAttribute('attachedto')) {
-        this.toggle('hidden');
-
-        return this;
-    }
-
     retVal = this.callNextMethod();
 
     //  Force whatever is currently displayed to render

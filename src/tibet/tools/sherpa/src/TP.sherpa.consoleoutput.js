@@ -402,7 +402,6 @@ function(uniqueID, dataRecord) {
                 break;
         }
 
-        resultTile.setAttribute('attachedto', 'console');
         resultTile.toggle('hidden');
 
     } else {
