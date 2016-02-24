@@ -61,40 +61,57 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineMethod('setSourceObject',
-function(anObject) {
+TP.sherpa.editortile.Inst.defineMethod('setSourceData',
+function(dataRecord) {
 
     /**
-     * @method setID
+     * @method setSourceData
      */
 
-    var currentDisplay,
+    var srcObject,
+
+        currentDisplay,
 
         identifier,
-        displayTPElem;
 
-    this.get('breadcrumb').setSourceObject(anObject);
+        displayTPElem,
+
+        displayType;
+
+    srcObject = dataRecord.at('rawData');
 
     if (TP.isValid(currentDisplay = this.get('currentDisplay'))) {
         currentDisplay.toggle('hidden');
     }
 
-    if (TP.notValid(identifier = this.getDisplayIdentifier(anObject))) {
+    if (srcObject === TP.TSH_NO_VALUE) {
+        identifier = dataRecord.at('request').at('tiledOutputEditorType');
+    } else {
+        identifier = this.getDisplayIdentifier(srcObject);
+    }
+
+    if (TP.notValid(identifier)) {
         return this;
     }
 
     displayTPElem = this.get('displays').at(identifier);
-
     if (TP.notValid(displayTPElem)) {
-        if (TP.isValid(displayTPElem = this.setupDisplayFor(anObject))) {
+
+        if (srcObject === TP.TSH_NO_VALUE) {
+            displayType = TP.sys.getTypeByName(identifier);
+        } else {
+            displayType = TP.getSherpaStructuredEditor(srcObject);
+        }
+
+        if (TP.isValid(displayTPElem = this.setupDisplayFor(displayType))) {
             this.get('displays').atPut(identifier, displayTPElem);
         }
     }
 
     if (TP.isValid(displayTPElem)) {
-
         this.set('currentDisplay', displayTPElem);
-        displayTPElem.setSourceObject(anObject);
+
+        displayTPElem.setSourceObject(srcObject);
         displayTPElem.toggle('hidden');
     }
 
@@ -114,14 +131,10 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.editortile.Inst.defineMethod('setupDisplayFor',
-function(anObject) {
+function(displayType) {
 
-    var displayType,
-
-        resultBody,
+    var resultBody,
         displayTPElem;
-
-    displayType = TP.getSherpaStructuredEditor(anObject);
 
     if (TP.isType(displayType)) {
         resultBody = this.get('body');
