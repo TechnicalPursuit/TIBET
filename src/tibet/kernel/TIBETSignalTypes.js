@@ -650,6 +650,42 @@ TP.sig.ResponderSignal.Type.defineAttribute('bubbling', true);
 TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('getDOMTarget',
+function() {
+
+    /**
+     * @method getDOMTarget
+     * @summary Returns the DOM target of the receiver. If the receiver was
+     *     triggered because of a DOM signal, this method will return the *DOM*
+     *     target of the signal.
+     * @description When triggered via a DOM signal, Responder signals set their
+     *     target to their origin so that responder chain semantics work
+     *     properly. This method allows access to the original *DOM* target of
+     *     the signal.
+     * @returns {TP.core.UIElementNode} The DOM target of the receiver.
+     */
+
+    var evt,
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    if (TP.isEvent(evt = this.at('event'))) {
+
+        //  Wrap the event into a TIBET DOM signal of some type.
+        domSignal = TP.wrap(evt);
+
+        return domSignal.getTarget();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
 //  Responder Notification Signals
 //  ------------------------------------------------------------------------
 
