@@ -1663,7 +1663,7 @@ function(aRequest) {
 
     //  Build up the input data for the console GUI to template.
     inputData = TP.hc('hid', hid,
-                        'cmdtext', str,
+                        'cmdText', str,
                         'cssClass', cssClass,
                         'request', request);
 

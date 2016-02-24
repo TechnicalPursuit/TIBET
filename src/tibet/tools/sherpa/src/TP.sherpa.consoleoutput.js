@@ -233,7 +233,7 @@ function(uniqueID, dataRecord) {
         cssClass = dataRecord.at('cssClass');
         cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
 
-        cmdText = TP.ifInvalid(dataRecord.at('cmdtext'), '');
+        cmdText = TP.ifInvalid(dataRecord.at('cmdText'), '');
         cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
 
         //  If there's ACP in the text, we need to escape it before feeding it
@@ -249,9 +249,9 @@ function(uniqueID, dataRecord) {
                         'id', uniqueID,
                         'inputclass', cssClass,
                         'hid', hidstr,
-                        'cmdtext', cmdText,
+                        'cmdText', cmdText,
                         'empty', '',
-                        'resulttype', '',
+                        'resultType', '',
                         'stats', '&#8230;');
 
         resp = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
