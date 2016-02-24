@@ -1698,7 +1698,7 @@ function(anObject, aRequest) {
 
     var request,
 
-        structuredOutput,
+        tiledOutput,
 
         tap,
         data,
@@ -1715,12 +1715,12 @@ function(anObject, aRequest) {
 
     request = TP.request(aRequest);
 
-    structuredOutput = false;
+    tiledOutput = false;
 
     //  If the request has structured output, then we blank out the data.
-    if (TP.isTrue(request.at('structuredOutput'))) {
+    if (TP.isTrue(request.at('tiledOutput'))) {
         data = '';
-        structuredOutput = true;
+        tiledOutput = true;
     } else {
 
         //  TODO: replace this hack with an update to direct to the proper
@@ -1804,7 +1804,7 @@ function(anObject, aRequest) {
                         'cssClass', cssClass,
                         'rawData', anObject,
                         'request', request,
-                        'structuredOutput', structuredOutput);
+                        'tiledOutput', tiledOutput);
 
     consoleGUI = this.get('$consoleGUI');
 

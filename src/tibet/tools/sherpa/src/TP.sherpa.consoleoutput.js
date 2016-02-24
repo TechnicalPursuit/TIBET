@@ -315,6 +315,8 @@ function(uniqueID, dataRecord) {
 
         cmdTagName,
 
+        cmdText,
+
         outputClass,
 
         resultTile,
@@ -369,38 +371,25 @@ function(uniqueID, dataRecord) {
                 TP.byCSSPath('.header', cellGroupElem, true, false));
     }
 
-    //  If the output text is empty and the user is asking for structured
-    //  output, then created a tile and set the raw data as its source object.
+    //  If the output text is empty and the user is asking for tiled output,
+    //  then created a tile and set the raw data as its source object.
     if (TP.isEmpty(outputText) &&
-        TP.isTrue(dataRecord.at('structuredOutput'))) {
-
-        //  Make sure to configure this particular cell group so that content
-        //  *can* be awakened under it - our structured output might very well
-        //  need it.
-        TP.elementRemoveAttribute(cellGroupElem, 'tibet:noawaken', true);
+        TP.isTrue(dataRecord.at('tiledOutput'))) {
 
         cmdTagName = TP.name(
                         dataRecord.at('request').getPayload().at('cmdNode'));
-        switch (cmdTagName) {
-            case 'tsh:edit':
+        cmdText = TP.byCSSPath('.header .content',
+                                cellGroupElem,
+                                true).getTextContent();
 
-                resultTile = TP.bySystemId('Sherpa').makeEditorTile(
-                                            uniqueID + '_tile',
-                                            cellGroupElem);
-                resultTile.set('sourceObject', rawData);
+        resultTile = TP.bySystemId('Sherpa').makeTile(
+                            uniqueID + '_tile',
+                            TP.documentGetBody(doc),
+                            'TP.sherpa.editortile');
 
-                break;
+        resultTile.set('sourceData', dataRecord);
 
-            default:
-
-                resultTile = TP.bySystemId('Sherpa').makeCommandTile(
-                                            uniqueID + '_tile',
-                                            cellGroupElem);
-                resultTile.set('commandEditorURI',
-                                TP.uc(dataRecord.at('structuredOutputURI')));
-
-                break;
-        }
+        resultTile.set('headerText', cmdText);
 
         resultTile.toggle('hidden');
 

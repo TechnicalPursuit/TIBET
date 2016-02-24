@@ -2074,7 +2074,7 @@ function(aRequest) {
         obj = this.resolveObjectReference(arg, aRequest);
     }
 
-    aRequest.atPut('structuredOutput', true);
+    aRequest.atPut('tiledOutput', true);
     aRequest.complete(obj);
 
     return;

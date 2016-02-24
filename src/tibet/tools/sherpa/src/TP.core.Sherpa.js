@@ -336,41 +336,26 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
-function(anID, tileParent) {
+function(anID, tileParent, customTagSubtype) {
 
-    var tileTPElem;
+    var tileTPElem,
+        tileTemplateTPElem;
 
-    tileTPElem = TP.wrap(tileParent).addContent(
-                    TP.sherpa.tile.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
+    if (TP.notEmpty(customTagSubtype)) {
+        tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML,
+                                function(anElement) {
+                                    anElement.setAttribute(
+                                            'tibet:tag', customTagSubtype);
+                                });
+    } else {
+        tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML);
+    }
 
-    tileTPElem.setID(anID);
-    tileTPElem.awaken();
-    tileTPElem.setup();
-
-    return tileTPElem;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.core.Sherpa.Inst.defineMethod('makeEditorTile',
-function(anID, tileParent) {
-
-    var newEditorTPElem,
-        tileTPElem;
-
-    //  NB: Editor tiles don't have their own template - we use their
-    //  supertype's
-    newEditorTPElem = TP.sherpa.tile.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML,
-                            function(anElement) {
-                                anElement.setAttribute(
-                                        'tibet:tag', 'TP.sherpa.editortile');
-                            });
-    newEditorTPElem = newEditorTPElem.clone();
-
-    tileTPElem = TP.wrap(tileParent).addContent(newEditorTPElem);
+    tileTPElem = TP.wrap(tileParent).addContent(tileTemplateTPElem);
 
     tileTPElem.setID(anID);
     tileTPElem.awaken();
