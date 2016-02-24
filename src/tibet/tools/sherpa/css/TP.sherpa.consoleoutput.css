@@ -105,6 +105,7 @@ sherpa|consoleoutputitem {
     top: 0;
     right: 0;
     left: 0;
+
     height: 15px;
 
     margin: 2px;
@@ -150,17 +151,6 @@ sherpa|consoleoutputitem {
     white-space: pre-wrap;
 }
 
-.flex-card > .header > .stats {
-
-    float: right;
-    margin: 0 8px;
-    display: inline-block;
-
-    color: grey;
-
-    white-space: pre-wrap;
-}
-
 .flex-card > .header > .typeinfo {
 
     float: right;
@@ -168,6 +158,17 @@ sherpa|consoleoutputitem {
     display: inline-block;
 
     color: orange;
+
+    white-space: pre-wrap;
+}
+
+.flex-card > .header > .stats {
+
+    float: right;
+    margin: 0 8px;
+    display: inline-block;
+
+    color: grey;
 
     white-space: pre-wrap;
 }
@@ -211,7 +212,7 @@ sherpa|consoleoutputitem {
     right: 0;
     height: 8px;
 
-    background: #eee;
+    background: #EEE;
 
     min-width: auto;
 
