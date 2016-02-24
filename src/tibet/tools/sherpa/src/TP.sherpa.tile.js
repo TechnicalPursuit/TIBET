@@ -61,7 +61,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tile.Inst.defineMethod('setHeader',
+TP.sherpa.tile.Inst.defineMethod('setHeaderText',
 function(newContent, aRequest) {
 
     return this.get('headerText').setTextContent(newContent);
