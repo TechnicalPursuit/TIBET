@@ -6,23 +6,26 @@ sherpa|tile {
     display: block;
     position: absolute;
 
-	top: 0px;
-	left: 0px;
-	min-height: 300px;
+    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-size: 85%;
+
+	top: 75px;
+	left: 75px;
+	min-height: 400px;
     min-width: 600px;
 
-    border: solid 1px rgba(0, 0, 0, 0.2);
+    margin-top: 2px;
+    margin-bottom: 2px;
 
-    padding: 5px 10px;
+    background: #EEE;
+    border: solid 1px #666;
 
-    border-radius: 3px;
+    border-radius: 5px;
+
+    line-height: 1.5em;
 
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 
-    background-color: rgb(238, 238, 238);
-
-    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
-    font-size: 12px;
 	/* This should match TIBET's HUD_POPUP_TIER constant */
 	z-index: 17500;
 
@@ -31,87 +34,108 @@ sherpa|tile {
     -webkit-user-select: none;
 }
 
-sherpa|tile[attachedto="console"] {
-
-	position: relative;
-
-    border: dotted 1px orange;
-
-    background-color: #3F3F3F;
-}
-
 sherpa|tile > .header {
 
-    position: absolute;
-    display: block;
+    top: 0;
+    left: 0;
+    right: 0;
 
-    top: 0px;
-    left: 0px;
-    right: 0px;
+    height: 15px;
 
-    height: 10px;
+    margin: 2px;
 
-    padding-bottom: 1px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+
+    background-color: #EEE;
+
+    cursor: default;
+
+    border: 1px solid #666;
+    overflow: hidden;
+
+    font-size: inherit;
 }
 
-sherpa|tile[attachedto="console"] > .header {
+sherpa|tile > .header > .header_text {
 
-    background-color: orange;
+    position: relative;
+    display: inline-block;
+
+    pointer-events: none;
+
+    cursor: default;
+}
+
+sherpa|tile > .header > .minimize_mark {
+
+    float: right;
+    margin: 0 8px;
+    display: inline-block;
+
+    cursor: pointer;
+
+    width: 14px;
+    height: 14px;
+
+    background-size: 14px 14px;
+    background-image: url(../media/exit13.svg);
+}
+
+sherpa|tile > .header > .close_mark {
+
+    float: right;
+    margin: 0 8px;
+    display: inline-block;
+
+    cursor: pointer;
+
+    width: 14px;
+    height: 14px;
+
+    background-size: 14px 14px;
+    background-image: url(../media/cancel19.svg);
 }
 
 sherpa|tile > .body {
 
     position: absolute;
 
-    top: 12px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+    top: 19px;
+    right: 0;
+    bottom: 9px;
+    left: 0;
+
+    background-color: #FFF;
+
+    margin: 2px;
+    border: 1px solid #666;
 
     overflow-x: hidden;
     overflow-y: auto;
+
+    text-align: left;
+
+    color: black;
 }
 
-sherpa|tile .header_text {
+sherpa|tile > .footer {
 
-    font-weight: bold;
-    font-size: 9px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
 
-    pointer-events: none;
-}
+    min-width: auto;
 
-sherpa|tile .detach_mark {
+    margin: 2px;
 
-    position: absolute;
+    border: 1px solid #666;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
 
-    cursor: pointer;
+    overflow: hidden;
 
-    top: 0px;
-    right: 22px;
-    width: 10px;
-    height: 10px;
-
-    background-size: 10px 10px;
-    background-image: url(../media/call49.svg);
-}
-
-sherpa|tile .close_mark {
-
-    position: absolute;
-
-    cursor: pointer;
-
-    top: 0px;
-    right: 2px;
-    width: 10px;
-    height: 10px;
-
-    background-size: 10px 10px;
-    background-image: url(../media/cancel19.svg);
-}
-
-sherpa|tile:not([attachedto]) .detach_mark {
-
-    background-image: url(../media/exit13.svg);
+    text-align: center;
 }
 
