@@ -20,10 +20,6 @@ TP.sherpa.tile.defineSubtype('editortile');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineAttribute(
-        'breadcrumb',
-        {value: TP.cpc('sherpa|breadcrumb', TP.hc('shouldCollapse', true))});
-
 TP.sherpa.editortile.Inst.defineAttribute('displays');
 
 //  ------------------------------------------------------------------------
@@ -109,19 +105,6 @@ function(anObject) {
 
 TP.sherpa.editortile.Inst.defineMethod('setup',
 function() {
-
-    var resultBody,
-        breadCrumbTPElem;
-
-    resultBody = this.get('body');
-
-    breadCrumbTPElem = resultBody.addContent(
-                    TP.sherpa.breadcrumb.getResourceElement(
-                        'template',
-                        TP.ietf.Mime.XHTML));
-
-    breadCrumbTPElem.awaken();
-    breadCrumbTPElem.set('sourceID', this.getID());
 
     this.set('displays', TP.hc());
 
