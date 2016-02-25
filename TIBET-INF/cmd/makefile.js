@@ -439,11 +439,13 @@ targets.build_tibet = function(make) {
 /**
  */
 targets.rollup_bluebird = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update bluebird');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'bluebird'));
 
     sh.exec('cp -f js/browser/bluebird.js  ../../deps/bluebird-tpi.js');
@@ -455,11 +457,13 @@ targets.rollup_bluebird = function(make) {
 /**
  */
 targets.rollup_codemirror = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update codemirror');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'codemirror'));
     sh.exec('npm install -d');
 
@@ -493,11 +497,13 @@ targets.rollup_codemirror = function(make) {
 /**
  */
 targets.rollup_d3 = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update d3');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'd3'));
     sh.exec('npm install -d');
     sh.exec('make');
@@ -510,11 +516,13 @@ targets.rollup_d3 = function(make) {
 /**
  */
 targets.rollup_diff = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update diff');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'diff'));
     sh.exec('cp -f diff.js  ../../deps/diff-tpi.js');
 
@@ -524,11 +532,13 @@ targets.rollup_diff = function(make) {
 /**
  */
 targets.rollup_forge = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update forge');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'node-forge'));
     sh.exec('npm install -d');
     sh.exec('npm run minify');
@@ -540,11 +550,13 @@ targets.rollup_forge = function(make) {
 /**
  */
 targets.rollup_jjv = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update jjv');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'jjv'));
     sh.exec('npm install -d');
     sh.exec('cp -f lib/jjv.js  ../../deps/jjv-tpi.js');
@@ -556,11 +568,13 @@ targets.rollup_jjv = function(make) {
 /**
  */
 targets.rollup_jsdiff = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update jsdiff');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'diff'));
     sh.exec('npm install -d');
     sh.exec('cp -f diff.js  ../../deps/diff-tpi.js');
@@ -571,11 +585,13 @@ targets.rollup_jsdiff = function(make) {
 /**
  */
 targets.rollup_jquery = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update jquery');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'jquery'));
 
     // TODO: build and copy jquery build output to the proper location(s)
@@ -586,11 +602,13 @@ targets.rollup_jquery = function(make) {
 /**
  */
 targets.rollup_jxon = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update jxon');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'jxon'));
     sh.exec('npm install -d');
     sh.exec('cp -f index.js  ../../deps/jxon-tpi.js');
@@ -601,11 +619,13 @@ targets.rollup_jxon = function(make) {
 /**
  */
 targets.rollup_less = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update less');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'less'));
 
     sh.exec('cp -f dist/less.js  ../../deps/less-tpi.js');
@@ -617,11 +637,13 @@ targets.rollup_less = function(make) {
 /**
  */
 targets.rollup_pouchdb = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update pouchdb');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'pouchdb'));
 
     sh.exec('cp -f dist/pouchdb.js ../../deps/pouchdb-tpi.js');
@@ -631,7 +653,8 @@ targets.rollup_pouchdb = function(make) {
 
     sh.cd(path.join(npmdir, 'pouchdb'));
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'pouchdb-all-dbs'));
     sh.exec('npm install -d');
     sh.exec('cp -f dist/pouchdb.all-dbs.js ../../deps/pouchdb.all-dbs-tpi.js');
@@ -643,11 +666,13 @@ targets.rollup_pouchdb = function(make) {
 /**
  */
 targets.rollup_sinon = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update sinon');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'sinon'));
     sh.exec('npm install -d');
     sh.exec('cp -f ./pkg/sinon.js ../../deps/sinon-tpi.js');
@@ -658,11 +683,13 @@ targets.rollup_sinon = function(make) {
 /**
  */
 targets.rollup_sprintf = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update sprintf.js');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'sprintf-js'));
     sh.exec('npm install -d');
     sh.exec('grunt uglify');
@@ -684,11 +711,13 @@ targets.rollup_sprintf = function(make) {
 /**
  */
 targets.rollup_syn = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update syn');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'syn'));
     sh.exec('npm install -d');
     sh.exec('grunt build');
@@ -701,11 +730,13 @@ targets.rollup_syn = function(make) {
 /**
  */
 targets.rollup_jqueryxpath = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update jquery-xpath');
 
-    npmdir = path.join(__dirname, 'node_modules');
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'jquery-xpath'));
     sh.exec('cp -f ./jquery.xpath.js ../../deps/jquery.xpath-tpi.js');
     sh.exec('cp -f ./jquery.xpath.min.js ../../deps/jquery.xpath-tpi.min.js');
@@ -716,12 +747,14 @@ targets.rollup_jqueryxpath = function(make) {
 /**
  */
 targets.rollup_xpath = function(make) {
-    var npmdir;
+    var CLI,
+        npmdir;
 
     sh.exec('npm update xpath');
 
-    npmdir = path.join(__dirname, 'node_modules');
-    sh.cd(path.join(npmdir, 'xpath'));
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
+    sh.cd(path.join(npmdir, 'xpath.js'));
     sh.exec('cp -f xpath.js ../../deps/xpath-tpi.js');
 
     targets.rollup_xpath.resolve();
