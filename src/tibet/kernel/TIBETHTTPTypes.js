@@ -663,18 +663,23 @@ function(aFormat) {
 
     /**
      * @method getResult
-     * @summary Returns the request result. By default it tries to return the
-     *     XML representation, followed by the text representation if the XML
-     *     can't be formed from the response. An explicit return type can be
-     *     forced by supplying a format constant.
+     * @summary Returns the request result.
+     * @description If a result type is specified in the responder's payload
+     *     under the 'resultType' key, that is the result type used. Otherwise,
+     *     by default it tries to return the XML representation, followed by the
+     *     text representation if the XML can't be formed from the response. An
+     *     explicit return type can be forced by supplying a format constant.
      * @param {Constant} aFormat One of the TP constants for low-level result
      *     data: TP.DOM, TP.TEXT, or TP.NATIVE.
      * @returns {Object} The object in the requested format.
      */
 
-    var result;
+    var format,
+        result;
 
-    switch (aFormat) {
+    format = TP.ifInvalid(aFormat, this.at('resultType'));
+
+    switch (format) {
         case TP.DOM:
             return this.getResponseXML();
         case TP.TEXT:
