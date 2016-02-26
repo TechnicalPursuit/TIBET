@@ -584,36 +584,6 @@ function(patchText, patchVirtualPath, onsuccess, onfailure) {
     return this;
 });
 
-//  ------------------------------------------------------------------------
-
-TP.core.Sherpa.Inst.defineMethod('saveFile',
-function(fileURL, fileContent, onsuccess, onfailure) {
-
-    var url,
-        pathname,
-
-        webDavSaveLocation,
-        params,
-        request;
-
-    url = TP.uc(fileURL);
-    pathname = url.getPath().slice(url.getRoot().getSize());
-
-    webDavSaveLocation = url.getRoot() +
-                            TP.sys.cfg('tds.webdav.uri') +
-                            pathname;
-
-    url = TP.uc(webDavSaveLocation);
-
-    params = TP.hc('refresh', true, 'async', true, 'method', TP.HTTP_PUT);
-    request = url.constructRequest(params);
-
-    url.setResource(fileContent);
-    url.save(request);
-
-    return this;
-});
-
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('toggle',
