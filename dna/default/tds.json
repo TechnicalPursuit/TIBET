@@ -5,7 +5,8 @@
     },
     "development": {
         "use": {
-            "watch": true
+            "watch": true,
+            "patch": true
         }
     }
 }
