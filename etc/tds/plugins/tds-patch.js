@@ -180,7 +180,7 @@
                 return err(500, 'Error writing file ' + url + ': ' + e.message);
             }
 
-            res.send('ack');
+            res.send(url + ' successfully patched.');
             res.end();
         };
 
