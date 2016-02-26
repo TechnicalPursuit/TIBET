@@ -158,7 +158,7 @@
                         throw new Error('NoData');
                     }
                 } catch (e) {
-                    return err('Error reading file data: ' + e.message);
+                    return err(500, 'Error reading file data: ' + e.message);
                 }
 
                 diff = require('diff');
@@ -172,7 +172,7 @@
             try {
                 fs.writeFileSync(url, text);
             } catch (e) {
-                return err('Error writing file ' + url + ': ' + e.message);
+                return err(500, 'Error writing file ' + url + ': ' + e.message);
             }
 
             res.send('ack');
