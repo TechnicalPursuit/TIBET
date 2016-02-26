@@ -77,7 +77,9 @@
                 url,
                 diff,
                 fs,
-                err;
+                err,
+                ignoreChangedFiles,
+                localPath;
 
             err = function(code, message) {
                 logger.error(message);
@@ -172,6 +174,23 @@
             } else {
                 // Supplied content is the new file text.
                 text = content;
+            }
+
+            if (data.nowatch === true) {
+                ignoreChangedFiles =
+                    TDS.getcfg('tds.watch.ignore_changed_files');
+                if (!ignoreChangedFiles) {
+                    ignoreChangedFiles = [];
+                    TDS.setcfg('tds.watch.ignore_changed_files',
+                                ignoreChangedFiles);
+                }
+
+                localPath = url.replace(TDS.expandPath('~app'), '');
+                if (localPath.charAt(0) === '/') {
+                    localPath = localPath.slice(1);
+                }
+
+                ignoreChangedFiles.push(localPath);
             }
 
             try {

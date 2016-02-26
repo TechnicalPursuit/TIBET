@@ -213,6 +213,21 @@
         eventName = TDS.getcfg('tds.watch.event');
 
         watcher.on('change', function(file) {
+            var ignoreChangedFiles,
+                ignoreIndex;
+
+            ignoreChangedFiles = TDS.getcfg('tds.watch.ignore_changed_files');
+
+            if (ignoreChangedFiles) {
+                ignoreIndex = ignoreChangedFiles.indexOf(file);
+
+                if (ignoreIndex !== -1) {
+                    ignoreChangedFiles.splice(ignoreIndex, 1);
+
+                    return;
+                }
+            }
+
             watcher.channels.forEach(function(sse) {
                 sse(eventName, {
                     path: file,
