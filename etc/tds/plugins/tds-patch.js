@@ -164,6 +164,11 @@
                 diff = require('diff');
 
                 text = diff.applyPatch(text, content);
+
+                if (text === false) {
+                    return err(500, 'Error generating patch');
+                }
+
             } else {
                 // Supplied content is the new file text.
                 text = content;
