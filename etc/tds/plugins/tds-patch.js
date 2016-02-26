@@ -188,9 +188,12 @@
         //  Routes
         //  ---
 
-        app.put(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
-        app.post(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
-        app.patch(TDS.cfg('tds.patch.uri'), loggedIn, TDS.patch);
+        app.put(TDS.cfg('tds.patch.uri'), loggedIn,
+                options.parsers.json, TDS.patch);
+        app.post(TDS.cfg('tds.patch.uri'), loggedIn,
+                options.parsers.json, TDS.patch);
+        app.patch(TDS.cfg('tds.patch.uri'), loggedIn,
+                options.parsers.json, TDS.patch);
     };
 
 }(this));
