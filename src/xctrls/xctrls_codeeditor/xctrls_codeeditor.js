@@ -32,6 +32,7 @@ TP.xctrls.codeeditor.Type.defineConstant('JS_MODE', 'javascript');
 TP.xctrls.codeeditor.addTraits(TP.html.textUtilities);
 
 TP.xctrls.codeeditor.Type.resolveTrait('booleanAttrs', TP.html.textUtilities);
+TP.xctrls.codeeditor.Type.resolveTrait('getResourceURI', TP.xctrls.codeeditor);
 
 TP.xctrls.codeeditor.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
