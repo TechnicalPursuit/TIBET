@@ -1800,7 +1800,7 @@ function(anObject, resultType, collapse) {
                         obj = '';
                     }
                 } else {
-                    obj = TP.str(anObject);
+                    obj = TP.str(anObject, false);
                 }
                 return obj;
 
