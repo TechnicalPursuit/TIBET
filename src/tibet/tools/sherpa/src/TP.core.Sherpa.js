@@ -576,6 +576,7 @@ function(patchText, patchVirtualPath, onsuccess, onfailure) {
                     TP.hc('async', false, 'mimetype', TP.JSON_ENCODED));
 
     patchURL.setResource(TP.hc('type', 'patch',
+                                'nowatch', true,
                                 'target', patchVirtualPath,
                                 'content', patchText));
 
