@@ -67,7 +67,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     /* eslint-disable quote-props */
     {
         'boolean': ['compiled'],
-        'string': ['package', 'config', 'dir', 'template', 'style'],
+        'string': ['package', 'config', 'dir', 'name', 'template', 'style'],
         'default': {
             compiled: false,
             template: ''
@@ -81,7 +81,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet tag [[<root>.]<namespace>:]<tagname> [--package <pkgname>] [--config <cfgname>] [--dir <dirname>] [--compiled] [--template <uri>] [--style <uri>|NO_RESULT]';
+    'tibet tag [--name] [[<root>.]<namespace>:]<tagname> [--package <pkgname>] [--config <cfgname>] [--dir <dirname>] [--compiled] [--template <uri>] [--style <uri>|NO_RESULT]';
 
 
 //  ---
@@ -100,6 +100,7 @@ Cmd.prototype.USAGE =
  * nsname           appname                 cannot default
  * tagname          cannot default          cannot default
  *
+ * name             tagname                 tagname
  * package          '~app_cfg/{{appname}}.xml'   '~lib_cfg/lib_namespaces.xml'
  * config           'app_img'               '<nsname>'
  * dir              '~app_src/tags'        '~lib_src/<nsname>'
@@ -117,7 +118,8 @@ Cmd.prototype.configureOptions = function() {
 
     opts = {};
 
-    tagname = this.options._[1];    //  Command is at 0, tagname should be [1].
+    //  Command is at 0, tagname should be [1] (or the value of the 'name' flag).
+    tagname = this.options.name || this.options._[1];
 
     //  Have to get at least one non-option argument (the tagname).
     if (!tagname) {
