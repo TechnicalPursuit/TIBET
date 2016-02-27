@@ -25,8 +25,7 @@
      *
      * You can test whether it works by using URLs of the form:
      *
-     * url =
-     * TP.uc('~/tds/cli?cmd=echo&arg0=fluff&--testing=123&--no-color=no-color');
+     * url = TP.uc('~/tds/cli?cmd=echo&arg0=fluff&testing=123&no-color');
      *
      * Run the command by forcing a call to the server for the URL:
      *
@@ -34,7 +33,7 @@
      *
      * Or, if you are in the TSH, you can execute:
      *
-     * :tibet echo fluff --testing=123 --no-color
+     * :cli echo fluff --testing=123 --no-color
      *
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
