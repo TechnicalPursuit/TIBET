@@ -3992,9 +3992,10 @@ TP.core.TSH.Inst.defineMethod('executeCli',
 function(aRequest) {
 
     var cmd,
-        args,
-        argv,
         url,
+        argv,
+        seenKeys,
+        args,
         req;
 
     //  TODO: sanity check them for non-alphanumeric 'command line' chars.
@@ -4021,6 +4022,8 @@ function(aRequest) {
         }
     }
 
+    seenKeys = TP.hc();
+
     args = this.getArguments(aRequest);
     args.perform(
         function(arg) {
@@ -4042,6 +4045,11 @@ function(aRequest) {
             if (/tsh:/.test(key)) {
                 key = key.slice(4);
             }
+
+            if (seenKeys.at(key)) {
+                return;
+            }
+            seenKeys.atPut(key, true);
 
             url += '&' + encodeURIComponent(key);
             if (TP.notEmpty(value)) {
