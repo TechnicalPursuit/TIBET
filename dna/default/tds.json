@@ -6,7 +6,8 @@
     "development": {
         "use": {
             "watch": true,
-            "patch": true
+            "patch": true,
+            "cli": true
         }
     }
 }
