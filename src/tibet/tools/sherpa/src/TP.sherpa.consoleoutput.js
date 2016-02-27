@@ -311,10 +311,11 @@ function(uniqueID, dataRecord) {
 
         typeinfo,
         rawData,
-        outputText,
-
+        outputObj,
 
         cmdText,
+
+        tileID,
 
         outputClass,
 
@@ -359,7 +360,7 @@ function(uniqueID, dataRecord) {
 
     typeinfo = dataRecord.at('typeinfo');
     rawData = dataRecord.at('rawData');
-    outputText = dataRecord.at('output');
+    outputObj = dataRecord.at('output');
 
     //  If we're outputting logging data, add the '.logoutput' class to the
     //  output cell element and set the content of the input line to 'Log'.
@@ -370,17 +371,28 @@ function(uniqueID, dataRecord) {
                 'Log');
     }
 
+    //  Grab the output entry template
+    if (TP.notValid(rawOutEntryTemplate = this.get('rawOutEntryTemplate'))) {
+        resp = TP.uc(
+            '~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                '#xpath1(//*[@name="raw_outputEntry"])').getResource(
+                TP.request('async', false));
+
+        rawOutEntryTemplate = resp.get('result');
+        this.set('rawOutEntryTemplate', rawOutEntryTemplate);
+    }
+
     //  If the output text is empty and the user is asking for tiled output,
     //  then created a tile and set the raw data as its source object.
-    if (TP.isEmpty(outputText) &&
-        TP.isTrue(dataRecord.at('tiledOutput'))) {
+    if (TP.isEmpty(outputObj) && TP.isTrue(dataRecord.at('tiledOutput'))) {
 
         cmdText = TP.byCSSPath('.header .content',
                                 cellGroupElem,
                                 true).getTextContent();
 
+        tileID = uniqueID + '_tile';
         resultTile = TP.bySystemId('Sherpa').makeTile(
-                            uniqueID + '_tile',
+                            tileID,
                             TP.documentGetBody(doc),
                             'TP.sherpa.editortile');
 
@@ -390,144 +402,139 @@ function(uniqueID, dataRecord) {
 
         resultTile.toggle('hidden');
 
+        //  Output a link that will cause the tile to show (if it hasn't been
+        //  closed - just hidden).
+        outputObj = TP.xhtmlnode(
+                        '<a href="#" on:click="' +
+                        '{signal: \'ShowTile\', ' +
+                        'payload: {tileID: \'' + tileID + '\'}}">' +
+                        'Show Tile' +
+                        '</a>');
+    }
+
+    //  If we're not outputting real output, then set the outputStr to the empty
+    //  String and skip executing the output template.
+    if (TP.isEmpty(outputObj) || rawData === TP.TSH_NO_VALUE) {
+        outputStr = '';
     } else {
+        outputClass = dataRecord.at('cssClass');
 
-        //  If we're not outputting real output, then set the outputStr to the
-        //  empty String and skip executing the output template.
-        if (rawData === TP.TSH_NO_VALUE) {
-            outputStr = '';
-        } else {
-            outputClass = dataRecord.at('cssClass');
+        //  Run the output template and fill in the data
+        outputData = TP.hc('output', outputObj,
+                            'outputclass', outputClass);
 
-            //  Run the output template and fill in the data
-            outputData = TP.hc('output', outputText,
-                                'outputclass', outputClass);
+        outputStr = rawOutEntryTemplate.transform(outputData);
 
-            if (TP.notValid(
-                    rawOutEntryTemplate = this.get('rawOutEntryTemplate'))) {
+        if (!TP.isString(outputStr)) {
 
-                resp = TP.uc(
-                    '~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                        '#xpath1(//*[@name="raw_outputEntry"])').getResource(
-                        TP.request('async', false));
+            //  Something went wrong during templating. The outputData didn't
+            //  get converted and now our outputStr is just a reference to
+            //  outputData.
 
-                rawOutEntryTemplate = resp.get('result');
-                this.set('rawOutEntryTemplate', rawOutEntryTemplate);
-            }
+            //  Try reprocessing the output since 99% of the errors will be DOM
+            //  parse issues meaning something in the data wasn't properly
+            //  escaped.
+            outputData.atPut('output',
+                    TP.boot.$dump(outputData.at('output'), '', true));
 
             outputStr = rawOutEntryTemplate.transform(outputData);
+        }
+    }
 
-            if (!TP.isString(outputStr)) {
+    updateStats = function(record, groupElem) {
 
-                //  Something went wrong during templating. The outputData
-                //  didn't get converted and now our outputStr is just a
-                //  reference to outputData.
+        var statsStr,
+            resultTypeStr;
 
-                //  Try reprocessing the output since 99% of the errors will be
-                //  DOM parse issues meaning something in the data wasn't
-                //  properly escaped.
-                outputData.atPut('output',
-                        TP.boot.$dump(outputData.at('output'), '', true));
-
-                outputStr = rawOutEntryTemplate.transform(outputData);
-            }
+        if (record.at('typeinfo') === 'LOG') {
+            return;
         }
 
-        updateStats = function(record, groupElem) {
-
-            var statsStr,
-                resultTypeStr;
-
-            if (record.at('typeinfo') === 'LOG') {
-                return;
-            }
-
-            //  Now, update statistics and result type data that was part of the
-            //  entry that we inserted before with the input content.
-            if (TP.isValid(request = record.at('request'))) {
-                statsStr = TP.isEmpty(record.at('stats')) ?
-                                this.getInputStats(request) :
-                                record.at('stats');
-                resultTypeStr = TP.isEmpty(record.at('typeinfo')) ?
-                                this.getOutputTypeInfo(request) :
-                                record.at('typeinfo');
-            } else {
-                statsStr = '';
-                resultTypeStr = '';
-            }
-
-            TP.xmlElementSetContent(
-                    TP.byCSSPath('.typeinfo', groupElem, true, false),
-                    TP.xhtmlnode(resultTypeStr));
-
-            TP.xmlElementSetContent(
-                    TP.byCSSPath('.stats', groupElem, true, false),
-                    TP.xhtmlnode(statsStr));
-        }.bind(this);
-
-        //  For superior performance, we 'coalesce' output. This allows quite a
-        //  bit of data to be accumulated in a DocumentFragment and then, every
-        //  so often via a timer, be appended to the output element. This avoids
-        //  a lot of document reflows for the console output.
-
-        //  There should be an 'output coalescing record' for each piece of
-        //  data that we're trying to output. This can be more than one since
-        //  our results can be asynchronous and we need to write them to the
-        //  correct fragment which will then get appended to the correct output
-        //  element for that result set.
-        outputCoalesceRecords = this.get('outputCoalesceRecords');
-        if (TP.notValid(coalesceRecord = outputCoalesceRecords.at(uniqueID))) {
-
-            //  If we couldn't find an existing coalescing record for the
-            //  supplied ID, then we create a coalescing fragment and a record
-            //  holding it, the data record and the overall output element.
-            coalesceFragment = TP.documentConstructFragment(doc);
-            insertionPoint = TP.byCSSPath(
-                                '.flex-card', cellGroupElem, true, false);
-
-            outputCoalesceRecords.atPut(
-                    uniqueID,
-                    TP.hc('fragment', coalesceFragment,
-                            'dataRecord', dataRecord,
-                            'insertionPoint', insertionPoint));
+        //  Now, update statistics and result type data that was part of the
+        //  entry that we inserted before with the input content.
+        if (TP.isValid(request = record.at('request'))) {
+            statsStr = TP.isEmpty(record.at('stats')) ?
+                            this.getInputStats(request) :
+                            record.at('stats');
+            resultTypeStr = TP.isEmpty(record.at('typeinfo')) ?
+                            this.getOutputTypeInfo(request) :
+                            record.at('typeinfo');
         } else {
-            //  Otherwise, we're coalescing for output that is already in the
-            //  process of being written - just grab the fragment.
-            coalesceFragment = coalesceRecord.at('fragment');
+            statsStr = '';
+            resultTypeStr = '';
         }
 
-        coalesceFragment.appendChild(TP.xhtmlnode(outputStr));
+        TP.xmlElementSetContent(
+                TP.byCSSPath('.typeinfo', groupElem, true, false),
+                TP.xhtmlnode(resultTypeStr));
 
-        //  Make sure that we have a coalescing timer set up.
-        if (!(flushTimer = this.get('outputCoalesceTimer'))) {
-            flushTimer = setTimeout(
-                function() {
+        TP.xmlElementSetContent(
+                TP.byCSSPath('.stats', groupElem, true, false),
+                TP.xhtmlnode(statsStr));
+    }.bind(this);
 
-                    //  Iterate over all of the coalescing records, append
-                    //  whatever is in the fragment onto the output element and
-                    //  update the cell's statistics.
-                    outputCoalesceRecords.getValues().forEach(
-                        function(record) {
-                            record.at('insertionPoint').appendChild(
-                                                record.at('fragment'));
+    //  For superior performance, we 'coalesce' output. This allows quite a bit
+    //  of data to be accumulated in a DocumentFragment and then, every so often
+    //  via a timer, be appended to the output element. This avoids a lot of
+    //  document reflows for the console output.
 
-                            updateStats(record.at('dataRecord'),
-                                        record.at('insertionPoint'));
-                        });
+    //  There should be an 'output coalescing record' for each piece of data
+    //  that we're trying to output. This can be more than one since our results
+    //  can be asynchronous and we need to write them to the correct fragment
+    //  which will then get appended to the correct output element for that
+    //  result set.
+    outputCoalesceRecords = this.get('outputCoalesceRecords');
+    if (TP.notValid(coalesceRecord = outputCoalesceRecords.at(uniqueID))) {
 
-                    //  Empty the set of coalescing records. We'll generate more
-                    //  the next time around.
-                    outputCoalesceRecords.empty();
+        //  If we couldn't find an existing coalescing record for the supplied
+        //  ID, then we create a coalescing fragment and a record holding it,
+        //  the data record and the overall output element.
+        coalesceFragment = TP.documentConstructFragment(doc);
+        insertionPoint = TP.byCSSPath(
+                            '.flex-card', cellGroupElem, true, false);
 
-                    this.scrollOutputToEnd();
+        outputCoalesceRecords.atPut(
+                uniqueID,
+                TP.hc('fragment', coalesceFragment,
+                        'dataRecord', dataRecord,
+                        'insertionPoint', insertionPoint));
+    } else {
+        //  Otherwise, we're coalescing for output that is already in the
+        //  process of being written - just grab the fragment.
+        coalesceFragment = coalesceRecord.at('fragment');
+    }
 
-                    flushTimer = null;
-                    this.set('outputCoalesceTimer', null);
-                }.bind(this),
-                80);
+    coalesceFragment.appendChild(TP.xhtmlnode(outputStr));
 
-            this.set('outputCoalesceTimer', flushTimer);
-        }
+    //  Make sure that we have a coalescing timer set up.
+    if (!(flushTimer = this.get('outputCoalesceTimer'))) {
+        flushTimer = setTimeout(
+            function() {
+
+                //  Iterate over all of the coalescing records, append whatever
+                //  is in the fragment onto the output element and update the
+                //  cell's statistics.
+                outputCoalesceRecords.getValues().forEach(
+                    function(record) {
+                        record.at('insertionPoint').appendChild(
+                                            record.at('fragment'));
+
+                        updateStats(record.at('dataRecord'),
+                                    record.at('insertionPoint'));
+                    });
+
+                //  Empty the set of coalescing records. We'll generate more the
+                //  next time around.
+                outputCoalesceRecords.empty();
+
+                this.scrollOutputToEnd();
+
+                flushTimer = null;
+                this.set('outputCoalesceTimer', null);
+            }.bind(this),
+            80);
+
+        this.set('outputCoalesceTimer', flushTimer);
     }
 
     return this;
