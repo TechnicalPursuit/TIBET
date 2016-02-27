@@ -1675,7 +1675,7 @@ function(aRequest) {
         //  empty
     } else {
         //  Replace the '$' with a '_' to avoid X(HT)ML naming issues.
-        cellID = cellID.replace(/\$/g, '_');
+        cellID = cellID.replace(/[$.]+/g, '_');
         this.get('$consoleGUI').createOutputEntry(cellID, inputData);
     }
 
@@ -1818,7 +1818,7 @@ function(anObject, aRequest) {
         //  really hand it any data to write out - we'll take care of that
         //  below).
         if (TP.isEmpty(cellID = this.get('lastNonCmdCellID'))) {
-            cellID = 'log' + TP.genID().replace('$', '_');
+            cellID = 'log' + TP.genID().replace(/[$.]+/g, '_');
             consoleGUI.createOutputEntry(cellID, TP.hc());
             this.set('lastNonCmdCellID', cellID);
         }
@@ -1828,7 +1828,7 @@ function(anObject, aRequest) {
         outputData.atPut('stats', '');
         outputData.atPut('typeinfo', 'LOG');
     } else {
-        cellID = cellID.replace(/\$/g, '_');
+        cellID = cellID.replace(/[$.]+/g, '_');
         this.set('lastNonCmdCellID', null);
     }
 
