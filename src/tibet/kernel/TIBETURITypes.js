@@ -9975,6 +9975,7 @@ function(targetURI, aRequest) {
     var subrequest,
         targetLoc,
         content,
+        resp,
         response;
 
     //  reuse the incoming request's payload/parameters but don't use that
@@ -10013,9 +10014,18 @@ function(targetURI, aRequest) {
 
     //  No body? Don't go any further.
     if (TP.notValid(subrequest.at('body'))) {
-        return this.raise(
-                'TP.sig.InvalidContent',
-                'No content to save for: ' + targetLoc);
+        //  NOTE: 'refresh' is false here! We do *not* want to fetch data from
+        //  the server if the body is undefined.
+        resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
+        content = resp.get('result');
+
+        if (TP.isEmpty(content)) {
+            return this.raise(
+                    'TP.sig.InvalidContent',
+                    'No content to save for: ' + targetLoc);
+        } else {
+            subrequest.atPut('body', content);
+        }
     }
 
     subrequest.defineMethod(
@@ -10300,9 +10310,19 @@ function(targetURI, aRequest) {
     //  Make sure we have content. Note that this will get encoded via the
     //  httpEncode() call in lower layers, so we don't touch it here.
     if (TP.notValid(saveRequest.at('body'))) {
-        return this.raise(
-                'TP.sig.InvalidContent',
-                'No content to save for: ' + targetLoc);
+
+        //  NOTE: 'refresh' is false here! We do *not* want to fetch data from
+        //  the server if the body is undefined.
+        resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
+        content = resp.get('result');
+
+        if (TP.isEmpty(content)) {
+            return this.raise(
+                    'TP.sig.InvalidContent',
+                    'No content to save for: ' + targetLoc);
+        } else {
+            saveRequest.atPut('body', content);
+        }
     }
 
     //  ensure the required settings are available for this operation
