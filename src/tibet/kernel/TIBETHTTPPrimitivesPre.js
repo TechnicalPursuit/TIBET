@@ -1200,6 +1200,14 @@ function(targetUrl, aRequest, httpObj, shouldThrow) {
     sig.setSignalName('TP.sig.IOCompleted');
     sig.fire(id);
 
+    //  Make sure to complete this request if it hasn't already been completed.
+    //  Normally, if request is an instance of the proper HTTP request type,
+    //  this isn't necessary because HTTP type will have done this when it
+    //  handles the IO* signal.
+    if (!request.didComplete()) {
+        request.complete();
+    }
+
     return;
 });
 
