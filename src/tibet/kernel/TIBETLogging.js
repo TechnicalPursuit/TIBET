@@ -2076,6 +2076,20 @@ function(aName) {
 
 //  ----------------------------------------------------------------------------
 
+TP.log.Marker.Type.defineMethod('getMarkerNames',
+function(aName) {
+
+    /**
+     * @method getMarkerNames
+     * @summary Returns the list of all known marker names.
+     * @returns {Array.<String>} The marker name list.
+     */
+
+    return TP.log.Marker.markers.getKeys();
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.log.Marker.Inst.defineMethod('isCategoryOf',
 function(nameOrMarker) {
 
@@ -3554,7 +3568,7 @@ function(anEntry) {
     //  processing the entry argument list more here.
     arglist = anEntry.getArglist();
 
-    return TP.hc('content', arglist.first());
+    return TP.hc('content', arglist.join(' '));
 });
 
 //  ----------------------------------------------------------------------------
@@ -3634,7 +3648,9 @@ function(anEntry) {
 
     //  Content should be either a hash containing job status-like data, or an
     //  Error object if reporting on a failed/errored test condition.
-    if (TP.canInvoke(content, 'at')) {
+    if (TP.isString(content)) {
+        message = content;
+    } else if (TP.canInvoke(content, 'at')) {
         message = content.at('statusText');
     } else if (TP.isError(content)) {
         message = content.message;
