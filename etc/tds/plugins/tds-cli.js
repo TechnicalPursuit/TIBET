@@ -83,6 +83,8 @@
                 cmd = 'help';
             }
 
+            logger.debug('TDS CLI interface received: ' + req.url);
+
             params = [cmd];
 
             Object.keys(req.query).forEach(
@@ -116,6 +118,8 @@
                         }
                     });
 
+            logger.debug('TDS CLI interface running: ' + params);
+
             child = require('child_process');
             cli = child.spawn('tibet', params);
 
@@ -129,7 +133,8 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tds.cli.uri'), loggedIn, TDS.cli);
+        app.post(TDS.cfg('tds.cli.uri'), loggedIn,
+                    options.parsers.json, TDS.cli);
     };
 
 }(this));
