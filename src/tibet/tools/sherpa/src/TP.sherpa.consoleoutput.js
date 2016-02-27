@@ -313,7 +313,6 @@ function(uniqueID, dataRecord) {
         rawData,
         outputText,
 
-        cmdTagName,
 
         cmdText,
 
@@ -376,8 +375,6 @@ function(uniqueID, dataRecord) {
     if (TP.isEmpty(outputText) &&
         TP.isTrue(dataRecord.at('tiledOutput'))) {
 
-        cmdTagName = TP.name(
-                        dataRecord.at('request').getPayload().at('cmdNode'));
         cmdText = TP.byCSSPath('.header .content',
                                 cellGroupElem,
                                 true).getTextContent();
