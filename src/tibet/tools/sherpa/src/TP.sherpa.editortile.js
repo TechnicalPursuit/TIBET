@@ -46,21 +46,6 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.editortile.Inst.defineHandler('DetachTile',
-function(anObject) {
-
-    var retVal;
-
-    retVal = this.callNextMethod();
-
-    //  Force whatever is currently displayed to render
-    this.get('currentDisplay').render();
-
-    return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.editortile.Inst.defineMethod('setSourceData',
 function(dataRecord) {
 
