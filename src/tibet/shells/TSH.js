@@ -4066,7 +4066,8 @@ function(aRequest) {
         return aRequest.fail('Invalid request input.');
     }
 
-    req = url.constructRequest();
+    req = TP.sig.HTTPRequest.construct(
+                    TP.hc('uri', url.getLocation()));
 
     req.defineHandler('RequestSucceeded',
                         function() {
@@ -4079,7 +4080,7 @@ function(aRequest) {
                             aRequest.complete();
                         });
 
-    url.save(req);
+    url.httpPost(req);
 
     return this;
 });
