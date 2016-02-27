@@ -1066,7 +1066,9 @@ function(aRequest) {
     list.add(aRequest);
     offset = list.getSize() - histmax;
     if (offset > 0) {
-        list.atPut(offset - 1, null);
+        //  We're over the history maximum. Since history is LRU, we shift off
+        //  the first item.
+        list.shift();
     }
 
     //  NOTE that we set this past the end of the list so the first request
