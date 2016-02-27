@@ -776,6 +776,8 @@ function(aTargetElem, nodesAdded) {
     for (i = 0; i < len; i++) {
         node = nodesAdded.at(i);
 
+        mutatedGIDs.push(TP.gid(node));
+
         //  Check to make sure we haven't already awakened this content. If so
         //  we want to exit.
         if (node.$$awakened) {
@@ -806,12 +808,11 @@ function(aTargetElem, nodesAdded) {
         }
 
         processor.processTree(node);
-
-        mutatedGIDs.push(TP.gid(node));
     }
 
-    //  Signal from our document that attach processing is complete.
-    TP.signal(TP.gid(aTargetElem),
+    //  Signal from our (wrapped) target element that attach processing is
+    //  complete.
+    TP.signal(TP.wrap(aTargetElem),
                 'TP.sig.AttachComplete',
                 TP.hc('mutatedNodeIDs', mutatedGIDs));
 
@@ -870,6 +871,8 @@ function(aTargetElem, nodesRemoved) {
 
         node = nodesRemoved.at(i);
 
+        mutatedGIDs.push(TP.gid(node));
+
         //  If the node is already detached, then just move on here.
         if (TP.nodeIsDetached(node)) {
             continue;
@@ -902,12 +905,11 @@ function(aTargetElem, nodesRemoved) {
             focusStackCheckElems = focusStackCheckElems.concat(
                                 TP.nodeGetDescendantElements(node, '*'));
         }
-
-        mutatedGIDs.push(TP.gid(node));
     }
 
-    //  Signal from our document that detach processing is complete.
-    TP.signal(TP.gid(aTargetElem),
+    //  Signal from our (wrapped) target element that detach processing is
+    //  complete.
+    TP.signal(TP.wrap(aTargetElem),
                 'TP.sig.DetachComplete',
                 TP.hc('mutatedNodeIDs', mutatedGIDs));
 
