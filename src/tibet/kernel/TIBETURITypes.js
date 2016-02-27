@@ -10011,9 +10011,12 @@ function(targetURI, aRequest) {
 
     subrequest.atPutIfAbsent('refreshContent', false);
 
-    //  default text content to the empty string to avoid errors
-    content = TP.ifInvalid(targetURI.getResource(subrequest).get('result'), '');
-    subrequest.atPutIfAbsent('body', TP.str(content));
+    //  No body? Don't go any further.
+    if (TP.notValid(subrequest.at('body'))) {
+        return this.raise(
+                'TP.sig.InvalidContent',
+                'No content to save for: ' + targetLoc);
+    }
 
     subrequest.defineMethod(
             'completeJob',
@@ -10297,10 +10300,9 @@ function(targetURI, aRequest) {
     //  Make sure we have content. Note that this will get encoded via the
     //  httpEncode() call in lower layers, so we don't touch it here.
     if (TP.notValid(saveRequest.at('body'))) {
-        resp = targetURI.getResource(TP.hc('async', false));
-        content = TP.ifInvalid(resp.get('result', ''));
-
-        saveRequest.atPut('body', content);
+        return this.raise(
+                'TP.sig.InvalidContent',
+                'No content to save for: ' + targetLoc);
     }
 
     //  ensure the required settings are available for this operation
