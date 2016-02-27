@@ -8227,6 +8227,75 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('load',
+function(aRequest) {
+
+    /**
+     * @method load
+     * @summary For this type, this method loads the receiver's concrete URI.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var concreteURI;
+
+    concreteURI = this.getConcreteURI();
+
+    if (TP.isValid(concreteURI) && concreteURI !== this) {
+        return concreteURI.load(aRequest);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('nuke',
+function(aRequest) {
+
+    /**
+     * @method nuke
+     * @summary For this type, this method nukes the receiver's concrete URI.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var concreteURI;
+
+    concreteURI = this.getConcreteURI();
+
+    if (TP.isValid(concreteURI) && concreteURI !== this) {
+        return concreteURI.nuke(aRequest);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('save',
+function(aRequest) {
+
+    /**
+     * @method save
+     * @summary For this type, this method saves the receiver's concrete URI.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    var concreteURI;
+
+    concreteURI = this.getConcreteURI();
+
+    if (TP.isValid(concreteURI) && concreteURI !== this) {
+        return concreteURI.save(aRequest);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('setWatched',
 function(shouldBeWatched) {
 
