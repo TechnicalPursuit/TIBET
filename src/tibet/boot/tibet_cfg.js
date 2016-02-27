@@ -1620,7 +1620,7 @@
     TP.sys.setcfg('uri.keybindings_fallback', false);
 
     //  the default types used to handle URI load/save operations.
-    TP.sys.setcfg('uri.handler.default', 'TP.core.URLHandler');
+    TP.sys.setcfg('uri.handler.default', 'TP.core.URIHandler');
     TP.sys.setcfg('uri.handler.file', 'TP.core.FileURLHandler');
     TP.sys.setcfg('uri.handler.http', 'TP.core.HTTPURLHandler');
 
