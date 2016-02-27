@@ -362,12 +362,12 @@ function(uniqueID, dataRecord) {
     outputText = dataRecord.at('output');
 
     //  If we're outputting logging data, add the '.logoutput' class to the
-    //  output cell element and empty the content of the cells under the input
-    //  line.
+    //  output cell element and set the content of the input line to 'Log'.
     if (typeinfo === 'LOG') {
         TP.elementAddClass(cellGroupElem, 'logoutput');
-        TP.nodeEmptyContent(
-                TP.byCSSPath('.header', cellGroupElem, true, false));
+        TP.nodeSetTextContent(
+                TP.byCSSPath('.header', cellGroupElem, true, false),
+                'Log');
     }
 
     //  If the output text is empty and the user is asking for tiled output,

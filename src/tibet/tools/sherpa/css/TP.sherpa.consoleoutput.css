@@ -90,6 +90,18 @@ sherpa|consoleoutputitem {
     margin-bottom: 2px;
 }
 
+sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content {
+
+    margin: 0;
+}
+
+sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child {
+
+    border-bottom: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
 .flex-card {
 
     width: 100%;
@@ -185,7 +197,7 @@ sherpa|consoleoutputitem {
     min-width: auto;
 
     margin: 2px;
-    border: 1px solid #666;
+    border: 1px dotted #DADADA;
 
     overflow: auto;
 
