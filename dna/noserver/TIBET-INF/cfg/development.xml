@@ -4,18 +4,18 @@
     name="{{appname}}" default="base" basedir="~app_cfg">
 
 <config id="properties" if="boot.phase_one">
-    <property name="sherpa.enabled" value="true"/>
+    <property name="boot.console_log" value="true"/>
+    <property name="boot.level" value="DEBUG"/>
+    <property name="boot.unminified" value="true"/>
+    <property name="boot.unpackaged" value="true"/>
     <property name="debug.use_debugger" value="true"/>
-    <property name="log.bootcfg" value="true"/>
-    <property name="log.bootenv" value="true"/>
-    <property name="log.level" value="DEBUG"/>
     <property name="log.inferences" value="true"/>
     <property name="log.null_namespaces" value="true"/>
     <property name="log.stack" value="true"/>
     <property name="log.signal_stack" value="true"/>
-    <property name="security.request_privileges" value="true"/>
     <property name="tibet.$debug" value="true"/>
     <property name="tibet.$verbose" value="true"/>
+    <property name="sherpa.enabled" value="true"/>
 </config>
 
 <config id="base">
