@@ -281,7 +281,7 @@ function(aRequest) {
         '<p>' +
         'Check that file for syntax errors if it is the right file, or check' +
         ' your tibet.apptag settings to ensure the right tag type is being' +
-        ' specified along with your ~app_cfg/app.xml package to ensure you' +
+        ' specified along with your ~app_cfg/master.xml package to ensure you' +
         ' are loading it.' +
         '</p>' +
 

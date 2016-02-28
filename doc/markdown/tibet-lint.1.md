@@ -15,7 +15,7 @@ treated as a regular expression for purposes of file filtering.
 
 [package-opts] refers to valid options for a TIBET Package object.
 These include --package, --config, --phase, --assets, etc.
-The package#config defaults to `~app_cfg/app.xml` and its default
+The package#config defaults to `~app_cfg/master.xml` and its default
 config (usually #base) so your typical configuration is linted.
 See help on the `tibet package` command for more information.
 
