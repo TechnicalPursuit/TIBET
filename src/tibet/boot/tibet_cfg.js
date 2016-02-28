@@ -210,6 +210,13 @@
     //  sharing code between boot logic and command-line packaging tools).
     TP.sys.setcfg('boot.assets', null);
 
+    //  A convenient shorthand for loading unpackaged/unminified library source.
+    TP.sys.setcfg('boot.teamtibet', false);
+
+    //  A secondary flag required by application developers to force TIBET to
+    //  load the unminified version of the library source.
+    TP.sys.setcfg('boot.unminified_lib', false);
+
     //  Do we want to boot the unminified source alternative(s) where found? The
     //  default tibet.xml file includes unminified options for kernel/library
     //  code to assist with debugging into the framework code.
@@ -1561,6 +1568,7 @@
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
     TP.sys.setcfg('karma.boot.profile', 'app#contributor');
+    TP.sys.setcfg('karma.boot.teamtibet', false);
     TP.sys.setcfg('karma.boot.unminified', false);
     TP.sys.setcfg('karma.boot.unpackaged', false);
 

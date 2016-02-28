@@ -5,7 +5,7 @@
 
 <config id="properties" if="boot.phase_one">
     <property name="boot.console_log" value="true"/>
-    <property name="boot.level" value="DEBUG"/>
+    <property name="boot.level" value="debug"/>
     <property name="boot.unminified" value="true"/>
     <property name="boot.unpackaged" value="true"/>
     <property name="debug.use_debugger" value="true"/>
