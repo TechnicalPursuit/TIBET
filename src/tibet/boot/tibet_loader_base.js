@@ -619,7 +619,7 @@ TP.boot.$$log = function(argList, aLogLevel) {
 
     //  Get level in numeric form so we can test leveling below.
     level = TP.ifInvalid(aLogLevel, TP.INFO);
-    level = TP.boot[level];
+    level = TP.boot[level.toUpperCase()];
 
     //  TODO: Convert argument list into a single message object we can output.
     message = argList[0];
@@ -6291,7 +6291,7 @@ TP.boot.Log.canLogLevel = function(aLevel) {
     var level;
 
     level = TP.boot.$isValid(aLevel) ? aLevel : TP.WARN;
-    level = typeof level === 'string' ? TP.boot[level] : level;
+    level = typeof level === 'string' ? TP.boot[level.toUpperCase()] : level;
 
     return TP.boot.$$loglevel <= level;
 };
@@ -6353,7 +6353,7 @@ TP.boot.Log.isErrorLevel = function(aLevel) {
         return false;
     }
 
-    level = typeof aLevel === 'string' ? TP.boot[aLevel] : aLevel;
+    level = typeof aLevel === 'string' ? TP.boot[aLevel.toUpperCase()] : aLevel;
 
     return level >= TP.boot.ERROR && level < TP.boot.SYSTEM;
 };
@@ -6384,7 +6384,7 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
         return false;
     }
 
-    level = typeof aLevel === 'string' ? TP.boot[aLevel] : aLevel;
+    level = typeof aLevel === 'string' ? TP.boot[aLevel.toUpperCase()] : aLevel;
 
     if (level === TP.boot.FATAL) {
         TP.boot.$$stop = 'fatal error detected.';
@@ -10362,6 +10362,9 @@ TP.boot.$expand = function() {
                     TP.DEBUG);
     TP.boot.$expandPackage(file, config);
 
+    //  Property tags in the package may require us to update var config.
+    TP.boot.$updateDependentVars();
+
     return;
 };
 
@@ -10523,10 +10526,6 @@ TP.boot.$expandConfig = function(anElement) {
 
                                 value = TP.boot.$getArgumentPrimitive(value);
 
-                                if (typeof value === 'string') {
-                                    value = TP.boot.$quoted(value);
-                                }
-
                                 //  If the property is a boot property we need
                                 //  to set it right now or it won't take effect.
                                 if (name.indexOf('boot.') === 0) {
@@ -10535,7 +10534,8 @@ TP.boot.$expandConfig = function(anElement) {
                                     try {
                                         str = '<script><![CDATA[' +
                                             'TP.sys.setcfg(' +
-                                            '\'' + name + '\', ' + value +
+                                            '\'' + name + '\', ' +
+                                            TP.boot.$quoted('' + value) +
                                             ');' +
                                             ']]></script>';
                                         doc = TP.boot.$documentFromString(str);
