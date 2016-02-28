@@ -58,9 +58,6 @@
     <property name="path.TP.sherpa.tile.template" value="~ide_root/xhtml/TP.sherpa.tile.xhtml"/>
     <property name="path.TP.sherpa.tile.style" value="~ide_root/css/TP.sherpa.tile.css"/>
 
-    <script src="./src/TP.sherpa.editortile.js"/>
-    <property name="path.TP.sherpa.editortile.style" value="~ide_root/css/TP.sherpa.tile.css"/>
-
     <script src="./src/TP.sherpa.tiledock.js"/>
     <property name="path.TP.sherpa.tiledock.template" value="~ide_root/xhtml/TP.sherpa.tiledock.xhtml"/>
     <property name="path.TP.sherpa.tiledock.style" value="~ide_root/css/TP.sherpa.tiledock.css"/>
@@ -92,7 +89,6 @@
     <script src="./src/TP.sherpa.searcher.js"/>
     <property name="path.TP.sherpa.searcher.template" value="~ide_root/xhtml/TP.sherpa.searcher.xhtml"/>
     <property name="path.TP.sherpa.searcher.style" value="~ide_root/css/TP.sherpa.searcher.css"/>
-
 
     <script src="./src/TP.sherpa.drawer.js"/>
     <property name="path.TP.sherpa.drawer.template" value="~ide_root/xhtml/TP.sherpa.drawer.xhtml"/>
