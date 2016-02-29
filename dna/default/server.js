@@ -176,10 +176,13 @@
 
     //  Lots of options for where to get a port number but try to leverage TDS
     //  first. Our registered IANA port is the last option and is hard-coded.
-    port = TDS.cfg('tds.port') || TDS.cfg('port') ||
+    port = argv.port || TDS.cfg('tds.port') || TDS.cfg('port') ||
         process.env.npm_package_config_port ||
         process.env.PORT ||
         1407;   //  registered TIBET Data Server port.
+
+    //  Update to set the current runtime value to reflect actual port.
+    TDS.setcfg('tds.port', port);
 
     //  If running via Passenger (a good choice for serious production work)
     //  we need to start the server with slightly different logic.
