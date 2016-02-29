@@ -1238,6 +1238,10 @@
     //  the id of the element under the mark holding the prompt
     TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
 
+    //  should the console display stack information? only for lowest-level
+    //  debugging, otherwise tends to be annoying to users.
+    TP.sys.setcfg('sherpa.console_stack', false);
+
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
