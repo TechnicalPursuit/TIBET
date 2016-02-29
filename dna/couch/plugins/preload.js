@@ -38,8 +38,11 @@
         TDS = app.TDS;
 
         //  NOTE this plugin loads prior to the logger so our only option is to
-        //  use the console for output meaning we must level check ourselves.
-        level = TDS.cfg('tds.log.level') || 'info';
+        //  use the console for output meaning we must level check ourselves. We
+        //  check arg list for level as needed and normalize on lowercase.
+        level = options.argv.level || TDS.cfg('tds.log.level') || 'info';
+        level = level.toLowerCase();
+        TDS.setcfg('tds.log.level', level);
         if (level === 'debug') {
             console.log('debug: Executing TDS preload hook.');
         }
