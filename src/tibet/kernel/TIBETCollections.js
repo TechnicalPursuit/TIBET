@@ -4563,13 +4563,11 @@ function() {
         i,
         pair,
         attrs,
-
         keys,
         len,
-
         val,
-
-        newHash;
+        newHash,
+        inst;
 
     this.callNextMethod();
 
@@ -4587,6 +4585,14 @@ function() {
             obj = arguments[0];
             if (TP.notValid(obj)) {
                 this.$set('$$hash', TP.constructOrphanObject(), false);
+            } else if (TP.isPlainObject(obj)) {
+                this.$set('$$hash', TP.constructOrphanObject(), false);
+                inst = this;
+                Object.keys(obj).forEach(function(key) {
+                    var value;
+                    value = obj[key];
+                    inst.atPut(key, TP.notDefined(value) ? null : value, false);
+                });
             } else if (TP.isArray(obj)) {
                 //  allocate internal hash - note that it is a prototype-less
                 //  object.
@@ -4596,17 +4602,19 @@ function() {
                     //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
                     for (i = 0; i < obj.length; i++) {
                         pair = obj[i];
+                        val = pair[1];
                         this.atPut(
                             pair[0],
-                            TP.notDefined(pair[1]) ? null : pair[1],
+                            TP.notDefined(val) ? null : val,
                             false);
                     }
                 } else {
                     //  array syntax ['a', 1, 'b', 2, 'c', 3]
                     for (i = 0; i < obj.length; i += 2) {
+                        val = obj[i + 1];
                         this.atPut(
                             obj[i],
-                            TP.notDefined(obj[i + 1]) ? null : obj[i + 1],
+                            TP.notDefined(val) ? null : val,
                             false);
                     }
                 }
@@ -4627,12 +4635,23 @@ function() {
                 return obj;
             } else {
 
-                val = TP.js2json(obj);
-                val = TP.json2js(val);
-
-                //  Note how we grab the '$$hash' prototype-less object and make
-                //  that *our* $$hash.
-                this.$set('$$hash', val.$$hash, false);
+                //  JSON conversions can fail so protect against that.
+                try {
+                    val = TP.js2json(obj);
+                    if (TP.isValid(val)) {
+                        val = TP.json2js(val);
+                        if (TP.isValid(val)) {
+                            //  Note how we grab the '$$hash' prototype-less
+                            //  object and make that *our* $$hash.
+                            this.$set('$$hash', val.$$hash, false);
+                        } else {
+                            this.$set('$$hash', TP.constructOrphanObject(),
+                                    false);
+                        }
+                    }
+                } catch (e) {
+                    return;
+                }
             }
             break;
         default:
@@ -4642,11 +4661,10 @@ function() {
 
             //  arguments syntax 'a', 1, 'b', 2, 'c', 3
             for (i = 0; i < arguments.length; i += 2) {
+                value = arguments[i + 1];
                 this.atPut(
                     arguments[i],
-                    TP.notDefined(arguments[i + 1]) ?
-                                    null :
-                                    arguments[i + 1],
+                    TP.notDefined(value) ? null : value,
                     false);
             }
             break;
