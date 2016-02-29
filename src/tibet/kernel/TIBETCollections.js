@@ -4592,7 +4592,6 @@ function() {
                     var value;
                     value = obj[key];
                     if (TP.isPlainObject(value) && !TP.isPrototype(value)) {
-                        console.log('plain object: ' + TP.boot.$dump(value));
                         value = TP.core.Hash.construct(value);
                     }
                     inst.atPut(key, TP.notDefined(value) ? null : value, false);
