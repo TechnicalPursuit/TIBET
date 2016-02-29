@@ -9029,6 +9029,10 @@ function(anObj) {
         return TP.isXHTMLDocument(anObj);
     }
 
+    if (anObj.namespaceURI === 'http://www.w3.org/1999/xhtml') {
+        return true;
+    }
+
     //  If the node isn't in a document anywhere, then about the only thing
     //  we can do is check to see if it has a tagName (i.e. it is a
     //  Node.ELEMENT_NODE), and if that tag name is one of the HTML ones. If
