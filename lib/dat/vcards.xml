@@ -59,7 +59,7 @@
         <VERSION>1.1</VERSION>
         <FN>WebDAVServiceDefault</FN>
         <DESC>The WebDAV test Service</DESC>
-        <URL>http://localhost:1407/tds/webdav/</URL>
+        <URL>http://localhost:1407/_tds/webdav/</URL>
         <X-IS-WEBDAV>true</X-IS-WEBDAV>
     </vCard>
 

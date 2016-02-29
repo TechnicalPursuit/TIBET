@@ -1279,7 +1279,7 @@
 
     TP.sys.setcfg('tds.auth.strategy', 'tds');
 
-    TP.sys.setcfg('tds.cli.uri', '/tds/cli');
+    TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
 
     //  The combined names from cli, npm, and syslog from winston.
     TP.sys.setcfg('tds.color.emerg', 'red');
@@ -1313,7 +1313,7 @@
     TP.sys.setcfg('tds.max_bodysize', '5mb');
 
     TP.sys.setcfg('tds.patch.root', '~');
-    TP.sys.setcfg('tds.patch.uri', '/tds/patch');
+    TP.sys.setcfg('tds.patch.uri', '/_tds/patch');
 
     //  NOTE we do _not_ default this here so env.PORT etc can be used when the
     //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
@@ -1330,7 +1330,7 @@
 
     TP.sys.setcfg('tds.stop_onerror', true);
 
-    TP.sys.setcfg('tds.job.uri', '/tds/jobs');
+    TP.sys.setcfg('tds.job.uri', '/_tds/jobs');
 
     TP.sys.setcfg('tds.use.cli', false);
     TP.sys.setcfg('tds.use.couch', false);
@@ -1346,11 +1346,11 @@
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
     TP.sys.setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('tds.watch.root', '~app');
-    TP.sys.setcfg('tds.watch.uri', '/tds/watch');
+    TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
 
     TP.sys.setcfg('tds.webdav.mount', '/');
     TP.sys.setcfg('tds.webdav.root', '~app');
-    TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
+    TP.sys.setcfg('tds.webdav.uri', '/_tds/webdav');
 
     //  ---
     //  tsh processing
