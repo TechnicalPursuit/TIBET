@@ -16,7 +16,7 @@ sherpa|dispenser {
     border-radius: 5px;
 }
 
-sherpa|dispenser > sherpa|tofu {
+sherpa|dispenser > sherpa|dispenseritem {
     display: block;
     position: relative;
     margin: 3px 4px;
@@ -28,7 +28,7 @@ sherpa|dispenser > sherpa|tofu {
     background: white;
 }
 
-sherpa|dispenser > sherpa|tofu:hover {
+sherpa|dispenser > sherpa|dispenseritem:hover {
     background: gold;
 }
 

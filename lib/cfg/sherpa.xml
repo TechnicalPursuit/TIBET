@@ -138,6 +138,8 @@
     <property name="path.TP.sherpa.dispenser.template" value="~ide_root/xhtml/TP.sherpa.dispenser.xhtml"/>
     <property name="path.TP.sherpa.dispenser.style" value="~ide_root/css/TP.sherpa.dispenser.css"/>
 
+    <script src="./src/TP.sherpa.dispenseritem.js"/>
+
     <script src="./src/TP.sherpa.notifier.js"/>
     <property name="path.TP.sherpa.notifier.template" value="~ide_root/xhtml/TP.sherpa.notifier.xhtml"/>
     <property name="path.TP.sherpa.notifier.style" value="~ide_root/css/TP.sherpa.notifier.css"/>
