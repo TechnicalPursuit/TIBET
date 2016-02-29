@@ -76,5 +76,37 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Hash.Type.describe('plain object conversion',
+function() {
+
+    this.it('can process a plain object', function(test, options) {
+        var h1,
+            obj,
+            deltas;
+
+        obj = {a: 1, b: 2, c: 3};
+        h1 = TP.hc(obj);
+
+        this.assert.isEqualTo(h1.getKeys().length, 3);
+    });
+
+    this.it('can process nested plain objects', function(test, options) {
+        var h1,
+            obj,
+            deltas;
+
+        obj1 = {a: 1, b: 2, c: 3};
+        obj2 = {nested: obj1, fluffy: true};
+
+        h1 = TP.hc(obj2);
+
+        this.assert.isEqualTo(h1.getKeys().length, 2);
+        this.assert.isKindOf(h1.at('nested'), TP.core.Hash);
+        this.assert.isEqualTo(h1.at('nested').at('b'), 2);
+    });
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

@@ -4585,13 +4585,14 @@ function() {
             obj = arguments[0];
             if (TP.notValid(obj)) {
                 this.$set('$$hash', TP.constructOrphanObject(), false);
-            } else if (TP.isPlainObject(obj)) {
+            } else if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
                 this.$set('$$hash', TP.constructOrphanObject(), false);
                 inst = this;
                 Object.keys(obj).forEach(function(key) {
                     var value;
                     value = obj[key];
-                    if (TP.isPlainObject(value)) {
+                    if (TP.isPlainObject(value) && !TP.isPrototype(value)) {
+                        console.log('plain object: ' + TP.boot.$dump(value));
                         value = TP.core.Hash.construct(value);
                     }
                     inst.atPut(key, TP.notDefined(value) ? null : value, false);
