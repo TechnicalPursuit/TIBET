@@ -559,6 +559,35 @@ TP.definePrimitive('json', TP.js2json);
 //  XML source conversions
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isXMLString',
+function(aString) {
+
+    /**
+     * @method isXMLString
+     * @summary Returns whether or not the supplied String can be parsed into an
+     *     XML string.
+     * @param {String} aString An XML-formatted string.
+     * @returns {Boolean} Whether or not the supplied String is an XML-formatted
+     *     String.
+     */
+
+    var text;
+
+    if (TP.isEmpty(aString)) {
+        return false;
+    }
+
+    //  avoid changing parameter value
+    text = aString;
+
+    //  Note here how we supply a null default namespace and pass false so that
+    //  parser errors are *not* reported - we're really only interested if the
+    //  String is XML or not.
+    return TP.isNode(TP.nodeFromString(text, null, false));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('js2xml',
 function(anObject, aFilterName) {
 
