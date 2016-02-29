@@ -2659,8 +2659,8 @@ function(aRequest, allForms) {
     //  process any interpolations within attribute values
     args.perform(
         function(item) {
-            var first,
-                last,
+            var name,
+                value,
                 argv,
                 parts,
                 nonIdent,
@@ -2668,23 +2668,23 @@ function(aRequest, allForms) {
                 expandedVal,
                 reParts;
 
-            first = item.first();
-            last = TP.xmlEntitiesToLiterals(item.last().trim());
+            name = item.first();
+            value = TP.xmlEntitiesToLiterals(item.last().trim());
 
             //  Make sure to null out val and expandedVal
             val = null;
             expandedVal = null;
 
-            if (first === 'tsh:argv') {
+            if (name === 'tsh:argv') {
                 argv = TP.ac();
                 dict.atPut('ARGV', argv);
-
-                argvParts = last.split(' ');
+/*
+                argvParts = value.split(' ');
                 argvParts.forEach(function(argvPart) {
-
+*/
                     //  Watch for dot-separated identifiers like TP.sys.* etc. and
                     //  skip the tokenizer in those cases.
-                    parts = argvPart.split('.');
+                    parts = value.split('.');
                     nonIdent = parts.detect(
                                     function(part) {
                                         return !part.isJSIdentifier();
@@ -2695,7 +2695,7 @@ function(aRequest, allForms) {
                         //  telling the tokenize routine that we're parsing for
                         //  shell arguments.
                         parts = TP.$tokenize(
-                            argvPart,
+                            value,
                             //  All of the JS operators *and* the TSH operators
                             TP.tsh.script.$tshAndJSOperators,
                             true, false, false, true);
@@ -2703,13 +2703,13 @@ function(aRequest, allForms) {
                         //  One special case here is any argument which appears to
                         //  be a valid JS identifier but which is, in fact, a TSH
                         //  variable value.
-                        expandedVal = shell.getVariable(argvPart);
+                        expandedVal = shell.getVariable(value);
                         if (TP.isDefined(expandedVal)) {
-                            dict.atPut('ARG0', TP.ac(argvPart, expandedVal));
-                            argv.push(TP.ac(argvPart, expandedVal));
+                            dict.atPut('ARG0', TP.ac(value, expandedVal));
+                            argv.push(TP.ac(value, expandedVal));
                         } else {
-                            dict.atPut('ARG0', TP.ac(argvPart, argvPart));
-                            argv.push(TP.ac(argvPart, argvPart));
+                            dict.atPut('ARG0', TP.ac(value, value));
+                            argv.push(TP.ac(value, value));
                         }
 
                         return;
@@ -2798,10 +2798,10 @@ function(aRequest, allForms) {
                             dict.atPut('ARG' + index, part);
                             argv.push(part);
                         });
-                });
+//                });
 
-            } else if (!TP.core.Shell.INVALID_ARGUMENT_MATCHER.test(first)) {
-                val = last;
+            } else if (!TP.core.Shell.INVALID_ARGUMENT_MATCHER.test(name)) {
+                val = value;
                 expandedVal = null;
 
                 //  Filter all of the 'internal' keys that aren't really
@@ -2847,7 +2847,7 @@ function(aRequest, allForms) {
                     }
                 }
 
-                dict.atPut(first, TP.ac(last, expandedVal));
+                dict.atPut(name, TP.ac(value, expandedVal));
             }
         });
 
