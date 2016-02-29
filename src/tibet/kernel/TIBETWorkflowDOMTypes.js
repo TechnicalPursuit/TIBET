@@ -1229,9 +1229,26 @@ function(aNode, aProcessor) {
                 }
             }
 
+            //  If we can't get a concrete type at all, then we just return
+            //  false. Can't do anything from here.
             if (!TP.isType(type = TP.core.Node.getConcreteType(node))) {
-                //  TODO: Log a warning - this is the 'teachable moment' :-)
                 return false;
+            }
+
+            //  If we're processing an Element, elemName will have been set
+            //  above. If it's not 'processingroot', but we can't find a type
+            //  for it, then it's an unknown tag.
+            if (TP.notEmpty(elemName) &&
+                elemName !== 'processingroot' &&
+                !TP.isType(TP.sys.getTypeByName(elemName))) {
+
+                //  If the Sherpa is loaded and has been configured to
+                //  automatically define missing tags, then we do so.
+                if (TP.sys.hasFeature('sherpa') &&
+                    TP.sys.cfg('sherpa.autodefine_missing_tags')) {
+
+                    TP.core.Sherpa.replaceWithUnknownElementProxy(node);
+                }
             }
 
             canInvoke = TP.canInvoke(type, methodName);

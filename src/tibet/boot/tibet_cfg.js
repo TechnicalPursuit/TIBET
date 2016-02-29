@@ -1210,6 +1210,10 @@
     //  hasn't loaded it won't matter, and if it has then it'll activate.
     TP.sys.setcfg('sherpa.enabled', true);
 
+    //  if the Sherpa is running, we use this flag to determine whether or not
+    //  to autodefine tags that are not known by the system.
+    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
+
     //  how many screens should the Sherpa display?
     TP.sys.setcfg('sherpa.num_screens', 1);
 

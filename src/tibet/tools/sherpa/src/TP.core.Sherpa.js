@@ -168,6 +168,34 @@ function() {
     return false;
 });
 
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Type.defineMethod('replaceWithUnknownElementProxy',
+function(anElement) {
+
+    var newTagContent,
+        newElement;
+
+    newTagContent = TP.str(anElement);
+
+    newElement = TP.xhtmlnode(
+        '<tibet:tofu on:click="TagAssist"' +
+                ' proxyfor="' + TP.name(anElement) + '">' +
+            '<span class="name">' +
+                '&lt;' + TP.name(anElement) + '... /&gt;' +
+            '</span>' +
+            '<span class="content">' +
+                '<![CDATA[' +
+                newTagContent +
+                ']]>' +
+            '</span>' +
+        '</tibet:tofu>');
+
+    newElement = TP.elementReplaceWith(anElement, newElement);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
