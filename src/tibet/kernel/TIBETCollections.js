@@ -4591,6 +4591,9 @@ function() {
                 Object.keys(obj).forEach(function(key) {
                     var value;
                     value = obj[key];
+                    if (TP.isPlainObject(value)) {
+                        value = TP.core.Hash.construct(value);
+                    }
                     inst.atPut(key, TP.notDefined(value) ? null : value, false);
                 });
             } else if (TP.isArray(obj)) {
