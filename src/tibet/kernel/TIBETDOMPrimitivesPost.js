@@ -2088,7 +2088,7 @@ function(aString, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @example Create a node from an XML String:
      *     <code>
      *          xmlElem = TP.elementFromString(
@@ -4814,7 +4814,7 @@ function(aString, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @example Create a node from an XML String:
      *     <code>
      *          xmlFrag = TP.fragmentFromString(
@@ -6427,7 +6427,7 @@ function(aString, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @example Create a node from an XML String:
      *     <code>
      *          xmlElem = TP.nodeFromString(
@@ -14108,7 +14108,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @example Obtain the document for a variety of different objects:
      *     <code>
      *          // Supplying no parameter returns a blank XML document:
@@ -14212,7 +14212,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @returns {Element} A native Element node.
      * @exception TP.sig.InvalidParameter Raised when an invalid object is
      *     provided to the method.
@@ -14311,7 +14311,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @example Obtain a native DOM Node from a variety of objects:
      *     <code>
      *          TP.frag('<foo></foo><bar></bar>');
@@ -14447,7 +14447,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @example Obtain a native DOM Node from a variety of objects:
      *     <code>
      *          TP.node('<foo><bar/></foo>');
@@ -14601,7 +14601,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @returns {TP.core.DocumentNode} A TIBET document wrapper.
      */
 
@@ -14692,7 +14692,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @returns {TP.core.ElementNode} A TIBET element wrapper.
      * @exception TP.sig.InvalidParameter Raised when an invalid object is
      *     provided to the method.
@@ -14739,7 +14739,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @returns {TP.core.DocumentFragmentNode} A TIBET document fragment
      *     wrapper.
      */
@@ -14791,7 +14791,7 @@ function(anObject, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @example Obtain an instance of a TIBET TP.core.Node subtype from a
      *     variety of objects:
      *     <code>

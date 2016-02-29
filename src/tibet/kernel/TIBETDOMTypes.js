@@ -417,7 +417,7 @@ function(aString, defaultNS, shouldReport) {
      *     value and let the parser do what it does natively, supply null here.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @exception TP.sig.DOMParseException
      * @returns {TP.core.Node} The newly constructed TP.core.Node.
      */
@@ -495,7 +495,7 @@ function(aURI, shouldReport) {
      * @param {TP.core.URI} aURI A URI referencing XML content.
      * @param {Boolean} shouldReport False to turn off exception reporting so
      *     strings can be tested for XML compliance without causing exceptions
-     *     to be thrown.
+     *     to be thrown. This is true by default.
      * @exception TP.sig.DOMParseException
      * @returns {TP.core.Node} The newly constructed TP.core.Node.
      */

@@ -440,7 +440,7 @@ TP.hc(
          *     here.
          * @param {Boolean} shouldReport False to turn off exception reporting
          *     so strings can be tested for XML compliance without causing
-         *     exceptions to be thrown.
+         *     exceptions to be thrown. This is true by default.
          * @example Create an XML document from a String:
          *     <code>
          *          xmlDoc = TP.documentFromString('<foo><bar/></foo>');
@@ -584,7 +584,7 @@ TP.hc(
          *     here.
          * @param {Boolean} shouldReport False to turn off exception reporting
          *     so strings can be tested for XML compliance without causing
-         *     exceptions to be thrown.
+         *     exceptions to be thrown. This is true by default.
          * @example Create an XML document from a String:
          *     <code>
          *          xmlDoc = TP.documentFromString('<foo><bar/></foo>');
@@ -715,7 +715,7 @@ TP.hc(
          *     here.
          * @param {Boolean} shouldReport False to turn off exception reporting
          *     so strings can be tested for XML compliance without causing
-         *     exceptions to be thrown.
+         *     exceptions to be thrown. This is true by default.
          * @example Create an XML document from a String:
          *     <code>
          *          xmlDoc = TP.documentFromString('<foo><bar/></foo>');

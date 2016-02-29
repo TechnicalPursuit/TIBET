@@ -732,7 +732,7 @@ TP.hc(
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
-         *     reporting.
+         *     reporting. This defaults to false.
          * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
@@ -887,7 +887,7 @@ TP.hc(
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
-         *     reporting.
+         *     reporting. This defaults to false.
          * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
@@ -1057,7 +1057,7 @@ TP.hc(
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
-         *     reporting.
+         *     reporting. This defaults to false.
          * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
@@ -1176,7 +1176,7 @@ TP.hc(
          *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
-         *     reporting.
+         *     reporting. This defaults to false.
          * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
          *     TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
