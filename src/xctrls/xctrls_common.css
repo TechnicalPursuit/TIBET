@@ -19,14 +19,6 @@ xctrls|value {
 /*  Define some common z-ordering constants. Note that when used from code,
     these *must* match the 'z-index' tiers defined in TIBETGlobals.js */
 
-.CURTAIN_TIER, *[class~="CURTAIN_TIER"] {
-    z-index: 50;
-}
-
-.ALERT_TIER, *[class~="ALERT_TIER"] {
-    z-index: 100;
-}
-
 .SLIDER_TIER, *[class~="SLIDER_TIER"] {
     z-index: 500;
 }
@@ -49,5 +41,13 @@ xctrls|value {
 
 .DRAG_DROP_TIER, *[class~="DRAG_DROP_TIER"] {
     z-index: 30000;
+}
+
+.CURTAIN_TIER, *[class~="CURTAIN_TIER"] {
+    z-index: 32500;
+}
+
+.ALERT_TIER, *[class~="ALERT_TIER"] {
+    z-index: 32767;
 }
 
