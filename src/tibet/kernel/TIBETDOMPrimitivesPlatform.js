@@ -464,6 +464,9 @@ TP.hc(
             xmlDoc,
 
             errorElement,
+
+            undefinedPrefixes,
+
             errorMatchResults,
             errorRecord,
             list;
@@ -521,6 +524,36 @@ TP.hc(
         //  occurred ;-).
         if (xmlDoc.documentElement.nodeName === 'parsererror') {
             errorElement = xmlDoc.documentElement;
+
+            //  If the system is currently configured to automatically define
+            //  undefined XML prefixes (either element or attribute), then
+            //  attempt to do so.
+            if (TP.sys.cfg('content.autodefine_missing_prefixes')) {
+
+                //  Scan the content for undefined prefixes
+                undefinedPrefixes = TP.xmlStringGetUndefinedPrefixes(aString);
+
+                //  Declare the missing prefixes and then retry
+                if (TP.notEmpty(undefinedPrefixes)) {
+                    undefinedPrefixes.forEach(
+                            function(aPrefix) {
+                                TP.ifWarn() ?
+                                    TP.warn('Declaring missing prefix: ' +
+                                            aPrefix +
+                                            ' as: ' +
+                                            'urn:temp:' +
+                                            aPrefix) : 0;
+                                TP.w3.Xmlns.registerNSInfo(
+                                    'urn:temp:' + aPrefix,
+                                    TP.hc('prefix', aPrefix));
+                            });
+
+                    //  Return retrying the parsing now that the prefixes have
+                    //  been defined.
+                    return TP.documentFromString(
+                            aString, defaultNS, shouldReport);
+                }
+            }
 
             //  Sometimes we don't want to report an error from here
             //  because we're calling this from the logging itself and
@@ -607,6 +640,8 @@ TP.hc(
 
             xmlDoc,
 
+            undefinedPrefixes,
+
             errorRecord,
 
             activeXDoc,
@@ -666,6 +701,37 @@ TP.hc(
         try {
             xmlDoc = parser.parseFromString(str, TP.XML_ENCODED);
         } catch (e) {
+
+            //  If the system is currently configured to automatically define
+            //  undefined XML prefixes (either element or attribute), then
+            //  attempt to do so.
+            if (TP.sys.cfg('content.autodefine_missing_prefixes')) {
+
+                //  Scan the content for undefined prefixes
+                undefinedPrefixes = TP.xmlStringGetUndefinedPrefixes(aString);
+
+                //  Declare the missing prefixes and then retry
+                if (TP.notEmpty(undefinedPrefixes)) {
+                    undefinedPrefixes.forEach(
+                            function(aPrefix) {
+                                TP.ifWarn() ?
+                                    TP.warn('Declaring missing prefix: ' +
+                                            aPrefix +
+                                            ' as: ' +
+                                            'urn:temp:' +
+                                            aPrefix) : 0;
+                                TP.w3.Xmlns.registerNSInfo(
+                                    'urn:temp:' + aPrefix,
+                                    TP.hc('prefix', aPrefix));
+                            });
+
+                    //  Return retrying the parsing now that the prefixes have
+                    //  been defined.
+                    return TP.documentFromString(
+                            aString, defaultNS, shouldReport);
+                }
+            }
+
             if (TP.notFalse(report)) {
                 errorRecord = TP.hc('reason', TP.str(e.message));
                 TP.raise(this, 'TP.sig.DOMParseException',
@@ -739,6 +805,10 @@ TP.hc(
             xmlDoc,
 
             errorElement,
+            errorStr,
+
+            undefinedPrefixes,
+
             errorMatchResults,
             errorRecord;
 
@@ -794,16 +864,50 @@ TP.hc(
         //  way of telling us that a parser error occurred ;-).
         if (TP.isElement(errorElement =
                         xmlDoc.getElementsByTagName('parsererror')[0])) {
+
+            //  If the system is currently configured to automatically define
+            //  undefined XML prefixes (either element or attribute), then
+            //  attempt to do so.
+            if (TP.sys.cfg('content.autodefine_missing_prefixes')) {
+
+                //  Scan the content for undefined prefixes
+                undefinedPrefixes = TP.xmlStringGetUndefinedPrefixes(aString);
+
+                //  Declare the missing prefixes and then retry
+                if (TP.notEmpty(undefinedPrefixes)) {
+                    undefinedPrefixes.forEach(
+                            function(aPrefix) {
+                                TP.ifWarn() ?
+                                    TP.warn('Declaring missing prefix: ' +
+                                            aPrefix +
+                                            ' as: ' +
+                                            'urn:temp:' +
+                                            aPrefix) : 0;
+                                TP.w3.Xmlns.registerNSInfo(
+                                    'urn:temp:' + aPrefix,
+                                    TP.hc('prefix', aPrefix));
+                            });
+
+                    //  Return retrying the parsing now that the prefixes have
+                    //  been defined.
+                    return TP.documentFromString(
+                            aString, defaultNS, shouldReport);
+                }
+            }
+
             //  Sometimes we don't want to report an error from here
             //  because we're calling this from the logging itself and
             //  we would recurse (or we're just 'tasting' the String).
             if (TP.notFalse(report)) {
+
+                errorStr = TP.nodeAsString(errorElement);
+
                 //  Sometimes there is more information to go with the
                 //  parser error. If so, build a record of that
                 //  information to report with the exception.
                 if (TP.isNode(errorElement.firstChild)) {
-                    errorMatchResults = TP.regex.WEBKIT_XML_PARSE.exec(
-                                        TP.nodeAsString(errorElement));
+                    errorMatchResults =
+                        TP.regex.WEBKIT_XML_PARSE.exec(errorStr);
 
                     errorRecord =
                             TP.hc('reason', errorMatchResults.at(3),

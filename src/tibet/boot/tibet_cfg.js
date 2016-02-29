@@ -754,6 +754,9 @@
     //  content mgmt
     //  ---
 
+    //  should the tag processing system autodefine prefixes that are not known?
+    TP.sys.setcfg('content.autodefine_missing_prefixes', true);
+
     //  limit DOM replacement routines to a maximum number of elements to
     //  process unless overridden.
     TP.sys.setcfg('content.max_replace', 30);
