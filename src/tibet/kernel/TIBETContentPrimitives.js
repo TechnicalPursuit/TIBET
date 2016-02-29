@@ -1025,6 +1025,52 @@ function(aNode) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('xmlStringGetUndefinedPrefixes',
+function(aString) {
+
+    /**
+     * @method xmlStringGetUndefinedPrefixes
+     * @summary Returns an Array of XML namespace prefixes that occur in the
+     *     supplied String, but are currently undefined in TIBET.
+     * @param {String} aString The XML string content to find undefined
+     *     namespace prefixes in.
+     * @returns {Array} An Array of undefined XML (either element or attribute
+     *     level) prefixes in the supplied String.
+     */
+
+    var results;
+
+    //  Extract all of the element or attribute prefixes from the supplied
+    //  String. Note that they will all contain a trailing colon (':').
+    TP.regex.ALL_ELEM_OR_ATTR_PREFIXES.lastIndex = 0;
+    results = TP.regex.ALL_ELEM_OR_ATTR_PREFIXES.match(aString);
+
+    if (TP.isEmpty(results)) {
+        return TP.ac();
+    }
+
+    //  We're only interested in one occurrence per prefix.
+    results.unique();
+
+    //  Strip off the trailing colon from each one.
+    results = results.collect(
+                    function(aPrefix) {
+                        //  Slice off the ':'
+                        return aPrefix.slice(0, -1);
+                    });
+
+    //  Filter the results to only those that do *not* have a definition in our
+    //  common namespace URI dictionary.
+    results = results.filter(
+                    function(aPrefix) {
+                        return TP.notValid(TP.w3.Xmlns.getPrefixURI(aPrefix));
+                    });
+
+    return results.unique();
+});
+
+//  ------------------------------------------------------------------------
 //  XML-RPC support
 //  ------------------------------------------------------------------------
 
