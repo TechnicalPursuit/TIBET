@@ -7747,6 +7747,8 @@ function(aMutationRecord) {
 
         args,
 
+        stopAncestor,
+
         addedNodes,
         removedNodes,
 
@@ -7807,13 +7809,26 @@ function(aMutationRecord) {
 
             if (!TP.isEmpty(aMutationRecord.addedNodes) &&
                 !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
+
+                stopAncestor = TP.nodeDetectAncestor(
+                    targetNode,
+                    function(anAncestor) {
+                        return TP.elementHasAttribute(
+                                anAncestor,
+                                'tibet:nomutationtracking',
+                                true);
+                    });
+
+                if (TP.isElement(stopAncestor)) {
+                    return this;
+                }
+
                 addedNodes = TP.ac(addedNodes);
 
                 //  Need to check the nodes individually for mutation tracking
                 //  stoppage.
                 addedNodes = addedNodes.filter(
                         function(aNode) {
-                            var stopAncestor;
 
                             if (TP.isElement(aNode) &&
                                 TP.elementHasAttribute(
@@ -7850,13 +7865,26 @@ function(aMutationRecord) {
 
             if (!TP.isEmpty(aMutationRecord.removedNodes) &&
                 !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
+
+                stopAncestor = TP.nodeDetectAncestor(
+                    targetNode,
+                    function(anAncestor) {
+                        return TP.elementHasAttribute(
+                                anAncestor,
+                                'tibet:nomutationtracking',
+                                true);
+                    });
+
+                if (TP.isElement(stopAncestor)) {
+                    return this;
+                }
+
                 removedNodes = TP.ac(removedNodes);
 
                 //  Need to check the nodes individually for mutation tracking
                 //  stoppage.
                 removedNodes = removedNodes.filter(
                         function(aNode) {
-                            var stopAncestor;
 
                             if (TP.isElement(aNode) &&
                                 TP.elementHasAttribute(
