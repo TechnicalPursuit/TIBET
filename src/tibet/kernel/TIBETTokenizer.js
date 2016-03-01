@@ -100,7 +100,8 @@ TP.boot.defineAttribute('$futurereservedwords',
 TP.boot.defineAttribute('$futureReservedString',
     '__' + TP.boot.$futurereservedwords.join('__') + '__');
 
-//  The following list is per Narcissus's jsdefs.js definitions.
+//  The following list is per Narcissus's jsdefs.js definitions, adjusted to
+//  also take ES6 bits into account.
 TP.boot.defineAttribute('$operators',
     TP.ac(
         ';',
@@ -123,7 +124,9 @@ TP.boot.defineAttribute('$operators',
         '.',
         '[', ']',
         '{', '}',
-        '(', ')'
+        '(', ')',
+        //  ES6
+        '...', '=>'
     ));
 
 TP.boot.defineAttribute('$operatorString',
@@ -995,7 +998,7 @@ function(src, ops, tsh, exp, alias, args) {
             }
 
         /* eslint-disable no-extra-parens */
-        } else if (c === '\'' || c === '"' || (tsh && c === '`')) {
+        } else if (c === '\'' || c === '"' || c === '`') {
         /* eslint-enable no-extra-parens */
             //  quoted string...and TSH command-substitutions. these are
             //  all treated as "quoting characters", but we tokenize the
@@ -1059,7 +1062,11 @@ function(src, ops, tsh, exp, alias, args) {
                     //  even? quote not escaped, the '\' is
                     if (count % 2 === 0) {
                         if (quote === '`') {
-                            result.push(new_token('substitution', str));
+                            if (tsh) {
+                                result.push(new_token('substitution', str));
+                            } else {
+                                result.push(new_token('es6template', str));
+                            }
                         } else {
                             result.push(new_token('string', str));
                         }
@@ -1315,11 +1322,121 @@ function(src, ops, tsh, exp, alias, args) {
         }
     }
 
+    if (TP.isEmpty(result[result.length - 1].value)) {
+        result = result.slice(0, -1);
+    }
+
     if (tsh && TP.sys.cfg('log.tsh_tokenize')) {
         TP.boot.$stdout(TP.json(result));
     }
 
     return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$tokenizedJoin',
+function(tokens, separators) {
+
+    /**
+     * @method $tokenizedJoin
+     * @summary Builds up one or more strings by combining sequences of tokens
+     *     separated by one or more separator tokens. This routine is used by
+     *     $tokenizedSplit for example, to rejoin substrings separated by
+     *     whitespace tokens. The result is that identifiers etc. are rebuilt.
+     * @param {Array} tokens A list of tokens from the $tokenize routine.
+     * @param {Array} separators A list of token types which should be
+     *     considered separators. Sequences of non-separators are joined.
+     * @return {Array} An array of strings reconstructed from tokens.
+     */
+
+    var seps,
+        arr,
+        str;
+
+    if (TP.isEmpty(tokens)) {
+        return this.raise('InvalidParameter', 'Must have token list to join.');
+    }
+
+    if (TP.isValid(separators) && !TP.isArray(separators)) {
+        return this.raise('InvalidParameter', 'Separators must be an array.');
+    }
+    seps = TP.notValid(separators) ? ['space', 'tab', 'newline'] : separators;
+
+    arr = TP.ac();
+    str = '';
+    tokens.forEach(function(token) {
+        if (seps.indexOf(token.name) !== -1) {
+            //  Separator, close off string, push, and start a new one.
+            arr.push(str);
+            str = '';
+        } else {
+            str += token.value;
+        }
+    });
+
+    //  Push the last token string, if it's not a "leftover" that's empty.
+    if (TP.notEmpty(str)) {
+        arr.push(str);
+    }
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$tokenizedSplit',
+function(src, separators, ops, tsh, exp, alias, args) {
+
+    /**
+     * @method $tokenizedSplit
+     * @summary Tokenizes and then rejoins a source string. The initial
+     *     tokenization is done by passing all arguments other than the
+     *     separators value to the $tokenize routine. The resulting token list
+     *     and separators are then passed to $tokenizedJoin. This routine
+     *     defaults the tsh and args values to true (meaning we're defaulting to
+     *     processing for both JS and TSH tokens and arguments).
+    @param      {String}    src             The JavaScript source to process.
+    @param      {String[]}  [separators]    A list of token types such as
+                                            'space', 'tab', 'newline', to be
+                                            used to split.
+    @param      {String[]}  [ops]           An optional array of the operator
+                                            strings which should be considered
+                                            valid for the source. If this isn't
+                                            supplied, the set of JS operators is
+                                            assumed.
+    @param      {Boolean}   [tsh=false]     True to support extensions specific
+                                            to the TIBET Shell (tsh) which
+                                            includes ${var} and `cmd` syntax as
+                                            well as limited markup processing.
+    @param      {Boolean}   [exp=false]     True to signify that the content is
+                                            being tokenized for expansion, which
+                                            means certain clues for strings and
+                                            regular expressions won't be found.
+    @param      {Boolean}   [alias=false]   True to signify content is being
+                                            tokenized for aliasing purposes.
+                                            This causes substitutions to always
+                                            terminate an ongoing string or URI.
+    @param      {Boolean}   [args=false]    True to signify content is being
+                                            tokenized for 'shell arguments'.
+     */
+
+    var seps,
+        tshell,
+        tsargs,
+        tokens;
+
+    if (TP.isValid(separators) && !TP.isArray(separators)) {
+        return this.raise('InvalidParameter', 'Separators must be an array.');
+    }
+    seps = TP.notValid(separators) ? ['space', 'tab', 'newline'] : separators;
+
+    tshell = TP.notValid(tsh) ? true : tsh;
+    tsargs = TP.notValid(args) ? true : args;
+
+    tokens = TP.$tokenize(src, ops, tshell, exp, alias, tsargs);
+
+    return TP.$tokenizedJoin(tokens, seps)
 });
 
 //  ------------------------------------------------------------------------

@@ -2662,8 +2662,8 @@ function(aRequest, allForms) {
             var name,
                 value,
                 argv,
+                argvParts,
                 parts,
-                nonIdent,
                 val,
                 expandedVal,
                 reParts;
@@ -2671,134 +2671,97 @@ function(aRequest, allForms) {
             name = item.first();
             value = TP.xmlEntitiesToLiterals(item.last().trim());
 
-            //  Make sure to null out val and expandedVal
-            val = null;
-            expandedVal = null;
-
             if (name === 'tsh:argv') {
                 argv = TP.ac();
                 dict.atPut('ARGV', argv);
-/*
-                argvParts = value.split(' ');
-                argvParts.forEach(function(argvPart) {
-*/
-                    //  Watch for dot-separated identifiers like TP.sys.* etc. and
-                    //  skip the tokenizer in those cases.
-                    parts = value.split('.');
-                    nonIdent = parts.detect(
-                                    function(part) {
-                                        return !part.isJSIdentifier();
-                                    });
 
-                    if (TP.isValid(nonIdent)) {
-                        //  Note here how we pass 'true' as the sixth argument,
-                        //  telling the tokenize routine that we're parsing for
-                        //  shell arguments.
-                        parts = TP.$tokenize(
-                            value,
-                            //  All of the JS operators *and* the TSH operators
+                argvParts = TP.$tokenizedSplit(value);
+                argvParts.forEach(function(argvPart, argIndex) {
+                    var part,
+                        partName;
+
+                    //  Make sure to null out val and expandedVal
+                    val = null;
+                    expandedVal = null;
+
+                    //  Substitution/expansion logic below will require a token
+                    //  to inspect so we retokenize the individual argument. If
+                    //  that results in something that's not "atomic" we treat
+                    //  it as a string token.
+                    parts = TP.$tokenize(argvPart,
                             TP.tsh.script.$tshAndJSOperators,
                             true, false, false, true);
-                    } else {
-                        //  One special case here is any argument which appears to
-                        //  be a valid JS identifier but which is, in fact, a TSH
-                        //  variable value.
-                        expandedVal = shell.getVariable(value);
-                        if (TP.isDefined(expandedVal)) {
-                            dict.atPut('ARG0', TP.ac(value, expandedVal));
-                            argv.push(TP.ac(value, expandedVal));
-                        } else {
-                            dict.atPut('ARG0', TP.ac(value, value));
-                            argv.push(TP.ac(value, value));
-                        }
 
-                        return;
+                    if (parts.length > 1) {
+                        partName = parts[0].name;
+                        part = {
+                            name: partName,
+                            value: argvPart
+                        }
+                    } else {
+                        part = parts[0];
                     }
 
-                    //  throw away spaces and tabs
-                    parts = parts.select(
-                                function(part) {
-                                    /* eslint-disable no-extra-parens */
-                                    return (part.name !== 'space' &&
-                                            part.name !== 'tab');
-                                    /* eslint-enable no-extra-parens */
-                                });
+                    //  If it's a Number or RegExp literal string, then
+                    //  try to turn it into one of those objects
+                    if (part.name === 'number') {
+                        //  Handle Numbers
+                        expandedVal = part.value.asNumber();
+                    } else if (part.name === 'regexp') {
+                        //  Handle RegExps
+                        reParts = part.value.split('/');
+                        expandedVal = TP.rc(reParts.at(1),
+                                            reParts.at(2));
+                    } else if (part.name === 'keyword' &&
+                                (part.value === 'true' ||
+                                 part.value === 'false')) {
+                        //  Handle Booleans
+                        expandedVal = TP.bc(part.value);
+                    } else if (part.name === 'string') {
+                        //  Handle Strings
+                        if (part.value.charAt(0) === '"') {
+                            val = part.value.unquoted();
+                        } else if (part.value.charAt(0) === '\'') {
+                            expandedVal = part.value;
+                        } else {
+                            expandedVal = part.value.unquoted();
+                        }
+                    } else if (part.name === 'substitution' ||
+                                part.name === 'template' ||
+                                part.name === 'identifier') {
+                        val = part.value.unquoted();
+                        if (val.startsWith('${') && val.endsWith('}')) {
+                            // This might not find a value, but if it
+                            // does we essentially are resolving the
+                            // identifier.
+                            expandedVal = shell.getVariable(
+                                '$' + val.slice(2, -1));
+                        }
+                    } else {
+                        expandedVal = part.value;
+                    }
 
-                    //  resolve substitutions for double-quoted strings, but
-                    //  note that we preserve values as literal when single
-                    //  quoted strings were used.
-                    parts = parts.collect(
-                            function(part) {
+                    //  If we don't have an 'expanded value', then call
+                    //  upon the TP.tsh.cmd type to expand this content
+                    //  for us. Content expansion includes command
+                    //  substitution (i.e. `...` constructs) and
+                    //  template rendering but *not* variable
+                    //  substitution and/or object resolution.
+                    if (TP.isValid(val) && TP.notValid(expandedVal)) {
+                        expandedVal = TP.tsh.cmd.expandContent(
+                                        val, shell, aRequest);
 
-                                //  Make sure to null out val and expandedVal
-                                val = null;
-                                expandedVal = null;
+                        if (expandedVal === 'null') {
+                            expandedVal = null;
+                        } else if (expandedVal === 'undefined') {
+                            expandedVal = undefined;
+                        }
+                    }
 
-                                //  If it's a Number or RegExp literal string, then
-                                //  try to turn it into one of those objects
-                                if (part.name === 'number') {
-                                    //  Handle Numbers
-                                    expandedVal = part.value.asNumber();
-                                } else if (part.name === 'regexp') {
-                                    //  Handle RegExps
-                                    reParts = part.value.split('/');
-                                    expandedVal = TP.rc(reParts.at(1),
-                                                        reParts.at(2));
-                                } else if (part.name === 'keyword' &&
-                                            (part.value === 'true' ||
-                                             part.value === 'false')) {
-                                    //  Handle Booleans
-                                    expandedVal = TP.bc(part.value);
-                                } else if (part.name === 'string') {
-                                    //  Handle Strings
-                                    if (part.value.charAt(0) === '"') {
-                                        val = part.value.unquoted();
-                                    } else if (part.value.charAt(0) === '\'') {
-                                        expandedVal = part.value;
-                                    } else {
-                                        expandedVal = part.value.unquoted();
-                                    }
-                                } else if (part.name === 'substitution' ||
-                                            part.name === 'template' ||
-                                            part.name === 'identifier') {
-                                    val = part.value.unquoted();
-                                    if (val.startsWith('${') && val.endsWith('}')) {
-                                        // This might not find a value, but if it
-                                        // does we essentially are resolving the
-                                        // identifier.
-                                        expandedVal = shell.getVariable(
-                                            '$' + val.slice(2, -1));
-                                    }
-                                } else {
-                                    expandedVal = part.value;
-                                }
-
-                                //  If we don't have an 'expanded value', then call
-                                //  upon the TP.tsh.cmd type to expand this content
-                                //  for us. Content expansion includes command
-                                //  substitution (i.e. `...` constructs) and
-                                //  template rendering but *not* variable
-                                //  substitution and/or object resolution.
-                                if (TP.isValid(val) && TP.notValid(expandedVal)) {
-                                    expandedVal = TP.tsh.cmd.expandContent(
-                                                    val, shell, aRequest);
-
-                                    if (expandedVal === 'null') {
-                                        expandedVal = null;
-                                    } else if (expandedVal === 'undefined') {
-                                        expandedVal = undefined;
-                                    }
-                                }
-
-                                return TP.ac(part.value, expandedVal);
-                            });
-
-                    parts.perform(
-                        function(part, index) {
-                            dict.atPut('ARG' + index, part);
-                            argv.push(part);
-                        });
-//                });
+                    part = TP.ac(part.value, expandedVal);
+                    dict.atPut('ARG' + argIndex, part);
+                    argv.push(part);
+                });
 
             } else if (!TP.core.Shell.INVALID_ARGUMENT_MATCHER.test(name)) {
                 val = value;

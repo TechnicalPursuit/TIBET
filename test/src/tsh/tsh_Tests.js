@@ -2468,8 +2468,8 @@ function() {
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '$Y',
-                        'Expanded value tname', 'Number',
-                        'Expanded value', 100,
+                        'Expanded value tname', 'String',
+                        'Expanded value', '100',
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
     });
