@@ -43,7 +43,7 @@ TP.sherpa.tile.Inst.defineAttribute(
 TP.sherpa.tile.Inst.defineHandler('MinimizeTile',
 function(aSignal) {
 
-    this.toggle('hidden');
+    this.setAttribute('hidden', true);
 
     return this;
 });
@@ -53,8 +53,9 @@ function(aSignal) {
 TP.sherpa.tile.Inst.defineHandler('CloseTile',
 function(aSignal) {
 
+    this.setAttribute('hidden', true);
+
     this.teardown();
-    this.detach();
 
     return this;
 });
