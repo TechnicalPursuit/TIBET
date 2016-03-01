@@ -2279,7 +2279,7 @@ function(wantsTransformed) {
      * @method getOffsetRect
      * @summary Returns the receiver's offset position and size as a
      *     TP.core.Rect. The offset position is the element's position relative
-     *     to its offset parent
+     *     to its offset parent.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
