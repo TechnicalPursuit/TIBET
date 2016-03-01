@@ -38,13 +38,17 @@ function() {
 
     /**
      * @method setup
+     * @returns {TP.sherpa.halo} The receiver.
      */
 
-    /* eslint-disable no-wrap-func,no-extra-parens */
     (function(aSignal) {
 
         var signalGlobalPoint,
-            haloGlobalRect;
+            haloGlobalRect,
+
+            hideFunc,
+
+            contextMenuTPElem;
 
         if (aSignal.getShiftKey()) {
 
@@ -64,12 +68,23 @@ function() {
             haloGlobalRect = this.getGlobalRect();
 
             if (haloGlobalRect.containsPoint(signalGlobalPoint)) {
+
                 //  Make sure to prevent default to avoid having the context
                 //  menu pop up.
                 aSignal.preventDefault();
                 aSignal.stopPropagation();
 
-                TP.info('Show the halo menu!');
+                contextMenuTPElem = TP.byId('SherpaContextMenu', TP.win('UIROOT'));
+
+                contextMenuTPElem.setGlobalPosition(aSignal.getGlobalPoint());
+                contextMenuTPElem.setAttribute('hidden', false);
+
+                hideFunc = function(mouseUpSignal) {
+                    hideFunc.ignore(TP.core.Mouse, 'TP.sig.DOMMouseUp');
+                    contextMenuTPElem.setAttribute('hidden', true);
+                };
+
+                hideFunc.observe(TP.core.Mouse, 'TP.sig.DOMMouseUp');
             }
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
@@ -87,18 +102,6 @@ function() {
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
 
-    /*
-    (function(aSignal) {
-        if (TP.notTrue(this.getAttribute('hidden'))) {
-            aSignal.preventDefault();
-            aSignal.stopPropagation();
-
-            TP.bySystemId('SherpaConsoleService').sendShellCommand(':edit $HALO');
-        }
-    }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMDblClick');
-    */
-    /* eslint-disable no-wrap-func,no-extra-parens */
-
     return this;
 });
 
@@ -109,7 +112,8 @@ function(beHidden) {
 
     /**
      * @method setAttrHidden
-     * @returns {TP.sherpa.hud} The receiver.
+     * @param {Boolean} beHidden
+     * @returns {TP.sherpa.halo} The receiver.
      */
 
     if (TP.bc(this.getAttribute('hidden')) === beHidden) {
@@ -122,12 +126,18 @@ function(beHidden) {
         this.ignore(this, 'TP.sig.DOMMouseOut');
 
         this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+
+        this.ignore(TP.ANY, 'TP.sig.DetachComplete');
+
+        this.set('haloRect', null);
     } else {
         this.observe(this, 'TP.sig.DOMMouseMove');
         this.observe(this, 'TP.sig.DOMMouseOver');
         this.observe(this, 'TP.sig.DOMMouseOut');
 
         this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+
+        this.observe(TP.ANY, 'TP.sig.DetachComplete');
     }
 
     return this.callNextMethod();
@@ -149,9 +159,10 @@ function() {
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
-    this.ignore(this.getDocument(), 'TP.sig.DOMScroll');
-
-    this.set('currentTargetTPElem', null);
+    if (TP.isValid(currentTargetTPElem)) {
+        this.ignore(currentTargetTPElem.getDocument(), 'TP.sig.DOMScroll');
+        this.set('currentTargetTPElem', null);
+    }
 
     this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem));
 
@@ -165,7 +176,7 @@ function(target) {
 
     /**
      * @method focusOn
-     * @param {TP.core.Node} target
+     * @param {TP.core.ElementNode} target
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -174,7 +185,7 @@ function(target) {
 
         this.set('currentTargetTPElem', target);
 
-        this.observe(this.getDocument(), 'TP.sig.DOMScroll');
+        this.observe(target.getDocument(), 'TP.sig.DOMScroll');
 
         this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));
 
@@ -190,6 +201,43 @@ function(target) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineHandler('DetachComplete',
+function(aSignal) {
+
+    var mutatedIDs,
+        currentTargetTPElem,
+
+        currentGlobalID,
+        newTargetTPElem;
+
+    if (TP.notEmpty(mutatedIDs = aSignal.at('mutatedNodeIDs'))) {
+
+        currentTargetTPElem = this.get('currentTargetTPElem');
+
+        if (TP.isValid(currentTargetTPElem)) {
+
+            currentGlobalID = currentTargetTPElem.getID();
+            if (mutatedIDs.contains(currentGlobalID)) {
+
+                this.blur();
+
+                newTargetTPElem = TP.byId(currentTargetTPElem.getLocalID(),
+                                            aSignal.getOrigin().getDocument());
+
+                if (TP.isKindOf(newTargetTPElem, TP.core.Node)) {
+                    this.focusOn(newTargetTPElem);
+                } else {
+                    this.setAttribute('hidden', true);
+                }
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineHandler('DOMScroll',
 function(aSignal) {
 
@@ -198,6 +246,8 @@ function(aSignal) {
     currentTargetTPElem = this.get('currentTargetTPElem');
 
     this.moveAndSizeToTarget(currentTargetTPElem);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -208,10 +258,10 @@ function(aSignal) {
 
     /**
      * @method handleHiddenChange
+     * @returns {TP.sherpa.halo} The receiver.
      */
 
     this.setAttribute('hidden', true);
-    this.set('haloRect', null);
 
     return this;
 });
@@ -223,8 +273,10 @@ function(aSignal) {
 
     /**
      * @method handleHaloClick
-     * @summary Handles notifications of mouse click events.
-     * @param {DOMClick} aSignal The TIBET signal which triggered this method.
+     * @abstract Handles notifications of mouse click events.
+     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered this
+     *     method.
+     * @returns {TP.sherpa.halo} The receiver.
      */
 
     var sigTarget,
@@ -277,7 +329,8 @@ function(aSignal) {
 
     /**
      * @method handleDOMMouseMove
-     * @param {TP.sig.DOMMouseMove} aSignal
+     * @param {TP.sig.DOMMouseMove} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -293,7 +346,8 @@ function(aSignal) {
 
     /**
      * @method handleDOMMouseOver
-     * @param {TP.sig.DOMMouseOver} aSignal
+     * @param {TP.sig.DOMMouseOver} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -309,7 +363,8 @@ function(aSignal) {
 
     /**
      * @method handleDOMMouseOut
-     * @param {TP.sig.DOMMouseOut} aSignal
+     * @param {TP.sig.DOMMouseOut} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -325,7 +380,8 @@ function(aSignal) {
 
     /**
      * @method handleDOMMouseWheel
-     * @param {TP.sig.DOMMouseWheel} aSignal
+     * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -391,7 +447,7 @@ function(aTarget) {
 
     /**
      * @method moveAndSizeToTarget
-     * @param {undefined} aTarget
+     * @param {TP.core.ElementNode|undefined} aTarget
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -410,9 +466,12 @@ function(aTarget) {
             return;
         }
 
-        //  Grab rect for existing target
+        //  Grab rect for the existing target. Note that this will be supplied
+        //  in *global* coordinates.
         theRect = currentTargetTPElem.getHaloRect(this);
     } else {
+        //  Grab rect for the new target. Note that this will be supplied in
+        //  *global* coordinates.
         theRect = aTarget.getHaloRect(this);
     }
 
@@ -422,9 +481,14 @@ function(aTarget) {
         this.set('haloRect', null);
     } else {
 
-        //  Make sure to adjust for the fact that the halo itself might be
-        //  in a container that's positioned. We go to our offset parent and get
-        //  it's global rectangle.
+        //  Given that the halo rect returned by one of the targets above is in
+        //  *global* coordinates, we need to sure to adjust for the fact that
+        //  the halo itself might be in a container that's positioned. We go to
+        //  the halo's offset parent and get it's global rectangle.
+
+        //  Note that we do this because the halo is currently hidden and won't
+        //  give proper coordinates when computing relative to its offset
+        //  parent.
         ourRect = this.getOffsetParent().getGlobalRect(true);
 
         theRect.subtractByPoint(ourRect.getXYPoint());
@@ -445,6 +509,8 @@ function(aSignal) {
 
     /**
      * @method showHaloCorner
+     * @param {TP.sig.DOMSignal} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -467,8 +533,8 @@ function(aSignal) {
     }
 
     angle = TP.computeAngleFromEnds(
-        currentTargetTPElem.getHaloRect(this).getCenterPoint(),
-        aSignal.getEvent());
+                    currentTargetTPElem.getHaloRect(this).getCenterPoint(),
+                    aSignal.getEvent());
 
     corner = TP.computeCompassCorner(angle, 8);
 
@@ -502,6 +568,8 @@ function(aSignal) {
 
     /**
      * @method changeHaloFocus
+     * @param {TP.sig.DOMSignal} aSignal The TIBET signal which triggered
+     *     this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -510,7 +578,9 @@ function(aSignal) {
         handledSignal,
 
         currentTargetTPElem,
-        targetTPElem;
+        targetTPElem,
+
+        canFocus;
 
     sigTarget = aSignal.getTarget();
 
@@ -555,15 +625,28 @@ function(aSignal) {
         } else {
             targetTPElem = TP.wrap(sigTarget);
 
-            if (targetTPElem.haloCanFocus(this, aSignal)) {
+            canFocus = targetTPElem.haloCanFocus(this, aSignal);
 
-                this.blur();
-                this.focusOn(targetTPElem);
+            if (canFocus === TP.ANCESTOR) {
+                while (TP.isValid(
+                            targetTPElem = targetTPElem.getHaloParent(this))) {
+                    canFocus = targetTPElem.haloCanFocus();
 
-                this.setAttribute('hidden', false);
-
-                handledSignal = true;
+                    if (canFocus && canFocus !== TP.ANCESTOR) {
+                        break;
+                    }
+                }
             }
+        }
+
+        if (TP.isValid(targetTPElem)) {
+
+            this.blur();
+            this.focusOn(targetTPElem);
+
+            this.setAttribute('hidden', false);
+
+            handledSignal = true;
         }
     }
 

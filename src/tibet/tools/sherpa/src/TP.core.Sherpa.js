@@ -288,6 +288,9 @@ function() {
     //  Set up the halo
     this.setupHalo();
 
+    //  Set up the context menu
+    this.setupContextMenu();
+
     //  Set up the console
     this.setupConsole();
 
@@ -448,6 +451,25 @@ function() {
     testAppender = TP.log.SherpaAppender.construct();
     testAppender.setLayout(TP.log.SherpaTestLogLayout.construct());
     TP.getLogger(TP.TEST_LOG).addAppender(testAppender);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupContextMenu',
+function() {
+
+    var uiDoc,
+        contextMenuTPElem;
+
+    uiDoc = this.get('vWin').document;
+
+    contextMenuTPElem = TP.byId('center', uiDoc).addContent(
+                    TP.sherpa.contextmenu.getResourceElement('template',
+                        TP.ietf.Mime.XHTML));
+
+    contextMenuTPElem.setup();
 
     return this;
 });

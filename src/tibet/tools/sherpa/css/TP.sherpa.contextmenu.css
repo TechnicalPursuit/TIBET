@@ -1,0 +1,84 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+sherpa|contextmenu {
+    display: block;
+    position: absolute;
+    width: 96px;
+    height: 256px;
+    background: #eee;
+    border: 1px solid #666;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px #aaa;
+
+    /* This should match the HALO_POPUP_TIER constant */
+    z-index: 12500;
+}
+
+sherpa|contextmenu > .header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 30px;
+    margin: 2px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    background: #eee;
+    min-width: auto;
+    border: 1px solid #666;
+    overflow: hidden;
+}
+
+sherpa|contextmenu > .header > .title {
+    line-height: 30px;
+    font-weight: bold;
+    font-size: 108%;
+}
+
+sherpa|contextmenu > .content {
+    position: absolute;
+    top: 31px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background: #fff;
+    min-width: auto;
+    margin: 2px;
+    border: 1px solid #666;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    overflow: hidden;
+}
+
+sherpa|contextmenu > .content > ul {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    line-height: 29px;
+}
+
+sherpa|contextmenu > .content > ul > li {
+    border: 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+sherpa|contextmenu > .content > ul > li:hover {
+    background: #ddd;
+    border-top: 1px solid #666;
+    border-bottom: 1px solid #666;
+}
+
+sherpa|contextmenu > .content > ul > li:first-child:hover {
+    border-top: 1px solid #ddd;
+}
+
+sherpa|contextmenu > .content > ul > li:last-child:hover {
+    border-bottom: 1px solid #ddd;
+}
+

@@ -8,6 +8,10 @@
  */
 //  ========================================================================
 
+//  ========================================================================
+//  TP.sherpa.halo.js
+//  ========================================================================
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -38,7 +42,13 @@ function(aHalo) {
      * @returns {TP.core.ElementNode}
      */
 
-    return TP.wrap(this.getNativeNode().parentNode);
+    var parentElem;
+
+    if (TP.isElement(parentElem = this.getNativeNode().parentNode)) {
+        return TP.wrap(parentElem);
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -47,9 +57,13 @@ TP.core.UIElementNode.Inst.defineMethod('getHaloRect',
 function(aHalo) {
 
     /**
-     * @method getHaloParent
-     * @returns {TP.core.ElementNode}
-     * @abstract
+     * @method getHaloRect
+     * @abstract Returns the rectangle that the halo can use to display itself
+     *     when it has the receiver selected.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the rectangle
+     *     to use to display itself.
+     * @returns {TP.core.Rect} The rectangle that the halo will use to display
+     *     itself.
      */
 
     var haloWin,
@@ -88,9 +102,11 @@ function(aHalo, aSignal) {
 
     /**
      * @method getNextHaloChild
+     * @abstract
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the next halo
+     *     child.
      * @param {TP.sig.Signal} aSignal
      * @returns {TP.core.ElementNode}
-     * @abstract
      */
 
     var evtTarget,
@@ -120,20 +136,6 @@ function(aHalo, aSignal) {
     }
 
     return TP.wrap(lastElem);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('getUIEditorType',
-function() {
-
-    /**
-     * @method getUIEditorType
-     * @summary Returns the UIEditor subtype used to edit any UI elements.
-     * @returns {Type}
-     */
-
-    return TP.core.UIElementNodeEditor;
 });
 
 //  ------------------------------------------------------------------------
@@ -176,8 +178,20 @@ function(aHalo, aSignal) {
         return false;
     }
 
+    if (this.hasAttribute('tibet:tag')) {
+        return true;
+    }
+
+    if (this.getNSURI() === TP.w3.Xmlns.XHTML) {
+        return TP.ANCESTOR;
+    }
+
     return true;
 });
+
+//  ========================================================================
+//  TP.core.ElementNode Additions
+//  ========================================================================
 
 //  ------------------------------------------------------------------------
 //  HTML Elements
@@ -234,68 +248,30 @@ function(anElement) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.html.body.Inst.defineMethod('getHaloParent',
-function(aHalo) {
-
-    /**
-     * @method getHaloParent
-     * @abstract
-     * @param
-     * @returns {TP.core.ElementNode}
-     */
-
-    return this;
-});
-
-//  ========================================================================
-//  UIElementNodeEditor
-//  ========================================================================
-
-TP.lang.Object.defineSubtype('core.UIElementNodeEditor');
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNodeEditor.Type.defineMethod('haloNorthwestClick',
-function(targetTPElement, cornerTPElement) {
+TP.core.UIElementNode.Inst.defineMethod('getUIEditorType',
+function() {
 
     /**
      * @method getUIEditorType
-     * @summary Returns the UIEditor subtype used to edit 'html' elements.
-     * @param {} targetTPElement
+     * @summary Returns the UIEditor subtype used to edit any UI elements.
      * @returns {Type}
      */
 
-    var theTile,
-        position,
-        input;
+    return TP.core.UIElementNodeEditor;
+});
 
-    if (TP.notValid(theTile = TP.byId('HaloEditorTile', TP.win('UIROOT.SHERPA_FRAME')))) {
-        theTile = TP.bySystemId('Sherpa').makeEditorTile('HaloEditorTile');
+//  ------------------------------------------------------------------------
 
-        position = cornerTPElement.getPagePoint();
+TP.core.UIElementNode.Inst.defineMethod('getTagNameForTool',
+function() {
 
-        theTile.setPagePositionAndSize(
-                    TP.rtc(position.getX() + 50, position.getY() + 50, 750, 500));
+    /**
+     * @method getTagNameForTool
+     * @summary
+     * @returns
+     */
 
-        input = theTile.get('textInput');
-
-        /* eslint-disable no-wrap-func,no-extra-parens */
-        (function() {
-            theTile.setHeader(targetTPElement.getID());
-            theTile.focusOn(targetTPElement);
-            theTile.setAttribute('hidden', false);
-        }).observe(input, 'TP.sig.DOMReady');
-        /* eslint-enable no-wrap-func,no-extra-parens */
-
-    } else {
-        if (TP.isTrue(TP.bc(theTile.getAttribute('hidden')))) {
-            theTile.setHeader(targetTPElement.getID());
-            theTile.focusOn(targetTPElement);
-            theTile.setAttribute('hidden', false);
-        } else {
-            theTile.setAttribute('hidden', true);
-        }
-    }
+    return 'sherpa:haloMenu';
 });
 
 //  ------------------------------------------------------------------------

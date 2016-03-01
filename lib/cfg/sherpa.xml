@@ -28,11 +28,17 @@
     <script src="./src/TP.log.SherpaTestLogLayout.js"/>
     <script src="./src/TP.log.SherpaAppender.js"/>
 
+    <script src="./src/TP.sherpa.popup.js"/>
+
     <script src="./src/UIElementNodeAdditions.js"/>
 
     <script src="./src/TP.sherpa.halo.js"/>
     <property name="path.TP.sherpa.halo.template" value="~ide_root/xhtml/TP.sherpa.halo.xhtml"/>
     <property name="path.TP.sherpa.halo.style" value="~ide_root/css/TP.sherpa.halo.css"/>
+
+    <script src="./src/TP.sherpa.haloMenu.js"/>
+    <property name="path.TP.sherpa.haloMenu.template" value="~ide_root/xhtml/TP.sherpa.haloMenu.xhtml"/>
+    <property name="path.TP.sherpa.haloMenu.style" value="~ide_root/css/TP.sherpa.haloMenu.css"/>
 
     <script src="./src/TP.sherpa.console.js"/>
     <property name="path.TP.sherpa.console.template" value="~ide_root/xhtml/TP.sherpa.console.xhtml"/>
@@ -151,6 +157,10 @@
     <script src="./src/TP.sherpa.consoleoutput.js"/>
     <property name="path.TP.sherpa.consoleoutput.template" value="~ide_root/xhtml/TP.sherpa.consoleoutput.xhtml"/>
     <property name="path.TP.sherpa.consoleoutput.style" value="~ide_root/css/TP.sherpa.consoleoutput.css"/>
+
+    <script src="./src/TP.sherpa.contextmenu.js"/>
+    <property name="path.TP.sherpa.contextmenu.template" value="~ide_root/xhtml/TP.sherpa.contextmenu.xhtml"/>
+    <property name="path.TP.sherpa.contextmenu.style" value="~ide_root/css/TP.sherpa.contextmenu.css"/>
 
 </config>
 

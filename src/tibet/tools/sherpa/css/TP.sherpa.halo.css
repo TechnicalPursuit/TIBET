@@ -15,7 +15,7 @@ sherpa|halo {
     border: dashed 1px #666;
     border-radius: 5px;
 
-    pointer-events: none;
+    /*pointer-events: none;*/
 
     box-shadow: 3px 3px 3px #AAA;
 }
