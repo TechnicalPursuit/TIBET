@@ -367,24 +367,14 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
-function(anID, tileParent, customTagSubtype) {
+function(anID, tileParent) {
 
     var tileTPElem,
         tileTemplateTPElem;
 
-    if (TP.notEmpty(customTagSubtype)) {
-        tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
-                                'template',
-                                TP.ietf.Mime.XHTML,
-                                function(anElement) {
-                                    anElement.setAttribute(
-                                            'tibet:tag', customTagSubtype);
-                                });
-    } else {
-        tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
-                                'template',
-                                TP.ietf.Mime.XHTML);
-    }
+    tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
 
     tileTPElem = TP.wrap(tileParent).addContent(tileTemplateTPElem);
 
