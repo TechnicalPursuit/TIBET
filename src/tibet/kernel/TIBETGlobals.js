@@ -1132,6 +1132,10 @@ TP.VALID = 'valid';
 
 TP.FACET_NAMES = [TP.READONLY, TP.RELEVANT, TP.REQUIRED, TP.VALID];
 
+//  sherpa operations
+TP.ASSIST = 'assist';
+TP.EDIT = 'edit';
+
 //  ---
 //  IO/URI support
 //  ---

@@ -2075,7 +2075,10 @@ function(aRequest) {
     }
 
     aRequest.atPut('tiledOutput', true);
-    aRequest.complete(obj);
+    aRequest.atPut('tiledOperation', TP.EDIT);
+    aRequest.atPut('tiledTarget', obj);
+
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });

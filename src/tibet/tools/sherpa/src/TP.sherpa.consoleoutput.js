@@ -280,6 +280,89 @@ function(uniqueID, dataRecord) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.consoleoutput.Inst.defineMethod('createTiledOutput',
+function(cellGroupElem, uniqueID, dataRecord) {
+
+    /**
+     * @method createTiledOutput
+     */
+
+    var doc,
+        cmdText,
+
+        tileID,
+
+        tileTPElem,
+
+        targetObj,
+        defaultAspectObj,
+
+        operationTarget,
+
+        tileContentTPElem,
+
+        curtainTPElem;
+
+    doc = this.getNativeDocument();
+
+    cmdText = TP.byCSSPath('.header .content',
+                            cellGroupElem,
+                            true).getTextContent();
+
+    tileID = uniqueID + '_tile';
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(
+                        tileID,
+                        TP.documentGetBody(doc));
+
+    tileTPElem.set('headerText', cmdText);
+
+    targetObj = dataRecord.at('tiledTarget');
+
+    switch (dataRecord.at('tiledOperation')) {
+        case TP.EDIT:
+            tileContentTPElem = TP.getEditorTPElement(targetObj);
+            if (TP.notValid(tileContentTPElem)) {
+                defaultAspectObj = TP.getDefaultEditingAspect(targetObj);
+                if (TP.isValid(defaultAspectObj)) {
+                    operationTarget = defaultAspectObj;
+                    tileContentTPElem = TP.getEditorTPElement(defaultAspectObj);
+                }
+            } else {
+                operationTarget = dataRecord.at('tiledTarget');
+            }
+
+            break;
+
+        case TP.ASSIST:
+            tileContentTPElem = TP.getAssistantTPElement(targetObj);
+            break;
+
+        default:
+            break;
+    }
+
+    if (TP.isValid(tileContentTPElem)) {
+        tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
+        tileContentTPElem.awaken();
+
+        tileContentTPElem.set('sourceObject', operationTarget);
+    }
+
+    if (TP.isTrue(dataRecord.at('tiledModal'))) {
+
+        tileTPElem.set('modal', true);
+
+        if (TP.isValid(
+                curtainTPElem = TP.byId('systemCurtain', this.getDocument()))) {
+            curtainTPElem.setAttribute('hidden', false);
+        }
+    }
+
+    tileTPElem.toggle('hidden');
+
+    return tileID;
+});
+
 TP.sherpa.consoleoutput.Inst.defineMethod('scrollOutputToEnd',
 function() {
 
@@ -313,13 +396,9 @@ function(uniqueID, dataRecord) {
         rawData,
         outputObj,
 
-        cmdText,
-
         tileID,
 
         outputClass,
-
-        resultTile,
 
         outputData,
         resp,
@@ -386,21 +465,7 @@ function(uniqueID, dataRecord) {
     //  then created a tile and set the raw data as its source object.
     if (TP.isEmpty(outputObj) && TP.isTrue(dataRecord.at('tiledOutput'))) {
 
-        cmdText = TP.byCSSPath('.header .content',
-                                cellGroupElem,
-                                true).getTextContent();
-
-        tileID = uniqueID + '_tile';
-        resultTile = TP.bySystemId('Sherpa').makeTile(
-                            tileID,
-                            TP.documentGetBody(doc),
-                            'TP.sherpa.editortile');
-
-        resultTile.set('sourceData', dataRecord);
-
-        resultTile.set('headerText', cmdText);
-
-        resultTile.toggle('hidden');
+        tileID = this.createTiledOutput(cellGroupElem, uniqueID, dataRecord);
 
         //  Output a link that will cause the tile to show (if it hasn't been
         //  closed - just hidden).
@@ -414,7 +479,8 @@ function(uniqueID, dataRecord) {
 
     //  If we're not outputting real output, then set the outputStr to the empty
     //  String and skip executing the output template.
-    if (TP.isEmpty(outputObj) || rawData === TP.TSH_NO_VALUE) {
+    if ((TP.isEmpty(outputObj) || rawData === TP.TSH_NO_VALUE) &&
+            TP.isEmpty(tileID)) {
         outputStr = '';
     } else {
         outputClass = dataRecord.at('cssClass');
@@ -538,6 +604,77 @@ function(uniqueID, dataRecord) {
     }
 
     return this;
+});
+
+//  ============================================================================
+//  Meta-methods to return common editor subtypes
+//  ============================================================================
+
+TP.definePrimitive('getAssistantTPElement',
+function(anObject) {
+
+    if (TP.canInvoke(anObject, 'getAssistantTPElement')) {
+        return anObject.getAssistantTPElement();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getDefaultEditingAspect',
+function(anObject) {
+
+    if (TP.canInvoke(anObject, 'getDefaultEditingAspect')) {
+        return anObject.getDefaultEditingAspect();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getEditorTPElement',
+function(anObject) {
+
+    if (TP.canInvoke(anObject, 'getEditorTPElement')) {
+        return anObject.getEditorTPElement();
+    }
+
+    return null;
+});
+
+//  ---
+
+Function.Inst.defineMethod('getEditorTPElement',
+function() {
+
+    var methodEditorTPElem;
+
+    if (TP.isMethod(this)) {
+
+        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
+
+        return methodEditorTPElem;
+    }
+
+    return null;
+});
+
+//  ---
+
+TP.core.URI.Inst.defineMethod('getEditorTPElement',
+function() {
+
+    var uriEditorTPElem;
+
+    uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
+
+    return uriEditorTPElem;
 });
 
 //  ------------------------------------------------------------------------

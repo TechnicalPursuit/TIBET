@@ -1804,7 +1804,10 @@ function(anObject, aRequest) {
                         'cssClass', cssClass,
                         'rawData', anObject,
                         'request', request,
-                        'tiledOutput', tiledOutput);
+                        'tiledOutput', tiledOutput,
+                        'tiledOperation', request.at('tiledOperation'),
+                        'tiledTarget', request.at('tiledTarget'),
+                        'tiledModal', request.at('tiledModal'));
 
     consoleGUI = this.get('$consoleGUI');
 

@@ -31,6 +31,7 @@
     <script src="./src/TP.sherpa.popup.js"/>
 
     <script src="./src/UIElementNodeAdditions.js"/>
+    <script src="./src/CoreTagAdditions.js"/>
 
     <script src="./src/TP.sherpa.halo.js"/>
     <property name="path.TP.sherpa.halo.template" value="~ide_root/xhtml/TP.sherpa.halo.xhtml"/>
