@@ -61,38 +61,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     */
-
-    var editorObj;
-
-    editorObj = this.get('editor').$get('$editorObj');
-
-    editorObj.setOption('theme', 'elegant');
-    editorObj.setOption('mode', 'javascript');
-    editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', true);
-    editorObj.setOption('lineWrapping', true);
-
-    //  By forking this, we give the console a chance to focus the input cell
-    //  (which it really wants to do after executing a command) and then we can
-    //  shift the focus back to us.
-    (function() {
-        this.get('editor').refreshEditor();
-        this.get('editor').focus();
-    }).bind(this).fork(500);
-
-    this.$set('didSetup', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.methodeditor.Inst.defineHandler('MethodAccept',
 function(aSignal) {
 
@@ -166,6 +134,38 @@ function() {
         editor.refreshEditor();
     }).fork(200);
     /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     */
+
+    var editorObj;
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    editorObj.setOption('theme', 'elegant');
+    editorObj.setOption('mode', 'javascript');
+    editorObj.setOption('tabMode', 'indent');
+    editorObj.setOption('lineNumbers', true);
+    editorObj.setOption('lineWrapping', true);
+
+    //  By forking this, we give the console a chance to focus the input cell
+    //  (which it really wants to do after executing a command) and then we can
+    //  shift the focus back to us.
+    (function() {
+        this.get('editor').refreshEditor();
+        this.get('editor').focus();
+    }).bind(this).fork(500);
+
+    this.$set('didSetup', true);
 
     return this;
 });
