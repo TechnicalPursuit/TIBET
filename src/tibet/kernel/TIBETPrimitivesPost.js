@@ -1870,7 +1870,6 @@ function(anObject, assignIfAbsent) {
         frameElem,
         pname,
         cid,
-        ancestor,
 
         elem;
 
@@ -1915,53 +1914,16 @@ function(anObject, assignIfAbsent) {
                 }
 
                 if (TP.isEmpty(localID)) {
-                    //  element() scheme would be good, but it's not valid
-                    //  in the face of DOM mutations, so we build a unique
-                    //  value and assign it
+                    //  Build a unique value and assign it
                     localID = TP.elemGenID(obj);
                 }
 
                 TP.elementSetAttribute(obj, 'id', localID);
             } else {
-                //  only option is to construct a positional index. in this
-                //  case we'll generate a viable element() scheme identifier
-                //  for the node i.e. element([id_or_position/pos/pos/...)
-                //  where the positions are 1-indexed child locations.
+                //  only option is to construct a unique ID
                 if (TP.isEmpty(localID)) {
-                    ancestor = TP.nodeGetFirstAncestorByAttribute(obj, 'id');
-                    if (TP.notValid(ancestor)) {
-                        ancestor = TP.nodeGetDocument(obj).documentElement;
-                        if (TP.notValid(ancestor)) {
-                            //  problems. apparently we're trying to get the
-                            //  ID for a detached node. which won't work
-                            //  in most any case
-                            this.raise('TP.sig.DetachedNodeException', obj);
-
-                            return;
-                        }
-                    }
-
-                    cid = TP.elementGetAttribute(ancestor, 'id');
-                    if (TP.isEmpty(cid)) {
-                        //  per the spec when all else fails the root
-                        //  element starts the path using an index of 1, so
-                        //  we just want that index wrapped in element()
-                        localID = 'element(' +
-                                    TP.elementGetDocumentIndex(obj) +
-                                    ')';
-                    } else {
-                        //  found an id, so that's the first part of the
-                        //  path, replacing all portions of the path
-                        //  associated with the ancestor itself
-                        localID = TP.join(
-                            'element(',
-                            cid,
-                            '/',
-                            TP.elementGetDocumentIndex(obj).replace(
-                                TP.elementGetDocumentIndex(ancestor) + '/',
-                                ''),
-                            ')');
-                    }
+                    //  Build a unique value
+                    localID = TP.elemGenID(obj);
                 }
             }
         }
