@@ -2712,6 +2712,11 @@ TP.regex.NON_PREFIXED_NS_ATTR =
 TP.regex.PREFIXED_NS_ATTR =
         /\s+xmlns:\w+=(['"])([\x00-\x7F]*?)\1/g;    //  needs reset
 
+//  A RegExp that matches all element or attribute prefixes. Note that each will
+//  have a trailing colon (':')
+TP.regex.ALL_ELEM_OR_ATTR_PREFIXES =
+/((?:[A-Za-z_]|[^\x00-\x7F])(?:[A-Za-z0-9_.-]|[^\x00-\x7F])*):/g; // needs reset
+
 //  RegExps that match content in between quotes that must be at the beginning
 //  or end.
 TP.regex.QUOTED_CONTENT = /^(['"])(.*)\1$/;
