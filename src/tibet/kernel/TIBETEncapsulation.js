@@ -363,7 +363,7 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
         !TP.isProperty(this, attributeName) &&
         !TP.regex.INTERNAL_SLOT.test(attributeName)) {
         TP.ifWarn() ?
-            TP.warn(TP.join(TP.sc('Setting undefined attribute: '),
+            TP.warn(TP.sc('Setting undefined attribute: ',
                             TP.name(this), '.', attributeName,
                             ' (', TP.tname(this), ')',
                             TP.tname(this) === 'Window' ?
@@ -1543,7 +1543,7 @@ function(varargs) {
                 result.push(locale.localizeString('' + arr[i]));
             }
 
-            return result.join(' ');
+            return result.join('');
     }
 });
 
