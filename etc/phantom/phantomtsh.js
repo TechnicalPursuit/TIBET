@@ -157,6 +157,7 @@
         '\t[--color]   - Colorizes the output in the terminal. [true]\n' +
         '\t[--errimg]  - Capture PhantomError_{ts}.png onError. [false]\n' +
         '\t[--errexit] - Exit the PhantomJS execution onError. [false]\n' +
+        '\t[--ok]      - When outputting TAP form, include \'ok\'. [true]\n' +
         '\t[--tap]     - Specifies test anything protocol format. [false]\n' +
         '\t[--debug]   - Activates additional debugging output. [false]\n' +
         '\t[--quiet]   - Silences startup/finish message display. [false]\n' +
@@ -190,11 +191,12 @@
     /* eslint-disable quote-props */
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'errexit', 'errimg', 'help', 'usage', 'debug',
-            'tap', 'system', 'quiet'],
+            'tap', 'system', 'quiet', 'ok'],
         'string': ['script', 'url', 'profile', 'params', 'level', 'app-root'],
         'number': ['timeout', 'remote-debug-port'],
         'default': {
-            color: true
+            color: true,
+            ok: true
         }
     };
     /* eslint-enable quote-props */
@@ -865,6 +867,11 @@
         //  Sherpa output in the client uses a signifying value which we don't
         //  want to output to other console logs so strip that if found.
         if (/__TSH__NO_VALUE__TSH__/.test(msg)) {
+            return;
+        }
+
+        //  Allow filtering output to just comments/warnings and not-ok msgs.
+        if (/^ok/.test(msg) && !PhantomTSH.argv.ok) {
             return;
         }
 

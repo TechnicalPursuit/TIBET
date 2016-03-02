@@ -66,10 +66,11 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap'],
+        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok'],
         'string': ['target', 'suite', 'cases', 'context'],
         'default': {
-            tap: true
+            tap: true,
+            ok: true
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -79,7 +80,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap] [--remote-debug-port <portnumber>]';
+Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap] [--no-ok] [--remote-debug-port <portnumber>]';
 
 //  ---
 //  Instance Methods
