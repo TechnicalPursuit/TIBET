@@ -587,14 +587,11 @@ function(source, shell, sibling, request) {
     requote = function(tokenValue) {
         var value;
 
-        //  Don't remove single quotes if found. By preserving them here they
-        //  carry through into the values seen and thereby maintain context that
-        //  the attribute value should not undergo substitutions.
-        if (tokenValue.unquoted().quoted('\'') !== tokenValue) {
-            value = tokenValue.unquoted();
-        } else {
-            value = tokenValue;
-        }
+        //  Goal here is to always use double quotes and to preserve any form of
+        //  quoting that was already in existence. By preserving we ensure the
+        //  "original value" used by the shell's argument parser knows which
+        //  type of quote (or if there were even quotes) were used for a value.
+        value = tokenValue;
         value = TP.xmlLiteralsToEntities(value);
         value = value.quoted('"');
 
