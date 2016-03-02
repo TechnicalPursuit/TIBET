@@ -18,7 +18,9 @@ TP.sherpa.Element.defineSubtype('urieditor');
 
 TP.sherpa.urieditor.Inst.defineAttribute('didSetup');
 
-TP.sherpa.urieditor.Inst.defineAttribute('serverSourceObject');
+TP.sherpa.urieditor.Inst.defineAttribute('remoteSourceContent');
+TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
+
 TP.sherpa.urieditor.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.urieditor.Inst.defineAttribute(
@@ -45,12 +47,25 @@ TP.sherpa.urieditor.Inst.defineMethod('acceptResource',
 function() {
 
     var newSourceText,
+        sourceObj,
+        resourceObj,
         contentObj;
 
     newSourceText = this.get('editor').getDisplayValue();
 
-    contentObj = this.get('sourceObject').getResource().get('result');
-    contentObj.setData(newSourceText);
+    sourceObj = this.get('sourceObject');
+
+    resourceObj = sourceObj.getResource();
+
+    contentObj = resourceObj.get('result');
+    if (TP.isKindOf(contentObj, TP.core.Content)) {
+        contentObj.setData(newSourceText);
+    } else {
+        sourceObj.setResource(newSourceText);
+        sourceObj.$changed();
+    }
+
+    this.set('localSourceContent', newSourceText);
 
     return this;
 });
@@ -114,6 +129,103 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('formatXML',
+function(anObject) {
+
+    var str;
+
+    if (TP.isValid(TP.extern.CodeMirror)) {
+
+        TP.extern.CodeMirror.runMode(
+            anObject.asString(),
+            {
+                name: 'application/xml'
+            },
+            function(text, style) {
+
+                if (style) {
+                    str += '<span class="cm-' + style + '">' +
+                             text.asEscapedXML() +
+                             '</span>';
+                } else {
+                    str += text.asEscapedXML();
+                }
+            });
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('ResourceAccept',
+function(aSignal) {
+
+    this.acceptResource();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('ResourcePush',
+function(aSignal) {
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('render',
+function() {
+
+    var editor,
+        editorObj,
+
+        sourceObj,
+
+        str;
+
+    if (TP.notTrue(this.$get('didSetup'))) {
+        this.setup();
+    }
+
+    editor = this.get('editor');
+
+    if (TP.notValid(sourceObj = this.get('localSourceContent'))) {
+        editor.setDisplayValue('');
+
+        return this;
+    }
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    if (TP.isJSONString(sourceObj)) {
+
+        editorObj.setOption('mode', 'application/json');
+        str = this.formatJSON(sourceObj);
+
+    } else if (TP.isXMLString(sourceObj)) {
+
+        editorObj.setOption('mode', 'application/xml');
+        str = sourceObj;
+    } else {
+        editorObj.setOption('mode', 'text/plain');
+    }
+
+    editor.setDisplayValue(str);
+
+    /* eslint-disable no-extra-parens */
+    (function() {
+        editor.refreshEditor();
+    }).fork(200);
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineMethod('setup',
 function() {
 
@@ -145,79 +257,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.urieditor.Inst.defineHandler('ResourceAccept',
-function(aSignal) {
-
-    this.acceptResource();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineHandler('ResourcePush',
-function(aSignal) {
-
-    //  TODO:
-
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('render',
-function() {
-
-    var editor,
-        editorObj,
-
-        contentObj,
-
-        sourceObj,
-
-        str;
-
-    if (TP.notTrue(this.$get('didSetup'))) {
-        this.setup();
-    }
-
-    editor = this.get('editor');
-
-    if (TP.notValid(sourceObj = this.get('sourceObject'))) {
-        editor.setDisplayValue('');
-
-        return this;
-    }
-
-    editorObj = this.get('editor').$get('$editorObj');
-
-    contentObj = sourceObj.getResource().get('result');
-
-    if (TP.isKindOf(contentObj, TP.core.JSONContent)) {
-
-        editorObj.setOption('mode', 'application/ld+json');
-
-        str = TP.str(contentObj);
-        str = this.formatJSON(str);
-    }
-
-    editor.setDisplayValue(str);
-
-    /* eslint-disable no-extra-parens */
-    (function() {
-        editor.refreshEditor();
-    }).fork(200);
-    /* eslint-enable no-extra-parens */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.urieditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
+    var fetchOptions,
+        content;
+
     this.$set('sourceObject', anObj);
-    //this.$set('serverSourceObject', anObj);
+
+    fetchOptions = TP.hc('async', false, 'resultType', TP.TEXT, 'refresh', true);
+    content = anObj.getResource(fetchOptions).get('result');
+
+    this.set('remoteSourceContent', content);
+    this.set('localSourceContent', content);
 
     this.render();
 
