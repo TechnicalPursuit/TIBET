@@ -1129,6 +1129,12 @@
     //  mouse/gesture
     //  ---
 
+    //  which button(s) can trigger drag events. Possible values are 'left',
+    //  'middle' and 'right'. Note that configuring buttons other than 'left'
+    //  can cause unwanted interactions depending on platform (like context
+    //  menus, etc.)
+    TP.sys.setcfg('mouse.drag_buttons', ['left']);
+
     //  how far (in pixels) the mouse has to move to start a drag operation
     TP.sys.setcfg('mouse.drag_distance', 3);
 

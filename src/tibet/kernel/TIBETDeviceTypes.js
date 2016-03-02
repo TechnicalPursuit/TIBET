@@ -3326,7 +3326,9 @@ function(normalizedEvent) {
      * @returns {Boolean} True if dragging, false otherwise.
      */
 
-    var lastDown,
+    var dragButtonDown,
+
+        lastDown,
         distance,
 
         dragDistance,
@@ -3345,9 +3347,17 @@ function(normalizedEvent) {
         return true;
     }
 
-    if (this.$get('leftDown') ||
-        this.$get('rightDown') ||
-        this.$get('middleDown')) {
+    /* eslint-disable no-extra-parens */
+    dragButtonDown =
+                (this.$get('leftDown') &&
+                    TP.sys.cfg('mouse.drag_buttons').contains('left')) ||
+                (this.$get('middleDown') &&
+                    TP.sys.cfg('mouse.drag_buttons').contains('middle')) ||
+                (this.$get('rightDown') &&
+                    TP.sys.cfg('mouse.drag_buttons').contains('right'));
+    /* eslint-enable no-extra-parens */
+
+    if (dragButtonDown) {
         if (!TP.isEvent(lastDown = this.get('lastDown'))) {
             return false;
         }
