@@ -171,6 +171,42 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineHandler('ResourcePush',
 function(aSignal) {
 
+    var sourceObject,
+
+        patchableURI,
+
+        patchSourceLocation,
+        sourceLocation,
+
+        patchText;
+
+    this.acceptResource();
+
+    sourceObject = this.get('sourceObject');
+
+    //  TODO: Fix this!
+    patchableURI = true;
+
+    sourceLocation = TP.uriInTIBETFormat(sourceObject.getLocation());
+    if (patchableURI) {
+
+        patchSourceLocation = sourceLocation.slice(
+                                sourceLocation.lastIndexOf('/') + 1);
+
+        patchText = TP.extern.JsDiff.createPatch(
+                            patchSourceLocation,
+                            this.get('remoteSourceContent'),
+                            this.get('localSourceContent'));
+
+        TP.bySystemId('Sherpa').postPatch(patchText, sourceLocation);
+
+        this.set('remoteSourceContent', this.get('localSourceContent'));
+    } else {
+        //newSourceText = this.get('localSourceContent');
+        //sourceLocation = sourceObject.getSourcePath();
+        TP.warn('not a patchable URI: ' + sourceLocation);
+    }
+
     return this;
 });
 
@@ -265,7 +301,9 @@ function(anObj) {
 
     this.$set('sourceObject', anObj);
 
-    fetchOptions = TP.hc('async', false, 'resultType', TP.TEXT, 'refresh', true);
+    fetchOptions = TP.hc('async', false,
+                            'resultType', TP.TEXT,
+                            'refresh', true);
     content = anObj.getResource(fetchOptions).get('result');
 
     this.set('remoteSourceContent', content);

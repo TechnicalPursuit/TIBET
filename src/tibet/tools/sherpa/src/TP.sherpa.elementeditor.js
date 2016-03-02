@@ -18,7 +18,9 @@ TP.sherpa.Element.defineSubtype('elementeditor');
 
 TP.sherpa.elementeditor.Inst.defineAttribute('didSetup');
 
-TP.sherpa.elementeditor.Inst.defineAttribute('serverSourceObject');
+TP.sherpa.elementeditor.Inst.defineAttribute('remoteSourceTemplate');
+TP.sherpa.elementeditor.Inst.defineAttribute('localSourceTemplate');
+
 TP.sherpa.elementeditor.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.elementeditor.Inst.defineAttribute(
@@ -39,6 +41,134 @@ TP.sherpa.elementeditor.Inst.defineAttribute(
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.elementeditor.Inst.defineMethod('acceptMarkup',
+function() {
+
+    var newSourceText,
+        newElem,
+
+        halo,
+
+        templateURI,
+        sourceObject,
+        newSourceTPElem;
+
+    //  Grab the new text from the editor.
+    newSourceText = this.get('editor').getDisplayValue();
+
+    //  Make sure we can turn it into a node.
+    if (!TP.isElement(newElem = TP.nodeFromString(newSourceText))) {
+        //  TODO: Warn
+        return this;
+    }
+
+    halo = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    halo.blur();
+
+    sourceObject = this.get('sourceObject');
+
+    if (TP.isValid(templateURI = sourceObject.getType().getResourceURI(
+                                        'template', TP.ietf.Mime.XHTML))) {
+        templateURI.setResource(TP.wrap(newElem));
+    }
+
+    this.set('localSourceTemplate', newSourceText);
+
+    newSourceTPElem = sourceObject.replaceContent(newElem);
+    halo.focusOn(newSourceTPElem);
+
+    this.$set('sourceObject', newSourceTPElem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.elementeditor.Inst.defineHandler('MarkupAccept',
+function(aSignal) {
+
+    this.acceptMarkup();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.elementeditor.Inst.defineHandler('MarkupPush',
+function(aSignal) {
+
+    var newSourceText,
+
+        sourceObject,
+
+        templateURI,
+
+        patchSourceLocation,
+        sourceLocation,
+
+        patchText;
+
+    this.acceptMarkup();
+
+    sourceObject = this.get('sourceObject');
+
+    if (TP.isValid(templateURI = sourceObject.getType().getResourceURI(
+                                        'template', TP.ietf.Mime.XHTML))) {
+        sourceLocation = TP.uriInTIBETFormat(templateURI.getLocation());
+
+        patchSourceLocation = sourceLocation.slice(
+                                sourceLocation.lastIndexOf('/') + 1);
+
+        patchText = TP.extern.JsDiff.createPatch(
+                            patchSourceLocation,
+                            this.get('remoteSourceTemplate'),
+                            this.get('localSourceTemplate'));
+
+        TP.bySystemId('Sherpa').postPatch(patchText, sourceLocation);
+
+        this.set('remoteSourceTemplate', this.get('localSourceTemplate'));
+    } else {
+        newSourceText = sourceObject.getDocument().asString();
+        alert('there was no template - must be a whole page: ' + newSourceText);
+        sourceLocation = sourceObject.getSourcePath();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.elementeditor.Inst.defineMethod('render',
+function() {
+
+    var editor,
+        str;
+
+    if (TP.notTrue(this.$get('didSetup'))) {
+        this.setup();
+    }
+
+    editor = this.get('editor');
+
+    if (TP.notValid(str = this.get('localSourceTemplate'))) {
+        editor.setDisplayValue('');
+
+        return this;
+    }
+
+    editor.setDisplayValue(str);
+
+    /* eslint-disable no-extra-parens */
+    (function() {
+        editor.refreshEditor();
+    }).fork(200);
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.elementeditor.Inst.defineMethod('setup',
@@ -73,123 +203,25 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.elementeditor.Inst.defineMethod('acceptMarkup',
-function() {
-
-    var newSourceText,
-        newElem,
-        sourceObject,
-        newSourceTPElem;
-
-    newSourceText = this.get('editor').getDisplayValue();
-
-    if (!TP.isElement(newElem = TP.nodeFromString(newSourceText))) {
-        //  TODO: Warn
-        return this;
-    }
-
-    sourceObject = this.get('sourceObject');
-
-    newSourceTPElem = sourceObject.replaceContent(newElem);
-
-    this.$set('sourceObject', newSourceTPElem);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.elementeditor.Inst.defineHandler('MarkupAccept',
-function(aSignal) {
-
-    this.acceptMarkup();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.elementeditor.Inst.defineHandler('MarkupPush',
-function(aSignal) {
-
-    var newSourceText,
-
-        sourceObject,
-        sourceLocation;
-
-    this.acceptMarkup();
-
-    sourceObject = this.get('sourceObject');
-
-    newSourceText = sourceObject.getDocument().asString();
-    sourceLocation = sourceObject.getSourcePath();
-
-    TP.bySystemId('Sherpa').saveFile(sourceLocation, newSourceText);
-
-    /*
-    newSourceText = this.get('editor').getDisplayValue();
-
-    serverSourceObject = this.get('serverSourceObject');
-
-    patchText = serverSourceObject.getMarkupPatch(newSourceText);
-
-    if (TP.notEmpty(patchText)) {
-
-        patchPath = TP.objectGetSourcePath(this.get('sourceObject'));
-
-        TP.bySystemId('Sherpa').postPatch(patchText, patchPath);
-
-        //  TODO: Only do this if the patch operation succeeded
-        this.set('serverSourceObject', this.get('sourceObject'));
-    }
-    */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.elementeditor.Inst.defineMethod('render',
-function() {
-
-    var editor,
-
-        sourceObj,
-
-        str;
-
-    if (TP.notTrue(this.$get('didSetup'))) {
-        this.setup();
-    }
-
-    editor = this.get('editor');
-
-    if (TP.notValid(sourceObj = this.get('sourceObject'))) {
-        editor.setDisplayValue('');
-
-        return this;
-    }
-
-    str = TP.str(sourceObj);
-
-    editor.setDisplayValue(str);
-
-    /* eslint-disable no-extra-parens */
-    (function() {
-        editor.refreshEditor();
-    }).fork(200);
-    /* eslint-enable no-extra-parens */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.elementeditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
+    var templateURI,
+        template;
+
     this.$set('sourceObject', anObj);
-    this.$set('serverSourceObject', anObj);
+
+    if (TP.isValid(templateURI = anObj.getType().getResourceURI(
+                                        'template', TP.ietf.Mime.XHTML))) {
+
+        //  NB: This should already be loaded, since we got here by selecting a
+        //  custom element
+        template = templateURI.getResource(
+                TP.hc('async', false, 'resultType', TP.TEXT, 'refresh', true)).get('result');
+
+        this.set('remoteSourceTemplate', template);
+        this.set('localSourceTemplate', template);
+    }
 
     this.render();
 
