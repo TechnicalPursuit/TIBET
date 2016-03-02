@@ -452,27 +452,6 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.ConsoleService.Inst.defineHandler('ConsoleCommand',
-function(aSignal) {
-
-    /**
-     * @method handleConsoleCommand
-     * @summary Handles signals that trigger console command execution.
-     * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
-     *     this method.
-     */
-
-    var cmdText;
-
-    if (TP.notEmpty(cmdText = aSignal.at('cmdText'))) {
-        this.sendConsoleRequest(cmdText);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  Key Handling
 //  ------------------------------------------------------------------------
 

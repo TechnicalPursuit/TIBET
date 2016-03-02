@@ -364,6 +364,31 @@ function() {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('ConsoleCommand',
+function(aSignal) {
+
+    /**
+     * @method handleConsoleCommand
+     * @summary Handles signals that trigger console command execution.
+     * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var consoleService,
+        cmdText;
+
+    consoleService = TP.bySystemId('SherpaConsoleService');
+    cmdText = aSignal.at('cmdText');
+
+    if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
+        consoleService.sendConsoleRequest(cmdText);
+    }
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
