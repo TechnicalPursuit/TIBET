@@ -4,43 +4,43 @@
     name="{{appname}}" default="base" basedir="~app_cfg">
 
 <config id="properties" if="boot.phase_one">
-    <property name="sherpa.enabled" value="true"/>
+    <property name="boot.console_log" value="true"/>
+    <property name="boot.level" value="debug"/>
+    <property name="boot.unminified" value="true"/>
+    <property name="boot.unpackaged" value="true"/>
     <property name="debug.use_debugger" value="true"/>
-    <property name="log.bootcfg" value="true"/>
-    <property name="log.bootenv" value="true"/>
-    <property name="log.level" value="DEBUG"/>
     <property name="log.inferences" value="true"/>
     <property name="log.null_namespaces" value="true"/>
     <property name="log.stack" value="true"/>
     <property name="log.signal_stack" value="true"/>
-    <property name="security.request_privileges" value="true"/>
     <property name="tibet.$debug" value="true"/>
     <property name="tibet.$verbose" value="true"/>
+    <property name="sherpa.enabled" value="true"/>
 </config>
 
 <config id="base">
     <config ref="properties"/>
-    <package src="app.xml" config="base"/>
+    <package src="master.xml" config="base"/>
 </config>
 
 <config id="full">
     <config ref="properties"/>
-    <package src="app.xml" config="full"/>
+    <package src="master.xml" config="full"/>
 </config>
 
 <config id="developer">
     <config ref="properties"/>
-    <package src="app.xml" config="developer"/>
+    <package src="master.xml" config="developer"/>
 </config>
 
 <config id="contributor">
     <config ref="properties"/>
-    <package src="app.xml" config="contributor"/>
+    <package src="master.xml" config="contributor"/>
 </config>
 
 <config id="test">
     <config ref="properties"/>
-    <package src="app.xml" config="test"/>
+    <package src="master.xml" config="test"/>
 </config>
 
 </package>

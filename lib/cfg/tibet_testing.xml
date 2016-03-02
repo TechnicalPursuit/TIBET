@@ -51,6 +51,8 @@
     <config ref="databinding"/>
     <config ref="dom"/>
     <config ref="focusing"/>
+    <config ref="localization"/>
+    <config ref="tokenizer"/>
     <config ref="logging"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
@@ -127,6 +129,14 @@
 
 <config id="focusing">
     <script src="~lib_test/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
+</config>
+
+<config id="localization">
+    <script src="~lib_test/src/tibet/localization/TP.core.Locale_Tests.js" />
+</config>
+
+<config id="tokenizer">
+    <script src="~lib_test/src/tibet/tokenizer/TP.tokenizer_Tests.js" />
 </config>
 
 <config id="logging">

@@ -3568,7 +3568,8 @@ function(anEntry) {
     //  processing the entry argument list more here.
     arglist = anEntry.getArglist();
 
-    return TP.hc('content', arglist.join(' '));
+    //  The first object in the list is the one with status info for the test.
+    return TP.hc('content', arglist.first());
 });
 
 //  ----------------------------------------------------------------------------

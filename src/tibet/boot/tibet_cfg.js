@@ -210,6 +210,13 @@
     //  sharing code between boot logic and command-line packaging tools).
     TP.sys.setcfg('boot.assets', null);
 
+    //  A convenient shorthand for loading unpackaged/unminified library source.
+    TP.sys.setcfg('boot.teamtibet', false);
+
+    //  A secondary flag required by application developers to force TIBET to
+    //  load the unminified version of the library source.
+    TP.sys.setcfg('boot.unminified_lib', false);
+
     //  Do we want to boot the unminified source alternative(s) where found? The
     //  default tibet.xml file includes unminified options for kernel/library
     //  code to assist with debugging into the framework code.
@@ -1244,6 +1251,10 @@
     //  the id of the element under the mark holding the prompt
     TP.sys.setcfg('sherpa.console_prompt', 'sherpaPrompt');
 
+    //  should the console display stack information? only for lowest-level
+    //  debugging, otherwise tends to be annoying to users.
+    TP.sys.setcfg('sherpa.console_stack', false);
+
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
@@ -1285,7 +1296,7 @@
 
     TP.sys.setcfg('tds.auth.strategy', 'tds');
 
-    TP.sys.setcfg('tds.cli.uri', '/tds/cli');
+    TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
 
     //  The combined names from cli, npm, and syslog from winston.
     TP.sys.setcfg('tds.color.emerg', 'red');
@@ -1319,7 +1330,7 @@
     TP.sys.setcfg('tds.max_bodysize', '5mb');
 
     TP.sys.setcfg('tds.patch.root', '~');
-    TP.sys.setcfg('tds.patch.uri', '/tds/patch');
+    TP.sys.setcfg('tds.patch.uri', '/_tds/patch');
 
     //  NOTE we do _not_ default this here so env.PORT etc can be used when the
     //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
@@ -1336,7 +1347,7 @@
 
     TP.sys.setcfg('tds.stop_onerror', true);
 
-    TP.sys.setcfg('tds.job.uri', '/tds/jobs');
+    TP.sys.setcfg('tds.job.uri', '/_tds/jobs');
 
     TP.sys.setcfg('tds.use.cli', false);
     TP.sys.setcfg('tds.use.couch', false);
@@ -1352,11 +1363,11 @@
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
     TP.sys.setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('tds.watch.root', '~app');
-    TP.sys.setcfg('tds.watch.uri', '/tds/watch');
+    TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
 
     TP.sys.setcfg('tds.webdav.mount', '/');
     TP.sys.setcfg('tds.webdav.root', '~app');
-    TP.sys.setcfg('tds.webdav.uri', '/tds/webdav');
+    TP.sys.setcfg('tds.webdav.uri', '/_tds/webdav');
 
     //  ---
     //  tsh processing
@@ -1574,6 +1585,7 @@
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
     TP.sys.setcfg('karma.boot.profile', 'app#contributor');
+    TP.sys.setcfg('karma.boot.teamtibet', false);
     TP.sys.setcfg('karma.boot.unminified', false);
     TP.sys.setcfg('karma.boot.unpackaged', false);
 

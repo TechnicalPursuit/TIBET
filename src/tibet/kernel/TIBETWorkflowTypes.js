@@ -6042,6 +6042,7 @@ function(aSignal) {
      */
 
     var controllers,
+        sherpa,
         route,
         routeKey,
         config,
@@ -6053,9 +6054,17 @@ function(aSignal) {
     controllers = this.$get('controllers');
 
     //  Ensure we copy current list and include the application itself as the
-    //  final controller in the list.
+    //  final controller in the list...unless we're running with the Sherpa in
+    //  which case we add the Sherpa as a tooling controller.
     controllers = controllers.slice(0);
     controllers.push(this);
+
+    if (TP.sys.hasFeature('sherpa')) {
+        sherpa = TP.bySystemId('Sherpa');
+        if (TP.isValid(sherpa)) {
+            controllers.push(sherpa);
+        }
+    }
 
     if (!TP.sys.hasStarted()) {
         return controllers;

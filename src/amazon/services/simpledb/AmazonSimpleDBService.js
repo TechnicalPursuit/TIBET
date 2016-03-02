@@ -414,8 +414,8 @@ function(aRequest) {
     //  'PutAttributes' - 'Names' is required for that operation.
     if (TP.isEmpty(names)) {
         aRequest.fail(
-            TP.join(TP.sc('Missing "Names" parameter in request for action:'),
-                ' "', anAction, '"'));
+            TP.sc('Missing "Names" parameter in request for action: ',
+                '"', anAction, '"'));
         return;
     }
 
@@ -423,8 +423,8 @@ function(aRequest) {
     //  need values for names.
     if (TP.isEmpty(values)) {
         aRequest.fail(
-            TP.join(TP.sc('Missing "Values" parameter in request for action:'),
-                ' "', anAction, '"'));
+            TP.sc('Missing "Values" parameter in request for action: ',
+                '"', anAction, '"'));
         return;
     }
 

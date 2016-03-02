@@ -1672,9 +1672,11 @@ function(options) {
 
     //  Output a small 'suite header'
     TP.sys.logTest('#', TP.DEBUG);
-    TP.sys.logTest('# ' + this.get('suiteOwner').getID() +
-                            '.describe(' + this.getSuiteName() +
-                            ')',
+    TP.sys.logTest('# ' +
+        (TP.sys.cfg('boot.context') === 'phantomjs' ?
+            'tibet test ' : ':test --context=all ') +
+            this.get('suiteOwner').getID() + ' --suite=\'' +
+            this.getSuiteName() + '\'',
                     TP.DEBUG);
 
     params = TP.hc(options);

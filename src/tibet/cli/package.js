@@ -19,7 +19,7 @@
  * STANDARD OPTIONS:
  *
  *      package     The path of the top-level package to begin processing with.
- *                  The default is ~app_cfg/app.xml for application content.
+ *                  The default is ~app_cfg/master.xml for application content.
  *      config      The name of the top-level package config to process.
  *                  Defaults to the default config for the package.
  *      all         True to expand all configs recursively. Default is false.

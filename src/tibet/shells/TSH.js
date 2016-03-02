@@ -91,7 +91,7 @@
  *
  *      \   &bsol;      Escape character. Used to escape the first command
  *                      character from shell processing so you can enter lines
- *                      starting with or symbols which might otherwise cause
+ *                      starting with symbols which might otherwise cause
  *                      command processing to occur. The result is therefore
  *                      the same as sending the command line without the
  *                      leading backslash directly to the current responder.

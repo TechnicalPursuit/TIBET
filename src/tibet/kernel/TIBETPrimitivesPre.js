@@ -1567,8 +1567,7 @@ TP.boot.PHash = function() {
             name = attributeName;
         } else {
             TP.ifWarn() ?
-                TP.warn(TP.join(
-                            TP.sc('Setting undeclared attribute: '),
+                TP.warn(TP.sc('Setting undeclared attribute: ',
                             TP.name(this), '.', attributeName,
                                 ' (', TP.tname(this), ')',
                             TP.tname(this) === 'Window' ?
@@ -6097,7 +6096,7 @@ function(varargs) {
                     result.push(key);
                 }
             }
-            return result.join(' ');
+            return result.join('');
     }
 
 });

@@ -7160,7 +7160,7 @@ function(callingContext) {
         this.runDebugger(callingContext);
     } else {
         //  on IE or Mozilla this will foreground the native debugger, if
-        //  installed and open. but it's a bit flakey.
+        //  installed and open. but it's a bit flaky.
         try {
             /* jshint -W087 */
             /* eslint-disable no-debugger */

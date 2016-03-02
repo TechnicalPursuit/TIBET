@@ -1794,6 +1794,11 @@ function(aString, aShell, aRequest) {
 
         wasCommandSubstitution;
 
+    //  If the string is single-quoted we do nothing.
+    if (aString.unquoted().quoted('\'') === aString) {
+        return aString;
+    }
+
     //  There is an order of operation here when expanding content:
 
     //  1. Process template substitutions

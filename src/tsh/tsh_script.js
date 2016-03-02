@@ -581,13 +581,24 @@ function(source, shell, sibling, request) {
     //  helper functions
     //  ---
 
+    //  Turn the incoming string into a value that will work as an XML
+    //  attribute. We rely on double quotes as our outer quoting value
+    //  so process accordingly.
     requote = function(tokenValue) {
+        var value;
 
-        //  Replace any double quotes in the value with '&quot;' and put the
-        //  double quotes on either side of the token value, which is what the
-        //  XML parser invoked below is going to expect to see 'surrounding' the
-        //  attribute value.
-        return '"' + tokenValue.replace(/"/g, '&quot;') + '"';
+        //  Don't remove single quotes if found. By preserving them here they
+        //  carry through into the values seen and thereby maintain context that
+        //  the attribute value should not undergo substitutions.
+        if (tokenValue.unquoted().quoted('\'') !== tokenValue) {
+            value = tokenValue.unquoted();
+        } else {
+            value = tokenValue;
+        }
+        value = TP.xmlLiteralsToEntities(value);
+        value = value.quoted('"');
+
+        return value;
     };
 
     //  if we're provided with an array assume its a set of tokens to

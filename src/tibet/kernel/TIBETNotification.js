@@ -5623,7 +5623,7 @@ function(target, signal) {
                     return this.raise(
                                 'InvalidController',
                                 TP.sc('Unable to construct controller',
-                                        'instance of:', id));
+                                        ' instance of: ', id));
                 }
             } else {
                 last = responder.getType();
@@ -5634,8 +5634,8 @@ function(target, signal) {
                 responder.handle(signal);
             } else {
                 return this.raise('InvalidController',
-                                    TP.sc('Controller:', id,
-                                            'cannot invoke "handle" using:',
+                                    TP.sc('Controller: ', id,
+                                            ' cannot invoke "handle" using: ',
                                             signal.getSignalName()));
             }
 

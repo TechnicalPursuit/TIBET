@@ -25,7 +25,7 @@
      *
      * You can test whether it works by using URLs of the form:
      *
-     * url = TP.uc('~/tds/cli?cmd=echo&arg0=fluff&testing=123&no-color');
+     * url = TP.uc('~/_tds/cli?cmd=echo&arg0=fluff&testing=123&no-color');
      *
      * Run the command by forcing a call to the server for the URL:
      *
@@ -78,7 +78,7 @@
                 params, // Named argument collector.
                 child;  // child process module.
 
-            cmd = req.param('cmd');
+            cmd = req.query.cmd;
             if (!cmd) {
                 cmd = 'help';
             }

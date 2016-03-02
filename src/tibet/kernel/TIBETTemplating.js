@@ -153,7 +153,7 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
                     'TP.sig.TemplateTokenizationFailed',
                     TP.ec(e,
                         TP.sc('Tokenization failed at: ', e.line || 'unknown',
-                                'in template named: ', templateName,
+                                ' in template named: ', templateName,
                                 ' with source: ' + str)));
         }
 

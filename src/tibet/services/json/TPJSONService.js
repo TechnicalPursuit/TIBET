@@ -273,7 +273,7 @@ function(aRequest) {
                     xhr,
                     xhrStr;
 
-                result = TP.sc('Failed with no message');
+                result = TP.sc('Failed with no message.');
 
                 req = aSignal.getPayload();
 
