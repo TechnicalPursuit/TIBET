@@ -2745,9 +2745,6 @@ function(aRequest, allForms) {
                             //  so no further expansion happens down below.
                             expandedVal = part.value.unquoted();
                             val = part.value.unquoted();
-                        } else {
-                            //  Not sure how we'd get here...but just in case.
-                            expandedVal = part.value.unquoted();
                         }
                     } else if (part.name === 'substitution' ||
                                 part.name === 'template' ||
@@ -2771,15 +2768,32 @@ function(aRequest, allForms) {
                     //  template rendering but *not* variable
                     //  substitution and/or object resolution.
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
-                        expandedVal = TP.tsh.cmd.expandContent(
-                                        val, shell, aRequest);
+                        if (TP.regex.TSH_VARIABLE.test(val) ||
+                                TP.regex.TSH_VARIABLE_DEREF.test(val)) {
+                            //  Pure argv variable reference, return the
+                            //  resolution value.
+                            if (val.charAt(0) === '@') {
+                                val = val.slice(1);
+                            }
+                            expandedVal = shell.resolveObjectReference(val);
 
-                        if (expandedVal === 'null') {
-                            expandedVal = null;
-                        } else if (expandedVal === 'undefined') {
-                            expandedVal = undefined;
+                            //  Requote if original references were
+                            //  string-based.
+                            if (part.value.charAt(0) === '"') {
+                                expandedVal = TP.str(expandedVal);
+                            }
+                        } else {
+                            expandedVal = TP.tsh.cmd.expandContent(
+                                            val, shell, aRequest);
+
+                            if (expandedVal === 'null') {
+                                expandedVal = null;
+                            } else if (expandedVal === 'undefined') {
+                                expandedVal = undefined;
+                            }
                         }
                     }
+
 
                     part = TP.ac(part.value, expandedVal);
                     dict.atPut('ARG' + argIndex, part);
@@ -2825,13 +2839,29 @@ function(aRequest, allForms) {
                     //  constructs) and template rendering but *not* variable
                     //  substitution and/or object resolution.
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
-                        expandedVal = TP.tsh.cmd.expandContent(
-                                                val, shell, aRequest);
+                        if (TP.regex.TSH_VARIABLE.test(val) ||
+                                TP.regex.TSH_VARIABLE_DEREF.test(val)) {
+                            //  Pure argv variable reference, return the
+                            //  resolution value.
+                            if (val.charAt(0) === '@') {
+                                val = val.slice(1);
+                            }
+                            expandedVal = shell.resolveObjectReference(val);
 
-                        if (expandedVal === 'null') {
-                            expandedVal = null;
-                        } else if (expandedVal === 'undefined') {
-                            expandedVal = undefined;
+                            //  Requote if original references were
+                            //  string-based.
+                            if (value.charAt(0) === '"') {
+                                expandedVal = TP.str(expandedVal);
+                            }
+                        } else {
+                            expandedVal = TP.tsh.cmd.expandContent(
+                                                    val, shell, aRequest);
+
+                            if (expandedVal === 'null') {
+                                expandedVal = null;
+                            } else if (expandedVal === 'undefined') {
+                                expandedVal = undefined;
+                            }
                         }
                     }
                 }

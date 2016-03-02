@@ -1132,6 +1132,8 @@ function(REQUEST$$, CMDTYPE$$) {
         EXEC$$,
         TYPE$$,
         CTYPE$$,
+        DEREF$$,
+        VAR$$,
 
     //  standard "special variables" we're willing to expose to scripts
         $LASTREQ,
@@ -1656,6 +1658,29 @@ function(REQUEST$$, CMDTYPE$$) {
                 return;
             }
 
+            //  Special case here. If we're piping into a variable we really
+            //  aren't asking to resolve that variable...unless we add '@'
+            //  explicitly. Otherwise we're asking to update the variable's
+            //  value.
+            if (TP.regex.TSH_VARIABLE_DEREF.test($SCRIPT)) {
+                $SCRIPT = $SCRIPT.slice(1);
+                DEREF$$ = true;
+            }
+
+            if (TP.regex.TSH_VARIABLE.test($SCRIPT)) {
+                VAR$$ = $SCRIPT.slice(1);
+                if (VAR$$.charAt(0) === '{') {
+                    VAR$$ = VAR$$.slice(1, -1);
+                }
+
+                RESULT$$ = $REQUEST.stdin().at(0);
+                if (!DEREF$$) {
+                    $SHELL.setVariable(VAR$$, RESULT$$);
+                    $REQUEST.complete(RESULT$$);
+                    return;
+                }
+            }
+
             if (TP.canInvoke(RESULT$$, 'cmdSetContent')) {
                 RESULT$$ = RESULT$$.cmdSetContent($REQUEST);
             } else if (TP.isType(TYPE$$ = TP.type(RESULT$$))) {
@@ -1796,6 +1821,11 @@ function(aString, aShell, aRequest) {
 
     //  If the string is single-quoted we do nothing.
     if (aString.unquoted().quoted('\'') === aString) {
+        return aString;
+    }
+
+    //  Don't expand variable names. We leave them for later resolution.
+    if (TP.regex.TSH_VARIABLE.test(aString)) {
         return aString;
     }
 

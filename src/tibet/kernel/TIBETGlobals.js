@@ -2534,6 +2534,9 @@ TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
 TP.regex.BINDING_ATTR_VALUE_DETECT = /\s*\{\s*\w+\s*:/;
 
 
+TP.regex.TSH_VARIABLE = /^\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
+TP.regex.TSH_VARIABLE_DEREF = /^@\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
+
 TP.regex.TSH_VARSUB = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/;
 //  A global version of TP.regex.TSH_VARSUB
 TP.regex.TSH_VARSUB_EXTRACT = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/g;
