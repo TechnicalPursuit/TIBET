@@ -1786,11 +1786,10 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeEcho',
 function(aRequest) {
-
     var args;
 
-    args = this.getArgument(aRequest, 'ARGV');
-    aRequest.stdout(args.join(' '));
+    args = this.getArguments(aRequest);
+    aRequest.stdout(args);
 
     return aRequest.complete();
 });
