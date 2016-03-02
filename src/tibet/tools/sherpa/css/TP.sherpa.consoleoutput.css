@@ -185,6 +185,20 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     white-space: pre-wrap;
 }
 
+.flex-card > .header > .detach_mark {
+
+    float: right;
+    margin: 0 8px;
+
+    cursor: pointer;
+
+    width: 14px;
+    height: 14px;
+
+    background-size: 14px 14px;
+    background-image: url(../media/call49.svg);
+}
+
 .flex-card > .content {
 
     top: 31px;
