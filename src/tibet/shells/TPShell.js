@@ -2149,6 +2149,7 @@ function(anObjectSpec, aRequest) {
         execContext,
 
         spec,
+        deref,
 
         url,
         resp,
@@ -2182,6 +2183,13 @@ function(anObjectSpec, aRequest) {
     //  The $CONTEXT object (the global context shell code is being eval'ed in)
     execContext = this.getExecutionContext();
 
+    //  If 'spec' matches shell 'dereference sugar' (i.e. '@foo'), then we have
+    //  to strip the leading '@'.
+    if (TP.regex.TSH_DEREF_SUGAR.test(spec)) {
+        spec = spec.slice(1);
+        deref = true;
+    }
+
     //  Convert any shell variable that starts with '${' and ends with '}' to
     //  it's plain form.
     //  NB: We do *not* want to use the TP.regex.TSH_VARSUB_EXTENDED replacement
@@ -2190,12 +2198,6 @@ function(anObjectSpec, aRequest) {
     //  interior along.
     if (spec.startsWith('${') && spec.endsWith('}')) {
         spec = '$' + spec.slice(2, -1);
-    }
-
-    //  If 'spec' matches shell 'dereference sugar' (i.e. '@foo'), then we have
-    //  to strip the leading '@'.
-    if (TP.regex.TSH_DEREF_SUGAR.test(spec)) {
-        spec = anObjectSpec.slice(1);
     }
 
     //  With most of our desugaring done can we just use getObjectById? Let's
@@ -2214,6 +2216,17 @@ function(anObjectSpec, aRequest) {
     if (isIdentifier) {
         $$inst = TP.sys.getObjectById(spec);
         if (TP.isValid($$inst)) {
+            if (deref) {
+                if (TP.canInvoke($$inst, 'cmdGetContent')) {
+                    $$inst = $$inst.cmdGetContent(aRequest);
+                } else if (TP.canInvoke($$inst, 'getType')) {
+                    instType = $$inst.getType();
+                    if (TP.canInvoke(instType, 'cmdGetContent')) {
+                        $$inst = instType.cmdGetContent(aRequest);
+                    }
+                }
+            }
+
             return $$inst;
         }
     }
@@ -2263,23 +2276,19 @@ function(anObjectSpec, aRequest) {
 
         }
 
-        //  If the original object spec was some 'dereference sugar', then, as a
-        //  final step, we need to call 'cmdGetContent' on it (or it's type if
-        //  it doesn't respond). This is to keep the same semantics that the
-        //  rest of the shell has around dereference sugar.
-        if (TP.regex.TSH_DEREF_SUGAR.test(anObjectSpec)) {
-            if (TP.canInvoke($$inst, 'cmdGetContent')) {
-                $$inst = $$inst.cmdGetContent(aRequest);
-            } else if (TP.canInvoke($$inst, 'getType')) {
-                instType = $$inst.getType();
-                if (TP.canInvoke(instType, 'cmdGetContent')) {
-                    $$inst = instType.cmdGetContent(aRequest);
-                }
-            }
-        }
-
     } catch (e) {
         $$inst = undefined;
+    }
+
+    if (TP.isTrue(deref)) {
+        if (TP.canInvoke($$inst, 'cmdGetContent')) {
+            $$inst = $$inst.cmdGetContent(aRequest);
+        } else if (TP.canInvoke($$inst, 'getType')) {
+            instType = $$inst.getType();
+            if (TP.canInvoke(instType, 'cmdGetContent')) {
+                $$inst = instType.cmdGetContent(aRequest);
+            }
+        }
     }
 
     return $$inst;
@@ -2310,6 +2319,11 @@ function(aString) {
 
     //  Don't expand variables being used as part of a dereferencing operation.
     if (/\@\$/.test(str)) {
+        return str;
+    }
+
+    //  Don't expand strings that are single-quoted.
+    if (str.unquoted().quoted('\'') === str) {
         return str;
     }
 
@@ -2666,7 +2680,8 @@ function(aRequest, allForms) {
                 parts,
                 val,
                 expandedVal,
-                reParts;
+                reParts,
+                reText;
 
             name = item.first();
             value = TP.xmlEntitiesToLiterals(item.last().trim());
@@ -2710,7 +2725,9 @@ function(aRequest, allForms) {
                     } else if (part.name === 'regexp') {
                         //  Handle RegExps
                         reParts = part.value.split('/');
-                        expandedVal = TP.rc(reParts.at(1),
+                        reText = TP.tsh.cmd.expandContent(
+                                        reParts.at(1), shell, aRequest);
+                        expandedVal = TP.rc(reText,
                                             reParts.at(2));
                     } else if (part.name === 'keyword' &&
                                 (part.value === 'true' ||
@@ -2720,10 +2737,16 @@ function(aRequest, allForms) {
                     } else if (part.name === 'string') {
                         //  Handle Strings
                         if (part.value.charAt(0) === '"') {
+                            //  Strip the quotes and let the expanded value be
+                            //  produced down below during value expansion.
                             val = part.value.unquoted();
                         } else if (part.value.charAt(0) === '\'') {
-                            expandedVal = part.value;
+                            //  Strip the quotes but also set the expanded value
+                            //  so no further expansion happens down below.
+                            expandedVal = part.value.unquoted();
+                            val = part.value.unquoted();
                         } else {
+                            //  Not sure how we'd get here...but just in case.
                             expandedVal = part.value.unquoted();
                         }
                     } else if (part.name === 'substitution' ||
@@ -2775,7 +2798,9 @@ function(aRequest, allForms) {
                 } else if (TP.regex.REGEX_LITERAL_STRING.test(val)) {
                     //  Handle RegExps
                     reParts = val.split('/');
-                    expandedVal = TP.rc(reParts.at(1), reParts.at(2));
+                    reText = TP.tsh.cmd.expandContent(
+                        reParts.at(1), shell, aRequest);
+                    expandedVal = TP.rc(reText, reParts.at(2));
                 } else if (TP.regex.ANY_NUMBER.test(val) ||
                             TP.regex.PERCENTAGE.test(val)) {
                     expandedVal = val.asNumber();
@@ -2787,7 +2812,8 @@ function(aRequest, allForms) {
                     if (val.charAt(0) === '"') {
                         val = val.unquoted();
                     } else if (val.charAt(0) === '\'') {
-                        expandedVal = val;
+                        expandedVal = val.unquoted();
+                        val = val.unquoted();
                     } else if (val.charAt(0) === '`') {
                         //  We leave 'val' alone here and let it get expanded.
                         void 0;

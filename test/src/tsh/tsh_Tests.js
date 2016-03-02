@@ -62,12 +62,12 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'foo\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'foo\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'foo'),
+                        'Expanded value', 'foo',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF),
                 'tsh:fourth',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"bar"',
+                        'Original value', 'bar',
                         'Expanded value tname', 'String',
                         'Expanded value', 'bar',
                         'Resolved value tname', 'Null',
@@ -383,18 +383,18 @@ function() {
         inputVal = ':testCmd "true" foo="true"';
         correctResult =
             TP.hc(
-                'foo',
+                'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"true"',
                         'Expanded value tname', 'String',
                         'Expanded value', 'true',
                         'Resolved value tname', 'Boolean',
                         'Resolved value', true),
-                'ARG0',
+                'foo',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"true"',
-                        'Expanded value tname', 'String',
-                        'Expanded value', 'true',
+                        'Original value', 'true',
+                        'Expanded value tname', 'Boolean',
+                        'Expanded value', true,
                         'Resolved value tname', 'Boolean',
                         'Resolved value', true)
             );
@@ -402,32 +402,32 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
-    this.it(':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" foo="\'\'" bar="\'hi\'" baz="\'hi {{x}}\'"', function(test, options) {
+    this.it(':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"', function(test, options) {
 
-        inputVal = ':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" foo="\'\'" bar="\'hi\'" baz="\'hi {{x}}\'"';
+        inputVal = ':testCmd "\'\'" "\'hi\'" "\'hi {{x}}\'" "hi {{x}}" foo="\'\'" bar="\'hi\'" baz="hi {{x}}"';
         correctResult =
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"\'\'"',
+                        'Original value', '\'\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', ''),
+                        'Expanded value', '',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF),
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"\'hi\'"',
+                        'Original value', '\'hi\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'hi\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'hi'),
+                        'Expanded value', 'hi',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"\'hi {{x}}\'"',
+                        'Original value', 'hi {{x}}',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'hi 2\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'hi 2'),
+                        'Expanded value', 'hi 2',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF),
                 'ARG0',
                 TP.hc('Original value tname', 'String',
                         'Original value', '"\'\'"',
@@ -446,9 +446,16 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '"\'hi {{x}}\'"',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'hi 2\'',
+                        'Expanded value', '\'hi {{x}}\'',
                         'Resolved value tname', 'String',
-                        'Resolved value', 'hi 2')
+                        'Resolved value', 'hi {{x}}'),
+                'ARG3',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '"hi {{x}}"',
+                        'Expanded value tname', 'String',
+                        'Expanded value', 'hi 2',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
@@ -461,14 +468,14 @@ function() {
             TP.hc(
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"2"',
-                        'Expanded value tname', 'String',
-                        'Expanded value', '2',
+                        'Original value', '2',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 2,
                         'Resolved value tname', 'Number',
                         'Resolved value', 2),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"2{{x}}"',
+                        'Original value', '2{{x}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '22',
                         'Resolved value tname', 'Number',
@@ -499,21 +506,21 @@ function() {
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"[]"',
+                        'Original value', '[]',
                         'Expanded value tname', 'String',
                         'Expanded value', '[]',
                         'Resolved value tname', 'Array',
                         'Resolved value', []),
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"[1,2,3]"',
+                        'Original value', '[1,2,3]',
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,3]',
                         'Resolved value tname', 'Array',
                         'Resolved value', [1, 2, 3]),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"[1,2,{{x}}]"',
+                        'Original value', '[1,2,{{x}}]',
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,2]',
                         'Resolved value tname', 'Array',
@@ -551,21 +558,21 @@ function() {
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{}"',
+                        'Original value', '{}',
                         'Expanded value tname', 'String',
                         'Expanded value', '{}',
                         'Resolved value tname', 'Object',
                         'Resolved value', {}),
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{foo:\'bar\'}"',
+                        'Original value', '{foo:\'bar\'}',
                         'Expanded value tname', 'String',
                         'Expanded value', '{foo:\'bar\'}',
                         'Resolved value tname', 'Object',
                         'Resolved value', {foo: 'bar'}),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{foo:{{x}}}"',
+                        'Original value', '{foo:{{x}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '{foo:2}',
                         'Resolved value tname', 'Object',
@@ -603,21 +610,21 @@ function() {
             TP.hc(
                 'foo',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {}"',
+                        'Original value', 'function() {}',
                         'Expanded value tname', 'String',
                         'Expanded value', 'function() {}',
                         'Resolved value tname', 'Function',
                         'Resolved value', function() {}),
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function(x) {window.alert(x); }"',
+                        'Original value', 'function(x) {window.alert(x); }',
                         'Expanded value tname', 'String',
                         'Expanded value', 'function(x) {window.alert(x); }',
                         'Resolved value tname', 'Function',
                         'Resolved value', function(x) {window.alert(x); }),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"function() {window.alert({{x}}); }"',
+                        'Original value', 'function() {window.alert({{x}}); }',
                         'Expanded value tname', 'String',
                         'Expanded value', 'function() {window.alert(2); }',
                         'Resolved value tname', 'Function',
@@ -655,16 +662,16 @@ function() {
             TP.hc(
                 'bar',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"/fuzzy/"',
-                        'Expanded value tname', 'String',
-                        'Expanded value', '/fuzzy/',
+                        'Original value', '/fuzzy/',
+                        'Expanded value tname', 'RegExp',
+                        'Expanded value', /fuzzy/,
                         'Resolved value tname', 'RegExp',
                         'Resolved value', /fuzzy/),
                 'baz',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"/fuzz{{x}}y/"',
-                        'Expanded value tname', 'String',
-                        'Expanded value', '/fuzz2y/',
+                        'Original value', '/fuzz{{x}}y/',
+                        'Expanded value tname', 'RegExp',
+                        'Expanded value', /fuzz2y/,
                         'Resolved value tname', 'RegExp',
                         'Resolved value', /fuzz2y/),
                 'ARG0',
@@ -702,9 +709,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'foo\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'foo\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'foo'),
+                        'Expanded value', 'foo',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF),
                 'ARG2',
                 TP.hc('Original value tname', 'String',
                         'Original value', '42',
@@ -768,9 +775,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'foo\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'foo\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'foo'),
+                        'Expanded value', 'foo',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF),
                 'third',
                 TP.hc('Original value tname', 'String',
                         'Original value', '42',
@@ -787,28 +794,28 @@ function() {
                         'Resolved value', /foo(.+)/g),
                 'fifth',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{}"',
+                        'Original value', '{}',
                         'Expanded value tname', 'String',
                         'Expanded value', '{}',
                         'Resolved value tname', 'Object',
                         'Resolved value', {}),
                 'sixth',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"[]"',
+                        'Original value', '[]',
                         'Expanded value tname', 'String',
                         'Expanded value', '[]',
                         'Resolved value tname', 'Array',
                         'Resolved value', []),
                 'seventh',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{\'foo\':\'bar\'}"',
+                        'Original value', '{\'foo\':\'bar\'}',
                         'Expanded value tname', 'String',
                         'Expanded value', '{\'foo\':\'bar\'}',
                         'Resolved value tname', 'Object',
                         'Resolved value', {foo: 'bar'}),
                 'eighth',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"[1,2,3]"',
+                        'Original value', '[1,2,3]',
                         'Expanded value tname', 'String',
                         'Expanded value', '[1,2,3]',
                         'Resolved value tname', 'Array',
@@ -1208,9 +1215,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'x')));
+                        'Expanded value', 'x',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 2)));
     });
 
     this.it(':testCmd "x"', function(test, options) {
@@ -1256,9 +1263,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'@x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '@x')));
+                        'Expanded value', '@x',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 2)));
     });
 
     this.it(':testCmd "@x"', function(test, options) {
@@ -1304,9 +1311,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{x}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{x}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{x}}')));
+                        'Expanded value', '{{x}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "{{x}}"', function(test, options) {
@@ -1352,9 +1359,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is x')));
+                        'Expanded value', 'This is x',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "This is x"', function(test, options) {
@@ -1400,9 +1407,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is @x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is @x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is @x')));
+                        'Expanded value', 'This is @x',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "This is @x"', function(test, options) {
@@ -1448,9 +1455,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is {{x}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is {{x}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is {{x}}')));
+                        'Expanded value', 'This is {{x}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "This is {{x}}"', function(test, options) {
@@ -1544,9 +1551,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'x')));
+                        'Expanded value', 'x',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 2)));
     });
 
     this.it(':testCmd stuff="x"', function(test, options) {
@@ -1558,7 +1565,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"x"',
+                        'Original value', 'x',
                         'Expanded value tname', 'String',
                         'Expanded value', 'x',
                         'Resolved value tname', 'Number',
@@ -1592,9 +1599,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'@x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '@x')));
+                        'Expanded value', '@x',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 2)));
     });
 
     this.it(':testCmd stuff="@x"', function(test, options) {
@@ -1606,14 +1613,14 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"@x"',
+                        'Original value', '@x',
                         'Expanded value tname', 'String',
                         'Expanded value', '@x',
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
     });
 
-    this.it(':testCmd stuff=\'@x\'', function(test, options) {
+    this.it(':testCmd stuff=`@x`', function(test, options) {
 
         inputVal = ':testCmd stuff=`@x`';
         shellDriver.execOutputTest(
@@ -1640,9 +1647,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{x}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{x}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{x}}')));
+                        'Expanded value', '{{x}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="{{x}}"', function(test, options) {
@@ -1654,7 +1661,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{x}}"',
+                        'Original value', '{{x}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '2',
                         'Resolved value tname', 'Number',
@@ -1688,9 +1695,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is x')));
+                        'Expanded value', 'This is x',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="This is x"', function(test, options) {
@@ -1702,7 +1709,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is x"',
+                        'Original value', 'This is x',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is x',
                         'Resolved value tname', 'Undefined',
@@ -1736,9 +1743,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is @x\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is @x\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is @x')));
+                        'Expanded value', 'This is @x',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="This is @x"', function(test, options) {
@@ -1750,7 +1757,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is @x"',
+                        'Original value', 'This is @x',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is @x',
                         'Resolved value tname', 'Undefined',
@@ -1785,9 +1792,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is {{x}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is {{x}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is {{x}}')));
+                        'Expanded value', 'This is {{x}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="This is {{x}}"', function(test, options) {
@@ -1799,7 +1806,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is {{x}}"',
+                        'Original value', 'This is {{x}}',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is 2',
                         'Resolved value tname', 'Undefined',
@@ -1849,9 +1856,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{x .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{x .% #{##.00}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{x .% #{##.00}}}')));
+                        'Expanded value', '{{x .% #{##.00}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "{{x .% #{##.00}}}"', function(test, options) {
@@ -1912,9 +1919,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{x .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{x .% #{##.00}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{x .% #{##.00}}}')));
+                        'Expanded value', '{{x .% #{##.00}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="{{x .% #{##.00}}}"', function(test, options) {
@@ -1926,7 +1933,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{x .% #{##.00}}}"',
+                        'Original value', '{{x .% #{##.00}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '2.00',
                         'Resolved value tname', 'Number',
@@ -2565,9 +2572,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'$Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'$Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '$Y')));
+                        'Expanded value', '$Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd \'${Y}\'', function(test, options) {
@@ -2581,9 +2588,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '${Y}')));
+                        'Expanded value', '${Y}',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd "$Y"', function(test, options) {
@@ -2661,9 +2668,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@$Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'@$Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '@$Y')));
+                        'Expanded value', '@$Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd \'@${Y}\'', function(test, options) {
@@ -2677,9 +2684,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'@${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '@${Y}')));
+                        'Expanded value', '@${Y}',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd "@$Y"', function(test, options) {
@@ -2757,9 +2764,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{$Y}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{$Y}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{$Y}}')));
+                        'Expanded value', '{{$Y}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd \'{{${Y}}}\'', function(test, options) {
@@ -2773,9 +2780,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{${Y}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{${Y}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{${Y}}}')));
+                        'Expanded value', '{{${Y}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "{{$Y}}"', function(test, options) {
@@ -2853,9 +2860,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is $Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is $Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is $Y')));
+                        'Expanded value', 'This is $Y',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd \'This is ${Y}\'', function(test, options) {
@@ -2869,9 +2876,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is ${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is ${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is ${Y}')));
+                        'Expanded value', 'This is ${Y}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "This is $Y"', function(test, options) {
@@ -2949,9 +2956,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is @$Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is @$Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is @$Y')));
+                        'Expanded value', 'This is @$Y',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd \'This is @$Y\'', function(test, options) {
@@ -2965,9 +2972,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is @${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is @${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is @${Y}')));
+                        'Expanded value', 'This is @${Y}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "This is @$Y"', function(test, options) {
@@ -3045,9 +3052,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is {{$Y}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is {{$Y}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is {{$Y}}')));
+                        'Expanded value', 'This is {{$Y}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd \'This is {{${Y}}}\'', function(test, options) {
@@ -3061,9 +3068,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is {{${Y}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is {{${Y}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is {{${Y}}}')));
+                        'Expanded value', 'This is {{${Y}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "This is {{$Y}}"', function(test, options) {
@@ -3170,9 +3177,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{$Y .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{$Y .% #{##.00}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{$Y .% #{##.00}}}')));
+                        'Expanded value', '{{$Y .% #{##.00}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd \'{{${Y} .% #{##.00}}}\'', function(test, options) {
@@ -3185,9 +3192,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{${Y} .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{${Y} .% #{##.00}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{${Y} .% #{##.00}}}')));
+                        'Expanded value', '{{${Y} .% #{##.00}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd "{{$Y .% #{##.00}}}"', function(test, options) {
@@ -3350,9 +3357,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'$Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'$Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '$Y')));
+                        'Expanded value', '$Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd stuff=\'${Y}\'', function(test, options) {
@@ -3365,9 +3372,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '${Y}')));
+                        'Expanded value', '${Y}',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd stuff="$Y"', function(test, options) {
@@ -3378,7 +3385,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"$Y"',
+                        'Original value', '$Y',
                         'Expanded value tname', 'String',
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
@@ -3393,7 +3400,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"${Y}"',
+                        'Original value', '${Y}',
                         'Expanded value tname', 'String',
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
@@ -3440,9 +3447,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@$Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'@$Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '@$Y')));
+                        'Expanded value', '@$Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd stuff=\'@${Y}\'', function(test, options) {
@@ -3455,9 +3462,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'@${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '@${Y}')));
+                        'Expanded value', '@${Y}',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)));
     });
 
     this.it(':testCmd stuff="@$Y"', function(test, options) {
@@ -3468,7 +3475,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"@$Y"',
+                        'Original value', '@$Y',
                         'Expanded value tname', 'String',
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
@@ -3483,7 +3490,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"@${Y}"',
+                        'Original value', '@${Y}',
                         'Expanded value tname', 'String',
                         'Expanded value', '@$Y',
                         'Resolved value tname', 'Number',
@@ -3530,9 +3537,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{$Y}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{$Y}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{$Y}}')));
+                        'Expanded value', '{{$Y}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff=\'{{${Y}}}\'', function(test, options) {
@@ -3545,9 +3552,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{${Y}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{${Y}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{${Y}}}')));
+                        'Expanded value', '{{${Y}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="{{$Y}}"', function(test, options) {
@@ -3558,7 +3565,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{$Y}}"',
+                        'Original value', '{{$Y}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
@@ -3573,7 +3580,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{${Y}}}"',
+                        'Original value', '{{${Y}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '100',
                         'Resolved value tname', 'Number',
@@ -3620,9 +3627,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is $Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is $Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is $Y')));
+                        'Expanded value', 'This is $Y',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff=\'This is ${Y}\'', function(test, options) {
@@ -3635,9 +3642,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is ${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is ${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is ${Y}')));
+                        'Expanded value', 'This is ${Y}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="This is $Y"', function(test, options) {
@@ -3648,7 +3655,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is $Y"',
+                        'Original value', 'This is $Y',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
@@ -3663,7 +3670,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is ${Y}"',
+                        'Original value', 'This is ${Y}',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
@@ -3710,9 +3717,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is @$Y\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is @$Y\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is @$Y')));
+                        'Expanded value', 'This is @$Y',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff=\'This is @${Y}\'', function(test, options) {
@@ -3725,9 +3732,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is @${Y}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is @${Y}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is @${Y}')));
+                        'Expanded value', 'This is @${Y}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="This is @$Y"', function(test, options) {
@@ -3738,7 +3745,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is @$Y"',
+                        'Original value', 'This is @$Y',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is @$Y',
                         'Resolved value tname', 'Undefined',
@@ -3753,7 +3760,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is @${Y}"',
+                        'Original value', 'This is @${Y}',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is @$Y',
                         'Resolved value tname', 'Undefined',
@@ -3800,9 +3807,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is {{$Y}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is {{$Y}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is {{$Y}}')));
+                        'Expanded value', 'This is {{$Y}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff=\'This is {{${Y}}}\'', function(test, options) {
@@ -3815,9 +3822,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'This is {{${Y}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'This is {{${Y}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', 'This is {{${Y}}}')));
+                        'Expanded value', 'This is {{${Y}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="This is {{$Y}}"', function(test, options) {
@@ -3828,7 +3835,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is {{$Y}}"',
+                        'Original value', 'This is {{$Y}}',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
@@ -3843,7 +3850,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"This is {{${Y}}}"',
+                        'Original value', 'This is {{${Y}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', 'This is 100',
                         'Resolved value tname', 'Undefined',
@@ -3905,9 +3912,9 @@ function() {
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'{{$Y .% #{##.00}}}\'',
                         'Expanded value tname', 'String',
-                        'Expanded value', '\'{{$Y .% #{##.00}}}\'',
-                        'Resolved value tname', 'String',
-                        'Resolved value', '{{$Y .% #{##.00}}}')));
+                        'Expanded value', '{{$Y .% #{##.00}}}',
+                        'Resolved value tname', 'Undefined',
+                        'Resolved value', TP.UNDEF)));
     });
 
     this.it(':testCmd stuff="{{$Y .% #{##.00}}}"', function(test, options) {
@@ -3918,7 +3925,7 @@ function() {
             TP.hc(
                 'stuff',
                 TP.hc('Original value tname', 'String',
-                        'Original value', '"{{$Y .% #{##.00}}}"',
+                        'Original value', '{{$Y .% #{##.00}}}',
                         'Expanded value tname', 'String',
                         'Expanded value', '100.00',
                         'Resolved value tname', 'Number',
