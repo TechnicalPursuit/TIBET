@@ -70,6 +70,22 @@ function(newContent, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.tile.Inst.defineMethod('setModal',
+function(isModal) {
+
+    if (isModal) {
+        this.addClass('modal');
+        this.addClass('ALERT_TIER');
+    } else {
+        this.removeClass('modal');
+        this.removeClass('ALERT_TIER');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.tile.Inst.defineMethod('setRawContent',
 function(newContent, aRequest) {
 

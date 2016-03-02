@@ -1,0 +1,82 @@
+@namespace tsh url(http://www.technicalpursuit.com/1999/tshell);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+tsh|tag_assistant {
+
+    display: flex;
+    flex-direction: column;
+
+	position: absolute;
+
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+    right: 0px;
+}
+
+tsh|tag_assistant > .body {
+
+    position: relative;
+
+    flex-grow: 1;
+
+    top: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+tsh|tag_assistant > .body > form {
+
+    /*margin-left: 14px;*/
+
+    display: flex;
+    flex-direction: column;
+}
+
+tsh|tag_assistant > .body > form > * {
+
+    flex: 1 1 100px;
+}
+
+tsh|tag_assistant > .head {
+
+    left: 0px;
+    right: 0px;
+
+    display: none;
+}
+
+tsh|tag_assistant > .foot {
+
+    display: flex;
+    justify-content: flex-end;
+
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+
+    border-top: dotted 1px black;
+}
+
+tsh|tag_assistant > .foot > button {
+
+    margin-bottom: 2px;
+    margin-right: 2px;
+
+    font-size: 10px;
+
+    line-height: 0.8;
+
+    border: dotted 1px black;
+    background-color: transparent;
+}
+
+tsh|tag_assistant > #generatedCmdLine {
+
+    margin-top: 2px;
+    margin-bottom: 2px;
+
+    min-height: 1.5em;
+    border: dotted 1px black;
+}
+
