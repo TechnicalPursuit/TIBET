@@ -12,6 +12,128 @@
 
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Type.describe('Expansion Core',
+function() {
+
+    var inputVal,
+        correctResult,
+        shellDriver;
+
+    this.before(function(suite, options) {
+        inputVal = null;
+        correctResult = null;
+
+        shellDriver = TP.tsh.Driver.construct();
+
+        this.get('drivers').atPut('shell', shellDriver);
+    });
+
+    this.it('Can set initial shell variables', function(test, options) {
+        inputVal =
+            'x = 2 .; :set y 100 .; foo = undefined .; bar = null .; baz = 42';
+
+        //  Quiet the test harness. It needs at least one assert.
+        test.assert.isTrue(true);
+
+        shellDriver.execShellTest(test, inputVal);
+    });
+
+    this.it('Expands unquoted argv and param values to resolved values',
+    function(test, options) {
+        inputVal = ':testCmd $Y -first=$Y --second=$Y';
+        correctResult =
+            TP.hc(
+                'ARG0',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '$Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:first',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '$Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:second',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '$Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)
+            );
+
+        shellDriver.execOutputTest(test, inputVal, correctResult);
+    });
+
+    this.it('Expands double-quoted argv and param values to resolved strings',
+    function(test, options) {
+        inputVal = ':testCmd "$Y" -first="$Y" --second="$Y"';
+        correctResult =
+            TP.hc(
+                'ARG0',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '"$Y"',
+                        'Expanded value tname', 'String',
+                        'Expanded value', "100",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:first',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '"$Y"',
+                        'Expanded value tname', 'String',
+                        'Expanded value', "100",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:second',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '"$Y"',
+                        'Expanded value tname', 'String',
+                        'Expanded value', "100",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)
+            );
+
+        shellDriver.execOutputTest(test, inputVal, correctResult);
+    });
+
+    this.it('Expands single-quoted argv and param values to literal strings',
+    function(test, options) {
+        inputVal = ':testCmd \'$Y\' -first=\'$Y\' --second=\'$Y\'';
+        correctResult =
+            TP.hc(
+                'ARG0',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '\'$Y\'',
+                        'Expanded value tname', 'String',
+                        'Expanded value', "$Y",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:first',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '\'$Y\'',
+                        'Expanded value tname', 'String',
+                        'Expanded value', "$Y",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:second',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '\'$Y\'',
+                        'Expanded value tname', 'String',
+                        'Expanded value', "$Y",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)
+            );
+
+        shellDriver.execOutputTest(test, inputVal, correctResult);
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Type.describe('Shell command options expansion',
 function() {
 
@@ -41,7 +163,7 @@ function() {
 
     this.it('simple expansion', function(test, options) {
 
-        inputVal = ':testCmd -first --second --third=\'foo\' -fourth="bar"';
+        inputVal = ':testCmd -first --second --third=\'foo\' -fourth="bar" --fifth=$Y --sixth="$Y" --seventh=\'$Y\'';
         correctResult =
             TP.hc(
                 'tsh:first',
@@ -67,11 +189,32 @@ function() {
                         'Resolved value', TP.UNDEF),
                 'tsh:fourth',
                 TP.hc('Original value tname', 'String',
-                        'Original value', 'bar',
+                        'Original value', '"bar"',
                         'Expanded value tname', 'String',
                         'Expanded value', 'bar',
                         'Resolved value tname', 'Null',
-                        'Resolved value', TP.NULL)
+                        'Resolved value', TP.NULL),
+                'tsh:fifth',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '$Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:sixth',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '"$Y"',
+                        'Expanded value tname', 'String',
+                        'Expanded value', "100",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:seventh',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '\'$Y\'',
+                        'Expanded value tname', 'String',
+                        'Expanded value', '$Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
