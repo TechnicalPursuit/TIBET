@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('tiledock');
+TP.sherpa.TemplatedTag.defineSubtype('tiledock');
 
 TP.sherpa.tiledock.Inst.defineAttribute('tileEntries');
 

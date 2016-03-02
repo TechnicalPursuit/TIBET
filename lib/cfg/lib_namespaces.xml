@@ -133,6 +133,9 @@
     <script src="tibet/xmlns/tibet_content.js"/>
     <script src="tibet/xmlns/tibet_service.js"/>
     <script src="tibet/xmlns/tibet_style.js"/>
+
+    <script src="tibet/xmlns/tibet_tofu.js"/>
+    <property name="path.TP.tibet.tofu.style" value="~TP.tibet.tofu/tibet_tofu.css"/>
 </config>
 
 <config id="tsh">
@@ -143,6 +146,12 @@
     <script src="tsh/tsh_history.js"/>
     <script src="tsh/tsh_pp.js"/>
     <script src="tsh/tsh_script.js"/>
+
+    <script src="tsh/tsh_tag/tsh_tag.js"/>
+    <script src="tsh/tsh_tag/tsh_tag_assistant.js"/>
+    <property name="path.TP.tsh.tag_assistant.template" value="~TP.tsh.tag/tsh_tag_assistant.xhtml"/>
+    <property name="path.TP.tsh.tag_assistant.style" value="~TP.tsh.tag/tsh_tag_assistant.css"/>
+
     <script src="tsh/tsh_template.js"/>
     <script src="tsh/tsh_test.js"/>
     <script src="tsh/tsh_transform.js"/>

@@ -2,42 +2,50 @@
 @namespace pclass url(urn:tibet:pseudoclass);
 
 sherpa|tiledock {
+    width: 100%;
+    height: 100%;
+}
+
+sherpa|tiledock > ul {
 
     position: absolute;
-
-	top: 0px;
-	left: 0px;
-    right: 0px;
-    bottom: 0px;
+    top: 36px;
+    bottom: 0;
+    height: auto;
+    left: 0;
+    right: 0;
+    width: auto;
+    margin: 0;
+    padding: 0;
+    line-height: 18px;
+    color: #666;
+    font-size: 60%;
+    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-weight: normal;
 }
 
-sherpa|tiledock .tilelist {
+sherpa|tiledock > ul > li {
 
-    margin: 2px;
-    font-size: 10px;
-
-    text-align: center;
-
-    list-style: none;
+    height: 18px;
+    padding-left: 0.25em;
+    margin: 0.5em;
+    border: 1px solid #666;
+    border-radius: 9px;
     overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-sherpa|tiledock .tilelist li {
+sherpa|tiledock > ul > li:hover {
 
-    border: solid 1px black;
-    border-radius: 5px;
-
-    height: 1.5em;
-    line-height: 1.5em;
+    background: gold;
+    color: #666;
 }
 
-sherpa|tiledock .tilelist li:hover {
-
-    background-color: yellow;
+sherpa|tiledock > ul > li.warn {
+    color: orange;
 }
 
-sherpa|tiledock .tilelist li a {
-
-    text-decoration: none;
+sherpa|tiledock > ul > li.error {
+    color: red;
 }
 
