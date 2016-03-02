@@ -62,6 +62,8 @@ function() {
             '.|?*', '.&?*', '.|&?*',    //  pipe w/wo stderr
                                         //  (splatted filter)
 
+            '.?', '.?*', '.*',          //  shorthands
+
             '.||', '.&&',               //  conditional pipes
 
             '.>', '.&>', '.>&',         //  output w/wo stderr
@@ -2099,8 +2101,11 @@ function(aRequest) {
                 //  ---
 
                 case '.|':      //  stdout
-                case '.|?':     //  stdout
                 case '.|*':     //  stdout (and iterate)
+                case '.*':      //  stdout (and iterate)
+                case '.?':      //  stdout (and filter)
+                case '.|?':     //  stdout (and filter)
+                case '.?*':     //  stdout (iterate and filter)
                 case '.|?*':    //  stdout (iterate and filter)
 
                     cmdRequest.atPut(TP.STDOUT, TP.ac());
@@ -3579,6 +3584,7 @@ function(aRequest) {
     switch (pipe) {
         case '.|':
         case '.|*':
+        case '.*':
 
         case '.&':
         case '.&*':
@@ -3590,6 +3596,9 @@ function(aRequest) {
                 fname = 'cmdTransformInput';
             }
             break;
+
+        case '.?':
+        case '.?*':
 
         case '.|?':
         case '.|?*':
