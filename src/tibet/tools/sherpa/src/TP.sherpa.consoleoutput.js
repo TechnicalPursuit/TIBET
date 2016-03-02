@@ -382,6 +382,30 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineHandler('ShowTile',
+function(aSignal) {
+
+    var tileID,
+        tileTPElem;
+
+    if (TP.notEmpty(tileID = aSignal.at('tileID'))) {
+        tileID = tileID.unquoted();
+
+        if (TP.isValid(tileTPElem = TP.byId(tileID, this.getDocument()))) {
+            tileTPElem.setAttribute('hidden', false);
+        }
+
+    } else {
+        //  TODO: Log an exception
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.consoleoutput.Inst.defineMethod('scrollOutputToEnd',
 function() {
 
