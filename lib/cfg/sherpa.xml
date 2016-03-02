@@ -77,10 +77,6 @@
     <property name="path.TP.sherpa.methodeditor.template" value="~ide_root/xhtml/TP.sherpa.methodeditor.xhtml"/>
     <property name="path.TP.sherpa.methodeditor.style" value="~ide_root/css/TP.sherpa.methodeditor.css"/>
 
-    <script src="./src/TP.sherpa.elementeditor.js"/>
-    <property name="path.TP.sherpa.elementeditor.template" value="~ide_root/xhtml/TP.sherpa.elementeditor.xhtml"/>
-    <property name="path.TP.sherpa.elementeditor.style" value="~ide_root/css/TP.sherpa.elementeditor.css"/>
-
     <script src="./src/TP.sherpa.urieditor.js"/>
     <property name="path.TP.sherpa.urieditor.template" value="~ide_root/xhtml/TP.sherpa.urieditor.xhtml"/>
     <property name="path.TP.sherpa.urieditor.style" value="~ide_root/css/TP.sherpa.urieditor.css"/>
