@@ -1347,6 +1347,7 @@ function(src, ops, tsh, exp, alias, args) {
         token,
         count,
         index,
+        slice,
         close,
         shell,
         obj,

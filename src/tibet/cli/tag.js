@@ -431,7 +431,6 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
     cfgNode = this.readConfigNode(opts.pkgname, opts.cfgname);
     if (!cfgNode) {
         throw new Error('Unable to find ' + opts.pkgname + '#' + opts.cfgname);
-        return;
     }
 
     //  ---
@@ -487,7 +486,6 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
     cfgNode = this.readConfigNode(opts.pkgname, 'app_tests');
     if (!cfgNode) {
         throw new Error('Unable to find ' + opts.pkgname + '#' + opts.cfgname);
-        return;
     }
 
     value = opts.dirname + '/' + fqtagname + '_test.js';
@@ -498,7 +496,7 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
                 '    ',
                 '<script src="' + value + '"/>',
                 '');
-    };
+    }
 
     if (dirty) {
         this.addXMLLiteral(cfgNode, '\n');
