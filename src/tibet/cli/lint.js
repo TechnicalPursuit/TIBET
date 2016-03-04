@@ -921,7 +921,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                     return;
                 }
 
-                parseString(currentText, function (err, result) {
+                parseString(currentText, function(err, result) {
                     if (err) {
                         res.errors += 1;
                         cmd.error('Error in ' + current + ': ' + err);
@@ -929,7 +929,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 });
             },
             warn: function(msg) {
-                parseString(currentText, function (err, result) {
+                parseString(currentText, function(err, result) {
                     if (err) {
                         res.warnings += 1;
                         if (!cmd.options.quiet) {
@@ -963,7 +963,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 if (!doc || CLI.isValid(
                         doc.getElementsByTagName('parsererror')[0])) {
 
-                    parseString(text, function (err, result) {
+                    parseString(text, function(err, result) {
                         if (err) {
                             res.errors += 1;
                             cmd.error('Error in ' + file + ': ' + err);

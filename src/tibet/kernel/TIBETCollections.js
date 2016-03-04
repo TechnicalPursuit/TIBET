@@ -4563,10 +4563,8 @@ function() {
         i,
         pair,
         attrs,
-        keys,
         len,
         val,
-        newHash,
         inst;
 
     this.callNextMethod();
@@ -4588,14 +4586,20 @@ function() {
             } else if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
                 this.$set('$$hash', TP.constructOrphanObject(), false);
                 inst = this;
-                Object.keys(obj).forEach(function(key) {
-                    var value;
-                    value = obj[key];
-                    if (TP.isPlainObject(value) && !TP.isPrototype(value)) {
-                        value = TP.core.Hash.construct(value);
-                    }
-                    inst.atPut(key, TP.notDefined(value) ? null : value, false);
-                });
+                Object.keys(obj).forEach(
+                        function(key) {
+                            var value;
+
+                            value = obj[key];
+                            if (TP.isPlainObject(value) &&
+                                !TP.isPrototype(value)) {
+                                value = TP.core.Hash.construct(value);
+                            }
+
+                            inst.atPut(
+                                key,
+                                TP.notDefined(value) ? null : value);
+                        });
             } else if (TP.isArray(obj)) {
                 //  allocate internal hash - note that it is a prototype-less
                 //  object.
@@ -4664,10 +4668,10 @@ function() {
 
             //  arguments syntax 'a', 1, 'b', 2, 'c', 3
             for (i = 0; i < arguments.length; i += 2) {
-                value = arguments[i + 1];
+                val = arguments[i + 1];
                 this.atPut(
                     arguments[i],
-                    TP.notDefined(value) ? null : value,
+                    TP.notDefined(val) ? null : val,
                     false);
             }
             break;
