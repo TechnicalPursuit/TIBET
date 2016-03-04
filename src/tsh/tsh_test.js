@@ -150,7 +150,12 @@ function(aRequest) {
 
     } else {
 
-        obj = shell.resolveObjectReference(target, aRequest);
+        if (TP.isString(target)) {
+            obj = shell.resolveObjectReference(target, aRequest);
+        } else {
+            obj = target;
+        }
+
         if (TP.notValid(obj)) {
             aRequest.fail('Unable to resolve object: ' + target);
             return;
