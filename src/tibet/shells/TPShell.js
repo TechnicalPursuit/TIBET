@@ -1271,7 +1271,7 @@ function(aName, aValue) {
      * @method setVariable
      * @summary Sets the string value of a variable name. Note that variable
      *     names are normalized to uppercase $-prefixed values for storage in
-     *     the $SCOPE object. For example, aName of 'focus' will become '$focus'
+     *     the $SCOPE object. For example, aName of 'focus' will become '$FOCUS'
      *     for variable storage. The getVariable call follows this convention as
      *     well, so it is largely invisible except when examining the $SCOPE
      *     object.
