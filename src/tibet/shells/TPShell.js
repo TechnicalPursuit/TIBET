@@ -2166,12 +2166,8 @@ function(anObjectSpec, aRequest) {
         return anObjectSpec;
     }
 
-    if (anObjectSpec === '{}') {
-        return Object.construct();
-    }
-
-    if (anObjectSpec === '[]') {
-        return TP.ac();
+    if (anObjectSpec.charAt(0) === '{' || anObjectSpec.charAt(0) === '[') {
+        return TP.$tokenizedConstruct(anObjectSpec);
     }
 
     spec = anObjectSpec;
@@ -2618,6 +2614,7 @@ function(aRequest, allForms) {
         node,
         shell,
         args,
+        index,
         dict;
 
     if (TP.isValid(dict = aRequest.get('ARGUMENTS'))) {
@@ -2668,6 +2665,7 @@ function(aRequest, allForms) {
 
     args = TP.elementGetAttributes(node);
     dict = TP.hc();
+    index = 0;
 
     //  convert string values into their equivalent boolean forms and
     //  process any interpolations within attribute values
@@ -2679,6 +2677,13 @@ function(aRequest, allForms) {
                 argvParts,
                 parts,
                 val,
+                i,
+                len,
+                argvPart,
+                chunk,
+                stop,
+                part,
+                partName,
                 expandedVal,
                 reParts,
                 reText;
@@ -2691,9 +2696,9 @@ function(aRequest, allForms) {
                 dict.atPut('ARGV', argv);
 
                 argvParts = TP.$tokenizedSplit(value);
-                argvParts.forEach(function(argvPart, argIndex) {
-                    var part,
-                        partName;
+                len = argvParts.getSize();
+                for (i = 0; i < len; i++) {
+                    argvPart = argvParts[i];
 
                     //  Make sure to null out val and expandedVal
                     val = null;
@@ -2749,24 +2754,67 @@ function(aRequest, allForms) {
                     } else if (part.name === 'substitution' ||
                                 part.name === 'template' ||
                                 part.name === 'identifier') {
-                        val = part.value.unquoted();
+                        //  Before we unquote check for `substitution`. If
+                        //  we find those we need to expand content, then
+                        //  optionally resolve object references to see if we
+                        //  evaluated to a number, boolean, etc.
+                        if (part.value.charAt(0) === '`') {
+                            val = TP.tsh.cmd.expandContent(part.value,
+                                shell, aRequest);
+                            expandedVal = shell.resolveObjectReference(val);
+                            expandedVal = TP.ifUndefined(expandedVal, val);
+                        } else {
+                            val = part.value.unquoted();
+                        }
+
                         if (val.startsWith('${') && val.endsWith('}')) {
                             // This might not find a value, but if it
                             // does we essentially are resolving the
                             // identifier.
                             expandedVal = shell.getVariable(
                                 '$' + val.slice(2, -1));
+                        } else if (part.name === 'identifier') {
+                            expandedVal = shell.resolveObjectReference(
+                                part.value);
+                            expandedVal = TP.ifUndefined(expandedVal,
+                                part.value);
+                        }
+                    } else if (part.name === 'operator' &&
+                        (part.value.charAt(0) === '[' ||
+                         part.value.charAt(0) === '{')) {
+
+                        //  The trick here is that we're working with an array
+                        //  of parts split on whitespace, so we can have things
+                        //  like '[1' or 'a:' etc. We have to essentially scan
+                        //  for the closing token and then cause our index to
+                        //  adjust beyond the range of the object.
+                        if (argvPart === '[]') {
+                            expandedVal = [];
+                        } else if (argvPart === '{}') {
+                            expandedVal = {};
+                        } else {
+                            stop = part.value.charAt(0) === '[' ? ']' : '}';
+                            chunk = '';
+                            while (argvPart && argvPart.last() !== stop) {
+                                chunk += argvPart;
+                                i++;
+                                argvPart = argvParts[i];
+                            }
+
+                            if (argvPart && argvPart.last() === stop) {
+                                chunk += argvPart;
+                            }
+
+                            expandedVal = TP.$tokenizedConstruct(chunk);
                         }
                     } else {
                         expandedVal = part.value;
                     }
 
                     //  If we don't have an 'expanded value', then call
-                    //  upon the TP.tsh.cmd type to expand this content
-                    //  for us. Content expansion includes command
-                    //  substitution (i.e. `...` constructs) and
-                    //  template rendering but *not* variable
-                    //  substitution and/or object resolution.
+                    //  upon the TP.tsh.cmd type to expand / resolve the
+                    //  value. Which one depends on quoting and whether the
+                    //  value is an atomic variable reference or not.
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
@@ -2794,11 +2842,19 @@ function(aRequest, allForms) {
                         }
                     }
 
-
-                    part = TP.ac(part.value, expandedVal);
-                    dict.atPut('ARG' + argIndex, part);
+                    //  The value we use for the 'original' value depends on
+                    //  whether the initial value was quoted. When we get
+                    //  unquoted arguments (42, true, etc) we consider the
+                    //  original to be that value, not the string version.
+                    if (TP.regex.TSH_QUOTECHAR.test(part.value.charAt(0))) {
+                        part = TP.ac(part.value, expandedVal);
+                    } else {
+                        part = TP.ac(expandedVal, expandedVal);
+                    }
+                    dict.atPut('ARG' + index, part);
                     argv.push(part);
-                });
+                    index++;
+                }
 
             } else if (!TP.core.Shell.INVALID_ARGUMENT_MATCHER.test(name)) {
                 val = value;
@@ -2829,8 +2885,10 @@ function(aRequest, allForms) {
                         expandedVal = val.unquoted();
                         val = val.unquoted();
                     } else if (val.charAt(0) === '`') {
-                        //  We leave 'val' alone here and let it get expanded.
-                        void 0;
+                        val = TP.tsh.cmd.expandContent(value,
+                            shell, aRequest);
+                        expandedVal = shell.resolveObjectReference(val);
+                        expandedVal = TP.ifUndefined(expandedVal, val);
                     }
 
                     //  If we don't have an 'expanded value', then call upon the
@@ -2856,7 +2914,6 @@ function(aRequest, allForms) {
                         } else {
                             expandedVal = TP.tsh.cmd.expandContent(
                                                     val, shell, aRequest);
-
                             if (expandedVal === 'null') {
                                 expandedVal = null;
                             } else if (expandedVal === 'undefined') {
@@ -2866,7 +2923,15 @@ function(aRequest, allForms) {
                     }
                 }
 
-                dict.atPut(name, TP.ac(value, expandedVal));
+                //  The value we use for the 'original' value depends on
+                //  whether the initial value was quoted. When we get
+                //  unquoted arguments (42, true, etc) we consider the
+                //  original to be that value, not the string version.
+                if (TP.regex.TSH_QUOTECHAR.test(value.charAt(0))) {
+                    dict.atPut(name, TP.ac(value, expandedVal));
+                } else {
+                    dict.atPut(name, TP.ac(expandedVal, expandedVal));
+                }
             }
         });
 

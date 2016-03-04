@@ -790,9 +790,12 @@ function(src, ops, tsh, exp, alias, args) {
                             result.push(new_token('uri', str));
                         }
                     } else {
-                        // Actually a couple of options here, and one is that
-                        // we're looking at the start of an object literal...
-                        if (/^\{[$_a-zA-Z]+/.test(str)) {
+                        //  One special case to check here is {}, which will
+                        //  otherwise result in a single token value.
+                        if (str === '{}') {
+                            result.push(new_token('operator', '{'));
+                            result.push(new_token('operator', '}'));
+                        } else if (/^\{[$_a-zA-Z]+/.test(str)) {
                             result.push(new_token('operator', '{'));
                             result.push(new_token(
                                         identifier_type(str.slice(1)),
@@ -1328,6 +1331,142 @@ function(src, ops, tsh, exp, alias, args) {
 
     if (tsh && TP.sys.cfg('log.tsh_tokenize')) {
         TP.boot.$stdout(TP.json(result));
+    }
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+//  Token-based Utilities
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$tokenizedConstruct',
+function(src, ops, tsh, exp, alias, args) {
+
+    var tokens,
+        token,
+        count,
+        index,
+        close,
+        shell,
+        obj,
+        result,
+        i,
+        len,
+        parts;
+
+    if (TP.isEmpty(src)) {
+        return this.raise('InvalidParameter',
+            'Must provide token array or string.');
+    }
+
+    if (TP.isString(src)) {
+        tokens = TP.$tokenize(src,
+            TP.ifInvalid(ops, TP.tsh.script.$tshAndJSOperators),
+            TP.ifInvalid(tsh, true),
+            TP.ifInvalid(exp, false),
+            TP.ifInvalid(alias, false),
+            TP.ifInvalid(args, true));
+    } else if (TP.isArray(src)) {
+        tokens = src;
+    } else {
+        return this.raise('InvalidParameter',
+            'Must provide token array or string.');
+    }
+
+    shell = TP.bySystemId('TSHDefault');
+
+    parts = TP.ac();
+    token = tokens.shift();
+    switch (token.value) {
+        case '[':
+            token = tokens.shift();
+            while (token && token.value !== ']') {
+                //  Handle nested array or object references.
+                if (token.value === '[' || token.value === '{') {
+                    //  slice out tokens that comprise nested structure and
+                    //  invoke recursively to produce the result for the slot.
+                    close = token.value === '[' ? ']' : '}';
+                    count = 1;
+                    index = 0;
+                    while (count !== 0) {
+                        if (tokens[index].value === token.value) {
+                            count++;
+                        } else if (tokens[index].value === close) {
+                            count--;
+                        }
+                        index++;
+                    }
+
+                    //  Capture nested struct slice and build.
+                    slice = tokens.slice(0, index);
+                    slice.unshift(token);
+                    parts.push(TP.$tokenizedConstruct(slice));
+
+                    //  Remove nested content from list and continue.
+                    tokens = tokens.slice(index + 1);
+                    token = tokens[0];
+                }
+
+                //  Process remaining chunks.
+                if (!TP.$is_whitespace(token.name) &&
+                        token.name !== 'operator') {
+                    //  Try to get the best version of each token.
+                    obj = shell.resolveObjectReference(token.value);
+                    parts.push(TP.ifUndefined(obj, token.value));
+                }
+                token = tokens.shift();
+            }
+            result = Array.construct.apply(Array, parts);
+            break;
+        case '{':
+            token = tokens.shift();
+            while (token && token.value !== '}') {
+                //  Handle nested array or object references.
+                if (token.value === '[' || token.value === '{') {
+                    //  slice out tokens that comprise nested structure and
+                    //  invoke recursively to produce the result for the slot.
+                    close = token.value === '[' ? ']' : '}';
+                    count = 1;
+                    index = 0;
+                    while (count !== 0) {
+                        if (tokens[index].value === token.value) {
+                            count++;
+                        } else if (tokens[index].value === close) {
+                            count--;
+                        }
+                        index++;
+                    }
+
+                    //  Capture nested struct slice and build.
+                    slice = tokens.slice(0, index);
+                    slice.unshift(token);
+                    parts.push(TP.$tokenizedConstruct(slice));
+
+                    //  Remove nested content from list and continue.
+                    tokens = tokens.slice(index + 1);
+                    token = tokens[0];
+                }
+
+                if (!TP.$is_whitespace(token.name) &&
+                        token.name !== 'operator') {
+                    obj = shell.resolveObjectReference(token.value);
+                    parts.push(TP.ifUndefined(obj, token.value));
+                }
+                token = tokens.shift();
+            }
+
+            //  Parts should now contain an array containing key, value, key,
+            //  value, etc. So process that into an object form.
+            result = {};
+            len = parts.length;
+            for (i = 0; i < len; i += 2) {
+                result[parts[i].unquoted()] = parts[i + 1];
+            }
+            break;
+        default:
+            //  Only works on primitive array and object structures.
+            return;
     }
 
     return result;

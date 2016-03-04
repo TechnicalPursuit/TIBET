@@ -72,6 +72,140 @@ function() {
 
 });
 
+//  ------------------------------------------------------------------------
+
+TP.describe('$tokenizedConstruct',
+function(tokens) {
+
+    this.it('Can build up empty arrays', function(test, options) {
+        var str, obj;
+
+        str = '[]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj.length, 0);
+
+        str = '[ ]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj.length, 0);
+    });
+
+    this.it('Can build up simple arrays', function(test, options) {
+        var str, obj;
+
+        str = '[1,2,3]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj.length, 3);
+        test.assert.isEqualTo(obj[2], 3);
+
+        str = '[ 1, 2, 3 ]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj.length, 3);
+        test.assert.isEqualTo(obj[2], 3);
+    });
+
+    this.it('Can build up nested arrays', function(test, options) {
+        var str, obj;
+
+        str = '[ 1, ["a", "b"], 3 ]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj.length, 3);
+        test.assert.isEqualTo(obj[2], 3);
+        test.assert.isArray(obj[1]);
+        test.assert.isEqualTo(obj[1].length, 2);
+        test.assert.isEqualTo(obj[1][0], 'a');
+    });
+
+    this.it('Can build up empty objects', function(test, options) {
+        var str, obj;
+
+        str = '{}';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(TP.keys(obj).length, 0);
+
+        str = '{ }';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(TP.keys(obj).length, 0);
+    });
+
+    this.it('Can build up simple objects', function(test, options) {
+        var str, obj;
+
+        str = '{"a":1,"b":2,"c":3}';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(TP.keys(obj).length, 3);
+        test.assert.isEqualTo(obj.a, 1);
+
+        str = '{ "a": 1, "b": 2 , "c": 3 }';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(TP.keys(obj).length, 3);
+        test.assert.isEqualTo(obj.a, 1);
+    });
+
+    this.it('Can build up nested objects', function(test, options) {
+        var str, obj;
+
+        str = '{ "a": 1, "b": { "d": 4, "e": 5 } , "c": 3 }';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(TP.keys(obj).length, 3);
+        test.assert.isEqualTo(obj.a, 1);
+
+        test.assert.isPlainObject(obj.b);
+        test.assert.isEqualTo(TP.keys(obj.b).length, 2);
+        test.assert.isEqualTo(obj.b.d, 4);
+    });
+
+    this.it('Can build up mixed arrays', function(test, options) {
+        var str, obj;
+
+        str = '[ 1, { "a": 1, "b": 2 } , 3 ]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj[0], 1);
+        test.assert.isEqualTo(obj.length, 3);
+
+        test.assert.isPlainObject(obj[1]);
+        test.assert.isEqualTo(obj[1].b, 2);
+        test.assert.isEqualTo(TP.keys(obj[1]).length, 2);
+    });
+
+    this.it('Can build up mixed objects', function(test, options) {
+        var str, obj;
+
+        str = '{ "a": 1, "b": [ 1, 2, 3 ], "c": 3 }';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(obj.a, 1);
+        test.assert.isEqualTo(TP.keys(obj).length, 3);
+
+        test.assert.isArray(obj.b);
+        test.assert.isEqualTo(obj.b[1], 2);
+        test.assert.isEqualTo(obj.b.length, 3);
+    });
+
+});
+
 //  ========================================================================
 //  Run those babies!
 //  ------------------------------------------------------------------------

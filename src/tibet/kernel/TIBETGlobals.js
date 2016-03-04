@@ -1107,8 +1107,8 @@ TP.TRANSFORM = 'transform';
 TP.TSH_ADD_PIPES = ['.>>', '.>>!', '.&>>', '.&>>!', '.>>&', '.>>&!'];
 TP.TSH_GET_PIPES = ['.<', '.<!', '.<<'];
 TP.TSH_SET_PIPES = ['.>', '.>!', '.&>', '.&>!', '.>&', '.>&!'];
-TP.TSH_FILTER_PIPES = ['.|?', '.|?*', '.&?', '.&?*', '.|&?', '.|&?*'];
-TP.TSH_TRANSFORM_PIPES = ['.|', '.|*', '.&', '.&*', '.|&', '.|&*'];
+TP.TSH_FILTER_PIPES = ['.|?', '.|?*', '.&?', '.&?*', '.|&?', '.|&?*', '.?', '.?*'];
+TP.TSH_TRANSFORM_PIPES = ['.|', '.|*', '.&', '.&*', '.|&', '.|&*', '.*'];
 
 //  change notification keys
 
@@ -2533,7 +2533,9 @@ TP.regex.BINDING_STATEMENT_DETECT = /\[\[(.+?)\]\]/;
 TP.regex.BINDING_STATEMENT_EXTRACT = /\[\[(.+?)\]\]/g; // needs reset
 TP.regex.BINDING_ATTR_VALUE_DETECT = /\s*\{\s*\w+\s*:/;
 
+TP.regex.TSH_QUOTECHAR = /['"]/;
 
+TP.regex.TSH_VARIABLE = /^\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
 TP.regex.TSH_VARIABLE = /^\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
 TP.regex.TSH_VARIABLE_DEREF = /^@\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
 

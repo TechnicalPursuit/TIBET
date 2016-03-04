@@ -471,6 +471,7 @@ function(source, shell, sibling, request) {
      *     collection rather than pass the collection as the input value. An
      *     example might be:
      *
+     *     a.* b (pipe stdout and iterate over it)
      *     a.|* b (pipe stdout and iterate over it)
      *
      *     In addition to the splatting syntax which drives iteration by those
@@ -480,6 +481,7 @@ function(source, shell, sibling, request) {
      *     after the standard pipe symbol and before any trailing * (splat)
      *     operator:
      *
+     *     a .? b (pipe stdout and query it via b)
      *     a .|? b (pipe stdout and query it via b)
      *     a .|?* b (pipe stdout and query each item via b)
      *
@@ -858,6 +860,63 @@ function(source, shell, sibling, request) {
                             closer = '';
                             i += 1;
                             token = arr[i];
+
+                        } else if (token.value === '{') {
+
+                            //  TODO: deal with nested structures via a count
+
+                            chunk.length = 0;
+                            chunk.push(token.value);
+
+                            //  push all contiguous tokens which don't break
+                            //  whitespace or parse as terminators into the
+                            //  arg list
+                            i += 1;
+                            token = arr[i];
+                            while (token && token.value !== '}') {
+                                chunk.push(token.value);
+
+                                i += 1;
+                                token = arr[i];
+                            }
+
+                            if (token && token.value === '}') {
+                                chunk.push(token.value);
+                            }
+
+                            args.push(chunk.join(''));
+
+                            i += 1;
+                            token = arr[i];
+
+                        } else if (token.value === '[') {
+
+                            //  TODO: deal with nested structures via a count
+
+                            chunk.length = 0;
+                            chunk.push(token.value);
+
+                            //  push all contiguous tokens which don't break
+                            //  whitespace or parse as terminators into the
+                            //  arg list
+                            i += 1;
+                            token = arr[i];
+                            while (token && token.value !== ']') {
+                                chunk.push(token.value);
+
+                                i += 1;
+                                token = arr[i];
+                            }
+
+                            if (token && token.value === ']') {
+                                chunk.push(token.value);
+                            }
+
+                            args.push(chunk.join(''));
+
+                            i += 1;
+                            token = arr[i];
+
                         } else {
                             //  probably going to result in a syntax error
                             //  unless it happens to be a tag closing pair
