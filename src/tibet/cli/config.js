@@ -82,7 +82,6 @@ Cmd.prototype.USAGE = 'tibet config [property[=value]] [--env <env>]';
 Cmd.prototype.execute = function() {
     var cfg,
         option,
-        parts,
         keys,
         newcfg,
         str;
