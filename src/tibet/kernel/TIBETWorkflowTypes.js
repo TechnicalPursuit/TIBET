@@ -4483,8 +4483,8 @@ TP.core.Resource.defineSubtype('Service');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  storage for a default instance that will take the ID of the type itself
-//  with a suffix of 'Default' to identify it.
+//  storage for a default instance that will take the ID of the type itself but
+//  without any namespace prefixing (so typically just the 'service name'.
 TP.core.Service.Type.defineAttribute('defaultInstance');
 
 //  is the service registered to accept the initial request?
@@ -4521,7 +4521,7 @@ function(resourceID, aSignal) {
 
         //  Note here how we use the type's 'local name' (i.e. without the
         //  namespace) to compute the default service ID
-        id = TP.ifEmpty(resourceID, this.getLocalName() + 'Default');
+        id = TP.ifEmpty(resourceID, this.getLocalName());
 
         //  NOTE that not all services can construct instances without
         //  additional parameters...those that can't have to use constructed
@@ -4609,7 +4609,7 @@ function(aSignal) {
     //  take over for the type in terms of generic registrations
     //  Note here how we use the type's 'local name' (i.e. without the
     //  namespace) to compute the default service ID
-    id = this.getLocalName() + 'Default';
+    id = this.getLocalName();
     inst = this.getDefaultInstance(id, aSignal);
 
     //  turn off future invocations of the service as a request handler.

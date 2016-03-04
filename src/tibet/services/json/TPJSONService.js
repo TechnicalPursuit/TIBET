@@ -19,7 +19,7 @@
  *     all TP.sig.JSONRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'TP.core.JSONServiceDefault'.
+ *     system under the name 'JSONService'.
  *
  *     It is possible, however, to manually set up a server. To do so, execute
  *     the following:

@@ -20,9 +20,9 @@
  *     TP.google.GoogleContactsRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'TP.google.GoogleContactsServiceDefault'. It should
+ *     system under the name 'GoogleContactsService'. It should
  *     have a vCard entry in the currently executing project (with an 'FN' of
- *     'TP.google.GoogleContactsServiceDefault'). If this vCard cannot be found,
+ *     'GoogleContactsService'). If this vCard cannot be found,
  *     the user will be prompted to enter the information about the default
  *     server. If only part of the information is found the user can be prompted
  *     to enter the missing information.

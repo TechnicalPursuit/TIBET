@@ -19,9 +19,9 @@
  *     instantiated and registered to handle all TP.sig.GoogleDocsRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'TP.google.GoogleDocsServiceDefault'. It should have
+ *     system under the name 'GoogleDocsService'. It should have
  *     a vCard entry in the currently executing project (with an 'FN' of
- *     'TP.google.GoogleDocsServiceDefault'). If this vCard cannot be found, the
+ *     'GoogleDocsServiceDefault'). If this vCard cannot be found, the
  *     user will be prompted to enter the information about the default server.
  *     If only part of the information is found the user can be prompted to
  *     enter the missing information.

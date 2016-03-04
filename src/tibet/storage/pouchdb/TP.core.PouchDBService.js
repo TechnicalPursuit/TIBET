@@ -19,7 +19,7 @@
  *     handle all TP.sig.PouchDBRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'TP.core.PouchDBServiceDefault'.
+ *     system under the name 'PouchDBService'.
  *
  *     It is possible, however, to manually set up a server. To do so, execute
  *     the following:

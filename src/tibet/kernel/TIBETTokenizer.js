@@ -1375,7 +1375,7 @@ function(src, ops, tsh, exp, alias, args) {
             'Must provide token array or string.');
     }
 
-    shell = TP.bySystemId('TSHDefault');
+    shell = TP.bySystemId('TSH');
 
     parts = TP.ac();
     token = tokens.shift();

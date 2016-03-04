@@ -19,9 +19,9 @@
  *     handle all TP.core.WebDAVRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'WebDAVServiceDefault'. It should have a
+ *     system under the name 'WebDAVService'. It should have a
  *     vCard entry in the currently executing project (with an 'FN' of
- *     'WebDAVServiceDefault'). If this vCard cannot be found, the user will be
+ *     'WebDAVService'). If this vCard cannot be found, the user will be
  *     prompted to enter the information about the default server. If only part
  *     of the information is found the user can be prompted to enter the missing
  *     information.

@@ -20,7 +20,7 @@
  *     TP.sig.AmazonSimpleDBRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'AmazonSimpleDBServiceDefault'. It should have a
+ *     system under the name 'AmazonSimpleDBService'. It should have a
  *     vCard entry in the currently executing project. If this vCard cannot be
  *     found, the user will be prompted to enter the information about this
  *     server. If only part of the information can be found (i.e. the URL, but

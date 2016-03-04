@@ -20,7 +20,7 @@
  *     TP.sig.LocalDBStorageRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'TP.core.LocalDBStorageServiceDefault'.
+ *     system under the name 'LocalDBStorageService'.
  *
  *     It is possible, however, to manually set up a server. To do so, execute
  *     the following:

@@ -19,9 +19,9 @@
  *     all TP.sig.XMPPRequests.
  *
  *     This 'default' instance of the service will be registered with the
- *     system under the name 'TP.core.XMPPServiceDefault'. It should have a
+ *     system under the name 'XMPPService'. It should have a
  *     vCard entry in the currently executing project (with an 'FN' of
- *     'TP.core.XMPPServiceDefault'). If this vCard cannot be found, the user
+ *     'XMPPService'). If this vCard cannot be found, the user
  *     will be prompted to enter the information about the default server. If
  *     only part of the information is found the user can be prompted to enter
  *     the missing information.

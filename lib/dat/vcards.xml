@@ -31,7 +31,7 @@
     (XEP-124) connection -->
     <vCard xmlns="vcard-temp">
         <VERSION>1.1</VERSION>
-        <FN>XMPPServiceDefault</FN>
+        <FN>XMPPService</FN>
         <N>localhost</N>
         <DESC>The default Jabber server</DESC>
         <URL>http://localhost:5280/http-bind/</URL>
@@ -41,7 +41,7 @@
     <!-- The Amazon S3 server's vCard -->
     <vCard xmlns="vcard-temp">
         <VERSION>1.1</VERSION>
-        <FN>AmazonS3ServiceDefault</FN>
+        <FN>AmazonS3Service</FN>
         <DESC>The Amazon S3 Service</DESC>
 
         <!-- Note no trailing slash here! -->
@@ -57,7 +57,7 @@
     <!-- The WebDAV test server's vCard -->
     <vCard xmlns="vcard-temp">
         <VERSION>1.1</VERSION>
-        <FN>WebDAVServiceDefault</FN>
+        <FN>WebDAVService</FN>
         <DESC>The WebDAV test Service</DESC>
         <URL>http://localhost:1407/_tds/webdav/</URL>
         <X-IS-WEBDAV>true</X-IS-WEBDAV>
