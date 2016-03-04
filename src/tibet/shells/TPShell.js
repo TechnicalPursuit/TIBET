@@ -1163,7 +1163,7 @@ function(anIndex, afterExpansion) {
             return;
         }
 
-        //  have to skip the current command here...
+        //  have to skip the current command here or we'll just find that.
         list = this.$get('history').slice(0, -1);
         request = list.reverse().detect(
                             function(req) {

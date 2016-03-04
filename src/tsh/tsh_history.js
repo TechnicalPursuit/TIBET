@@ -68,7 +68,7 @@ function(aRequest) {
     shell = aRequest.at('cmdShell');
 
     hid = TP.elementGetAttribute(node, 'tsh:hid', true);
-    if (TP.isEmpty(hid)) {
+    if (TP.isEmpty(hid) || hid === '?') {
         entries = TP.hc();
         count = 0;
 
@@ -263,10 +263,15 @@ function(aString, aRequest, aShell) {
             return;
         }
 
-        //  If the user specified a negative index, then we need to actually
-        //  subtract 1 since '-1' should refer to the command just executed.
+        //  Indexes are off by one due to the current entry.
+        num -= 1;
+
+        //  If the user specified a negative index, then we need to adjust the
+        //  index to be the current history list size minus that number of
+        //  entries (per normal sh behavior)
         if (aString.charAt(0) === '-') {
-            num -= 1;
+            //  Note we add here. Since value is negative,we'll back up.
+            num = aShell.getHistory().getSize() + num;
         }
 
         cmd = aShell.getHistory(num, true);
