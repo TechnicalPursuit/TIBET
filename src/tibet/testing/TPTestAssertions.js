@@ -749,6 +749,21 @@ function(anObject, aComment) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.TestMethodCollection.defineAssertion('isPlainObject',
+function(anObject, aComment) {
+
+    if (!this.assertMinArguments(arguments, 1)) {
+        return false;
+    }
+
+    return this.assert(
+            TP.isPlainObject(anObject),
+            aComment,
+            TP.sc('Expected ', TP.id(anObject), ' to be a "plain" Object.'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.TestMethodCollection.defineAssertion('isRegExp',
 function(anObject, aComment) {
 
