@@ -2941,6 +2941,10 @@ function(aRequest, allForms) {
 
     aRequest.set('ARGUMENTS', dict);
 
+    if (this.getVariable('LOGARGS')) {
+        TP.info('TSH args: ' + TP.dump(dict));
+    }
+
     if (TP.isTrue(allForms)) {
         return dict;
     } else {
