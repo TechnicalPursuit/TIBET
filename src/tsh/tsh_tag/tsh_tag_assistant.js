@@ -16,7 +16,7 @@
 
 TP.core.CustomTag.defineSubtype('tsh.tag_assistant');
 
-TP.tsh.tag_assistant.Inst.defineAttribute('sourceObject');
+TP.tsh.tag_assistant.Inst.defineAttribute('originalRequest');
 
 TP.tsh.tag_assistant.Inst.defineAttribute(
         'head',
@@ -28,7 +28,7 @@ TP.tsh.tag_assistant.Inst.defineAttribute(
 
 TP.tsh.tag_assistant.Inst.defineAttribute(
         'generatedCmdLine',
-        {value: TP.cpc('> #generatedCmdLine', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .body > #generatedCmdLine', TP.hc('shouldCollapse', true))});
 
 TP.tsh.tag_assistant.Inst.defineAttribute(
         'foot',
@@ -78,8 +78,7 @@ function(info) {
         val;
 
     str = ':tag ' +
-            info.at('topLevelNS') + '.' +
-            info.at('tagName');
+            info.at('topLevelNS') + '.' + info.at('tagNSAndName');
 
     if (TP.notEmpty(val = info.at('package'))) {
         str += ' --package=\'' + val + '\'';
@@ -131,8 +130,77 @@ function() {
     tagInfo = TP.hc(data).at('info');
 
     str = this.generateCommand(tagInfo);
-
     this.get('generatedCmdLine').setTextContent(str);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.tag_assistant.Inst.defineMethod('setOriginalRequest',
+function(anObj) {
+
+    var shell,
+        args,
+
+        tagInfo,
+
+        name,
+        nameParts,
+
+        modelURI,
+
+        str;
+
+    this.$set('originalRequest', anObj);
+
+    shell = anObj.at('cmdShell');
+    args = shell.getArguments(anObj);
+
+    tagInfo = TP.hc();
+
+    name = args.at('tsh:name');
+    if (TP.notEmpty(name)) {
+        nameParts = name.split(/[:.]/g);
+
+        if (nameParts.getSize() === 3) {
+            tagInfo.atPut('topLevelNS', nameParts.at(0));
+            tagInfo.atPut('tagNSAndName',
+                            nameParts.at(1) + '.' + nameParts.at(2));
+        } else if (nameParts.getSize() === 2) {
+            tagInfo.atPut('topLevelNS', 'APP');
+            tagInfo.atPut('tagNSAndName',
+                            nameParts.at(0) + '.' + nameParts.at(1));
+        } else if (nameParts.getSize() === 1) {
+            tagInfo.atPut('topLevelNS', 'APP');
+            tagInfo.atPut('tagNSAndName',
+                            TP.sys.cfg('project.name') + '.' + nameParts.at(0));
+        }
+    } else {
+        tagInfo.atPut('topLevelNS', 'APP');
+        tagInfo.atPut('tagNSAndName', '');
+    }
+
+    tagInfo.atPut('package',
+                    TP.ifInvalid(args.at('tsh:package'), ''));
+    tagInfo.atPut('config',
+                    TP.ifInvalid(args.at('tsh:config'), ''));
+    tagInfo.atPut('dir',
+                    TP.ifInvalid(args.at('tsh:dir'), ''));
+    tagInfo.atPut('compiled',
+                    TP.ifInvalid(TP.bc(args.at('tsh:compiled')), false));
+    tagInfo.atPut('template',
+                    TP.ifInvalid(args.at('tsh:template'), ''));
+    tagInfo.atPut('style',
+                    TP.ifInvalid(args.at('tsh:style'), ''));
+
+    str = this.generateCommand(tagInfo);
+    this.get('generatedCmdLine').setTextContent(str);
+
+    modelURI = TP.uc('urn:tibet:tag_cmd_source');
+    modelURI.getResource().get('result').set('$.info', tagInfo);
+
+    this.observe(modelURI, 'ValueChange');
 
     return this;
 });
@@ -141,14 +209,6 @@ function() {
 
 TP.tsh.tag_assistant.Inst.defineMethod('setSourceObject',
 function(anObj) {
-
-    var modelURI;
-
-    this.$set('sourceObject', anObj);
-
-    modelURI = TP.uc('urn:tibet:tag_cmd_source');
-
-    this.observe(modelURI, 'ValueChange');
 
     return this;
 });
