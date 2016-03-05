@@ -82,6 +82,7 @@
 </config>
 
 <config id="collections">
+    <script src="~lib_test/src/tibet/collections/Array_Tests.js" />
     <script src="~lib_test/src/tibet/collections/TP.core.Hash_Tests.js" />
 </config>
 
