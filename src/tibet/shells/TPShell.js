@@ -1026,7 +1026,7 @@ function(aRequest) {
      */
 
     var list,
-
+        root,
         cmd,
 
         histmax,
@@ -1038,7 +1038,9 @@ function(aRequest) {
 
     list = this.get('history');
 
-    cmd = aRequest.at('cmd');
+    root = TP.ifInvalid(aRequest.at('rootRequest'), aRequest);
+
+    cmd = root.at('cmd');
     cmd = cmd.trim();
 
     //  no matter what, we reset the history index to the end so any
@@ -1063,7 +1065,7 @@ function(aRequest) {
         }
     }
 
-    list.add(aRequest);
+    list.add(root);
     offset = list.getSize() - histmax;
     if (offset > 0) {
         //  We're over the history maximum. Since history is LRU, we shift off
