@@ -344,6 +344,7 @@ function(cellGroupElem, uniqueID, dataRecord) {
         tileContentTPElem.awaken();
 
         tileContentTPElem.set('sourceObject', operationTarget);
+        tileContentTPElem.set('originalRequest', dataRecord.at('request'));
     }
 
     if (TP.isTrue(dataRecord.at('tiledModal'))) {
