@@ -234,7 +234,6 @@ function(uniqueID, dataRecord) {
         cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
 
         cmdText = TP.ifInvalid(dataRecord.at('cmdText'), '');
-        cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
 
         //  If there's ACP in the text, we need to escape it before feeding it
         //  into the template transformation machinery.
@@ -287,8 +286,7 @@ function(cellGroupElem, uniqueID, dataRecord) {
      * @method createTiledOutput
      */
 
-    var doc,
-        cmdText,
+    var cmdText,
 
         tileID,
 
@@ -301,18 +299,18 @@ function(cellGroupElem, uniqueID, dataRecord) {
 
         tileContentTPElem,
 
-        curtainTPElem;
-
-    doc = this.getNativeDocument();
+        curtainTPElem,
+        handler;
 
     cmdText = TP.byCSSPath('.header .content',
                             cellGroupElem,
                             true).getTextContent();
 
     tileID = uniqueID + '_tile';
-    tileTPElem = TP.bySystemId('Sherpa').makeTile(
-                        tileID,
-                        TP.documentGetBody(doc));
+
+    //  We don't supply a parent to the makeTile() call, so it will be placed in
+    //  the common tile tier.
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID);
 
     tileTPElem.set('headerText', cmdText);
 
@@ -346,6 +344,7 @@ function(cellGroupElem, uniqueID, dataRecord) {
         tileContentTPElem.awaken();
 
         tileContentTPElem.set('sourceObject', operationTarget);
+        tileContentTPElem.set('originalRequest', dataRecord.at('request'));
     }
 
     if (TP.isTrue(dataRecord.at('tiledModal'))) {
@@ -356,9 +355,20 @@ function(cellGroupElem, uniqueID, dataRecord) {
                 curtainTPElem = TP.byId('systemCurtain', this.getDocument()))) {
             curtainTPElem.setAttribute('hidden', false);
         }
-    }
 
-    tileTPElem.toggle('hidden');
+        tileTPElem.toggle('hidden');
+
+        handler = function() {
+            handler.ignore(tileTPElem, 'HiddenChange');
+            curtainTPElem.setAttribute('hidden', true);
+
+            TP.byId('SherpaConsole', TP.win('UIROOT')).focusInput();
+        };
+
+        handler.observe(tileTPElem, 'HiddenChange');
+    } else {
+        tileTPElem.toggle('hidden');
+    }
 
     return tileID;
 });

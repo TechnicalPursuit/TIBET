@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 
-<tsh:tag_assistant>
+<tsh:tag_assistant tibet:nomutationtracking="true">
     <div class="head">
         <tibet:data name="urn:tibet:tag_cmd_source">
             <![CDATA[
             {
                 "info": {
                     "topLevelNS":"APP",
-                    "tagName": "",
+                    "tagNSAndName": "",
                     "package":"",
                     "config":"",
                     "dir":"",
@@ -21,37 +21,34 @@
     </div>
     <div class="body">
         <form>
-            <span>
+            <div class="form_content">
             <label>Tag top-level namespace:</label>
+            <span>
                 <input type="radio" name="namespace_radio" value="TP" id="topLevelNSRadio1" bind:io="{checked: urn:tibet:tag_cmd_source#jpath($.info.topLevelNS)}"/><label for="topLevelNSRadio1">TP</label>
                 <input type="radio" name="namespace_radio" value="APP" id="topLevelNSRadio2" bind:io="{checked: urn:tibet:tag_cmd_source#jpath($.info.topLevelNS)}"/><label for="topLevelNSRadio1">APP</label>
             </span>
-            <span>
-            <label>Tag name:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.tagName)}"/>
-            </span>
-            <span>
+
+            <label>Tag name:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.tagNSAndName)}"/>
+
             <label>Package:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.package)}"/>
-            </span>
-            <span>
+
             <label>Config:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.config)}"/>
-            </span>
-            <span>
+
             <label>Directory:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.dir)}"/>
-            </span>
+
+            <label for="colorCheckbox1">Compiled</label>
             <span>
-            <label for="colorCheckbox1">Compiled</label><input type="checkbox" name="compiled_checkbox" id="colorCheckbox1" bind:io="{checked: urn:tibet:tag_cmd_source#jpath($.info.compiled)}"/>
-            </span>
-            <span>
-            <label>Template:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.template)}"/>
-            </span>
-            <span>
-            <label>Style:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.style)}"/>
+                <input type="checkbox" name="compiled_checkbox" id="colorCheckbox1" bind:io="{checked: urn:tibet:tag_cmd_source#jpath($.info.compiled)}"/>
             </span>
 
+            <label>Template:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.template)}"/>
+
+            <label>Style:</label><input type="text" bind:io="{value: urn:tibet:tag_cmd_source#jpath($.info.style)}"/>
+            </div>
         </form>
+        <code id="generatedCmdLine"/>
     </div>
-    <div id="generatedCmdLine"/>
     <div class="foot">
-        <button on:click="TP.sig.DoInput">Do it!</button>
+        <button on:click="TP.sig.DoInput">Run in TSH</button>
     </div>
 </tsh:tag_assistant>

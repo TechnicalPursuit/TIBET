@@ -395,13 +395,22 @@ TP.core.Sherpa.Inst.defineMethod('makeTile',
 function(anID, tileParent) {
 
     var tileTPElem,
-        tileTemplateTPElem;
+        tileTemplateTPElem,
+
+        parent;
 
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
                             'template',
                             TP.ietf.Mime.XHTML);
 
-    tileTPElem = TP.wrap(tileParent).addContent(tileTemplateTPElem);
+    parent = tileParent;
+
+    if (!TP.isElement(parent) &&
+        !TP.isKindOf(parent, TP.core.ElementNode)) {
+        parent = TP.byId('commonTileLayer', this.get('vWin'));
+    }
+
+    tileTPElem = TP.wrap(parent).addContent(tileTemplateTPElem);
 
     tileTPElem.setID(anID);
     tileTPElem.awaken();
