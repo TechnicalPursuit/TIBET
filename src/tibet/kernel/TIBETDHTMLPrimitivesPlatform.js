@@ -1375,16 +1375,11 @@ TP.hc(
         pixelFunc = function(cssName) {
             var pixelVal;
 
-            pixelVal = computedStyle.getPropertyCSSValue(cssName).
-                                    getFloatValue(CSSPrimitiveValue.CSS_PX);
-
-
-            if (TP.isTrue(wantsTransformed)) {
-                pixelVal = TP.elementTransformCSSPixelValue(
-                                                    anElement,
-                                                    pixelVal,
-                                                    cssName.asDOMName());
-            }
+            pixelVal = TP.elementGetPixelValue(
+                            anElement,
+                            computedStyle.getPropertyValue(cssName),
+                            cssName.asDOMName(),
+                            wantsTransformed);
 
             return pixelVal;
         };
@@ -1589,16 +1584,11 @@ TP.hc(
         pixelFunc = function(cssName) {
             var pixelVal;
 
-            pixelVal = computedStyle.getPropertyCSSValue(cssName).
-                                    getFloatValue(CSSPrimitiveValue.CSS_PX);
-
-
-            if (TP.isTrue(wantsTransformed)) {
-                pixelVal = TP.elementTransformCSSPixelValue(
-                                                    anElement,
-                                                    pixelVal,
-                                                    cssName.asDOMName());
-            }
+            pixelVal = TP.elementGetPixelValue(
+                            anElement,
+                            computedStyle.getPropertyValue(cssName),
+                            cssName.asDOMName(),
+                            wantsTransformed);
 
             return pixelVal;
         };
@@ -1907,16 +1897,11 @@ TP.hc(
         pixelFunc = function(cssName) {
             var pixelVal;
 
-            pixelVal = computedStyle.getPropertyCSSValue(cssName).
-                                    getFloatValue(CSSPrimitiveValue.CSS_PX);
-
-
-            if (TP.isTrue(wantsTransformed)) {
-                pixelVal = TP.elementTransformCSSPixelValue(
-                                                    anElement,
-                                                    pixelVal,
-                                                    cssName.asDOMName());
-            }
+            pixelVal = TP.elementGetPixelValue(
+                            anElement,
+                            computedStyle.getPropertyValue(cssName),
+                            cssName.asDOMName(),
+                            wantsTransformed);
 
             return pixelVal;
         };

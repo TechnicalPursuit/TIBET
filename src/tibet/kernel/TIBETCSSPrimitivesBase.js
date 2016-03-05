@@ -802,12 +802,13 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  exception when attempting to get the computed value, especially on the
     //  'body' element.
     try {
-        //  Get the value in pixels by using the 'getPropertyCSSValue' call of
+        //  Get the value in pixels by using the 'getPropertyValue' call of
         //  the computed style, asking for 'pixels' as type of the return value.
-        valueInPixels =
-            parseInt(computedStyle.getPropertyCSSValue(
-                                targetPropName).getFloatValue(
-                                    CSSPrimitiveValue.CSS_PX), 10);
+        valueInPixels = TP.elementGetPixelValue(
+                        anElement,
+                        computedStyle.getPropertyValue(targetPropName),
+                        targetPropName.asDOMName(),
+                        wantsTransformed);
     } catch (e) {
         //  Can't compute the value anyway, so just return 0.
         return 0;
