@@ -2218,7 +2218,7 @@ function(anObject, aFilter, aDiscriminator) {
         obj = anObject;
 
         do {
-            arr.push(Object.keys(obj));
+            arr.push(TP.objectGetKeys(obj));
             obj = Object.getPrototypeOf(obj);
         } while (obj);
 

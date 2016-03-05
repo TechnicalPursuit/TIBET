@@ -4522,7 +4522,7 @@ function() {
         thisArg = this;
         processMap = {};
 
-        Object.keys(thisArg.typeMap).forEach(
+        TP.objectGetKeys(thisArg.typeMap).forEach(
                 function(n) {
                     processMap[n] = thisArg.typeMap[n].slice();
                 });

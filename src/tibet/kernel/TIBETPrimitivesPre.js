@@ -996,7 +996,7 @@ TP.boot.PHash = function() {
         arr = TP.ac();
         arr.push('TP.hc(');
 
-        keys = Object.keys(this.$$hash);
+        keys = TP.objectGetKeys(this.$$hash);
         length = keys.length;
 
         for (j = 0; j < length; j++) {
@@ -1284,7 +1284,7 @@ TP.boot.PHash = function() {
 
         arr = TP.ac();
 
-        keys = Object.keys(this.$$hash);
+        keys = TP.objectGetKeys(this.$$hash);
         length = keys.length;
 
         for (j = 0; j < length; j++) {
@@ -1315,7 +1315,7 @@ TP.boot.PHash = function() {
          * @returns {Array} An array containing the receiver's keys.
          */
 
-        return Object.keys(this.$$hash);
+        return TP.objectGetKeys(this.$$hash);
     };
 
     //  register with TIBET by hand
@@ -1363,7 +1363,7 @@ TP.boot.PHash = function() {
          * @returns {Number} The size.
          */
 
-        return Object.keys(this.$$hash).length;
+        return TP.objectGetKeys(this.$$hash).length;
     };
 
     //  register with TIBET by hand
@@ -1415,7 +1415,7 @@ TP.boot.PHash = function() {
 
         arr = TP.ac();
 
-        keys = Object.keys(this.$$hash);
+        keys = TP.objectGetKeys(this.$$hash);
         length = keys.length;
 
         for (j = 0; j < length; j++) {
@@ -1447,7 +1447,7 @@ TP.boot.PHash = function() {
          */
 
         // Nothing on Object.prototype, this should work.
-        return Object.keys(this.$$hash).indexOf(aKey) !== -1;
+        return TP.objectGetKeys(this.$$hash).indexOf(aKey) !== -1;
     };
 
     //  register with TIBET by hand
@@ -1480,7 +1480,7 @@ TP.boot.PHash = function() {
 
         item = TP.ac();
 
-        keys = Object.keys(this.$$hash);
+        keys = TP.objectGetKeys(this.$$hash);
         length = keys.length;
 
         for (j = 0; j < length; j++) {
@@ -9330,7 +9330,7 @@ function(anObj) {
         }
     }
 
-    return Object.keys(anObj).getSize() === 0;
+    return TP.objectGetKeys(anObj).getSize() === 0;
 });
 
 //  ------------------------------------------------------------------------
@@ -9614,95 +9614,70 @@ TP.sys.$xhrkeys = TP.ac(
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('$getOwnKeys',
+TP.definePrimitive('objectGetKeys',
 function(anObject) {
+
+    /**
+     * @method objectGetKeys
+     * @summary Returns an Array of the 'own keys' for the supplied object.
+     *     Essentially Object.keys, but with a try/catch fallback.
+     * @param {Object} anObject The object to obtain the keys for.
+     * @returns {Array} An Array of the supplied Object's own keys.
+     */
+
+    var keys;
+
+    if (anObject === null || anObject === undefined) {
+        return [];
+    }
+
+    try {
+        keys = Object.keys(anObject);
+    } catch (e) {
+        keys = [];
+        for (key in anObject) {
+            if (anObject.hasOwnProperty(key)) {
+                keys.push(key);
+            }
+        }
+    }
+
+    return keys;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$getOwnKeys',
+function(anObject, internals) {
 
     /**
      * @method $getOwnKeys
      * @summary Returns an Array of the 'own keys' for the supplied object.
      *     These are keys for which the object has a unique value.
      * @param {Object} anObject The object to obtain the keys for.
+     * @param {Boolean} [internals=false] Should internal slots be returned as
+     *     well?
      * @returns {Array} An Array of the supplied Object's own keys.
      */
 
-    var keys,
-        ownKeys,
-        len,
-        i,
-        key;
+    var keys;
 
-    if (TP.notValid(anObject)) {
-        return this.raise('InvalidParameter');
-    }
+    //  Object.keys is fastest, but doesn't always cooperate.
+    keys = TP.objectGetKeys(anObject);
 
+    len = keys.getSize();
     ownKeys = TP.ac();
 
-    //  ECMA edition 5 defines the nice, new 'Object.keys()' method. If its
-    //  available, we use it.
-    if (TP.isCallable(Object.keys)) {
-        keys = Object.keys(anObject);
-
-        len = keys.getSize();
-
-        //  If the object is the TP.ObjectProto, then we have to check for DNUs
-        //  as well...
-        if (anObject === TP.ObjectProto) {
-            //  Make sure there are no 'internal slots' that we don't want
-            //  to expose and that there are no DNUs.
-            for (i = 0; i < len; i++) {
-                if (TP.$$isDNU(anObject[keys.at(i)]) ||
-                    TP.regex.INTERNAL_SLOT.test(keys.at(i))) {
-                    continue;
-                } else {
-                    ownKeys.push(keys.at(i));
-                }
-            }
-        } else {
-            //  Make sure there are no 'internal slots' that we don't want
-            //  to expose
-            for (i = 0; i < len; i++) {
-                if (TP.regex.INTERNAL_SLOT.test(keys.at(i))) {
-                    continue;
-                } else {
-                    ownKeys.push(keys.at(i));
-                }
-            }
+    for (i = 0; i < len; i++) {
+        if (anObject === TP.ObjectProto && TP.$$isDNU(anObject[keys.at(i)])) {
+            continue;
         }
 
-        return ownKeys;
-    }
-
-    //  Otherwise, we've got to do this the 'old' way - loop over the object
-    //  and check its keys.
-
-    //  If the object is the TP.ObjectProto, then we have to check for DNUs as
-    //  well...
-    if (anObject === TP.ObjectProto) {
-        //  If its TP.ObjectProto (i.e. 'TP.ObjectProto'), iterate and test
-        //  against our internal slot regex (to filter things like '$$'
-        //  keys, etc.), make sure the slot name is for a slot that actually
-        //  belongs to the object and make sure its not a DNU.
-        /* jshint forin:true */
-        for (key in anObject) {
-            if (!TP.owns(anObject, key) || TP.regex.INTERNAL_SLOT.test(key)) {
-                continue;
-            }
-
-            ownKeys.push(key);
+        if (internals !== true && TP.regex.INTERNAL_SLOT.test(keys.at(i))) {
+            continue;
         }
-        /* jshint forin:false */
-    } else {
-        //  Otherwise, just iterate and test against our internal slot regex
-        //  (to filter things like '$$' keys, etc.) and make sure the
-        //  slot name is for a slot that actually belongs to the object.
-        for (key in anObject) {
-            if (!TP.owns(anObject, key) ||
-                TP.regex.INTERNAL_SLOT.test(key)) {
-                continue;
-            }
 
-            ownKeys.push(key);
-        }
+        ownKeys.push(keys.at(i));
     }
 
     return ownKeys;

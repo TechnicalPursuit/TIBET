@@ -4151,7 +4151,7 @@ function(targetObj, varargs) {
                                     resultKeys;
 
                                 result = TP.$xml2jsonObj(item);
-                                resultKeys = Object.keys(result);
+                                resultKeys = TP.objectGetKeys(result);
 
                                 //  If the converted data structure only has 1
                                 //  key, then return the object at that key.
@@ -4164,7 +4164,7 @@ function(targetObj, varargs) {
         } else if (TP.isNode(retVal)) {
 
             retVal = TP.$xml2jsonObj(retVal);
-            retValKeys = Object.keys(retVal);
+            retValKeys = TP.objectGetKeys(retVal);
 
             //  If the converted data structure only has 1 key, then return the
             //  object at that key.

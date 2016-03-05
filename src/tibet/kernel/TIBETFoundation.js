@@ -3073,7 +3073,7 @@ function(aFilter) {
         obj = this;
 
         do {
-            keys.push(Object.keys(obj));
+            keys.push(TP.objectGetKeys(obj));
             obj = Object.getPrototypeOf(obj);
         } while (obj);
 
