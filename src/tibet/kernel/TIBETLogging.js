@@ -78,7 +78,8 @@ function(aName) {
 
     var name;
 
-    name = aName.toLowerCase();
+    name = (aName === TP.log.Manager.ROOT_LOGGER_NAME) ? aName :
+        aName.toLowerCase();
 
     return TP.isValid(this.loggers.at(name));
 });
@@ -104,7 +105,8 @@ function(aName) {
         return this.raise('InvalidName');
     }
 
-    name = aName.toLowerCase();
+    name = (aName === TP.log.Manager.ROOT_LOGGER_NAME) ? aName :
+        aName.toLowerCase();
     logger = this.loggers.at(name);
 
     if (TP.isValid(logger)) {
@@ -197,7 +199,10 @@ function(aLogger) {
         return this.raise('DuplicateRegistration', name);
     }
 
-    this.loggers.atPut(name.toLowerCase(), aLogger);
+    name = (name === TP.log.Manager.ROOT_LOGGER_NAME) ? name :
+        name.toLowerCase();
+
+    this.loggers.atPut(name, aLogger);
 
     return this;
 });
@@ -217,6 +222,11 @@ function(aLogger) {
     var name;
 
     name = TP.isString(aLogger) ? aLogger : aLogger.get('name');
+
+    //  Ignore attempts to remove the root logger.
+    if (name === TP.log.Manager.ROOT_LOGGER_NAME) {
+        return this;
+    }
 
     if (this.exists(name)) {
         this.loggers.removeKey(name.toLowerCase());
@@ -461,7 +471,9 @@ function(aFilter) {
         this.set('filters', filters);
     }
 
-    filters.push(aFilter);
+    if (!filters.contains(aFilter)) {
+        filters.push(aFilter);
+    }
 
     return this;
 });
@@ -674,9 +686,8 @@ function(aName) {
         return this.raise('InvalidName');
     }
 
-    //  We unique based on lower-case names to avoid confusion. The lower-case
-    //  name is only used as a key however, not as the logger's actual name.
-    name = aName.toLowerCase();
+    name = (aName === TP.log.Manager.ROOT_LOGGER_NAME) ? aName :
+        aName.toLowerCase();
 
     if (TP.log.Manager.exists(name)) {
         return TP.log.Manager.getLogger(name);
@@ -851,7 +862,9 @@ function(anAppender) {
         this.set('appenders', appenders);
     }
 
-    appenders.push(anAppender);
+    if (!appenders.contains(anAppender)) {
+        appenders.push(anAppender);
+    }
 
     return this;
 });
