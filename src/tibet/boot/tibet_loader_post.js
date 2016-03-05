@@ -18,8 +18,7 @@
           maxerr:999
 */
 /* global TP:true,
-          Document:false,
-          CSSPrimitiveValue:false
+          Document:false
 */
 
 //  ----------------------------------------------------------------------------
@@ -624,9 +623,13 @@ TP.boot.installPatches = function(aWindow) {
                         if (target.offsetParent) {
                             compStyle = TP.elementGetComputedStyleObj(
                                                     target.offsetParent);
-                            offsetX -= compStyle.getPropertyCSSValue(
-                                        'border-left-width').getFloatValue(
-                                        CSSPrimitiveValue.CSS_PX);
+
+                            offsetX -= TP.elementGetPixelValue(
+                                        this,
+                                        compStyle.getPropertyValue(
+                                                        'border-left-width'),
+                                        'borderLeftWidth',
+                                        false);
                         }
                     }
 
@@ -670,9 +673,12 @@ TP.boot.installPatches = function(aWindow) {
                         if (target.offsetParent) {
                             compStyle = TP.elementGetComputedStyleObj(
                                                     target.offsetParent);
-                            offsetY -= compStyle.getPropertyCSSValue(
-                                        'border-top-width').getFloatValue(
-                                        CSSPrimitiveValue.CSS_PX);
+                            offsetY -= TP.elementGetPixelValue(
+                                        this,
+                                        compStyle.getPropertyValue(
+                                                        'border-top-width'),
+                                        'borderTopWidth',
+                                        false);
                         }
                     }
 
