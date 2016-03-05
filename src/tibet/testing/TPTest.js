@@ -217,7 +217,10 @@ function(options) {
         currentSuite,
         handler;
 
+    TP.sys.setcfg('test.running', true);
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
+
+    TP.test.Suite.before();
 
     //  Get filtered list of test suites that apply to our test criteria.
     suites = TP.test.getSuites(options);
@@ -334,6 +337,7 @@ function(options) {
             exclusives + ' only.');
 
         TP.sys.setcfg('test.running', false);
+        TP.test.Suite.after();
     };
 
     msg = '# ' + suites.getSize() +
@@ -427,8 +431,6 @@ function(options) {
     //  Install the Bluebird (specific) top-level unhandled rejection handlers
     TP.extern.Promise.onPossiblyUnhandledRejection(handler);
     TP.extern.Promise.onUnhandledRejectionHandled(handler);
-
-    TP.sys.setcfg('test.running', true);
 
     return promise.then(
             function(obj) {
@@ -735,8 +737,30 @@ TP.test.Root.defineSubtype('Suite');
  */
 TP.test.Suite.defineAttribute('suites', TP.ac());
 
+/**
+ * A log appender that gets installed when the test harness is running to catch
+ * errors and fail the current executing test case.
+ * @type {TP.log.TestAppender}
+ */
+TP.test.Suite.Type.defineAttribute('logAppender');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Type.defineMethod('initialize',
+function() {
+    var appender;
+
+    //  Initialize a log appender for our default 'TP' and 'APP' logs. This
+    //  makes sure that logging of a particular log level or higher while the
+    //  test cases are being run will fail the test case.
+    appender = TP.log.TestAppender.construct();
+    this.$set('logAppender', appender);
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.test.Suite.Type.defineMethod('addSuite',
@@ -771,6 +795,37 @@ function(target, suiteName, suiteFunc) {
     suites.push(suite);
 
     return suite;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Type.defineMethod('after',
+function(options) {
+    var appender;
+
+    appender = this.get('logAppender');
+
+    //  Make sure uninstall the test appender from our default 'TP' and 'APP'
+    //  logs as our last thing to do.
+    TP.getDefaultLogger().removeAppender(appender);
+    APP.getDefaultLogger().removeAppender(appender);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Type.defineMethod('before',
+function(options) {
+    var appender;
+
+    appender = this.get('logAppender');
+
+    //  Install it for both 'TP' and 'APP' logs
+    TP.getDefaultLogger().addAppender(appender);
+    APP.getDefaultLogger().addAppender(appender);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -825,13 +880,6 @@ TP.test.Suite.Inst.defineAttribute('currentTestCase');
  * @type {TP.gui.Driver}
  */
 TP.test.Suite.Inst.defineAttribute('drivers');
-
-/**
- * A log appender that gets installed when the test harness is running to catch
- * errors and fail the current executing test case.
- * @type {TP.log.TestAppender}
- */
-TP.test.Suite.Inst.defineAttribute('logAppender');
 
 /**
  * The number of milliseconds the object is limited to for run time before
@@ -996,19 +1044,6 @@ function(setup) {
      */
 
     this.set('beforeEvery', setup);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.test.Suite.Inst.defineMethod('cleanup',
-function(options) {
-
-    //  Make sure uninstall the test appender from our default 'TP' and 'APP'
-    //  logs as our last thing to do.
-    TP.getDefaultLogger().removeAppender(this.get('logAppender'));
-    APP.getDefaultLogger().removeAppender(this.get('logAppender'));
 
     return this;
 });
@@ -1394,8 +1429,6 @@ function(target, suiteName, suiteFunc) {
      * @returns {TP.core.Hash} The new test suite instance.
      */
 
-    var newAppender;
-
     if (TP.notValid(target) ||
             TP.notValid(suiteName) ||
             TP.notValid(suiteFunc)) {
@@ -1415,16 +1448,6 @@ function(target, suiteName, suiteFunc) {
         TP.test.TestMethodCollection.construct());
     this.$set('refuter',
         TP.test.TestMethodCollection.construct().set('isRefuter', true));
-
-    //  Initialize a log appender for our default 'TP' and 'APP' logs. This
-    //  makes sure that logging of a particular log level or higher while the
-    //  test cases are being run will fail the test case.
-    newAppender = TP.log.TestAppender.construct();
-    this.$set('logAppender', newAppender);
-
-    //  Install it for both 'TP' and 'APP' logs
-    TP.getDefaultLogger().addAppender(newAppender);
-    APP.getDefaultLogger().addAppender(newAppender);
 
     //  Install any GUI drivers we might need.
     this.$set('drivers', TP.hc());
@@ -3125,8 +3148,10 @@ function(options) {
                 refuter.$set('currentTestCase', testcase);
                 testcase.$set('refute', refuter);
 
-                logAppender = testcase.getSuite().get('logAppender');
-                logAppender.$set('currentTestCase', testcase);
+                logAppender = TP.test.Suite.get('logAppender');
+                if (TP.isValid(logAppender)) {
+                    logAppender.$set('currentTestCase', testcase);
+                }
 
                 //  The test case provide a 'then()', 'thenAllowGUIRefresh()',
                 //  'thenPromise()' and 'thenWait()' API to the suite's drivers.
