@@ -354,9 +354,20 @@ function(cellGroupElem, uniqueID, dataRecord) {
                 curtainTPElem = TP.byId('systemCurtain', this.getDocument()))) {
             curtainTPElem.setAttribute('hidden', false);
         }
-    }
 
-    tileTPElem.toggle('hidden');
+        tileTPElem.toggle('hidden');
+
+        handler = function() {
+            handler.ignore(tileTPElem, 'HiddenChange');
+            curtainTPElem.setAttribute('hidden', true);
+
+            TP.byId('SherpaConsole', TP.win('UIROOT')).focusInput();
+        };
+
+        handler.observe(tileTPElem, 'HiddenChange');
+    } else {
+        tileTPElem.toggle('hidden');
+    }
 
     return tileID;
 });
