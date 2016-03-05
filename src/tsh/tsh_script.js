@@ -565,6 +565,7 @@ function(source, shell, sibling, request) {
         chunk,
         mode,
         tagname,
+        builtin,
 
         i,
         j,
@@ -1266,13 +1267,21 @@ function(source, shell, sibling, request) {
                                             next.value +
                                             more.value;
 
+                                //  If the custom type isn't found verify
+                                //  whether the shell may have this as a built
+                                //  in. Warn if you can't find either.
                                 if (TP.notValid(
                                             TP.sys.getTypeByName(tagname))) {
                                     if (TP.notValid(
                                                 TP.sys.require(tagname))) {
-                                        TP.ifWarn() ?
-                                            TP.warn('Unable to find' +
-                                                ' custom type ' + tagname) : 0;
+                                        builtin = 'execute' +
+                                            ('' + more.value).asTitleCase();
+                                        if (!TP.canInvoke(shell, builtin)) {
+                                            TP.ifWarn() ?
+                                                TP.warn('Unable to find' +
+                                                    ' command ' +
+                                                    tagname) : 0;
+                                        }
                                     }
                                 }
 
