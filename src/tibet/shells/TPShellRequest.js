@@ -228,11 +228,21 @@ function() {
      */
 
     var text,
-
+        cmds,
         cmdRoot,
         textContentNode;
 
     text = '';
+
+    //  If we have multiple subrequests then we're dealing with a pipe and the
+    //  only real way to respond is via 'cmd' slot.
+    cmds = this.get('subrequests');
+    if (TP.notEmpty(cmds) && cmds.getSize() > 1) {
+        if (TP.isEmpty(text = this.at('cmd'))) {
+            text = '';
+        }
+        return text;
+    }
 
     if (TP.isNode(cmdRoot = this.at('cmdRoot'))) {
         if (TP.isCDATASectionNode(

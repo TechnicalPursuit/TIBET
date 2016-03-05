@@ -80,7 +80,7 @@ function(aRequest) {
         return aRequest.complete(entries);
     }
 
-    str = this.translateHistoryReference(hid, aRequest, shell);
+    str = this.translateHistoryReference(hid, aRequest, shell, false);
     if (TP.isEmpty(str)) {
         //  report on specific error should come from translation
         aRequest.fail();
@@ -175,7 +175,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.tsh.history.Type.defineMethod('translateHistoryReference',
-function(aString, aRequest, aShell) {
+function(aString, aRequest, aShell, expand) {
 
     /**
      * @method translateHistoryReference
@@ -225,7 +225,7 @@ function(aString, aRequest, aShell) {
 
     if (aString === '!') {
         //  entry is the last command
-        cmd = aShell.getHistory(-2, true);
+        cmd = aShell.getHistory(-2, expand);
     } else if (aString.charAt(0) === '/') {
         //  should be able to tokenize a regex token from the string which
         //  will help avoid noise around embedded symbols like :
@@ -248,7 +248,7 @@ function(aString, aRequest, aShell) {
         }
 
         //  constructed the regex, now off to find the command :)
-        cmd = aShell.getHistory(re, true);
+        cmd = aShell.getHistory(re, expand);
     } else if (/^[\-0-9]/.test(aString)) {
         //  numerical with/without '-' prefixing. split off any word portion
         //  and find the command at that index if possible.
@@ -274,10 +274,10 @@ function(aString, aRequest, aShell) {
             num = aShell.getHistory().getSize() + num;
         }
 
-        cmd = aShell.getHistory(num, true);
+        cmd = aShell.getHistory(num, expand);
     } else {
         //  alpha reference, but not a regex...? exact match for start
-        cmd = aShell.getHistory(aString, true);
+        cmd = aShell.getHistory(aString, expand);
     }
 
     //  if we didn't find a command no point in continuing. also, if the command
