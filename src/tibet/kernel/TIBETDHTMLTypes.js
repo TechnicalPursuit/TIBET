@@ -251,8 +251,17 @@ function(aDragResponder, aSignal, xyPoint) {
                                                     'container'),
                                 TP.elementGetOffsetParent(target));
 
-        targetRect = TP.wrap(target).getPageRect();
-        containerRect = TP.wrap(targetContainer).getPageRect();
+        coords = TP.elementGetPageBox(target,
+                                        TP.BORDER_BOX,
+                                        null,
+                                        false);
+        targetRect = TP.rtc(coords);
+
+        coords = TP.elementGetPageBox(targetContainer,
+                                        TP.CONTENT_BOX,
+                                        null,
+                                        false);
+        containerRect = TP.rtc(coords);
 
         maxPoint = targetRect.maxFittedPoint(containerRect);
         maxFittedRect =
@@ -261,8 +270,7 @@ function(aDragResponder, aSignal, xyPoint) {
                         maxPoint.getX(),
                         maxPoint.getY());
 
-        kallee.tempData.atPut('maxFittedRect',
-                                        maxFittedRect);
+        kallee.tempData.atPut('maxFittedRect', maxFittedRect);
     }
 
     xyPoint.clampToRect(maxFittedRect);
@@ -1600,11 +1608,16 @@ TP.core.ResizeResponder.Type.defineConstant(
         'CLAMP_RECT_TO_CONTAINER',
 function(aDragResponder, aSignal, xyPoint) {
 
-    var containerRect,
+    var kallee,
+
+        containerRect,
+
         target,
+        targetRect,
         targetContainer,
-        containerOffsets,
-        kallee;
+
+        borderXOffset,
+        borderYOffset;
 
     kallee = TP.core.ResizeResponder.CLAMP_RECT_TO_CONTAINER;
 
@@ -1612,19 +1625,28 @@ function(aDragResponder, aSignal, xyPoint) {
                                                 'containerRect'))) {
         target = aDragResponder.get('actionElement');
 
-        targetContainer = TP.ifInvalid(kallee.modifierData.at(
-                                                    'container'),
-                                TP.elementGetOffsetParent(target));
+        targetRect = TP.rtc(TP.elementGetOffsetBox(target,
+                                                    TP.CONTENT_BOX,
+                                                    null,
+                                                    false));
 
-        containerRect = TP.wrap(targetContainer).getPageRect();
+        targetContainer = TP.ifInvalid(kallee.modifierData.at('container'),
+                                        TP.elementGetOffsetParent(target));
+
+        containerRect = TP.rtc(TP.elementGetPageBox(targetContainer,
+                                                    TP.CONTENT_BOX,
+                                                    null,
+                                                    false));
 
         containerRect.setXY(0, 0);
-        containerOffsets = TP.elementGetOffsetFromContainer(target);
-        containerRect.shrink(containerOffsets.first(),
-                                containerOffsets.last());
 
-        kallee.tempData.atPut('containerRect',
-                                        containerRect);
+        borderXOffset = TP.elementGetBorderInPixels(target, TP.RIGHT);
+        borderYOffset = TP.elementGetBorderInPixels(target, TP.BOTTOM);
+
+        containerRect.shrink(targetRect.getX() + borderXOffset,
+                                targetRect.getY() + borderYOffset);
+
+        kallee.tempData.atPut('containerRect', containerRect);
     }
 
     xyPoint.clampToRect(containerRect);
