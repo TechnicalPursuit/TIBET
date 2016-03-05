@@ -234,7 +234,6 @@ function(uniqueID, dataRecord) {
         cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
 
         cmdText = TP.ifInvalid(dataRecord.at('cmdText'), '');
-        cmdText = cmdText.truncate(TP.sys.cfg('tdc.max_title', 70));
 
         //  If there's ACP in the text, we need to escape it before feeding it
         //  into the template transformation machinery.
