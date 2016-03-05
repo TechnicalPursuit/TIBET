@@ -3293,16 +3293,19 @@ function() {
 
         case '.|':      //  stdout
         case '.|*':     //  stdout (and iterate)
-        case '.|?':     //  stdout (and iterate)
-        case '.|?*':    //  stdout (and iterate)
+        case '.*':      //  stdout (and iterate shorthand)
+        case '.|?':     //  stdout (and filter)
+        case '.?':      //  stdout (and filter shorthand)
+        case '.|?*':    //  stdout (iterate and filter)
+        case '.?*':     //  stdout (iterate and filter shorthand)
 
             name = TP.STDOUT;
             break;
 
         case '.&':      //  stderr
-        case '.&?':     //  stderr
+        case '.&?':     //  stderr (and filter)
         case '.&*':     //  stderr (and iterate)
-        case '.&?*':    //  stderr (and iterate)
+        case '.&?*':    //  stderr (iterate and filter)
 
             name = TP.STDERR;
             break;
