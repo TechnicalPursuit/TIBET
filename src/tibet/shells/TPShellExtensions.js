@@ -107,8 +107,8 @@ function(aRequest) {
         return aRequest.fail(msg);
     }
 
-    if (TP.notValid(val = obj.get('value'))) {
-        msg = 'No content.';
+    if (TP.notDefined(val = obj.get('value'))) {
+        msg = 'No command content.';
         return aRequest.fail(msg);
     }
 
@@ -157,7 +157,7 @@ function(aRequest) {
         result;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -196,7 +196,7 @@ function(aRequest) {
         arr;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -231,7 +231,7 @@ function(aRequest) {
         arr;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -275,7 +275,7 @@ function(aRequest) {
         result;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -355,7 +355,7 @@ function(aRequest) {
         match;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -457,7 +457,7 @@ function(aRequest) {
         testfunc;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -549,7 +549,7 @@ function(aRequest) {
         result;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -670,7 +670,7 @@ function(aRequest) {
         result;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -711,7 +711,7 @@ function(aRequest) {
     }
 
     if (TP.notValid(node = obj.get('content'))) {
-        msg = 'No content.';
+        msg = 'No command content.';
         return aRequest.fail(msg);
     }
 
@@ -739,7 +739,7 @@ function(aRequest) {
         msg;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -788,7 +788,7 @@ function(aRequest) {
 
     //  Check input
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -863,7 +863,7 @@ function(aRequest) {
     }
 
     if (TP.notValid(doc = obj.getContentDocument())) {
-        msg = 'No content.';
+        msg = 'No command content.';
         return aRequest.fail(msg);
     }
 
@@ -889,7 +889,7 @@ function(aRequest) {
         result;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        msg = 'No content.';
+        msg = 'No command stdin.';
         return aRequest.fail(msg);
     }
 
@@ -1363,6 +1363,7 @@ function(aRequest) {
      */
 
     var input,
+        msg,
         obj,
         result,
 
@@ -1370,7 +1371,8 @@ function(aRequest) {
         request;
 
     if (TP.isEmpty(input = aRequest.stdin())) {
-        return aRequest.fail('No content');
+        msg = 'No command stdin.';
+        return aRequest.fail(msg);
     }
 
     if (TP.notValid(obj = aRequest.at('cmdInstance'))) {
