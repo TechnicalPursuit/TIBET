@@ -286,8 +286,7 @@ function(cellGroupElem, uniqueID, dataRecord) {
      * @method createTiledOutput
      */
 
-    var doc,
-        cmdText,
+    var cmdText,
 
         tileID,
 
@@ -300,18 +299,18 @@ function(cellGroupElem, uniqueID, dataRecord) {
 
         tileContentTPElem,
 
-        curtainTPElem;
-
-    doc = this.getNativeDocument();
+        curtainTPElem,
+        handler;
 
     cmdText = TP.byCSSPath('.header .content',
                             cellGroupElem,
                             true).getTextContent();
 
     tileID = uniqueID + '_tile';
-    tileTPElem = TP.bySystemId('Sherpa').makeTile(
-                        tileID,
-                        TP.documentGetBody(doc));
+
+    //  We don't supply a parent to the makeTile() call, so it will be placed in
+    //  the common tile tier.
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID);
 
     tileTPElem.set('headerText', cmdText);
 
