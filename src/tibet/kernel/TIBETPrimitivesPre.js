@@ -9770,6 +9770,11 @@ function(verbose) {
         }
     }
 
+    //  Avoid circular reference errors.
+    if (this === TP) {
+        return 'TP';
+    }
+
     if (!wantsVerbose) {
         return TP.objectToString(this);
     }

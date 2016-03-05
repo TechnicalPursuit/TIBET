@@ -10480,6 +10480,11 @@ function() {
         str,
         keys;
 
+    //  Avoid recursions on TP object at this level.
+    if (this === TP) {
+        return 'Object.defineProperty(root, \'TP\', {value: {}, writable: true, configurable: true});';
+    }
+
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asSource';
     if (TP.owns(this, marker)) {

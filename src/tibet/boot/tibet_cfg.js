@@ -853,6 +853,10 @@
     //  triggering their built-in recursion checks.
     TP.sys.setcfg('debug.trap_recursion', false);
 
+    //  should TIBET register objects with recursive references etc. during
+    //  recursive string output operations? default is false.
+    TP.sys.setcfg('debug.register_recursion', false);
+
     //  pop debugger if inferencing fails or is off or if an exception is
     //  raise? this is normally off but can be used to force activation of the
     //  environment's debugger (on IE/Moz) if the debugger has already opened.
