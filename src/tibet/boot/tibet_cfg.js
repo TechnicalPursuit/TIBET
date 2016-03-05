@@ -1237,6 +1237,14 @@
     //  which output formatter should be used for presentation output?
     TP.sys.setcfg('sherpa.default_format', 'sherpa:pp');
 
+    //  what is the default depth for a sherpa pretty-print descent?
+    TP.sys.setcfg('sherpa.pp.level', 2);
+
+    //  what level do we stop doing full function bodies and do we include
+    //  comments or just the method signature when we output?
+    TP.sys.setcfg('sherpa.pp.function_level', 1);
+    TP.sys.setcfg('sherpa.pp.function_comments', false);
+
     //  should the console suspend normal output?
     TP.sys.setcfg('sherpa.silent', false);
 
