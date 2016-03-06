@@ -241,15 +241,16 @@ function() {
         if (TP.isEmpty(text = this.at('cmd'))) {
             text = '';
         }
-        return text;
     }
 
-    if (TP.isNode(cmdRoot = this.at('cmdRoot'))) {
-        if (TP.isCDATASectionNode(
-                textContentNode = TP.nodeGetFirstDescendantByType(
-                                            cmdRoot,
-                                            Node.CDATA_SECTION_NODE))) {
-            text = TP.nodeGetTextContent(textContentNode);
+    if (TP.isEmpty(text)) {
+        if (TP.isNode(cmdRoot = this.at('cmdRoot'))) {
+            if (TP.isCDATASectionNode(
+                    textContentNode = TP.nodeGetFirstDescendantByType(
+                                                cmdRoot,
+                                                Node.CDATA_SECTION_NODE))) {
+                text = TP.nodeGetTextContent(textContentNode);
+            }
         }
     }
 

@@ -82,7 +82,6 @@ function(aRequest) {
     if (TP.isEmpty(str)) {
         //  report on specific error should come from translation
         aRequest.fail();
-
         return;
     }
 
@@ -90,7 +89,6 @@ function(aRequest) {
     if (str === hid) {
         aRequest.fail(
             TP.sc('History translation failed.'));
-
         return;
     }
 
@@ -98,7 +96,6 @@ function(aRequest) {
     if (str.indexOf('tsh:history') !== TP.NOT_FOUND) {
         aRequest.fail(
             TP.sc('Recursive history translation unsupported.'));
-
         return;
     }
 
@@ -287,6 +284,24 @@ function(aString, aRequest, aShell, expand) {
         return;
     }
     /* eslint-enable no-extra-parens */
+
+    //  if we got a reference to another history execution do a deeper
+    //  translation
+    while (/!\d*/.test(cmd)) {
+        cmd = this.translateHistoryReference(
+            cmd.slice(1), aRequest, aShell, expand);
+
+        //  If we translated from a numeric reference try to push the translated
+        //  text back up to the root request so it's reflected in history rather
+        //  than a reference to a numerical entry.
+        if (TP.notEmpty(cmd)) {
+            if (aRequest.at('rootRequest')) {
+                aRequest.at('rootRequest').atPut('cmd', cmd);
+            } else {
+                aRequest.atPut('cmd', cmd);
+            }
+        }
+    }
 
     //  ---
     //  word access
