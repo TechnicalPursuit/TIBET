@@ -148,14 +148,12 @@ Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
 
 
 /**
- * Performs any final processing of the argument list prior to execution. The
- * default implementation does nothing but subtypes can leverage this method
- * to ensure the command line meets their specific requirements.
- * @param {Array.<String>} arglist The argument list to finalize.
- * @returns {Array.<String>} The finalized argument list.
+ * Configure the command options list post-parse. Typically you want to override this.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ * @returns {Object} An options object usable by the command.
  */
-Cmd.prototype.finalizeArglist = function(arglist) {
-    return arglist;
+Cmd.prototype.configure = function() {
+    return this.options;
 };
 
 
@@ -309,6 +307,9 @@ Cmd.prototype.run = function() {
     this.options = this.parse();
 
     this.debug(beautify(JSON.stringify(this.config.tibet)), true);
+
+    //  Adjust any parameters after parsing.
+    this.options = this.configure();
 
     if (this.options.usage) {
         return this.usage();

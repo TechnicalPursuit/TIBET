@@ -283,6 +283,18 @@ Cmd.prototype.execute = function() {
 
 
 /**
+ * Performs any final processing of the argument list prior to execution. The
+ * default implementation does nothing but subtypes can leverage this method
+ * to ensure the command line meets their specific requirements.
+ * @param {Array.<String>} arglist The argument list to finalize.
+ * @returns {Array.<String>} The finalized argument list.
+ */
+Cmd.prototype.finalizeArglist = function(arglist) {
+    return arglist;
+};
+
+
+/**
  * Computes and returns the full boot profile value, combining the profile
  * package name with any profile config ID.
  * @returns {String} The profile#config to boot.
