@@ -1091,7 +1091,7 @@ function(aRequest) {
         list.shift();
     }
 
-    this.set('historyIndex', index);
+    this.set('historyIndex', index + 1);
 
     return index;
 });
