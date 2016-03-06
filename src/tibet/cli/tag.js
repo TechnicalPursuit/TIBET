@@ -676,7 +676,7 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
     if (opts.template) {
         if (/^</.test(opts.template.trim()) === true) {
             if (/^<svg/.test(opts.template.trim()) !== true) {
-                return;
+                templatePath = null;
             } else {
                 templatePath = opts.dirname + '/' + fqtagname + '.svg';
             }
@@ -684,15 +684,17 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
             templatePath = opts.template;
         }
 
-        value = 'path.' + fqtagname + '.template';
-        if (!this.hasXMLEntry(cfgNode, 'property', 'name', value)) {
-            dirty = true;
-            this.addXMLEntry(
-                cfgNode,
-                '\n    ',
-                '<property name="' + value + '"' +
-                    ' value="' + templatePath + '"/>',
-                '');
+        if (templatePath) {
+            value = 'path.' + fqtagname + '.template';
+            if (!this.hasXMLEntry(cfgNode, 'property', 'name', value)) {
+                dirty = true;
+                this.addXMLEntry(
+                    cfgNode,
+                    '\n    ',
+                    '<property name="' + value + '"' +
+                        ' value="' + templatePath + '"/>',
+                    '');
+            }
         }
     }
 
