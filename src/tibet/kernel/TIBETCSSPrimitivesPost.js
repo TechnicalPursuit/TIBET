@@ -1532,11 +1532,11 @@ function(anElement, aProperty) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementPopStyleProperty',
+TP.definePrimitive('elementPopAndSetStyleProperty',
 function(anElement, aProperty) {
 
     /**
-     * @method elementPopStyleProperty
+     * @method elementPopAndSetStyleProperty
      * @summary 'Pop's the previously pushed style property named by aProperty
      *     from the receiver, uses that value as the new value for the property
      *     on the supplied element and returns that value.
