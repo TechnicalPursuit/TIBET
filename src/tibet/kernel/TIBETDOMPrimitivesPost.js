@@ -6842,6 +6842,12 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
         return TP.raise(this, 'TP.sig.InvalidPath');
     }
 
+    //  If the path is just '.', then that's the shortcut to just return the
+    //  target node itself.
+    if (TP.regex.ONLY_PERIOD.test(aPath)) {
+        return aNode;
+    }
+
     //  common path in repeats etc. where performance is important is an
     //  attribute path so we can optimize for those (but not for '@*' paths
     //  where the caller wants all attributes).
