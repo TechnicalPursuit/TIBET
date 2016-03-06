@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	#resizeDiv {
+		position: absolute;
+
+		top: 10px;
+		left: 10px;
+		width: 100px;
+		height: 100px;
+
+		background-color: red;
+
+		border: solid 4px orange;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body>
+
+	<h2>Drag Test #2</h2><br/>
+	<br/>
+	<br/>
+	This test sets up a regular XHTML &lt;div&gt; element to be resized.<br/>
+	<br/>
+	<br/>
+	The &lt;div&gt; element has a 'drag:resizer' value of 'true', which means that it can be resized from any side. Note that the mousedown to start this resizing must be *inside* of the element itself (within the red area - *not* the orange border) and within a certain number of pixels *inside* side. Since we did not specify the number of pixels of this 'perimeter' here, it defaults to 10.<br/>
+
+    <div id="resizeDiv" drag:resizer="true"/>
+
+</body>
+</html>
