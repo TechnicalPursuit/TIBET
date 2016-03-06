@@ -802,14 +802,13 @@ function(src, ops, tsh, exp, alias, args) {
                                 i = from + 1;
                                 result.push(new_token('operator', char));
                                 from += 1;
-                                i += 1;
                             });
                         } else if (/^\{[$_a-zA-Z]+/.test(str)) {
                             from = from;
                             i = from + 1;
                             result.push(new_token('operator', '{'));
                             from += 1;
-                            i += str.length;
+                            i += str.length - 1;
                             result.push(new_token(
                                         identifier_type(str.slice(1)),
                                         str.slice(1)));
