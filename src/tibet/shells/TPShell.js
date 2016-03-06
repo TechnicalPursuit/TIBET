@@ -851,7 +851,7 @@ function() {
                                 //  rebuilding. This will reset to 0-histmax but
                                 //  that's better than nothing.
                                 'cmdHistoryID', TP.ifInvalid(
-                                    anEntry.at('cmdHistoryID'), anIndex + 1000),
+                                    anEntry.at('cmdHistoryID'), anIndex),
                                 'cmdBuildGUI',
                                     anEntry.at('cmdBuildGUI'),
                                 'cmdLiteral',
