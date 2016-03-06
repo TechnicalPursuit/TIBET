@@ -572,6 +572,10 @@ function(source, shell, sibling, request) {
         token,
         prefix,
         closer,
+        close,
+
+        count,
+        offset,
 
         arg,
 
@@ -860,23 +864,56 @@ function(source, shell, sibling, request) {
 
                         } else if (token.value === '{') {
 
-                            //  TODO: deal with nested structures via a count
-
                             chunk.length = 0;
                             chunk.push(token.value);
 
-                            //  push all contiguous tokens which don't break
-                            //  whitespace or parse as terminators into the
-                            //  arg list
+                            //  Process everything up through the closing brace.
                             i += 1;
                             token = arr[i];
                             while (token && token.value !== '}') {
-                                chunk.push(token.value);
 
-                                i += 1;
-                                token = arr[i];
+                                if (token.value === '[' || token.value === '{') {
+                                    //  capture tokens that comprise nested
+                                    //  structure by keeping count until we find
+                                    //  the true closing token.
+                                    close = token.value === '[' ? ']' : '}';
+                                    count = 1;
+                                    offset = 0;
+                                    while (count !== 0 && arr[i + offset]) {
+                                        if (arr[i + offset].value === token.value) {
+                                            count++;
+                                        } else if (arr[i + offset].value === close) {
+                                            count--;
+                                        }
+                                        offset++;
+                                    }
+
+                                    //  If not closed and no arr[i + offset] we
+                                    //  ran off the end looking for closer.
+                                    if (count !== 0 && !arr[i + offset]) {
+                                        //  TODO:   warn/error?
+                                        void 0;
+                                    }
+
+                                    //  Push count of nested tokens into place.
+                                    for (j = 0; j < offset; j++) {
+                                        chunk.push(token.value);
+                                        i += 1;
+                                        token = arr[i];
+                                    }
+
+                                    i += 1;
+                                    token = arr[i];
+
+                                } else {
+                                    chunk.push(token.value);
+                                    i += 1;
+                                    token = arr[i];
+                                }
                             }
 
+                            //  Depending on internal loop we may still need to
+                            //  push the closing token.
                             if (token && token.value === '}') {
                                 chunk.push(token.value);
                             }
@@ -888,23 +925,56 @@ function(source, shell, sibling, request) {
 
                         } else if (token.value === '[') {
 
-                            //  TODO: deal with nested structures via a count
-
                             chunk.length = 0;
                             chunk.push(token.value);
 
-                            //  push all contiguous tokens which don't break
-                            //  whitespace or parse as terminators into the
-                            //  arg list
+                            //  Process everything up through the closing brace.
                             i += 1;
                             token = arr[i];
                             while (token && token.value !== ']') {
-                                chunk.push(token.value);
 
-                                i += 1;
-                                token = arr[i];
+                                if (token.value === '[' || token.value === '{') {
+                                    //  capture tokens that comprise nested
+                                    //  structure by keeping count until we find
+                                    //  the true closing token.
+                                    close = token.value === '[' ? ']' : '}';
+                                    count = 1;
+                                    offset = 0;
+                                    while (count !== 0 && arr[i + offset]) {
+                                        if (arr[i + offset].value === token.value) {
+                                            count++;
+                                        } else if (arr[i + offset].value === close) {
+                                            count--;
+                                        }
+                                        offset++;
+                                    }
+
+                                    //  If not closed and no arr[i + offset] we
+                                    //  ran off the end looking for closer.
+                                    if (count !== 0 && !arr[i + offset]) {
+                                        //  TODO:   warn/error?
+                                        void 0;
+                                    }
+
+                                    //  Push count of nested tokens into place.
+                                    for (j = 0; j < offset; j++) {
+                                        chunk.push(token.value);
+                                        i += 1;
+                                        token = arr[i];
+                                    }
+
+                                    i += 1;
+                                    token = arr[i];
+
+                                } else {
+                                    chunk.push(token.value);
+                                    i += 1;
+                                    token = arr[i];
+                                }
                             }
 
+                            //  Depending on internal loop we may still need to
+                            //  push the closing token.
                             if (token && token.value === ']') {
                                 chunk.push(token.value);
                             }

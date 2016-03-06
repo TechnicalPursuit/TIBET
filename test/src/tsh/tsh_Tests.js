@@ -211,6 +211,30 @@ function() {
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
 
+    this.it('Expands unquoted argv values with nested objects',
+    function(test, options) {
+        inputVal = ':testCmd [1, 2, {a: 1, b:2}] {a: 1, b: 2, c: [1,2,3]}';
+        correctResult =
+            TP.hc(
+                'ARG0',
+                TP.hc('Original value tname', 'Array',
+                        'Original value', [1, 2, {a: 1, b:2}],
+                        'Expanded value tname', 'Array',
+                        'Expanded value', [1, 2, {a: 1, b:2}],
+                        'Resolved value tname', 'Array',
+                        'Resolved value', [1, 2, {a: 1, b:2}]),
+                'ARG1',
+                TP.hc('Original value tname', 'Object',
+                        'Original value', {a: 1, b: 2, c: [1,2,3]},
+                        'Expanded value tname', 'Object',
+                        'Expanded value', {a: 1, b: 2, c: [1,2,3]},
+                        'Resolved value tname', 'Object',
+                        'Resolved value', {a: 1, b: 2, c: [1,2,3]})
+            );
+
+        shellDriver.execOutputTest(test, inputVal, correctResult);
+    });
+
     this.it('Expands unquoted argv and param backticks to resolved values',
     function(test, options) {
         inputVal = ':testCmd `$Y` -first=`$Y` --second=`$Y`';

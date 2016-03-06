@@ -498,6 +498,9 @@ function(src, ops, tsh, exp, alias, args) {
             //  control characters are largely stripped when found but we do
             //  handle certain forms of whitespace to preserve semantics.
 
+            //  Increment i before new_token to capture 'to:'
+            i += 1;
+
             if (c === ' ' || c.charCodeAt(0) === 160) {
                 result.push(new_token('space', c));
             } else if (c === '\t') {
@@ -516,7 +519,6 @@ function(src, ops, tsh, exp, alias, args) {
                 }
             }
 
-            i += 1;
             c = src.charAt(i);
         } else if (identHead.test(c) ||
 
@@ -773,6 +775,9 @@ function(src, ops, tsh, exp, alias, args) {
                                 }
                             }
 
+                            //  Increment i before new_token to capture 'to:'
+                            i += 1;
+
                             if (c === '' && uriParenCount !== 0) {
                                 err = true;
                                 TP.boot.$stderr('Unbalanced parens in URI: ' +
@@ -782,7 +787,6 @@ function(src, ops, tsh, exp, alias, args) {
                             }
 
                             str += c;
-                            i += 1;
                         }
 
                         if (!err) {
@@ -792,11 +796,20 @@ function(src, ops, tsh, exp, alias, args) {
                     } else {
                         //  One special case to check here is {}, which will
                         //  otherwise result in a single token value.
-                        if (str === '{}') {
-                            result.push(new_token('operator', '{'));
-                            result.push(new_token('operator', '}'));
+                        if (/^[{}]+$/.test(str)) {
+                            str.split('').forEach(function(char) {
+                                from = from;
+                                i = from + 1;
+                                result.push(new_token('operator', char));
+                                from += 1;
+                                i += 1;
+                            });
                         } else if (/^\{[$_a-zA-Z]+/.test(str)) {
+                            from = from;
+                            i = from + 1;
                             result.push(new_token('operator', '{'));
+                            from += 1;
+                            i += str.length;
                             result.push(new_token(
                                         identifier_type(str.slice(1)),
                                         str.slice(1)));
@@ -1031,6 +1044,8 @@ function(src, ops, tsh, exp, alias, args) {
                         break;
                     }
 
+                    i = i - str.length;
+
                     //  in TSH processing not all content is JS, much more
                     //  is actually markup where a ' or " should simply be
                     //  treated as another character. Of course, that means
@@ -1039,7 +1054,6 @@ function(src, ops, tsh, exp, alias, args) {
                     //  continuing to treat it like "offlimit" content.
                     result.push(new_token('quote', quote));
 
-                    i = i - str.length;
                     if (c !== '') {
                         i += 1;
                     }
@@ -1165,8 +1179,8 @@ function(src, ops, tsh, exp, alias, args) {
 
                     //  when in TSH mode we defer to XML over regexp
                     if (tsh && src.charAt(i + 1) === '>') {
-                        result.push(new_token('operator', '/>'));
                         i += 2;
+                        result.push(new_token('operator', '/>'));
                         c = src.charAt(i);
                         break;
                     }
@@ -1183,8 +1197,8 @@ function(src, ops, tsh, exp, alias, args) {
                         last.value !== '=' &&
                         last.value !== '(' &&
                         last.value !== ',') {
-                        result.push(new_token('operator', '/'));
                         i += 1;
+                        result.push(new_token('operator', '/'));
                         c = src.charAt(i);
                         break;
                     }
@@ -1202,8 +1216,8 @@ function(src, ops, tsh, exp, alias, args) {
                             //  _not_ a regular expression...could be either
                             //  a / or /= operator
                             str = src.charAt(i + 1) === '=' ? '/=' : '/';
-                            result.push(new_token('operator', str));
                             i += str.length;
+                            result.push(new_token('operator', str));
                             c = src.charAt(i);
                             break;
                         }
@@ -1278,8 +1292,8 @@ function(src, ops, tsh, exp, alias, args) {
                                     j += 1;
                                 }
 
-                                result.push(new_token('regexp', str));
                                 i = j;
+                                result.push(new_token('regexp', str));
                                 break;
                             } else {
                                 //  escaped? keep scanning for the end
@@ -1297,8 +1311,8 @@ function(src, ops, tsh, exp, alias, args) {
             }
         } else if (tsh && c === '<' && src.charAt(i + 1) === '/') {
             //  XML tag closing operator
-            result.push(new_token('operator', '</'));
             i += 2;
+            result.push(new_token('operator', '</'));
             c = src.charAt(i);
         } else {
             //  try to construct the longest possible operator or string from
@@ -1313,6 +1327,8 @@ function(src, ops, tsh, exp, alias, args) {
                 str = str.slice(0, j);
             }
 
+            i += str.length;
+
             //  if the str is not an operator, it's a string
             if (operators.indexOf('__' + str + '__') === TP.NOT_FOUND) {
                 result.push(new_token('string', str));
@@ -1320,7 +1336,6 @@ function(src, ops, tsh, exp, alias, args) {
                 result.push(new_token('operator', str));
             }
 
-            i += str.length;
             c = src.charAt(i);
         }
     }
@@ -1376,7 +1391,6 @@ function(src, ops, tsh, exp, alias, args) {
     }
 
     shell = TP.bySystemId('TSH');
-
     parts = TP.ac();
     token = tokens.shift();
     switch (token.value) {
@@ -1390,7 +1404,7 @@ function(src, ops, tsh, exp, alias, args) {
                     close = token.value === '[' ? ']' : '}';
                     count = 1;
                     index = 0;
-                    while (count !== 0) {
+                    while (count !== 0 && tokens[index]) {
                         if (tokens[index].value === token.value) {
                             count++;
                         } else if (tokens[index].value === close) {
@@ -1399,18 +1413,32 @@ function(src, ops, tsh, exp, alias, args) {
                         index++;
                     }
 
+                    //  If no value at tokens[index] we ran off the end looking
+                    //  for a closing token.
+                    if (!tokens[index]) {
+                        //  TODO:   warn/error?
+                        void 0;
+                    }
+
                     //  Capture nested struct slice and build.
                     slice = tokens.slice(0, index);
                     slice.unshift(token);
                     parts.push(TP.$tokenizedConstruct(slice));
 
+
                     //  Remove nested content from list and continue.
                     tokens = tokens.slice(index + 1);
-                    token = tokens[0];
+                    token = tokens.shift();
+                }
+
+                //  Since we're slicing and getting a new token we need to
+                //  recheck exit before trying to process remaining chunks.
+                if (token && token.value === ']') {
+                    break;
                 }
 
                 //  Process remaining chunks.
-                if (!TP.$is_whitespace(token.name) &&
+                if (token && !TP.$is_whitespace(token.name) &&
                         token.name !== 'operator') {
                     //  Try to get the best version of each token.
                     obj = shell.resolveObjectReference(token.value);
@@ -1418,7 +1446,13 @@ function(src, ops, tsh, exp, alias, args) {
                 }
                 token = tokens.shift();
             }
-            result = Array.construct.apply(Array, parts);
+
+            if (TP.isEmpty(parts)) {
+                result = [];
+            } else {
+                result = parts;
+            }
+
             break;
         case '{':
             token = tokens.shift();
@@ -1430,13 +1464,20 @@ function(src, ops, tsh, exp, alias, args) {
                     close = token.value === '[' ? ']' : '}';
                     count = 1;
                     index = 0;
-                    while (count !== 0) {
+                    while (count !== 0 && tokens[index]) {
                         if (tokens[index].value === token.value) {
                             count++;
                         } else if (tokens[index].value === close) {
                             count--;
                         }
                         index++;
+                    }
+
+                    //  If no value at tokens[index] we ran off the end looking
+                    //  for a closing token.
+                    if (!tokens[index]) {
+                        //  TODO:   warn/error?
+                        void 0;
                     }
 
                     //  Capture nested struct slice and build.
@@ -1446,10 +1487,16 @@ function(src, ops, tsh, exp, alias, args) {
 
                     //  Remove nested content from list and continue.
                     tokens = tokens.slice(index + 1);
-                    token = tokens[0];
+                    token = tokens.shift();
                 }
 
-                if (!TP.$is_whitespace(token.name) &&
+                //  Since we're slicing and getting a new token we need to
+                //  recheck exit before trying to process remaining chunks.
+                if (token && token.value === '}') {
+                    break;
+                }
+
+                if (token && !TP.$is_whitespace(token.name) &&
                         token.name !== 'operator') {
                     obj = shell.resolveObjectReference(token.value);
                     parts.push(TP.ifUndefined(obj, token.value));

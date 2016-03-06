@@ -38,6 +38,30 @@ function() {
         test.assert.isEqualTo(arr[10].value, 'such');
 
     });
+
+    this.it('Processes from/to values correctly', function(test, options) {
+        var str,
+            arr,
+            i,
+            len,
+            token;
+
+        str = "a {curly: 1} [1, [2, 3]]";
+        arr = TP.$tokenize(str);
+
+        len = arr.length;
+        for (i = 0; i < len; i++) {
+            token = arr[i];
+            prev = arr[i - 1];
+            if (prev) {
+                test.assert.isEqualTo(token.from, prev.to);
+            } else {
+                test.assert.isEqualTo(token.from, 0);
+            }
+            test.assert.isEqualTo(token.to - token.from, token.value.length);
+        }
+    });
+
 });
 
 //  ------------------------------------------------------------------------
@@ -114,6 +138,25 @@ function(tokens) {
     this.it('Can build up nested arrays', function(test, options) {
         var str, obj;
 
+        str = '[[1]]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj.length, 1);
+        test.assert.isArray(obj[0]);
+        test.assert.isEqualTo(obj[0].length, 1);
+        test.assert.isEqualTo(obj[0][0], 1);
+
+        str = '[1,["a","b"],3]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj.length, 3);
+        test.assert.isEqualTo(obj[2], 3);
+        test.assert.isArray(obj[1]);
+        test.assert.isEqualTo(obj[1].length, 2);
+        test.assert.isEqualTo(obj[1][0], 'a');
+
         str = '[ 1, ["a", "b"], 3 ]';
         obj = TP.$tokenizedConstruct(str);
 
@@ -162,6 +205,25 @@ function(tokens) {
     this.it('Can build up nested objects', function(test, options) {
         var str, obj;
 
+        str = '{"a":{"b":{}}}';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(TP.keys(obj).length, 1);
+        test.assert.isPlainObject(obj.a);
+        test.assert.isPlainObject(obj.a.b);
+
+        str = '{"a":1,"b":{"d":4,"e":5},"c":3}';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(TP.keys(obj).length, 3);
+        test.assert.isEqualTo(obj.a, 1);
+
+        test.assert.isPlainObject(obj.b);
+        test.assert.isEqualTo(TP.keys(obj.b).length, 2);
+        test.assert.isEqualTo(obj.b.d, 4);
+
         str = '{ "a": 1, "b": { "d": 4, "e": 5 } , "c": 3 }';
         obj = TP.$tokenizedConstruct(str);
 
@@ -177,6 +239,17 @@ function(tokens) {
     this.it('Can build up mixed arrays', function(test, options) {
         var str, obj;
 
+        str = '[1,{"a":1,"b":2},3]';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isArray(obj);
+        test.assert.isEqualTo(obj[0], 1);
+        test.assert.isEqualTo(obj.length, 3);
+
+        test.assert.isPlainObject(obj[1]);
+        test.assert.isEqualTo(obj[1].b, 2);
+        test.assert.isEqualTo(TP.keys(obj[1]).length, 2);
+
         str = '[ 1, { "a": 1, "b": 2 } , 3 ]';
         obj = TP.$tokenizedConstruct(str);
 
@@ -191,6 +264,17 @@ function(tokens) {
 
     this.it('Can build up mixed objects', function(test, options) {
         var str, obj;
+
+        str = '{"a":1,"b":[1,2,3],"c":3}';
+        obj = TP.$tokenizedConstruct(str);
+
+        test.assert.isPlainObject(obj);
+        test.assert.isEqualTo(obj.a, 1);
+        test.assert.isEqualTo(TP.keys(obj).length, 3);
+
+        test.assert.isArray(obj.b);
+        test.assert.isEqualTo(obj.b[1], 2);
+        test.assert.isEqualTo(obj.b.length, 3);
 
         str = '{ "a": 1, "b": [ 1, 2, 3 ], "c": 3 }';
         obj = TP.$tokenizedConstruct(str);
