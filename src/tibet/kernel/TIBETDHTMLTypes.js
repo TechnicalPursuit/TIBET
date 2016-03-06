@@ -298,8 +298,8 @@ function(aDragResponder, aSignal, xyPoint) {
     }
 
     if (!TP.isNumber(maxWidth = styleVals.at('maxWidth'))) {
-        //  Note here how we get the "content box", since that's
-        //  what we're using when we set 'width'.
+        //  Note here how we get the "content box", since that's what we're
+        //  using when we set 'width'.
         maxWidth = TP.elementGetContentWidth(actionElem);
     }
 
@@ -331,8 +331,8 @@ function(aDragResponder, aSignal, xyPoint) {
     }
 
     if (!TP.isNumber(maxHeight = styleVals.at('maxHeight'))) {
-        //  Note here how we get the "content box", since that's
-        //  what we're using when we set 'width'.
+        //  Note here how we get the "content box", since that's what we're
+        //  using when we set 'width'.
         maxHeight = TP.elementGetContentHeight(actionElem);
     }
 
@@ -414,6 +414,8 @@ function() {
     dragSM.defineState(null, 'idle');         //  start-able state
     dragSM.defineState('idle');               //  final-able state
 
+    //  Define a method that will accept the state machine going into the 'idle'
+    //  state if we get a 'TP.sig.DOMDragUp' signal.
     dragSM.defineMethod('acceptIdle',
         function(signalOrParams) {
 
@@ -537,9 +539,9 @@ function() {
      *     account the following parameters:
      *     - The initial starting point
      *     - The offset from the action element's offset parent to the action
-     *     element.
+     *       element.
      *     - The border of the action element.
-     *     - The 'drag corner' that was configured for the gesture.
+     *     - The 'drag corner' that was configured or computed for the gesture.
      * @returns {TP.core.DragResponder} The receiver.
      */
 
@@ -568,8 +570,8 @@ function() {
         return this;
     }
 
-    //  Grab the starting point - this is where the mouse point has begun in
-    //  our drag session
+    //  Grab the starting point - this is where the mouse point has begun in our
+    //  drag session
     startPoint = this.get('startPoint');
     startX = startPoint.getX();
     startY = startPoint.getY();
@@ -579,16 +581,16 @@ function() {
     offsetX = startX - containerOffsets.first();
     offsetY = startY - containerOffsets.last();
 
-    //  If the user specified a 'drag corner', then we'll be snapping over
-    //  to that corner before we begin manipulation of the active element.
+    //  If the user specified a 'drag corner', then we'll be snapping over to
+    //  that corner before we begin manipulation of the active element.
     //  Adjust the offset point accordingly.
     if (TP.isValid(corner = this.get('dragCorner'))) {
         borderXOffset = TP.elementGetBorderInPixels(actionElem, TP.LEFT);
         borderYOffset = TP.elementGetBorderInPixels(actionElem, TP.TOP);
 
-        //  Since moving/resizing happens by setting 'top', 'left', 'width'
-        //  or 'height' of the 'style' property, we need to use the *content
-        //  box* when measuring.
+        //  Since moving/resizing happens by setting 'top', 'left', 'width' or
+        //  'height' of the 'style' property, we need to use the *content box*
+        //  when measuring.
         elemBox = TP.elementGetPageBox(actionElem, TP.CONTENT_BOX);
 
         /* eslint-disable no-extra-parens */
@@ -779,11 +781,11 @@ function(runModifiers) {
 
     /**
      * @method getCurrentPoint
-     * @summary Returns the gesture's 'current point' (after running any 'data
+     * @summary Returns the responder's 'current point' (after running any 'data
      *     modifiers' on the point data).
      * @param {Boolean} runModifiers Whether or not to run the 'data modifiers'
      *     (i.e. Functions that alter the current point). Defaults to true.
-     * @returns {TP.core.Point} The gesture's current point.
+     * @returns {TP.core.Point} The responder's current point.
      */
 
     var xyPoint,
@@ -793,8 +795,8 @@ function(runModifiers) {
 
         frameOffsetPoint;
 
-    //  Grab the TP.core.Point representing the current point and the
-    //  current signal (which will probably be some sort of DOMDrag signal)
+    //  Grab the TP.core.Point representing the current point and the current
+    //  signal (which will probably be some sort of DOMDrag signal)
     xyPoint = this.$get('currentPoint');
     currentSignal = this.get('currentSignal');
 
@@ -802,10 +804,10 @@ function(runModifiers) {
     xyPoint.setXY(currentSignal.getPageX() + this.get('xOffset'),
                     currentSignal.getPageY() + this.get('yOffset'));
 
-    //  If the existing 'current drag window' doesn't match the signal's
-    //  window, then we need to compute the offsets from the signal's
-    //  window to the window of the action element and store those away in
-    //  a TP.core.Point which is the 'frame offset point'.
+    //  If the existing 'current drag window' doesn't match the signal's window,
+    //  then we need to compute the offsets from the signal's window to the
+    //  window of the action element and store those away in a TP.core.Point
+    //  which is the 'frame offset point'.
     if (this.get('actionWindow') !==
         (eventWin = TP.eventGetWindow(currentSignal.getEvent()))) {
         frameOffsetPoint = TP.pc(
@@ -817,16 +819,16 @@ function(runModifiers) {
         this.set('actionWindow', eventWin);
     } else {
         //  Grab the current 'frame offset' point. Initially, this will be a
-        //  TP.core.Point of 0,0 but may have been modified if the mouse
-        //  pointer is over an iframe.
+        //  TP.core.Point of 0,0 but may have been modified if the mouse pointer
+        //  is over an iframe.
         frameOffsetPoint = this.get('$frameOffsetPoint');
     }
 
     //  Translate the current point by that amount
     xyPoint.translateByPoint(frameOffsetPoint);
 
-    //  If the caller didn't explicitly turn off 'data modifiers' execution
-    //  then we run those here.
+    //  If the caller didn't explicitly turn off 'data modifiers' execution then
+    //  we run those here.
     if (TP.notFalse(runModifiers)) {
         this.modifyResponderData(currentSignal, xyPoint);
     }
@@ -901,13 +903,12 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
+     * @param {TP.core.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The TPElement that acts as the
+     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The TPElement that the
-     *     originating event occurred in and which might be used as the action
-     *     element.
+     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
@@ -935,6 +936,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
         startPoint;
 
+    //  If no attribute hash was supplied, then grab one from the 'information'
+    //  TP.core.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -979,7 +982,7 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         }
 
         if (!TP.isElement(actionElem)) {
-            return this.raise('TP.sig.InvalidParamter',
+            return this.raise('TP.sig.InvalidParameter',
                 'No elements found for drag:item path: ' + attrVal);
         }
 
@@ -990,10 +993,11 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     this.set('actionElement', actionElem);
 
-    //  If the author has configured a drag increment, install our own
-    //  modifier function for that and remove the key so that supertypes
-    //  won't install anything else for that.
+    //  If the author has configured a drag increment, install our own modifier
+    //  function for that and remove the key so that supertypes won't install
+    //  anything else for that.
     if (TP.notEmpty(attrVal = attrs.at('drag:increment'))) {
+
         attrVals = TP.cssDimensionValuesFromString(attrVal);
 
         attrVal = TP.elementGetPixelValue(
@@ -1181,7 +1185,6 @@ function() {
     //  TP.core.Hash
     modifiers.perform(
             function(aModifierFunc) {
-
                 aModifierFunc.tempData = TP.hc();
             });
 
@@ -1210,7 +1213,6 @@ function() {
     //  TP.core.Hash
     modifiers.perform(
             function(aModifierFunc) {
-
                 delete aModifierFunc.modifierData;
                 delete aModifierFunc.tempData;
             });
@@ -1247,8 +1249,8 @@ function() {
 
     var moveStateMachine;
 
-    //  Construct a new state machine and use it as the state machine for
-    //  the move singleton.
+    //  Construct a new state machine and use it as the state machine for the
+    //  move singleton.
     moveStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
     //  Construct the move singleton - this will cause it to register itself.
@@ -1440,6 +1442,7 @@ function(aSignal) {
      *     signals) while it is in the 'moving' state.
      * @param {TP.sig.StateSignal} aSignal The state signal generated by the
      *     state machine machinery when triggering this state.
+     * @returns {TP.core.MoveResponder} The receiver.
      */
 
     return this.executeTriggerSignalHandler(aSignal.getPayload().at('trigger'));
@@ -1480,12 +1483,12 @@ function(aSignal) {
     overlayElem = this.get('$overlayElement');
     TP.nodeDetach(overlayElem);
 
-    //  Since this is a shared responder, we need to teardown it's
-    //  responder data.
+    //  Since this is a shared responder, we need to teardown it's responder
+    //  data.
     this.teardownDataModifiers();
 
-    //  These parameters need to be reset since this responder
-    //  is shared and may be used again
+    //  These parameters need to be reset since this responder is shared and may
+    //  be used again
     this.set('actionElement', null);
     this.set('xOffset', 0);
     this.set('yOffset', 0);
@@ -1503,13 +1506,12 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
+     * @param {TP.core.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The TPElement that acts as the
+     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The TPElement that the
-     *     originating event occurred in and which might be used as the action
-     *     element.
+     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
@@ -1523,6 +1525,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrVal,
         containerElem;
 
+    //  If no attribute hash was supplied, then grab one from the 'information'
+    //  TP.core.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -1666,8 +1670,8 @@ function() {
 
     var resizeStateMachine;
 
-    //  Construct a new state machine and use it as the state machine for
-    //  the resize singleton.
+    //  Construct a new state machine and use it as the state machine for the
+    //  resize singleton.
     resizeStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
     //  Construct the resize singleton - this will cause it to register itself.
@@ -1728,11 +1732,13 @@ function() {
      * @method computeOffsetPoint
      * @summary Computes the gestures initial 'offset point'.
      * @description When computing the offset point, this method takes into
-     *     account the following parameters: - The initial starting point - The
-     *     offset from the action element's offset parent to the action element.
-     *     - The border of the action element. - The 'drag corner' that was
-     *     configured or computed for the gesture.
-     * @returns {TP.core.DragResponder} The receiver.
+     *     account the following parameters:
+     *     - The initial starting point
+     *     - The offset from the action element's offset parent to the action
+     *       element.
+     *     - The border of the action element.
+     *     - The 'drag corner' that was configured or computed for the gesture.
+     * @returns {TP.core.ResizeResponder} The receiver.
      */
 
     var actionElem,
@@ -1785,11 +1791,10 @@ function() {
     offsetY = startY - containerOffsets.last();
 
     if (TP.notValid(side = this.get('dragSide'))) {
-        //  NB: Note here how we just divvy the element's box up into
-        //  equally sized chunks to do the corner computation. The real
-        //  offsets aren't really relevant here, since they would've already
-        //  denied the resize earlier if the user moused down in one of
-        //  them.
+        //  NB: Note here how we just divvy the element's box up into equally
+        //  sized chunks to do the corner computation. The real offsets aren't
+        //  really relevant here, since they would've already denied the resize
+        //  earlier if the user moused down in one of them.
         side = TP.elementComputeCornerUsing(actionElem, startX, startY,
                                             this.get('perimeterTop'),
                                             this.get('perimeterRight'),
@@ -1914,9 +1919,9 @@ function() {
         /* eslint-enable no-extra-parens */
     }
 
-    //  If the action element's offset parent is the document element, then
-    //  we want to just set some default values for the 'diff' values that
-    //  get used below to adjust the offset value.
+    //  If the action element's offset parent is the document element, then we
+    //  want to just set some default values for the 'diff' values that get used
+    //  below to adjust the offset value.
     if (TP.elementGetOffsetParent(actionElem) ===
         TP.nodeGetDocument(actionElem).documentElement) {
         topDiff = 0;
@@ -1925,10 +1930,13 @@ function() {
         leftDiff = 0;
 
         parentOffsets = TP.ac(0, 0);
+
     } else {
-        //  Otherwise, if the action element is offset because its in
-        //  another container (i.e. it's offset parent is *not* the document
-        //  element), then we compute real values for our 'diff' values.
+
+        //  Otherwise, if the action element is offset because its in another
+        //  container (i.e. it's offset parent is *not* the document element),
+        //  then we compute real values for our 'diff' values.
+
         if (!sideComputed) {
             topDiff = 0;
             rightDiff = elemBox.at('width') +
@@ -2311,8 +2319,8 @@ function(aSignal) {
         return;
     }
 
-    //  Create an 'overlay element' that will overlay the entire action
-    //  element during the time that the gesture is active.
+    //  Create an 'overlay element' that will overlay the entire action element
+    //  during the time that the gesture is active.
     overlayElem = TP.documentConstructElement(
                             TP.nodeGetDocument(actionElem),
                             'div',
@@ -2333,15 +2341,14 @@ function(aSignal) {
 
     this.set('$overlayElement', overlayElem);
 
-    //  Append the overlay element to the element we're performing the
-    //  action on. This will prevent spurious events from the action
-    //  element.
+    //  Append the overlay element to the element we're performing the action
+    //  on. This will prevent spurious events from the action element.
     TP.nodeAppendChild(actionElem, overlayElem, false);
 
-    //  Grab the start point and make sure that the overlay element contains
-    //  it. If it doesn't, we must've come down on one of the insets, so we
-    //  just stop propagation of the state signal, detach the overlay
-    //  element and exit.
+    //  Grab the start point and make sure that the overlay element contains it.
+    //  If it doesn't, we must've come down on one of the insets, so we just
+    //  stop propagation of the state signal, detach the overlay element and
+    //  exit.
 
     startPoint = this.get('startPoint');
     startX = startPoint.getX();
@@ -2364,8 +2371,8 @@ function(aSignal) {
     //  A reusable point that we can use in our dragging computations.
     this.set('$computedPoint', TP.pc());
 
-    //  Set the attribute on the action element that indicates we are
-    //  'resizing' it.
+    //  Set the attribute on the action element that indicates we are 'resizing'
+    //  it.
     TP.elementSetAttribute(actionElem, 'pclass:resizing', 'true', true);
 
     return;
@@ -2383,6 +2390,7 @@ function(aSignal) {
      *     signals) while it is in the 'resizing' state.
      * @param {TP.sig.StateSignal} aSignal The state signal generated by the
      *     state machine machinery when triggering this state.
+     * @returns {TP.core.ResizeResponder} The receiver.
      */
 
     return this.executeTriggerSignalHandler(aSignal.getPayload().at('trigger'));
@@ -2451,13 +2459,12 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
+     * @param {TP.core.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The TPElement that acts as the
+     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The TPElement that the
-     *     originating event occurred in and which might be used as the action
-     *     element.
+     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
@@ -2471,18 +2478,20 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrVal,
         containerElem;
 
+    //  If no attribute hash was supplied, then grab one from the 'information'
+    //  TP.core.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
 
-    //  If the author has configured a drag container, install our own
-    //  modifier function for that and remove the key so that supertypes
-    //  won't install anything else for that.
+    //  If the author has configured a drag container, install our own modifier
+    //  function for that and remove the key so that supertypes won't install
+    //  anything else for that.
 
-    //  Note here how we specify both 'autocollapse' and 'retry with
-    //  document', for the TP.nodeEvaluatePath() call since we only want one
-    //  element and we want the document to be retried as the context node -
-    //  very useful for CSS paths.
+    //  Note here how we specify both 'autocollapse' and 'retry with document',
+    //  for the TP.nodeEvaluatePath() call since we only want one element and we
+    //  want the document to be retried as the context node - very useful for
+    //  CSS paths.
     if (TP.notEmpty(attrVal = attrs.at('drag:container')) &&
         TP.isElement(containerElem = TP.nodeEvaluatePath(
                                         evtTPElement.getNativeNode(),
@@ -2497,9 +2506,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrs.removeKey('drag:container');
     }
 
-    //  If the author has configured a resize side, set our value for that
-    //  and remove the key so that supertypes won't install anything else
-    //  for that.
+    //  If the author has configured a resize side, set our value for that and
+    //  remove the key so that supertypes won't install anything else for that.
 
     if (TP.notEmpty(attrVal = attrs.at('drag:side'))) {
         this.set('dragSide', TP[attrVal]);
@@ -2507,10 +2515,11 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrs.removeKey('drag:side');
     }
 
-    //  If the author has configured a set of drag constraint function
-    //  names, use them to configure the modifier functions
+    //  If the author has configured a set of drag constraint function names,
+    //  use them to configure the modifier functions
 
     if (TP.notEmpty(attrVal = attrs.at('drag:constraints'))) {
+
         //  The author can define multiple values.
         attrVal = attrVal.split(' ');
 
@@ -2534,8 +2543,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                 }.bind(this));
     }
 
-    //  Need to do this since we might have generated 'attrs' here and want
-    //  to pass it along.
+    //  Need to do this since we might have generated 'attrs' here and want to
+    //  pass it along.
     return this.callNextMethod(infoTPElement, srcTPElement,
                                 evtTPElement, initialSignal, attrs);
 });
@@ -2639,13 +2648,12 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         acceptVals,
         vendVals;
 
-    if (TP.isEmpty(acceptVal =
-                    targetTPElem.getAttribute('dnd:accept'))) {
+    if (TP.isEmpty(acceptVal = targetTPElem.getAttribute('dnd:accept'))) {
         return false;
     }
 
-    if (TP.notEmpty(vendVal =
-                    sourceTPElem.getAttribute('dnd:vend'))) {
+    if (TP.notEmpty(vendVal = sourceTPElem.getAttribute('dnd:vend'))) {
+
         acceptVals = acceptVal.split(' ');
         vendVals = vendVal.split(' ');
 
@@ -2667,13 +2675,12 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         acceptVals,
         vendVals;
 
-    if (TP.isEmpty(acceptVal =
-                    targetTPElem.getAttribute('dnd:accept'))) {
+    if (TP.isEmpty(acceptVal = targetTPElem.getAttribute('dnd:accept'))) {
         return false;
     }
 
-    if (TP.notEmpty(vendVal =
-                    sourceTPElem.getAttribute('dnd:vend'))) {
+    if (TP.notEmpty(vendVal = sourceTPElem.getAttribute('dnd:vend'))) {
+
         acceptVals = acceptVal.split(' ');
         vendVals = vendVal.split(' ');
 
@@ -2697,8 +2704,8 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         acceptVals,
         vendVals;
 
-    //  If there is no value for 'dnd:accept', then we can early
-    //  exit here with false. 'Nothing to see here'...
+    //  If there is no value for 'dnd:accept', then we can early exit here with
+    //  false. 'Nothing to see here'...
     if (TP.isEmpty(acceptVal =
                     targetTPElem.getAttribute('dnd:accept'))) {
         return false;
@@ -2706,15 +2713,15 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
     if (TP.notEmpty(vendVal =
                     sourceTPElem.getAttribute('dnd:vend'))) {
-        //  Grab 1...n type names from the vend values and try to
-        //  compute TIBET type names from them.
+        //  Grab 1...n type names from the vend values and try to compute TIBET
+        //  type names from them.
         vendVals = vendVal.split(' ');
 
         //  Manufacture a DOMDNDWillVend signal
         sig = TP.sig.DOMDNDWillVend.construct(null);
 
-        //  Manually call 'handle' against any type names that can
-        //  be derived from each vend value
+        //  Manually call 'handle' against any type names that can be derived
+        //  from each vend value
         vendVals.perform(
             function(aVal) {
 
@@ -2725,31 +2732,28 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
                 }
             });
 
-        //  If the signal has been 'prevent default'ed, then return
-        //  false
+        //  If the signal has been 'prevent default'ed, then return false
         if (sig.shouldPrevent()) {
             return false;
         }
 
-        //  Now fire the signal, using the source as the 'signal
-        //  source'
+        //  Now fire the signal, using the source as the 'signal source'
         sig = sourceTPElem.signal(sig);
 
-        //  If the signal has been 'prevent default'ed, then return
-        //  false
+        //  If the signal has been 'prevent default'ed, then return false
         if (sig.shouldPrevent()) {
             return false;
         }
 
-        //  Grab 1...n type names from the accept values and try to
-        //  compute TIBET type names from them.
+        //  Grab 1...n type names from the accept values and try to compute
+        //  TIBET type names from them.
         acceptVals = acceptVal.split(' ');
 
         //  Manufacture a DOMDNDWillAccept signal
         sig = TP.sig.DOMDNDWillAccept.construct(null);
 
-        //  Manually call 'handle' against any type names that can
-        //  be derived from each accept value
+        //  Manually call 'handle' against any type names that can be derived
+        //  from each accept value
         acceptVals.perform(
             function(aVal) {
 
@@ -2760,18 +2764,15 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
                 }
             });
 
-        //  If the signal has been 'prevent default'ed, then return
-        //  false
+        //  If the signal has been 'prevent default'ed, then return false
         if (sig.shouldPrevent()) {
             return false;
         }
 
-        //  Now fire the signal, using the target as the 'signal
-        //  source'
+        //  Now fire the signal, using the target as the 'signal source'
         sig = targetTPElem.signal(sig);
 
-        //  If the signal has been 'prevent default'ed, then return
-        //  false
+        //  If the signal has been 'prevent default'ed, then return false
         if (sig.shouldPrevent()) {
             return false;
         }
@@ -2792,8 +2793,8 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
     var vendVal,
         matchedElems;
 
-    //  The target element only needs to have a 'dnd:accept' value.
-    //  We don't pay attention to the actual value.
+    //  The target element only needs to have a 'dnd:accept' value. We don't pay
+    //  attention to the actual value.
     if (!targetTPElem.hasAttribute('dnd:accept')) {
         return false;
     }
@@ -2815,8 +2816,8 @@ TP.core.DNDResponder.Type.defineConstant(
 'FILTER_BY_DTD',
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
-    //  The target element only needs to have a 'dnd:accept' value.
-    //  We don't pay attention to the actual value.
+    //  The target element only needs to have a 'dnd:accept' value. We don't pay
+    //  attention to the actual value.
     if (!targetTPElem.hasAttribute('dnd:accept')) {
         return false;
     }
@@ -2841,8 +2842,8 @@ function() {
 
     var dndStateMachine;
 
-    //  Construct a new state machine and use it as the state machine for
-    //  the DND singleton.
+    //  Construct a new state machine and use it as the state machine for the
+    //  DND singleton.
     dndStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
     //  Construct the DND singleton - this will cause it to register itself.
@@ -2855,8 +2856,8 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  The 'real' action element. This type uses a 'cover element' as the
-//  action element.
+//  The 'real' action element. This type uses a 'cover element' as the action
+//  element.
 TP.core.DNDResponder.Inst.defineAttribute('$realActionElem');
 
 //  The item element - the element that the 'action element' (i.e. the DND
@@ -2877,10 +2878,12 @@ function() {
      * @method computeOffsetPoint
      * @summary Computes the gestures initial 'offset point'.
      * @description When computing the offset point, this method takes into
-     *     account the following parameters: - The initial starting point - The
-     *     offset from the action element's offset parent to the action element.
-     *     - The border and margin from the action element's offset parent. -
-     *     The 'drag corner' that was configured for the gesture.
+     *     account the following parameters:
+     *     - The initial starting point
+     *     - The offset from the action element's offset parent to the action
+     *       element.
+     *     - The border and margin from the action element's offset parent.
+     *     - The 'drag corner' that was configured or computed for the gesture.
      * @returns {TP.core.DragResponder} The receiver.
      */
 
@@ -2916,14 +2919,13 @@ function() {
     startX = startPoint.getX();
     startY = startPoint.getY();
 
-    //  In this type, we don't worry about container offsets, since the
-    //  action element is always a child of the 'body'.
-    //  We do, however, have to obtain offsets from the original source
-    //  element and compute those in.
+    //  In this type, we don't worry about container offsets, since the action
+    //  element is always a child of the 'body'. We do, however, have to obtain
+    //  offsets from the original source element and compute those in.
     itemPagePoint = this.get('itemPagePoint');
 
-    //  We do want to make sure that if the 'body' has a border, we account
-    //  for it though
+    //  We do want to make sure that if the 'body' has a border, we account for
+    //  it though
     offsetParent = TP.elementGetOffsetParent(actionElem);
 
     borderXOffset = TP.elementGetBorderInPixels(offsetParent, TP.LEFT);
@@ -2933,9 +2935,9 @@ function() {
     offsetY = startY - borderYOffset - itemPagePoint.getY();
 
     if (TP.isValid(corner = this.get('dragCorner'))) {
-        //  Since moving/resizing happens by setting 'top', 'left', 'width'
-        //  or 'height' of the 'style' property, we need to use the *content
-        //  box* when measuring.
+        //  Since moving/resizing happens by setting 'top', 'left', 'width' or
+        //  'height' of the 'style' property, we need to use the *content box*
+        //  when measuring.
         elemBox = TP.elementGetPageBox(actionElem, TP.CONTENT_BOX);
 
         switch (corner) {
@@ -2994,11 +2996,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragDroppingEnter',
+TP.core.DNDResponder.Inst.defineHandler('DragdroppingEnter',
 function(aSignal) {
 
     /**
-     * @method handleDragDroppingEnter
+     * @method handleDragdroppingEnter
      * @summary Executed when the state machine associated with this receiver
      *     enters the 'dragdropping' state. This method performs whatever
      *     processing is necessary to start the dragdropping process.
@@ -3030,16 +3032,17 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragDroppingInput',
+TP.core.DNDResponder.Inst.defineHandler('DragdroppingInput',
 function(aSignal) {
 
     /**
-     * @method handleDragDroppingInput
+     * @method handleDragdroppingInput
      * @summary Executed when the state machine associated with this receiver
      *     has further input (i.e. in this case, dragging move or dragging hover
      *     signals) while it is in the 'dragdropping' state.
      * @param {TP.sig.StateSignal} aSignal The state signal generated by the
      *     state machine machinery when triggering this state.
+     * @returns {TP.core.DNDResponder} The receiver.
      */
 
     return this.executeTriggerSignalHandler(aSignal.getPayload().at('trigger'));
@@ -3047,11 +3050,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragDroppingExit',
+TP.core.DNDResponder.Inst.defineHandler('DragdroppingExit',
 function(aSignal) {
 
     /**
-     * @method handleDragDroppingExit
+     * @method handleDragdroppingExit
      * @summary Executed when the state machine associated with this receiver
      *     exits the 'dragdropping' state. This method performs whatever
      *     processing is necessary to stop the dragging process.
@@ -3066,20 +3069,25 @@ function(aSignal) {
 
     if (TP.isValid(targetTPElem =
                     TP.core.UIElementNode.get('currentDNDTarget'))) {
+
         sigPayload = TP.hc('dndSource',
                             TP.core.UIElementNode.get('currentDNDSource'),
                             'dndTarget',
                             targetTPElem);
 
     } else {
+
         sigPayload = TP.hc('dndSource',
                             TP.core.UIElementNode.get('currentDNDSource'));
     }
 
     if (TP.isValid(targetTPElem) && targetTPElem.willDrop()) {
+
         //  Send a 'TP.sig.DOMDNDSucceeded' signal
         this.signal('TP.sig.DOMDNDSucceeded', sigPayload);
+
     } else {
+
         //  Send a 'TP.sig.DOMDNDFailed' signal
         this.signal('TP.sig.DOMDNDFailed', sigPayload);
     }
@@ -3096,20 +3104,19 @@ function(aSignal) {
 
     //  Reset the D&D infrastructure
 
-
     //  NB: These steps are in a very particular order, due to the logic in
     //  supertypes.
 
-    //  This will be the 'drag element' used by the receiver to drag the
-    //  content around. NB: We need to grab this reference before 'calling
-    //  up', since the action element gets cleared.
+    //  This will be the 'drag element' used by the receiver to drag the content
+    //  around. NB: We need to grab this reference before 'calling up', since
+    //  the action element gets cleared.
     dndElem = this.get('actionElement');
 
     //  Next, 'call up'. Need to do this before we 'empty the content'.
     this.callNextMethod();
 
-    //  Remove the drag element to avoid problems with mouse events which
-    //  might hit the element by mistake.
+    //  Remove the drag element to avoid problems with mouse events which might
+    //  hit the element by mistake.
     TP.nodeDetach(dndElem);
 
     //this.set('actionElement', this.get('$realActionElem'));
@@ -3118,61 +3125,14 @@ function(aSignal) {
     //  data.
     this.teardownDataModifiers();
 
-    //  These parameters need to be reset since this responder
-    //  is shared and may be used again
+    //  These parameters need to be reset since this responder is shared and may
+    //  be used again
     this.set('actionElement', null);
     this.set('xOffset', 0);
     this.set('yOffset', 0);
     this.set('dragCorner', null);
 
     return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DNDResponder.Inst.defineHandler('TargetIn',
-function(aSignal) {
-
-    //TP.info('Signaled: ' + TP.str(aSignal)),
-
-    var evtTargetTPElem,
-
-        targetTPElem;
-
-    evtTargetTPElem = TP.wrap(aSignal.at('targetRect').get('targetElement'));
-
-    if (TP.isValid(targetTPElem = evtTargetTPElem.getDNDTarget()) &&
-        targetTPElem.isValidTarget()) {
-        TP.core.UIElementNode.Type.set('currentDNDTarget',
-                                                targetTPElem);
-
-        //  Send a 'TP.sig.DOMDNDTargetOver' signal
-        targetTPElem.signal('TP.sig.DOMDNDTargetOver');
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DNDResponder.Inst.defineHandler('TargetOut',
-function(aSignal) {
-
-    //TP.info('Signaled: ' + TP.str(aSignal)),
-
-    var targetTPElem;
-
-    if (TP.notValid(targetTPElem =
-                    TP.core.UIElementNode.get('currentDNDTarget'))) {
-        return this;
-    }
-
-    //  Send a 'TP.sig.DOMDNDTargetOut' signal
-    targetTPElem.signal('TP.sig.DOMDNDTargetOut');
-
-    TP.core.UIElementNode.Type.set('currentDNDTarget', null);
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3213,9 +3173,9 @@ function(anElement) {
                                             TP.w3.Xmlns.XHTML);
     dragElement.setAttribute('id', '__dragElement__');
 
-    //  Set the style here (note that we'll set the z-index later when
-    //  we begin the drag session - which we have to do anyway for
-    //  dragging elements that we haven't created here).
+    //  Set the style here (note that we'll set the z-index later when we begin
+    //  the drag session - which we have to do anyway for dragging elements that
+    //  we haven't created here).
     dragElement.setAttribute(
         'style',
         'position: absolute; z-index: ' + TP.DRAG_DROP_TIER);
@@ -3230,23 +3190,25 @@ function(anElement) {
     dragElement.style.left = dragCoords.getX() + 'px';
     dragElement.style.top = dragCoords.getY() + 'px';
 
-    //  The width of the drag element is going to be the same as the
-    //  original element.
+    //  The width of the drag element is going to be the same as the original
+    //  element.
     dragElementWidth = TP.elementGetContentWidth(anElement);
     dragElementHeight = TP.elementGetContentHeight(anElement);
 
-    //  Set its width and height based on the width and height of the
-    //  content of the original element.
+    //  Set its width and height based on the width and height of the content of
+    //  the original element.
     TP.elementSetWidth(dragElement, dragElementWidth);
     TP.elementSetHeight(dragElement, dragElementHeight);
 
     //  Generate a 'drag cover element' to cover the entire contents of the
-    //  dragElement. We append this last so that if spurious mouse events
-    //  occur where the user was moving the drag element so fast that they
-    //  actually dragged the mouse *back* over the top of the dragElement
-    //  those events will be trapped by this drag cover element.
+    //  dragElement. We append this last so that if spurious mouse events occur
+    //  where the user was moving the drag element so fast that they actually
+    //  dragged the mouse *back* over the top of the dragElement those events
+    //  will be trapped by this drag cover element.
+
     if (TP.notValid(dragCoverElement = dragElement.dragCoverElement)) {
-        dragCoverElement = TP.documentConstructElement(dragDoc, 'div',
+        dragCoverElement = TP.documentConstructElement(dragDoc,
+                                                        'div',
                                                         TP.w3.Xmlns.XHTML);
 
         dragCoverElement.setAttribute(
@@ -3257,8 +3219,8 @@ function(anElement) {
         dragElement.dragCoverElement = dragCoverElement;
     }
 
-    //  Note that we don't worry about reassignment here (but we do append
-    //  the transparent 'cover element' *after* the content element).
+    //  Note that we don't worry about reassignment here (but we do append the
+    //  transparent 'cover element' *after* the content element).
     TP.nodeAppendChild(dragElement, dragCoverElement, false);
 
     return dragElement;
@@ -3273,13 +3235,12 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
      * @method prepareFrom
      * @summary Prepares the receiver by using well-known attributes present on
      *     the supplied info element.
-     * @param {TP.core.ElementNode} infoTPElement The TPElement to obtain
+     * @param {TP.core.ElementNode} infoTPElement The object to obtain
      *     configuration information from.
-     * @param {TP.core.ElementNode} srcTPElement The TPElement that acts as the
+     * @param {TP.core.ElementNode} srcTPElement The object that acts as the
      *     'source' of the drag operation.
-     * @param {TP.core.ElementNode} evtTPElement The TPElement that the
-     *     originating event occurred in and which might be used as the action
-     *     element.
+     * @param {TP.core.ElementNode} evtTPElement The object that the originating
+     *     event occurred in and which might be used as the action element.
      * @param {TP.sig.DOMMouseSignal} initialSignal The signal that started the
      *     dragging session. Usually this will be an instance of
      *     TP.sig.DOMDragDown.
@@ -3293,6 +3254,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrVal,
         containerElem;
 
+    //  If no attribute hash was supplied, then grab one from the 'information'
+    //  TP.core.ElementNode.
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
@@ -3336,7 +3299,7 @@ function() {
      *     receiver wants to do of the state machine it will be using should be
      *     done here before the receiver becomes a registered object and begins
      *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.MoveResponder} The receiver.
+     * @returns {TP.core.DNDResponder} The receiver.
      */
 
     var stateMachine;
@@ -3351,7 +3314,7 @@ function() {
 
     this.observe(
             stateMachine,
-            TP.ac('TP.sig.DragDroppingEnter', 'TP.sig.DragDroppingExit'));
+            TP.ac('TP.sig.DragdroppingEnter', 'TP.sig.DragdroppingExit'));
 
     this.setID('DNDService');
 
@@ -3449,21 +3412,22 @@ function(aTargetElem, anEvent) {
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
-    //  Check to see if the event target TPElement will move. If so,
-    //  activate the shared MoveService (an instance of
-    //  TP.core.MoveResponder), set it up, activate it and exit.
+    //  Check to see if the event target will move. If so, activate the shared
+    //  MoveService (an instance of TP.core.MoveResponder), set it up, activate
+    //  it and exit.
     if (evtTargetTPElem.willMove()) {
         if (TP.isValid(moveResponder = TP.bySystemId('MoveService'))) {
             //  Ask the wrapped event target element for its 'drag source'
-            //  TP.core.Element. If it can't find one, then it acts as it's own.
+            //  TP.core.ElementNode. If it can't find one, then it acts as it's
+            //  own.
             sourceTPElem = evtTargetTPElem.getDragSource();
 
-            //  Ask the drag source TPElement for its 'drag info'
-            //  TP.core.Element
+            //  Ask the drag source TP.core.ElementNode for its 'drag info'
+            //  TP.core.ElementNode
             infoTPElem = sourceTPElem.getDragInfo();
 
-            //  Set up the responder using the info, source and event
-            //  target native elements
+            //  Set up the responder using the info, source and event target
+            //  native elements
             moveResponder.prepareFrom(infoTPElem,
                                         sourceTPElem,
                                         evtTargetTPElem,
@@ -3480,21 +3444,20 @@ function(aTargetElem, anEvent) {
         return this;
     }
 
-    //  Check to see if the event target TPElement will resize. If so,
-    //  activate the shared ResizeService (an instance of
-    //  TP.core.ResizeResponder), set it up, activate it and exit.
+    //  Check to see if the event target will resize. If so, activate the shared
+    //  ResizeService (an instance of TP.core.ResizeResponder), set it up,
+    //  activate it and exit.
     if (evtTargetTPElem.willResize()) {
         if (TP.isValid(resizeResponder = TP.bySystemId('ResizeService'))) {
             //  Ask the wrapped event target element for its 'drag source'
-            //  TPElement
+            //  TP.core.ElementNode
             sourceTPElem = evtTargetTPElem.getDragSource();
 
-            //  Ask the drag source TPElement for its 'drag info'
-            //  TPElement
+            //  Ask the drag source for its 'drag info' TP.core.ElementNode
             infoTPElem = sourceTPElem.getDragInfo();
 
-            //  Set up the responder using the info, source and event
-            //  target native elements
+            //  Set up the responder using the info, source and event target
+            //  native elements
             resizeResponder.prepareFrom(infoTPElem,
                                         sourceTPElem,
                                         evtTargetTPElem,
@@ -3523,21 +3486,22 @@ function(aTargetElem, anEvent) {
                 return this;
             }
 
-            //  Ask the source TPElement for its 'drag info' TPElement. This
-            //  very well may be the sourceTPElem itself if there is no
-            //  separate element pointed to by 'drag:info'.
+            //  Ask the source for its 'drag info' TP.core.ElementNode. This
+            //  very well may be the sourceTPElem itself if there is no separate
+            //  element pointed to by 'drag:info'.
             infoTPElem = sourceTPElem.getDNDInfo();
 
-            //  Get the 'drag item' TPElement. Again, this very well may be
-            //  the sourceTPElem itself, but it might an 'item' within the
-            //  source or some other element. It's the one we actually want
+            //  Get the 'drag item' TP.core.ElementNode. Again, this very well
+            //  may be the sourceTPElem itself, but it might an 'item' within
+            //  the source or some other element. It's the one we actually want
             //  to drag.
             itemTPElem = infoTPElem.getDragItem();
 
-            //  Ask the item TPElement if a 'DND representation element' can
-            //  be computed. If one can be, then set up the shared DND
-            //  responder.
+            //  Ask the item TP.core.ElementNode if a 'DND representation
+            //  element' can be computed. If one can be, then set up the shared
+            //  DND responder.
             if (TP.isElement(actionElem = itemTPElem.getDNDRepElement())) {
+
                 //  Set up the shared dnd responder using the info, source
                 //  and event target native elements
 
@@ -3554,8 +3518,8 @@ function(aTargetElem, anEvent) {
                 itemElem = itemTPElem.getNativeNode();
                 dndResponder.set('itemElement', itemElem);
 
-                //  Grab the item elements pageX/pageY. This will be used
-                //  when computing where to place the rep element.
+                //  Grab the item elements pageX/pageY. This will be used when
+                //  computing where to place the rep element.
                 itemOffsets = TP.elementGetPageXY(itemElem);
                 dndResponder.set('itemPagePoint', TP.pc(itemOffsets));
 
@@ -3585,7 +3549,8 @@ function(aTargetElem, anEvent) {
     /**
      * @method ondragup
      * @summary Handles a 'dragup' native event (well, 'native' in that TIBET
-     *     simulates it) that was dispatched against the supplied native element.
+     *     simulates it) that was dispatched against the supplied native
+     *     element.
      * @param {HTMLElement} aTargetElem The target element computed for this
      *     signal.
      * @param {Event} anEvent The native event that was triggered.
@@ -3621,8 +3586,8 @@ function() {
     var attrVal,
         infoElem;
 
-    //  If there is no 'drag:info' attribute on the element, then we just
-    //  return the receiver.
+    //  If there is no 'drag:info' attribute on the element, then we just return
+    //  the receiver.
     if (!this.hasAttribute('drag:info')) {
         return this;
     }
@@ -3631,9 +3596,8 @@ function() {
                                                         'drag:info',
                                                         true))) {
         //  Note here how we specify both 'autocollapse' and 'retry with
-        //  document', since we only want one element and we want the
-        //  document to be retried as the context node - very useful for CSS
-        //  paths.
+        //  document', since we only want one element and we want the document
+        //  to be retried as the context node - very useful for CSS paths.
         if (TP.isElement(
                 infoElem =
                     TP.nodeEvaluatePath(
@@ -3665,25 +3629,28 @@ function() {
 
         sourceNatElem;
 
-    //  If there is no 'drag:item' attribute on the info element, then we
-    //  just return the source, since they're one and the same.
+    //  If there is no 'drag:item' attribute on the info element, then we just
+    //  return the source, since they're one and the same.
     if (!this.hasAttribute('drag:item')) {
         return this;
     }
 
-    //  If we found a 'drag:item' attribute, we see what it's value is. If
-    //  its 'target', then we use the 'lastDown's target element. Otherwise,
-    //  we assume that its a path and we execute the path *in the context of
-    //  the source element*
+    //  If we found a 'drag:item' attribute, we see what it's value is. If its
+    //  'target', then we use the 'lastDown's target element. Otherwise, we
+    //  assume that its a path and we execute the path *in the context of the
+    //  source element*
 
     attrVal = this.getAttribute('drag:item');
 
     if (attrVal === 'target') {
+
         lastDown = TP.core.Mouse.get('lastDown');
+
         if (TP.isElement(targetElem = TP.eventGetResolvedTarget(lastDown))) {
             itemElem = targetElem;
         }
     } else {
+
         sourceNatElem = this.getNativeNode();
 
         //  Note here how we specify 'autocollapse' for the
@@ -3718,8 +3685,7 @@ function() {
 
     //  If the receiver itself has a 'dnd:mover' or 'dnd:resizer'
     //  attribute, then we can use it.
-    if (this.hasAttribute('drag:mover') ||
-        this.hasAttribute('drag:resizer')) {
+    if (this.hasAttribute('drag:mover') || this.hasAttribute('drag:resizer')) {
         return this;
     }
 
@@ -3775,9 +3741,9 @@ function() {
     var attrVal,
         infoElem;
 
-    //  If there is no 'dnd:info' attribute on the element, then we just
-    //  return the receiver (which should be the source), since they're one
-    //  and the same.
+    //  If there is no 'dnd:info' attribute on the element, then we just return
+    //  the receiver (which should be the source), since they're one and the
+    //  same.
     if (!this.hasAttribute('dnd:info')) {
         return this;
     }
@@ -3786,9 +3752,8 @@ function() {
                                                         'dnd:info',
                                                         true))) {
         //  Note here how we specify both 'autocollapse' and 'retry with
-        //  document', since we only want one element and we want the
-        //  document to be retried as the context node - very useful for CSS
-        //  paths.
+        //  document', since we only want one element and we want the document
+        //  to be retried as the context node - very useful for CSS paths.
         if (TP.isElement(
                     infoElem =
                         TP.nodeEvaluatePath(
@@ -3832,9 +3797,8 @@ function() {
                                                         'dnd:rep',
                                                         true))) {
         //  Note here how we specify both 'autocollapse' and 'retry with
-        //  document', since we only want one element and we want the
-        //  document to be retried as the context node - very useful for CSS
-        //  paths.
+        //  document', since we only want one element and we want the document
+        //  to be retried as the context node - very useful for CSS paths.
         if (!TP.isElement(repElem = TP.nodeEvaluatePath(
                                         elem, attrVal, null, true, true))) {
             repElem = elem;
@@ -3854,8 +3818,8 @@ function() {
     //  Remove the 'id' to make sure the clone is unique in the document.
     TP.elementRemoveAttribute(dragClone, 'id');
 
-    //  Make sure that the clone is 'shown' - if the D&D rep was gotten from
-    //  a hidden block somewhere, it may not be showing
+    //  Make sure that the clone is 'shown' - if the D&D rep was gotten from a
+    //  hidden block somewhere, it may not be showing.
     TP.elementShow(dragClone);
 
     return dragClone;
@@ -3872,8 +3836,7 @@ function() {
      * @abstract
      */
 
-    //  If the receiver itself has a 'dnd:vend' attribute, then we can use
-    //  it.
+    //  If the receiver itself has a 'dnd:vend' attribute, then we can use it.
     if (this.hasAttribute('dnd:vend')) {
         return this;
     }
@@ -3882,10 +3845,7 @@ function() {
     //  'dnd:vend'.
     return this.detectAncestor(
                 function(ansNatNode) {
-
-                    return TP.elementHasAttribute(ansNatNode,
-                                                    'dnd:vend',
-                                                    true);
+                    return TP.elementHasAttribute(ansNatNode, 'dnd:vend', true);
                 });
 });
 
@@ -3900,8 +3860,8 @@ function() {
      * @abstract
      */
 
-    //  If the receiver itself has a 'dnd:accept' attribute, then we can
-    //  grab it.
+    //  If the receiver itself has a 'dnd:accept' attribute, then we can grab
+    //  it.
     if (this.hasAttribute('dnd:accept')) {
         return this;
     }
@@ -3910,7 +3870,6 @@ function() {
     //  'dnd:accept'.
     return this.detectAncestor(
                 function(ansNatNode) {
-
                     return TP.elementHasAttribute(ansNatNode,
                                                     'dnd:accept',
                                                     true);
@@ -3944,8 +3903,9 @@ function() {
         return false;
     }
 
-    testFuncName = TP.ifEmpty(dndSource.getAttribute('dnd:filter'),
-                                'FILTER_BY_STRING_OR');
+    testFuncName = TP.ifEmpty(
+                        dndSource.getAttribute('dnd:filter'),
+                        'FILTER_BY_STRING_OR');
 
     //  Try some built-in values
     switch (testFuncName) {
@@ -4031,8 +3991,8 @@ function() {
 
         results;
 
-    //  If the receiver' 'drag info' element (usually itself) has a
-    //  'drag:mover' attribute, then we just return true
+    //  If the receiver' 'drag info' element (usually itself) has a 'drag:mover'
+    //  attribute, then we just return true
     if (this.getDragInfo().hasAttribute('drag:mover')) {
         return true;
     }
@@ -4050,10 +4010,11 @@ function() {
 
     //  If we found a valid source TP.core.ElementNode, get its 'info'
     //  TP.core.ElementNode and make sure that the info TP.core.ElementNode has
-    //  a 'drag:mover' attribute and that the receiver's native node is part
-    //  of the results returned by executing the path supplied in the
-    //  'drag:item' attribute (relative to the source element).
+    //  a 'drag:mover' attribute and that the receiver's native node is part of
+    //  the results returned by executing the path supplied in the 'drag:item'
+    //  attribute (relative to the source element).
     if (TP.isValid(sourceTPElem)) {
+
         infoTPElem = sourceTPElem.getDragInfo();
 
         if (!infoTPElem.hasAttribute('drag:mover')) {
@@ -4098,7 +4059,6 @@ function() {
     sourceTPElem =
         this.detectAncestor(
                 function(ansNatNode) {
-
                     return TP.elementHasAttribute(ansNatNode,
                                                     'drag:item',
                                                     true);
@@ -4110,6 +4070,7 @@ function() {
     //  of the results returned by executing the path supplied in the
     //  'drag:item' attribute (relative to the source element).
     if (TP.isValid(sourceTPElem)) {
+
         infoTPElem = sourceTPElem.getDragInfo();
 
         if (!infoTPElem.hasAttribute('drag:resizer')) {
@@ -4120,6 +4081,7 @@ function() {
                                     sourceTPElem.getNativeNode(),
                                     infoTPElem.getAttribute('drag:item'),
                                     null))) {
+
             return results.contains(this.getNativeNode(), TP.IDENTITY);
         }
     }
@@ -4316,8 +4278,10 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
      *     responder should observe.
      * @param {String|Function} domainSpec A domain specification function or
      *     string.
-     *
-     *
+     * @param {Function} filterFunction
+     * @param {Function} rangeFunction
+     * @param {Function} testFunction
+     * @param {TP.sig.Signal} trackingSignal
      * @returns {TP.core.DragTracker} A new instance.
      */
 
@@ -4509,7 +4473,6 @@ function() {
 
     //  Query each domain object using our current range function to compute a
     //  new set of computable values we'll run tracking tests against.
-
 
     return this;
 });

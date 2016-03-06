@@ -3520,6 +3520,122 @@ function(anElement, boxType, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$elementGetOffsetParent',
+function(anElement) {
+
+    /**
+     * @method elementGetOffsetParent
+     * @summary Returns the element's offset parent.
+     * @description This is the lower level routine that this shared amongst the
+     *     the public 'TP.elementGetOffsetParent' method and the ECMA5 getter
+     *     over in the boot code.
+     * @param {HTMLElement} anElement The element to get the offset parent.
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @returns {Element} The element's offset parent.
+     */
+
+    var computedStyle,
+
+        positionVal,
+        doc,
+        ancestor;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+
+    //  NOTE: We follow the CSSOM spec here for how to compute offset parent.
+
+    //  Per the spec, if anElement is the root element or the (X)HTML 'body',
+    //  then we return null
+    if (anElement === doc.documentElement || anElement === doc.body) {
+        return null;
+    }
+
+    //  Grab the computed style for the element
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    //  Grab the position of the element
+    positionVal = computedStyle.position;
+
+    //  Per the spec, if anElement is 'fixed' position, then we return null
+    if (positionVal === 'fixed') {
+        return null;
+    }
+
+    ancestor =
+        TP.nodeDetectAncestor(
+            anElement,
+            function(aParent) {
+
+                var parentPositionVal,
+                    parentTagName;
+
+                //  Per the spec, if aParent is the (X)HTML 'body', then we
+                //  return it.
+                if (aParent === doc.body) {
+                    return aParent;
+                }
+
+                //  Grab the parent's position.
+                parentPositionVal =
+                        TP.elementGetComputedStyleObj(aParent).position;
+
+                //  Per the spec, if aParent's computed position is not
+                //  'static', then we return it.
+                if (parentPositionVal !== 'static') {
+                    return aParent;
+                }
+
+                //  Per the spec, if aParent's computed position is 'static',
+                //  but it is an (X)HTML 'td', 'th' or 'table', then we return
+                //  it.
+                parentTagName = aParent.tagName.toLowerCase();
+                if (/(td|th|table)/.test(parentTagName)) {
+                    return aParent;
+                }
+            });
+
+    return ancestor;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementGetOffsetParent',
+function(anElement) {
+
+    /**
+     * @method elementGetOffsetParent
+     * @summary Returns the element's offset parent.
+     * @description Some elements, notably non-XHTML ones, do not have an
+     *     'offsetParent' convenience property. This method provides an
+     *     implementation of the CSS Object Model specification around the
+     *     'offsetParent' property, if the supplied Element doesn't have one.
+     * @param {HTMLElement} anElement The element to get the offset parent.
+     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @returns {Element} The element's offset parent.
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isElement(anElement.offsetParent)) {
+        return anElement.offsetParent;
+    }
+
+    //  Call the lower-level routine that the '.offsetParent' ECMA 5 getter over
+    //  in the boot code calls as well.
+    return TP.$elementGetOffsetParent(anElement);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetScrollOffsetFromAncestor',
 function(anElement, anAncestor, wantsTransformed) {
 

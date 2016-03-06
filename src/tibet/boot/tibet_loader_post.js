@@ -514,21 +514,31 @@ TP.boot.installPatches = function(aWindow) {
     //  CSS OM Patches
     //  --------------------------------------------------------------------
 
-    //  These browsers rendering engines have problems not properly supplying
+    //  All browsers rendering engines have problems not properly supplying
     //  the offset* properties for custom (i.e. non-XHTML) elements. We rectify
     //  that here.
-    if (TP.boot.$$isMoz() || TP.boot.$$isWebkit()) {
 
-        aWindow.Element.prototype.__defineGetter__(
-            'offsetParent',
-            function() {
+    aWindow.Object.defineProperty(
+        aWindow.Element.prototype,
+        'offsetParent',
+        {
+            configurable: true,
+            get: function() {
 
-                return TP.elementGetOffsetParent(this);
-            });
+                //  NOTE: We call the 'lower-level' method here (that actually
+                //  does the work). If we call the regular
+                //  'TP.elementGetOffsetParent' method, we WILL recurse into
+                //  here.
+                return TP.$elementGetOffsetParent(this);
+            }
+        });
 
-        aWindow.Element.prototype.__defineGetter__(
-            'offsetTop',
-            function() {
+    aWindow.Object.defineProperty(
+        aWindow.Element.prototype,
+        'offsetTop',
+        {
+            configurable: true,
+            get: function() {
 
                 var myTop,
 
@@ -544,12 +554,18 @@ TP.boot.installPatches = function(aWindow) {
 
                 offsetParentTop = this.offsetParent.offsetTop;
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(myTop - offsetParentTop);
-            });
+            }
+        });
 
-        aWindow.Element.prototype.__defineGetter__(
-            'offsetLeft',
-            function() {
+    aWindow.Object.defineProperty(
+        aWindow.Element.prototype,
+        'offsetLeft',
+        {
+            configurable: true,
+            get: function() {
 
                 var myLeft,
 
@@ -565,23 +581,37 @@ TP.boot.installPatches = function(aWindow) {
 
                 offsetParentLeft = this.offsetParent.offsetLeft;
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(myLeft - offsetParentLeft);
-            });
+            }
+        });
 
-        aWindow.Element.prototype.__defineGetter__(
-            'offsetWidth',
-            function() {
+    aWindow.Object.defineProperty(
+        aWindow.Element.prototype,
+        'offsetWidth',
+        {
+            configurable: true,
+            get: function() {
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(this.getBoundingClientRect().width);
-            });
+            }
+        });
 
-        aWindow.Element.prototype.__defineGetter__(
-            'offsetHeight',
-            function() {
+    aWindow.Object.defineProperty(
+        aWindow.Element.prototype,
+        'offsetHeight',
+        {
+            configurable: true,
+            get: function() {
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(this.getBoundingClientRect().height);
-            });
-    }
+            }
+        });
 
     //  --------------------------------------------------------------------
     //  Event Patches
@@ -589,103 +619,111 @@ TP.boot.installPatches = function(aWindow) {
 
     if (TP.boot.$$isMoz() || TP.boot.$$isWebkit()) {
 
-        aWindow.Event.prototype.__defineGetter__(
+        aWindow.Object.defineProperty(
+            aWindow.Event.prototype,
             'offsetX',
-            function() {
+            {
+                configurable: true,
+                get: function() {
 
-                //  The spec says that offsetX should be computed from the
-                //  left of the *padding box* (i.e. including the padding,
-                //  but excluding the border).
+                    //  The spec says that offsetX should be computed from the
+                    //  left of the *padding box* (i.e. including the padding,
+                    //  but excluding the border).
 
-                var target,
-                    compStyle,
-                    offsetX,
-                    absOffset;
+                    var target,
+                        compStyle,
+                        offsetX,
+                        absOffset;
 
-                target = this.target;
+                    target = this.target;
 
-                if (target && target.nodeType !== undefined &&
-                    target.nodeType !== Node.DOCUMENT_NODE) {
-                    target = target.nodeType === Node.TEXT_NODE ?
-                                                target.parentNode :
-                                                target;
+                    if (target && target.nodeType !== undefined &&
+                        target.nodeType !== Node.DOCUMENT_NODE) {
+                        target = target.nodeType === Node.TEXT_NODE ?
+                                                    target.parentNode :
+                                                    target;
 
-                    compStyle = TP.elementGetComputedStyleObj(target);
+                        compStyle = TP.elementGetComputedStyleObj(target);
 
-                    if (compStyle.position === 'absolute' ||
-                        compStyle.position === 'relative') {
-                        offsetX = this.layerX;
-                    } else {
-                        absOffset =
-                            TP.elementGetOffsetFromContainer(target);
-                        offsetX = this.layerX - absOffset[0];
+                        if (compStyle.position === 'absolute' ||
+                            compStyle.position === 'relative') {
+                            offsetX = this.layerX;
+                        } else {
+                            absOffset =
+                                TP.elementGetOffsetFromContainer(target);
+                            offsetX = this.layerX - absOffset[0];
 
-                        if (target.offsetParent) {
-                            compStyle = TP.elementGetComputedStyleObj(
-                                                    target.offsetParent);
+                            if (target.offsetParent) {
+                                compStyle = TP.elementGetComputedStyleObj(
+                                                        target.offsetParent);
 
-                            offsetX -= TP.elementGetPixelValue(
-                                        this,
-                                        compStyle.getPropertyValue(
-                                                        'border-left-width'),
-                                        'borderLeftWidth',
-                                        false);
+                                offsetX -= TP.elementGetPixelValue(
+                                            this,
+                                            compStyle.getPropertyValue(
+                                                            'border-left-width'),
+                                            'borderLeftWidth',
+                                            false);
+                            }
                         }
+
+                        return offsetX;
                     }
 
-                    return offsetX;
+                    return 0;
                 }
-
-                return 0;
             });
 
-        aWindow.Event.prototype.__defineGetter__(
+        aWindow.Object.defineProperty(
+            aWindow.Event.prototype,
             'offsetY',
-            function() {
+            {
+                configurable: true,
+                get: function() {
 
-                //  The spec says that offsetY should be computed from the
-                //  top of the *padding box* (i.e. including the padding,
-                //  but excluding the border).
+                    //  The spec says that offsetY should be computed from the
+                    //  top of the *padding box* (i.e. including the padding,
+                    //  but excluding the border).
 
-                var target,
-                    compStyle,
-                    offsetY,
-                    absOffset;
+                    var target,
+                        compStyle,
+                        offsetY,
+                        absOffset;
 
-                target = this.target;
+                    target = this.target;
 
-                if (target && target.nodeType !== undefined &&
-                    target.nodeType !== Node.DOCUMENT_NODE) {
-                    target = target.nodeType === Node.TEXT_NODE ?
-                                                target.parentNode :
-                                                target;
+                    if (target && target.nodeType !== undefined &&
+                        target.nodeType !== Node.DOCUMENT_NODE) {
+                        target = target.nodeType === Node.TEXT_NODE ?
+                                                    target.parentNode :
+                                                    target;
 
-                    compStyle = TP.elementGetComputedStyleObj(target);
+                        compStyle = TP.elementGetComputedStyleObj(target);
 
-                    if (compStyle.position === 'absolute' ||
-                        compStyle.position === 'relative') {
-                        offsetY = this.layerY;
-                    } else {
-                        absOffset =
-                            TP.elementGetOffsetFromContainer(target);
-                        offsetY = this.layerY - absOffset[1];
+                        if (compStyle.position === 'absolute' ||
+                            compStyle.position === 'relative') {
+                            offsetY = this.layerY;
+                        } else {
+                            absOffset =
+                                TP.elementGetOffsetFromContainer(target);
+                            offsetY = this.layerY - absOffset[1];
 
-                        if (target.offsetParent) {
-                            compStyle = TP.elementGetComputedStyleObj(
-                                                    target.offsetParent);
-                            offsetY -= TP.elementGetPixelValue(
-                                        this,
-                                        compStyle.getPropertyValue(
-                                                        'border-top-width'),
-                                        'borderTopWidth',
-                                        false);
+                            if (target.offsetParent) {
+                                compStyle = TP.elementGetComputedStyleObj(
+                                                        target.offsetParent);
+                                offsetY -= TP.elementGetPixelValue(
+                                            this,
+                                            compStyle.getPropertyValue(
+                                                            'border-top-width'),
+                                            'borderTopWidth',
+                                            false);
+                            }
                         }
+
+                        return offsetY;
                     }
 
-                    return offsetY;
+                    return 0;
                 }
-
-                return 0;
             });
 
     } else if (TP.boot.$$isIE()) {
