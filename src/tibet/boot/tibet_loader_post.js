@@ -525,7 +525,11 @@ TP.boot.installPatches = function(aWindow) {
             configurable: true,
             get: function() {
 
-                return TP.elementGetOffsetParent(this);
+                //  NOTE: We call the 'lower-level' method here (that actually
+                //  does the work). If we call the regular
+                //  'TP.elementGetOffsetParent' method, we WILL recurse into
+                //  here.
+                return TP.$elementGetOffsetParent(this);
             }
         });
 
@@ -550,6 +554,8 @@ TP.boot.installPatches = function(aWindow) {
 
                 offsetParentTop = this.offsetParent.offsetTop;
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(myTop - offsetParentTop);
             }
         });
@@ -575,6 +581,8 @@ TP.boot.installPatches = function(aWindow) {
 
                 offsetParentLeft = this.offsetParent.offsetLeft;
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(myLeft - offsetParentLeft);
             }
         });
@@ -586,6 +594,8 @@ TP.boot.installPatches = function(aWindow) {
             configurable: true,
             get: function() {
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(this.getBoundingClientRect().width);
             }
         });
@@ -597,6 +607,8 @@ TP.boot.installPatches = function(aWindow) {
             configurable: true,
             get: function() {
 
+                //  We round() since offset* properties always return whole
+                //  numbers.
                 return Math.round(this.getBoundingClientRect().height);
             }
         });
