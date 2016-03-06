@@ -17,11 +17,139 @@
 TP.describe('$tokenize',
 function() {
 
+    this.it('Processes typical objects correctly', function(test, options) {
+        var str,
+            arr;
+
+        str = ':testCmd [] [1, 2, 3] {} {a: 1, b: 2, c: 3} true false 12 12.34 /foo/g TP';
+        arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
+
+        test.assert.isEqualTo(arr.length, 49);
+        test.assert.isEqualTo(arr[0].name, 'operator');
+        test.assert.isEqualTo(arr[0].value, ':');
+        test.assert.isEqualTo(arr[1].name, 'identifier');
+        test.assert.isEqualTo(arr[1].value, 'testCmd');
+        test.assert.isEqualTo(arr[2].name, 'space');
+        test.assert.isEqualTo(arr[2].value, ' ');
+        test.assert.isEqualTo(arr[3].name, 'operator');
+        test.assert.isEqualTo(arr[3].value, '[');
+        test.assert.isEqualTo(arr[4].name, 'operator');
+        test.assert.isEqualTo(arr[4].value, ']');
+        test.assert.isEqualTo(arr[5].name, 'space');
+        test.assert.isEqualTo(arr[5].value, ' ');
+        test.assert.isEqualTo(arr[6].name, 'operator');
+        test.assert.isEqualTo(arr[6].value, '[');
+        test.assert.isEqualTo(arr[7].name, 'number');
+        test.assert.isEqualTo(arr[7].value, '1');
+        test.assert.isEqualTo(arr[8].name, 'operator');
+        test.assert.isEqualTo(arr[8].value, ',');
+        test.assert.isEqualTo(arr[9].name, 'space');
+        test.assert.isEqualTo(arr[9].value, ' ');
+
+        test.assert.isEqualTo(arr[10].name, 'number');
+        test.assert.isEqualTo(arr[10].value, '2');
+        test.assert.isEqualTo(arr[11].name, 'operator');
+        test.assert.isEqualTo(arr[11].value, ',');
+        test.assert.isEqualTo(arr[12].name, 'space');
+        test.assert.isEqualTo(arr[12].value, ' ');
+        test.assert.isEqualTo(arr[13].name, 'number');
+        test.assert.isEqualTo(arr[13].value, '3');
+        test.assert.isEqualTo(arr[14].name, 'operator');
+        test.assert.isEqualTo(arr[14].value, ']');
+        test.assert.isEqualTo(arr[15].name, 'space');
+        test.assert.isEqualTo(arr[15].value, ' ');
+        test.assert.isEqualTo(arr[16].name, 'operator');
+        test.assert.isEqualTo(arr[16].value, '{');
+        test.assert.isEqualTo(arr[17].name, 'operator');
+        test.assert.isEqualTo(arr[17].value, '}');
+        test.assert.isEqualTo(arr[18].name, 'space');
+        test.assert.isEqualTo(arr[18].value, ' ');
+        test.assert.isEqualTo(arr[19].name, 'operator');
+        test.assert.isEqualTo(arr[19].value, '{');
+
+        test.assert.isEqualTo(arr[20].name, 'identifier');
+        test.assert.isEqualTo(arr[20].value, 'a');
+        test.assert.isEqualTo(arr[21].name, 'operator');
+        test.assert.isEqualTo(arr[21].value, ':');
+        test.assert.isEqualTo(arr[22].name, 'space');
+        test.assert.isEqualTo(arr[22].value, ' ');
+        test.assert.isEqualTo(arr[23].name, 'number');
+        test.assert.isEqualTo(arr[23].value, '1');
+        test.assert.isEqualTo(arr[24].name, 'operator');
+        test.assert.isEqualTo(arr[24].value, ',');
+        test.assert.isEqualTo(arr[25].name, 'space');
+        test.assert.isEqualTo(arr[25].value, ' ');
+        test.assert.isEqualTo(arr[26].name, 'identifier');
+        test.assert.isEqualTo(arr[26].value, 'b');
+        test.assert.isEqualTo(arr[27].name, 'operator');
+        test.assert.isEqualTo(arr[27].value, ':');
+        test.assert.isEqualTo(arr[28].name, 'space');
+        test.assert.isEqualTo(arr[28].value, ' ');
+        test.assert.isEqualTo(arr[29].name, 'number');
+        test.assert.isEqualTo(arr[29].value, '2');
+
+        test.assert.isEqualTo(arr[30].name, 'operator');
+        test.assert.isEqualTo(arr[30].value, ',');
+        test.assert.isEqualTo(arr[31].name, 'space');
+        test.assert.isEqualTo(arr[31].value, ' ');
+        test.assert.isEqualTo(arr[32].name, 'identifier');
+        test.assert.isEqualTo(arr[32].value, 'c');
+        test.assert.isEqualTo(arr[33].name, 'operator');
+        test.assert.isEqualTo(arr[33].value, ':');
+        test.assert.isEqualTo(arr[34].name, 'space');
+        test.assert.isEqualTo(arr[34].value, ' ');
+        test.assert.isEqualTo(arr[35].name, 'number');
+        test.assert.isEqualTo(arr[35].value, '3');
+        test.assert.isEqualTo(arr[36].name, 'operator');
+        test.assert.isEqualTo(arr[36].value, '}');
+        test.assert.isEqualTo(arr[37].name, 'space');
+        test.assert.isEqualTo(arr[37].value, ' ');
+        test.assert.isEqualTo(arr[38].name, 'keyword');
+        test.assert.isEqualTo(arr[38].value, 'true');
+        test.assert.isEqualTo(arr[39].name, 'space');
+        test.assert.isEqualTo(arr[39].value, ' ');
+
+        test.assert.isEqualTo(arr[40].name, 'keyword');
+        test.assert.isEqualTo(arr[40].value, 'false');
+        test.assert.isEqualTo(arr[41].name, 'space');
+        test.assert.isEqualTo(arr[41].value, ' ');
+        test.assert.isEqualTo(arr[42].name, 'number');
+        test.assert.isEqualTo(arr[42].value, '12');
+        test.assert.isEqualTo(arr[43].name, 'space');
+        test.assert.isEqualTo(arr[43].value, ' ');
+        test.assert.isEqualTo(arr[44].name, 'number');
+        test.assert.isEqualTo(arr[44].value, '12.34');
+        test.assert.isEqualTo(arr[45].name, 'space');
+        test.assert.isEqualTo(arr[45].value, ' ');
+        test.assert.isEqualTo(arr[46].name, 'regexp');
+        test.assert.isEqualTo(arr[46].value, '/foo/g');
+        test.assert.isEqualTo(arr[47].name, 'space');
+        test.assert.isEqualTo(arr[47].value, ' ');
+        test.assert.isEqualTo(arr[48].name, 'identifier');
+        test.assert.isEqualTo(arr[48].value, 'TP');
+
+    });
+
     this.it('Processes quotes correctly', function(test, options) {
         var str,
             arr;
 
         str = "Blah \"double quotes\" 'single quotes' `templates` and such";
+        arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
+
+        test.assert.isEqualTo(arr.length, 11);
+        test.assert.isEqualTo(arr[0].value, 'Blah');
+        test.assert.isEqualTo(arr[1].name, 'space');
+        test.assert.isEqualTo(arr[2].name, 'string');
+        test.assert.isEqualTo(arr[3].name, 'space');
+        test.assert.isEqualTo(arr[4].name, 'string');
+        test.assert.isEqualTo(arr[5].name, 'space');
+        test.assert.isEqualTo(arr[6].name, 'substitution');
+        test.assert.isEqualTo(arr[7].name, 'space');
+        test.assert.isEqualTo(arr[8].value, 'and');
+        test.assert.isEqualTo(arr[9].name, 'space');
+        test.assert.isEqualTo(arr[10].value, 'such');
+
         arr = TP.$tokenize(str);
 
         test.assert.isEqualTo(arr.length, 11);
@@ -36,7 +164,6 @@ function() {
         test.assert.isEqualTo(arr[8].value, 'and');
         test.assert.isEqualTo(arr[9].name, 'space');
         test.assert.isEqualTo(arr[10].value, 'such');
-
     });
 
     this.it('Processes from/to values correctly', function(test, options) {
@@ -47,7 +174,7 @@ function() {
             token;
 
         str = "a {curly: 1} [1, [2, 3]]";
-        arr = TP.$tokenize(str);
+        arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
 
         len = arr.length;
         for (i = 0; i < len; i++) {
