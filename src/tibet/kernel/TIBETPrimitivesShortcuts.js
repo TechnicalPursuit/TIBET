@@ -2218,7 +2218,7 @@ function(anObject, aFilter, aDiscriminator) {
         obj = anObject;
 
         do {
-            arr.push(Object.keys(obj));
+            arr.push(TP.objectGetKeys(obj));
             obj = Object.getPrototypeOf(obj);
         } while (obj);
 
@@ -2537,12 +2537,19 @@ function(anObject, aKey) {
      * @returns {String} A recursion string rep for the object.
      */
 
-    var obj;
+    var obj,
+        gid,
+        key;
 
     try {
-        TP.warn('Circular reference(s) detected in ' + TP.gid(anObject) +
-            ' ' + aKey.replace('\$\$recursive_', ''));
+        //  Remove our recursion marker from the object.
         delete anObject[aKey];
+
+        //  Update our key to the original key name.
+        key = aKey.replace('\$\$recursive_', '');
+        gid = TP.gid(anObject);
+
+        TP.warn('Circular reference(s) in ' + gid + ' (' + key + ')');
     } catch (e) {
         void 0;
     }
@@ -2558,8 +2565,14 @@ function(anObject, aKey) {
         return anObject.asRecursionString();
     }
 
-    //  worst case we just produce our dump representation
-    return TP.dump(anObject);
+    //  Do up a manual form of recursion string here.
+    gid = TP.gid(obj);
+    if (TP.sys.cfg('debug.register_recursion')) {
+        gid = 'urn:tibet:' + gid;
+        TP.uc(gid).setResource(obj);
+        return gid;
+    }
+    return '@' + gid;
 });
 
 //  ------------------------------------------------------------------------

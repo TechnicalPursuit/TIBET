@@ -621,7 +621,7 @@ function(anObject, aFilterName) {
     //  If the object has more than 1 key, then put it in another object with a
     //  single slot, 'value'. This is because the JXON processor cannot handle
     //  multi-keyed objects - it needs a 'rooted' object.
-    if (Object.keys(obj).getSize() > 1) {
+    if (TP.objectGetKeys(obj).getSize() > 1) {
         obj = {value: obj};
     }
 
@@ -823,7 +823,7 @@ function(anObject, rootName) {
 
                         default:
 
-                            keys = Object.keys(obj);
+                            keys = TP.objectGetKeys(obj);
                             str += '<' + slotName + ' type="object">';
                             for (i = 0; i < keys.length; i++) {
                                 if (TP.regex.PRIVATE_OR_INTERNAL_SLOT.test(
@@ -852,7 +852,7 @@ function(anObject, rootName) {
     //  single slot keyed under the root name. This is because the translation
     //  machinery cannot handle multi-keyed objects - it needs a 'rooted'
     //  object.
-    rootKeys = Object.keys(anObject);
+    rootKeys = TP.objectGetKeys(anObject);
     if (rootKeys.getSize() > 1) {
         dataRoot = {};
         dataRoot[name] = anObject;
@@ -1007,7 +1007,7 @@ function(aNode) {
                     currentChild = children[i];
 
                     xmlNodeAsJSONObj(currentChild, itemObj);
-                    key = Object.keys(itemObj)[0];
+                    key = TP.objectGetKeys(itemObj)[0];
 
                     newObj.push(itemObj[key]);
                     itemObj[key] = null;

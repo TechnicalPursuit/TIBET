@@ -4586,7 +4586,7 @@ function() {
             } else if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
                 this.$set('$$hash', TP.constructOrphanObject(), false);
                 inst = this;
-                Object.keys(obj).forEach(
+                TP.objectGetKeys(obj).forEach(
                         function(key) {
                             var value;
 
@@ -8053,7 +8053,7 @@ function(aFilterName) {
     var arr,
         func;
 
-    arr = Object.keys(this.$get('$$hash'));
+    arr = TP.objectGetKeys(this.$get('$$hash'));
 
     func = this.getSortFunction();
     if (!func) {

@@ -853,6 +853,10 @@
     //  triggering their built-in recursion checks.
     TP.sys.setcfg('debug.trap_recursion', false);
 
+    //  should TIBET register objects with recursive references etc. during
+    //  recursive string output operations? default is false.
+    TP.sys.setcfg('debug.register_recursion', false);
+
     //  pop debugger if inferencing fails or is off or if an exception is
     //  raise? this is normally off but can be used to force activation of the
     //  environment's debugger (on IE/Moz) if the debugger has already opened.
@@ -1232,6 +1236,14 @@
 
     //  which output formatter should be used for presentation output?
     TP.sys.setcfg('sherpa.default_format', 'sherpa:pp');
+
+    //  what is the default depth for a sherpa pretty-print descent?
+    TP.sys.setcfg('sherpa.pp.level', 2);
+
+    //  what level do we stop doing full function bodies and do we include
+    //  comments or just the method signature when we output?
+    TP.sys.setcfg('sherpa.pp.function_level', 1);
+    TP.sys.setcfg('sherpa.pp.function_comments', false);
 
     //  should the console suspend normal output?
     TP.sys.setcfg('sherpa.silent', false);

@@ -3073,7 +3073,7 @@ function(aFilter) {
         obj = this;
 
         do {
-            keys.push(Object.keys(obj));
+            keys.push(TP.objectGetKeys(obj));
             obj = Object.getPrototypeOf(obj);
         } while (obj);
 
@@ -4387,7 +4387,17 @@ function() {
      * @returns {String}
      */
 
-    return 'Recursion of: ' + this.getTypeName() + ' :: ' + this.getID();
+    var id;
+
+    id = TP.gid(this);
+
+    if (TP.sys.cfg('debug.register_recursion')) {
+        id = 'urn:tibet:' + id;
+        TP.uc(id).setResource(this);
+        return id;
+    }
+
+    return '@' + id;
 });
 
 //  ------------------------------------------------------------------------

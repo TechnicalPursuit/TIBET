@@ -31,13 +31,10 @@ TP.sherpa.pp.Type.defineMethod('fromArray',
 function(anObject, optFormat) {
 
     var marker,
+        format,
         output,
         len,
         i;
-
-    if (TP.isEmpty(anObject)) {
-        return this.fromString('[]', optFormat);
-    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_sherpa_pp';
@@ -45,31 +42,34 @@ function(anObject, optFormat) {
         return TP.recursion(anObject, marker);
     }
 
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
+
     //  If an optional format was supplied, then, if it has a level, check the
     //  level and if we're at that level, then just print the name of the
     //  object. If we haven't, increment the level and proceed.
-    if (TP.isValid(optFormat)) {
-        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
-            return TP.name(anObject);
-        } else if (TP.notValid(optFormat.at('currentLevel'))) {
-            optFormat.atPut('currentLevel', 1);
-        } else {
-            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
-        }
+    if (format.at('currentLevel') >= format.at('level')) {
+        return TP.name(anObject);
+    } else if (TP.notValid(format.at('currentLevel'))) {
+        format.atPut('currentLevel', 1);
+    } else {
+        format.atPut('currentLevel', format.at('currentLevel') + 1);
+    }
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
+
+    if (TP.isEmpty(anObject)) {
+        return this.fromString('[]', format);
     }
 
     try {
         anObject[marker] = true;
     } catch (e) {
         void 0;
-    }
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
     }
 
     output = TP.ac();
@@ -79,16 +79,14 @@ function(anObject, optFormat) {
     try {
         for (i = 0; i < len; i++) {
             output.push('<span data-name="', i, '">',
-                        TP.format(anObject.at(i), TP.sherpa.pp.Type, optFormat),
+                        TP.format(anObject.at(i), TP.sherpa.pp.Type, format),
                         '</span>');
         }
     } finally {
         output.push('</span>');
 
         //  Decrement the traversal level
-        if (TP.isValid(optFormat)) {
-            optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
-        }
+        format.atPut('currentLevel', format.at('currentLevel') - 1);
 
         try {
             delete anObject[marker];
@@ -105,14 +103,6 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromBoolean',
 function(anObject, optFormat) {
 
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
-
     return '<span class="sherpa_pp Number">' +
             this.runJSModeOn(TP.str(anObject)) +
             '</span>';
@@ -123,22 +113,18 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromDate',
 function(anObject, optFormat) {
 
-    var obj;
+    var obj,
+        format;
+
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
 
     //  Believe it or not, objects that are not a Date can make it to this
     //  routine. They are usually invalid Dates that were created with bad
     //  syntax. Their type and type name report 'Date', but they're not. We need
     //  to catch them here before we try to 'toISOString()' them below.
     if (TP.isInvalidDate(anObject)) {
-        return this.fromString('Invalid Date', optFormat);
-    }
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
+        return this.fromString('Invalid Date', format);
     }
 
     obj = anObject.toISOString().asEscapedXML();
@@ -153,19 +139,20 @@ TP.sherpa.pp.Type.defineMethod('fromError',
 function(anObject, optFormat) {
 
     var str,
-
+        format,
         stackStr,
         stackEntries,
 
         thisArg;
 
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
+
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
 
     if (TP.notEmpty(anObject.message)) {
         str = this.fromString(anObject.message);
@@ -184,13 +171,13 @@ function(anObject, optFormat) {
 
                 infoStr =
                     'at ' +
-                    thisArg.fromString(infoPiece.at(0), optFormat) +
+                    thisArg.fromString(infoPiece.at(0), format) +
                     '(' +
-                    thisArg.fromString(infoPiece.at(1), optFormat) +
+                    thisArg.fromString(infoPiece.at(1), format) +
                     ':' +
-                    thisArg.fromString(infoPiece.at(2), optFormat) +
+                    thisArg.fromString(infoPiece.at(2), format) +
                     ':' +
-                    thisArg.fromString(infoPiece.at(3), optFormat) +
+                    thisArg.fromString(infoPiece.at(3), format) +
                     ')\n';
                 return infoStr;
             });
@@ -205,18 +192,38 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromFunction',
 function(anObject, optFormat) {
 
-    var str;
+    var str,
+        obj,
+        format,
+        sigonly;
 
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
+
+    level = format.at('currentLevel');
+    if (level && level >= TP.sys.cfg('sherpa.pp.function_level')) {
+        sigonly = true;
+    }
+
+    if (sigonly) {
+        try {
+            str = anObject.getSignature();
+            if (TP.sys.cfg('sherpa.pp.function_comments')) {
+                str += '\n' + TP.ifInvalid(anObject.getCommentText(), '');
+            }
+        } catch (e) {
+            //  Must not have been an instrumented function. Fall back.
+            str = anObject.toString();
+            str = str.slice(str.indexOf('{'));
+        }
+
+        obj = str;
+    } else {
+        obj = anObject;
     }
 
     if (TP.isValid(TP.extern.CodeMirror)) {
-        str = this.runJSModeOn(anObject);
+        str = this.runJSModeOn(obj);
 
         str = str.replace(/\n/g, '<br/>');
 
@@ -224,7 +231,7 @@ function(anObject, optFormat) {
                 str +
                 '</span>';
     } else {
-        str = TP.str(anObject);
+        str = TP.str(obj);
 
         //  NOTE the CDATA blocks here combined with <span> of
         //  'white-space: pre' to hold on to remaining whitespace while
@@ -241,18 +248,18 @@ TP.sherpa.pp.Type.defineMethod('fromNamedNodeMap',
 function(anObject, optFormat) {
 
     var content,
-
+        format,
         len,
         i,
-
         item;
 
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
+
     //  Don't need to box output from our own markup generator.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
 
     content = TP.ac();
 
@@ -261,7 +268,7 @@ function(anObject, optFormat) {
         item = anObject.item(i);
 
         content.push('<span data-name="' + TP.name(item).asEscapedXML() + '">',
-                        TP.format(TP.val(item), TP.sherpa.pp.Type, optFormat),
+                        TP.format(TP.val(item), TP.sherpa.pp.Type, format),
                         '</span>');
     }
 
@@ -288,13 +295,6 @@ function(anObject, optFormat) {
         anObject[marker] = true;
     } catch (e) {
         void 0;
-    }
-
-    //  Don't need to box output from our own markup generator.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
     }
 
     try {
@@ -325,29 +325,28 @@ TP.sherpa.pp.Type.defineMethod('fromNodeList',
 function(anObject, optFormat) {
 
     var content,
-
+        format,
         len,
         i;
+
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
 
     //  If an optional format was supplied, then, if it has a level, check the
     //  level and if we're at that level, then just print the name of the
     //  object. If we haven't, increment the level and proceed.
-    if (TP.isValid(optFormat)) {
-        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
-            return TP.name(anObject);
-        } else if (TP.notValid(optFormat.at('currentLevel'))) {
-            optFormat.atPut('currentLevel', 1);
-        } else {
-            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
-        }
+    if (format.at('currentLevel') >= format.at('level')) {
+        return TP.name(anObject);
+    } else if (TP.notValid(format.at('currentLevel'))) {
+        format.atPut('currentLevel', 1);
+    } else {
+        format.atPut('currentLevel', format.at('currentLevel') + 1);
     }
 
     //  Don't need to box output from our own markup generator.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
 
     content = TP.ac();
 
@@ -355,14 +354,12 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         content.push(
                 '<span data-name="', TP.str(i).asEscapedXML(), '">',
-                    TP.format(anObject[i], TP.sherpa.pp.Type, optFormat),
+                    TP.format(anObject[i], TP.sherpa.pp.Type, format),
                 '</span>');
     }
 
     //  Decrement the traversal level
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
-    }
+    format.atPut('currentLevel', format.at('currentLevel') - 1);
 
     return '<span class="sherpa_pp NodeList">' + content.join('') + '</span>';
 });
@@ -372,21 +369,23 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromNumber',
 function(anObject, optFormat) {
 
-    var obj;
+    var obj,
+        format;
+
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
 
     //  Believe it or not, objects that are NaNs can make it to this routine.
     //  Their type and type name report 'Number', but they're not. We should
     //  catch them here.
     if (TP.isNaN(anObject)) {
-        return this.fromString('NaN', optFormat);
-    }
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
+        return this.fromString('NaN', format);
     }
 
     obj = anObject.asEscapedXML();
@@ -409,41 +408,40 @@ function(anObject, optFormat) {
         i,
         len;
 
-    if (TP.isEmpty(TP.keys(anObject))) {
-        return this.fromString('{}', optFormat);
-    }
-
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_sherpa_pp';
     if (TP.owns(anObject, marker)) {
         return TP.recursion(anObject, marker);
     }
 
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
+
+    if (TP.isEmpty(TP.keys(anObject))) {
+        return this.fromString('{}', format);
+    }
+
     //  If an optional format was supplied, then, if it has a level, check the
     //  level and if we're at that level, then just print the name of the
     //  object. If we haven't, increment the level and proceed.
-    if (TP.isValid(optFormat)) {
-        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
-            return TP.name(anObject);
-        } else if (TP.notValid(optFormat.at('currentLevel'))) {
-            optFormat.atPut('currentLevel', 1);
-        } else {
-            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
-        }
+    if (format.at('currentLevel') >= format.at('level')) {
+        return TP.name(anObject);
+    } else if (TP.notValid(format.at('currentLevel'))) {
+        format.atPut('currentLevel', 1);
+    } else {
+        format.atPut('currentLevel', format.at('currentLevel') + 1);
     }
 
     try {
         anObject[marker] = true;
     } catch (e) {
         void 0;
-    }
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
     }
 
     output = TP.ac();
@@ -475,7 +473,7 @@ function(anObject, optFormat) {
         try {
             for (i = 0; i < len; i++) {
                 key = keys.at(i);
-                value = TP.format(anObject[key], TP.sherpa.pp.Type, optFormat);
+                value = TP.format(anObject[key], TP.sherpa.pp.Type, format);
                 //value = value.asEscapedXML();
 
                 output.push(
@@ -491,9 +489,7 @@ function(anObject, optFormat) {
     output.push('</span>');
 
     //  Decrement the traversal level
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
-    }
+    format.atPut('currentLevel', format.at('currentLevel') - 1);
 
     try {
         delete anObject[marker];
@@ -510,14 +506,6 @@ TP.sherpa.pp.Type.defineMethod('fromRegExp',
 function(anObject, optFormat) {
 
     var obj;
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
 
     obj = anObject.asEscapedXML();
 
@@ -537,18 +525,7 @@ function(anObject, optFormat) {
         return this.runJSModeOn('\'\'');
     }
 
-    //  Don't need to box output from our own markup generator.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', false);
-        optFormat.atPut('cmdAwaken', false);
-    }
-
     if (TP.regex.STARTS_WITH_ELEM_MARKUP.test(anObject)) {
-        if (TP.isValid(optFormat)) {
-            optFormat.atPut('cmdAsIs', true);
-        }
-
         obj = TP.str(anObject);
 
         return '<span class="sherpa_pp String">' +
@@ -579,13 +556,6 @@ function(anObject, optFormat) {
     //  wrapper. The object in TP.boot.Annotation instances is almost always
     //  an Error object of some kind.
 
-    //  Don't need to box output from our own markup generator.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
-
     return '<span class="sherpa_pp TP_boot_Annotation">' +
                 '<span data-name="object">' +
                     TP.xhtmlstr(anObject.object) +
@@ -608,13 +578,6 @@ function(anObject, optFormat) {
         str,
         len,
         i;
-
-    //  Don't need to box output from our own markup generator.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
 
     getLogLevelName = function(aLogLevel) {
 
@@ -703,15 +666,12 @@ TP.sherpa.pp.Type.defineMethod('fromTP_core_Hash',
 function(anObject, optFormat) {
 
     var marker,
+        format,
         output,
         keys,
         key,
         len,
         i;
-
-    if (TP.isEmpty(anObject)) {
-        return this.fromString('TP.hc()', optFormat);
-    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_sherpa_pp';
@@ -719,31 +679,34 @@ function(anObject, optFormat) {
         return TP.recursion(anObject, marker);
     }
 
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
+
+    //  Don't need to box output from our own markup generator, and we want the
+    //  markup here to actually render, but not awake.
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
+
     //  If an optional format was supplied, then, if it has a level, check the
     //  level and if we're at that level, then just print the name of the
     //  object. If we haven't, increment the level and proceed.
-    if (TP.isValid(optFormat)) {
-        if (optFormat.at('currentLevel') >= optFormat.at('level')) {
-            return TP.name(anObject);
-        } else if (TP.notValid(optFormat.at('currentLevel'))) {
-            optFormat.atPut('currentLevel', 1);
-        } else {
-            optFormat.atPut('currentLevel', optFormat.at('currentLevel') + 1);
-        }
+    if (format.at('currentLevel') >= format.at('level')) {
+        return TP.name(anObject);
+    } else if (TP.notValid(format.at('currentLevel'))) {
+        format.atPut('currentLevel', 1);
+    } else {
+        format.atPut('currentLevel', format.at('currentLevel') + 1);
+    }
+
+    if (TP.isEmpty(anObject)) {
+        return this.fromString('TP.hc()', format);
     }
 
     try {
         anObject[marker] = true;
     } catch (e) {
         void 0;
-    }
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
     }
 
     output = TP.ac();
@@ -759,16 +722,14 @@ function(anObject, optFormat) {
         output.push('<span data-name="' + TP.str(key).asEscapedXML() + '">' +
                     TP.format(anObject.at(keys.at(i)),
                                 TP.sherpa.pp.Type,
-                                optFormat),
+                                format),
                     '</span>');
     }
 
     output.push('</span>');
 
     //  Decrement the traversal level
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('currentLevel', optFormat.at('currentLevel') - 1);
-    }
+    format.atPut('currentLevel', format.at('currentLevel') - 1);
 
     try {
         delete anObject[marker];
@@ -797,13 +758,6 @@ function(anObject, optFormat) {
         anObject[marker] = true;
     } catch (e) {
         void 0;
-    }
-
-    //  Don't need to box output from our own markup generator.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
     }
 
     if (TP.isValid(TP.extern.CodeMirror)) {
@@ -847,12 +801,6 @@ function(anObject, optFormat) {
         void 0;
     }
 
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
-
     // Requests that are not yet processed should format their command.
     if (anObject.isCompleted()) {
         data = anObject.getResult();
@@ -891,14 +839,6 @@ function(anObject, optFormat) {
         keys,
         len,
         i;
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
 
     nativeWin = anObject.getNativeWindow();
 
@@ -943,14 +883,6 @@ function(anObject, optFormat) {
         keys,
         len,
         i;
-
-    //  Don't need to box output from our own markup generator, and we want the
-    //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
 
     content = TP.ac();
 
@@ -1123,15 +1055,17 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('transformObject',
 function(anObject, optFormat) {
 
-    var methodName;
+    var methodName,
+        format;
+
+    format = TP.hc(optFormat);
+    format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
 
     //  Don't need to box output from our own markup generator, and we want the
     //  markup here to actually render, but not awake.
-    if (TP.isValid(optFormat)) {
-        optFormat.atPut('cmdBox', false);
-        optFormat.atPut('cmdAsIs', true);
-        optFormat.atPut('cmdAwaken', false);
-    }
+    format.atPut('cmdBox', false);
+    format.atPut('cmdAsIs', true);
+    format.atPut('cmdAwaken', false);
 
     //  Sometimes, we're invoked because we were handed an Object that lives in
     //  a Window that wasn't instrumented with TIBET. We try to redispatch
@@ -1140,9 +1074,9 @@ function(anObject, optFormat) {
     if (TP.notValid(anObject)) {
         // 'null' or 'undefined', as you'd expect.
         if (anObject === null) {
-            return this.transformNull(anObject, optFormat);
+            return this.transformNull(anObject, format);
         } else if (anObject === undefined) {
-            return this.transformUndefined(anObject, optFormat);
+            return this.transformUndefined(anObject, format);
         }
 
         return '<span class="sherpa_pp Object">' + anObject + '</span>';

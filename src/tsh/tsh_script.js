@@ -565,6 +565,7 @@ function(source, shell, sibling, request) {
         chunk,
         mode,
         tagname,
+        builtin,
 
         i,
         j,
@@ -1266,13 +1267,21 @@ function(source, shell, sibling, request) {
                                             next.value +
                                             more.value;
 
+                                //  If the custom type isn't found verify
+                                //  whether the shell may have this as a built
+                                //  in. Warn if you can't find either.
                                 if (TP.notValid(
                                             TP.sys.getTypeByName(tagname))) {
                                     if (TP.notValid(
                                                 TP.sys.require(tagname))) {
-                                        TP.ifWarn() ?
-                                            TP.warn('Unable to find' +
-                                                ' custom type ' + tagname) : 0;
+                                        builtin = 'execute' +
+                                            ('' + more.value).asTitleCase();
+                                        if (!TP.canInvoke(shell, builtin)) {
+                                            TP.ifWarn() ?
+                                                TP.warn('Unable to find' +
+                                                    ' command ' +
+                                                    tagname) : 0;
+                                        }
                                     }
                                 }
 
@@ -3284,16 +3293,19 @@ function() {
 
         case '.|':      //  stdout
         case '.|*':     //  stdout (and iterate)
-        case '.|?':     //  stdout (and iterate)
-        case '.|?*':    //  stdout (and iterate)
+        case '.*':      //  stdout (and iterate shorthand)
+        case '.|?':     //  stdout (and filter)
+        case '.?':      //  stdout (and filter shorthand)
+        case '.|?*':    //  stdout (iterate and filter)
+        case '.?*':     //  stdout (iterate and filter shorthand)
 
             name = TP.STDOUT;
             break;
 
         case '.&':      //  stderr
-        case '.&?':     //  stderr
+        case '.&?':     //  stderr (and filter)
         case '.&*':     //  stderr (and iterate)
-        case '.&?*':    //  stderr (and iterate)
+        case '.&?*':    //  stderr (iterate and filter)
 
             name = TP.STDERR;
             break;
