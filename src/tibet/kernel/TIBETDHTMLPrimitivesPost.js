@@ -2960,13 +2960,17 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
             elemBox.atPut('height',
                 elemBox.at('height') -
-                    (offsets.at('borderBottomWidth') +
+                    (offsets.at('borderTopWidth') +
+                        offsets.at('paddingTop') +
+                     offsets.at('borderBottomWidth') +
                         offsets.at('paddingBottom')));
 
             elemBox.atPut('width',
                 elemBox.at('width') -
                     (offsets.at('borderLeftWidth') +
-                        offsets.at('paddingLeft')));
+                        offsets.at('paddingLeft') +
+                     offsets.at('borderRightWidth') +
+                        offsets.at('paddingRight')));
 
             break;
 
@@ -2993,10 +2997,14 @@ function(anElement, boxType, ancestor, wantsTransformed) {
                 elemBox.at('left') + offsets.at('borderLeftWidth'));
 
             elemBox.atPut('height',
-                elemBox.at('height') - offsets.at('borderBottomWidth'));
+                elemBox.at('height') -
+                    (offsets.at('borderBottomWidth') +
+                     offsets.at('borderTopWidth')));
 
             elemBox.atPut('width',
-                elemBox.at('width') - offsets.at('borderLeftWidth'));
+                elemBox.at('width') -
+                    (offsets.at('borderLeftWidth') +
+                     offsets.at('borderRightWidth')));
 
             break;
 

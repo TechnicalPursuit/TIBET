@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:drag="http://www.technicalpursuit.com/2005/drag">
+
+<head>
+	<title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	#dragDiv {
+		position: absolute;
+
+		height: 100px;
+		width: 100px;
+
+		background-color: blue;
+    }
+
+	.itemDiv {
+		position: absolute;
+
+		height: 10px;
+		width: 10px;
+	}
+	#item1 {
+		background-color: red;
+	}
+	#item2 {
+		background-color: yellow;
+	}
+	#item3 {
+		background-color: orange;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body>
+
+	<h2>Drag Test #5</h2><br/>
+	<br/>
+	<br/>
+	This test sets up 3 regular XHTML &lt;div&gt; elements to be dragged within a container.<br/>
+	<br/>
+	<br/>
+	The &lt;div&gt; element has a 'drag:mover' value of 'true' and a 'drag:item' value of '*', which means that any of the elements (as selected by the '*' path) can be moved but must stay within the containing element. The value of 'drag:item' should be some type of access path that can deal with markup (that is, a CSS selector path or XPath).<br/>
+
+<!-- Note here that all of these properties are used *in the context of the actual
+     dragging element as if the property had been placed on each individual
+     dragging element. -->
+
+<div id="dragDiv" drag:mover="true" drag:item="*" drag:container="..">
+	<div id="item1" class="itemDiv"/>
+	<div id="item2" class="itemDiv"/>
+	<div id="item3" class="itemDiv"/>
+</div>
+
+</body>
+</html>

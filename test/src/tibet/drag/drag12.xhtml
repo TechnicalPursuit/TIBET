@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:drag="http://www.technicalpursuit.com/2005/drag">
+
+<head>
+	<title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	#dragDiv {
+		position: absolute;
+
+		height: 100px;
+		width: 100px;
+
+        background-color: blue;
+        border: solid 1px orange;
+	}
+	#dragDiv2 {
+		position: absolute;
+
+	    top: 110px;
+
+		height: 100px;
+		width: 100px;
+
+		background-color: red;
+        border: solid 1px orange;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body>
+
+    <h2>Drag Test #12</h2><br/>
+	<br/>
+	<br/>
+	This test sets up 2 regular XHTML &lt;div&gt; elements by using a 'drag:info' attribute and another element as the place where the drag information is stored.<br/>
+	<br/>
+	<br/>
+	Both &lt;div&gt; elements have a 'drag:info' value of '#dragInfoSpan', which is the 'path' to the 'info' element - that is, the element that contains the drag information for any element that references it. The info element in this case specifies that any elements that reference it can be moved and will have an X offset of 1em and a Y offset of 1.5em and an X increment of 1.5em and a Y increment of 2em.<br/>
+
+    <span id="dragInfoSpan" drag:mover="true" drag:offset="1em 1.5em" drag:increment="1.5em 2em"/>
+
+    <div id="dragDiv" drag:info="#dragInfoSpan"/>
+    <div id="dragDiv2" drag:info="#dragInfoSpan"/>
+
+</body>
+</html>

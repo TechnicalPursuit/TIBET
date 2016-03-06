@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:drag="http://www.technicalpursuit.com/2005/drag">
+
+<head>
+	<title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	html,body {
+		overflow: auto;
+    }
+
+	.draggingDiv {
+		position: absolute;
+
+		height: 100px;
+		width: 100px;
+
+		background-color: blue;
+
+		border: solid 4px green;
+	}
+
+	#drag_TOP_LEFT {
+	}
+	#drag_TOP {
+		left: 125px;
+	}
+	#drag_TOP_RIGHT {
+		left: 250px;
+	}
+	#drag_LEFT {
+		top: 325px;
+	}
+	#drag_RIGHT {
+		top: 325px;
+		left: 250px;
+	}
+	#drag_BOTTOM_LEFT {
+		top: 450px;
+	}
+	#drag_BOTTOM {
+		left: 125px;
+		top: 450px;
+	}
+	#drag_BOTTOM_RIGHT {
+		left: 250px;
+		top: 450px;
+	}
+
+	.resizingDiv {
+		position: absolute;
+
+		height: 100px;
+		width: 100px;
+
+		background-color: red;
+
+		border: solid 4px orange;
+	}
+
+	#resize_TOP_LEFT {
+		top: 600px;
+	}
+	#resize_TOP {
+		top: 600px;
+		left: 125px;
+	}
+	#resize_TOP_RIGHT {
+		top: 600px;
+		left: 250px;
+	}
+	#resize_LEFT {
+		top: 725px;
+	}
+	#resize_RIGHT {
+		top: 725px;
+		left: 250px;
+	}
+	#resize_BOTTOM_LEFT {
+		top: 850px;
+	}
+	#resize_BOTTOM {
+		left: 125px;
+		top: 850px;
+	}
+	#resize_BOTTOM_RIGHT {
+		left: 250px;
+		top: 850px;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body>
+
+	<h2>Drag Test #8</h2><br/>
+	<br/>
+	<br/>
+	This test sets up a set of regular XHTML &lt;div&gt; elements to be moved and resized from various sides, showing that any side can be dragged or resized.<br/>
+	<br/>
+	<br/>
+
+	<div id="drag_TOP_LEFT" class="draggingDiv" drag:mover="true" drag:corner="TOP_LEFT">Drag from the TOP_LEFT corner</div>
+	<div id="drag_TOP" class="draggingDiv" drag:mover="true" drag:corner="TOP">Drag from the TOP side</div>
+	<div id="drag_TOP_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="TOP_RIGHT">Drag from the TOP_RIGHT corner</div>
+
+	<div id="drag_LEFT" class="draggingDiv" drag:mover="true" drag:corner="LEFT">Drag from the LEFT side</div>
+	<div id="drag_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="RIGHT">Drag from the RIGHT side</div>
+
+	<div id="drag_BOTTOM_LEFT" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM_LEFT">Drag from the BOTTOM_LEFT corner</div>
+	<div id="drag_BOTTOM" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM">Drag from the BOTTOM side</div>
+	<div id="drag_BOTTOM_RIGHT" class="draggingDiv" drag:mover="true" drag:corner="BOTTOM_RIGHT">Drag from the BOTTOM_RIGHT corner</div>
+
+	<div id="resize_TOP_LEFT" class="resizingDiv" drag:resizer="true" drag:side="TOP_LEFT">Resize from the TOP_LEFT corner</div>
+	<div id="resize_TOP" class="resizingDiv" drag:resizer="true" drag:side="TOP">Resize from the TOP side</div>
+	<div id="resize_TOP_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="TOP_RIGHT">Resize from the TOP_RIGHT corner</div>
+
+	<div id="resize_LEFT" class="resizingDiv" drag:resizer="true" drag:side="LEFT">Resize from the LEFT side</div>
+	<div id="resize_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="RIGHT">Resize from the RIGHT side</div>
+
+	<div id="resize_BOTTOM_LEFT" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM_LEFT">Resize from the BOTTOM_LEFT corner</div>
+	<div id="resize_BOTTOM" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM">Resize from the BOTTOM side</div>
+	<div id="resize_BOTTOM_RIGHT" class="resizingDiv" drag:resizer="true" drag:side="BOTTOM_RIGHT">Resize from the BOTTOM_RIGHT corner</div>
+
+</body>
+</html>
