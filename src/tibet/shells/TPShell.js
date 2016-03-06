@@ -830,7 +830,7 @@ function() {
 
             if (TP.notEmpty(historyEntries = dataSet.at('history'))) {
                 historyEntries.perform(
-                    function(anEntry) {
+                    function(anEntry, anIndex) {
 
                         var newReq;
 
@@ -847,6 +847,11 @@ function() {
                                 //  We're not creating a history of
                                 //  commands that restore history ;-).
                                 'cmdHistory', false,
+                                //  Assign ID based on iteration when
+                                //  rebuilding. This will reset to 0-histmax but
+                                //  that's better than nothing.
+                                'cmdHistoryID', TP.ifInvalid(
+                                    anEntry.at('cmdHistoryID'), anIndex + 1000),
                                 'cmdBuildGUI',
                                     anEntry.at('cmdBuildGUI'),
                                 'cmdLiteral',
@@ -869,7 +874,12 @@ function() {
                     });
 
                 this.set('history', newHistory);
-                this.set('historyIndex', newHistory.getSize());
+                if (TP.notEmpty(newHistory)) {
+                    this.set('historyIndex',
+                        newHistory.last().at('cmdHistoryID') + 1);
+                } else {
+                    this.set('historyIndex', 1);
+                }
             }
         }
     }
@@ -906,6 +916,7 @@ function() {
                         'cmdAllowSubs', aShellReq.at('cmdAllowSubs'),
                         'cmdExecute', aShellReq.at('cmdExecute'),
                         'cmdBuildGUI', aShellReq.at('cmdBuildGUI'),
+                        'cmdHistoryID', aShellReq.at('cmdHistoryID'),
                         'cmdLiteral', aShellReq.at('cmdLiteral'),
                         'cmdPhases', aShellReq.at('cmdPhases'),
                         'cmdRecycle', aShellReq.at('cmdRecycle'),
@@ -1028,7 +1039,7 @@ function(aRequest) {
     var list,
         root,
         cmd,
-
+        index,
         histmax,
         dups,
 
@@ -1045,8 +1056,6 @@ function(aRequest) {
 
     //  no matter what, we reset the history index to the end so any
     //  next/prev operations are reset
-    this.set('historyIndex', list.getSize());
-
     histmax = TP.ifInvalid(this.getVariable('HISTSIZE'),
                             this.getType().HISTORY_MAX);
 
@@ -1065,7 +1074,16 @@ function(aRequest) {
         }
     }
 
+    //  compute the index and store it with the root request
+    if (TP.notEmpty(list)) {
+        index = list.last().at('cmdHistoryID') + 1;
+    } else {
+        index = 1;
+    }
+
+    root.atPut('cmdHistoryID', index);
     list.add(root);
+
     offset = list.getSize() - histmax;
     if (offset > 0) {
         //  We're over the history maximum. Since history is LRU, we shift off
@@ -1073,12 +1091,9 @@ function(aRequest) {
         list.shift();
     }
 
-    //  NOTE that we set this past the end of the list so the first request
-    //  for history will see the last element in the list
-    this.set('historyIndex', list.getSize());
+    this.set('historyIndex', index);
 
-    //  return the index of the command so it can be tracked/displayed later
-    return list.getSize() - 1;
+    return index;
 });
 
 //  ------------------------------------------------------------------------
@@ -1094,7 +1109,20 @@ function() {
      * @returns {Number} The new index.
      */
 
-    this.set('historyIndex', (0).max(this.get('historyIndex') - 1));
+    var index,
+        first,
+        min;
+
+    //  Current index value?
+    index = this.get('historyIndex');
+
+    //  Index value at the start of the list. Can't get smaller than this.
+    first = this.get('history').first();
+    min = TP.notValid(first) ? 0 : first.at('cmdHistoryID');
+
+    //  Whichever's smaller, the current index value or one at the head of the
+    //  list, offset by one to allow clean input result and increment to work.
+    this.set('historyIndex', index.max(min) - 1);
 
     return this.get('historyIndex');
 });
@@ -1115,7 +1143,7 @@ function(anIndex, afterExpansion) {
      */
 
     var expanded,
-
+        entry,
         hist,
         text,
         doc,
@@ -1132,17 +1160,22 @@ function(anIndex, afterExpansion) {
     }
 
     if (TP.isNumber(anIndex)) {
-        hist = this.$get('history').at(anIndex);
-        if (TP.isValid(hist)) {
+        hist = this.$get('history');
+
+        entry = hist.detect(function(item) {
+            return item.at('cmdHistoryID') === anIndex;
+        });
+
+        if (TP.isValid(entry)) {
             //  re-constituted history entries may be simple strings
-            if (TP.isString(hist)) {
-                return hist;
+            if (TP.isString(entry)) {
+                return entry;
             } else if (expanded) {
-                text = hist.getOriginalCmdText();
+                text = entry.getOriginalCmdText();
 
                 return text;
             } else {
-                return hist.at('cmd');
+                return entry.at('cmd');
             }
         }
     } else {
@@ -1211,10 +1244,21 @@ function() {
      * @returns {Number} The new index.
      */
 
+    var index,
+        last,
+        max;
+
+    //  Current index value?
+    index = this.get('historyIndex');
+
+    //  Index value of the entry at the tail of the list. Can't get bigger than
+    //  this + 1;
+    last = this.get('history').last();
+    max = TP.notValid(last) ? 0 : last.at('cmdHistoryID');
+
     //  note that we let this push past the end of the list so we get an
     //  empty entry and are properly positioned for the next decrement call
-    this.set('historyIndex', (this.get('historyIndex') + 1).min(
-                                    this.get('history').getSize()));
+    this.set('historyIndex', index.min(max) + 1);
 
     return this.get('historyIndex');
 });

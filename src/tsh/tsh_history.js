@@ -56,7 +56,6 @@ function(aRequest) {
         hid,
 
         entries,
-        count,
 
         str,
         req,
@@ -70,11 +69,10 @@ function(aRequest) {
     hid = TP.elementGetAttribute(node, 'tsh:hid', true);
     if (TP.isEmpty(hid) || hid === '?') {
         entries = TP.hc();
-        count = 0;
-
         shell.get('history').perform(
                         function(aShellReq) {
-                            entries.atPut(count++, aShellReq.at('cmd'));
+                            entries.atPut(aShellReq.at('cmdHistoryID'),
+                                aShellReq.at('cmd'));
                         });
 
         return aRequest.complete(entries);
@@ -225,7 +223,7 @@ function(aString, aRequest, aShell, expand) {
 
     if (aString === '!') {
         //  entry is the last command
-        cmd = aShell.getHistory(-2, expand);
+        cmd = aShell.getHistory(-1, expand);
     } else if (aString.charAt(0) === '/') {
         //  should be able to tokenize a regex token from the string which
         //  will help avoid noise around embedded symbols like :
@@ -262,9 +260,6 @@ function(aString, aRequest, aShell, expand) {
 
             return;
         }
-
-        //  Indexes are off by one due to the current entry.
-        num -= 1;
 
         //  If the user specified a negative index, then we need to adjust the
         //  index to be the current history list size minus that number of
