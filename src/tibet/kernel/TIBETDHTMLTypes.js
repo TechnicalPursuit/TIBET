@@ -2994,11 +2994,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragDroppingEnter',
+TP.core.DNDResponder.Inst.defineHandler('DragdroppingEnter',
 function(aSignal) {
 
     /**
-     * @method handleDragDroppingEnter
+     * @method handleDragdroppingEnter
      * @summary Executed when the state machine associated with this receiver
      *     enters the 'dragdropping' state. This method performs whatever
      *     processing is necessary to start the dragdropping process.
@@ -3030,11 +3030,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragDroppingInput',
+TP.core.DNDResponder.Inst.defineHandler('DragdroppingInput',
 function(aSignal) {
 
     /**
-     * @method handleDragDroppingInput
+     * @method handleDragdroppingInput
      * @summary Executed when the state machine associated with this receiver
      *     has further input (i.e. in this case, dragging move or dragging hover
      *     signals) while it is in the 'dragdropping' state.
@@ -3047,11 +3047,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.DNDResponder.Inst.defineHandler('DragDroppingExit',
+TP.core.DNDResponder.Inst.defineHandler('DragdroppingExit',
 function(aSignal) {
 
     /**
-     * @method handleDragDroppingExit
+     * @method handleDragdroppingExit
      * @summary Executed when the state machine associated with this receiver
      *     exits the 'dragdropping' state. This method performs whatever
      *     processing is necessary to stop the dragging process.
@@ -3351,7 +3351,7 @@ function() {
 
     this.observe(
             stateMachine,
-            TP.ac('TP.sig.DragDroppingEnter', 'TP.sig.DragDroppingExit'));
+            TP.ac('TP.sig.DragdroppingEnter', 'TP.sig.DragdroppingExit'));
 
     this.setID('DNDService');
 
