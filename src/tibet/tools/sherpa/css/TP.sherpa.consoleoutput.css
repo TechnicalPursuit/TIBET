@@ -33,7 +33,7 @@ sherpa|consoleoutput {
     /* This should match TIBET's CONSOLE_OUTPUT_TIER constant */
     z-index: 27500;
 
-    transition: top 0.25s;
+    transition: margin 0.25s;
 }
 
 sherpa|consoleoutput[panes="none"] {
@@ -65,6 +65,21 @@ sherpa|consoleoutput a {
 
     color: LightSkyBlue;
 }
+
+/* Resizing the console output when HUD drawers open */
+
+#background.edge-east-open sherpa|consoleoutput {
+    margin-right: 144px;
+}
+
+#background.edge-west-open sherpa|consoleoutput {
+    margin-left: 144px;
+}
+
+#background.edge-north-open sherpa|consoleoutput {
+    margin-top: 160px;
+}
+
 
 .wrapper {
 

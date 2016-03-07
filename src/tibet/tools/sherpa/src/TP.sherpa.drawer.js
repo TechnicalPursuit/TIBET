@@ -23,7 +23,23 @@ TP.sherpa.TemplatedTag.defineSubtype('drawer');
 TP.sherpa.drawer.Inst.defineHandler('Toggle',
 function(aSignal) {
 
-    TP.bySystemId(aSignal.getOrigin()).toggle('closed');
+    var sigOriginTPElem,
+        originID,
+
+        isClosed;
+
+    sigOriginTPElem = TP.bySystemId(aSignal.getOrigin());
+
+    originID = sigOriginTPElem.getAttribute('id');
+    isClosed = TP.bc(sigOriginTPElem.getAttribute('closed'));
+
+    if (isClosed) {
+        sigOriginTPElem.setAttribute('closed', false);
+        TP.byId('background', this.getDocument()).addClass('edge-' + originID + '-open');
+    } else {
+        sigOriginTPElem.setAttribute('closed', true);
+        TP.byId('background', this.getDocument()).removeClass('edge-' + originID + '-open');
+    }
 
     return this;
 });
