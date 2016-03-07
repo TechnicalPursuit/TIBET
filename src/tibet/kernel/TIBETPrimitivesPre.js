@@ -1886,10 +1886,10 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         case TP.SUBTYPE:
 
             //  don't overlay information we've already collected
-//          if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
+            //if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
             TP.sys.$$meta_types.atPut(iname, anItem);
- //         }
- //
+            //}
+
             //  If the system has started we need to keep track of any types
             //  which load so we can ensure they get their initialize methods
             //  invoked. This is coordinated with the boot code which does the
@@ -1904,9 +1904,9 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         case TP.NAMESPACE:
 
             //  don't overlay information we've already collected
-//          if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
+            //if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
             TP.sys.$$meta_namespaces.atPut(iname, anItem);
- //         }
+            //}
 
             break;
 
