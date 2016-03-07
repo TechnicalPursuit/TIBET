@@ -5474,6 +5474,7 @@ function() {
      */
 
     var uri,
+        callback,
         secondaryURIs;
 
     if (TP.notFalse(this.get('shouldRefresh'))) {
@@ -5490,27 +5491,34 @@ function() {
                 });
     }
 
-    //  Force a reload.
+    //  Snapshot reference for closure usage.
     uri = this;
-    this.getResource().then(
-            function(resource) {
 
-                var virtualURI;
+    //  Force a reload. Note that we approach this two ways depending on the
+    //  nature of the URI. Source code needs to be loaded via the boot system so
+    //  it properly loads and runs, whereas other resources can load via XHR.
+    callback = function() {
+        var virtualURI;
 
-                //  Notify observers of the URI (elements, etc.) that the
-                //  resource has been refreshed with potentially new content.
-                uri.$changed();
+        //  Notify observers of the URI (elements, etc.) that the
+        //  resource has been refreshed with potentially new content.
+        uri.$changed();
 
-                //  Watch specifically for changes to application manifest which
-                //  might indicate new code has been added to the project. These
-                //  files don't get observed since they never trigger a mutation
-                //  observer.
-                virtualURI = TP.uriInTIBETFormat(uri.getLocation());
-                if (virtualURI.indexOf('~app_cfg') !== TP.NOT_FOUND) {
+        //  Watch specifically for changes to application manifest which
+        //  might indicate new code has been added to the project. These
+        //  files don't get observed since they never trigger a mutation
+        //  observer.
+        virtualURI = TP.uriInTIBETFormat(uri.getLocation());
+        if (virtualURI.indexOf('~app_cfg') !== TP.NOT_FOUND) {
+            TP.boot.$importPackageUpdates(virtualURI);
+        }
+    };
 
-                    TP.boot.$importPackageUpdates();
-                }
-            });
+//    if (this.getExtension() === 'js') {
+//       TP.boot.$uriImport(this.getLocation(), callback);
+//    } else {
+    this.getResource().then(callback);
+//    }
 
     return this;
 });

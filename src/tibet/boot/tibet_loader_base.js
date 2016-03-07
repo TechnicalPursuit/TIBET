@@ -9587,17 +9587,23 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
     var elem,
         result,
-
+        proposed,
         scriptDoc,
         scriptHead,
-
         scriptUrl,
-
         jsSrcUrl,
-
         oldScript,
-
+        postImports,
+        sherpa,
+        type,
+        len,
+        i,
         tn;
+
+    //  Don't load what we're already processing.
+    if (srcUrl && (TP.boot.$$srcPath == TP.boot.$uriInTIBETFormat(srcUrl))) {
+        return;
+    }
 
     if (jsSrc == null) {
         if (srcUrl) {
@@ -9633,7 +9639,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     //  Patch for stack traces on text-injected code. See:
     //  https://bugs.webkit.org/show_bug.cgi?id=25475
     if (scriptUrl !== 'inline') {
-        jsSrcUrl = '//@ sourceURL=' + scriptUrl + '\n\n' + jsSrc;
+        jsSrcUrl = '//# sourceURL=' + scriptUrl + '\n\n' + jsSrc;
     } else {
         jsSrcUrl = jsSrc;
     }
@@ -9668,19 +9674,22 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     } catch (e) {
         $ERROR = e;
     } finally {
-
-        TP.boot.$$srcPath = null;
-        TP.boot.$$loadPath = null;
-
         //  appends with source code that has syntax errors or other issues
         //  won't trigger Error conditions we can catch, but they will hit
         //  the onerror hook so we can check $STATUS and proceed from there.
         if ($ERROR) {
             if (shouldThrow) {
+                TP.boot.$$loadNode = null;
+                TP.boot.$$srcPath = null;
+                TP.boot.$$loadPath = null;
+
                 throw $ERROR;
             }
         } else if (!result || $STATUS !== 0) {
+
             TP.boot.$$loadNode = null;
+            TP.boot.$$srcPath = null;
+            TP.boot.$$loadPath = null;
 
             if (shouldThrow === true) {
                 if (scriptUrl === 'inline') {
@@ -9705,7 +9714,48 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
     //  if we were successful then invoke the callback function
     if (typeof aCallback === 'function') {
-        aCallback(result, $STATUS !== 0);
+        try {
+            aCallback(result, $STATUS !== 0);
+        } catch (e) {
+            if (shouldThrow === true) {
+                throw new Error('Import callback failed for: ' + scriptUrl);
+            } else {
+                TP.boot.$stderr('Import callback failed for: ' + scriptUrl);
+            }
+        } finally {
+            TP.boot.$$loadNode = null;
+            TP.boot.$$srcPath = null;
+            TP.boot.$$loadPath = null;
+        }
+    } else {
+        TP.boot.$$loadNode = null;
+        TP.boot.$$srcPath = null;
+        TP.boot.$$loadPath = null;
+    }
+
+    //  if the system is already running we need to initialize any types that
+    //  haven't had that done (invoking it on an previous type won't matter).
+    //  We also signal if the sherpa is active to let it know about the type.
+    if (TP.sys.hasStarted()) {
+        sherpa = TP.sys.hasFeature('sherpa');
+        postImports = TP.boot.$$postImports;
+        len = postImports.length;
+        for (i = 0; i < len; i++) {
+            type = postImports[i];
+            try {
+                if (TP.canInvoke(type, 'initialize')) {
+                    TP.trace('Initializing type ' + type.getName());
+                    type.initialize();
+                }
+
+                if (sherpa) {
+                    TP.signal(type, 'TypeLoaded');
+                }
+            } catch (e) {
+                TP.error('Type initialization failed: ' + e.message);
+            }
+        }
+        TP.boot.$$postImports.length = 0;
     }
 
     return result;
@@ -10261,6 +10311,7 @@ TP.boot.$$importPhaseTwo = function(manifest) {
 
 TP.boot.$$configs = [];
 TP.boot.$$packageStack = [];
+TP.boot.$$postImports = [];
 
 TP.boot.$$assets = {};
 TP.boot.$$packages = {};
@@ -10914,11 +10965,13 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$importPackageUpdates = function(importScripts) {
+TP.boot.$importPackageUpdates = function(uri, importScripts) {
 
     /**
      * @method $importPackageUpdates
      * @summary Re-imports package definitions.
+     * @param {String} [uri] An optional URI to specifically process rather than
+     *     reprocessing all the manifest files.
      * @param {Boolean} [importScripts=true] Whether or not to import any *new*
      *     scripts that were referenced in the updated package definitions. This
      *     method will *not* re-import any scripts that are already present via
@@ -10926,16 +10979,28 @@ TP.boot.$importPackageUpdates = function(importScripts) {
      */
 
     var newScripts,
-
         loadedScripts,
-        missingScripts;
+        missingScripts,
+        phaseOne,
+        phaseTwo;
 
-    TP.boot.$refreshPackages();
+    TP.boot.$refreshPackages(uri);
 
     if (importScripts !== false) {
 
-        newScripts = TP.boot.$listPackageAssets(
+        try {
+            phaseOne = TP.sys.cfg('boot.phase_one');
+            phaseTwo = TP.sys.cfg('boot.phase_two');
+            TP.sys.setcfg('boot.phase_one', true);
+            TP.sys.setcfg('boot.phase_two', true);
+            newScripts = TP.boot.$listPackageAssets(
                             TP.boot.$$bootfile, TP.boot.$$bootconfig);
+        } catch (e) {
+            void 0;
+        } finally {
+            TP.sys.setcfg('boot.phase_one', phaseOne);
+            TP.sys.setcfg('boot.phase_two', phaseTwo);
+        }
 
         newScripts = newScripts.map(
                         function(node) {
@@ -11188,27 +11253,46 @@ TP.boot.$pushPackage = function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$refreshPackages = function() {
+TP.boot.$pushPostImport = function(aType) {
+
+    /**
+     * @method $pushPostImport
+     * @summary Adds a type object to the list of types to be processed once
+     *     they finish loading entirely.
+     * @param {Object} aType The type to be initialized/post-processed.
+     */
+
+    TP.boot.$$postImports.push(aType);
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$refreshPackages = function(aURI) {
 
     /**
      * @method $refreshPackages
      * @summary Refreshes any package manifests currently loaded by system. Note
      *     that this re-expands all package manifest entries to ensure that all
      *     changes are properly propagated.
+     * @param {string} [aURI] A specific URI to load rather than the entire set.
      */
 
     var packages,
         keys,
-        stderr;
+        stderr,
+        uri;
 
     packages = TP.boot.$$packages;
-    keys = Object.keys(packages);
-
-    //  Force refresh of the documents held in the package cache.
-    keys.forEach(
+    if (aURI) {
+        uri = TP.boot.$uriExpandPath(aURI);
+        packages[uri] = TP.boot.$uriLoad(uri, TP.DOM, 'manifest');
+    } else {
+        keys = Object.keys(packages);
+        keys.forEach(
             function(key) {
                 packages[key] = TP.boot.$uriLoad(key, TP.DOM, 'manifest');
             });
+    }
 
     //  Re-expand the resulting packages, but turn off any error reporting since
     //  this will trigger duplicate reference warnings.

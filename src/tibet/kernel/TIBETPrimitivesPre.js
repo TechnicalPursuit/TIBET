@@ -1889,6 +1889,15 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 //          if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
             TP.sys.$$meta_types.atPut(iname, anItem);
  //         }
+ //
+            //  If the system has started we need to keep track of any types
+            //  which load so we can ensure they get their initialize methods
+            //  invoked. This is coordinated with the boot code which does the
+            //  loading so it can trigger things after full file loading.
+            if (TP.sys.hasStarted()) {
+                TP.debug('Pushing ' + iname + ' to boot post import list.');
+                TP.boot.$pushPostImport(anItem);
+            }
 
             break;
 
