@@ -3,7 +3,11 @@
 
 sherpa|world {
 
-    display: block;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
     position: absolute;
     box-sizing: border-box;
 
@@ -17,11 +21,11 @@ sherpa|world {
     transform-origin: 0 0;
     transition: transform .5s ease-in;
 
-    /*background-image: url('../../../../../lib/media/boot/tibet_world.gif');
+    background-image: url('../../../../../lib/media/tibet_world.gif');
     background-position: center center;
-    background-repeat: no-repeat;*/
+    background-repeat: no-repeat;
 
-    background-color: #aaa;
+    background-color: white;
 
     border-radius: 3px;
     border: 1px solid #666;
