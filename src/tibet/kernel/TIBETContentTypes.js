@@ -99,6 +99,20 @@ function(aURI, content) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.CSSStyleSheet.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    return this.get('cssSheet').asString();
+});
+
 //  ========================================================================
 //  TP.core.Selection
 //  ========================================================================
@@ -4545,6 +4559,10 @@ function(templateArgs) {
                         case 'boolean':
                         case 'number':
                         case 'string':
+                            /* eslint-disable no-fallthrough */
+                            val = TP.nodeGetDocument(content).createTextNode(
+                                                                        value);
+                            /* eslint-enable no-fallthrough */
                         case 'object':
                             //  Tag the content with the computed data type.
                             content.setAttribute('type', theType);
