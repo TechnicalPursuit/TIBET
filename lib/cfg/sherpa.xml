@@ -159,6 +159,10 @@
     <property name="path.TP.sherpa.contextmenu.template" value="~ide_root/xhtml/TP.sherpa.contextmenu.xhtml"/>
     <property name="path.TP.sherpa.contextmenu.style" value="~ide_root/css/TP.sherpa.contextmenu.css"/>
 
+    <script src="./src/TP.sherpa.responders.js"/>
+    <property name="path.TP.sherpa.responders.template" value="~ide_root/xhtml/TP.sherpa.responders.xhtml"/>
+    <property name="path.TP.sherpa.responders.style" value="~ide_root/css/TP.sherpa.responders.css"/>
+
 </config>
 
 </package>
