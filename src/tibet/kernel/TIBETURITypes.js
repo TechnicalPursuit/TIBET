@@ -951,7 +951,7 @@ function(aURI) {
     /**
      * @method processRemoteResourceChange
      * @summary Processes a 'remote resource' change for the supplied URI.
-     * @descriptio Depending on whether the supplied URI 'auto refreshes' from
+     * @description Depending on whether the supplied URI 'auto refreshes' from
      *     its remote resource or not, this method will either immediately
      *     refresh the URI or it will puts an entry for the supplied URI into
      *     a queue that manages URIs that have had their remote resources
@@ -5498,6 +5498,7 @@ function() {
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
     callback = function() {
+
         var virtualURI;
 
         //  Notify observers of the URI (elements, etc.) that the
@@ -5514,11 +5515,11 @@ function() {
         }
     };
 
-//    if (this.getExtension() === 'js') {
-//       TP.boot.$uriImport(this.getLocation(), callback);
-//    } else {
+    //if (this.getExtension() === 'js') {
+    //   TP.boot.$uriImport(this.getLocation(), callback);
+    //} else {
     this.getResource().then(callback);
-//    }
+    //}
 
     return this;
 });
