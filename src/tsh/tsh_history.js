@@ -59,7 +59,7 @@ function(aRequest) {
 
         str,
         req,
-
+        output,
         isEdit,
         origReq;
 
@@ -69,13 +69,25 @@ function(aRequest) {
     hid = TP.elementGetAttribute(node, 'tsh:hid', true);
     if (TP.isEmpty(hid) || hid === '?') {
         entries = TP.hc();
+        output = '<dl>';
         shell.get('history').perform(
                         function(aShellReq) {
-                            entries.atPut(aShellReq.at('cmdHistoryID'),
-                                aShellReq.at('cmd'));
+                            var id;
+
+                            id = aShellReq.at('cmdHistoryID');
+                            output += '<dt>' +
+                                '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\'!' +
+                                id + '\'); return false;">!' +
+                                id + '</a>' +
+                            '</dt>' +
+                            '<dd><![CDATA[' +
+                                aShellReq.at('cmd') +
+                            ']]></dd>';
                         });
 
-        return aRequest.complete(entries);
+        aRequest.atPut('cmdAsIs', true);
+        output += '</dl>'
+        return aRequest.complete(output);
     }
 
     str = this.translateHistoryReference(hid, aRequest, shell, false);
@@ -284,6 +296,10 @@ function(aString, aRequest, aShell, expand) {
         return;
     }
     /* eslint-enable no-extra-parens */
+
+    if (cmd === '!') {
+        return ':history';
+    }
 
     //  if we got a reference to another history execution do a deeper
     //  translation
