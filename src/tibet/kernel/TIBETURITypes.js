@@ -5475,6 +5475,7 @@ function() {
 
     var uri,
         callback,
+        path,
         secondaryURIs;
 
     if (TP.notFalse(this.get('shouldRefresh'))) {
@@ -5494,6 +5495,8 @@ function() {
     //  Snapshot reference for closure usage.
     uri = this;
 
+    path = uri.getLocation();
+
     //  Force a reload. Note that we approach this two ways depending on the
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
@@ -5508,17 +5511,21 @@ function() {
         //  might indicate new code has been added to the project. These
         //  files don't get observed since they never trigger a mutation
         //  observer.
-        virtualURI = TP.uriInTIBETFormat(uri.getLocation());
+        virtualURI = TP.uriInTIBETFormat(path);
         if (virtualURI.indexOf('~app_cfg') !== TP.NOT_FOUND) {
             TP.boot.$importPackageUpdates(virtualURI);
         }
     };
 
-//    if (this.getExtension() === 'js') {
-//       TP.boot.$uriImport(this.getLocation(), callback);
-//    } else {
-    this.getResource().then(callback);
-//    }
+    //  If the receiver refers to a file that was loaded (meaning it's mentioned
+    //  in a TIBET package config) we source it back in rather than just
+    //  loading via simple XHR.
+    if (TP.boot.$isLoadedScript(path)) {
+        TP.system('Sourcing in updates to ' + path);
+        TP.boot.$uriImport(path, callback);
+    } else {
+        this.getResource().then(callback);
+    }
 
     return this;
 });
