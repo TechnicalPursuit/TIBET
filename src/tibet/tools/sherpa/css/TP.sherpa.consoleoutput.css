@@ -63,7 +63,7 @@ sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child > .flex-ca
 
 sherpa|consoleoutput a {
 
-    color: LightSkyBlue;
+    color: slateblue;
 }
 
 /* Resizing the console output when HUD drawers open */
@@ -184,7 +184,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     margin: 0 8px;
     display: inline-block;
 
-    color: orange;
+    color: darkgoldenrod;
 
     white-space: pre-wrap;
 }
