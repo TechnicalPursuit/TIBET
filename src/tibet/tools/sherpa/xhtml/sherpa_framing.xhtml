@@ -316,24 +316,9 @@
     <div id="west" tibet:tag="sherpa:drawer" class="framing v-edge overlay middle west" pclass:closed="true" pclass:hidden="true">
         <sherpa:opener class="west"/>
         <sherpa:splitbox>
-            <sherpa:shelf>
-                <div class="title">snippets</div>
-                <ul>
-                    <li on:click="{signal: ConsoleCommand, payload: {cmdText:':clear'}}">watch</li>
-                    <li on:click="{signal: ConsoleCommand, payload: {cmdText:':clear'}}">unwatch</li>
-                    <li>push</li>
-                    <li on:click="{signal: ConsoleCommand, payload: {cmdText:':clear'}}">clear</li>
-                </ul>
-            </sherpa:shelf>
+            <sherpa:shelf/>
             <sherpa:splitbar/>
-            <sherpa:logger>
-                <div class="title">history</div>
-                <ul>
-                    <li>:tds --watch</li>
-                    <li>:clear</li>
-                    <li>:history</li>
-                </ul>
-            </sherpa:logger>
+            <sherpa:logger/>
         </sherpa:splitbox>
         <sherpa:opener class="west"/>
     </div>
@@ -349,32 +334,9 @@
     <div id="east" tibet:tag="sherpa:drawer" class="framing v-edge middle overlay east" pclass:closed="true" pclass:hidden="true">
         <sherpa:opener class="east"/>
         <sherpa:splitbox>
-            <sherpa:shelf>
-                <div class="title">urls</div>
-                <ul>
-                    <li>~app/foo</li>
-                    <li>~app/bar</li>
-                    <li>~app/baz</li>
-                </ul>
-            </sherpa:shelf>
+            <sherpa:responders/>
             <sherpa:splitbar/>
-            <sherpa:tiledock>
-                <div class="title">tiles</div>
-            </sherpa:tiledock>
-            <!--
-            <sherpa:logger>
-                <div class="title">logs</div>
-                <ul>
-                    <li class="info">blah blah blah</li>
-                    <li class="error">failure to launch</li>
-                    <li class="warn">very confused</li>
-                    <li class="info">other blah</li>
-                    <li class="info">more blah</li>
-                    <li class="info">some info</li>
-                    <li class="info">nit nit</li>
-                </ul>
-            </sherpa:logger>
-            -->
+            <sherpa:tiledock/>
         </sherpa:splitbox>
         <sherpa:opener class="east"/>
     </div>

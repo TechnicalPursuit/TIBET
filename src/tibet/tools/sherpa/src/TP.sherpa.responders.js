@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.shelf}
+ * @type {TP.sherpa.responders}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('shelf');
+TP.sherpa.TemplatedTag.defineSubtype('responders');
 
 //  ------------------------------------------------------------------------
 //  end
