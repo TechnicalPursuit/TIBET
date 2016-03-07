@@ -2867,7 +2867,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
     var start = Date.now();
 
-    facet = aSignal.at('facet');
+    facet = TP.ifInvalid(aSignal.at('facet'), 'value');
 
     attrValue = bindingAttr.value;
     info = this.getBindingInfoFrom(attrValue);

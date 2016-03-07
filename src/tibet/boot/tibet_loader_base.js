@@ -9587,7 +9587,6 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
 
     var elem,
         result,
-        proposed,
         scriptDoc,
         scriptHead,
         scriptUrl,
@@ -9601,7 +9600,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
         tn;
 
     //  Don't load what we're already processing.
+    /* eslint-disable no-extra-parens */
     if (srcUrl && (TP.boot.$$srcPath == TP.boot.$uriInTIBETFormat(srcUrl))) {
+    /* eslint-enable no-extra-parens */
         return;
     }
 
@@ -9737,11 +9738,17 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     //  haven't had that done (invoking it on an previous type won't matter).
     //  We also signal if the sherpa is active to let it know about the type.
     if (TP.sys.hasStarted()) {
+
+        //  Whether or not the Sherpa is loaded
         sherpa = TP.sys.hasFeature('sherpa');
+
         postImports = TP.boot.$$postImports;
+
         len = postImports.length;
         for (i = 0; i < len; i++) {
+
             type = postImports[i];
+
             try {
                 if (TP.canInvoke(type, 'initialize')) {
                     TP.trace('Initializing type ' + type.getName());
