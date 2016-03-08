@@ -16,6 +16,7 @@
 
 TP.core.CustomTag.defineSubtype('tsh.tag_assistant');
 
+TP.tsh.tag_assistant.Inst.defineAttribute('tileTPElem');
 TP.tsh.tag_assistant.Inst.defineAttribute('originalRequest');
 
 TP.tsh.tag_assistant.Inst.defineAttribute(
@@ -38,15 +39,44 @@ TP.tsh.tag_assistant.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineHandler('DoInput',
+TP.tsh.tag_assistant.Inst.defineMethod('awaken',
+function() {
+
+    /**
+     * @method awaken
+     * @summary This method invokes the 'awaken' functionality of the tag
+     *     processing system, to provide 'post-render' awakening of various
+     *     features such as events and CSS styles.
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
+
+    this.callNextMethod();
+
+    (function() {
+        var modelURI;
+
+        modelURI = TP.uc('urn:tibet:tag_cmd_source');
+        modelURI.$changed();
+    }).fork(50);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.tag_assistant.Inst.defineHandler('ExecuteCommand',
 function(anObject) {
+
+    /**
+     * @method handleExecuteCommand
+     * @summary
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
 
     var result,
         data,
         tagInfo,
-        str,
-
-        consoleGUI;
+        str;
 
     result = TP.uc('urn:tibet:tag_cmd_source').getResource().get('result');
 
@@ -62,8 +92,11 @@ function(anObject) {
 
     str = this.generateCommand(tagInfo);
 
-    consoleGUI = TP.bySystemId('SherpaConsoleService').get('$consoleGUI');
-    consoleGUI.setInputContent(str);
+    this.get('tileTPElem').setAttribute('hidden', true);
+
+    //  Fire a 'ConsoleCommand' with a ':tag' command, supplying the name and
+    //  the template.
+    TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
 
     return this;
 });
@@ -73,12 +106,18 @@ function(anObject) {
 TP.tsh.tag_assistant.Inst.defineMethod('generateCommand',
 function(info) {
 
+    /**
+     * @method generateCommand
+     * @summary
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
+
     var str,
 
         val;
 
-    str = ':tag ' +
-            info.at('topLevelNS') + '.' + info.at('tagNSAndName');
+    str = ':tag --name=\'' +
+            info.at('topLevelNS') + '.' + info.at('tagNSAndName') + '\'';
 
     if (TP.notEmpty(val = info.at('package'))) {
         str += ' --package=\'' + val + '\'';
@@ -112,6 +151,12 @@ function(info) {
 TP.tsh.tag_assistant.Inst.defineHandler('ValueChange',
 function() {
 
+    /**
+     * @method handleValueChange
+     * @summary
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
+
     var result,
         data,
         tagInfo,
@@ -140,15 +185,23 @@ function() {
 TP.tsh.tag_assistant.Inst.defineMethod('setOriginalRequest',
 function(anObj) {
 
+    /**
+     * @method setOriginalRequest
+     * @summary
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
+
     var shell,
         args,
 
         tagInfo,
+        topLevelInfo,
 
         name,
         nameParts,
 
         modelURI,
+        modelObj,
 
         str;
 
@@ -157,7 +210,10 @@ function(anObj) {
     shell = anObj.at('cmdShell');
     args = shell.getArguments(anObj);
 
+    topLevelInfo = TP.hc();
+
     tagInfo = TP.hc();
+    topLevelInfo.atPut('info', tagInfo);
 
     name = args.at('tsh:name');
     if (TP.notEmpty(name)) {
@@ -198,7 +254,10 @@ function(anObj) {
     this.get('generatedCmdLine').setTextContent(str);
 
     modelURI = TP.uc('urn:tibet:tag_cmd_source');
-    modelURI.getResource().get('result').set('$.info', tagInfo);
+
+    modelObj = TP.core.JSONContent.construct(TP.js2json(topLevelInfo));
+
+    modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
     this.observe(modelURI, 'ValueChange');
 
@@ -209,6 +268,12 @@ function(anObj) {
 
 TP.tsh.tag_assistant.Inst.defineMethod('setSourceObject',
 function(anObj) {
+
+    /**
+     * @method setSourceObject
+     * @summary
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
 
     return this;
 });
