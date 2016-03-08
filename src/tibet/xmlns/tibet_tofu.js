@@ -76,7 +76,7 @@ TP.tibet.tofu.Inst.defineHandler('TagAssist',
 function(aSignal) {
 
     /**
-     * @method TagAssist
+     * @method handleTagAssist
      * @summary
      * @param {TP.sig.TagAssist} aSignal The signal that caused this handler to
      *     trip.
@@ -89,11 +89,14 @@ function(aSignal) {
 
     newTagName = this.getAttribute('proxyfor');
 
+    //  Grab all of the tag content in the CDATA section. This will be any tag
+    //  content that the user originally authored and that the 'tibet:tofu' tag
+    //  is wrapping. It will form the initial template of our tag.
     newTagContentSection = this.getFirstDescendantByType(Node.CDATA_SECTION_NODE);
     newTagContent = newTagContentSection.getTextContent();
 
-    //  Fire a 'ConsoleCommand' with a ':tag' command, supplying the name and
-    //  the template.
+    //  Fire a 'ConsoleCommand' with a ':tag --assist' command, supplying the
+    //  name and the template.
     TP.signal(null,
                 'ConsoleCommand',
                 TP.hc('cmdText',
