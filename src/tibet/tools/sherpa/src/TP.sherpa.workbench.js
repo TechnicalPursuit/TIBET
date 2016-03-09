@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.toolbar}
+ * @type {TP.sherpa.workbench}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('toolbar');
+TP.sherpa.TemplatedTag.defineSubtype('workbench');
 
 //  ------------------------------------------------------------------------
 //  end

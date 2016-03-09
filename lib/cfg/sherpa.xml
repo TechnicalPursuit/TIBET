@@ -105,9 +105,9 @@
     <property name="path.TP.sherpa.thumbnail.template" value="~ide_root/xhtml/TP.sherpa.thumbnail.xhtml"/>
     <property name="path.TP.sherpa.thumbnail.style" value="~ide_root/css/TP.sherpa.thumbnail.css"/>
 
-    <script src="./src/TP.sherpa.toolbar.js"/>
-    <property name="path.TP.sherpa.toolbar.template" value="~ide_root/xhtml/TP.sherpa.toolbar.xhtml"/>
-    <!--<property name="path.TP.sherpa.toolbar.style" value="~ide_root/css/TP.sherpa.toolbar.css"/>-->
+    <script src="./src/TP.sherpa.workbench.js"/>
+    <property name="path.TP.sherpa.workbench.template" value="~ide_root/xhtml/TP.sherpa.workbench.xhtml"/>
+    <property name="path.TP.sherpa.workbench.style" value="~ide_root/css/TP.sherpa.workbench.css"/>
 
     <script src="./src/TP.sherpa.testing.js"/>
     <property name="path.TP.sherpa.testing.template" value="~ide_root/xhtml/TP.sherpa.testing.xhtml"/>
