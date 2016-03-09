@@ -1,0 +1,54 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+sherpa|inspector {
+
+    display: block;
+    position: absolute;
+
+    top: 0;
+    right: 30px;
+    bottom: 0;
+    left: 50%;
+
+    border-right: solid 1px #aaa;
+    border-left: solid 1px white;
+}
+
+sherpa|inspector > .content {
+
+    position: absolute;
+
+    top: 25px;
+    right: 0;
+    bottom: 25px;
+    left: 0;
+
+    border-top: solid 1px white;
+    border-bottom: solid 1px #aaa;
+
+    background-color: white;
+}
+
+.navpath {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    height: 24px;
+    border-bottom: 1px solid #aaa;
+    background: #eee;
+}
+
+.navscroll {
+    position: absolute;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 24px;
+    border-top: 1px solid white;
+    background: #eee;
+}

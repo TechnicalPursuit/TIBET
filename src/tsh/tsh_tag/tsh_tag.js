@@ -55,6 +55,19 @@ function(aRequest) {
         return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
+    //  Fire a 'ConsoleCommand' with a ':cli tag ...' command, supplying the
+    //  name and the template.
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc('cmdText',
+                        ':cli tag' +
+                        ' --name=\'' +
+                            shell.getArgument(aRequest, 'tsh:name') +
+                            '\'' +
+                        ' --template=\'' +
+                            shell.getArgument(aRequest, 'tsh:template') +
+                            '\''));
+
     return aRequest.complete();
 });
 

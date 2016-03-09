@@ -389,6 +389,59 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('FocusWorkbench',
+function(aSignal) {
+
+    /**
+     * @method FocusWorkbench
+     * @summary
+     * @param {TP.sig.FocusWorkbench} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var northDrawer;
+
+    northDrawer = TP.byId('north', this.get('vWin'));
+
+    northDrawer.setAttribute('closed', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('TypeLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleTypeLoaded
+     * @summary Handles signals that are triggered when a new type is loaded.
+     * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var newType,
+        typeName;
+
+    newType = aSignal.getOrigin();
+    if (!TP.isType(newType)) {
+        //  TODO: Raise an exception here.
+        return this;
+    }
+
+    //  If the new type is a subtype of TP.core.CustomTag, then we need to have
+    //  the 'tibet:tofu' tag replace any occurrences of itself that are proxies
+    //  for that new tag type.
+    if (TP.isSubtypeOf(newType, TP.core.CustomTag)) {
+        typeName = newType.getName();
+        TP.tibet.tofu.replaceOccurrencesOf(typeName);
+    }
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',

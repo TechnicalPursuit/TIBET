@@ -105,9 +105,9 @@
     <property name="path.TP.sherpa.thumbnail.template" value="~ide_root/xhtml/TP.sherpa.thumbnail.xhtml"/>
     <property name="path.TP.sherpa.thumbnail.style" value="~ide_root/css/TP.sherpa.thumbnail.css"/>
 
-    <script src="./src/TP.sherpa.toolbar.js"/>
-    <property name="path.TP.sherpa.toolbar.template" value="~ide_root/xhtml/TP.sherpa.toolbar.xhtml"/>
-    <!--<property name="path.TP.sherpa.toolbar.style" value="~ide_root/css/TP.sherpa.toolbar.css"/>-->
+    <script src="./src/TP.sherpa.workbench.js"/>
+    <property name="path.TP.sherpa.workbench.template" value="~ide_root/xhtml/TP.sherpa.workbench.xhtml"/>
+    <property name="path.TP.sherpa.workbench.style" value="~ide_root/css/TP.sherpa.workbench.css"/>
 
     <script src="./src/TP.sherpa.testing.js"/>
     <property name="path.TP.sherpa.testing.template" value="~ide_root/xhtml/TP.sherpa.testing.xhtml"/>
@@ -162,6 +162,14 @@
     <script src="./src/TP.sherpa.responders.js"/>
     <property name="path.TP.sherpa.responders.template" value="~ide_root/xhtml/TP.sherpa.responders.xhtml"/>
     <property name="path.TP.sherpa.responders.style" value="~ide_root/css/TP.sherpa.responders.css"/>
+
+    <script src="./src/TP.sherpa.inspector.js"/>
+    <property name="path.TP.sherpa.inspector.template" value="~ide_root/xhtml/TP.sherpa.inspector.xhtml"/>
+    <property name="path.TP.sherpa.inspector.style" value="~ide_root/css/TP.sherpa.inspector.css"/>
+
+    <script src="./src/TP.sherpa.pathfinder.js"/>
+    <property name="path.TP.sherpa.pathfinder.template" value="~ide_root/xhtml/TP.sherpa.pathfinder.xhtml"/>
+    <property name="path.TP.sherpa.pathfinder.style" value="~ide_root/css/TP.sherpa.pathfinder.css"/>
 
 </config>
 

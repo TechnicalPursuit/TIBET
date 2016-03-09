@@ -30,6 +30,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TemplatedTag.Inst.defineMethod('getEditingAspectNamed',
+function(anAspectName) {
+
+    /**
+     * @method getDefaultEditingAspect
+     * @summary
+     * @returns
+     */
+
+    switch (anAspectName) {
+
+        case 'structure':
+            return this.getType().getResourceURI('template', TP.ietf.Mime.XHTML);
+
+        case 'style':
+            return this.getType().getResourceURI('style', TP.ietf.Mime.CSS);
+
+        default:
+            break;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CompiledTag.Inst.defineMethod('getDefaultEditingAspect',
 function() {
 
@@ -45,6 +71,32 @@ function() {
 
     if (TP.owns(ourType, 'tagCompile')) {
         return ourType.tagCompile;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CompiledTag.Inst.defineMethod('getEditingAspectNamed',
+function(anAspectName) {
+
+    /**
+     * @method getDefaultEditingAspect
+     * @summary
+     * @returns
+     */
+
+    switch (anAspectName) {
+
+        case 'structure':
+            return this.getDefaultEditingAspect();
+
+        case 'style':
+            return this.getType().getResourceURI('template', TP.ietf.Mime.CSS);
+
+        default:
+            break;
     }
 
     return null;

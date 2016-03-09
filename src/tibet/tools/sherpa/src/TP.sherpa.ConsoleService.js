@@ -2004,14 +2004,11 @@ function(aSignal) {
      * @returns {TP.core.NormalKeyResponder} The receiver.
      */
 
-    var consoleGUI,
-        evt,
+    var evt,
 
         handlerName;
 
     if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
-
-        consoleGUI = this.get('$consoleGUI');
 
         if (aSignal.getSignalName() ===
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
@@ -2019,11 +2016,6 @@ function(aSignal) {
         } else {
 
             evt = aSignal.getEvent();
-
-            //  Make sure that the key event happened in our document
-            if (!consoleGUI.eventIsInInput(evt)) {
-                return this;
-            }
 
             handlerName = TP.composeHandlerName(aSignal.getKeyName());
 

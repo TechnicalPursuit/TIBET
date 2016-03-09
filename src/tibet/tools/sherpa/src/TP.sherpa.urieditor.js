@@ -72,92 +72,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.urieditor.Inst.defineMethod('formatJSON',
-function(anObject) {
-
-    var str,
-        level,
-        tabSpaces;
-
-    if (TP.isValid(TP.extern.CodeMirror)) {
-
-        str = '';
-        level = 0;
-        tabSpaces = 4;
-
-        TP.extern.CodeMirror.runMode(
-            anObject.asString(),
-            {
-                name: 'application/ld+json'
-            },
-            function(text, style) {
-
-                //  Collapse a brace followed by a comma with a brace coming
-                //  next to a single line
-                if (text === '{' && str.slice(-2) === '},\n') {
-                    str = str.slice(0, -1) + ' ';
-                } else if (str.slice(-1) === '\n') {
-                    //  Otherwise, if we're starting a new line, 'tab in' the
-                    //  proper number of spaces.
-                    str += ' '.times(level * tabSpaces);
-                }
-
-                if (style) {
-                    str += text;
-                } else {
-                    if (text === '{' || text === '[') {
-                        level++;
-                        str += text + '\n';
-                    }
-                    if (text === '}' || text === ']') {
-                        level--;
-                        str += '\n' +
-                                ' '.times(level * tabSpaces) + text;
-                    }
-                    if (text === ':') {
-                        str += ' ' + text + ' ';
-                    }
-                    if (text === ',') {
-                        str += text + '\n';
-                    }
-                }
-            });
-    }
-
-    return str;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('formatXML',
-function(anObject) {
-
-    var str;
-
-    if (TP.isValid(TP.extern.CodeMirror)) {
-
-        TP.extern.CodeMirror.runMode(
-            anObject.asString(),
-            {
-                name: 'application/xml'
-            },
-            function(text, style) {
-
-                if (style) {
-                    str += '<span class="cm-' + style + '">' +
-                             text.asEscapedXML() +
-                             '</span>';
-                } else {
-                    str += text.asEscapedXML();
-                }
-            });
-    }
-
-    return str;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.urieditor.Inst.defineHandler('ResourceAccept',
 function(aSignal) {
 
@@ -202,6 +116,9 @@ function(aSignal) {
 
         this.set('remoteSourceContent', this.get('localSourceContent'));
     } else {
+
+        //  An unpatchable URI
+
         //newSourceText = this.get('localSourceContent');
         //sourceLocation = sourceObject.getSourcePath();
         TP.warn('not a patchable URI: ' + sourceLocation);
@@ -219,6 +136,9 @@ function() {
         editorObj,
 
         sourceObj,
+        sourceStr,
+
+        mimeType,
 
         str;
 
@@ -228,7 +148,7 @@ function() {
 
     editor = this.get('editor');
 
-    if (TP.notValid(sourceObj = this.get('localSourceContent'))) {
+    if (TP.notValid(sourceStr = this.get('localSourceContent'))) {
         editor.setDisplayValue('');
 
         return this;
@@ -236,20 +156,24 @@ function() {
 
     editorObj = this.get('editor').$get('$editorObj');
 
-    if (TP.isJSONString(sourceObj)) {
+    sourceObj = this.get('sourceObject');
 
-        editorObj.setOption('mode', 'application/json');
-        str = this.formatJSON(sourceObj);
-
-    } else if (TP.isXMLString(sourceObj)) {
-
-        editorObj.setOption('mode', 'application/xml');
-        str = sourceObj;
-    } else {
-        editorObj.setOption('mode', 'text/plain');
+    //  Try to get a MIME type from the URI - if we can't, then we just treat
+    //  the content as plain text.
+    if (TP.isEmpty(mimeType = sourceObj.getMIMEType())) {
+        mimeType = TP.PLAIN_TEXT_ENCODED;
     }
 
-    editor.setDisplayValue(str);
+    //  CodeMirror won't understand XHTML as distinct from XML.
+    if (mimeType === TP.XHTML_ENCODED) {
+        mimeType = TP.XML_ENCODED;
+    }
+
+    //  Set the editor's 'mode' to the computed MIME type
+    editorObj.setOption('mode', mimeType);
+
+    str = sourceStr;
+    editorObj.setValue(str);
 
     /* eslint-disable no-extra-parens */
     (function() {

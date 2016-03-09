@@ -293,6 +293,10 @@ function(cellGroupElem, uniqueID, dataRecord) {
         tileTPElem,
 
         targetObj,
+
+        shell,
+        aspectName,
+
         defaultAspectObj,
 
         operationTarget,
@@ -317,8 +321,18 @@ function(cellGroupElem, uniqueID, dataRecord) {
     targetObj = dataRecord.at('tiledTarget');
 
     switch (dataRecord.at('tiledOperation')) {
+
         case TP.EDIT:
+
+            shell = TP.bySystemId('TSH');
+            aspectName = shell.getArgument(
+                            dataRecord.at('request'), 'tsh:aspect', null, false);
+            if (TP.notEmpty(aspectName)) {
+                targetObj = TP.getEditingAspectNamed(targetObj, aspectName);
+            }
+
             tileContentTPElem = TP.getEditorTPElement(targetObj);
+
             if (TP.notValid(tileContentTPElem)) {
                 defaultAspectObj = TP.getDefaultEditingAspect(targetObj);
                 if (TP.isValid(defaultAspectObj)) {
@@ -326,13 +340,15 @@ function(cellGroupElem, uniqueID, dataRecord) {
                     tileContentTPElem = TP.getEditorTPElement(defaultAspectObj);
                 }
             } else {
-                operationTarget = dataRecord.at('tiledTarget');
+                operationTarget = targetObj;
             }
 
             break;
 
         case TP.ASSIST:
+
             tileContentTPElem = TP.getAssistantTPElement(targetObj);
+
             break;
 
         default:
@@ -341,10 +357,13 @@ function(cellGroupElem, uniqueID, dataRecord) {
 
     if (TP.isValid(tileContentTPElem)) {
         tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
-        tileContentTPElem.awaken();
+
+        tileContentTPElem.set('tileTPElem', tileTPElem);
 
         tileContentTPElem.set('sourceObject', operationTarget);
         tileContentTPElem.set('originalRequest', dataRecord.at('request'));
+
+        tileContentTPElem.awaken();
     }
 
     if (TP.isTrue(dataRecord.at('tiledModal'))) {
@@ -356,6 +375,7 @@ function(cellGroupElem, uniqueID, dataRecord) {
             curtainTPElem.setAttribute('hidden', false);
         }
 
+        //  NB: Do this *before* we observe the 'hidden' state.
         tileTPElem.toggle('hidden');
 
         handler = function() {
@@ -683,6 +703,18 @@ function(anObject) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getEditingAspectNamed',
+function(anObject, anAspectName) {
+
+    if (TP.canInvoke(anObject, 'getEditingAspectNamed')) {
+        return anObject.getEditingAspectNamed(anAspectName);
+    }
+
+    return anObject;
 });
 
 //  ------------------------------------------------------------------------

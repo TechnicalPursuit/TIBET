@@ -2105,7 +2105,30 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeInspect',
 function(aRequest) {
 
-    aRequest.stdout('Coming soon.');
+    var arg,
+        url,
+        obj;
+
+    arg = this.getArgument(aRequest, 'ARG0');
+
+    if (TP.regex.URI_LIKELY.test(arg) &&
+        !TP.regex.REGEX_LITERAL_STRING.test(arg)) {
+        url = this.expandPath(arg);
+        if (TP.isURI(url = TP.uc(url))) {
+            obj = url;
+        } else {
+            obj = this.resolveObjectReference(arg, aRequest);
+        }
+    } else {
+        obj = this.resolveObjectReference(arg, aRequest);
+    }
+
+    //  Fire a 'FocusWorkbench' signal, supplying the target object to focus on.
+    TP.signal(null,
+                'FocusWorkbench',
+                TP.hc('targetObject', obj));
+
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return aRequest.complete();
 });
