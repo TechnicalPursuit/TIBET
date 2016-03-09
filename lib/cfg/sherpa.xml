@@ -163,6 +163,14 @@
     <property name="path.TP.sherpa.responders.template" value="~ide_root/xhtml/TP.sherpa.responders.xhtml"/>
     <property name="path.TP.sherpa.responders.style" value="~ide_root/css/TP.sherpa.responders.css"/>
 
+    <script src="./src/TP.sherpa.inspector.js"/>
+    <property name="path.TP.sherpa.inspector.template" value="~ide_root/xhtml/TP.sherpa.inspector.xhtml"/>
+    <property name="path.TP.sherpa.inspector.style" value="~ide_root/css/TP.sherpa.inspector.css"/>
+
+    <script src="./src/TP.sherpa.pathfinder.js"/>
+    <property name="path.TP.sherpa.pathfinder.template" value="~ide_root/xhtml/TP.sherpa.pathfinder.xhtml"/>
+    <property name="path.TP.sherpa.pathfinder.style" value="~ide_root/css/TP.sherpa.pathfinder.css"/>
+
 </config>
 
 </package>
