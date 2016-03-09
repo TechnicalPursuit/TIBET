@@ -1,0 +1,144 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+sherpa|navpath {
+
+    position: absolute;
+    display: block;
+
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+
+    height: 24px;
+
+    border-bottom: 1px solid #aaa;
+
+    background: #eee;
+}
+
+sherpa|navpath > ul {
+
+    display: flex;
+
+    position: absolute;
+
+    right: 30px;
+    left: 30px;
+
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+}
+
+sherpa|navpath > ul > li {
+
+    flex: 1;
+
+    height: 100%;
+    width: 80%;
+
+    line-height: 22px;
+
+    overflow: hidden;
+
+    padding-left: 6px;
+
+    text-overflow: ellipsis;
+}
+
+sherpa|navpath > ul > li::after {
+
+    float: right;
+
+    content: "\00bb";
+}
+
+sherpa|navpath > ul > li:first-child {
+
+    border-left: 0;
+}
+
+sherpa|navpath > ul > li:last-child {
+
+    border-right: 0;
+}
+
+sherpa|navpath > ul > li:last-child::after {
+
+    content: "";
+}
+
+.pathscroll {
+
+    margin: 0.25em auto;
+
+    width: 16px;
+    height: 16px;
+
+    background: #eee;
+
+    border: 1px solid #aaa;
+    border-radius: 9px;
+
+    color: #aaa;
+
+    line-height: 14px;
+    text-align: center;
+
+    overflow: hidden;
+}
+
+.pathscroll.more {
+
+    color: #666;
+    background: white;
+
+    border: 1px solid #666;
+}
+
+.pathscroll.west {
+
+    position: absolute;
+
+    left: 0;
+
+    margin-left: 6px;
+}
+
+.pathscroll.east {
+
+    position: absolute;
+
+    right: 0;
+
+    margin-right: 6px;
+}
+
+.pathscroll > .icon {
+
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    font-size: 16px;
+}
+
+.pathscroll.more > .icon {
+}
+
+.pathscroll.more:hover {
+
+    border: 1px solid #666;
+
+    background: gold;
+}
+
+.pathscroll.more:hover > .icon {
+    color: #333;
+}
+
