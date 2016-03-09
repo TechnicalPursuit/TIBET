@@ -391,6 +391,27 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineHandler('FocusWorkbench',
+function(aSignal) {
+
+    /**
+     * @method FocusWorkbench
+     * @summary
+     * @param {TP.sig.FocusWorkbench} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var northDrawer;
+
+    northDrawer = TP.byId('north', this.get('vWin'));
+
+    northDrawer.setAttribute('closed', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineHandler('TypeLoaded',
 function(aSignal) {
 
