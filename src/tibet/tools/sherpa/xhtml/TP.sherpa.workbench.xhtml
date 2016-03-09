@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 
-<div tibet:tag="sherpa:toolbar">
+<sherpa:workbench>
+
+    <div class="content">
+        <sherpa:pathfinder/>
+        <sherpa:inspector/>
+    </div>
+
+    <div class="footer">
+        <sherpa:readout id="keyAndMouseReadout"/>
+        <sherpa:notifier/>
+        <sherpa:dispenser/>
+    </div>
 
     <sherpa:opener class="north west"/>
-
-    <sherpa:readout id="keyAndMouseReadout"/>
-
-    <sherpa:notifier/>
-
     <sherpa:opener class="north east"/>
 
-    <sherpa:dispenser/>
-
-</div>
+</sherpa:workbench>
