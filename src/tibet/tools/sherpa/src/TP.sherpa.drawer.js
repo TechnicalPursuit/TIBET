@@ -35,10 +35,12 @@ function(aSignal) {
 
     if (isClosed) {
         sigOriginTPElem.setAttribute('closed', false);
-        TP.byId('background', this.getDocument()).addClass('edge-' + originID + '-open');
+        TP.byId('background',
+                this.getDocument()).addClass('edge-' + originID + '-open');
     } else {
         sigOriginTPElem.setAttribute('closed', true);
-        TP.byId('background', this.getDocument()).removeClass('edge-' + originID + '-open');
+        TP.byId('background',
+                this.getDocument()).removeClass('edge-' + originID + '-open');
     }
 
     return this;
