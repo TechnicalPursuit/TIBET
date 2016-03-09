@@ -148,19 +148,30 @@ function() {
     var win,
 
         hudDrawers,
-        centerElem;
+
+        centerElem,
+        backgroundElem;
 
     win = this.getNativeWindow();
     hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
+            aHUDDrawer.setAttrClosed(true);
             aHUDDrawer.setAttrHidden(true);
         });
 
     centerElem = TP.byId('center', win, false);
 
     TP.elementAddClass(centerElem, 'fullscreen');
+
+    //  Remove classes from the background div that cause other components (like
+    //  the console output) to resize when drawers are open fully.
+    backgroundElem = TP.byId('background', win, false);
+
+    TP.elementRemoveClass(backgroundElem, 'edge-north-open');
+    TP.elementRemoveClass(backgroundElem, 'edge-east-open');
+    TP.elementRemoveClass(backgroundElem, 'edge-west-open');
 
     return this;
 });
