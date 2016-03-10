@@ -7175,7 +7175,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         if (owner !== origin && TP.canInvoke(owner, 'signalObservers')) {
             shouldSignalMap = owner.signalObservers(
                                                 anOrigin, aSignal,
-                                                aPayload, aPolicy, aType,
+                                                aPayload, aPolicy, type,
                                                 isCancelable, isBubbling);
             if (!shouldSignalMap) {
                 return;
@@ -7304,7 +7304,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     }
 
     //  hand off to policy do do the actual firing of the signal(s)
-    sig = pol(anOrigin, aSignal, aPayload, aType,
+    sig = pol(anOrigin, aSignal, aPayload, type,
                 isCancelable, isBubbling);
 
     //  TODO:   dramatically expand on the ability to track stats across signal
