@@ -2177,7 +2177,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Inst.defineMethod('resolveObjectReference',
-function(anObjectSpec, aRequest) {
+function(anObjectSpec, aRequest, forArguments) {
 
     /**
      * @method resolveObjectReference
@@ -2188,6 +2188,9 @@ function(anObjectSpec, aRequest) {
      * @param {String} anObjectSpec An object spec or TIBET URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request or hash
      *     containing parameters.
+     * @param {Boolean} [forArguments=false] Optional signifier that the
+     *     resolution is occurring for a command argument rather than a pure
+     *     reference. This largely matters only when using dereferencing.
      * @returns {Object} The object, if found.
      */
 
@@ -2229,6 +2232,10 @@ function(anObjectSpec, aRequest) {
     //  to strip the leading '@'.
     if (TP.regex.TSH_DEREF_SUGAR.test(spec)) {
         spec = spec.slice(1);
+        //  Can only dereference a variable, not a standard value.
+        if (spec.charAt(0) !== '$') {
+            spec = '$' + spec;
+        }
         deref = true;
     }
 
@@ -2258,7 +2265,8 @@ function(anObjectSpec, aRequest) {
     if (isIdentifier) {
         $$inst = TP.sys.getObjectById(spec);
         if (TP.isValid($$inst)) {
-            if (deref) {
+            if (deref && TP.notTrue(forArguments)) {
+                //  TODO:   check forArguments flag and act accordingly
                 if (TP.canInvoke($$inst, 'cmdGetContent')) {
                     $$inst = $$inst.cmdGetContent(aRequest);
                 } else if (TP.canInvoke($$inst, 'getType')) {
@@ -2322,7 +2330,9 @@ function(anObjectSpec, aRequest) {
         $$inst = undefined;
     }
 
-    if (TP.isTrue(deref)) {
+    //  We don't "dive in" to cmd* method references for simple argument usage,
+    //  only for sink processing.
+    if (TP.isTrue(deref) && TP.notTrue(forArguments)) {
         if (TP.canInvoke($$inst, 'cmdGetContent')) {
             $$inst = $$inst.cmdGetContent(aRequest);
         } else if (TP.canInvoke($$inst, 'getType')) {
@@ -2564,7 +2574,7 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
 
     //  Because we supply true as the second parameter here, this method returns
     //  a pair of values per argument name: [original, expanded]
-    if (TP.notValid(args = this.getArguments(aRequest, true))) {
+    if (TP.notValid(args = this.getArguments(aRequest, TP.ALLFORMS))) {
         //  This might be null or undefined - that's ok
         return defaultValue;
     }
@@ -2634,7 +2644,7 @@ function(aRequest, argumentName, defaultValue, searchAll, wantsOriginal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Inst.defineMethod('getArguments',
-function(aRequest, allForms) {
+function(aRequest, forms) {
 
     /**
      * @method getArguments
@@ -2644,16 +2654,11 @@ function(aRequest, allForms) {
      *     provided to the command. Positional arguments are named ARG0 through
      *     ARG[n] within this hash and the key ARGV contains an array of those.
      * @param {TP.sig.ShellRequest} aRequest The request to query.
-     * @param {Boolean} allForms Whether or not to include 'all forms' of the
-     *     argument value. If this is true, then this method returns an Array
-     *     for each key that contains both the 'original value' (what the script
-     *     author actually authored, before any substitution was performed) and
-     *     the 'expanded value' (what that value might have 'expanded' into).
-     *     Otherwise, it just returns the expanded value itself under each key.
-     *     The default is false.
+     * @param {String} [forms=TP.EXPANDED] Which forms (TP.ORIGINAL,
+     *     TP.EXPANDED, or TP.ALLFORMS) should be returned.
      * @returns {TP.core.Hash} The hash of named arguments with either
-     *     individual expanded values or an Array of values for each entry,
-     *     depending on the setting of 'allForms'.
+     *     individual expanded values, individual original values, or an Array
+     *     of values for each entry (original, expanded).
      */
 
     var newDict,
@@ -2661,17 +2666,22 @@ function(aRequest, allForms) {
         shell,
         args,
         index,
-        dict;
+        dict,
+        format;
+
+    format = TP.ifInvalid(forms, TP.EXPANDED);
 
     if (TP.isValid(dict = aRequest.get('ARGUMENTS'))) {
 
         //  If the caller specified that they wanted all forms of the value,
         //  then just hand back the full dictionary.
-        if (allForms) {
+        if (format === TP.ALLFORMS) {
             return dict;
         }
 
-        //  Otherwise, only return the 'expanded' value in a TP.core.Hash
+        aspect = format === TP.ORIGINAL ? 'first' : 'last';
+
+        //  Collect the values (original or expanded) being requested.
         newDict = TP.hc();
         dict.perform(
             function(kvPair) {
@@ -2684,12 +2694,12 @@ function(aRequest, allForms) {
 
                 if (key !== 'ARGV') {
                     //  Remember value is an array of original, expanded.
-                    newDict.atPut(key, val.last());
+                    newDict.atPut(key, val[aspect]());
                 } else {
                     //  ARGV is special. It's the only nested structure.
                     arr = val.collect(
                                 function(item) {
-                                    return item.last();
+                                    return item[aspect]();
                                 });
 
                     newDict.atPut(key, arr);
@@ -2749,6 +2759,7 @@ function(aRequest, allForms) {
                     //  Make sure to null out val and expandedVal
                     val = null;
                     expandedVal = null;
+                    chunk = null;
 
                     //  Substitution/expansion logic below will require a token
                     //  to inspect so we retokenize the individual argument. If
@@ -2864,12 +2875,9 @@ function(aRequest, allForms) {
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
-                            //  Pure argv variable reference, return the
-                            //  resolution value.
-                            if (val.charAt(0) === '@') {
-                                val = val.slice(1);
-                            }
-                            expandedVal = shell.resolveObjectReference(val);
+
+                            expandedVal = shell.resolveObjectReference(val,
+                                true);
 
                             //  Requote if original references were
                             //  string-based.
@@ -2894,6 +2902,10 @@ function(aRequest, allForms) {
                     //  original to be that value, not the string version.
                     if (TP.regex.TSH_QUOTECHAR.test(part.value.charAt(0))) {
                         part = TP.ac(part.value, expandedVal);
+                    } else if (format !== TP.EXPANDED) {
+                        //  requestor asked for original values as part of
+                        //  return value so we explicitly don't convert here.
+                        part = TP.ac(chunk || part.value, expandedVal);
                     } else {
                         part = TP.ac(expandedVal, expandedVal);
                     }
@@ -2945,12 +2957,9 @@ function(aRequest, allForms) {
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
-                            //  Pure argv variable reference, return the
-                            //  resolution value.
-                            if (val.charAt(0) === '@') {
-                                val = val.slice(1);
-                            }
-                            expandedVal = shell.resolveObjectReference(val);
+
+                            expandedVal = shell.resolveObjectReference(val,
+                                true);
 
                             //  Requote if original references were
                             //  string-based.
@@ -2975,6 +2984,10 @@ function(aRequest, allForms) {
                 //  original to be that value, not the string version.
                 if (TP.regex.TSH_QUOTECHAR.test(value.charAt(0))) {
                     dict.atPut(name, TP.ac(value, expandedVal));
+                } else if (format !== TP.EXPANDED) {
+                    //  requestor asked for original values as part of
+                    //  return value so we explicitly don't convert here.
+                    dict.atPut(name, TP.ac(value, expandedVal));
                 } else {
                     dict.atPut(name, TP.ac(expandedVal, expandedVal));
                 }
@@ -2991,7 +3004,7 @@ function(aRequest, allForms) {
         TP.info('TSH args: ' + TP.dump(dict));
     }
 
-    if (TP.isTrue(allForms)) {
+    if (format === TP.ALLFORMS) {
         return dict;
     } else {
         return this.getArguments(aRequest);
@@ -3033,7 +3046,7 @@ function(aRequest) {
     var args,
         keys;
 
-    args = this.getArguments(aRequest, true);
+    args = this.getArguments(aRequest, TP.ALLFORMS);
     keys = args.getKeys();
 
     if (keys.getSize() > 1) {
@@ -3384,53 +3397,44 @@ function(aRequest) {
      * @returns {TP.sig.ShellRequest} The request.
      */
 
-    var argv,
-
+    var varname,
+        value,
+        count,
         dict,
-
-        arg1,
-
         str,
         val;
 
-    argv = this.getArgument(aRequest, 'ARGV');
+    //  This lets us check count which affects behavior of this command.
+    argv = this.getArgument(aRequest, 'ARGV', null, true, true);
 
-    if (argv.getSize() === 0) {
+    //  If no args it's a request to dump the current list.
+    if (TP.isEmpty(argv)) {
+        dict = TP.hc(this.getExecutionInstance());
+        aRequest.stdout(dict);
+        return aRequest.complete();
+    }
+
+    //  We can get the unexpanded string form of the variable from arg0.
+    varname = this.getArgument(aRequest, 'ARG0', null, true, true);
+    if (TP.isEmpty(varname)) {
         dict = TP.hc(this.getExecutionInstance());
         aRequest.stdout(dict);
 
         return aRequest.complete();
     }
 
-    arg1 = argv.at(0);
-    if (TP.isEmpty(arg1)) {
-        dict = TP.hc(this.getExecutionInstance());
-        aRequest.stdout(dict);
-
-        return aRequest.complete();
-    }
-
-    //  one arg means clear value
+    //  one arg means clear value of the variable.
     if (argv.getSize() === 1) {
-        this.unsetVariable(argv.at(0));
-
-        return aRequest.complete();
+        this.unsetVariable(varname);
+        return aRequest.complete('Variable cleared.');
     }
 
-    str = argv.slice(1).join(' ');
-    if (TP.isNaN(val = parseFloat(str))) {
-        if (str.toLowerCase() === 'false') {
-            val = false;
-        } else if (str.toLowerCase() === 'true') {
-            val = true;
-        } else {
-            val = str;
-        }
-    }
+    //  two args means we need the resolved value of the second argument
+    value = this.getArgument(aRequest, 'ARG1');
 
-    this.setVariable(arg1, val);
+    this.setVariable(varname, value);
 
-    aRequest.stdout(this.getVariable(arg1));
+    aRequest.stdout(this.getVariable(varname));
 
     return aRequest.complete();
 });

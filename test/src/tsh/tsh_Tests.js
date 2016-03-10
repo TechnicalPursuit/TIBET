@@ -44,22 +44,22 @@ function() {
         correctResult =
             TP.hc(
                 'ARG0',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 100,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '$Y',
                         'Expanded value tname', 'Number',
                         'Expanded value', 100,
                         'Resolved value tname', 'Number',
                         'Resolved value', 100),
                 'tsh:first',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 100,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '$Y',
                         'Expanded value tname', 'Number',
                         'Expanded value', 100,
                         'Resolved value tname', 'Number',
                         'Resolved value', 100),
                 'tsh:second',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 100,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '$Y',
                         'Expanded value tname', 'Number',
                         'Expanded value', 100,
                         'Resolved value tname', 'Number',
@@ -137,71 +137,71 @@ function() {
         correctResult =
             TP.hc(
                 'ARG0',
-                TP.hc('Original value tname', 'Array',
-                        'Original value', [],
+                TP.hc('Original value tname', 'String',
+                        'Original value', '[]',
                         'Expanded value tname', 'Array',
                         'Expanded value', [],
                         'Resolved value tname', 'Array',
                         'Resolved value', []),
                 'ARG1',
-                TP.hc('Original value tname', 'Array',
-                        'Original value', [1, 2, 3],
+                TP.hc('Original value tname', 'String',
+                        'Original value', '[1,2,3]',
                         'Expanded value tname', 'Array',
                         'Expanded value', [1, 2, 3],
                         'Resolved value tname', 'Array',
                         'Resolved value', [1, 2, 3]),
                 'ARG2',
-                TP.hc('Original value tname', 'Object',
-                        'Original value', {},
+                TP.hc('Original value tname', 'String',
+                        'Original value', '{}',
                         'Expanded value tname', 'Object',
                         'Expanded value', {},
                         'Resolved value tname', 'Object',
                         'Resolved value', {}),
                 'ARG3',
-                TP.hc('Original value tname', 'Object',
-                        'Original value', {a: 1, b: 2, c: 3},
+                TP.hc('Original value tname', 'String',
+                        'Original value', '{a:1,b:2,c:3}',
                         'Expanded value tname', 'Object',
                         'Expanded value', {a: 1, b: 2, c: 3},
                         'Resolved value tname', 'Object',
                         'Resolved value', {a: 1, b: 2, c: 3}),
                 'ARG4',
-                TP.hc('Original value tname', 'Boolean',
-                        'Original value', true,
+                TP.hc('Original value tname', 'String',
+                        'Original value', 'true',
                         'Expanded value tname', 'Boolean',
                         'Expanded value', true,
                         'Resolved value tname', 'Boolean',
                         'Resolved value', true),
                 'ARG5',
-                TP.hc('Original value tname', 'Boolean',
-                        'Original value', false,
+                TP.hc('Original value tname', 'String',
+                        'Original value', 'false',
                         'Expanded value tname', 'Boolean',
                         'Expanded value', false,
                         'Resolved value tname', 'Boolean',
                         'Resolved value', false),
                 'ARG6',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 12,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '12',
                         'Expanded value tname', 'Number',
                         'Expanded value', 12,
                         'Resolved value tname', 'Number',
                         'Resolved value', 12),
                 'ARG7',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 12.34,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '12.34',
                         'Expanded value tname', 'Number',
                         'Expanded value', 12.34,
                         'Resolved value tname', 'Number',
                         'Resolved value', 12.34),
                 'ARG8',
-                TP.hc('Original value tname', 'RegExp',
-                        'Original value', /foo/g,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '/foo/g',
                         'Expanded value tname', 'RegExp',
                         'Expanded value', /foo/g,
                         'Resolved value tname', 'RegExp',
                         'Resolved value', /foo/g),
                 'ARG9',
-                TP.hc('Original value tname', 'TP.lang.Namespace',
-                        'Original value', TP,
+                TP.hc('Original value tname', 'String',
+                        'Original value', 'TP',
                         'Expanded value tname', 'TP.lang.Namespace',
                         'Expanded value', TP,
                         'Resolved value tname', 'TP.lang.Namespace',
@@ -217,15 +217,15 @@ function() {
         correctResult =
             TP.hc(
                 'ARG0',
-                TP.hc('Original value tname', 'Array',
-                        'Original value', [1, 2, {a: 1, b:2}],
+                TP.hc('Original value tname', 'String',
+                        'Original value', '[1,2,{a:1,b:2}]',
                         'Expanded value tname', 'Array',
                         'Expanded value', [1, 2, {a: 1, b:2}],
                         'Resolved value tname', 'Array',
                         'Resolved value', [1, 2, {a: 1, b:2}]),
                 'ARG1',
-                TP.hc('Original value tname', 'Object',
-                        'Original value', {a: 1, b: 2, c: [1,2,3]},
+                TP.hc('Original value tname', 'String',
+                        'Original value', '{a:1,b:2,c:[1,2,3]}',
                         'Expanded value tname', 'Object',
                         'Expanded value', {a: 1, b: 2, c: [1,2,3]},
                         'Resolved value tname', 'Object',
@@ -241,22 +241,22 @@ function() {
         correctResult =
             TP.hc(
                 'ARG0',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 100,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '`$Y`',
                         'Expanded value tname', 'Number',
                         'Expanded value', 100,
                         'Resolved value tname', 'Number',
                         'Resolved value', 100),
                 'tsh:first',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 100,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '`$Y`',
                         'Expanded value tname', 'Number',
                         'Expanded value', 100,
                         'Resolved value tname', 'Number',
                         'Resolved value', 100),
                 'tsh:second',
-                TP.hc('Original value tname', 'Number',
-                        'Original value', 100,
+                TP.hc('Original value tname', 'String',
+                        'Original value', '`$Y`',
                         'Expanded value tname', 'Number',
                         'Expanded value', 100,
                         'Resolved value tname', 'Number',
@@ -323,6 +323,99 @@ function() {
                         'Expanded value', "`$Y`",
                         'Resolved value tname', 'Undefined',
                         'Resolved value', TP.UNDEF)
+            );
+
+        shellDriver.execOutputTest(test, inputVal, correctResult);
+    });
+
+    this.it('Expands unquoted @ references to resolved values',
+    function(test, options) {
+        inputVal = ':testCmd @Y -first=@Y --second=@Y';
+        correctResult =
+            TP.hc(
+                'ARG0',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '@Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:first',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '@Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:second',
+                TP.hc('Original value tname', 'String',
+                        'Original value', '@Y',
+                        'Expanded value tname', 'Number',
+                        'Expanded value', 100,
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)
+            );
+
+        shellDriver.execOutputTest(test, inputVal, correctResult);
+    });
+
+    this.it('Expands double-quoted @ references to resolved value strings',
+    function(test, options) {
+        inputVal = ':testCmd "@Y" -first="@Y" --second="@Y"';
+        correctResult =
+            TP.hc(
+                'ARG0',
+                TP.hc('Original value tname', 'String',
+                        'Original value', "\"@Y\"",
+                        'Expanded value tname', 'String',
+                        'Expanded value', "100",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:first',
+                TP.hc('Original value tname', 'String',
+                        'Original value', "\"@Y\"",
+                        'Expanded value tname', 'String',
+                        'Expanded value', "100",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:second',
+                TP.hc('Original value tname', 'String',
+                        'Original value', "\"@Y\"",
+                        'Expanded value tname', 'String',
+                        'Expanded value', "100",
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)
+            );
+
+        shellDriver.execOutputTest(test, inputVal, correctResult);
+    });
+
+    this.it('Expands single-quoted @ references to literal values',
+    function(test, options) {
+        inputVal = ':testCmd \'@Y\' -first=\'@Y\' --second=\'@Y\'';
+        correctResult =
+            TP.hc(
+                'ARG0',
+                TP.hc('Original value tname', 'String',
+                        'Original value', "'@Y'",
+                        'Expanded value tname', 'String',
+                        'Expanded value', '@Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:first',
+                TP.hc('Original value tname', 'String',
+                        'Original value', "'@Y'",
+                        'Expanded value tname', 'String',
+                        'Expanded value', '@Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100),
+                'tsh:second',
+                TP.hc('Original value tname', 'String',
+                        'Original value', "'@Y'",
+                        'Expanded value tname', 'String',
+                        'Expanded value', '@Y',
+                        'Resolved value tname', 'Number',
+                        'Resolved value', 100)
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
@@ -1235,7 +1328,7 @@ function() {
 
     this.it('\'x\'', function(test, options) {
 
-        //  Use the variable in a single quoted String expression
+        //  Use the variable in a single-quoted String expression
         inputVal = '\'x\'';
         correctResult = 'x';
 
@@ -1292,7 +1385,7 @@ function() {
 
     this.it('\'This is x\'', function(test, options) {
 
-        //  Use the variable with other String content in a single quoted String
+        //  Use the variable with other String content in a single-quoted String
         //  expression
         inputVal = '\'This is x\'';
         correctResult = 'This is x';
@@ -2409,7 +2502,7 @@ function() {
 
     this.it('\'$Y\'', function(test, options) {
 
-        //  Use the variable in a single quoted String expression
+        //  Use the variable in a single-quoted String expression
 
         //  Simple form
         inputVal = '\'$Y\'';
@@ -2529,7 +2622,7 @@ function() {
 
     this.it('\'This is $Y\'', function(test, options) {
 
-        //  Use the variable with other String content in a single quoted String
+        //  Use the variable with other String content in a single-quoted String
         //  expression
 
         //  Simple form
