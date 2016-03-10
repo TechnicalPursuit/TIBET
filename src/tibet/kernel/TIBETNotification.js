@@ -289,8 +289,8 @@ TP.sig.Signal.Type.defineAttribute('cancelable', true);
 //  is the receiver a controller root, meaning controller traversal stops?
 TP.sig.Signal.Type.defineAttribute('controllerRoot', null);
 
-//  TIBET's default is to work up the tree so specialization works
-TP.sig.Signal.Type.defineAttribute('defaultPolicy', TP.DEFAULT_FIRING);
+//  TIBET's default is to use observer-style firing.
+TP.sig.Signal.Type.defineAttribute('defaultPolicy', TP.OBSERVER_FIRING);
 
 //  The list of signal names for the receiving type. Serves as a cache for the
 //  common instance signal name list query.
@@ -330,7 +330,7 @@ function() {
      * @method getDefaultPolicy
      * @summary Returns the default firing policy to use for signals of this
      *     type when no other policy is provided.
-     * @returns {String} The firing policy name such as TP.DEFAULT_FIRING.
+     * @returns {String} The firing policy name such as TP.OBSERVER_FIRING.
      */
 
     return this.$get('defaultPolicy');
@@ -4916,11 +4916,11 @@ function(anOrigin, aSignal, aPayload, aType) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.defineMethod('DEFAULT_FIRING',
+TP.sig.SignalMap.defineMethod('OBSERVER_FIRING',
 function(anOrigin, signalSet, aPayload, aType) {
 
     /**
-     * @method DEFAULT_FIRING
+     * @method OBSERVER_FIRING
      * @summary Fires one or more signals from one or more origins.
      * @param {Object} anOrigin The originator or originators of the signal(s).
      * @param {String|TP.sig.Signal} signalSet The signal(s) to fire.
@@ -7291,14 +7291,16 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         } else {
             if (!TP.isType(type) ||
                     TP.isEmpty(pol = type.getDefaultPolicy())) {
-                //  TODO:   make the default signaling policy an attribute of the
-                //          signaling system somewhere so that it can be configured.
-                pol = TP.sig.SignalMap.DEFAULT_FIRING;
+                //  TODO:   make the default signaling policy an attribute of
+                //          the signaling system somewhere so that it can be
+                //          configured.
+                pol = TP.sig.SignalMap.OBSERVER_FIRING;
             } else if (!TP.isCallable(pol) &&
                         !TP.isCallable(pol = TP.sig.SignalMap[pol])) {
-                //  TODO:   make the default signaling policy an attribute of the
-                //          signaling system somewhere so that it can be configured.
-                pol = TP.sig.SignalMap.DEFAULT_FIRING;
+                //  TODO:   make the default signaling policy an attribute of
+                //          the signaling system somewhere so that it can be
+                //          configured.
+                pol = TP.sig.SignalMap.OBSERVER_FIRING;
             }
         }
     }
