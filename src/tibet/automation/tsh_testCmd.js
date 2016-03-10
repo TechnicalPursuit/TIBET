@@ -117,7 +117,7 @@ function(aRequest) {
 
     //  all parameters should be named, those with tsh: prefixes are used
     //  by the enclosing request.
-    attrs = shell.getArguments(aRequest, true).getItems();
+    attrs = shell.getArguments(aRequest, TP.ALLFORMS).getItems();
     len = attrs.getSize();
     for (i = 0; i < len; i++) {
 

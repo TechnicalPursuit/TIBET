@@ -1248,14 +1248,29 @@ function(REQUEST$$, CMDTYPE$$) {
                     //  could be a variable reference. if that variable isn't
                     //  set as a scoped variable then we'll do that manually,
                     //  otherwise we can get the object and test as needed.
+
+                    //  Have to watch for '@' prefixing here. When doing a
+                    //  redirection into a dereference we want to adjust the
+                    //  token value to allow resolution of the variable.
+                    if (TOKEN$$.value.charAt(0) === '@') {
+                        TOKEN$$.value = TOKEN$$.value.slice(1);
+                        //  Deal with 'shorthand' of @FOO vs. @$FOO.
+                        if (TOKEN$$.value.charAt(0) !== '$') {
+                            TOKEN$$.value = '$' + TOKEN$$.value;
+                        }
+                        DEREF$$ = true;
+                        CTYPE$$ = TP.SET;
+                        $SCRIPT = TOKEN$$.value;
+                    }
+
                     if (TP.notDefined($SCOPE[TOKEN$$.value])) {
                         //  new variable setter...adjust script
-                        $SCRIPT = '$SCOPE.' + TOKEN$$.value + ' = $INPUT';
+                        $SCRIPT = '$SCOPE.' + TOKEN$$.value;
+                        if (DEREF$$ !== true) {
+                            $SCRIPT += ' = $INPUT';
+                            CTYPE$$ = 'var';
+                        }
                         TP.nodeSetTextContent($NODE, $SCRIPT);
-
-                        //  adjust our command type so we can exit cleanly down
-                        //  below without trying to use the result
-                        CTYPE$$ = 'var';
                     }
                 } else {
                     //  TODO: Had a token, but it's not an identifier?
@@ -1658,26 +1673,22 @@ function(REQUEST$$, CMDTYPE$$) {
                 return;
             }
 
-            //  Special case here. If we're piping into a variable we really
-            //  aren't asking to resolve that variable...unless we add '@'
-            //  explicitly. Otherwise we're asking to update the variable's
-            //  value.
-            if (TP.regex.TSH_VARIABLE_DEREF.test($SCRIPT)) {
-                $SCRIPT = $SCRIPT.slice(1);
-                DEREF$$ = true;
-            }
-
+            //  If DEFEF$$ is true we're looking at a script that should resolve
+            //  a variable reference. The first check here is for the ${foo}
+            //  variant, which we need to adjust.
             if (TP.regex.TSH_VARIABLE.test($SCRIPT)) {
                 VAR$$ = $SCRIPT.slice(1);
                 if (VAR$$.charAt(0) === '{') {
                     VAR$$ = VAR$$.slice(1, -1);
                 }
 
-                RESULT$$ = $REQUEST.stdin().at(0);
                 if (!DEREF$$) {
+                    RESULT$$ = $REQUEST.stdin().at(0);
                     $SHELL.setVariable(VAR$$, RESULT$$);
                     $REQUEST.complete(RESULT$$);
                     return;
+                } else {
+                    RESULT$$ = $SHELL.getVariable(VAR$$);
                 }
             }
 

@@ -1676,9 +1676,6 @@
     //  remote resources that we should try to watch.
     TP.sys.setcfg('uri.remote_watch_sources', ['~app_src', '~app_styles', '~app_cfg']);
 
-    //  should we process the queue of remote resource changes?
-    TP.sys.setcfg('uri.process_remote_changes', false);
-
     //  ---
     //  xpath/xslt
     //  ---

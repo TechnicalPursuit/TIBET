@@ -1096,6 +1096,11 @@ TP.ONFAIL = 'onfail';
 //  shell
 //  ---
 
+//  arguments
+TP.ORIGINAL = 'original';
+TP.EXPANDED = 'expanded';
+TP.ALLFORMS = 'allforms';
+
 //  pipe symbol actions
 TP.ADD = 'add';
 TP.GET = 'get';
@@ -2537,7 +2542,7 @@ TP.regex.TSH_QUOTECHAR = /['"]/;
 
 TP.regex.TSH_VARIABLE = /^\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
 TP.regex.TSH_VARIABLE = /^\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
-TP.regex.TSH_VARIABLE_DEREF = /^@\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
+TP.regex.TSH_VARIABLE_DEREF = /^@\$?\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?$/;
 
 TP.regex.TSH_VARSUB = /\$\{?([A-Z_$]{1}[A-Z0-9_$]*)\}?/;
 //  A global version of TP.regex.TSH_VARSUB
