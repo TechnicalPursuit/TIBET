@@ -171,6 +171,18 @@
     <property name="path.TP.sherpa.pathfinder.template" value="~ide_root/xhtml/TP.sherpa.pathfinder.xhtml"/>
     <property name="path.TP.sherpa.pathfinder.style" value="~ide_root/css/TP.sherpa.pathfinder.css"/>
 
+    <script src="./src/TP.sherpa.navpath.js"/>
+    <property name="path.TP.sherpa.navpath.template" value="~ide_root/xhtml/TP.sherpa.navpath.xhtml"/>
+    <property name="path.TP.sherpa.navpath.style" value="~ide_root/css/TP.sherpa.navpath.css"/>
+
+    <script src="./src/TP.sherpa.navbays.js"/>
+    <property name="path.TP.sherpa.navbays.template" value="~ide_root/xhtml/TP.sherpa.navbays.xhtml"/>
+    <property name="path.TP.sherpa.navbays.style" value="~ide_root/css/TP.sherpa.navbays.css"/>
+
+    <script src="./src/TP.sherpa.navscroll.js"/>
+    <property name="path.TP.sherpa.navscroll.template" value="~ide_root/xhtml/TP.sherpa.navscroll.xhtml"/>
+    <property name="path.TP.sherpa.navscroll.style" value="~ide_root/css/TP.sherpa.navscroll.css"/>
+
 </config>
 
 </package>
