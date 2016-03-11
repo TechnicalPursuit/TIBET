@@ -289,8 +289,8 @@ TP.sig.Signal.Type.defineAttribute('cancelable', true);
 //  is the receiver a controller root, meaning controller traversal stops?
 TP.sig.Signal.Type.defineAttribute('controllerRoot', null);
 
-//  TIBET's default is to work up the tree so specialization works
-TP.sig.Signal.Type.defineAttribute('defaultPolicy', TP.DEFAULT_FIRING);
+//  TIBET's default is to use observer-style firing.
+TP.sig.Signal.Type.defineAttribute('defaultPolicy', TP.OBSERVER_FIRING);
 
 //  The list of signal names for the receiving type. Serves as a cache for the
 //  common instance signal name list query.
@@ -330,7 +330,7 @@ function() {
      * @method getDefaultPolicy
      * @summary Returns the default firing policy to use for signals of this
      *     type when no other policy is provided.
-     * @returns {String} The firing policy name such as TP.DEFAULT_FIRING.
+     * @returns {String} The firing policy name such as TP.OBSERVER_FIRING.
      */
 
     return this.$get('defaultPolicy');
@@ -3130,6 +3130,216 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.SignalMap.defineMethod('$computeOriginID',
+function(anOrigin) {
+
+    var orgid;
+
+    orgid = TP.isValid(anOrigin) ? TP.id(anOrigin) : TP.ANY;
+    if (orgid === '*' || orgid === '') {
+        orgid = TP.ANY;
+    }
+
+    return orgid;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('$computeSignalName',
+function(aSignal) {
+
+    var signame;
+
+    signame = TP.isValid(aSignal) ? aSignal.getSignalName() : TP.ANY;
+    if (TP.notValid(signame) || signame === '*' || signame === '') {
+        signame = TP.ANY;
+    }
+
+    return signame;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('$constructHandlerEntries',
+function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserver, xmlEvent) {
+
+    /**
+     * @method $constructHandlerEntries
+     * @summary Creates 1..n signal map entries for the interest specified.
+     * @param {Object} anOrigin What origin?
+     * @param {String|TP.sig.Signal} aSignal What signal?
+     * @param {Object} aHandler What object will get notification?
+     * @param {String} aPhase The dispatch phase to register the handler for.
+     * @param {String} propagate If equal to 'stop', then the handler should
+     *     stop propagation.
+     * @param {String} defaultAction If equal to 'cancel', then the handler
+     *     should cancel the default action.
+     * @param {Element} anObserver The observer element.
+     * @param {Boolean} xmlEvent Should use XML Events semantics?
+     */
+
+    var origins,
+        origin,
+
+        events,
+        theEvent,
+
+        entry,
+        xml,
+
+        i,
+        j,
+        k,
+
+        observers,
+        observer,
+        handlers;
+
+    if (TP.isEmpty(anOrigin) || anOrigin === '*') {
+        origins = TP.ANY;
+    } else {
+        origins = anOrigin;
+    }
+    origins = origins.split(' ');
+
+    if (TP.isEmpty(aSignal) || aSignal === '*') {
+        events = TP.ANY;
+    } else {
+        events = aSignal;
+    }
+    events = events.split(' ');
+
+    handlers = TP.ac();
+
+    xml = TP.ifInvalid(xmlEvent, false);
+
+    //  create a new entry for each expanded origin/signal pair
+    for (i = 0; i < origins.getSize(); i++) {
+        origin = origins.at(i);
+        for (j = 0; j < events.getSize(); j++) {
+            theEvent = events.at(j);
+
+            //  when dealing with XML event semantics we have to manipulate
+            //  things a bit if the target (origin) and observer differ. In
+            //  particular we want the registration to sit at the observer's
+            //  level in the DOM which means using the observer as the
+            //  origin rather than the target. we want to preserve the
+            //  target in a separate attribute so we can filter on it later
+            if (xml) {
+                if (anOrigin === anObserver) {
+                    //  when anOrigin == anObserver it means ev:target was
+                    //  defaulted to ev:observer. In that case we don't care
+                    //  about xml_target since we weren't given a specific
+                    //  child of an observer to match. Also, we can just use
+                    //  origin as target and not worry about splitting
+                    //  observer separately if necessary.
+                    entry = TP.constructOrphanObject();
+                    entry.target = origin;
+                } else {
+                    if (anObserver.indexOf(' ') === TP.NOT_FOUND) {
+                        entry = TP.constructOrphanObject();
+
+                        //  anObserver is a single value, no split required.
+                        //  one special case here is that when the origin is
+                        //  the document we're "outside" the element chain
+                        //  and have to cheat a bit
+                        if (TP.regex.DOCUMENT_ID.test(origin)) {
+                            //  theoretically illegal, since we're saying
+                            //  the document is "inside" the observer
+                            entry.target = origin;
+                        } else {
+                            entry.target = anObserver;
+                            entry.xml_target = origin;
+                        }
+                    } else {
+                        //  have to split observer and generate an entry for
+                        //  each combination
+                        observers = anObserver.split(' ');
+                        for (k = 0; k < observers.getSize(); k++) {
+                            observer = observers.at(k);
+
+                            entry = TP.constructOrphanObject();
+
+                            entry.target = observer;
+                            entry.xml_target = origin;
+
+                            entry.event = theEvent;
+                            entry.handler = aHandler;
+
+                            TP.notEmpty(aPhase) ?
+                                entry.phase = aPhase : 0;
+                            TP.notEmpty(propagate) ?
+                                entry.propagate = propagate : 0;
+                            TP.notEmpty(defaultAction) ?
+                                entry.defaultAction = defaultAction : 0;
+                            TP.notEmpty(observer) ?
+                                entry.observer = observer : 0;
+
+                            handlers.push(entry);
+                        }
+
+                        //  skip tail of the i/j loop since we've already
+                        //  fully configured the handler entries
+                        continue;
+                    }
+                }
+            } else {    //  NOT XML EVENTS
+                entry = TP.constructOrphanObject();
+                entry.target = origin;
+            }
+
+            entry.event = theEvent;
+            entry.handler = aHandler;
+
+            TP.notEmpty(aPhase) ?
+                    entry.phase = aPhase : 0;
+            TP.notEmpty(propagate) ?
+                    entry.propagate = propagate : 0;
+            TP.notEmpty(defaultAction) ?
+                    entry.defaultAction = defaultAction : 0;
+            TP.notEmpty(anObserver) ?
+                    entry.observer = anObserver : 0;
+
+            handlers.push(entry);
+        }
+    }
+
+    return handlers;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('$getDefaultTypeForPolicy',
+function(aPolicy) {
+
+    /**
+     * @method $getDefaultTypeForPolicy
+     * @summary Returns the default type of signal of the policy provided.
+     *     Default signal types are used by the system for 'spoofed' signals
+     *     (i.e. when a real signal type isn't provided).
+     * @param {Function|String} aPolicy The policy specification.
+     * @returns {TP.lang.RootObject.<TP.core.Signal>} The default signal type
+     *     for the provided policy.
+     */
+
+    switch (aPolicy) {
+        case TP.EXCEPTION_FIRING:
+            return TP.sig.Exception;
+        case TP.DOM_FIRING:
+            return TP.sig.DOMSignal;
+        case TP.RESPONDER_FIRING:
+            return TP.sig.ResponderSignal;
+
+        case TP.OBSERVER_FIRING:
+        case TP.INHERITANCE_FIRING:
+        case TP.FIRE_ONE:
+        default:
+            return TP.sig.Signal;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.SignalMap.defineMethod('$getPolicyName',
 function(aPolicy) {
 
@@ -3312,36 +3522,6 @@ function(aSignal, aDefaultType) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.defineMethod('$computeOriginID',
-function(anOrigin) {
-
-    var orgid;
-
-    orgid = TP.isValid(anOrigin) ? TP.id(anOrigin) : TP.ANY;
-    if (orgid === '*' || orgid === '') {
-        orgid = TP.ANY;
-    }
-
-    return orgid;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.SignalMap.defineMethod('$computeSignalName',
-function(aSignal) {
-
-    var signame;
-
-    signame = TP.isValid(aSignal) ? aSignal.getSignalName() : TP.ANY;
-    if (TP.notValid(signame) || signame === '*' || signame === '') {
-        signame = TP.ANY;
-    }
-
-    return signame;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.SignalMap.defineMethod('$isInterestSuspended',
 function(anOrigin, aSignal) {
 
@@ -3376,155 +3556,6 @@ function(anOrigin, aSignal) {
             return entry.suspend === true;
         }
     }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.SignalMap.defineMethod('$constructHandlerEntries',
-function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserver, xmlEvent) {
-
-    /**
-     * @method $constructHandlerEntries
-     * @summary Creates 1..n signal map entries for the interest specified.
-     * @param {Object} anOrigin What origin?
-     * @param {String|TP.sig.Signal} aSignal What signal?
-     * @param {Object} aHandler What object will get notification?
-     * @param {String} aPhase The dispatch phase to register the handler for.
-     * @param {String} propagate If equal to 'stop', then the handler should
-     *     stop propagation.
-     * @param {String} defaultAction If equal to 'cancel', then the handler
-     *     should cancel the default action.
-     * @param {Element} anObserver The observer element.
-     * @param {Boolean} xmlEvent Should use XML Events semantics?
-     */
-
-    var origins,
-        origin,
-
-        events,
-        theEvent,
-
-        entry,
-        xml,
-
-        i,
-        j,
-        k,
-
-        observers,
-        observer,
-        handlers;
-
-    if (TP.isEmpty(anOrigin) || anOrigin === '*') {
-        origins = TP.ANY;
-    } else {
-        origins = anOrigin;
-    }
-    origins = origins.split(' ');
-
-    if (TP.isEmpty(aSignal) || aSignal === '*') {
-        events = TP.ANY;
-    } else {
-        events = aSignal;
-    }
-    events = events.split(' ');
-
-    handlers = TP.ac();
-
-    xml = TP.ifInvalid(xmlEvent, false);
-
-    //  create a new entry for each expanded origin/signal pair
-    for (i = 0; i < origins.getSize(); i++) {
-        origin = origins.at(i);
-        for (j = 0; j < events.getSize(); j++) {
-            theEvent = events.at(j);
-
-            //  when dealing with XML event semantics we have to manipulate
-            //  things a bit if the target (origin) and observer differ. In
-            //  particular we want the registration to sit at the observer's
-            //  level in the DOM which means using the observer as the
-            //  origin rather than the target. we want to preserve the
-            //  target in a separate attribute so we can filter on it later
-            if (xml) {
-                if (anOrigin === anObserver) {
-                    //  when anOrigin == anObserver it means ev:target was
-                    //  defaulted to ev:observer. In that case we don't care
-                    //  about xml_target since we weren't given a specific
-                    //  child of an observer to match. Also, we can just use
-                    //  origin as target and not worry about splitting
-                    //  observer separately if necessary.
-                    entry = TP.constructOrphanObject();
-                    entry.target = origin;
-                } else {
-                    if (anObserver.indexOf(' ') === TP.NOT_FOUND) {
-                        entry = TP.constructOrphanObject();
-
-                        //  anObserver is a single value, no split required.
-                        //  one special case here is that when the origin is
-                        //  the document we're "outside" the element chain
-                        //  and have to cheat a bit
-                        if (TP.regex.DOCUMENT_ID.test(origin)) {
-                            //  theoretically illegal, since we're saying
-                            //  the document is "inside" the observer
-                            entry.target = origin;
-                        } else {
-                            entry.target = anObserver;
-                            entry.xml_target = origin;
-                        }
-                    } else {
-                        //  have to split observer and generate an entry for
-                        //  each combination
-                        observers = anObserver.split(' ');
-                        for (k = 0; k < observers.getSize(); k++) {
-                            observer = observers.at(k);
-
-                            entry = TP.constructOrphanObject();
-
-                            entry.target = observer;
-                            entry.xml_target = origin;
-
-                            entry.event = theEvent;
-                            entry.handler = aHandler;
-
-                            TP.notEmpty(aPhase) ?
-                                entry.phase = aPhase : 0;
-                            TP.notEmpty(propagate) ?
-                                entry.propagate = propagate : 0;
-                            TP.notEmpty(defaultAction) ?
-                                entry.defaultAction = defaultAction : 0;
-                            TP.notEmpty(observer) ?
-                                entry.observer = observer : 0;
-
-                            handlers.push(entry);
-                        }
-
-                        //  skip tail of the i/j loop since we've already
-                        //  fully configured the handler entries
-                        continue;
-                    }
-                }
-            } else {    //  NOT XML EVENTS
-                entry = TP.constructOrphanObject();
-                entry.target = origin;
-            }
-
-            entry.event = theEvent;
-            entry.handler = aHandler;
-
-            TP.notEmpty(aPhase) ?
-                    entry.phase = aPhase : 0;
-            TP.notEmpty(propagate) ?
-                    entry.propagate = propagate : 0;
-            TP.notEmpty(defaultAction) ?
-                    entry.defaultAction = defaultAction : 0;
-            TP.notEmpty(anObserver) ?
-                    entry.observer = anObserver : 0;
-
-            handlers.push(entry);
-        }
-    }
-
-    return handlers;
 });
 
 //  ------------------------------------------------------------------------
@@ -4916,11 +4947,11 @@ function(anOrigin, aSignal, aPayload, aType) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.defineMethod('DEFAULT_FIRING',
+TP.sig.SignalMap.defineMethod('OBSERVER_FIRING',
 function(anOrigin, signalSet, aPayload, aType) {
 
     /**
-     * @method DEFAULT_FIRING
+     * @method OBSERVER_FIRING
      * @summary Fires one or more signals from one or more origins.
      * @param {Object} anOrigin The originator or originators of the signal(s).
      * @param {String|TP.sig.Signal} signalSet The signal(s) to fire.
@@ -7147,8 +7178,9 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  'default' signal type that was passed in and, if that doesn't exist,
     //  then ask the signal instance itself.
     type = TP.ifInvalid(
-                type,
-                TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(aSignal)));
+                type, TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(
+                        aSignal,
+                        TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy))));
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event
@@ -7175,7 +7207,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         if (owner !== origin && TP.canInvoke(owner, 'signalObservers')) {
             shouldSignalMap = owner.signalObservers(
                                                 anOrigin, aSignal,
-                                                aPayload, aPolicy, aType,
+                                                aPayload, aPolicy, type,
                                                 isCancelable, isBubbling);
             if (!shouldSignalMap) {
                 return;
@@ -7291,20 +7323,22 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         } else {
             if (!TP.isType(type) ||
                     TP.isEmpty(pol = type.getDefaultPolicy())) {
-                //  TODO:   make the default signaling policy an attribute of the
-                //          signaling system somewhere so that it can be configured.
-                pol = TP.sig.SignalMap.DEFAULT_FIRING;
+                //  TODO:   make the default signaling policy an attribute of
+                //          the signaling system somewhere so that it can be
+                //          configured.
+                pol = TP.sig.SignalMap.OBSERVER_FIRING;
             } else if (!TP.isCallable(pol) &&
                         !TP.isCallable(pol = TP.sig.SignalMap[pol])) {
-                //  TODO:   make the default signaling policy an attribute of the
-                //          signaling system somewhere so that it can be configured.
-                pol = TP.sig.SignalMap.DEFAULT_FIRING;
+                //  TODO:   make the default signaling policy an attribute of
+                //          the signaling system somewhere so that it can be
+                //          configured.
+                pol = TP.sig.SignalMap.OBSERVER_FIRING;
             }
         }
     }
 
     //  hand off to policy do do the actual firing of the signal(s)
-    sig = pol(anOrigin, aSignal, aPayload, aType,
+    sig = pol(anOrigin, aSignal, aPayload, type,
                 isCancelable, isBubbling);
 
     //  TODO:   dramatically expand on the ability to track stats across signal

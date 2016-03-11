@@ -6140,14 +6140,20 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('signal',
-function(aSignal, aPayload, aPolicy, aType, isCancelable,
-isBubbling) {
+function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
      * @method signal
      * @summary Signals activity to registered observers. Any additional
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
+     * @discussion We override the standard 'signal' method on this type to
+     *     possibly alter the firing policy based on whether the signal was
+     *     spoofed or not. In the core signaling system, if the signal is
+     *     spoofed and a specific firing policy isn't supplied in this call,
+     *     then TP.OBSERVER_FIRING is used. This call changes that so that, if a
+     *     specific firing policy isn't supplied for a spoofed signal,
+     *     TP.RESPONDER_FIRING is used.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object (unused in this
      *     override).
@@ -6160,13 +6166,37 @@ isBubbling) {
      *     if they can be cancelled.
      * @param {Boolean} isBubbling Optional flag for dynamic signals defining
      *     whether they bubble (when using TP.DOM_FIRING).
-     * @returns {TP.sig.Signal}
+     * @returns {TP.sig.Signal} The signal instance which was fired.
      */
 
+    var sigType,
+        policy;
+
+    //  Determine whether this is a spoofed signal by getting the signal type.
+    if (TP.isString(aSignal)) {
+        sigType = TP.sys.getTypeByName(TP.expandSignalName(aSignal));
+    } else {
+        sigType = aSignal.getType();
+    }
+
+    //  Capture any supplied policy.
+    policy = aPolicy;
+
+    //  If a policy wasn't explicitly provided, then use TP.RESPONDER_FIRING for
+    //  spoofed signals.
+    if (TP.notValid(policy)) {
+        if (!TP.isType(sigType)) {
+            policy = TP.RESPONDER_FIRING;
+        } else {
+            policy = sigType.getDefaultPolicy();
+        }
+    }
+
+    //  Dispatch it with the computed firing policy.
     return this.dispatch(aSignal,
                             this.getNativeNode(),
                             aPayload,
-                            aPolicy,
+                            policy,
                             isCancelable,
                             isBubbling);
 });
