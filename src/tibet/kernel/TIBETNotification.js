@@ -3130,6 +3130,185 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.SignalMap.defineMethod('$computeOriginID',
+function(anOrigin) {
+
+    var orgid;
+
+    orgid = TP.isValid(anOrigin) ? TP.id(anOrigin) : TP.ANY;
+    if (orgid === '*' || orgid === '') {
+        orgid = TP.ANY;
+    }
+
+    return orgid;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('$computeSignalName',
+function(aSignal) {
+
+    var signame;
+
+    signame = TP.isValid(aSignal) ? aSignal.getSignalName() : TP.ANY;
+    if (TP.notValid(signame) || signame === '*' || signame === '') {
+        signame = TP.ANY;
+    }
+
+    return signame;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalMap.defineMethod('$constructHandlerEntries',
+function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserver, xmlEvent) {
+
+    /**
+     * @method $constructHandlerEntries
+     * @summary Creates 1..n signal map entries for the interest specified.
+     * @param {Object} anOrigin What origin?
+     * @param {String|TP.sig.Signal} aSignal What signal?
+     * @param {Object} aHandler What object will get notification?
+     * @param {String} aPhase The dispatch phase to register the handler for.
+     * @param {String} propagate If equal to 'stop', then the handler should
+     *     stop propagation.
+     * @param {String} defaultAction If equal to 'cancel', then the handler
+     *     should cancel the default action.
+     * @param {Element} anObserver The observer element.
+     * @param {Boolean} xmlEvent Should use XML Events semantics?
+     */
+
+    var origins,
+        origin,
+
+        events,
+        theEvent,
+
+        entry,
+        xml,
+
+        i,
+        j,
+        k,
+
+        observers,
+        observer,
+        handlers;
+
+    if (TP.isEmpty(anOrigin) || anOrigin === '*') {
+        origins = TP.ANY;
+    } else {
+        origins = anOrigin;
+    }
+    origins = origins.split(' ');
+
+    if (TP.isEmpty(aSignal) || aSignal === '*') {
+        events = TP.ANY;
+    } else {
+        events = aSignal;
+    }
+    events = events.split(' ');
+
+    handlers = TP.ac();
+
+    xml = TP.ifInvalid(xmlEvent, false);
+
+    //  create a new entry for each expanded origin/signal pair
+    for (i = 0; i < origins.getSize(); i++) {
+        origin = origins.at(i);
+        for (j = 0; j < events.getSize(); j++) {
+            theEvent = events.at(j);
+
+            //  when dealing with XML event semantics we have to manipulate
+            //  things a bit if the target (origin) and observer differ. In
+            //  particular we want the registration to sit at the observer's
+            //  level in the DOM which means using the observer as the
+            //  origin rather than the target. we want to preserve the
+            //  target in a separate attribute so we can filter on it later
+            if (xml) {
+                if (anOrigin === anObserver) {
+                    //  when anOrigin == anObserver it means ev:target was
+                    //  defaulted to ev:observer. In that case we don't care
+                    //  about xml_target since we weren't given a specific
+                    //  child of an observer to match. Also, we can just use
+                    //  origin as target and not worry about splitting
+                    //  observer separately if necessary.
+                    entry = TP.constructOrphanObject();
+                    entry.target = origin;
+                } else {
+                    if (anObserver.indexOf(' ') === TP.NOT_FOUND) {
+                        entry = TP.constructOrphanObject();
+
+                        //  anObserver is a single value, no split required.
+                        //  one special case here is that when the origin is
+                        //  the document we're "outside" the element chain
+                        //  and have to cheat a bit
+                        if (TP.regex.DOCUMENT_ID.test(origin)) {
+                            //  theoretically illegal, since we're saying
+                            //  the document is "inside" the observer
+                            entry.target = origin;
+                        } else {
+                            entry.target = anObserver;
+                            entry.xml_target = origin;
+                        }
+                    } else {
+                        //  have to split observer and generate an entry for
+                        //  each combination
+                        observers = anObserver.split(' ');
+                        for (k = 0; k < observers.getSize(); k++) {
+                            observer = observers.at(k);
+
+                            entry = TP.constructOrphanObject();
+
+                            entry.target = observer;
+                            entry.xml_target = origin;
+
+                            entry.event = theEvent;
+                            entry.handler = aHandler;
+
+                            TP.notEmpty(aPhase) ?
+                                entry.phase = aPhase : 0;
+                            TP.notEmpty(propagate) ?
+                                entry.propagate = propagate : 0;
+                            TP.notEmpty(defaultAction) ?
+                                entry.defaultAction = defaultAction : 0;
+                            TP.notEmpty(observer) ?
+                                entry.observer = observer : 0;
+
+                            handlers.push(entry);
+                        }
+
+                        //  skip tail of the i/j loop since we've already
+                        //  fully configured the handler entries
+                        continue;
+                    }
+                }
+            } else {    //  NOT XML EVENTS
+                entry = TP.constructOrphanObject();
+                entry.target = origin;
+            }
+
+            entry.event = theEvent;
+            entry.handler = aHandler;
+
+            TP.notEmpty(aPhase) ?
+                    entry.phase = aPhase : 0;
+            TP.notEmpty(propagate) ?
+                    entry.propagate = propagate : 0;
+            TP.notEmpty(defaultAction) ?
+                    entry.defaultAction = defaultAction : 0;
+            TP.notEmpty(anObserver) ?
+                    entry.observer = anObserver : 0;
+
+            handlers.push(entry);
+        }
+    }
+
+    return handlers;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.SignalMap.defineMethod('$getDefaultTypeForPolicy',
 function(aPolicy) {
 
@@ -3343,36 +3522,6 @@ function(aSignal, aDefaultType) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalMap.defineMethod('$computeOriginID',
-function(anOrigin) {
-
-    var orgid;
-
-    orgid = TP.isValid(anOrigin) ? TP.id(anOrigin) : TP.ANY;
-    if (orgid === '*' || orgid === '') {
-        orgid = TP.ANY;
-    }
-
-    return orgid;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.SignalMap.defineMethod('$computeSignalName',
-function(aSignal) {
-
-    var signame;
-
-    signame = TP.isValid(aSignal) ? aSignal.getSignalName() : TP.ANY;
-    if (TP.notValid(signame) || signame === '*' || signame === '') {
-        signame = TP.ANY;
-    }
-
-    return signame;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.SignalMap.defineMethod('$isInterestSuspended',
 function(anOrigin, aSignal) {
 
@@ -3407,155 +3556,6 @@ function(anOrigin, aSignal) {
             return entry.suspend === true;
         }
     }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.SignalMap.defineMethod('$constructHandlerEntries',
-function(anOrigin, aSignal, aHandler, aPhase, propagate, defaultAction, anObserver, xmlEvent) {
-
-    /**
-     * @method $constructHandlerEntries
-     * @summary Creates 1..n signal map entries for the interest specified.
-     * @param {Object} anOrigin What origin?
-     * @param {String|TP.sig.Signal} aSignal What signal?
-     * @param {Object} aHandler What object will get notification?
-     * @param {String} aPhase The dispatch phase to register the handler for.
-     * @param {String} propagate If equal to 'stop', then the handler should
-     *     stop propagation.
-     * @param {String} defaultAction If equal to 'cancel', then the handler
-     *     should cancel the default action.
-     * @param {Element} anObserver The observer element.
-     * @param {Boolean} xmlEvent Should use XML Events semantics?
-     */
-
-    var origins,
-        origin,
-
-        events,
-        theEvent,
-
-        entry,
-        xml,
-
-        i,
-        j,
-        k,
-
-        observers,
-        observer,
-        handlers;
-
-    if (TP.isEmpty(anOrigin) || anOrigin === '*') {
-        origins = TP.ANY;
-    } else {
-        origins = anOrigin;
-    }
-    origins = origins.split(' ');
-
-    if (TP.isEmpty(aSignal) || aSignal === '*') {
-        events = TP.ANY;
-    } else {
-        events = aSignal;
-    }
-    events = events.split(' ');
-
-    handlers = TP.ac();
-
-    xml = TP.ifInvalid(xmlEvent, false);
-
-    //  create a new entry for each expanded origin/signal pair
-    for (i = 0; i < origins.getSize(); i++) {
-        origin = origins.at(i);
-        for (j = 0; j < events.getSize(); j++) {
-            theEvent = events.at(j);
-
-            //  when dealing with XML event semantics we have to manipulate
-            //  things a bit if the target (origin) and observer differ. In
-            //  particular we want the registration to sit at the observer's
-            //  level in the DOM which means using the observer as the
-            //  origin rather than the target. we want to preserve the
-            //  target in a separate attribute so we can filter on it later
-            if (xml) {
-                if (anOrigin === anObserver) {
-                    //  when anOrigin == anObserver it means ev:target was
-                    //  defaulted to ev:observer. In that case we don't care
-                    //  about xml_target since we weren't given a specific
-                    //  child of an observer to match. Also, we can just use
-                    //  origin as target and not worry about splitting
-                    //  observer separately if necessary.
-                    entry = TP.constructOrphanObject();
-                    entry.target = origin;
-                } else {
-                    if (anObserver.indexOf(' ') === TP.NOT_FOUND) {
-                        entry = TP.constructOrphanObject();
-
-                        //  anObserver is a single value, no split required.
-                        //  one special case here is that when the origin is
-                        //  the document we're "outside" the element chain
-                        //  and have to cheat a bit
-                        if (TP.regex.DOCUMENT_ID.test(origin)) {
-                            //  theoretically illegal, since we're saying
-                            //  the document is "inside" the observer
-                            entry.target = origin;
-                        } else {
-                            entry.target = anObserver;
-                            entry.xml_target = origin;
-                        }
-                    } else {
-                        //  have to split observer and generate an entry for
-                        //  each combination
-                        observers = anObserver.split(' ');
-                        for (k = 0; k < observers.getSize(); k++) {
-                            observer = observers.at(k);
-
-                            entry = TP.constructOrphanObject();
-
-                            entry.target = observer;
-                            entry.xml_target = origin;
-
-                            entry.event = theEvent;
-                            entry.handler = aHandler;
-
-                            TP.notEmpty(aPhase) ?
-                                entry.phase = aPhase : 0;
-                            TP.notEmpty(propagate) ?
-                                entry.propagate = propagate : 0;
-                            TP.notEmpty(defaultAction) ?
-                                entry.defaultAction = defaultAction : 0;
-                            TP.notEmpty(observer) ?
-                                entry.observer = observer : 0;
-
-                            handlers.push(entry);
-                        }
-
-                        //  skip tail of the i/j loop since we've already
-                        //  fully configured the handler entries
-                        continue;
-                    }
-                }
-            } else {    //  NOT XML EVENTS
-                entry = TP.constructOrphanObject();
-                entry.target = origin;
-            }
-
-            entry.event = theEvent;
-            entry.handler = aHandler;
-
-            TP.notEmpty(aPhase) ?
-                    entry.phase = aPhase : 0;
-            TP.notEmpty(propagate) ?
-                    entry.propagate = propagate : 0;
-            TP.notEmpty(defaultAction) ?
-                    entry.defaultAction = defaultAction : 0;
-            TP.notEmpty(anObserver) ?
-                    entry.observer = anObserver : 0;
-
-            handlers.push(entry);
-        }
-    }
-
-    return handlers;
 });
 
 //  ------------------------------------------------------------------------
