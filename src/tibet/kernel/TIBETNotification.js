@@ -3130,6 +3130,37 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.SignalMap.defineMethod('$getDefaultTypeForPolicy',
+function(aPolicy) {
+
+    /**
+     * @method $getDefaultTypeForPolicy
+     * @summary Returns the default type of signal of the policy provided.
+     *     Default signal types are used by the system for 'spoofed' signals
+     *     (i.e. when a real signal type isn't provided).
+     * @param {Function|String} aPolicy The policy specification.
+     * @returns {TP.lang.RootObject.<TP.core.Signal>} The default signal type
+     *     for the provided policy.
+     */
+
+    switch (aPolicy) {
+        case TP.EXCEPTION_FIRING:
+            return TP.sig.Exception;
+        case TP.DOM_FIRING:
+            return TP.sig.DOMSignal;
+        case TP.RESPONDER_FIRING:
+            return TP.sig.ResponderSignal;
+
+        case TP.OBSERVER_FIRING:
+        case TP.INHERITANCE_FIRING:
+        case TP.FIRE_ONE:
+        default:
+            return TP.sig.Signal;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.SignalMap.defineMethod('$getPolicyName',
 function(aPolicy) {
 
@@ -7147,8 +7178,9 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  'default' signal type that was passed in and, if that doesn't exist,
     //  then ask the signal instance itself.
     type = TP.ifInvalid(
-                type,
-                TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(aSignal)));
+                type, TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(
+                        aSignal,
+                        TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy))));
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event
