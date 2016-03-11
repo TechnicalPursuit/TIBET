@@ -2352,7 +2352,7 @@ function(anError, aMessage) {
 
     msg = TP.isEmpty(aMessage) ? anError.message : aMessage;
 
-    return TP.sig.Exception.construct(TP.hc('object', anError,
+    return TP.sig.Exception.construct(TP.hc('error', anError,
                                             'message', msg));
 });
 
@@ -2406,7 +2406,7 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('object');
+    err = this.at('error');
     if (TP.isError(err)) {
         msg = TP.ifInvalid(err.message, err.toString());
     } else if (TP.isValid(err)) {
@@ -2418,7 +2418,7 @@ function() {
     try {
         str = this.getTypeName() + '.construct(' +
                 'TP.hc(' +
-                    '\'object\', ' + TP.src(err) + ', ' +
+                    '\'error\', ' + TP.src(err) + ', ' +
                     '\'message\', ' + '\'' + msg + '\'' +
                 '))';
 
@@ -2462,7 +2462,7 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('object');
+    err = this.at('error');
     if (TP.isError(err)) {
         msg = TP.ifInvalid(TP.str(err), err.toString());
         msg += TP.getStackInfo(err).join('\n');
@@ -2508,7 +2508,7 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('object');
+    err = this.at('error');
     if (TP.isValid(err)) {
         msg = TP.ifInvalid(TP.str(err), err.toString());
     } else {
@@ -2564,7 +2564,7 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('object');
+    err = this.at('error');
     if (TP.isValid(err)) {
         msg = TP.ifInvalid(TP.str(err), err.toString());
     } else {
@@ -2622,7 +2622,7 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('object');
+    err = this.at('error');
     if (TP.isValid(err)) {
         msg = TP.ifInvalid(TP.str(err), err.toString());
     } else {
@@ -2691,7 +2691,7 @@ function(verbose) {
     }
     this[marker] = true;
 
-    err = this.at('object');
+    err = this.at('error');
     if (TP.isValid(err)) {
         msg = TP.ifInvalid(TP.str(err), err.toString());
     } else {
@@ -2734,7 +2734,7 @@ function() {
     }
     this[marker] = true;
 
-    err = this.at('object');
+    err = this.at('error');
     if (TP.isValid(err)) {
         msg = TP.ifInvalid(TP.str(err), err.toString());
     } else {
@@ -2774,11 +2774,11 @@ function() {
      * @method getError
      * @summary Returns the Error object, if any, associated with this
      *     exception. This object is typically found in the payload under the
-     *     key 'object'.
+     *     key 'error'.
      * @returns {Error} A native Error object.
      */
 
-    return this.at('object');
+    return this.at('error');
 });
 
 //  ------------------------------------------------------------------------
