@@ -10052,7 +10052,7 @@ function(resource, mimeType, fallback) {
      *     are in the same directory with the tag javascript.
      *
      *     In all cases whatever value is found/computed is cached under a key
-     *     of path.{name}.{res}.cached for future lookups. These latter keys are
+     *     of path.{name}.{res} for future lookups. These latter keys are
      *     not saved, they exist only at runtime.
      *
      * @param {String} resource The resource name. Typically template, style,
@@ -10093,7 +10093,7 @@ function(resource, mimeType, fallback) {
     //  If we've done computation before don't repeat it. Also, this serves
     //  as a way for individual types to provide a specific override via cfg.
 
-    cachekey = 'path.' + name + '.' + res + '.cached';
+    cachekey = 'path.' + name + '.' + res;
 
     computed = TP.core.ElementNode.get('computedKeys');
     value = computed.at(cachekey);
