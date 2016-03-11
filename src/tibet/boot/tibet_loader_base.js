@@ -5089,7 +5089,13 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
         case 'boolean':
             return anObject;
         case 'function':
-            str = anObject.toString();
+            //  Have to try catch even this due to libs like sinon that override
+            //  toString and then throw if you try to serialize the "class".
+            try {
+                str = anObject.toString();
+            } catch (e) {
+                str = Object.prototype.toString.call(anObject);
+            }
             if (shouldEscape === true) {
                 return '<pre><![CDATA[' + str +
                     ']]></pre>';
@@ -5123,7 +5129,12 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
             }
 
             if (anObject instanceof RegExp) {
-                str = anObject.toString();
+                try {
+                    str = anObject.toString();
+                } catch (e) {
+                    str = Object.prototype.toString.call(anObject);
+                }
+
                 if (shouldEscape === true) {
                     return TP.boot.$xmlEscape(str);
                 } else {
@@ -6482,6 +6493,20 @@ TP.boot.Log.prototype.asPrettyString = function() {
                     TP.boot.$str(this.messages) +
                 '<\/dd>' +
                 '<\/dl>';
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.Log.prototype.asString = function() {
+
+    /**
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
+     *     output.
+     * @returns {String} A new String containing the dump string of the receiver.
+     */
+
+    return TP.boot.$str(this.messages);
 };
 
 //  ----------------------------------------------------------------------------

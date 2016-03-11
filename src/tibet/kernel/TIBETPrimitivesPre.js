@@ -710,7 +710,8 @@ TP.FunctionProto.$getName = function() {
      * @returns {String}
      */
 
-    var results;
+    var results,
+        str;
 
     //  careful here, TP.FunctionProto will pass names along and everything will
     //  turn up as "Function" if we don't make sure
@@ -718,7 +719,14 @@ TP.FunctionProto.$getName = function() {
         return this[TP.NAME];
     }
 
-    results = TP.getFunctionName(this.toString());
+    try {
+        str = this.toString();
+        results = TP.getFunctionName(str);
+    } catch (e) {
+        str = 'toString';
+        results = str;
+    }
+
     if (results === TP.ANONYMOUS_FUNCTION_NAME) {
         //  In Functions that live in TIBET, we don't like Functions to be named
         //  as TP.ANONYMOUS_FUNCTION_NAME, so we compute a unique ID for them

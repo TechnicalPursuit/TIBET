@@ -2151,39 +2151,7 @@ function(anObject) {
     }
 
     //  worst case we just produce our best source-code representation
-    return TP.src(anObject);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('inspect',
-function(anObject) {
-
-    /**
-     * @method inspect
-     * @summary Returns the key/value pairs of the object formatted in a
-     *     renderable markup string. Optional editing capability can be
-     *     supported by the resulting markup.
-     * @param {The} anObject object whose properties and simple inspection
-     *     string should be returned.
-     * @returns {String} A simple inspection string for the object.
-     */
-
-    var obj;
-
-    obj = TP.wrap(anObject);
-    if (obj !== anObject) {
-        if (TP.canInvoke(anObject, 'asInspectString')) {
-            return anObject.asInspectString();
-        }
-    }
-
-    if (TP.canInvoke(anObject, 'asInspectString')) {
-        return anObject.asInspectString();
-    }
-
-    //  worst case we just produce our best source-code representation
-    return TP.src(anObject);
+    return TP.boot.$dump(anObject);
 });
 
 //  ------------------------------------------------------------------------
@@ -2236,61 +2204,6 @@ function(anObject, aFilter, aDiscriminator) {
     } else {
         return arr.sort();
     }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('link',
-function(anObject, aMessage, aTitle, aCommand) {
-
-    /**
-     * @method link
-     * @summary Constructs and returns an HTML link in text form for the
-     *     object. The message portion of the link is either the message
-     *     provided or the object's ID. The command is the shell command, if
-     *     any, desired. The default command is :edit since most links generated
-     *     for objects ultimately target editing as their action.
-     * @param {Object} anObject The object to link to.
-     * @param {String} aMessage An optional message to use instead of the
-     *     object's ID for the link text.
-     * @param {String} aTitle The title parameter which will provide a tooltip
-     *     for the link.
-     * @param {String} aCommand An optional TSH command to use rather than the
-     *     default ':edit' command.
-     * @returns {String} A string containing an HTML link element.
-     */
-
-    var uri,
-        msg,
-        str,
-        title;
-
-    //  Get an acceptible URI to use for referencing the object.
-    uri = TP.uri(anObject);
-
-    //  The message portion of the link should be provided, or based on the
-    //  "name" portion of the object's URN, or it can be the true location.
-    if (TP.isString(aMessage)) {
-        msg = TP.trim(aMessage);
-    } else if (TP.isKindOf(uri, TP.core.URN)) {
-        msg = uri.getName();
-    } else {
-        msg = uri.getLocation();
-    }
-
-    title = TP.stringAsHTMLAttribute(aTitle).quoted('"');
-
-    //  Generate the link which drives the shell command invocation.
-    str = TP.join(
-        '<a href="#" ', 'title=', title, ' ',
-            'onclick="TP.shell(TP.hc(\'cmdSrc\',',
-            '\'', aCommand || ':edit ', uri.getLocation(), '\'',
-            ', \'cmdEcho\', false, \'cmdHistory\', false, \'cmdSilent\', false,',
-            ')); return false;">',
-            msg,
-        '</a>');
-
-    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -2487,36 +2400,6 @@ function(anObject) {
     }
 
     //  worst case we just produce our best html representation
-    return TP.htmlstr(anObject);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('print',
-function(anObject) {
-
-    /**
-     * @method print
-     * @summary Returns the content of the object in a standard markup display
-     *     form. This is a "simple markup" representation of the content.
-     * @param {The} anObject object whose properties and simple print string
-     *     should be returned.
-     * @returns {String} A simple print string for the object.
-     */
-
-    var obj;
-
-    obj = TP.wrap(anObject);
-    if (obj !== anObject) {
-        if (TP.canInvoke(anObject, 'asPrintString')) {
-            return anObject.asPrintString();
-        }
-    }
-
-    if (TP.canInvoke(anObject, 'asPrintString')) {
-        return anObject.asPrintString();
-    }
-
     return TP.htmlstr(anObject);
 });
 

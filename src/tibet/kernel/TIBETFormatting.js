@@ -122,23 +122,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('asStorageString',
-function() {
-
-    /**
-     * @method asStorageString
-     * @summary Produces a string representation suitable for data storage.
-     *     This might be encoded in a variety of ways depending on the receiver
-     *     and what "storage" means for it, but the default format is source
-     *     code form.
-     * @returns {String} The receiver in storage format.
-     */
-
-    return this.asJSONSource();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.defineMetaInstMethod('asXHTMLNode',
 function() {
 
@@ -288,7 +271,7 @@ function() {
 
         joinStr = '[' + joinArr.join(joinCh) + ']';
     } catch (e) {
-        joinStr = this.toString();
+        joinStr = Object.prototype.toString.call(this);
     } finally {
         delete this[marker];
     }
@@ -389,7 +372,7 @@ function() {
                     joinArr.join('') +
                     '<\/dl>';
     } catch (e) {
-        joinStr = this.toString();
+        joinStr = Object.prototype.toString.call(this);
     } finally {
         delete this[marker];
     }
@@ -503,8 +486,11 @@ function() {
      *     receiver.
      */
 
-    //  '.toISOString()' is an ECMA ed5 addition
-    return this.toISOString();
+    try {
+        return this.toISOString();
+    } catch (e) {
+        return TP.id(this);
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -1067,7 +1053,9 @@ function() {
 
         joinStr = TP.tname(this) + ' :: ' + '(' + joinArr.join(', ') + ')';
     } catch (e) {
-        joinStr = this.toString();
+        TP.warn(e.message + ' in ' + TP.id(this) + ' dump string for key ' +
+            keys.at(i));
+        joinStr = Object.prototype.toString.call(this);
     } finally {
         delete this[marker];
     }
@@ -1117,7 +1105,7 @@ function() {
                      joinArr.join('') +
                      '<\/span>';
     } catch (e) {
-        joinStr = this.toString();
+        joinStr = Object.prototype.toString.call(this);
     } finally {
         delete this[marker];
     }
@@ -1165,7 +1153,7 @@ function() {
         joinStr = '{"type":"' + TP.tname(this) + '",' +
                     '"data":{' + joinArr.join(',') + '}}';
     } catch (e) {
-        joinStr = this.toString();
+        joinStr = Object.prototype.toString.call(this);
     } finally {
         delete this[marker];
     }
@@ -1222,7 +1210,7 @@ function() {
                     joinArr.join('') +
                     '<\/dl>';
     } catch (e) {
-        joinStr = this.toString();
+        joinStr = Object.prototype.toString.call(this);
     } finally {
         delete this[marker];
     }
@@ -1271,7 +1259,7 @@ function() {
                      joinArr.join('') +
                      '<\/instance>';
     } catch (e) {
-        joinStr = this.toString();
+        joinStr = Object.prototype.toString.call(this);
     } finally {
         delete this[marker];
     }

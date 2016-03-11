@@ -1358,7 +1358,12 @@ TP.hc(
         }
 
         if (TP.canInvoke(anObject, 'toString')) {
-            str = anObject.toString();
+            try {
+                str = anObject.toString();
+            } catch (e) {
+                str = Object.prototype.toString.call(anObject);
+            }
+
             if (TP.regex.INSTANCE_OID.test(str)) {
                 str = '[object ' + TP.tname(anObject) + ']';
             } else if (TP.regex.NATIVE_CODE.test(str) &&
@@ -1500,7 +1505,11 @@ TP.hc(
         }
 
         if (TP.canInvoke(anObject, 'toString')) {
-            str = anObject.toString();
+            try {
+                str = anObject.toString();
+            } catch (e) {
+                str = Object.prototype.toString.call(anObject);
+            }
             if (TP.regex.INSTANCE_OID.test(str)) {
                 str = '[object ' + TP.tname(anObject) + ']';
             } else if (TP.regex.NATIVE_CODE.test(str) &&
@@ -1644,7 +1653,11 @@ TP.hc(
         }
 
         if (TP.canInvoke(anObject, 'toString')) {
-            str = anObject.toString();
+            try {
+                str = anObject.toString();
+            } catch (e) {
+                str = Object.prototype.toString.call(anObject);
+            }
             if (TP.regex.INSTANCE_OID.test(str)) {
                 str = '[object ' + TP.tname(anObject) + ']';
             } else if (TP.regex.NATIVE_CODE.test(str) &&

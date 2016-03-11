@@ -5521,7 +5521,7 @@ function() {
     //  in a TIBET package config) we source it back in rather than just
     //  loading via simple XHR.
     if (TP.boot.$isLoadedScript(path)) {
-        TP.system('Sourcing in updates to ' + path);
+        TP.debug('Sourcing in updates to ' + path);
         TP.boot.$uriImport(path, callback);
     } else {
         this.getResource().then(callback);

@@ -4248,62 +4248,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaInstMethod('asInspectString',
-function() {
-
-    /**
-     * @method asInspectString
-     * @summary Returns a string representation of the receiver which is
-     *     suitable for use in inspecting the keys, values, and other relevant
-     *     information of the receiver.
-     * @returns {String}
-     */
-
-    var keys,
-        len,
-        i,
-        result;
-
-    //  non-mutables like boolean, number, etc. can just report type/value
-    if (!TP.isMutable(this)) {
-        return this.getTypeName() + '::' + TP.str(this);
-    }
-
-    result = TP.ac();
-    keys = TP.keys(this);
-
-    if (TP.isEmpty(keys)) {
-        return this.getTypeName() + '::' + TP.str(this);
-    }
-
-    if (TP.isNumber(keys[0])) {
-        keys.sort(TP.sort.NUMERIC);
-    } else {
-        keys.sort();
-    }
-
-    len = keys.getSize();
-    for (i = 0; i < len; i++) {
-        //  collection keys are content, not "properties" so when they
-        //  contain methods we probably want to see them (for reflection
-        //  methods etc) but when not a collection the keys are property
-        //  names so we want to filter methods from that output.
-        if (!TP.isCollection(this) && TP.isMethod(this.at(keys.at(i)))) {
-            continue;
-        }
-
-        result.push(TP.str(keys.at(i)) + ' => ' + TP.val(this, keys.at(i)));
-    }
-
-    if (TP.isNode(this) && !TP.isDocument(this)) {
-        result.push('tag', ' =>', TP.nodeAsString(this, false, true));
-    }
-
-    return this.getTypeName() + '::' + '\n' + result.join('\n');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.defineMetaInstMethod('asPrettyString',
 function() {
 
@@ -4398,31 +4342,6 @@ function() {
     }
 
     return '@' + id;
-});
-
-//  ------------------------------------------------------------------------
-
-//  Grab the old inspect string function that was installed as a meta method
-TP.$asInspectString = TP.FunctionProto.asInspectString;
-
-TP.FunctionProto.defineMethod('asInspectString',
-function() {
-
-    /**
-     * @method asInspectString
-     * @summary Returns a string representation of the receiver which is
-     *     suitable for use in inspecting the keys, values, and other relevant
-     *     information of the receiver.
-     * @returns {String}
-     */
-
-    if (TP.isType(this)) {
-        this.asInspectString = TP.$asInspectString;
-
-        return this.asInspectString();
-    }
-
-    return this.getTypeName() + '::' + '\n' + this.asString();
 });
 
 //  ------------------------------------------------------------------------
