@@ -9927,6 +9927,11 @@ TP.core.ElementNode.isAbstract(true);
 //  HTML (but not XHTML ;-) ).
 TP.core.ElementNode.Type.defineAttribute('booleanAttrs', TP.ac());
 
+//  A cache of computed URI keys. This dictionary is used to avoid recomputing
+//  the resource URI values for various keys. Note that the keys here mirror
+//  those you'd normally see in TP.sys.cfg with respect to paths.
+TP.core.ElementNode.Type.defineAttribute('computedKeys', TP.hc());
+
 //  The attributes for this element type that are considered to 'URI
 //  attributes' that need XML Base/virtual URI resolution.
 TP.core.ElementNode.Type.defineAttribute('uriAttrs', TP.ac());
@@ -10063,6 +10068,7 @@ function(resource, mimeType, fallback) {
         name,
         theme,
         cachekey,
+        computed,
         prefix,
         key,
         value,
@@ -10089,7 +10095,8 @@ function(resource, mimeType, fallback) {
 
     cachekey = 'path.' + name + '.' + res + '.cached';
 
-    value = TP.sys.cfg(cachekey);
+    computed = TP.core.ElementNode.get('computedKeys');
+    value = computed.at(cachekey);
     if (TP.notEmpty(value)) {
         return value === TP.NO_RESULT ? void 0 : value;
     }
@@ -10105,7 +10112,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        TP.sys.setcfg(cachekey, value);
+        computed.atPut(cachekey, value);
         if (value !== TP.NO_RESULT) {
             return value;
         }
@@ -10120,7 +10127,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + prefix + '.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        TP.sys.setcfg(cachekey, value);
+        computed.atPut(cachekey, value);
         if (value !== TP.NO_RESULT) {
             return value;
         }
@@ -10133,7 +10140,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + name + '.' + res;
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        TP.sys.setcfg(cachekey, value);
+        computed.atPut(cachekey, value);
         return value === TP.NO_RESULT ? void 0 : value;
     }
 
@@ -10198,7 +10205,7 @@ function(resource, mimeType, fallback) {
         //  Finally add the proper mime extension such as CSS or XHTML.
         value += '.' + ext;
 
-        TP.sys.setcfg(cachekey, value);
+        computed.atPut(cachekey, value);
         return value;
     }
 
