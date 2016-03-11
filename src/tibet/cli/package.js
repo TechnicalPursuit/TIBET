@@ -29,6 +29,7 @@
  *                  If 'all' is true we default this to true to suppress
  *                  warnings about duplicate assets.
  *      phase       Package phase? Default depends on context (app vs. lib)
+ *      context     alias for phase in this command (app, lib, all)
  *
  * OTHER OPTIONS:
  *
@@ -104,7 +105,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 Cmd.prototype.USAGE =
     'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
     '\t[--missing] [--include <asset names>] [--exclude <asset names>]\n' +
-    '\t[--scripts] [--styles] --[images] [--phase <phase>] [--nodes]';
+    '\t[--scripts] [--styles] --[images] [--phase <app|lib|all>] [--nodes]';
 
 
 /**
@@ -157,10 +158,14 @@ Cmd.prototype.configurePackageOptions = function(options) {
 
     //  Default the phase based on project vs. library context.
     if (CLI.notValid(this.options.phase)) {
-        if (CLI.inProject()) {
-            this.options.phase = 'two';
-        } else if (CLI.inLibrary()) {
-            this.options.phase = 'one';
+        if (CLI.notValid(this.options.context)) {
+            if (CLI.inProject()) {
+                this.options.phase = 'all';
+            } else if (CLI.inLibrary()) {
+                this.options.phase = 'one';
+            }
+        } else {
+            this.options.phase = this.options.context;
         }
     }
 
