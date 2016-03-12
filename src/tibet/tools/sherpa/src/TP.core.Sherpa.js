@@ -76,8 +76,8 @@ function(aName) {
 
         if (TP.isValid(sherpaInst = TP.bySystemId('Sherpa'))) {
 
-            //  If we didn't show the IDE when we first started, the trigger
-            //  has now been fired to show it.
+            //  If we didn't show the IDE when we first started, the trigger has
+            //  now been fired to show it.
             if (!TP.sys.cfg('boot.show_ide')) {
 
                 win = TP.win('UIROOT');
@@ -88,22 +88,25 @@ function(aName) {
                         drawerElement, 'TP.sig.DOMTransitionEnd');
 
                     //  The basic Sherpa framing has been set up, but we
-                    //  complete the setup here (after the drawers
-                    //  animate in).
+                    //  complete the setup here (after the drawers animate in).
                     sherpaInst.finishSetup();
 
-                    //  We add our 'south's 'no_transition' class so
-                    //  that during user interaction, resizing this
-                    //  drawer will be immediate.
+                    //  We add our 'south's 'no_transition' class so that during
+                    //  user interaction, resizing this drawer will be
+                    //  immediate.
                     TP.elementAddClass(drawerElement, 'no_transition');
 
+                    //  Set the HUD to not be hidden
                     TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
                                                             'hidden', false);
 
+                    //  Refresh the input area after a 1000ms timeout. This
+                    //  ensures that other layout will happen before the editor
+                    //  component tries to compute its layout
                     /* eslint-disable no-wrap-func,no-extra-parens */
                     (function() {
                         TP.byId('SherpaConsole', TP.win('UIROOT')).render();
-                    }).fork(750);
+                    }).fork(1000);
                     /* eslint-enable no-wrap-func,no-extra-parens */
 
                 }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
@@ -139,6 +142,24 @@ function(aName) {
                             });
             } else {
                 sherpaInst.finishSetup();
+
+                //  We add our 'south's 'no_transition' class so that during
+                //  user interaction, resizing this drawer will be
+                //  immediate.
+                TP.elementAddClass(drawerElement, 'no_transition');
+
+                //  Set the HUD to not be hidden
+                TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
+                                                        'hidden', false);
+
+                //  Refresh the input area after a 1000ms timeout. This
+                //  ensures that other layout will happen before the editor
+                //  component tries to compute its layout
+                /* eslint-disable no-wrap-func,no-extra-parens */
+                (function() {
+                    TP.byId('SherpaConsole', TP.win('UIROOT')).render();
+                }).fork(1000);
+                /* eslint-enable no-wrap-func,no-extra-parens */
             }
         }
     }).observe(TP.core.Keyboard, toggleKey);
