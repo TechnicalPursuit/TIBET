@@ -818,9 +818,15 @@ function(aSignal, statusOutID) {
     }
     */
 
+    //  Note that we use $set() to manage the statusReadoutTimer here - this is
+    //  a big performance win because the keyboard / mouse stuff is so
+    //  performance intensive.
+
+    //  Also, we use setTextContent() to update the controls.
+
     if (TP.isValid(timer = this.get('statusReadoutTimer'))) {
         clearTimeout(timer);
-        this.set('statusReadoutTimer', null);
+        this.$set('statusReadoutTimer', null, false);
     }
 
     keyboardStatusTPElem =
@@ -850,13 +856,13 @@ function(aSignal, statusOutID) {
 
             str = arr.join(' : ');
 
-            keyboardStatusTPElem.setRawContent(str);
+            keyboardStatusTPElem.setTextContent(str);
 
             if (TP.isKindOf(aSignal, TP.sig.DOMKeyUp)) {
                 timer = function() {
                     var lastMove;
 
-                    this.set('statusReadoutTimer', null);
+                    this.$set('statusReadoutTimer', null, false);
 
                     lastMove = TP.core.Mouse.$get('lastMove');
 
@@ -876,7 +882,7 @@ function(aSignal, statusOutID) {
                     TP.ifInvalid(
                         TP.sys.cfg('sherpa.readout_mouse_reset_time'),
                         1000));
-                this.set('statusReadoutTimer', timer);
+                this.$set('statusReadoutTimer', timer, false);
             }
         } else {
             keyboardStatusTPElem.clearTextContent();
@@ -900,7 +906,7 @@ function(aSignal, statusOutID) {
                 str = aSignal.getPageX() + ' :: ' + aSignal.getPageY();
             }
 
-            mouseStatusTPElem.setRawContent(str);
+            mouseStatusTPElem.setTextContent(str);
         } else {
             mouseStatusTPElem.clearTextContent();
         }
