@@ -3117,7 +3117,7 @@ function(contentData, aRequest) {
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
     request = TP.request(aRequest);
-    request.atPutIfAbsent('refresh', this.isLoaded());
+    request.atPutIfAbsent('refresh', false);
 
     return this.$requestContent(request,
                                 'getResource',
@@ -3325,7 +3325,7 @@ function(aResource, aRequest) {
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
     request = TP.request(aRequest);
-    request.atPutIfAbsent('refresh', this.isLoaded());
+    request.atPutIfAbsent('refresh', false);
 
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
