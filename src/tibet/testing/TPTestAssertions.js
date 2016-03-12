@@ -1114,7 +1114,7 @@ function(anObject, aValue, aType, aComment) {
     return this.assert(
             TP.sc(anObject, aValue).equalAs(aType),
             aComment,
-            TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
+            TP.sc('Expected ', TP.dump(anObject), ' and ', TP.dump(aValue),
                     ' to be equal as ', TP.name(aType), 's.'));
 });
 
@@ -1130,7 +1130,7 @@ function(anObject, aValue, aComment) {
     return this.assert(
             TP.equal(anObject, aValue),
             aComment,
-            TP.sc('Expected ', TP.str(anObject), ' and ', TP.str(aValue),
+            TP.sc('Expected ', TP.dump(anObject), ' and ', TP.dump(aValue),
                     ' to be equal.'));
 });
 
@@ -1584,7 +1584,7 @@ function(aString, aComment) {
     return this.assert(
             TP.isJSONString(aString),
             aComment,
-            TP.sc('Expected ', TP.str(aString), ' to be a JSON string.'));
+            TP.sc('Expected ', TP.dump(aString), ' to be a JSON string.'));
 });
 
 //  ------------------------------------------------------------------------
@@ -2034,7 +2034,7 @@ function(aFunction, anException) {
                     false,
                     TP.sc('Expected function to raise',
                                 TP.notEmpty(name) ? ' ' + name : '.',
-                            ' but raised ', TP.str(exception)));
+                            ' but raised ', TP.dump(exception)));
                 retVal = false;
             }
         } else {
@@ -2129,7 +2129,7 @@ function(aFunction, aSignal) {
                 false,
                 TP.sc('Expected function to signal',
                             TP.notEmpty(name) ? ' ' + name : '.',
-                        ' but signaled ' + TP.str(signal)));
+                        ' but signaled ' + TP.dump(signal)));
             retVal = false;
         }
     } else {
@@ -3962,11 +3962,11 @@ function(aFunction) {
         if (TP.isTrue(this.get('$negate'))) {
             this.set('faultStr',
                 TP.sc('Expected ', TP.id(testVal),
-                        ' to not satisfy ', TP.str(aFunction), '.'));
+                        ' to not satisfy ', TP.dump(aFunction), '.'));
         } else {
             this.set('faultStr',
                 TP.sc('Expected ', TP.id(testVal),
-                        ' to satisfy ', TP.str(aFunction), '.'));
+                        ' to satisfy ', TP.dump(aFunction), '.'));
         }
     }
 
@@ -4069,9 +4069,9 @@ function(errorConstructor, errMsg, comment) {
             if (!retVal) {
                 faultStr = TP.sc('Expected ', TP.id(testObj),
                                     ' to throw ',
-                                    TP.str(desiredError),
+                                    TP.dump(desiredError),
                                     ' instead of ',
-                                    TP.str(err));
+                                    TP.dump(err));
             }
         } else if (TP.isValid(TheConstructor)) {
             retVal = err instanceof TheConstructor;
@@ -4080,7 +4080,7 @@ function(errorConstructor, errMsg, comment) {
                                     ' to throw ',
                                     name,
                                     ' instead of ',
-                                    TP.str(err));
+                                    TP.dump(err));
             }
         } else if (!TP.isEmpty(err.message)) {
             if (TP.isRegExp(expectedErrMsg)) {
@@ -4092,7 +4092,7 @@ function(errorConstructor, errMsg, comment) {
             if (!retVal) {
                 faultStr = TP.sc('Expected ', TP.id(testObj),
                                     ' to throw error matching ',
-                                    TP.str(expectedErrMsg),
+                                    TP.dump(expectedErrMsg),
                                     ' but got ',
                                     err.message);
             }
@@ -4107,10 +4107,10 @@ function(errorConstructor, errMsg, comment) {
                     'Expected ', TP.id(testObj),
                     ' to throw ',
                     TP.notEmpty(name) ? name :
-                        TP.isValid(desiredError) ? TP.str(desiredError) :
+                        TP.isValid(desiredError) ? TP.dump(desiredError) :
                         'an error',
                     ' instead of ',
-                    TP.str(thrownError));
+                    TP.dump(thrownError));
         /* eslint-enable no-nested-ternary */
     }
 

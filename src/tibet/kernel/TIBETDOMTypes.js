@@ -1239,13 +1239,8 @@ function() {
 
     nativeNode = this.getNativeNode();
 
-    return TP.tname(this) +
-                ' :: ' +
-                '(' +
-                     TP.tname(nativeNode) +
-                    ' :: ' +
-                    this.asString() +
-                ')';
+    return '[' + TP.tname(this) + ' (' + TP.tname(nativeNode) + ')' +
+                    ' :: ' + this.asString() + ']'
 });
 
 //  ------------------------------------------------------------------------

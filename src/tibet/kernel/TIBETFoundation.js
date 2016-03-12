@@ -4201,7 +4201,7 @@ function() {
         str;
 
     if (TP.isWindow(this)) {
-        return TP.tname(this) + ' :: ' + TP.windowAsString(this);
+        return '[' + TP.tname(this) + ' :: ' + TP.windowAsString(this) + ']';
     }
 
     //  Trap recursion around potentially nested object structures.
@@ -4224,6 +4224,8 @@ function() {
     /* eslint-enable no-array-constructor */
     /* jshint +W009 */
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     try {
         keys = TP.$getOwnKeys(this);
         len = keys.length;
@@ -4232,9 +4234,9 @@ function() {
             arr.push(keys[i] + ': ' + TP.dump(this[keys[i]]));
         }
 
-        str = '{' + arr.join(', ') + '}';
+        str += '(' + arr.join(', ') + ')' + ']';
     } catch (e) {
-        str = this.toString();
+        str += '(' + TP.str(this) + ')' + ']';
     } finally {
         try {
             delete this[marker];

@@ -1337,12 +1337,12 @@ function() {
     }
     this[marker] = true;
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     try {
-        str = TP.tname(this) +
-                    ' :: ' +
-                    '(' + TP.str(this.getLocation()) + ')';
+        str += '(' + TP.str(this.getLocation()) + ')';
     } catch (e) {
-        str = this.toString();
+        str += '(' + TP.str(this) + ')';
     } finally {
         delete this[marker];
     }

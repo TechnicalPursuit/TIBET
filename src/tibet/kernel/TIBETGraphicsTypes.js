@@ -201,14 +201,12 @@ function() {
 
         str;
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     data = this.$get('data');
     repStr = TP.join('(', data.x, ', ', data.y, ')');
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });
@@ -1128,16 +1126,13 @@ function() {
 
         str;
 
-    data = this.$get('data');
+    str = '[' + TP.tname(this) + ' :: ';
 
+    data = this.$get('data');
     repStr = TP.join('(', data.x, ', ', data.y, ', ',
                         data.width, ', ', data.height, ')');
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });
@@ -3428,6 +3423,7 @@ function() {
 
         str;
 
+    str = '[' + TP.tname(this) + ' :: ';
     data = this.$get('data');
 
     repStr = TP.join('{',
@@ -3439,11 +3435,7 @@ function() {
                         ', dy: ', data.dy,
                         '}');
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });
@@ -4221,13 +4213,11 @@ function() {
     var repStr,
         str;
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     repStr = this.asRGBAString();
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });
@@ -5114,13 +5104,11 @@ function() {
     //  Close the rep
     arr.push(')');
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     repStr = arr.join('');
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });
@@ -5658,13 +5646,11 @@ function() {
     //  Close the rep
     arr.push(')');
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     repStr = arr.join('');
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });
@@ -6074,13 +6060,11 @@ function() {
     //  Push on a ')'.
     arr.push(')');
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     repStr = arr.join('');
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });
@@ -6513,13 +6497,11 @@ function() {
     //      'M 10,10'
     //  which is exactly what we want.
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     repStr = this.get('pathSegments').join(' ');
 
-    try {
-        str = TP.tname(this) + ' :: ' + repStr;
-    } catch (e) {
-        str = this.toString();
-    }
+    str += repStr + ']';
 
     return str;
 });

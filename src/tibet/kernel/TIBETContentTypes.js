@@ -2284,16 +2284,15 @@ function() {
      *     receiver.
      */
 
-    var repStr,
+    var path,
+        repStr,
         str;
 
-    repStr = this.$get('srcPath').asString();
+    str = '[' + TP.tname(this) + ' :: ';
 
-    try {
-        str = TP.tname(this) + ' :: ' + '(' + repStr + ')';
-    } catch (e) {
-        str = this.toString();
-    }
+    path = this.$get('srcPath');
+    repStr = TP.ifEmpty(path) ? this.toString() : path.asString();
+    str += repStr;
 
     return str;
 });

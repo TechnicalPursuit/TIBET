@@ -1561,12 +1561,12 @@ function() {
     }
     this[marker] = true;
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     try {
-        str = TP.tname(this) +
-                    ' :: ' +
-                    '(' + TP.dump(this.getNativeWindow()) + ')';
+        str += '(' + TP.dump(this.getNativeWindow()) + ')' + ']';
     } catch (e) {
-        str = this.toString();
+        str += '(' + TP.str(this.getNativeWindow()) + ')' + ']';
     } finally {
         delete this[marker];
     }

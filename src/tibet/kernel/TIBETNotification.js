@@ -692,12 +692,12 @@ function() {
     }
     this[marker] = true;
 
+    str = '[' + this.getSignalName() + ' :: ';
+
     try {
-        str = this.getSignalName() +
-                ' :: ' +
-                '(' + TP.dump(this.getPayload()) + ')';
+        str += '(' + TP.dump(this.getPayload()) + ')' + ']';
     } catch (e) {
-        str = this.toString();
+        str += '(' + TP.str(this.getPayload()) + ')' + ']';
     } finally {
         delete this[marker];
     }
@@ -2472,12 +2472,12 @@ function() {
         msg = this.getMessage();
     }
 
+    str = '[' + this.getSignalName() + ' :: ';
+
     try {
-        str = this.getSignalName() +
-                ' :: ' +
-                '(' + msg + ')';
+        str += '(' + msg + ')' + ']'
     } catch (e) {
-        str = this.toString();
+        str += '(' + TP.str(this.getPayload()) + ')' + ']'
     } finally {
         delete this[marker];
     }

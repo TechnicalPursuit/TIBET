@@ -4771,7 +4771,8 @@ function() {
         keys,
         len,
         i,
-        joinStr;
+        joinStr,
+        str;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -4790,6 +4791,7 @@ function() {
         }
     }
 
+    str = '[' + TP.tname(this) + ' :: ';
     joinArr = TP.ac();
 
     try {
@@ -4802,14 +4804,14 @@ function() {
                 TP.dump(this.at(keys.at(i)))));
         }
 
-        joinStr = TP.tname(this) + ' :: ' + '(' + joinArr.join(joinCh) + ')';
+        str += joinArr.join(joinCh) + ']';
     } catch (e) {
-        joinStr = this.toString();
+        str += this.toString() + ']';
     } finally {
         delete this[marker];
     }
 
-    return joinStr;
+    return str;
 });
 
 //  ------------------------------------------------------------------------

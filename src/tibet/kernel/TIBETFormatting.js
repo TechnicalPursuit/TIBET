@@ -242,7 +242,8 @@ function() {
     var marker,
         joinCh,
         joinArr,
-        joinStr;
+        joinStr,
+        str;
 
     this.$sortIfNeeded();
 
@@ -263,20 +264,22 @@ function() {
         }
     }
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     try {
         joinArr = this.collect(
             function(item, index) {
                 return TP.dump(item);
             });
 
-        joinStr = '[' + joinArr.join(joinCh) + ']';
+        str += '[' + joinArr.join(joinCh) + ']]';
     } catch (e) {
-        joinStr = Object.prototype.toString.call(this);
+        str += '[' + this.join(', ') + ']]';
     } finally {
         delete this[marker];
     }
 
-    return joinStr;
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -486,11 +489,17 @@ function() {
      *     receiver.
      */
 
+    var str;
+
+    str = '[' + TP.tname(this) + ' :: ';
+
     try {
-        return this.toISOString();
+        str += this.toISOString() + ']';
     } catch (e) {
-        return TP.id(this);
+        str += TP.id(this) + ']';
     }
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
@@ -571,14 +580,18 @@ function() {
      *     receiver.
      */
 
+    var str;
+
+    str = '[' + TP.tname(this) + ' :: ';
+
     //  The only way to discern between Function objects that are one of the
     //  native constructors (types) and a regular Function object.
     if (TP.isNativeType(this)) {
-        return this.getName();
+        return str + this.getName() + ']';
     }
 
-    //  The 'dump string' version of a Function is it's 'toString()' rep.
-    return TP.objectToString(this);
+    //  Function instances dump their signature.
+    return str + this.getSignature() + ']';
 });
 
 //  ------------------------------------------------------------------------
@@ -774,7 +787,7 @@ function() {
 
     //   We use 'toString()' rather than the 'source' property, since it
     //   includes the flags, etc.
-    return this.toString();
+    return '[' + TP.tname(this) + ' :: ' + this.toString() + ']';
 });
 
 //  ------------------------------------------------------------------------
@@ -931,7 +944,7 @@ function() {
      *     receiver.
      */
 
-    return this.getName();
+    return '[' + TP.tname(this) + ' :: ' + this.getName() + ']';
 });
 
 //  ------------------------------------------------------------------------
@@ -1030,7 +1043,8 @@ function() {
         keys,
         len,
         i,
-        joinStr;
+        joinStr,
+        str;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -1043,6 +1057,8 @@ function() {
     keys = TP.keys(this);
     len = keys.getSize();
 
+    str = '[' + TP.tname(this) + ' :: ';
+
     try {
         for (i = 0; i < len; i++) {
             joinArr.push(
@@ -1051,16 +1067,16 @@ function() {
                             TP.dump(this.get(keys.at(i)))));
         }
 
-        joinStr = TP.tname(this) + ' :: ' + '(' + joinArr.join(', ') + ')';
+        str += '(' + joinArr.join(', ') + ')' + ']';
     } catch (e) {
         TP.warn(e.message + ' in ' + TP.id(this) + ' dump string for key ' +
             keys.at(i));
-        joinStr = Object.prototype.toString.call(this);
+        str += '(' + TP.str(this) + ')' + ']';
     } finally {
         delete this[marker];
     }
 
-    return joinStr;
+    return str;
 });
 
 //  ------------------------------------------------------------------------

@@ -240,11 +240,8 @@ function() {
                         this.get('systemID'),
                         '">');
 
-    try {
-        str = TP.tname(this) + ' :: ' + '(' + repStr + ')';
-    } catch (e) {
-        str = this.toString();
-    }
+    str = '[' + TP.tname(this) + ' :: ';
+    str += '(' + repStr + ')' + ']';
 
     return str;
 });
