@@ -773,9 +773,15 @@ function(aURI) {
     config = TP.sys.cfg();
 
     //  Scan for any uri map patterns of any kind.
-    patterns = config.getKeys().filter(function(key) {
-        return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-    });
+    if (TP.canInvoke(config, 'getKeys')) {
+        patterns = config.getKeys().filter(function(key) {
+            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+        });
+    } else {
+        patterns = TP.keys(config).filter(function(key) {
+            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+        });
+    }
 
     //  No patterns means no mappings.
     if (TP.isEmpty(patterns)) {
@@ -3105,7 +3111,15 @@ function(contentData, aRequest) {
      *     content set as its result.
      */
 
-    return this.$requestContent(aRequest,
+    var request;
+
+    //  Make sure we don't try to load a URI just because we're setting content.
+    //  A URI that's not loaded (and may not even exist) shouldn't be invoking
+    //  load just to access a possibly undefined resource.
+    request = TP.request(aRequest);
+    request.atPutIfAbsent('refresh', this.isLoaded());
+
+    return this.$requestContent(request,
                                 'getResource',
                                 '$setResultContent',
                                 null,
@@ -3305,18 +3319,26 @@ function(aResource, aRequest) {
      *     content set as its result.
      */
 
+    var request;
+
+    //  Make sure we don't try to load a URI just because we're setting data.
+    //  A URI that's not loaded (and may not even exist) shouldn't be invoking
+    //  load just to access a possibly undefined resource.
+    request = TP.request(aRequest);
+    request.atPutIfAbsent('refresh', this.isLoaded());
+
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        return this.$setPrimaryResource(aResource, aRequest);
+        return this.$setPrimaryResource(aResource, request);
     }
 
     //  If we have a fragment then we need to do the more complex approach
     //  of getting the primary resource and setting the fragment value with
     //  respect to that object.
-    return this.$requestContent(aRequest,
+    return this.$requestContent(request,
                                 '$getPrimaryResource',
                                 '$setResultFragment',
                                 null,
@@ -3341,7 +3363,8 @@ function(aRequest, aResult, aResource) {
      *     as a success body function.
      */
 
-    var result;
+    var result,
+        resultType;
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
@@ -3355,6 +3378,10 @@ function(aRequest, aResult, aResource) {
 
     if (TP.canInvoke(result, 'set')) {
         result.set('content', aResource);
+    } else if (!this.isLoaded()) {
+        result = TP.core.Content.construct(aResource);
+        this.$setPrimaryResource(result);
+        this.isLoaded(true);
     } else {
         this.raise('TP.sig.InvalidResource',
             'Unable to modify target resource.');

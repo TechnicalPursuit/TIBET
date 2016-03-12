@@ -251,6 +251,9 @@ TP.lang.Object.defineSubtype('core.Content');
 //  instance creation
 TP.core.Content.addTraits(TP.core.Selection);
 
+//  This type's constructor functions to locate the best matching subtype.
+TP.core.Content.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -726,6 +729,38 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    return TP.str(this.get('data'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('setContent',
+function(aDataObject, shouldSignal) {
+
+    /**
+     * @method setContent
+     * @summary Sets the receiver's data object to the supplied object.
+     * @param {Object} aDataObject The object to set the receiver's internal
+     *     data to.
+     * @param {Boolean} [shouldSignal=false] Whether or not to signal change.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+
+    return this.setData(aDataObject, shouldSignal);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('setData',
 function(aDataObject, shouldSignal) {
 
@@ -842,6 +877,35 @@ function() {
 });
 
 //  ========================================================================
+//  TP.core.GenericContent
+//  ========================================================================
+
+/**
+ * @type {TP.core.GenericContent}
+ * @summary A content handler specific to the TP.core.XMLContent format.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.defineSubtype('core.GenericContent');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.GenericContent.Type.defineMethod('canConstruct', function(data) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @returns {Boolean}
+     */
+
+    return true;
+});
+
+//  ========================================================================
 //  TP.core.JSONContent
 //  ========================================================================
 
@@ -871,6 +935,20 @@ function(data) {
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.JSONContent.Type.defineMethod('canConstruct', function(data) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @returns {Boolean}
+     */
+
+    return TP.isJSONString(data);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.JSONContent.Type.defineMethod('validate',
@@ -1361,6 +1439,20 @@ function(data) {
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Type.defineMethod('canConstruct', function(data) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @returns {Boolean}
+     */
+
+    return TP.isXMLString(data);
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.XMLContent.Type.defineMethod('validate',
@@ -9385,6 +9477,23 @@ function() {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.w3.DTDInfo.Type.defineMethod('canConstruct', function(data) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @returns {Boolean}
+     */
+
+    //  Must be JSON for starters...but we also want to restrict it to
+    //  JSON with keys hopefully unique to the Google result dataset.
+    return TP.isJSONString(data) && /childElements/.test(data) &&
+        /contentModel/.test(data);
 });
 
 //  ------------------------------------------------------------------------

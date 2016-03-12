@@ -222,6 +222,10 @@ TP.canInvoke = function(anObj, anInterface) {
         return false;
     }
 
+    if (anInterface === undefined || anInterface === null) {
+        return false;
+    }
+
     //  NB: Do not replace this logic - it has been optimized to primitives
     //  because this method (with a String parameter) gets called so much.
     if (anInterface.charAt !== undefined) {
@@ -232,7 +236,7 @@ TP.canInvoke = function(anObj, anInterface) {
         /* eslint-disable no-extra-parens */
         return (obj !== undefined && obj.apply && !obj.$$dnu);
         /* eslint-enable no-extra-parens */
-    } else if (TP.isArray(anInterface)) {
+    } else if (Array.isArray(anInterface)) {
         len = anInterface.length;
         for (i = 0; i < len; i++) {
             obj = anObj[anInterface[i]];

@@ -21,6 +21,25 @@
 TP.core.JSONContent.defineSubtype('google.GoogleSearchData');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.google.GoogleSearchData.Type.defineMethod('canConstruct', function(data) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @returns {Boolean}
+     */
+
+    //  Must be JSON for starters...but we also want to restrict it to
+    //  JSON with keys hopefully unique to the Google result dataset.
+    return TP.isJSONString(data) && /responseData/.test(data) &&
+        /estimatedResultCount/.test(data);
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
