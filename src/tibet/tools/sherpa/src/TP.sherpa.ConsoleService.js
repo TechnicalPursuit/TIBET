@@ -2140,7 +2140,10 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_K_Up',
 function(aSignal) {
-    this.get('$consoleGUI').clear();
+
+    //  Clear the output
+    this.get('$consoleGUI').get('consoleOutput').clear();
+
 });
 
 //  ----------------------------------------------------------------------------
