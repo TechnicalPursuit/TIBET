@@ -111,13 +111,12 @@
  *                      within the current target document. A pipe to one of
  *                      these operators is very common.
  *
- *                      The following characters are unary operators (or valid
- *                      as a leading character like '.'), but with rules that
- *                      provided some opportunities for specific pattern usage.
- *                      We use them when they fit a pattern that wouldn't be
- *                      found in valid JS or in cases where they might be legal
- *                      but are used so infrequently that we require a leading
- *                      \ to get the default JS operation.
+ *     The following characters are unary operators (or valid as a leading
+ *     character like '.'), but with rules that provided some opportunities for
+ *     specific pattern usage. We use them when they fit a pattern that wouldn't
+ *     be found in valid JS or in cases where they might be legal but are used
+ *     so infrequently that we require a leading \ to get the default JS
+ *     operation.
  *
  *     !    &excl;      History prefix, 'imperative' suffix. Equivalent to
  *                      tcsh's normal history prefixing, so !23 means event 23.

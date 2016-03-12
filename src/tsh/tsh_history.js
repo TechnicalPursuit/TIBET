@@ -142,7 +142,7 @@ function(aRequest) {
                     'cmdAsIs', aRequest.at('cmdAsIs'),
                     'cmdExecute', true,
                     //  Do not make a history entry for this request. A history
-                    //  entry will be make for the main request that started us.
+                    //  entry will be made for the main request that started us.
                     'cmdHistory', false,
                     //  Do not build GUI for this request.
                     'cmdBuildGUI', false,
