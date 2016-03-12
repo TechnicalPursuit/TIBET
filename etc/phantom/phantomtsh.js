@@ -30,6 +30,7 @@
     var fs,
         system,
         minimist,
+        beautify,
         PhantomTSH;
 
     fs = require('fs');

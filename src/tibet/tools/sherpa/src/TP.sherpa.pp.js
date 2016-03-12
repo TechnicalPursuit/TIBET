@@ -195,6 +195,7 @@ function(anObject, optFormat) {
     var str,
         obj,
         format,
+        level,
         sigonly;
 
     format = TP.hc(optFormat);
@@ -402,6 +403,7 @@ function(anObject, optFormat) {
     var marker,
         output,
         formatInLoop,
+        format,
         keys,
         key,
         value,

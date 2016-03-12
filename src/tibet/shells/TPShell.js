@@ -2676,6 +2676,7 @@ function(aRequest, forms) {
      */
 
     var newDict,
+        aspect,
         node,
         shell,
         args,
@@ -3412,11 +3413,9 @@ function(aRequest) {
      */
 
     var varname,
+        argv,
         value,
-        count,
-        dict,
-        str,
-        val;
+        dict;
 
     //  This lets us check count which affects behavior of this command.
     argv = this.getArgument(aRequest, 'ARGV', null, true, true);

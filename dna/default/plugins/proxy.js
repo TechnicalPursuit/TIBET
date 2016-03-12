@@ -80,8 +80,7 @@
         });
 
         keys.forEach(function(key) {
-            var entry,
-                name,
+            var name,
                 route;
 
             //  Inbound key is the route key so fetch that first (what the route
@@ -93,8 +92,7 @@
             name = key.replace(/\.route$/, '');
 
             app.all(route, function(req, res) {
-                var pattern,
-                    regex,
+                var regex,
                     replace,
                     path,
                     newpath;

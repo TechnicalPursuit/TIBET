@@ -55,8 +55,6 @@ function(aRequest) {
 
         hid,
 
-        entries,
-
         str,
         req,
         output,
@@ -70,7 +68,6 @@ function(aRequest) {
     //  Initial ! is stripped by desugaring so we have just the "second char"
     //  which should either be ? or blank for "all history" shorthand.
     if (TP.isEmpty(hid) || hid === '?') {
-        entries = TP.hc();
         output = '<dl>';
         shell.get('history').perform(
                         function(aShellReq) {

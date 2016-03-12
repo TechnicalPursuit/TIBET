@@ -82,8 +82,7 @@ function() {
 
     this.it('can process a plain object', function(test, options) {
         var h1,
-            obj,
-            deltas;
+            obj;
 
         obj = {a: 1, b: 2, c: 3};
         h1 = TP.hc(obj);
@@ -93,8 +92,8 @@ function() {
 
     this.it('can process nested plain objects', function(test, options) {
         var h1,
-            obj,
-            deltas;
+            obj1,
+            obj2;
 
         obj1 = {a: 1, b: 2, c: 3};
         obj2 = {nested: obj1, fluffy: true};

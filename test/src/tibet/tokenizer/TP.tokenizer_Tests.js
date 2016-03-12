@@ -134,7 +134,7 @@ function() {
         var str,
             arr;
 
-        str = "Blah \"double quotes\" 'single quotes' `templates` and such";
+        str = 'Blah "double quotes" \'single quotes\' `templates` and such';
         arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
 
         test.assert.isEqualTo(arr.length, 11);
@@ -169,11 +169,12 @@ function() {
     this.it('Processes from/to values correctly', function(test, options) {
         var str,
             arr,
+            prev,
             i,
             len,
             token;
 
-        str = "a {curly: 1} [1, [2, 3]]";
+        str = 'a {curly: 1} [1, [2, 3]]';
         arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
 
         len = arr.length;

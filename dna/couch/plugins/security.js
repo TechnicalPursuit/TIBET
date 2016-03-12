@@ -51,7 +51,7 @@
         //  Should be more configurable. This is just a placeholder for now.
         app.use(helmet.contentSecurityPolicy({
             directives: {
-                reportUri: '/',
+                reportUri: '/'
             },
             reportOnly: true
         }));

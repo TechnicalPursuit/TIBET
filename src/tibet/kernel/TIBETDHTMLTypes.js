@@ -237,7 +237,7 @@ function(aDragResponder, aSignal, xyPoint) {
 
         targetRect,
         containerRect,
-
+        coords,
         maxPoint,
         kallee;
 

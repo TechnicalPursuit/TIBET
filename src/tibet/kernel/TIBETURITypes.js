@@ -3363,8 +3363,7 @@ function(aRequest, aResult, aResource) {
      *     as a success body function.
      */
 
-    var result,
-        resultType;
+    var result;
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();

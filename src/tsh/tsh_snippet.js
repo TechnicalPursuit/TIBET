@@ -43,14 +43,11 @@ function(aRequest) {
     var node,
         shell,
 
-        hid,
-
-        entries,
-
+        sid,
+        entry,
         str,
         req,
         output,
-        isEdit,
         origReq;
 
     node = aRequest.at('cmdNode');
@@ -60,7 +57,6 @@ function(aRequest) {
     //  Initial # is stripped by desugaring so we have just the "second char"
     //  which should either be ? or blank for "all snippets" shorthand.
     if (TP.isEmpty(sid) || sid === '?') {
-        entries = TP.hc();
         output = '<dl>';
         shell.get('snippets').perform(
                         function(aShellReq, index) {
@@ -93,12 +89,12 @@ function(aRequest) {
 
     if (TP.isEmpty(str)) {
         //  report on specific error should come from translation
-        aRequest.fail('Unable to find snippet #' + hid);
+        aRequest.fail('Unable to find snippet #' + sid);
         return;
     }
 
     //  if no translation really occurred then we should terminate
-    if (str === hid) {
+    if (str === sid) {
         aRequest.fail(
             TP.sc('Snippet lookup failed.'));
         return;

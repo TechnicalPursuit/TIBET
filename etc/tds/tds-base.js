@@ -156,9 +156,9 @@
         Object.keys(source).forEach(function(key) {
             if (key in target) {
                 if (TDS.isObject(target[key])) {
-                    blend(target[key], source[key]);
+                    TDS.blend(target[key], source[key]);
                 } else if (Array.isArray(target[key])) {
-                    blend(target[key], source[key]);
+                    TDS.blend(target[key], source[key]);
                 }
                 return;
             }
@@ -166,10 +166,10 @@
             //  Key isn't in target, build it out with source copy.
             if (Array.isArray(source[key])) {
                 // Copy array/object slots deeply as needed.
-                target[key] = blend([], source[key]);
+                target[key] = TDS.blend([], source[key]);
             } else if (TDS.isObject(source[key])) {
                 // Deeply copy other non-primitive objects.
-                target[key] = blend({}, source[key]);
+                target[key] = TDS.blend({}, source[key]);
             } else {
                 target[key] = source[key];
             }

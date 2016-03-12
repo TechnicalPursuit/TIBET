@@ -9646,7 +9646,8 @@ function(anObject) {
      * @returns {Array} An Array of the supplied Object's own keys.
      */
 
-    var keys;
+    var keys,
+        key;
 
     if (anObject === null || anObject === undefined) {
         return [];
@@ -9681,7 +9682,10 @@ function(anObject, internals) {
      * @returns {Array} An Array of the supplied Object's own keys.
      */
 
-    var keys;
+    var keys,
+        len,
+        ownKeys,
+        i;
 
     //  Object.keys is fastest, but doesn't always cooperate.
     keys = TP.objectGetKeys(anObject);
