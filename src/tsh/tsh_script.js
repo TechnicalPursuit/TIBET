@@ -1405,17 +1405,18 @@ function(source, shell, sibling, request) {
                             /* eslint-disable no-fallthrough */
 
                             case '#':
-
-                                //  If this starts with a Number, then it
-                                //  can't be a URI fragment, so it must be a
-                                //  history entry.
+                                //  Normally a URI fragment but those have to be
+                                //  valid ID values or xpointers. We can
+                                //  overload a bit if there's a number or regex
+                                //  and use # as snippet (a variant of history).
 
                                 next = arr[i + 1];
 
-                                if (next && /^\d+/.test(next.value)) {
-                                    command.push('<tsh:history');
+                                if (next && (/^\d+/.test(next.value) ||
+                                        next.value === '/')) {
+                                    command.push('<tsh:snippet');
 
-                                    //  history is of the form ![+-]n[:m] so
+                                    //  snippet is of the form #n or #/foo/
                                     //  collect all tokens until whitespace
                                     //  or terminator (or end of stream).
                                     i += 1;

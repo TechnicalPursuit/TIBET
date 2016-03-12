@@ -433,6 +433,9 @@ TP.core.Shell.Inst.defineAttribute('executionInstance');
 TP.core.Shell.Inst.defineAttribute('history');
 TP.core.Shell.Inst.defineAttribute('historyIndex', 0);
 
+//  pinned history (aka snippets). a simple list.
+TP.core.Shell.Inst.defineAttribute('snippets');
+
 TP.core.Shell.Inst.defineAttribute('nextPID', 0);
 
 //  whether the shell is currently running (has started)
@@ -488,6 +491,8 @@ function(aResourceID, aRequest) {
     //  configure our internal list/lookup variables
     this.$set('aliases', TP.hc());
     this.$set('history', TP.ac());
+
+    this.$set('snippets', TP.ac());
 
     this.$set('pathStack', TP.ac());
 
