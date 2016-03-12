@@ -3099,6 +3099,33 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Inst.defineMethod('executePackage',
+function(aRequest) {
+
+    var types,
+        arr;
+
+    arr = TP.boot.$getLoadedScripts();
+    types = TP.sys.getTypes();
+
+    //  types will be a hash of names/type objects.
+    types.perform(function(item) {
+        var type;
+
+        type = item.last();
+        if (TP.canInvoke(type, 'computeResourceURI')) {
+            arr.push(type.computeResourceURI('template'));
+            arr.push(type.computeResourceURI('style'));
+        }
+    });
+
+    arr.unique();
+
+    return aRequest.complete(arr);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Inst.defineMethod('executeReflect',
 function(aRequest) {
 
