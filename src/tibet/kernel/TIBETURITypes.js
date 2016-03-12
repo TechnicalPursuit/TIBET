@@ -773,9 +773,15 @@ function(aURI) {
     config = TP.sys.cfg();
 
     //  Scan for any uri map patterns of any kind.
-    patterns = config.getKeys().filter(function(key) {
-        return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
-    });
+    if (TP.canInvoke(config, 'getKeys')) {
+        patterns = config.getKeys().filter(function(key) {
+            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+        });
+    } else {
+        patterns = TP.keys(config).filter(function(key) {
+            return TP.core.URI.Type.URI_PATTERN_REGEX.test(key);
+        });
+    }
 
     //  No patterns means no mappings.
     if (TP.isEmpty(patterns)) {
