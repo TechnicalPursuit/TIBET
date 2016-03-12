@@ -7682,6 +7682,14 @@ function(aDocument) {
                             //  https://bugs.webkit.org/show_bug.cgi?id=103916
                             if (!record.handled) {
                                 record.handled = true;
+
+                                if (TP.elementHasAttribute(
+                                    record.target,
+                                    'tibet:nomutationtracking',
+                                    true)) {
+                                    return;
+                                }
+
                                 this[method](record);
                             }
                         }
