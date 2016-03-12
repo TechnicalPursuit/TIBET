@@ -156,7 +156,7 @@ TP.boot.defineMethod('$elementAddClass', TP.boot.$elementAddClass);
 TP.boot.defineMethod('$elementSetInnerContent',
                                         TP.boot.$elementSetInnerContent);
 
-TP.boot.defineMethod('$dump', TP.boot.$dump);
+TP.boot.defineMethod('$stringify', TP.boot.$stringify);
 
 TP.boot.defineMethod('$trim', TP.boot.$trim);
 

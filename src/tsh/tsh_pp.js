@@ -76,7 +76,7 @@ function(anObject, optFormat) {
         }
 
         output.push('<span data-name="' + i + '">' +
-            TP.boot.$dump(anObject.at(i), '', true) +
+            TP.boot.$stringify(anObject.at(i), '', true) +
                     '<\/span>');
 
         count++;
@@ -314,7 +314,7 @@ function(anObject, optFormat) {
         key = keys.at(i);
 
         output.push('<span data-name="' + key + '">' +
-            TP.boot.$dump(anObject[keys.at(i)], '\n', true) +
+            TP.boot.$stringify(anObject[keys.at(i)], '\n', true) +
                     '<\/span>');
     }
 
@@ -511,7 +511,7 @@ function(anObject, optFormat) {
         key = keys.at(i);
 
         output.push('<span data-name="' + key + '">' +
-            TP.boot.$dump(anObject.at(keys.at(i)), '\n', true) +
+            TP.boot.$stringify(anObject.at(keys.at(i)), '\n', true) +
                     '<\/span>');
     }
 

@@ -2151,7 +2151,7 @@ function(anObject) {
     }
 
     //  worst case we just produce our best source-code representation
-    return TP.boot.$dump(anObject);
+    return TP.tname(anObject) + ' :: ' + TP.boot.$stringify(anObject);
 });
 
 //  ------------------------------------------------------------------------

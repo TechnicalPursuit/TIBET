@@ -576,7 +576,7 @@ function(src, ops, tsh, exp, alias, args) {
                     if (c === '' && templateBracketCount !== 0) {
                         err = true;
                         TP.boot.$stderr('Unbalanced brackets in template: ' +
-                            TP.boot.$dump(new_token('template', str),
+                            TP.boot.$stringify(new_token('template', str),
                                 ', '));
 
                         break;
@@ -619,7 +619,7 @@ function(src, ops, tsh, exp, alias, args) {
                         err = true;
                         TP.boot.$stderr('Unbalanced brackets in format' +
                                         ' substitution: ' +
-                            TP.boot.$dump(new_token('formatsub', str),
+                            TP.boot.$stringify(new_token('formatsub', str),
                                 ', '));
 
                         break;
@@ -781,7 +781,7 @@ function(src, ops, tsh, exp, alias, args) {
                             if (c === '' && uriParenCount !== 0) {
                                 err = true;
                                 TP.boot.$stderr('Unbalanced parens in URI: ' +
-                                    TP.boot.$dump(new_token('uri', str),
+                                    TP.boot.$stringify(new_token('uri', str),
                                         ', '));
                                 break;
                             }
@@ -936,7 +936,7 @@ function(src, ops, tsh, exp, alias, args) {
                     if (digit.test(c) !== true && c !== '-' && c !== '+') {
                         err = true;
                         TP.boot.$stderr('Bad exponent: ' +
-                            TP.boot.$dump(new_token('number', str + c),
+                            TP.boot.$stringify(new_token('number', str + c),
                                 ', '));
 
                         //  see if we can salvage a number from the rest of
@@ -948,7 +948,7 @@ function(src, ops, tsh, exp, alias, args) {
                         } else {
                             err = true;
                             TP.boot.$stderr('Bad number: ' +
-                                TP.boot.$dump(new_token('number', str),
+                                TP.boot.$stringify(new_token('number', str),
                                     ', '));
                         }
 
@@ -979,7 +979,7 @@ function(src, ops, tsh, exp, alias, args) {
 
                             err = true;
                             TP.boot.$stderr('Bad number: ' +
-                                TP.boot.$dump(new_token('number', str),
+                                TP.boot.$stringify(new_token('number', str),
                                     ', '));
                         }
                     }
@@ -993,7 +993,7 @@ function(src, ops, tsh, exp, alias, args) {
 
                         err = true;
                         TP.boot.$stderr('Bad number: ' +
-                            TP.boot.$dump(new_token('number', str),
+                            TP.boot.$stringify(new_token('number', str),
                                 ', '));
                     }
                 }
@@ -1008,7 +1008,7 @@ function(src, ops, tsh, exp, alias, args) {
                     result.push(new_token('number', str));
                 } else {
                     TP.boot.$stderr('Bad number: ' +
-                        TP.boot.$dump(new_token('number', str), ', '));
+                        TP.boot.$stringify(new_token('number', str), ', '));
                 }
             }
 
@@ -1034,7 +1034,7 @@ function(src, ops, tsh, exp, alias, args) {
 
                     if (!tsh) {
                         TP.boot.$stderr('Unterminated string: ' +
-                            TP.boot.$dump(new_token('string', str), ', '));
+                            TP.boot.$stringify(new_token('string', str), ', '));
 
                         //  consider this a warning, go ahead and push the
                         //  token data we do have out so it's at least in
@@ -1138,7 +1138,7 @@ function(src, ops, tsh, exp, alias, args) {
                         c = src.charAt(i);
                         if (c === '') {
                             TP.boot.$stderr('Unterminated comment: ' +
-                                TP.boot.$dump(new_token('comment', str),
+                                TP.boot.$stringify(new_token('comment', str),
                                     ', '));
                             break;
                         } else if (c === '*') {

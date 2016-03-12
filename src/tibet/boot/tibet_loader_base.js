@@ -5025,7 +5025,7 @@ TP.boot.$elementSetInnerContent = function(anElement, theContent) {
 //  DISPLAY HELPERS
 //  ============================================================================
 
-TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
+TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
 
     /**
      * @method anObject
@@ -5214,7 +5214,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
         //  Could use map() here but this works consistently.
         len = anObject.length;
         for (i = 0; i < len; i++) {
-            arr.push(TP.boot.$dump(anObject[i], aSeparator, shouldEscape, 1));
+            arr.push(TP.boot.$stringify(anObject[i], aSeparator, shouldEscape, 1));
         }
 
     } else {
@@ -5248,7 +5248,7 @@ TP.boot.$dump = function(anObject, aSeparator, shouldEscape, depth) {
                     val = anObject[key];
                 }
 
-                str = TP.boot.$dump(val, aSeparator, shouldEscape, 1);
+                str = TP.boot.$stringify(val, aSeparator, shouldEscape, 1);
                 arr.push(key + sep + str);
             }
         }
@@ -5427,7 +5427,7 @@ TP.boot.$str = function(anObject, aSeparator) {
             if (typeof anObject.message === 'string') {
                 return anObject.message;
             } else {
-                return TP.boot.$dump(anObject, aSeparator || ', ');
+                return TP.boot.$stringify(anObject, aSeparator || ', ');
             }
         } catch (e) {
             return '';
@@ -5883,8 +5883,8 @@ TP.boot.$$formatLogEntry = function(entry, options) {
     //  data from the surrounding log headings. This helps dumped data stand
     //  out.
     if (obj instanceof TP.boot.Annotation) {
-        str = sep + TP.boot.$dump(obj.message, sep, esc) +
-            sep + sep + TP.boot.$dump(obj.object, sep, esc) + sep;
+        str = sep + TP.boot.$stringify(obj.message, sep, esc) +
+            sep + sep + TP.boot.$stringify(obj.object, sep, esc) + sep;
     } else if (typeof obj !== 'string') {
         if (TP.sys.hasKernel()) {
             if (TP.isKindOf(obj, TP.sig.Exception)) {
@@ -5897,7 +5897,7 @@ TP.boot.$$formatLogEntry = function(entry, options) {
                 str = TP.dump(obj);
             }
         }
-        str = str || sep + sep + TP.boot.$dump(obj, sep, esc) + sep;
+        str = str || sep + sep + TP.boot.$stringify(obj, sep, esc) + sep;
     } else {
         str = esc ? TP.boot.$xmlEscape(obj) : obj;
     }

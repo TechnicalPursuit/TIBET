@@ -437,7 +437,7 @@
                 }
 
                 if (TP.notValid(data)) {
-                    data = TP.boot.$dump(item.data);
+                    data = TP.boot.$stringify(item.data);
                 }
 
                 return {

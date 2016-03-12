@@ -2650,7 +2650,7 @@ function(anObject, aRequest) {
         // Try reprocessing the output since 99% of the errors will be DOM parse
         // issues meaning something in the data wasn't properly escaped.
         outputData.atPut('output',
-                TP.boot.$dump(outputData.at('output'), '', true));
+                TP.boot.$stringify(outputData.at('output'), '', true));
 
         resp = TP.uc(TP.sys.cfg('path.TP.tsh.console.xhtml') +
                         '#xpath1(//*[@name="outputText"])').transform(

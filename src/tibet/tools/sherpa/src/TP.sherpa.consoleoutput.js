@@ -574,7 +574,7 @@ function(uniqueID, dataRecord) {
             //  parse issues meaning something in the data wasn't properly
             //  escaped.
             outputData.atPut('output',
-                    TP.boot.$dump(outputData.at('output'), '', true));
+                    TP.boot.$stringify(outputData.at('output'), '', true));
 
             outputStr = rawOutEntryTemplate.transform(outputData);
         }
