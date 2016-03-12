@@ -565,25 +565,25 @@ function(aString) {
     /**
      * @method isXMLString
      * @summary Returns whether or not the supplied String can be parsed into an
-     *     XML string.
+     *     XML string. To some extent you can always produce XML but this test
+     *     explicitly eliminates text nodes from consideration.
      * @param {String} aString An XML-formatted string.
      * @returns {Boolean} Whether or not the supplied String is an XML-formatted
      *     String.
      */
 
-    var text;
+    var node;
 
     if (TP.isEmpty(aString)) {
         return false;
     }
 
-    //  avoid changing parameter value
-    text = aString;
-
     //  Note here how we supply a null default namespace and pass false so that
     //  parser errors are *not* reported - we're really only interested if the
     //  String is XML or not.
-    return TP.isNode(TP.nodeFromString(text, null, false));
+    node = TP.nodeFromString(aString, null, false);
+
+    return TP.isNode(node) && !TP.isTextNode(node);
 });
 
 //  ------------------------------------------------------------------------
