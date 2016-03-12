@@ -300,7 +300,7 @@ TP.core.Service.defineSubtype('Shell');
 //  ------------------------------------------------------------------------
 
 //  rough limits on how many entries we'll maintain in core data structures
-TP.core.Shell.Type.defineConstant('HISTORY_MAX', 100);
+TP.core.Shell.Type.defineConstant('HISTORY_MAX', 250);
 
 //  the limit of the number of positional arguments
 TP.core.Shell.Type.defineConstant('POSITIONAL_MAX', 25);
