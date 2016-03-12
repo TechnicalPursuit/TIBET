@@ -67,6 +67,8 @@ function(aRequest) {
     shell = aRequest.at('cmdShell');
 
     hid = TP.elementGetAttribute(node, 'tsh:hid', true);
+    //  Initial ! is stripped by desugaring so we have just the "second char"
+    //  which should either be ? or blank for "all history" shorthand.
     if (TP.isEmpty(hid) || hid === '?') {
         entries = TP.hc();
         output = '<dl>';
@@ -297,7 +299,7 @@ function(aString, aRequest, aShell, expand) {
     }
     /* eslint-enable no-extra-parens */
 
-    if (cmd === '!') {
+    if (cmd === '!' || cmd === '!?') {
         return ':history';
     }
 

@@ -1162,9 +1162,18 @@ function(anIndex, afterExpansion) {
     if (TP.isNumber(anIndex)) {
         hist = this.$get('history');
 
-        entry = hist.detect(function(item) {
-            return item.at('cmdHistoryID') === anIndex;
-        });
+        //  If the index provided is a negative number (usually -1) then we're
+        //  not being asked for a specific item by "id" we're being asked based
+        //  on offset.
+        if (anIndex < 0) {
+            //  NOTE offset here is -2 because currently executing command is
+            //  the last one (aka -1).
+            entry = hist.at(-2);
+        } else {
+            entry = hist.detect(function(item) {
+                return item.at('cmdHistoryID') === anIndex;
+            });
+        }
 
         if (TP.isValid(entry)) {
             //  re-constituted history entries may be simple strings
