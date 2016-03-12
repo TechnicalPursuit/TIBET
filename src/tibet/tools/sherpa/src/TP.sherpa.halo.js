@@ -164,7 +164,8 @@ function() {
         this.set('currentTargetTPElem', null);
     }
 
-    this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem));
+    this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem),
+                TP.OBSERVER_FIRING);
 
     return this;
 });
@@ -187,7 +188,8 @@ function(target) {
 
         this.observe(target.getDocument(), 'TP.sig.DOMScroll');
 
-        this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target));
+        this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
+                    TP.OBSERVER_FIRING);
 
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
