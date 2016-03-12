@@ -31,5 +31,11 @@ sherpa|world {
     border: 1px solid #666;
 
     overflow: auto;
+
+    transition: margin 0.25s;
+}
+
+#background.edge-north-open sherpa|world {
+    margin-top: 165px;
 }
 
