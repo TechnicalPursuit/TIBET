@@ -182,17 +182,19 @@ function(aRequest) {
                 karma.info({total: total});
 
                 //  Type first, then Inst, then Local
-                TP.sys.logTest('# Running Type tests for ' + target);
+                TP.sys.logTest('# Running Type tests for ' + TP.name(target));
                 obj.Type.runTestSuites(options).then(
                     function() {
-                        TP.sys.logTest('# Running Inst tests for ' + target);
+                        TP.sys.logTest('# Running Inst tests for ' +
+                            TP.name(target));
 
                         //  This method returns a Promise, so we must return
                         //  that here so that everything gets chained
                         //  properly.
                         return obj.Inst.runTestSuites(options);
                     }).then(function() {
-                        TP.sys.logTest('# Running Local tests for ' + target);
+                        TP.sys.logTest('# Running Local tests for ' +
+                            TP.name(target));
 
                         //  This method returns a Promise, so we must return
                         //  that here so that everything gets chained
