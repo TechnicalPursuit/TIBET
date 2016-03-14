@@ -366,8 +366,8 @@ function(target) {
 
     this.buildRootData();
 
-    item = TP.byCSSPath('sherpa|inspectoritem > *', this, true);
-    item.render();
+    item = TP.byCSSPath('sherpa|inspectoritem > *', this);
+    item.first().render();
 
     return this;
 });
