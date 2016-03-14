@@ -112,9 +112,7 @@ function() {
      */
 
     var haloTarget,
-        toolTagName,
-
-        toolTagType,
+        theContent,
 
         menuContentTPElem;
 
@@ -122,20 +120,8 @@ function() {
 
     if (TP.isValid(haloTarget)) {
 
-        toolTagName = haloTarget.getTagNameForTool(this.getTypeName());
-        if (TP.isEmpty(toolTagName)) {
-            toolTagName = haloTarget.getCanonicalName() + '-' +
-                            this.getCanonicalPrefix() + '-' +
-                            this.getTagName();
-        }
-
-        toolTagType = TP.sys.getTypeByName(toolTagName);
-
-        if (!TP.isType(toolTagType)) {
-            //  Draw default edit menu
-        }
-
-        menuContentTPElem = this.get('menuContent').setContent('<' + toolTagName + '/>');
+        theContent = haloTarget.getContentForTool('contextMenu');
+        menuContentTPElem = this.get('menuContent').setContent(theContent);
         menuContentTPElem.awaken();
     }
 
