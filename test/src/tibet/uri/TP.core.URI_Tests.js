@@ -14,6 +14,29 @@
 //  URI
 //  ========================================================================
 
+TP.core.TIBETURL.Inst.describe('construct',
+function() {
+
+    this.it('TIBET URN uniques instances regardless of format',
+            function(test, options) {
+        var inst;
+
+        inst = TP.uc('urn::imatesturi');
+        inst.setResource('fluffy');
+
+        test.assert.isIdenticalTo(inst, TP.uc('urn::imatesturi'));
+        test.assert.isIdenticalTo(
+            inst.getResource().get('result'),
+            TP.uc('urn::imatesturi').getResource().get('result'));
+
+        test.assert.isIdenticalTo(
+            inst.getResource().get('result'),
+            TP.uc('urn:tibet:imatesturi').getResource().get('result'));
+    });
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.describe('getLocation',
 function() {
 
