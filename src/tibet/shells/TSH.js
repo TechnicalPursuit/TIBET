@@ -2125,7 +2125,7 @@ function(aRequest) {
     //  Fire a 'FocusWorkbench' signal, supplying the target object to focus on.
     TP.signal(null,
                 'FocusWorkbench',
-                TP.hc('targetObject', obj));
+                TP.hc('targetObject', obj, 'targetID', TP.id(obj)));
 
     aRequest.complete(TP.TSH_NO_VALUE);
 

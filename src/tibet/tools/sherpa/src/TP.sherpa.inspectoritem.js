@@ -9,36 +9,37 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.pathfinder}
+ * @type {TP.sherpa.inspectoritem}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('pathfinder');
+TP.sherpa.Element.defineSubtype('inspectoritem');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
 
-TP.sherpa.pathfinder.Inst.defineMethod('setup',
+TP.sherpa.inspectoritem.Inst.defineAttribute('config');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspectoritem.Inst.defineMethod('getBayIndex',
 function() {
 
-    var data,
-        workbenchContent,
-        navlistTPElem;
+    /**
+     * @method getBayIndex
+     * @summary
+     * @param
+     */
 
-    //data = TP.hc('items', TP.ac(1,2,3,4,5));
-    //TP.uc('urn:tibet:pathfinder_data').setResource(data);
+    var inspectorTPElem;
 
-    workbenchContent = TP.byCSSPath('#SherpaWorkbench > .content',
-                                    this.getNativeDocument(),
-                                    true);
+    inspectorTPElem = this.getParentNode();
 
-    navlistTPElem = TP.wrap(workbenchContent).addContent(
-                    TP.sherpa.navlist.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
-
-    navlistTPElem.setup();
-
-    return this;
+    return inspectorTPElem.getChildIndex(this.getNativeNode());
 });
 
 //  ------------------------------------------------------------------------

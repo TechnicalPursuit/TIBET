@@ -261,19 +261,5 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('getTagNameForTool',
-function() {
-
-    /**
-     * @method getTagNameForTool
-     * @summary
-     * @returns
-     */
-
-    return 'sherpa:haloMenu';
-});
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

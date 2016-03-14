@@ -1,0 +1,22 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+
+sherpa|inspectoritem {
+
+    overflow: auto;
+}
+
+sherpa|inspectoritem.flex-1 {
+
+    flex: 1;
+}
+
+sherpa|inspectoritem.flex-2 {
+
+    flex: 2;
+}
+
+sherpa|inspectoritem.flex-3 {
+
+    flex: 3;
+}
+

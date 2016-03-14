@@ -18,15 +18,3 @@ sherpa|pathfinder {
     border-left: solid 1px #aaa;
 }
 
-.navi {
-
-    position: absolute;
-
-    top: 6px;
-    right: 30px;
-    bottom: 36px;
-    left: 30px;
-
-    border: 1px solid #aaa;
-}
-

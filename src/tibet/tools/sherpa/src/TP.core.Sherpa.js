@@ -315,6 +315,9 @@ function() {
     //  Set up the console
     this.setupConsole();
 
+    //  Set up the inspector
+    this.setupInspector();
+
     //  Configure a toggle so we can always get back to just showing the app.
     toggleKey = TP.sys.cfg('sherpa.toggle_key');
 
@@ -416,7 +419,7 @@ TP.core.Sherpa.Inst.defineHandler('FocusWorkbench',
 function(aSignal) {
 
     /**
-     * @method FocusWorkbench
+     * @method handleFocusWorkbench
      * @summary
      * @param {TP.sig.FocusWorkbench} aSignal The TIBET signal which triggered
      *     this method.
@@ -427,6 +430,9 @@ function(aSignal) {
     northDrawer = TP.byId('north', this.get('vWin'));
 
     northDrawer.setAttribute('closed', false);
+
+    TP.byId('SherpaInspector', this.get('vWin')).signal(
+                                'InspectObject', aSignal.getPayload());
 
     return this;
 });
@@ -608,6 +614,19 @@ function() {
                         TP.ietf.Mime.XHTML));
 
     hudTPElem.setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupInspector',
+function() {
+
+    var inspectorTPElem;
+
+    inspectorTPElem = TP.byId('SherpaInspector', this.get('vWin'));
+    inspectorTPElem.setup();
 
     return this;
 });
