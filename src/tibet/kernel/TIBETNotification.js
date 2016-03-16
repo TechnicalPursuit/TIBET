@@ -194,7 +194,7 @@ function() {
      * @returns {String} The receiver in XML string format.
      */
 
-    return TP.join('<instance type="TP.Annotation"',
+    return TP.join('<instance type="TP.core.Annotation"',
                             ' object="', TP.str(this.$get('object')), '"',
                             ' message="', TP.str(this.$get('message')), '"\/>');
 });
