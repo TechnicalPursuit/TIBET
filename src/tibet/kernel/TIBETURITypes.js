@@ -244,7 +244,14 @@ function(aURI, $$vetted) {
             return;
         }
     } else {
-        inst = TP.core.URI.getInstanceById(aURI);
+        //  check for :: and if found expand it to :tibet: for consistency.
+        if (/urn::/.test(aURI)) {
+            inst = TP.core.URI.getInstanceById(
+                aURI.replace('urn::', 'urn:tibet:'));
+        } else {
+            inst = TP.core.URI.getInstanceById(aURI);
+        }
+
         if (TP.isValid(inst)) {
             return inst;
         }

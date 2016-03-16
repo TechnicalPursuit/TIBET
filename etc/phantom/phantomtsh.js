@@ -1215,13 +1215,14 @@
 
 
     /**
-     * Handle notification of an error within the PhantomJS engine and report it
+     * Handle notification of a JavaScript execution error and report it
      * to the Node.js console.
      * @param {String} msg The error message.
      * @param {Array.<Object>} trace A rough stack trace object.
      */
     PhantomTSH.page.onError = function(msg, trace) {
-        var str;
+        var str,
+            arr;
 
         if (PhantomTSH.argv.errimg) {
             /* eslint-disable no-extra-parens */
@@ -1232,11 +1233,24 @@
 
         // Only log errors if the application didn't just do it for us. Usually
         // TIBET will log an error if it can and we don't want duplicate output.
-        if (!/in file:/.test(PhantomTSH.lastMessage)) {
-            str = 'Error in page: ' + msg + ' @\n';
+        if (PhantomTSH.lastMessage && PhantomTSH.lastMessage.indexOf(msg) !== -1) {
+            return;
+        }
+
+        str = msg;
+        if (trace && trace.length) {
+            arr = [];
             trace.forEach(function(item) {
-                str += '\t' + item.file + ':' + item.line + '\n';
+                //  Don't write out logging layer portions.
+                if (/TIBETLogging/.test(item.file)) {
+                    return;
+                }
+                arr.push('\t' + item.file + ':' + item.line);
             });
+
+            if (arr.length) {
+                str += ' @\n' + arr.join('\n');
+            }
         }
 
         //  Either log and exit or just log based on startup flags.
