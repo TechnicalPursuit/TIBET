@@ -121,7 +121,13 @@ function(aNamespace, aTagname) {
         retVal = document.implementation.createDocument('', '', null);
     }
 
-    retVal[TP.IS_XHTML] = true;
+    retVal[TP.IS_XML] = true;
+
+    if (TP.isElement(retVal.documentElement) &&
+        retVal.documentElement.namespaceURI === TP.w3.Xmlns.XHTML) {
+
+        retVal[TP.IS_XHTML] = true;
+    }
 
     return retVal;
 });
