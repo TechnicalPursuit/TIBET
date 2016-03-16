@@ -1332,13 +1332,17 @@ function() {
      * @returns {String} The signature string.
      */
 
+    var str;
+
     //  In case this Function is bound
     if (TP.isFunction(this.$realFunc)) {
         return this.$realFunc.getSignature();
     }
 
-    return 'function ' + this.getName() +
-        '(' + this.getParameterNames().join(', ') + ')';
+    str = 'function ' + this.getName() +
+            '(' + this.getParameterNames().join(', ') + ')';
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
