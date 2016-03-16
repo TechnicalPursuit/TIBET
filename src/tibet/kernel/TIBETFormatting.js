@@ -494,7 +494,11 @@ function() {
     str = '[' + TP.tname(this) + ' :: ';
 
     try {
-        str += this.toISOString() + ']';
+        if (TP.sys.hasKernel()) {
+            str += TP.sys.getLocale().localizeDate(this) + ']';
+        } else {
+            str += this.toUTCString() + ']';
+        }
     } catch (e) {
         str += TP.id(this) + ']';
     }

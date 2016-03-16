@@ -2058,7 +2058,7 @@ function(anObject) {
 
     //  XMLHttpRequest can have permission issues, so check early
     if (TP.isXHR(anObject)) {
-        return str += '(' + anObject.status + ' ' + anObject.responseText + ')' + ']';
+        return str += '(' + anObject.status + ' : ' + anObject.responseText + ')' + ']';
     }
 
     //  native nodes are the next-most likely object being passed to this
@@ -2134,12 +2134,12 @@ function(anObject) {
 
     //  Style rule objects
     if (TP.isStyleRule(anObject)) {
-        return str += anObject.cssText = ']';
+        return str += anObject.cssText + ']';
     }
 
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
-        return str += anObject.cssText = ']';
+        return str += anObject.cssText + ']';
     }
 
     if (TP.canInvoke(anObject, 'asDumpString')) {

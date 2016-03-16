@@ -2291,8 +2291,10 @@ function() {
     str = '[' + TP.tname(this) + ' :: ';
 
     path = this.$get('srcPath');
-    repStr = TP.ifEmpty(path) ? this.toString() : path.asString();
-    str += repStr;
+
+    repStr = TP.isEmpty(path) ? this.toString() : this.asString();
+
+    str += '(' + repStr + ')' + ']';
 
     return str;
 });

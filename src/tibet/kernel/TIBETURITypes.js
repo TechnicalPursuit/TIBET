@@ -1340,9 +1340,9 @@ function() {
     str = '[' + TP.tname(this) + ' :: ';
 
     try {
-        str += '(' + TP.str(this.getLocation()) + ')';
+        str += '(' + TP.str(this.getLocation()) + ')' + ']';
     } catch (e) {
-        str += '(' + TP.str(this) + ')';
+        str += '(' + TP.str(this) + ')' + ']';
     } finally {
         delete this[marker];
     }

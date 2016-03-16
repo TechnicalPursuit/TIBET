@@ -5545,9 +5545,9 @@ TP.boot.Annotation.prototype.asDumpString = function() {
      *     receiver.
      */
 
-    return TP.boot.$join('TP.boot.Annotation :: ',
+    return TP.boot.$join('[TP.boot.Annotation :: ',
                             TP.boot.$str(this.object), ',',
-                            TP.boot.$str(this.message));
+                            TP.boot.$str(this.message), ']');
 };
 
 //  ----------------------------------------------------------------------------
