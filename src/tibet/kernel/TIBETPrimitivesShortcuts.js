@@ -2393,10 +2393,8 @@ function(anObject) {
 
     if (TP.canInvoke(anObject, 'asPrettyString')) {
         str = anObject.asPrettyString();
-        if (TP.regex.NATIVE_CODE.test(str)) {
-            str = TP.tname(anObject);
-        }
-
+        //  NB: No special detection of NATIVE_CODE functions here - just return
+        //  what a Function would normally produce.
         return str;
     }
 
