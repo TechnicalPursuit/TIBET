@@ -1097,7 +1097,7 @@ function(anObject, aValue, aComment) {
     return this.assert(
             TP.isTrue(aValue.test(anObject)),
             aComment,
-            TP.sc('Expected ', TP.id(anObject), ' to match ', TP.id(aValue), '.'));
+            TP.sc('Expected ', TP.dump(anObject), ' to match ', TP.str(aValue), '.'));
 });
 
 //  ------------------------------------------------------------------------
