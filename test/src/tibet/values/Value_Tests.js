@@ -145,12 +145,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.lid(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.lid(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -335,12 +344,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.gid(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.gid(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -516,12 +534,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.isType(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.isType(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -687,12 +714,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.isNativeType(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.isNativeType(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -981,12 +1017,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.isMemberOf(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.isMemberOf(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -1474,12 +1519,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.isKindOf(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.isKindOf(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -1682,12 +1736,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.stypes(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.stypes(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -1760,12 +1823,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.type(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.type(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -1831,12 +1903,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.wrap(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.wrap(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -1914,12 +1995,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.unwrap(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.unwrap(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
@@ -1997,12 +2087,21 @@ function() {
     //  ---
 
     this.it('Correct values for each test', function(test, options) {
+
+        var diffKeys;
+
+        diffKeys = testKeys.difference(correctValues.getKeys());
+
+        test.assert.isEmpty(
+            diffKeys,
+            'There are missing test values for TP.val(): ' +
+                                        diffKeys.asString(', '));
+
         test.assert.isEqualTo(
             testKeys.getSize(),
             correctValues.getKeys().getSize(),
             'There are missing test values for TP.val(): ' +
-                testKeys.difference(
-                            correctValues.getKeys()).asString(', '));
+                                        diffKeys.asString(', '));
     });
 
     len = testKeys.getSize();
