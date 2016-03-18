@@ -2720,6 +2720,14 @@ function(anObject) {
         return 'null';
     }
 
+    if (TP.isNaN(anObject)) {
+        return '"NaN"';
+    }
+
+    if (TP.isInvalidDate(anObject)) {
+        return '"NaN-NaN-NaNTNaN:NaN:NaN"';
+    }
+
     //  we're usually calling this with a standard object so we can leverage
     //  TIBET's method APIs to do a best-fit job
     if (TP.canInvoke(anObject, 'asJSONSource')) {
@@ -2736,6 +2744,25 @@ function(anObject) {
                 '"data":{' +
                     '"status":' + anObject.status.quoted('"') + ',' +
                     '"content":' + TP.jsonsrc(anObject.responseText) + '}}';
+    }
+
+    //  DocumentFragment objects need to be treated specially.
+    if (TP.isFragment(anObject)) {
+        arr = TP.ac();
+
+        arr.push('{"type":"DocumentFragment","data":[');
+
+        len = anObject.childNodes.length;
+        for (i = 0; i < len; i++) {
+            arr.push(TP.jsonsrc(anObject.childNodes[i]), ',');
+        }
+
+        //  Pop off the last comma
+        arr.pop();
+
+        arr.push(']}');
+
+        return arr.join('');
     }
 
     //  native nodes are the next-most likely object being passed to this
@@ -2767,6 +2794,11 @@ function(anObject) {
         return TP.objectToString(anObject).quoted('"');
     }
 
+    if (TP.isFunction(anObject)) {
+        return '{"type":"' + TP.tname(anObject) + '",' +
+                '"data":' + TP.str(anObject) + '}';
+    }
+
     //  The top-level Window has TIBET loaded into it, so it will respond to
     //  'asString' properly, but other iframes, etc. won't so we have to handle
     //  Windows in a special manner here, which is the same as the
@@ -2788,8 +2820,7 @@ function(anObject) {
 
         len = anObject.length;
         for (i = 0; i < len; i++) {
-            arr.push(TP.jsonsrc(anObject[i]),
-                        ',');
+            arr.push(TP.jsonsrc(anObject[i]), ',');
         }
 
         //  Pop off the last comma
