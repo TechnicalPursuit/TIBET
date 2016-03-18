@@ -594,7 +594,7 @@ function(anObject, aFilterName) {
     /**
      * @method js2xml
      * @summary Transforms a JavaScript object into roughly equivalent XML
-     *     using the built-in JXON processor.
+     *     using the built-in JSON<->XML Badgerfish conversions.
      * @param {Object} anObject The object to transform.
      * @param {String} aFilterName A get*Interface() filter spec.
      * @returns {Node} An XML node representing the same data structures found
@@ -619,15 +619,15 @@ function(anObject, aFilterName) {
     }
 
     //  If the object has more than 1 key, then put it in another object with a
-    //  single slot, 'value'. This is because the JXON processor cannot handle
-    //  multi-keyed objects - it needs a 'rooted' object.
+    //  single slot, 'value'. This makes it easier on the JSON<->XML conversion.
     if (TP.objectGetKeys(obj).getSize() > 1) {
         obj = {value: obj};
     }
 
-    //  NB: Here we provide a <root> element and an empty namespace, because
-    //  otherwise we end up with a 'xmlns="null"' namespace.
-    str = TP.extern.jxon.jsToString(obj, '', 'root');
+    //  This takes a JSON String and converts it to an XML String using the
+    //  Badgerfish convention.
+    str = TP.bfjson2xml(JSON.stringify(obj));
+
     if (TP.isXMLDocument(doc = TP.doc(str, null, true))) {
         node = doc.documentElement;
     }
@@ -648,7 +648,7 @@ function(anObject, aFilterName) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('xml2js',
-function(aNode) {
+function(aNode, smartConversion) {
 
     /**
      * @method xml2js
@@ -656,13 +656,17 @@ function(aNode) {
      *     object.
      * @description If the XML is in XMLRPC format this call attempts to
      *      reconstitute an Object from that, otherwise the node is processed
-     *      using the built-in JXON processor.
+     *      using a processor that uses the Badgerfish convensions.
      * @param {Node} aNode An XML node.
+     * @param {Boolean} smartConversion Whether or not to 'smart convert' the
+     *     resultant JSON into JS. This causes the construction of
+     *     TP.core.Hashes instead of Objects. This defaults to true.
      * @returns {Object} The JavaScript object constructed from the supplied
      *     XML.
      */
 
-    var node;
+    var node,
+        str;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -697,7 +701,254 @@ function(aNode) {
         }
     }
 
-    return TP.extern.jxon.xmlToJs(node);
+    //  This takes an XML node and converts it to a JSON String using the
+    //  Badgerfish convention.
+    str = TP.xml2bfjson(node);
+
+    return TP.json2js(str, smartConversion);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('xml2bfjson',
+function(aNode) {
+
+    /**
+     * @method xml2bfjson
+     * @summary Transforms an XML node into a JSON representations following the
+     *     Badgerfish conventions.
+     * @description Code adapted to use TIBET coding conventions from:
+     *     http://ruchirawageesha.blogspot.com/2011/06/xml-to-json-and-json-to-xml-conversion.html
+     * @param {Node} aNode An XML node.
+     * @returns {String} A JSON-formatted string that follows the Badgerfish
+     *     XML<->JSON convention.
+     */
+
+    var jsobj,
+        cloneNS,
+        process;
+
+    jsobj = {};
+
+    cloneNS = function(ns) {
+        var nns,
+            n;
+
+        nns = {};
+        for (n in ns) {
+            if (ns.hasOwnProperty(n)) {
+                nns[n] = ns[n];
+            }
+        }
+        return nns;
+    };
+
+    process = function(node, obj, ns) {
+
+        var p,
+            nodeName,
+            i,
+
+            attr,
+            name,
+            value,
+
+            prefix,
+
+            j,
+            k;
+
+        if (node.nodeType === Node.TEXT_NODE) {
+
+            if (!node.nodeValue.match(/[\S]+/)) {
+                return;
+            }
+
+            if (obj['$'] instanceof Array) {
+                obj['$'].push(node.nodeValue);
+            } else if (obj['$'] instanceof Object) {
+                obj['$'] = [obj['$'], node.nodeValue];
+            } else {
+                obj['$'] = node.nodeValue;
+            }
+
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+
+            p = {};
+            nodeName = node.nodeName;
+
+            for (i = 0; node.attributes && i < node.attributes.length; i++) {
+
+                attr = node.attributes[i];
+                name = attr.nodeName;
+                value = attr.nodeValue;
+
+                if (name === 'xmlns') {
+                    ns['$'] = value;
+                } else if (name.indexOf('xmlns:') === 0) {
+                    ns[name.substr(name.indexOf(':') + 1)] = value;
+                } else {
+                    p['@' + name] = value;
+                }
+            }
+
+            for (prefix in ns) {
+
+                if (ns.hasOwnProperty(prefix)) {
+                    p['@xmlns'] = p['@xmlns'] || {};
+                    p['@xmlns'][prefix] = ns[prefix];
+                }
+            }
+
+            if (obj[nodeName] instanceof Array) {
+                obj[nodeName].push(p);
+            } else if (obj[nodeName] instanceof Object) {
+                obj[nodeName] = [obj[nodeName], p];
+            } else {
+                obj[nodeName] = p;
+            }
+
+            for (j = 0; j < node.childNodes.length; j++) {
+                process(node.childNodes[j], p, cloneNS(ns));
+            }
+        } else if (node.nodeType === Node.DOCUMENT_NODE) {
+
+            for (k = 0; k < node.childNodes.length; k++) {
+                process(node.childNodes[k], obj, cloneNS(ns));
+            }
+        }
+    };
+
+    process(aNode, jsobj, {});
+
+    return JSON.stringify(jsobj);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('bfjson2xml',
+function(aString) {
+
+    /**
+     * @method bfjson2xml
+     * @summary Transforms JSON representation of XML that follows the
+     *     Badgerfish conventions into an XML String.
+     * @description Code adapted to use TIBET coding conventions from:
+     *     http://ruchirawageesha.blogspot.com/2011/06/xml-to-json-and-json-to-xml-conversion.html
+     * @param {String} aString A JSON-formatted string that follows the
+     *     Badgerfish XML<->JSON convention.
+     * @returns {String} A String of XML.
+     */
+
+    var data,
+
+        cloneNS,
+        processLeaf,
+
+        leafName;
+
+    //  Notice how we pass 'false' here for smart conversion - this routine
+    //  relies on JS primitive constructs and we don't want smart conversion.
+    data = TP.json2js(aString, false);
+
+    if (TP.notEmpty(data)) {
+
+        cloneNS = function(ns) {
+            var nns,
+                n;
+
+            nns = {};
+            for (n in ns) {
+                if (ns.hasOwnProperty(n)) {
+                    nns[n] = ns[n];
+                }
+            }
+
+            return nns;
+        };
+
+        processLeaf = function(lname, child, ns) {
+            var body,
+                i,
+                el,
+                attributes,
+                text,
+
+                xmlns,
+                prefix,
+
+                key,
+                obj;
+
+            body = '';
+            if (child instanceof Array) {
+                for (i = 0; i < child.length; i++) {
+                    body += processLeaf(lname, child[i], cloneNS(ns));
+                }
+                return body;
+            } else if (typeof child === 'object') {
+
+                el = '<' + lname;
+                attributes = '';
+                text = '';
+
+                if (child['@xmlns']) {
+                    xmlns = child['@xmlns'];
+                    for (prefix in xmlns) {
+                        if (xmlns.hasOwnProperty(prefix)) {
+                            if (prefix === '$') {
+                                if (ns[prefix] !== xmlns[prefix]) {
+                                    attributes += ' ' + 'xmlns=\'' +
+                                                    xmlns[prefix] + '\'';
+                                    ns[prefix] = xmlns[prefix];
+                                }
+                            } else if (!ns[prefix] ||
+                                        /* eslint-disable no-extra-parens */
+                                        (ns[prefix] !== xmlns[prefix])) {
+                                        /* eslint-enable no-extra-parens */
+                                attributes += ' xmlns:' + prefix + '=\'' +
+                                                    xmlns[prefix] + '\'';
+                                ns[prefix] = xmlns[prefix];
+                            }
+                        }
+                    }
+                }
+
+                for (key in child) {
+                    if (child.hasOwnProperty(key) && key !== '@xmlns') {
+                        obj = child[key];
+                        if (key === '$') {
+                            text += obj;
+                        } else if (key.indexOf('@') === 0) {
+                            attributes += ' ' + key.substring(1) + '=\'' +
+                                            obj + '\'';
+                        } else {
+                            body += processLeaf(key, obj, cloneNS(ns));
+                        }
+                    }
+                }
+
+                body = text + body;
+
+                /* eslint-disable no-extra-parens */
+                return (body !== '') ?
+                /* eslint-enable no-extra-parens */
+                    el + attributes + '>' + body + '</' + lname + '>' :
+                    el + attributes + '/>'
+            }
+        };
+
+        for (leafName in data) {
+
+            if (data.hasOwnProperty(leafName) && leafName.indexOf('@') == -1) {
+                return processLeaf(leafName, data[leafName], {});
+            }
+        }
+
+        return null;
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------

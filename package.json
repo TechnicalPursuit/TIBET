@@ -67,7 +67,6 @@
     "js-beautify": "*",
     "jsDAV": "*",
     "jshint": "*",
-    "jxon": "https://github.com/TechnicalPursuit/jxon/tarball/master",
     "less": "https://github.com/TechnicalPursuit/less.js/tarball/master",
     "marked-man": "^0.1.5",
     "mime-types": "^2.1.4",
