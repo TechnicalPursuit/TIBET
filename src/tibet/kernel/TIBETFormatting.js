@@ -242,7 +242,6 @@ function() {
     var marker,
         joinCh,
         joinArr,
-        joinStr,
         str;
 
     this.$sortIfNeeded();
@@ -1047,7 +1046,6 @@ function() {
         keys,
         len,
         i,
-        joinStr,
         str;
 
     //  Trap recursion around potentially nested object structures.
