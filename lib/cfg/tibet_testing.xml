@@ -58,6 +58,7 @@
     <config ref="grouping"/>
     <config ref="oo"/>
     <config ref="service"/>
+    <config ref="representations"/>
     <config ref="requests"/>
     <config ref="routing"/>
     <config ref="signaling"/>
@@ -157,6 +158,10 @@
 
 <config id="states">
     <script src="~lib_test/src/tibet/states/TP.state_Tests.js" />
+</config>
+
+<config id="representations">
+    <script src="~lib_test/src/tibet/representations/Representation_Tests.js" />
 </config>
 
 <config id="values">
