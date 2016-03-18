@@ -687,11 +687,11 @@ function(aNode) {
         return TP.nodeGetTextContent(aNode);
     }
 
-    if (TP.isElement(node) || TP.isFragment(node)) {
-        //  if we're looking at XMLRPC data then we can use the XMLRPC
-        //  type's objectFromNode.
-        //  we use a fairly trivial test here for struct as the outer
-        //  element since all JSON strings are ultimately enclosed in '{'s.
+    if (TP.isElement(node)) {
+        //  If we're looking at XMLRPC data then we can use the XMLRPC type's
+        //  objectFromNode(). We use a fairly trivial test here for struct as
+        //  the outer element since all JSON strings are ultimately enclosed in
+        //  '{'s.
         if (TP.elementGetLocalName(node) === 'struct') {
             return TP.core.XMLRPCNode.objectFromNode(node);
         }
