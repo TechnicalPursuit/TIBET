@@ -88,8 +88,22 @@
             background-color: gray;
         }
 
+        /* Resizing the center when HUD drawers open */
+
         #background.edge-north-open #center {
             margin-top: 168px;
+
+            transition: margin 0.25s;
+        }
+
+        #background.edge-west-open #center {
+            margin-left: 153px;
+
+            transition: margin 0.25s;
+        }
+
+        #background.edge-east-open #center {
+            margin-right: 153px;
 
             transition: margin 0.25s;
         }

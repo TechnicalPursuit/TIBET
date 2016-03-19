@@ -63,17 +63,6 @@ sherpa|consoleoutput a {
     color: slateblue;
 }
 
-/* Resizing the console output when HUD drawers open */
-
-#background.edge-east-open sherpa|consoleoutput {
-    margin-right: 144px;
-}
-
-#background.edge-west-open sherpa|consoleoutput {
-    margin-left: 144px;
-}
-
-
 .wrapper {
 
     display: inline-flex;
