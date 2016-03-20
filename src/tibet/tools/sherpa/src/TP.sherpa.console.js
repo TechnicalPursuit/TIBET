@@ -576,7 +576,9 @@ function(range, cssClass, promptText) {
         doc,
         elem,
 
-        marker;
+        marker,
+
+        contentNode;
 
     consoleInput = this.get('consoleInput');
 
@@ -617,7 +619,11 @@ function(range, cssClass, promptText) {
     //  Wire a reference to the marker back onto our output element
     elem.marker = marker;
 
-    elem.innerHTML = content;
+
+    //  'innerHTML' seems to throw exceptions in XHTML documents on Firefox
+    //elem.innerHTML = content;
+    contentNode = TP.xhtmlnode(content);
+    TP.nodeAppendChild(elem, contentNode, false);
 
     return marker;
 });

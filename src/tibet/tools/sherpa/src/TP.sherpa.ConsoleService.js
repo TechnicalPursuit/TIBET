@@ -2700,25 +2700,34 @@ function(editor, options) {
                     matches = matcher.match(matchInput);
 
                     matches.forEach(
-                            function(anItem, anIndex) {
-                                var itemEntry;
+                        function(anItem, anIndex) {
+                            var itemEntry;
 
-                                if (TP.isArray(itemEntry = anItem.original)) {
-                                    itemEntry = itemEntry.at(2);
-                                }
+                            if (TP.isArray(itemEntry = anItem.original)) {
+                                itemEntry = itemEntry.at(2);
+                            }
 
-                                completions.push(
-                                    {
-                                        input: matchInput,
-                                        text: itemEntry,
-                                        score: anItem.score,
-                                        className: anItem.cssClass,
-                                        displayText: anItem.string,
-                                        render: function(elem, self, data) {
-                                            elem.innerHTML = data.displayText;
-                                        }
-                                    });
-                            });
+                            completions.push(
+                                {
+                                    input: matchInput,
+                                    text: itemEntry,
+                                    score: anItem.score,
+                                    className: anItem.cssClass,
+                                    displayText: anItem.string,
+                                    render: function(elem, self, data) {
+                                        var contentNode;
+
+                                        //  'innerHTML' seems to throw
+                                        //  exceptions in XHTML documents on
+                                        //  Firefox
+                                        //elem.innerHTML = data.displayText;
+                                        contentNode = TP.xhtmlnode(
+                                                            data.displayText);
+                                        TP.nodeAppendChild(
+                                                elem, contentNode, false);
+                                    }
+                                });
+                        });
                 });
 
             if (TP.notEmpty(matchInput)) {
