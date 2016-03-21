@@ -321,7 +321,7 @@ function(beHidden) {
         //  cell no longer has focus.
         this.getNativeDocument().activeElement.blur();
 
-        this.get('consoleOutput').hide();
+        this.get('consoleOutput').setAttribute('hidden', true);
 
         //  Execute the supertype's method and capture the return value *after*
         //  everything has hidden.
@@ -333,7 +333,7 @@ function(beHidden) {
         //  everything has been shown.
         retVal = this.callNextMethod();
 
-        this.get('consoleOutput').show();
+        this.get('consoleOutput').setAttribute('hidden', false);
 
         consoleInput = this.get('consoleInput');
         consoleInput.focus();

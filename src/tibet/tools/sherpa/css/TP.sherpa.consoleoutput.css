@@ -33,6 +33,11 @@ sherpa|consoleoutput {
     transition: margin 0.25s;
 }
 
+sherpa|consoleoutput[pclass|hidden] {
+
+    display: none;
+}
+
 sherpa|consoleoutput[panes="none"] {
 
     display: none;
