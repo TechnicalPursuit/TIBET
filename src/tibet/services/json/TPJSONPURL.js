@@ -49,7 +49,7 @@ TP.core.JSONPURL.addTraits(TP.core.CommURL);
 //  This RegExp splits up the URL into the following components:
 //  jsonp://[domain]/[path]/[entity]?[query]
 TP.core.JSONPURL.Type.defineConstant('JSONP_REGEX',
-        TP.rc('jsonp://([^/]*)/?([^?]+)\\??(.*)'));
+        TP.rc('^jsonps?://([^/]*)/?([^?]+)\\??(.*)'));
 
 TP.core.JSONPURL.Type.defineConstant('SCHEME', 'jsonp');
 
@@ -64,6 +64,7 @@ TP.core.JSONPURL.Type.defineAttribute('mode',
                                     TP.core.SyncAsync.ASYNCHRONOUS);
 
 TP.core.JSONPURL.registerForScheme('jsonp');
+TP.core.JSONPURL.registerForScheme('jsonps');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -128,6 +129,11 @@ function(aURIString) {
                     'Unable to parse: ' + aURIString);
 
         return;
+    }
+
+    //  'jsonps:' is our URL scheme for loading JSONP data over https:
+    if (/^jsonps/.test(aURIString)) {
+        this.set('useSSL', true);
     }
 
     this.set('domain', results.at(1));
