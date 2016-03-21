@@ -73,11 +73,28 @@ div#toggleLog {
 }
 
 .framing.h-edge.north, .framing.h-edge.south {
-    transition: height 0.25s;
+    transition: height 0.25s, margin 0.25s;
 }
 
 .framing.v-edge.east, .framing.v-edge.west {
-    transition: width 0.25s;
+    transition: width 0.25s, margin 0.25s;
+}
+
+
+#background.edge-west-open .framing.h-edge.north {
+    margin-left: 153px;
+}
+
+#background:not(.edge-west-open) .framing.h-edge.north {
+    margin-left: 0;
+}
+
+#background.edge-east-open .framing.h-edge.north {
+    margin-right: 153px;
+}
+
+#background:not(.edge-east-open) .framing.h-edge.north {
+    margin-right: 0;
 }
 
 /* HUD corners */
@@ -92,6 +109,14 @@ div#toggleLog {
 .framing.north.west, .framing.north.east, .framing.south.west, .framing.south.east {
 
     transition: width 0.25s, height 0.25s;
+}
+
+#background.edge-west-open .framing.north.west {
+    width: 200px;
+}
+
+#background.edge-east-open .framing.north.east {
+    width: 200px;
 }
 
 .framing.north.west {
