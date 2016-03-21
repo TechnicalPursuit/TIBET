@@ -133,7 +133,8 @@ function(aNode, aURI) {
      * @returns {TP.xctrls.FramedElement} A new instance.
      */
 
-    var editorObj;
+    var editorObj,
+        nativeTA;
 
     this.callNextMethod();
 
@@ -147,6 +148,15 @@ function(aNode, aURI) {
     //  huge performance win when dealing with CodeMirror.
     TP.elementSetAttribute(
         this.getNativeNode(), 'tibet:nomutationtracking', true, true);
+
+    //  Grab the underlying textarea that CodeMirror creates privately and
+    //  configure it to manage Tabs manually. This is checked in our keydown
+    //  handling in the TIBET kernel to see whether to allow this component to
+    //  handle its own Tabbing. If we don't do this, CodeMirror will never
+    //  process Tabs because the kernel code will preventDefault() on Tab key
+    //  downs.
+    nativeTA = TP.byCSSPath('textarea', this.getNativeNode(), true, false);
+    TP.elementSetAttribute(nativeTA, 'tibet:manualTabs', true, true);
 
     return this;
 });

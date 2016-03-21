@@ -542,6 +542,13 @@ function(aTargetElem, anEvent) {
 
             return this;
         } else if (/DOM(.*)_Tab_Down/.test(keyname)) {
+
+            //  If the target element is configured to want manual tab mgmt,
+            //  then allow for that by just returning here.
+            if (TP.elementHasAttribute(aTargetElem, 'tibet:manualTabs', true)) {
+                return this;
+            }
+
             //  We're going to handle this key down to move the focus ourselves,
             //  so we don't want the browser's natural 'tabbing' code to do
             //  anything. To prevent this, we preventDefault() on the event.
