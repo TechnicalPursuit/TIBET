@@ -514,104 +514,107 @@ TP.boot.installPatches = function(aWindow) {
     //  CSS OM Patches
     //  --------------------------------------------------------------------
 
-    //  All browsers rendering engines have problems not properly supplying
-    //  the offset* properties for custom (i.e. non-XHTML) elements. We rectify
-    //  that here.
+    //  All browsers rendering engines that don't define this property on
+    //  Element.prototype have problems not properly supplying the offset*
+    //  properties for custom (i.e. non-XHTML) elements. We rectify that here.
 
-    aWindow.Object.defineProperty(
-        aWindow.Element.prototype,
-        'offsetParent',
-        {
-            configurable: true,
-            get: function() {
+    if (!aWindow.Element.prototype.hasOwnProperty('offsetParent')) {
+        aWindow.Object.defineProperty(
+            aWindow.Element.prototype,
+            'offsetParent',
+            {
+                configurable: true,
+                get: function() {
 
-                //  NOTE: We call the 'lower-level' method here (that actually
-                //  does the work). If we call the regular
-                //  'TP.elementGetOffsetParent' method, we WILL recurse into
-                //  here.
-                return TP.$elementGetOffsetParent(this);
-            }
-        });
+                    //  NOTE: We call the 'lower-level' method here (that
+                    //  actually does the work). If we call the regular
+                    //  'TP.elementGetOffsetParent' method, we WILL recurse into
+                    //  here.
+                    return TP.$elementGetOffsetParent(this);
+                }
+            });
 
-    aWindow.Object.defineProperty(
-        aWindow.Element.prototype,
-        'offsetTop',
-        {
-            configurable: true,
-            get: function() {
+        aWindow.Object.defineProperty(
+            aWindow.Element.prototype,
+            'offsetTop',
+            {
+                configurable: true,
+                get: function() {
 
-                var myTop,
+                    var myTop,
 
-                    offsetParentTop;
+                        offsetParentTop;
 
-                //  TODO: These calculations use getBoundingClientRect(), which
-                //  takes into account any kind of CSS transformation done to
-                //  the receiver, whereas 'offsetTop' guarantees its value
-                //  without taking CSS transformations into account. This needs
-                //  to be fixed, probably by manually doing the matrix
-                //  computation if the receiver is transformed.
-                myTop = this.getBoundingClientRect().top;
+                    //  TODO: These calculations use getBoundingClientRect(),
+                    //  which takes into account any kind of CSS transformation
+                    //  done to the receiver, whereas 'offsetTop' guarantees its
+                    //  value without taking CSS transformations into account.
+                    //  This needs to be fixed, probably by manually doing the
+                    //  matrix computation if the receiver is transformed.
+                    myTop = this.getBoundingClientRect().top;
 
-                offsetParentTop = this.offsetParent.offsetTop;
+                    offsetParentTop = this.offsetParent.offsetTop;
 
-                //  We round() since offset* properties always return whole
-                //  numbers.
-                return Math.round(myTop - offsetParentTop);
-            }
-        });
+                    //  We round() since offset* properties always return whole
+                    //  numbers.
+                    return Math.round(myTop - offsetParentTop);
+                }
+            });
 
-    aWindow.Object.defineProperty(
-        aWindow.Element.prototype,
-        'offsetLeft',
-        {
-            configurable: true,
-            get: function() {
+        aWindow.Object.defineProperty(
+            aWindow.Element.prototype,
+            'offsetLeft',
+            {
+                configurable: true,
+                get: function() {
 
-                var myLeft,
+                    var myLeft,
 
-                    offsetParentLeft;
+                        offsetParentLeft;
 
-                //  TODO: These calculations use getBoundingClientRect(), which
-                //  takes into account any kind of CSS transformation done to
-                //  the receiver, whereas 'offsetLeft' guarantees its value
-                //  without taking CSS transformations into account. This needs
-                //  to be fixed, probably by manually doing the matrix
-                //  computation if the receiver is transformed.
-                myLeft = this.getBoundingClientRect().left;
+                    //  TODO: These calculations use getBoundingClientRect(),
+                    //  which takes into account any kind of CSS transformation
+                    //  done to the receiver, whereas 'offsetLeft' guarantees
+                    //  its value without taking CSS transformations into
+                    //  account. This needs to be fixed, probably by manually
+                    //  doing the matrix computation if the receiver is
+                    //  transformed.
+                    myLeft = this.getBoundingClientRect().left;
 
-                offsetParentLeft = this.offsetParent.offsetLeft;
+                    offsetParentLeft = this.offsetParent.offsetLeft;
 
-                //  We round() since offset* properties always return whole
-                //  numbers.
-                return Math.round(myLeft - offsetParentLeft);
-            }
-        });
+                    //  We round() since offset* properties always return whole
+                    //  numbers.
+                    return Math.round(myLeft - offsetParentLeft);
+                }
+            });
 
-    aWindow.Object.defineProperty(
-        aWindow.Element.prototype,
-        'offsetWidth',
-        {
-            configurable: true,
-            get: function() {
+        aWindow.Object.defineProperty(
+            aWindow.Element.prototype,
+            'offsetWidth',
+            {
+                configurable: true,
+                get: function() {
 
-                //  We round() since offset* properties always return whole
-                //  numbers.
-                return Math.round(this.getBoundingClientRect().width);
-            }
-        });
+                    //  We round() since offset* properties always return whole
+                    //  numbers.
+                    return Math.round(this.getBoundingClientRect().width);
+                }
+            });
 
-    aWindow.Object.defineProperty(
-        aWindow.Element.prototype,
-        'offsetHeight',
-        {
-            configurable: true,
-            get: function() {
+        aWindow.Object.defineProperty(
+            aWindow.Element.prototype,
+            'offsetHeight',
+            {
+                configurable: true,
+                get: function() {
 
-                //  We round() since offset* properties always return whole
-                //  numbers.
-                return Math.round(this.getBoundingClientRect().height);
-            }
-        });
+                    //  We round() since offset* properties always return whole
+                    //  numbers.
+                    return Math.round(this.getBoundingClientRect().height);
+                }
+            });
+    }
 
     //  --------------------------------------------------------------------
     //  Event Patches
