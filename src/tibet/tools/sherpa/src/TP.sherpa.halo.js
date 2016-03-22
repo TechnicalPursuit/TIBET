@@ -24,6 +24,8 @@ TP.sherpa.Element.defineSubtype('halo');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
+
 TP.sherpa.halo.Inst.defineAttribute('currentTargetTPElem');
 TP.sherpa.halo.Inst.defineAttribute('haloRect');
 
@@ -279,7 +281,10 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    this.setAttribute('hidden', true);
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        this.set('$wasShowing', true);
+        this.setAttribute('hidden', true);
+    }
 
     return this;
 });
@@ -297,11 +302,16 @@ function(aSignal) {
 
     var currentTargetTPElem;
 
-    currentTargetTPElem = this.get('currentTargetTPElem');
+    if (this.get('$wasShowing')) {
 
-    this.moveAndSizeToTarget(currentTargetTPElem);
+        currentTargetTPElem = this.get('currentTargetTPElem');
 
-    this.setAttribute('hidden', false);
+        this.moveAndSizeToTarget(currentTargetTPElem);
+
+        this.setAttribute('hidden', false);
+
+        this.set('$wasShowing', null);
+    }
 
     return this;
 });
