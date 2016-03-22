@@ -594,7 +594,9 @@ function() {
 
     haloTPElem.setup();
     haloTPElem.observe(TP.byId('SherpaHUD', this.get('vWin')),
-                        'HiddenChange');
+                        TP.ac('HiddenChange',
+                                'DrawerCloseWillChange',
+                                'DrawerCloseDidChange'));
 
     return this;
 });

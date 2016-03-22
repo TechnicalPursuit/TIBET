@@ -51,9 +51,31 @@ function(beClosed) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var originID;
+    var hudTPElem,
+
+        originID,
+        drawerElement,
+        drawerFinishedFunc;
+
+    hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
 
     originID = this.getAttribute('id');
+    drawerElement = this.getNativeNode();
+
+    (drawerFinishedFunc = function(aSignal) {
+
+        drawerFinishedFunc.ignore(
+            drawerElement, 'TP.sig.DOMTransitionEnd');
+
+        hudTPElem.signal('DrawerCloseDidChange',
+                            TP.hc('drawerOriginID', originID),
+                            TP.OBSERVER_FIRING);
+
+    }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+
+    hudTPElem.signal('DrawerCloseWillChange',
+                        TP.hc('drawerOriginID', originID),
+                        TP.OBSERVER_FIRING);
 
     if (TP.isTrue(beClosed)) {
         TP.byId('background',

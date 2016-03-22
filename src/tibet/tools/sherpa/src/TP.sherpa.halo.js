@@ -270,6 +270,44 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineHandler(
+{signal: 'DrawerCloseWillChange', origin: 'SherpaHUD'},
+function(aSignal) {
+
+    /**
+     * @method handleDrawerCloseWillChange
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    this.setAttribute('hidden', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler(
+{signal: 'DrawerCloseDidChange', origin: 'SherpaHUD'},
+function(aSignal) {
+
+    /**
+     * @method handleDrawerCloseDidChange
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var currentTargetTPElem;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    this.moveAndSizeToTarget(currentTargetTPElem);
+
+    this.setAttribute('hidden', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineHandler('HaloClick',
 function(aSignal) {
 
