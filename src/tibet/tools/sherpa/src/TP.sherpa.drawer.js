@@ -24,26 +24,46 @@ TP.sherpa.drawer.Inst.defineHandler('Toggle',
 function(aSignal) {
 
     var sigOriginTPElem,
-        originID,
 
         isClosed;
 
     sigOriginTPElem = TP.bySystemId(aSignal.getOrigin());
 
-    originID = sigOriginTPElem.getAttribute('id');
     isClosed = TP.bc(sigOriginTPElem.getAttribute('closed'));
 
     if (isClosed) {
         sigOriginTPElem.setAttribute('closed', false);
-        TP.byId('background',
-                this.getDocument()).addClass('edge-' + originID + '-open');
     } else {
         sigOriginTPElem.setAttribute('closed', true);
-        TP.byId('background',
-                this.getDocument()).removeClass('edge-' + originID + '-open');
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.drawer.Inst.defineMethod('setAttrClosed',
+function(beClosed) {
+
+    /**
+     * @method setAttrClosed
+     * @abstract
+     * @returns {TP.sherpa.hud} The receiver.
+     */
+
+    var originID;
+
+    originID = this.getAttribute('id');
+
+    if (TP.isTrue(beClosed)) {
+        TP.byId('background',
+                this.getDocument()).removeClass('edge-' + originID + '-open');
+    } else {
+        TP.byId('background',
+                this.getDocument()).addClass('edge-' + originID + '-open');
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
