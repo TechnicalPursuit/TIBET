@@ -77,8 +77,6 @@ function(beHidden) {
 
     var drawerElement,
 
-        //toolbarElem,
-
         drawerFinishedFunc;
 
     if (TP.bc(this.getAttribute('hidden')) === beHidden) {
@@ -95,15 +93,6 @@ function(beHidden) {
 
         TP.elementGetStyleObj(drawerElement).height = '';
 
-        /*
-        toolbarElem = TP.byId('SherpaConsoleOutputToolbar',
-                                        this.getNativeWindow());
-        toolbarElem.toggle('hidden');
-        toolbarElem = TP.byId('SherpaConsoleCommandToolbar',
-                                        this.getNativeWindow());
-        toolbarElem.toggle('hidden');
-        */
-
         this.hideAllHUDDrawers();
 
         this.getNativeWindow().focus();
@@ -116,15 +105,6 @@ function(beHidden) {
             //  We add our 'south's 'no_transition' class so that during
             //  user interaction, resizing this drawer will be immediate.
             TP.elementAddClass(drawerElement, 'no_transition');
-
-            /*
-            toolbarElem = TP.byId('SherpaConsoleOutputToolbar',
-                                            this.getNativeWindow());
-            toolbarElem.toggle('hidden');
-            toolbarElem = TP.byId('SherpaConsoleCommandToolbar',
-                                            this.getNativeWindow());
-            toolbarElem.toggle('hidden');
-            */
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
