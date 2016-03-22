@@ -2,18 +2,18 @@
 @namespace pclass url(urn:tibet:pseudoclass);
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-div[tibet|tag="sherpa:drawer"]:not([pclass|closed]).corner {
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).corner {
 
     width: 48%;
     height: 48%;
 }
 
-div[tibet|tag="sherpa:drawer"]:not([pclass|closed]).h-edge {
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).h-edge {
 
     height: 200px;
 }
 
-div[tibet|tag="sherpa:drawer"]:not([pclass|closed]).v-edge {
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).v-edge {
 
     width: 200px;
 }

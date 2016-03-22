@@ -157,8 +157,7 @@ function() {
 
     hudDrawers.perform(
         function(aHUDDrawer) {
-            aHUDDrawer.setAttrClosed(true);
-            aHUDDrawer.setAttrHidden(true);
+            aHUDDrawer.setAttribute('hidden', true);
         });
 
     centerElem = TP.byId('center', win, false);
@@ -169,9 +168,16 @@ function() {
     //  the console output) to resize when drawers are open fully.
     backgroundElem = TP.byId('background', win, false);
 
-    TP.elementRemoveClass(backgroundElem, 'edge-north-open');
-    TP.elementRemoveClass(backgroundElem, 'edge-east-open');
-    TP.elementRemoveClass(backgroundElem, 'edge-west-open');
+    //  Stash the current classes for the 'visible' state for the background
+    //  element on a custom attribute.
+    TP.elementSetAttribute(backgroundElem,
+                            'tibet:visible-classes',
+                            TP.elementGetAttribute(backgroundElem, 'class', true),
+                            true);
+
+    //  NB: This should match the original setting of 'class' for the background
+    //  element.
+    TP.elementSetAttribute(backgroundElem, 'class', 'noselect', true);
 
     return this;
 });
@@ -190,19 +196,35 @@ function() {
     var win,
 
         hudDrawers,
-        centerElem;
+
+        centerElem,
+        backgroundElem;
 
     win = this.getNativeWindow();
     hudDrawers = TP.wrap(TP.byCSSPath('.framing', win));
 
     hudDrawers.perform(
         function(aHUDDrawer) {
-            aHUDDrawer.setAttrHidden(false);
+            aHUDDrawer.setAttribute('hidden', false);
         });
 
     centerElem = TP.byId('center', win, false);
 
     TP.elementRemoveClass(centerElem, 'fullscreen');
+
+    //  Remove classes from the background div that cause other components (like
+    //  the console output) to resize when drawers are open fully.
+    backgroundElem = TP.byId('background', win, false);
+
+    //  Restore the current classes for the 'visible' state for the background
+    //  element from a custom attribute to the 'class' attribute and remove the
+    //  custom attribute.
+    TP.elementSetAttribute(
+        backgroundElem,
+        'class',
+        TP.elementGetAttribute(backgroundElem, 'tibet:visible-classes', true),
+        true);
+    TP.elementRemoveAttribute(backgroundElem, 'tibet:visible-classes', true);
 
     return this;
 });
