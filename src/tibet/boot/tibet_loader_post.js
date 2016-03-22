@@ -1187,13 +1187,15 @@ TP.boot.$$documentSetup = function(aDocument) {
                             'change',
                             TP.$$handleChange);
 
-    TP.boot.$$addUIHandler(aDocument,
-                            'transitionend',
-                            TP.$$handleTransitionEnd);
-
+    TP.boot.$$addUIHandler(aDocument.defaultView,
+                            'resize',
+                            TP.$$handleResize);
     TP.boot.$$addUIHandler(aDocument,
                             'scroll',
                             TP.$$handleScroll);
+    TP.boot.$$addUIHandler(aDocument,
+                            'transitionend',
+                            TP.$$handleTransitionEnd);
 
     TP.boot.$$addUIHandler(aDocument,
                             'submit',
@@ -1257,9 +1259,9 @@ TP.boot.$$documentTeardown = function(aDocument) {
 
     TP.boot.$$removeUIHandler(aDocument, 'change');
 
-    TP.boot.$$removeUIHandler(aDocument, 'transitionend');
-
+    TP.boot.$$removeUIHandler(aDocument.defaultView, 'resize');
     TP.boot.$$removeUIHandler(aDocument, 'scroll');
+    TP.boot.$$removeUIHandler(aDocument, 'transitionend');
 
     TP.boot.$$removeUIHandler(aDocument, 'submit');
     TP.boot.$$removeUIHandler(aDocument, 'reset');

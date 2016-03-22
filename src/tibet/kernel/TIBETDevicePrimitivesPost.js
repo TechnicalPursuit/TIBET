@@ -697,6 +697,14 @@ function(anEvent) {
 
     evt = TP.eventNormalize(anEvent);
 
+    //  If there is no resolved target and the target is the Window, then we
+    //  resolve the target to the window's document documentElement. This
+    //  normalizes top-level events (like resize) so that users can subscribe
+    //  for these events on the document or document element.
+    if (!TP.isElement(evt.resolvedTarget) && TP.isWindow(evt.target)) {
+        return evt.target.document.documentElement;
+    }
+
     //  Note that we don't have a '$$' property for this property
     return evt.resolvedTarget;
 });
@@ -1373,6 +1381,20 @@ function(anEvent) {
     /**
      * @method $$handleReset
      * @summary Document-level reset handler, installed by tibet_hook.
+     * @param {Event} anEvent The native event object.
+     */
+
+    return TP.$$handleNonKeyOrMouseEvent(anEvent);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$$handleResize',
+function(anEvent) {
+
+    /**
+     * @method $$handleResize
+     * @summary Window-level resize handler, installed by tibet_hook.
      * @param {Event} anEvent The native event object.
      */
 
