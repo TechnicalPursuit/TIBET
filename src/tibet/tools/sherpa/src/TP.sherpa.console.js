@@ -969,7 +969,9 @@ function() {
     var consoleInput,
         editorHeight,
 
-        styleVals;
+        styleVals,
+
+        drawerElement;
 
     consoleInput = this.get('consoleInput');
     editorHeight = consoleInput.getEditorHeight();
@@ -985,7 +987,13 @@ function() {
                     (styleVals.at('borderBottomWidth') +
                      styleVals.at('paddingBottom')));
 
-    TP.elementSetHeight(TP.byId('south', this.getNativeWindow(), false),
+    //  Set the south drawer to *not* transition. Note that it seems we have to
+    //  do this by setting the style String directly as setting the 'transition'
+    //  property of the style object has no effect (at least on Chrome).
+    drawerElement = TP.byId('south', this.getNativeWindow(), false);
+    TP.elementSetStyleString(drawerElement, 'transition: none');
+
+    TP.elementSetHeight(drawerElement,
                         editorHeight +
                         styleVals.at('borderTopWidth') +
                         styleVals.at('borderBottomWidth') +
@@ -994,6 +1002,19 @@ function() {
                         styleVals.at('paddingTop') +
                         styleVals.at('paddingBottom') +
                         styleVals.at('bottom'));
+
+    (function() {
+        var styleStr;
+
+        //  We can only do this after letting the GUI thread service, otherwise
+        //  it has no effect.
+
+        //  Set the style String to whatever it is minus the 'transition: none'
+        //  value that we put on it above.
+        styleStr = TP.elementGetStyleString(drawerElement);
+        styleStr = styleStr.replace(/transition\:\s*none;\s*/,'');
+        TP.elementSetStyleString(drawerElement, styleStr);
+    }).fork(5);
 
     return this;
 });

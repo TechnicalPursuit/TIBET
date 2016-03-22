@@ -91,11 +91,6 @@ function(aName) {
                     //  complete the setup here (after the drawers animate in).
                     sherpaInst.finishSetup();
 
-                    //  We add our 'south's 'no_transition' class so that during
-                    //  user interaction, resizing this drawer will be
-                    //  immediate.
-                    TP.elementAddClass(drawerElement, 'no_transition');
-
                     //  Set the HUD to not be hidden
                     TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
                                                             'hidden', false);
@@ -142,11 +137,6 @@ function(aName) {
                             });
             } else {
                 sherpaInst.finishSetup();
-
-                //  We add our 'south's 'no_transition' class so that during
-                //  user interaction, resizing this drawer will be
-                //  immediate.
-                TP.elementAddClass(drawerElement, 'no_transition');
 
                 //  Set the HUD to not be hidden
                 TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(

@@ -87,10 +87,6 @@ function(beHidden) {
 
     if (TP.isTrue(beHidden)) {
 
-        //  We remove our 'south's 'no_transition' class so that it no longer
-        //  'immediately snaps' like it needs to do during user interaction.
-        TP.elementRemoveClass(drawerElement, 'no_transition');
-
         TP.elementGetStyleObj(drawerElement).height = '';
 
         this.hideAllHUDDrawers();
@@ -101,10 +97,6 @@ function(beHidden) {
         (drawerFinishedFunc = function(aSignal) {
             drawerFinishedFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
-
-            //  We add our 'south's 'no_transition' class so that during
-            //  user interaction, resizing this drawer will be immediate.
-            TP.elementAddClass(drawerElement, 'no_transition');
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
