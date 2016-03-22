@@ -162,7 +162,12 @@ function() {
     currentTargetTPElem = this.get('currentTargetTPElem');
 
     if (TP.isValid(currentTargetTPElem)) {
-        this.ignore(currentTargetTPElem.getDocument(), 'TP.sig.DOMScroll');
+
+        this.ignore(this.getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.ignore(currentTargetTPElem.getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
         this.set('currentTargetTPElem', null);
     }
 
@@ -184,11 +189,15 @@ function(target) {
      */
 
     if (TP.isKindOf(target, TP.core.ElementNode)) {
+
         this.moveAndSizeToTarget(target);
 
         this.set('currentTargetTPElem', target);
 
-        this.observe(target.getDocument(), 'TP.sig.DOMScroll');
+        this.observe(this.getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.observe(target.getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
 
         this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
                     TP.OBSERVER_FIRING);
@@ -236,6 +245,20 @@ function(aSignal) {
             }
         }
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMResize',
+function(aSignal) {
+
+    var currentTargetTPElem;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    this.moveAndSizeToTarget(currentTargetTPElem);
 
     return this;
 });
