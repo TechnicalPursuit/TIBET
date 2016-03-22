@@ -280,7 +280,7 @@ function(uniqueID, dataRecord) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.consoleoutput.Inst.defineMethod('createTiledOutput',
-function(cellGroupElem, uniqueID, dataRecord) {
+function(cellElem, uniqueID, dataRecord) {
 
     /**
      * @method createTiledOutput
@@ -306,9 +306,7 @@ function(cellGroupElem, uniqueID, dataRecord) {
         curtainTPElem,
         handler;
 
-    cmdText = TP.byCSSPath('.header .content',
-                            cellGroupElem,
-                            true).getTextContent();
+    cmdText = TP.byCSSPath('.header .content', cellElem, true).getTextContent();
 
     tileID = uniqueID + '_tile';
 
@@ -401,6 +399,8 @@ function(aSignal) {
     var ourWindow,
         testTile;
 
+    return this;
+
     ourWindow = this.get('wrapper').getNativeWindow();
 
     testTile = TP.bySystemId('Sherpa').makeTile(
@@ -463,7 +463,7 @@ function(uniqueID, dataRecord) {
      */
 
     var doc,
-        cellGroupElem,
+        cellElem,
 
         typeinfo,
         rawData,
@@ -494,14 +494,14 @@ function(uniqueID, dataRecord) {
     //  If we can't find the output cell that this output was using before
     //  (sometimes outputs like to reuse the same cell - i.e. logging), then
     //  attempt to recreate it.
-    if (!TP.isElement(cellGroupElem = doc.getElementById(uniqueID))) {
+    if (!TP.isElement(cellElem = doc.getElementById(uniqueID))) {
 
         //  Note here how we pass in no output data - we'll fill that in below.
         this.createOutputEntry(uniqueID, TP.hc());
 
         //  If we still couldn't create the cell, then notify with an error
         //  message and bail out.
-        if (!TP.isElement(cellGroupElem = doc.getElementById(uniqueID))) {
+        if (!TP.isElement(cellElem = doc.getElementById(uniqueID))) {
             TP.ifError() ?
                     TP.error(
                         'Couldn\'t find out cell for: ' + uniqueID) : 0;
@@ -517,9 +517,9 @@ function(uniqueID, dataRecord) {
     //  If we're outputting logging data, add the '.logoutput' class to the
     //  output cell element and set the content of the input line to 'Log'.
     if (typeinfo === 'LOG') {
-        TP.elementAddClass(cellGroupElem, 'logoutput');
+        TP.elementAddClass(cellElem, 'logoutput');
         TP.nodeSetTextContent(
-                TP.byCSSPath('.header', cellGroupElem, true, false),
+                TP.byCSSPath('.header', cellElem, true, false),
                 'Log');
     }
 
@@ -538,7 +538,7 @@ function(uniqueID, dataRecord) {
     //  then created a tile and set the raw data as its source object.
     if (TP.isEmpty(outputObj) && TP.isTrue(dataRecord.at('tiledOutput'))) {
 
-        tileID = this.createTiledOutput(cellGroupElem, uniqueID, dataRecord);
+        tileID = this.createTiledOutput(cellElem, uniqueID, dataRecord);
 
         //  Output a link that will cause the tile to show (if it hasn't been
         //  closed - just hidden).
@@ -629,8 +629,7 @@ function(uniqueID, dataRecord) {
         //  ID, then we create a coalescing fragment and a record holding it,
         //  the data record and the overall output element.
         coalesceFragment = TP.documentConstructFragment(doc);
-        insertionPoint = TP.byCSSPath(
-                            '.flex-card', cellGroupElem, true, false);
+        insertionPoint = TP.byCSSPath('.flex-cell', cellElem, true, false);
 
         outputCoalesceRecords.atPut(
                 uniqueID,

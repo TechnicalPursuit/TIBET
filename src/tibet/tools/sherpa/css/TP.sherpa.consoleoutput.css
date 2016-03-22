@@ -58,7 +58,7 @@ sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child {
     display: block;
 }
 
-sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child > .flex-card > .content {
+sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child > .flex-cell > .content {
 
     max-height: 150px;
 }
@@ -94,19 +94,19 @@ sherpa|consoleoutputitem {
     margin-bottom: 2px;
 }
 
-sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content {
+sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content {
 
     margin: 0;
 }
 
-sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child {
+sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child {
 
     border-bottom: 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-.flex-card {
+.flex-cell {
 
     width: 100%;
 
@@ -116,7 +116,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     border-radius: 5px;
 }
 
-.flex-card > .header {
+.flex-cell > .header {
 
     top: 0;
     right: 0;
@@ -139,7 +139,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     font-size: inherit;
 }
 
-.flex-card > .header > * {
+.flex-cell > .header > * {
 
     /*line-height: 30px;*/
 
@@ -147,19 +147,19 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     /*font-size: 116%;*/
 }
 
-.flex-card > .header > .hid {
+.flex-cell > .header > .hid {
 
     text-decoration: none;
     display: inline-block;
     min-width: 32px;
 }
 
-.flex-card > .header > .hid:hover {
+.flex-cell > .header > .hid:hover {
 
     font-weight: bold;
 }
 
-.flex-card > .header > .content {
+.flex-cell > .header > .content {
 
     position: relative;
     display: inline-block;
@@ -167,7 +167,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-card > .header > .typeinfo {
+.flex-cell > .header > .typeinfo {
 
     float: right;
     margin: 0 8px;
@@ -178,7 +178,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-card > .header > .stats {
+.flex-cell > .header > .stats {
 
     float: right;
     margin: 0 8px;
@@ -189,7 +189,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-card > .header > .detach_mark {
+.flex-cell > .header > .detach_mark {
 
     float: right;
     margin: 0 8px;
@@ -203,7 +203,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     background-image: url(../media/call49.svg);
 }
 
-.flex-card > .content {
+.flex-cell > .content {
 
     top: 31px;
     right: 0;
@@ -228,14 +228,14 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     -webkit-user-select: text;
 }
 
-.flex-card > .content > * {
+.flex-cell > .content > * {
     /*margin: 0.25em;*/
 
     line-height: 1.0em;
     white-space: pre-wrap;
 }
 
-.flex-card > .footer {
+.flex-cell > .footer {
 
     bottom: 0;
     left: 0;
@@ -257,26 +257,26 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-card > .content:last-child 
     text-align: center;
 }
 
-.flex-card > .content dl {
+.flex-cell > .content dl {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
 }
 
-.flex-card > .content dl > dt {
+.flex-cell > .content dl > dt {
     flex: 0 0 25%;
     margin: 0;
     line-height: 2em;
 }
-.flex-card > .content dl > dt:nth-of-type(even) {
+.flex-cell > .content dl > dt:nth-of-type(even) {
     background: #eee;
 }
 
-.flex-card > .content dl > dd {
+.flex-cell > .content dl > dd {
     flex: 0 0 75%;
     margin: 0;
     line-height: 2em;
 }
-.flex-card > .content dl > dd:nth-of-type(even) {
+.flex-cell > .content dl > dd:nth-of-type(even) {
     background: #eee;
 }
