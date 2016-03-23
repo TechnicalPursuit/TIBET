@@ -487,7 +487,7 @@ function() {
 
     /**
      * @method scrollOutputToEnd
-     * @summary Adjust the height of the input cell based on its contents.
+     * @summary
      * @returns {TP.sherpa.console} The receiver.
      */
 
