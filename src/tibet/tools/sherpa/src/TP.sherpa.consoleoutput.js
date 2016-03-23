@@ -51,6 +51,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.consoleoutput.Inst.defineAttribute('$inlineStyleElem');
+
 TP.sherpa.consoleoutput.Inst.defineAttribute('rawOutEntryTemplate');
 
 TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceRecords');
@@ -63,6 +65,48 @@ TP.sherpa.consoleoutput.Inst.defineAttribute(
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     */
+
+    var styleElem;
+
+    this.observe(this.getDocument(), 'TP.sig.DOMResize');
+
+    styleElem = TP.documentAddCSSStyleElement(
+    this.getNativeDocument(),
+    '@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);\n' +
+    '.flex-cell > .content {\n' +
+        'max-height: auto;' +
+        '\n' +
+    '}');
+
+    TP.elementSetAttribute(styleElem,
+                            'id',
+                            'TP_shera_consoleoutputitem_inline');
+
+    this.set('$inlineStyleElem', styleElem);
+
+    this.adjustCellMaxHeight();
+
+    this.observe(this.getDocument(), 'TP.sig.DOMResize');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineHandler('DOMResize',
+function(aSignal) {
+
+    this.adjustCellMaxHeight();
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  Output management methods
@@ -269,6 +313,8 @@ function(uniqueID, dataRecord) {
         TP.elementRemoveAttribute(outElem, 'name');
         TP.elementSetAttribute(outElem, 'tibet:noawaken', 'true', true);
 
+        this.adjustCellMaxHeight();
+
     } else {
         //  TODO: Print an error
         //  empty
@@ -449,6 +495,46 @@ function() {
 
     consoleOutputElem = this.getNativeNode();
     consoleOutputElem.scrollTop = consoleOutputElem.scrollHeight;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineMethod('adjustCellMaxHeight',
+function() {
+
+    /**
+     * @method adjustCellMaxHeight
+     * @summary
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var styleSheet,
+        outputItemRules,
+
+        centerHeight,
+        offset;
+
+    styleSheet = TP.cssElementGetStyleSheet(this.get('$inlineStyleElem'));
+    outputItemRules = TP.styleSheetGetStyleRulesMatching(
+                            styleSheet,
+                            '.flex-cell > .content');
+
+    centerHeight = TP.byId('center', this.getDocument()).getHeight();
+
+    offset =
+        20 +    //  sherpa:consoleoutput top & bottom values
+        4 +     //  sherpa:consoleoutputitem top & bottom margin values
+        2 +     //  .flex-cell top & bottom border values
+        21 +    //  .flex-cell > .header height + margin top & bottom +
+                //                          border top & bottom
+        6;      //  .flex-cell > .content margin top & bottom +
+                //                          border top & bottom
+
+    /* eslint-disable no-extra-parens */
+    outputItemRules.at(0).style.maxHeight = (centerHeight - offset) + 'px';
+    /* eslint-enable no-extra-parens */
 
     return this;
 });

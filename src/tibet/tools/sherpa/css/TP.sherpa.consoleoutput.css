@@ -58,11 +58,6 @@ sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child {
     display: block;
 }
 
-sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child > .flex-cell > .content {
-
-    max-height: 150px;
-}
-
 sherpa|consoleoutput a {
 
     color: slateblue;
@@ -226,6 +221,8 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     -ms-user-select: text;
     -moz-user-select: text;
     -webkit-user-select: text;
+
+    overflow: hidden;
 }
 
 .flex-cell > .content > * {

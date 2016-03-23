@@ -150,6 +150,8 @@ function() {
 
     //  Grab the consoleOutput TP.core.Element
     consoleOutputTPElem = TP.byId('SherpaConsoleOutput', TP.win('UIROOT'));
+    consoleOutputTPElem.setup();
+
     this.set('consoleOutput', consoleOutputTPElem);
 
     //  Now we can set up the ConsoleService
