@@ -103,8 +103,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell {
 
-    width: 100%;
-
     background: #EEE;
     border: solid 1px #666;
 
