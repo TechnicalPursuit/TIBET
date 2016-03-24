@@ -22,6 +22,7 @@ TP.sherpa.Element.defineSubtype('opener');
 
 TP.sherpa.opener.Type.defineMethod('tagCompile',
 function(aRequest) {
+
     var elem,
         newElem;
 

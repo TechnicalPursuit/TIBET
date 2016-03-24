@@ -224,7 +224,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     margin: 2px;
     border: 1px dotted #DADADA;
 
-    /*margin: 0.25em;*/
     overflow: auto;
 
     text-align: left;
