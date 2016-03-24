@@ -2786,6 +2786,63 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('scrollBy',
+function(direction, incrementValue, cssProperty) {
+
+    /**
+     * @method scrollBy
+     * @summary Scrolls the receiver (which should be clipped in some fashion)
+     *     by the supplied incrementValue. Note that this increment value can be
+     *     provided as a non-pixel value ('1em' or '30%') and this will be
+     *     converted to a pixel value.
+     * @param {String} direction A named direction to scroll the element. Any
+     *     one of:
+     *          TP.UP
+     *          TP.RIGHT
+     *          TP.DOWN
+     *          TP.LEFT
+     * @param {String|Number} incrementValue The amount to scroll by. If this is
+     *     a Number, it will be assumed to be a number of pixels. Otherwise, it
+     *     will be used as a CSS value that a number of pixels will be computed
+     *     from.
+     * @param {String} [cssProperty] The name of the property being used to
+     *     compute a pixel value from the supplied incrementValue. This is only
+     *     required if a percentage value is given, but is desired to produce
+     *     the most accurate results.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var elem,
+        computedIncrement;
+
+    elem = this.getNativeNode();
+
+    computedIncrement = TP.elementGetPixelValue(elem,
+                                                incrementValue,
+                                                cssProperty);
+
+    switch (direction) {
+        case TP.UP:
+            elem.scrollTop -= computedIncrement;
+            break;
+        case TP.RIGHT:
+            elem.scrollLeft += computedIncrement;
+            break;
+        case TP.DOWN:
+            elem.scrollTop += computedIncrement;
+            break;
+        case TP.LEFT:
+            elem.scrollLeft -= computedIncrement;
+            break;
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue, shouldSignal) {
 
