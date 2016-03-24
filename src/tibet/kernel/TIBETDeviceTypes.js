@@ -2364,8 +2364,8 @@ TP.core.Mouse.Type.defineAttribute(
                 function() {
 
                     var priorMove,
-                        doc,
-                        obs;
+                        doc;
+                        //obs;
 
                     priorMove = TP.core.Mouse.$get('lastMove');
 
@@ -2379,11 +2379,14 @@ TP.core.Mouse.Type.defineAttribute(
                     //  If there are no mouse/drag hover subscriptions,
                     //  then there is no point in continuing so we exit here
                     //  and don't reschedule the timer.
-                    obs = TP.core.Mouse.get('observers');
-                    if (!obs.hasKey('TP.sig.DOMMouseHover') &&
-                        !obs.hasKey('TP.sig.DOMDragHover')) {
-                        return;
-                    }
+                    //  TODO: This doesn't work with using 'on:mousehover' or
+                    //  'on:draghover', so we comment it out for now. It's
+                    //  doesn't seem to have a huge effect on performance.
+                    //obs = TP.core.Mouse.get('observers');
+                    //if (!obs.hasKey('TP.sig.DOMMouseHover') &&
+                     //   !obs.hasKey('TP.sig.DOMDragHover')) {
+                      //  return;
+                    //}
 
                     //  If the document doesn't itself have focus or doesn't
                     //  have an active element, then that probably means
