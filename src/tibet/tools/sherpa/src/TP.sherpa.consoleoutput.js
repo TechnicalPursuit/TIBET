@@ -93,7 +93,12 @@ function() {
 
     this.adjustCellMaxHeight();
 
-    this.observe(this.getDocument(), 'TP.sig.DOMResize');
+    this.observe(this.getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
+    //  Manually add TP.sherpa.scrollbutton's stylesheet to our document, since
+    //  we don't awaken cell content for performance reasons.
+    TP.sherpa.scrollbutton.addStylesheetTo(this.getNativeDocument());
 
     return this;
 });
@@ -109,7 +114,91 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineHandler('DOMScroll',
+function(aSignal) {
+
+    var sigTarget,
+        targetCell;
+
+    sigTarget = aSignal.getTarget();
+
+    if (TP.isElement(sigTarget)) {
+        targetCell = sigTarget.parentNode.parentNode;
+
+        if (TP.elementHasClass(targetCell, 'overflowing')) {
+            this.updateButtonsForCellContent(sigTarget);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Output management methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineMethod('adjustCellMaxHeight',
+function() {
+
+    /**
+     * @method adjustCellMaxHeight
+     * @summary
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var styleSheet,
+        outputItemRules,
+
+        centerHeight,
+        offset;
+
+    styleSheet = TP.cssElementGetStyleSheet(this.get('$inlineStyleElem'));
+    outputItemRules = TP.styleSheetGetStyleRulesMatching(
+                            styleSheet,
+                            '.flex-cell > .content');
+
+    centerHeight = TP.byId('center', this.getDocument()).getHeight();
+
+    offset =
+        20 +    //  sherpa:consoleoutput top & bottom values
+        4 +     //  sherpa:consoleoutputitem top & bottom margin values
+        2 +     //  .flex-cell top & bottom border values
+        21 +    //  .flex-cell > .header height + margin top & bottom +
+                //                          border top & bottom
+        6;      //  .flex-cell > .content margin top & bottom +
+                //                          border top & bottom
+
+    /* eslint-disable no-extra-parens */
+    outputItemRules.at(0).style.maxHeight = (centerHeight - offset) + 'px';
+    /* eslint-enable no-extra-parens */
+
+    (function() {
+
+        var cellContentElems;
+
+        cellContentElems = TP.byCSSPath(
+                                'sherpa|consoleoutputitem .content',
+                                this.getNativeNode(),
+                                false,
+                                false);
+
+        cellContentElems.forEach(
+                function(aContentElem) {
+                    if (aContentElem.scrollHeight > aContentElem.offsetHeight) {
+                        TP.elementAddClass(
+                            aContentElem.parentNode.parentNode, 'overflowing');
+                        this.updateButtonsForCellContent(aContentElem);
+                    } else {
+                        TP.elementRemoveClass(
+                            aContentElem.parentNode.parentNode, 'overflowing');
+                    }
+                }.bind(this));
+    }.bind(this)).fork(10);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.consoleoutput.Inst.defineMethod('clear',
@@ -313,8 +402,6 @@ function(uniqueID, dataRecord) {
         TP.elementRemoveAttribute(outElem, 'name');
         TP.elementSetAttribute(outElem, 'tibet:noawaken', 'true', true);
 
-        this.adjustCellMaxHeight();
-
     } else {
         //  TODO: Print an error
         //  empty
@@ -501,40 +588,31 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineMethod('adjustCellMaxHeight',
-function() {
+TP.sherpa.consoleoutput.Inst.defineMethod('updateButtonsForCellContent',
+function(contentElem) {
 
-    /**
-     * @method adjustCellMaxHeight
-     * @summary
-     * @returns {TP.sherpa.console} The receiver.
-     */
+    var arrows,
 
-    var styleSheet,
-        outputItemRules,
+        upArrow,
+        downArrow;
 
-        centerHeight,
-        offset;
+    arrows = TP.byCSSPath('sherpa|scrollbutton', contentElem, false, false);
 
-    styleSheet = TP.cssElementGetStyleSheet(this.get('$inlineStyleElem'));
-    outputItemRules = TP.styleSheetGetStyleRulesMatching(
-                            styleSheet,
-                            '.flex-cell > .content');
+    upArrow = arrows.first();
+    downArrow = arrows.last();
 
-    centerHeight = TP.byId('center', this.getDocument()).getHeight();
+    if (contentElem.scrollHeight >
+        contentElem.scrollTop + contentElem.offsetHeight) {
+        TP.elementAddClass(downArrow, 'more');
+    } else {
+        TP.elementRemoveClass(downArrow, 'more');
+    }
 
-    offset =
-        20 +    //  sherpa:consoleoutput top & bottom values
-        4 +     //  sherpa:consoleoutputitem top & bottom margin values
-        2 +     //  .flex-cell top & bottom border values
-        21 +    //  .flex-cell > .header height + margin top & bottom +
-                //                          border top & bottom
-        6;      //  .flex-cell > .content margin top & bottom +
-                //                          border top & bottom
-
-    /* eslint-disable no-extra-parens */
-    outputItemRules.at(0).style.maxHeight = (centerHeight - offset) + 'px';
-    /* eslint-enable no-extra-parens */
+    if (contentElem.scrollTop > 0) {
+        TP.elementAddClass(upArrow, 'more');
+    } else {
+        TP.elementRemoveClass(upArrow, 'more');
+    }
 
     return this;
 });
@@ -752,6 +830,8 @@ function(uniqueID, dataRecord) {
                 outputCoalesceRecords.empty();
 
                 this.scrollOutputToEnd();
+
+                this.adjustCellMaxHeight();
 
                 flushTimer = null;
                 this.set('outputCoalesceTimer', null);

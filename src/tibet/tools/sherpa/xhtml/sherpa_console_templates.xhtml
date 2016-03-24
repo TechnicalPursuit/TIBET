@@ -17,7 +17,13 @@
 
     <!-- The template used for the 'output' part of a piece of raw output -->
     <div class="content {{outputclass}} cm-s-elegant" name="raw_outputEntry" tibet:nocompile="true">
+        <sherpa:scrollbutton orientation="up" on:mousehover="ScrollUp">
+            <span class="icon">&#xab;</span>
+        </sherpa:scrollbutton>
         <span class="result">{{output}}</span>
+        <sherpa:scrollbutton orientation="down" on:mousehover="ScrollDown">
+            <span class="icon">&#xbb;</span>
+        </sherpa:scrollbutton>
     </div>
 
     <!-- The template used for the 'output' part of a piece of structured output -->

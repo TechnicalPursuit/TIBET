@@ -101,6 +101,20 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     border-bottom-right-radius: 5px;
 }
 
+.up_arrow, .down_arrow {
+
+    display: none;
+
+    position: absolute;
+
+    left: 10px;
+    width: 20px;
+    height: 20px;
+
+    background-color: yellow;
+    border: solid 1px black;
+}
+
 .flex-cell {
 
     background: #EEE;
@@ -210,6 +224,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     margin: 2px;
     border: 1px dotted #DADADA;
 
+    /*margin: 0.25em;*/
     overflow: auto;
 
     text-align: left;
@@ -224,10 +239,32 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 }
 
 .flex-cell > .content > * {
-    /*margin: 0.25em;*/
 
     line-height: 1.0em;
     white-space: pre-wrap;
+}
+
+.flex-cell > .content > sherpa|scrollbutton {
+
+    left: 5px;
+
+    transform: rotate(90deg);
+}
+
+.flex-cell > .content > sherpa|scrollbutton[orientation="up"] {
+
+    /* Accounting an extra 21 px for header margin, border and height */
+    top: 41px;
+}
+
+.flex-cell > .content > sherpa|scrollbutton[orientation="down"] {
+
+    bottom: 20px;
+}
+
+sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
+
+    display: block;
 }
 
 .flex-cell > .footer {
