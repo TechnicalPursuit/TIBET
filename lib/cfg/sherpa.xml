@@ -131,6 +131,9 @@
     <property name="path.TP.sherpa.opener.template" value="~ide_root/xhtml/TP.sherpa.opener.xhtml"/>
     <property name="path.TP.sherpa.opener.style" value="~ide_root/css/TP.sherpa.opener.css"/>
 
+    <script src="./src/TP.sherpa.scrollbutton.js"/>
+    <property name="path.TP.sherpa.scrollbutton.style" value="~ide_root/css/TP.sherpa.scrollbutton.css"/>
+
     <script src="./src/TP.sherpa.splitbox.js"/>
     <property name="path.TP.sherpa.splitbox.template" value="~ide_root/xhtml/TP.sherpa.splitbox.xhtml"/>
     <property name="path.TP.sherpa.splitbox.style" value="~ide_root/css/TP.sherpa.splitbox.css"/>
