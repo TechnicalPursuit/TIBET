@@ -305,25 +305,6 @@ TP.core.TSH.set('commandPrefix', 'tsh');
 TP.core.TSH.register();
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Type.defineHandler('ActivationKeyUp',
-function(aSignal) {
-
-    /**
-     * @method handleActivationKeyUp
-     * @summary Handles when our activation key is pressed.
-     * @param {DOMKeySignal} aSignal The key signal that was mapped to
-     *     activating us.
-     */
-
-    //  TODO:   look back at this, we don't want this to happen when the
-    //  console's already open without managing shell instances better
-    return TP.core.Window.open('~tdc_html/home.html');
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 

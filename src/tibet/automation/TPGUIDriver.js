@@ -469,6 +469,8 @@ function() {
      * @returns {TP.gui.Driver} The receiver.
      */
 
+    /*
+       TODO: The TDC is no longer with us - remove this when appropriate
     if (TP.sys.cfg('tibet.tdc') === true) {
         TP.elementHide(TP.byId('UIBOOT', top, false));
         TP.elementShow(TP.byId('UIROOT', top, false));
@@ -476,6 +478,7 @@ function() {
         //  TODO: Make the appropriate GUI window show for the Sherpa, etc.
         void 0;
     }
+    */
 
     return this;
 });
@@ -492,6 +495,8 @@ function() {
      * @returns {TP.gui.Driver} The receiver.
      */
 
+    /*
+       TODO: The TDC is no longer with us - remove this when appropriate
     if (TP.sys.cfg('tibet.tdc') === true) {
         TP.elementHide(TP.byId('UIROOT', top, false));
         TP.elementShow(TP.byId('UIBOOT', top, false));
@@ -499,6 +504,7 @@ function() {
         //  TODO: Make the appropriate log window show for the Sherpa, etc.
         void 0;
     }
+    */
 
     return this;
 });

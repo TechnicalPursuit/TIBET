@@ -45,10 +45,6 @@ TIBET-INF/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
 TIBET-INF/tibet/lib/json/html401_strict.json
 TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
 
-TIBET-INF/tibet/src/tibet/tools/tdc/src/TP.tsh.console.js
-TIBET-INF/tibet/src/tibet/tools/tdc/styles/TP.tsh.console.css
-TIBET-INF/tibet/src/tibet/tools/tdc/xhtml/TP.tsh.console.xhtml
-
 # --- don't cache multiple copies of TIBET, only the desired one(s)
 
 ## TIBET-INF/tibet/lib/src/tibet_init.js

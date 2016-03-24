@@ -731,10 +731,6 @@
     //  TIBET namespace source is used often enough that a shortcut is nice
     TP.sys.setcfg('path.tibet_src', '~lib_src/tibet');
 
-    //  Console (built in to base library).
-    TP.sys.setcfg('path.tdc_root', '~lib_src/tibet/tools/tdc');
-    TP.sys.setcfg('path.tdc_src', '~tdc_root/src');
-
     //  Sherpa (external IDE components).
     TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/sherpa');
     TP.sys.setcfg('path.ide_src', '~ide_root/src');
@@ -1187,39 +1183,6 @@
 
 
     //  ---
-    //  tdc processing
-    //  ---
-
-    //  which output formatter should be used for presentation output?
-    TP.sys.setcfg('tdc.default_format', 'tsh:pp');
-
-    //  what output cell template do we use by default?
-    TP.sys.setcfg('tdc.default_template', 'stdio_bubble');
-
-    TP.sys.setcfg('tdc.expanded_cells', 3);
-
-    //  do we highlight the 'border' or the 'title' ? when processing levels
-    TP.sys.setcfg('tdc.highlight', 'border');
-
-    //  what is the maximum width for output in the TDC for titlebar content?
-    TP.sys.setcfg('tdc.max_command', 70);
-    TP.sys.setcfg('tdc.max_status', 40);
-    TP.sys.setcfg('tdc.max_notice', 120);
-
-    //  should the console suspend normal output?
-    TP.sys.setcfg('tdc.silent', false);
-
-    //  the toggle key for the TDC
-    TP.sys.setcfg('tdc.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
-
-    //  should the TDC output collection value types during status updates?
-    TP.sys.setcfg('tdc.type_collections', true);
-
-    //  how long should the TDC wait to fade out a bubble (in milliseconds)?
-    TP.sys.setcfg('tdc.bubble_fade_time', 2000);
-
-
-    //  ---
     //  sherpa processing
     //  ---
 
@@ -1584,9 +1547,6 @@
 
     //  what tag should be used in place of the default {{appname}}.app tag.
     TP.sys.setcfg('tibet.apptag', null);
-
-    //  should the TDC currently be active? default is false.
-    TP.sys.setcfg('tibet.tdc', false);
 
     //  what CSS theme should we use? default is none.
     TP.sys.setcfg('tibet.theme', null);
