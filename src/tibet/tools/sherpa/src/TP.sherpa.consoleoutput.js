@@ -286,11 +286,15 @@ function(aSignal) {
     val = aSignal.get('evaltime');
     str = TP.ifInvalid(val, '0');
 
+    /*
+     For now, since it always seems that these values are 0, we don't include
+     them.
     val = aSignal.get('tagtime');
     str += ' | ' + TP.ifInvalid(val, '0');
 
     val = aSignal.get('exectime');
     str += ' | ' + TP.ifInvalid(val, '0');
+    */
 
     return str;
 });
