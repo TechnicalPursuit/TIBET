@@ -75,7 +75,7 @@ function() {
 
     var styleElem,
 
-        northDrawerElement;
+        northDrawerTPElement;
 
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
@@ -102,13 +102,20 @@ function() {
     //  we don't awaken cell content for performance reasons.
     TP.sherpa.scrollbutton.addStylesheetTo(this.getNativeDocument());
 
-    northDrawerElement = TP.byId('north', this.getNativeDocument(), false);
+    northDrawerTPElement = TP.byId('north', this.getNativeDocument());
 
     (function(aSignal) {
 
         this.adjustCellMaxHeight();
 
-    }.bind(this)).observe(northDrawerElement, 'TP.sig.DOMTransitionEnd');
+        if (TP.isTrue(TP.bc(northDrawerTPElement.getAttribute('closed')))) {
+
+            //  TODO: This is an 'empirically derived' value - need to compute
+            //  it from real numbers.
+            this.scrollBy(TP.DOWN, 120);
+        }
+
+    }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
 
     return this;
 });
