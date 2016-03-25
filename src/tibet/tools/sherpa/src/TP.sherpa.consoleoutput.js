@@ -75,7 +75,10 @@ function() {
 
     var styleElem,
 
-        northDrawerTPElement;
+        northDrawerTPElement,
+
+        editorObj,
+        extraKeys;
 
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
@@ -116,6 +119,37 @@ function() {
         }
 
     }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
+
+    //  Set up 'growl mode expose' key handlers
+    //  TODO: Try to make these keys mappable - a challenge below with
+    //  CodeMirror because it uses different key constants than we do.
+
+    (function(aSignal) {
+
+        if (this.getAttribute('panes') === 'growl') {
+            aSignal.preventDefault();
+            this.growlModeExpose();
+        }
+
+    }.bind(this)).observe(TP.core.Keyboard, 'TP.sig.DOM_Spacebar_Up');
+
+    //  We need to go to the editor object and make sure it's configured to stop
+    //  a space character from being put in if we're toggling the current growl
+    //  mode to 'exposed'.
+    editorObj = TP.byId('SherpaConsole', TP.win('UIROOT')).
+                                        get('consoleInput').
+                                        $get('$editorObj');
+    extraKeys = editorObj.getOption('extraKeys');
+
+    extraKeys['Space'] =
+        function() {
+            if (this.getAttribute('panes') === 'growl' &&
+                !this.hasAttribute('exposed')) {
+                return false;
+            }
+
+            return TP.extern.CodeMirror.Pass;
+        }.bind(this);
 
     return this;
 });
@@ -344,6 +378,25 @@ function(aSignal) {
     }
 
     return str;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineMethod('growlModeExpose',
+function() {
+
+    /**
+     * @method growlModeExpose
+     * @param
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+    TP.elementSetAttribute(elem, 'exposed', 'true', true);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -646,6 +699,9 @@ function(uniqueID, dataRecord) {
     var doc,
         cellElem,
 
+        fadeFinishedFunc,
+        elem,
+
         typeinfo,
         rawData,
         outputObj,
@@ -689,6 +745,40 @@ function(uniqueID, dataRecord) {
 
             return this;
         }
+    }
+
+    elem = this.getNativeNode();
+
+    //  If we're currently shifted into 'none' mode and haven't begun a 'fade
+    //  out' session, then switch our mode into 'growl', which will show the
+    //  last cell, but set us up to fade out.
+    if (this.getAttribute('panes') === 'none' &&
+        !TP.elementHasClass(elem, 'fade_out')) {
+
+        this.setAttribute('panes', 'growl');
+
+        //  When the fade effect is finished, then we remove the class that
+        //  causes the fade out and, if we're not 'exposed' (which means the
+        //  user toggled us to continue to show), then set our mode back to
+        //  'none'.
+        (fadeFinishedFunc = function(aSignal) {
+            fadeFinishedFunc.ignore(
+                elem, 'TP.sig.DOMTransitionEnd');
+
+            TP.elementRemoveClass(elem, 'fade_out');
+
+            if (!TP.elementHasAttribute(elem, 'exposed', true)) {
+                this.setAttribute('panes', 'none');
+            }
+
+        }.bind(this)).observe(elem, 'TP.sig.DOMTransitionEnd');
+
+        //  Add the class that causes us to fade out, but do so after a fork()
+        //  since otherwise the transition won't take effect (due to the way
+        //  that CSS transition interact with the DOM style system).
+        (function() {
+            TP.elementAddClass(elem, 'fade_out');
+        }).fork(10);
     }
 
     typeinfo = dataRecord.at('typeinfo');

@@ -148,7 +148,8 @@ function() {
     //  service.
     //this.setupLogView();
 
-    //  Grab the consoleOutput TP.core.Element
+    //  Grab the consoleOutput TP.core.Element and set it up. Note that we need
+    //  to do this *after* we set up the console input above.
     consoleOutputTPElem = TP.byId('SherpaConsoleOutput', TP.win('UIROOT'));
     consoleOutputTPElem.setup();
 
@@ -1054,6 +1055,10 @@ function() {
 
     this.teardownInputMark();
 
+    if (this.get('consoleOutput').getAttribute('panes') === 'growl') {
+        this.setOutputDisplayMode('none');
+    }
+
     return this;
 });
 
@@ -1241,6 +1246,7 @@ function(anObject, shouldAppend) {
                 this.generateInputMarkAt({anchor: start, head: end}));
 
     (function() {
+
         this.focusInput();
         this.setInputCursorToEnd();
 
@@ -1457,7 +1463,13 @@ function(displayModeVal) {
      * @method setOutputDisplayMode
      */
 
-    return this.get('consoleOutput').setAttribute('panes', displayModeVal);
+    var consoleOutput;
+
+    consoleOutput = this.get('consoleOutput');
+
+    consoleOutput.removeAttribute('exposed');
+
+    return consoleOutput.setAttribute('panes', displayModeVal);
 });
 
 //  ------------------------------------------------------------------------

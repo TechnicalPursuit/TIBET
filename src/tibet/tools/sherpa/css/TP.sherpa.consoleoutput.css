@@ -58,6 +58,37 @@ sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child {
     display: block;
 }
 
+/* 'growl' mode is basically the same from a CSS perspective as 'one' mode, but it
+	allows the JavaScript to distinguish between the two in code */
+
+sherpa|consoleoutput[panes="growl"] {
+
+    top: auto;
+}
+
+sherpa|consoleoutput[panes="growl"] sherpa|consoleoutputitem {
+
+    display: none;
+}
+
+sherpa|consoleoutput[panes="growl"] sherpa|consoleoutputitem:last-child {
+
+    display: block;
+}
+
+sherpa|consoleoutput[exposed] {
+	opacity: 1 !important;
+}
+
+sherpa|consoleoutput[class~="fade_out"] {
+
+	opacity: 0;
+
+	transition-property: opacity;
+	transition-delay: 2s;
+	transition-duration: 2s;
+}
+
 sherpa|consoleoutput a {
 
     color: slateblue;
