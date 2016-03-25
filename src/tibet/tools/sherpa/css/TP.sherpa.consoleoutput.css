@@ -302,6 +302,107 @@ sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
     display: block;
 }
 
+/* Output styles for the consoleoutputitem based on log level */
+sherpa|consoleoutputitem[class~="trace"] .flex-cell,
+sherpa|consoleoutputitem[class~="trace"] .flex-cell > .header {
+    background-color: #EEE;
+}
+sherpa|consoleoutputitem[class~="debug"] .flex-cell,
+sherpa|consoleoutputitem[class~="debug"] .flex-cell > .header {
+    background-color: #EEE;
+}
+sherpa|consoleoutputitem[class~="info"] .flex-cell,
+sherpa|consoleoutputitem[class~="info"] .flex-cell > .header {
+    background-color: #EEE;
+}
+sherpa|consoleoutputitem[class~="warn"] .flex-cell,
+sherpa|consoleoutputitem[class~="warn"] .flex-cell > .header {
+    background-color: orange;
+}
+sherpa|consoleoutputitem[class~="error"] .flex-cell,
+sherpa|consoleoutputitem[class~="error"] .flex-cell > .header {
+    background-color: red;
+}
+sherpa|consoleoutputitem[class~="severe"] .flex-cell,
+sherpa|consoleoutputitem[class~="severe"] .flex-cell > .header {
+    background-color: red;
+}
+sherpa|consoleoutputitem[class~="fatal"] .flex-cell,
+sherpa|consoleoutputitem[class~="fatal"] .flex-cell > .header {
+    background-color: red;
+}
+sherpa|consoleoutputitem[class~="system"] .flex-cell,
+sherpa|consoleoutputitem[class~="system"] .flex-cell > .header {
+    background-color: mediumseagreen;
+}
+
+/* Output styles for the consoleoutputitem based on TAP result */
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+
+/* Output styles based on log level */
+.flex-cell > .content.trace {
+    color: #aaa;
+}
+.flex-cell > .content.debug {
+    color: magenta;
+}
+.flex-cell > .content.info {
+    color: black;
+}
+.flex-cell > .content.warn {
+    color: orange;
+}
+.flex-cell > .content.error {
+    color: red;
+}
+.flex-cell > .content.severe {
+    color: red;
+}
+.flex-cell > .content.fatal {
+    color: red;
+}
+.flex-cell > .content.system {
+    color: cyan;
+}
+
+/* Output styles based on TAP result */
+.flex-cell > .content.tap-pass {
+    color: cyan;
+}
+
+.flex-cell > .content.tap-fail {
+    color: orange;
+}
+
+.flex-cell > .content.tap-comment {
+    color: #aaa;
+}
+
+.flex-cell > .content.tap-unknown {
+    color: #fff;
+}
+
+
+/* Footer style */
 .flex-cell > .footer {
 
     bottom: 0;

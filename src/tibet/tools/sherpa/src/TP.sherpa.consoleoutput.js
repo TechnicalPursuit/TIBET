@@ -843,6 +843,10 @@ function(uniqueID, dataRecord) {
     } else {
         outputClass = dataRecord.at('cssClass');
 
+        if (TP.notEmpty(outputClass)) {
+            TP.elementAddClass(cellElem, outputClass);
+        }
+
         //  Run the output template and fill in the data
         outputData = TP.hc('output', outputObj,
                             'outputclass', outputClass);

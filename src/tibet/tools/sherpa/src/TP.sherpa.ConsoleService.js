@@ -1680,9 +1680,11 @@ function(anObject, aRequest) {
 
         tiledOutput,
 
-        tap,
-        data,
         asIs,
+
+        data,
+        tap,
+        isLoggingMessage,
 
         possibleElem,
 
@@ -1702,10 +1704,6 @@ function(anObject, aRequest) {
         data = '';
         tiledOutput = true;
     } else {
-
-        //  TODO: replace this hack with an update to direct to the proper
-        //  Logger/Appender so we get the output we want via layout/appender.
-        tap = request.at('cmdTAP');
 
         //  ---
         //  Produce valid XHTML node to test string content, otherwise do our
@@ -1764,6 +1762,10 @@ function(anObject, aRequest) {
             }
         }
 
+        //  TODO: replace this hack with an update to direct to the proper
+        //  Logger/Appender so we get the output we want via layout/appender.
+        tap = request.at('cmdTAP');
+
         if (TP.isTrue(tap)) {
             if (/^ok /.test(data) || /# PASS/i.test(data)) {
                 cssClass = 'tap-pass';
@@ -1774,11 +1776,13 @@ function(anObject, aRequest) {
             } else {
                 cssClass = 'tap-unknown';
             }
+            isLoggingMessage = true;
+
+        } else if (TP.isValid(request.at('messageLevel'))) {
+            cssClass = request.at('messageLevel').getName().toLowerCase();
+            isLoggingMessage = true;
         } else {
-            if (TP.isValid(request.at('messageLevel'))) {
-                cssClass = request.at('messageLevel').getName().toLowerCase();
-            }
-            cssClass = TP.ifInvalid(cssClass, 'info');
+            isLoggingMessage = false;
         }
     }
 
@@ -1813,9 +1817,17 @@ function(anObject, aRequest) {
         //  result data type information.
         outputData.atPut('stats', '');
         outputData.atPut('typeinfo', 'LOG');
+        outputData.atPut('messageLevel', request.at('messageLevel'));
     } else {
         cellID = cellID.replace(/[$.]+/g, '_');
         this.set('lastNonCmdCellID', null);
+        if (isLoggingMessage) {
+            //  Stub in an empty String  for the stats and the word 'LOG' for
+            //  the result data type information.
+            outputData.atPut('stats', '');
+            outputData.atPut('typeinfo', 'LOG');
+            outputData.atPut('messageLevel', request.at('messageLevel'));
+        }
     }
 
     //  Update the output entry cell with the output data.
