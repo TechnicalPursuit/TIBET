@@ -73,7 +73,9 @@ function() {
      * @method setup
      */
 
-    var styleElem;
+    var styleElem,
+
+        northDrawerElement;
 
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
@@ -99,6 +101,14 @@ function() {
     //  Manually add TP.sherpa.scrollbutton's stylesheet to our document, since
     //  we don't awaken cell content for performance reasons.
     TP.sherpa.scrollbutton.addStylesheetTo(this.getNativeDocument());
+
+    northDrawerElement = TP.byId('north', this.getNativeDocument(), false);
+
+    (function(aSignal) {
+
+        this.adjustCellMaxHeight();
+
+    }.bind(this)).observe(northDrawerElement, 'TP.sig.DOMTransitionEnd');
 
     return this;
 });
