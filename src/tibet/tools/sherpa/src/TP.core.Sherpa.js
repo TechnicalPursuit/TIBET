@@ -515,7 +515,7 @@ function() {
                         TP.ietf.Mime.XHTML));
 
     consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
-    consoleOutputTPElem.setAttribute('panes', 'all');
+    consoleOutputTPElem.setAttribute('panes', 'none');
 
     consoleOutputTPElem.awaken();
 
