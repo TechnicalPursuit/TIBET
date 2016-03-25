@@ -661,7 +661,7 @@ TP.boot.installPatches = function(aWindow) {
                                                         target.offsetParent);
 
                                 offsetX -= TP.elementGetPixelValue(
-                                            this,
+                                            target,
                                             compStyle.getPropertyValue(
                                                             'border-left-width'),
                                             'borderLeftWidth',
@@ -714,7 +714,7 @@ TP.boot.installPatches = function(aWindow) {
                                 compStyle = TP.elementGetComputedStyleObj(
                                                         target.offsetParent);
                                 offsetY -= TP.elementGetPixelValue(
-                                            this,
+                                            target,
                                             compStyle.getPropertyValue(
                                                             'border-top-width'),
                                             'borderTopWidth',
