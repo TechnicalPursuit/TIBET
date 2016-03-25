@@ -141,9 +141,7 @@ function(anObject, optFormat) {
     var str,
         format,
         stackStr,
-        stackEntries,
-
-        thisArg;
+        stackEntries;
 
     format = TP.hc(optFormat);
     format.atPutIfAbsent('level', TP.sys.cfg('sherpa.pp.level'));
@@ -155,7 +153,7 @@ function(anObject, optFormat) {
     format.atPut('cmdAwaken', false);
 
     if (TP.notEmpty(anObject.message)) {
-        str = this.fromString(anObject.message);
+        str = anObject.message;
     } else {
         str = '';
     }
@@ -164,20 +162,19 @@ function(anObject, optFormat) {
         TP.notEmpty(stackEntries = TP.getStackInfo(anObject))) {
         stackStr = '';
 
-        thisArg = this;
         stackStr = stackEntries.collect(
             function(infoPiece) {
                 var infoStr;
 
                 infoStr =
                     'at ' +
-                    thisArg.fromString(infoPiece.at(0), format) +
+                    infoPiece.at(0) +
                     '(' +
-                    thisArg.fromString(infoPiece.at(1), format) +
+                    infoPiece.at(1) +
                     ':' +
-                    thisArg.fromString(infoPiece.at(2), format) +
+                    infoPiece.at(2) +
                     ':' +
-                    thisArg.fromString(infoPiece.at(3), format) +
+                    infoPiece.at(3) +
                     ')\n';
                 return infoStr;
             });

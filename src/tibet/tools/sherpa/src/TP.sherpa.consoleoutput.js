@@ -871,34 +871,50 @@ function(uniqueID, dataRecord) {
 
     updateStats = function(record, groupElem) {
 
-        var statsStr,
-            resultTypeStr;
+        var recordTypeInfo,
 
-        if (record.at('typeinfo') === 'LOG') {
-            return;
-        }
+            statsStr,
+            resultTypeStr,
+
+            statsElem;
 
         //  Now, update statistics and result type data that was part of the
         //  entry that we inserted before with the input content.
         if (TP.isValid(request = record.at('request'))) {
+
+            recordTypeInfo = record.at('typeinfo');
+            if (recordTypeInfo === 'LOG') {
+                return;
+            }
+
+            resultTypeStr = TP.isEmpty(recordTypeInfo) ?
+                            this.getOutputTypeInfo(request) :
+                            recordTypeInfo;
+            if (TP.isEmpty(resultTypeStr)) {
+                return;
+            }
+
             statsStr = TP.isEmpty(record.at('stats')) ?
                             this.getInputStats(request) :
                             record.at('stats');
-            resultTypeStr = TP.isEmpty(record.at('typeinfo')) ?
-                            this.getOutputTypeInfo(request) :
-                            record.at('typeinfo');
         } else {
-            statsStr = '';
             resultTypeStr = '';
+            statsStr = '';
         }
 
-        TP.xmlElementSetContent(
-                TP.byCSSPath('.typeinfo', groupElem, true, false),
-                TP.xhtmlnode(resultTypeStr));
+        statsElem = TP.byCSSPath('.typeinfo', groupElem, true, false);
+        if (TP.isElement(statsElem)) {
+            TP.xmlElementSetContent(
+                    statsElem,
+                    TP.xhtmlnode(resultTypeStr));
+        }
 
-        TP.xmlElementSetContent(
-                TP.byCSSPath('.stats', groupElem, true, false),
-                TP.xhtmlnode(statsStr));
+        statsElem = TP.byCSSPath('.stats', groupElem, true, false);
+        if (TP.isElement(statsElem)) {
+            TP.xmlElementSetContent(
+                    statsElem,
+                    TP.xhtmlnode(statsStr));
+        }
     }.bind(this);
 
     //  For superior performance, we 'coalesce' output. This allows quite a bit

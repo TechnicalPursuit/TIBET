@@ -1437,6 +1437,8 @@ function(anError, aRequest) {
             this.writeInputContent(request);
         }
 
+        request.atPut('reuseCell', false);
+
         //  Write output content
         this.writeOutputContent(err, request);
 
@@ -1801,7 +1803,8 @@ function(anObject, aRequest) {
     //  If the request has no cmdID for us to use as a cell ID, then this was
     //  probably a call to stdout() that wasn't a direct result of a command
     //  being issued.
-    if (TP.isEmpty(cellID = aRequest.at('cmdID'))) {
+    if (TP.isEmpty(cellID = aRequest.at('cmdID')) ||
+        TP.isFalse(aRequest.at('reuseCell'))) {
 
         //  See if there's a current 'non cmd' cell that we're using to write
         //  this kind of output. If there isn't one, then create one (but don't
