@@ -1233,6 +1233,13 @@
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
+    //  the amount of time that the Sherpa TDC will wait before fading out a
+    //  cell.
+    TP.sys.setcfg('sherpa.tdc.cell_fadeout_delay', 2000);
+
+    //  the amount of time that the Sherpa TDC will take to fade out a cell.
+    TP.sys.setcfg('sherpa.tdc.cell_fadeout_duration', 2000);
+
     //  the initial location to load into screen_0 in the Sherpa. Note this
     //  might be the same as 'project.homepage', but the Sherpa contains
     //  machinery to manually replace 'tibet:root' with the app's app tag.

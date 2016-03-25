@@ -85,8 +85,13 @@ sherpa|consoleoutput[class~="fade_out"] {
 	opacity: 0;
 
 	transition-property: opacity;
+
+    /* These are set by the
+       'sherpa.tdc.cell_fadeout_delay' and 'sherpa.tdc.cell_fadeout_duration'
+       cfg() variables respectively. They are defaulted to 2000ms.
 	transition-delay: 2s;
 	transition-duration: 2s;
+    */
 }
 
 sherpa|consoleoutput a {

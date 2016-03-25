@@ -777,7 +777,17 @@ function(uniqueID, dataRecord) {
         //  since otherwise the transition won't take effect (due to the way
         //  that CSS transition interact with the DOM style system).
         (function() {
+            var styleObj;
+
             TP.elementAddClass(elem, 'fade_out');
+
+            styleObj = TP.elementGetStyleObj(elem);
+
+            styleObj.transitionDelay =
+                TP.sys.cfg('sherpa.tdc.cell_fadeout_delay', 2000) + 'ms';
+            styleObj.transitionDuration =
+                TP.sys.cfg('sherpa.tdc.cell_fadeout_duration', 2000) + 'ms';
+
         }).fork(10);
     }
 
