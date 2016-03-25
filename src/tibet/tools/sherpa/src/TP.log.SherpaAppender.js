@@ -42,7 +42,6 @@ function(anEntry) {
         layout,
         results,
         content,
-        asIs,
 
         stdio;
 
@@ -64,19 +63,21 @@ function(anEntry) {
             break;
     }
 
+    //  TODO:
     //  If the entry contains multiple parts and we have access to a
     //  group/groupEnd api via the console we'll group our output to help show
     //  that it's all the result of a single logging call...
-    //  TODO:
 
     //  Format the little critter...
     layout = this.getLayout();
 
     results = layout.layout(anEntry);
     content = results.at('content');
-    asIs = results.at('cmdAsIs');
 
-    TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
+    //  Supply a 'messageLevel' here indicating the logging level and always set
+    //  'cmdAsIs' to be true, since we don't want any formatting via any pretty
+    //  printer to format this content.
+    TP[stdio](content, TP.hc('messageLevel', name, 'cmdAsIs', true));
 
     return this;
 });
