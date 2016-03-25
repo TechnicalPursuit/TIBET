@@ -116,18 +116,8 @@ sherpa|consoleoutputitem {
 
     position: relative;
 
-    /*
-    min-height: -webkit-min-content;
-    min-height: -moz-min-content;
-    */
-
     margin-top: 2px;
     margin-bottom: 2px;
-}
-
-sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content {
-
-    margin: 0;
 }
 
 sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child {
@@ -176,7 +166,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
     min-width: auto;
 
-    border: 1px solid #666;
     overflow: hidden;
 
     font-size: inherit;
