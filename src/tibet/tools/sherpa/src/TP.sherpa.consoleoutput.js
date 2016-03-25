@@ -710,6 +710,8 @@ function(uniqueID, dataRecord) {
         rawData,
         outputObj,
 
+        msgLevel,
+
         tileID,
 
         outputClass,
@@ -803,9 +805,16 @@ function(uniqueID, dataRecord) {
     //  output cell element and set the content of the input line to 'Log'.
     if (typeinfo === 'LOG') {
         TP.elementAddClass(cellElem, 'logoutput');
+        msgLevel = dataRecord.at('messageLevel');
+        if (TP.isEmpty(msgLevel)) {
+            msgLevel = '';
+        } else {
+            msgLevel = ' (' + msgLevel + ')';
+        }
+
         TP.nodeSetTextContent(
                 TP.byCSSPath('.header', cellElem, true, false),
-                'Log');
+                'Log' + msgLevel);
     }
 
     //  Grab the output entry template
