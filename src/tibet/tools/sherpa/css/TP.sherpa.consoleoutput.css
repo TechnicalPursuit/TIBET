@@ -245,20 +245,20 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell > .content > sherpa|scrollbutton {
 
-    left: 5px;
-
     transform: rotate(90deg);
+	box-shadow: 1px -1px 1px #888888;
 }
 
 .flex-cell > .content > sherpa|scrollbutton[orientation="up"] {
 
-    /* Accounting an extra 21 px for header margin, border and height */
-    top: 41px;
+    bottom: 10px;
+	left: calc(50% - 16px);
 }
 
 .flex-cell > .content > sherpa|scrollbutton[orientation="down"] {
 
-    bottom: 20px;
+    bottom: 10px;
+	left: calc(50% + 16px);
 }
 
 sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
