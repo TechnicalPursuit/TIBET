@@ -542,7 +542,7 @@ function() {
 
     TP.getLogger(TP.TEST_LOG).clearAppenders();
 
-    testAppender = TP.log.SherpaAppender.construct();
+    testAppender = TP.log.SherpaTestAppender.construct();
     testAppender.setLayout(TP.log.SherpaTestLogLayout.construct());
     TP.getLogger(TP.TEST_LOG).addAppender(testAppender);
 
