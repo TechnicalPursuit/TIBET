@@ -1424,7 +1424,8 @@ function(anError, aRequest) {
     } else {
         request = TP.hc('messageType', 'failure');
     }
-    request.atPutIfAbsent('messageLevel', TP.ERROR);
+
+    request.atPutIfAbsent('messageLevel', 'error');
 
     err = TP.isError(anError) ? anError : new Error(anError);
     request.set('result', err);

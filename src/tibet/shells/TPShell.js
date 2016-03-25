@@ -1684,7 +1684,8 @@ function(anError, aRequest) {
 
     req.atPut('output', anError);
     req.atPut('messageType', 'failure');
-    req.atPutIfAbsent('messageLevel', TP.ERROR);
+
+    req.atPutIfAbsent('messageLevel', 'error');
 
     req.fire(this);
 
