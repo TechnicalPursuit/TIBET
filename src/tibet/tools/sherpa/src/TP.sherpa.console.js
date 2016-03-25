@@ -1057,6 +1057,7 @@ function() {
 
     if (this.get('consoleOutput').getAttribute('panes') === 'growl') {
         this.setOutputDisplayMode('none');
+        this.get('consoleOutput').removeClass('fade_out');
     }
 
     return this;
