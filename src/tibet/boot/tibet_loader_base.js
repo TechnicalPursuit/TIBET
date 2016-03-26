@@ -4374,6 +4374,21 @@ TP.boot.$documentGetWindow = function(aDocument) {
 
 //  ----------------------------------------------------------------------------
 
+TP.boot.$$nodeAppendError = function(errEvent) {
+
+    /**
+     * @method $$nodeAppendError
+     * @summary An error handler for $nodeAppendChild onerror hook processing.
+     */
+
+    setTimeout(function() {
+        TP.boot.$stderr('Error loading ' + errEvent.target.src);
+        $STATUS = TP.FAILED;
+    }, 0);
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
 
     /**
@@ -4396,6 +4411,10 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
         //  work),  but the onerror hook will set a non-zero $STATUS.
         $STATUS = 0;
         $ERROR = null;
+
+        //  Files that are missing entirely need an onerror hook to catch them
+        //  and report properly.
+        newNode.onerror = TP.boot.$$nodeAppendError;
 
         if (TP.sys.isUA('IE')) {
             aNode.appendChild(newNode);
