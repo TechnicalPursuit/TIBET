@@ -11073,7 +11073,11 @@ function(namespaceName, forceDefinition, populateMetadata) {
             propertyDescriptor = Object.getOwnPropertyDescriptor(self, root);
             propertyDescriptor.value = newNamespace;
             propertyDescriptor.writable = false;
-            propertyDescriptor.configurable = false;
+
+            //  NB: Need to make this configurable or otherwise browsers tend to
+            //  freak out when non-configurable properties are placed on the
+            //  global.
+            propertyDescriptor.configurable = true;
 
             Object.defineProperty(self, root, propertyDescriptor);
         }
