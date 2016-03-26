@@ -2916,7 +2916,9 @@ TP.core.DNDResponder.Type.defineConstant(
 function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
 
     var vendVal,
-        matchedElems;
+        matchedElems,
+
+        vendPath;
 
     //  The target element only needs to have a 'dnd:accept' value. We don't pay
     //  attention to the actual value.
@@ -2924,11 +2926,13 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         return false;
     }
 
-    if (TP.notEmpty(vendVal =
-                    sourceTPElem.getAttribute('dnd:vend'))) {
-        if (TP.notEmpty(matchedElems = sourceTPElem.get(vendVal))) {
-            return matchedElems.contains(
-                        sourceTPElem.getNativeNode(), TP.IDENTITY);
+    if (TP.notEmpty(vendVal = sourceTPElem.getAttribute('dnd:vend'))) {
+
+        vendPath = TP.apc(vendVal);
+        vendPath.set('shouldCollapse', false);
+
+        if (TP.notEmpty(matchedElems = sourceTPElem.get(vendPath))) {
+            return matchedElems.contains(targetTPElem, TP.IDENTITY);
         }
     }
 
