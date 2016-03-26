@@ -42,7 +42,7 @@ root, application root, current project name, etc.
         "~app": "~/public",
         "~lib": "~app/TIBET-INF/tibet",
         "boot": {
-            "package": "~app_cfg/master.xml",
+            "package": "~app_cfg/main.xml",
             "configs": ["base", "contributor", "developer", "full", "test"]
         }
     }

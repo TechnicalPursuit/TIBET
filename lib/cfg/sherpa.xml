@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="sherpa" default="standard" basedir="~ide_root">
+    name="sherpa" default="base" basedir="~ide_root">
 
-<config id="standard">
+<config id="base">
 
     <script src="~lib_deps/diff-tpi.js" unless="linting"/>
     <script>

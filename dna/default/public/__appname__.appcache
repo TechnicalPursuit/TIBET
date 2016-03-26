@@ -83,7 +83,7 @@ TIBET-INF/xhtml/home.xhtml
 
 styles/app.css
 
-TIBET-INF/cfg/master.xml
+TIBET-INF/cfg/main.xml
 TIBET-INF/cfg/development.xml
 TIBET-INF/cfg/phantom.xml
 TIBET-INF/cfg/production.xml

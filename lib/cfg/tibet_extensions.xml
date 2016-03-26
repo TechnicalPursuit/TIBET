@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="tibet_extensions" default="standard" basedir="~tibet_src">
+    name="tibet_extensions" default="base" basedir="~tibet_src">
 
-<config id="standard">
+<config id="base">
     <config ref="parsers"/>
     <config ref="local_storage"/>
     <config ref="workflow"/>

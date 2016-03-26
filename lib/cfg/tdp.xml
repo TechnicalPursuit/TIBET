@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="tdp" default="standard" basedir="~lib/tdp">
+    name="tdp" default="base" basedir="~lib/tdp">
 
-<config id="standard">
+<config id="base">
     <package src="~lib_cfg/lib_namespaces.xml" config="html"/>
 
     <property name="tibet.tdpkey" value="DOM_Alt_Up_Up"/>
@@ -26,7 +26,7 @@
 </config>
 
 <config id="full">
-    <config ref="standard"/>
+    <config ref="base"/>
     <config ref="builder"/>
 </config>
 

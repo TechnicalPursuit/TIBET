@@ -22,27 +22,27 @@
 
 <config id="base">
     <config ref="properties"/>
-    <package src="master.xml" config="base"/>
+    <package src="main.xml" config="base"/>
 </config>
 
 <config id="full">
     <config ref="properties"/>
-    <package src="master.xml" config="full"/>
+    <package src="main.xml" config="full"/>
 </config>
 
 <config id="developer">
     <config ref="properties"/>
-    <package src="master.xml" config="developer"/>
+    <package src="main.xml" config="developer"/>
 </config>
 
 <config id="contributor">
     <config ref="properties"/>
-    <package src="master.xml" config="contributor"/>
+    <package src="main.xml" config="contributor"/>
 </config>
 
 <config id="test">
     <config ref="properties"/>
-    <package src="master.xml" config="test"/>
+    <package src="main.xml" config="test"/>
 </config>
 
 </package>

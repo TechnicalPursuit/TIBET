@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="lib_namespaces" default="standard" basedir="~lib_src">
+    name="lib_namespaces" default="base" basedir="~lib_src">
 
-<config id="standard">
+<config id="base">
     <config ref="acl"/>
     <config ref="bind"/>
     <config ref="ev"/>
@@ -14,7 +14,7 @@
 </config>
 
 <config id="full">
-    <config ref="standard"/>
+    <config ref="base"/>
 
     <config ref="google"/>
     <config ref="amazon"/>
