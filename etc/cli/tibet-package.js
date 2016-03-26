@@ -243,7 +243,7 @@
      * The default package file to process.
      * @type {string}
      */
-    Package.PACKAGE = '~app_cfg/master.xml';
+    Package.PACKAGE = '~app_cfg/main.xml';
 
 
     /**

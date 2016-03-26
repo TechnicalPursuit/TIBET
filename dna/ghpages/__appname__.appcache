@@ -83,7 +83,7 @@ html/UIBOOT.xhtml
 styles/app.css
 styles/master.css
 
-TIBET-INF/cfg/master.xml
+TIBET-INF/cfg/main.xml
 TIBET-INF/cfg/development.xml
 TIBET-INF/cfg/phantom.xml
 TIBET-INF/cfg/production.xml

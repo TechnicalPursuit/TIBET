@@ -183,7 +183,7 @@
             });
         }).then(function() {
             return helpers.rollup(make, {
-                pkg: '~app_cfg/master.xml',
+                pkg: '~app_cfg/main.xml',
                 config: 'base',
                 phase: 'two',
                 dir: './build',

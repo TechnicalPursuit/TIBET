@@ -8,14 +8,14 @@
 
 <config id="phantom">
     <config ref="properties"/>
-    <package src="~app_cfg/master.xml" config="test"/>
+    <package src="~app_cfg/main.xml" config="test"/>
 </config>
 
 <config id="reflection">
     <config ref="properties"/>
     <property name="boot.teamtibet" value="true"/>
     <property name="boot.unminified" value="true"/>
-    <package src="~app_cfg/master.xml" config="test"/>
+    <package src="~app_cfg/main.xml" config="test"/>
 </config>
 
 </package>

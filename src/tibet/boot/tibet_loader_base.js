@@ -8862,7 +8862,7 @@ TP.boot.$configurePackage = function() {
 
         package = TP.sys.cfg('boot.package');
         if (TP.boot.$isEmpty(package)) {
-            package = '~app_cfg/master.xml';
+            package = '~app_cfg/main.xml';
 
             TP.boot.$stdout('Empty boot.package. Defaulting to ' +
                 package + '.', TP.DEBUG);
