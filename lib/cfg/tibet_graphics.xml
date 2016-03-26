@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="tibet_graphics" default="standard" basedir="~tibet_src">
+    name="tibet_graphics" default="base" basedir="~tibet_src">
 
-<config id="standard">
+<config id="base">
     <script src="~lib_deps/d3-tpi.min.js"
         unless="boot.unminified linting" no-minify="true"/>
     <script src="~lib_deps/d3-tpi.js"
@@ -23,7 +23,7 @@
 </config>
 
 <config id="full">
-    <config ref="standard"/>
+    <config ref="base"/>
 </config>
 
 </package>

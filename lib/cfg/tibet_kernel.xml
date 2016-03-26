@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="tibet_kernel" default="standard" basedir="~tibet_src/kernel">
+    name="tibet_kernel" default="base" basedir="~tibet_src/kernel">
 
 <config id="vm" depends="">
 
@@ -174,7 +174,7 @@
 
 </config>
 
-<config id="standard" depends="">
+<config id="base" depends="">
 
     <config ref="core"/>
 
@@ -243,8 +243,8 @@
 
 </config>
 
-<config id="full" depends="standard">
-    <config ref="standard"/>
+<config id="full" depends="base">
+    <config ref="base"/>
 </config>
 
 </package>

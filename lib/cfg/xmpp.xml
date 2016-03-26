@@ -7,17 +7,17 @@
 <!--
 -->
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="xmpp" default="standard" basedir="~lib_src/xmpp">
+    name="xmpp" default="base" basedir="~lib_src/xmpp">
 
 <!--
 TIBET XMPP targets.
 -->
-<config id="standard">
+<config id="base">
     <config ref="xmpp_base"/>
 </config>
 
 <config id="full">
-    <config ref="standard"/>
+    <config ref="base"/>
     <config ref="xmpp_signals"/>
     <config ref="xmpp_service"/>
     <config ref="xmpp_iq"/>

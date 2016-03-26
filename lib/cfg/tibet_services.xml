@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="tibet_services" default="standard" basedir="~tibet_src/services">
+    name="tibet_services" default="base" basedir="~tibet_src/services">
 
-<config id="standard">
+<config id="base">
     <config ref="rest"/>
     <config ref="json"/>
 </config>
 
 <config id="full">
-    <config ref="standard"/>
+    <config ref="base"/>
 
     <config ref="soap"/>
     <config ref="webdav"/>
