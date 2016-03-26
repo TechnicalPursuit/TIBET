@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:dnd="http://www.technicalpursuit.com/2005/drag-and-drop">
+
+<head>
+	<title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	#backgroundDiv {
+		position: relative;
+
+		height: 500px;
+		width: 400px;
+
+		background-color: yellow;
+	}
+	#sourceDiv {
+		position: absolute;
+
+		top: 10px;
+
+		height: 80px;
+		width: 80px;
+
+		background-color: blue;
+	}
+	#validFitDestDiv {
+		position: absolute;
+
+		right: 0px;
+		height: 100px;
+		width: 100px;
+
+		background-color: green;
+	}
+	#validPointerDestDiv {
+		position: absolute;
+
+		top: 110px;
+
+		right: 0px;
+		height: 100px;
+		width: 100px;
+
+		background-color: green;
+	}
+	#validTouchDestDiv {
+		position: absolute;
+
+		top: 220px;
+
+		right: 0px;
+		height: 100px;
+		width: 100px;
+
+		background-color: green;
+	}
+	#invalidDestDiv {
+		position: absolute;
+
+		top: 330px;
+		right: 0px;
+		height: 100px;
+		width: 100px;
+
+		background-color: red;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body>
+
+TODO: Make this test work.
+
+<div id="backgroundDiv">
+	<div id="sourceDiv" dnd:vend="true" dnd:filter="coverage" drag:container=".."/>
+	<div id="validFitDestDiv" dnd:accept="fit"/>
+	<div id="validPointerDestDiv" dnd:accept="pointer"/>
+	<div id="validTouchDestDiv" dnd:accept="touch"/>
+
+	<!-- This div has a 'dnd:accept' of 'true' on it, but its not a valid
+		 destination since items vended from 'sourceDiv' use 'coverage' matching, and 'true' isn't a valid value for that type of matching -->
+	<div id="invalidDestDiv" dnd:accept="true"/>
+</div>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDInitiate" observer="*">
+		<![CDATA[
+		TP.info('Dragging has been initiated.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTerminate" observer="*">
+		<![CDATA[
+		TP.info('Dragging has been terminated.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDCompleted" observer="*">
+		<![CDATA[
+		TP.info('Dragging has been completed.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDFailed" observer="*">
+		<![CDATA[
+		TP.info('Dragging did not find a valid target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDSucceeded" observer="*">
+		<![CDATA[
+		TP.info('Dragging did find a valid target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOver" observer="validFitDestDiv">
+		<![CDATA[
+		TP.info('Over the fit drop target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOut" observer="validFitDestDiv">
+		<![CDATA[
+		TP.info('Out from over the fit drop target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOver" observer="validPointerDestDiv">
+		<![CDATA[
+		TP.info('Over the pointer drop target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOut" observer="validPointerDestDiv">
+		<![CDATA[
+		TP.info('Out from over the pointer drop target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOver" observer="validTouchDestDiv">
+		<![CDATA[
+		TP.info('Over the touch drop target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOut" observer="validTouchDestDiv">
+		<![CDATA[
+		TP.info('Out from over the touch drop target.');
+		]]>
+	</ev:script>
+
+</body>
+</html>
