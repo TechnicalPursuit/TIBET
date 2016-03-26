@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:dnd="http://www.technicalpursuit.com/2005/drag-and-drop">
+
+<head>
+	<title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+	<style type="text/css">
+	<![CDATA[
+	#backgroundDiv {
+		position: relative;
+
+		height: 400px;
+		width: 400px;
+
+		background-color: yellow;
+	}
+	#sourceDiv {
+		position: absolute;
+
+		top: 10px;
+
+		height: 100px;
+		width: 100px;
+
+		background-color: blue;
+	}
+	#validDestDiv {
+		position: absolute;
+
+		right: 0px;
+		height: 100px;
+		width: 100px;
+
+		background-color: green;
+	}
+	#invalidDestDiv {
+		position: absolute;
+
+		top: 150px;
+		right: 0px;
+		height: 100px;
+		width: 100px;
+
+		background-color: red;
+	}
+	]]>
+	</style>
+
+</head>
+
+<body>
+
+Start dragging blue blocks. A valid destination is the green block. An invalid destination is the red block. This uses the DND 'valid target' matching policy of 'FILTER_BY_PATH', which queries the document using a path and allows a valid target if the result of that path contains an element that also has 'dnd:accept' attribute on it.
+
+<div id="backgroundDiv">
+	<div id="sourceDiv" dnd:vend="//*[@foo='bar']" dnd:filter="path" drag:container=".."/>
+	<div id="validDestDiv" dnd:accept="true" foo="bar"/>
+	<div id="invalidDestDiv" dnd:accept="true"/>
+</div>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDInitiate" observer="*">
+		<![CDATA[
+		TP.info('Dragging has been initiated.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTerminate" observer="*">
+		<![CDATA[
+		TP.info('Dragging has been terminated.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDCompleted" observer="*">
+		<![CDATA[
+		TP.info('Dragging has been completed.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDFailed" observer="*">
+		<![CDATA[
+		TP.info('Dragging did not find a valid target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDSucceeded" observer="*">
+		<![CDATA[
+		TP.info('Dragging did find a valid target.');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOver" observer="validDestDiv">
+		<![CDATA[
+		TP.info('Over a valid drop target: ' + TP.gid(triggerSignal.getTarget()));
+		TP.elementPushAndSetStyleProperty(
+							triggerSignal.getTarget(),
+							'border',
+							'solid 3px orange');
+		]]>
+	</ev:script>
+
+	<ev:script type="text/javascript" event="TP.sig.DOMDNDTargetOut" observer="validDestDiv">
+		<![CDATA[
+        TP.info('Out from over a valid drop target: ' +
+                        TP.gid(triggerSignal.getTarget()));
+		TP.elementPopAndSetStyleProperty(triggerSignal.getTarget(), 'border');
+		]]>
+	</ev:script>
+
+</body>
+</html>
