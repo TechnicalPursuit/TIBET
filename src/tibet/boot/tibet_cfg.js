@@ -265,6 +265,9 @@
     //  the ID to the progress bar element; the one we set width on.
     TP.sys.setcfg('boot.uipercent', 'BOOT-PERCENT');
 
+    //  The splash graphic layer in the boot UI.
+    TP.sys.setcfg('boot.uisplash', 'BOOT-SPLASH');
+
     //  the ID to the post-boot command line container.
     TP.sys.setcfg('boot.uicommand', 'BOOT-COMMAND');
 
@@ -302,7 +305,7 @@
     TP.sys.setcfg('log.color.time', 'grey');
     TP.sys.setcfg('log.color.delta', 'grey');
     TP.sys.setcfg('log.color.slow', 'yellow');
-    TP.sys.setcfg('log.color.debug', 'magenta');
+    TP.sys.setcfg('log.color.debug', 'grey');
     TP.sys.setcfg('log.color.verbose', 'grey');
 
     //  ---

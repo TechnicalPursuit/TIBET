@@ -4379,10 +4379,17 @@ TP.boot.$$nodeAppendError = function(errEvent) {
     /**
      * @method $$nodeAppendError
      * @summary An error handler for $nodeAppendChild onerror hook processing.
+     *     Many errors can be caught by the global onerror handler but a missing
+     *     file cannot be trapped that way, you have to use a local onerror hook
+     *     on the script node itself.
      */
 
+    //  NOTE the setTimeout here is to keep Chrome DevTools from crashing.
     setTimeout(function() {
-        TP.boot.$stderr('Error loading ' + errEvent.target.src);
+        var level;
+
+        level = TP.sys.hasLoaded() ? TP.ERROR : TP.FATAL;
+        TP.boot.$stderr('Error locating ' + errEvent.target.src, TP.FATAL);
         $STATUS = TP.FAILED;
     }, 0);
 };
@@ -7630,6 +7637,47 @@ TP.boot.showUICanvas = function(aURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.boot.showUIConsole = function() {
+
+    /**
+     * @method showUIConsole
+     * @summary Displays the current tibet.uiconsole element in the
+     *     application's main window.
+     */
+
+    var boot,
+        doc,
+        elem;
+
+    elem = TP.boot.getUIBoot();
+    if (!elem) {
+        return;
+    }
+
+    doc = elem.contentWindow.document;
+    if (!doc) {
+        return;
+    }
+
+    //  Turn off splash display.
+    elem = doc.getElementById(TP.sys.cfg('boot.uisplash'));
+    if (elem) {
+        elem.style.display = 'none';
+    }
+
+    //  Turn on console display.
+    elem = doc.getElementById(TP.sys.cfg('boot.uiconsole'));
+    if (elem) {
+        elem.style.display = 'block';
+    }
+
+    //  Force log display to the last entry.
+    TP.boot.$flushLog(true);
+    TP.boot.$scrollLog();
+};
+
+//  ------------------------------------------------------------------------
+
 TP.boot.showUIRoot = function() {
 
     /**
@@ -8227,8 +8275,10 @@ TP.boot.$setStage = function(aStage, aReason) {
             (TP.boot.$getStageTime('stopped', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
             ' ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
-        TP.boot.$stdout('', TP.SYSTEM);
-        TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+        //TP.boot.$stdout('', TP.SYSTEM);
+        //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+
+        TP.boot.showUIConsole();
     }
 
     TP.boot.$flushLog(true);
@@ -11807,6 +11857,13 @@ TP.boot.$uiBootReady = function() {
      * @summary Called to complete the process of launching a new TIBET
      *     application once the UI boot frame is configured/loaded.
      */
+
+    var bar;
+
+    bar = TP.boot.$getProgressBarElement();
+    if (bar) {
+        bar.onclick = TP.boot.showUIConsole;
+    }
 
     TP.boot.$uiRootConfig();
 };
