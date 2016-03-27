@@ -352,7 +352,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     color: #aaa;
 }
 .flex-cell > .content.debug {
-    color: magenta;
+    color: #aaa;
 }
 .flex-cell > .content.info {
     color: black;

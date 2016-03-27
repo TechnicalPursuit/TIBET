@@ -55,7 +55,7 @@ prompt = require('readline-sync');
  *  info: 'white',
  *  warn: 'yellow',
  *  error: 'red',
- *  debug: 'magenta',
+ *  debug: 'grey',
  *  verbose: 'grey',
  *  system: 'cyan',
  *
@@ -254,7 +254,7 @@ CLI.debug = function(msg, verbose) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.magenta(msg));
+    console.log(chalk.grey(msg));
 };
 
 CLI.verbose = function(msg) {
