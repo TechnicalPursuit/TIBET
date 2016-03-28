@@ -98,7 +98,7 @@ function(beHidden) {
             drawerFinishedFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
-        }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+        }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
         this.showAllHUDDrawers();
     }

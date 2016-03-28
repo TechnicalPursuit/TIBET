@@ -300,7 +300,7 @@ function(name) {
     };
 
     //  why?
-    //typeConstructor.prototype.$$meta = this.$$meta;
+    // typeConstructor.prototype.$$meta = this.$$meta;
 
     //  create the 'type' as an instance of the type constructor side. This
     //  is the magic juju part. The object you get back isn't a function so
@@ -1462,7 +1462,7 @@ function(aDate, transformParams) {
     //  individual token variants can also be found, but we need to know
     //  which token set to look in
     if (/Z$/.test(str) && /%{/.test(str)) {
-        format = str.strip(/\Z$/);
+        format = str.strip(/Z$/);
 
         return format.substitute(aDate, Date.UTC_TOKENS);
     } else if (/\+$/.test(str) && /%{/.test(str)) {
@@ -1997,7 +1997,7 @@ function(aSignal, flags) {
         });
 
     return names;
-})
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2423,14 +2423,14 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
             continue;
         }
 
-        //asMethodName = 'as' + typ;
+        // asMethodName = 'as' + typ;
         asMethodName = 'as(\'' + typ + '\')';
 
         //  don't try to convert to ourselves...:)
         if (typ === anOrigin.getTypeName()) {
             TP.sys.logInference('Inferring this.' +
                             asMethodName +
-                            //'()' +
+                            // '()' +
                             '.... would recurse. Skipping.',
                             TP.DEBUG);
             continue;
@@ -2438,21 +2438,21 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
         TP.sys.logInference('Inferring this.' +
                             asMethodName +
-                            //'()' +
+                            // '()' +
                             '.' +
                             aMethodName +
                             '()',
                             TP.INFO);
 
         if (TP.sys.$$shouldInvokeInferences()) {
-            //if (TP.isCallable(anOrigin[asMethodName]))
-            //{
+            // if (TP.isCallable(anOrigin[asMethodName]))
+            // {
             TP.sys.logInference(
                     'Invoking ' +
                     TP.id(anOrigin) +
                     '.' +
                     asMethodName +
-                    //'()' +
+                    // '()' +
                     '.' +
                     aMethodName +
                     '();!',
@@ -2481,13 +2481,13 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
             //  do this in two parts for now to ensure proper
             //  binding as we move along the path...if you don't
             //  split this out the binding doesn't work properly
-            //inst = anOrigin[asMethodName]();
-            //return inst[aMethodName].apply(inst, anArgArray);
+            // inst = anOrigin[asMethodName]();
+            // return inst[aMethodName].apply(inst, anArgArray);
 
             //  here's the hotspot version
             s = 'var inst;\n' +
                 'var res;\n' +
-                'inst=this.' + asMethodName + ';\n' + //'();\n' +
+                'inst=this.' + asMethodName + ';\n' + // '();\n' +
                 'if (TP.notValid(inst)) return;\n' +
                 'res=inst.' + aMethodName +
                     '.apply(inst, arguments);\n' +
@@ -2496,7 +2496,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
             //  "return res.as('" + anOrigin.getTypeName() + "');\n";
 
             //  Original version...no return type reconvert.
-            //s = 'var inst;\n' +
+            // s = 'var inst;\n' +
             //  'inst=this.' + asMethodName + '();\n' +
             //  'return inst.' + aMethodName +
             //    '.apply(inst, arguments);';
@@ -2507,7 +2507,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
             f = TP.fc(s);
 
-            //f = new Function(s);
+            // f = new Function(s);
 
             //  install our new function on the receiver...next
             //  time there won't be any inferencing it will just
@@ -4498,7 +4498,7 @@ function() {
         //  don't add it to the list. It is, after all, found under the same
         //  child's name - so the system has uniqued it.
         if (ref.indexOf(parentName) >= 0) {
-            //throw new Error('Duplicate parent');
+            // throw new Error('Duplicate parent');
             return this;
         }
 
@@ -7604,8 +7604,6 @@ function() {
     } else {
         return this.raise('TP.sig.InvalidType', this);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -9058,7 +9056,7 @@ TP.lang.RootObject.Inst.defineMethod('callNextMethod',
                         TP.lang.RootObject[TP.TYPEC].prototype.callNextMethod);
 
 //  to avoid problems with native types getting this invoked on them we
-//TP.ObjectProto.addLocalMethod('callNextMethod', TP.RETURN_NULL);
+// TP.ObjectProto.addLocalMethod('callNextMethod', TP.RETURN_NULL);
 
 //  ------------------------------------------------------------------------
 

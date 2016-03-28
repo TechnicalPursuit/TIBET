@@ -52,7 +52,7 @@ function() {
 
     TP.nodeEmptyContent(body);
 
-    //var data = TP.extern.d3.range(10).map(Math.random);
+    // var data = TP.extern.d3.range(10).map(Math.random);
 
     w = 430;
     h = 230;

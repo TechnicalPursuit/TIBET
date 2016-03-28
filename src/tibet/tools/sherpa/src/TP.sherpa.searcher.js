@@ -42,7 +42,7 @@ TP.sherpa.searcher.Inst.defineAttribute(
         'resultsList',
         {value: TP.cpc('.results_list', TP.hc('shouldCollapse', true))});
 
-//TP.sherpa.searcher.Inst.defineAttribute(
+// TP.sherpa.searcher.Inst.defineAttribute(
 //        'resultDetail',
 //        {value: TP.cpc('.result_detail', TP.hc('shouldCollapse', true))});
 

@@ -628,8 +628,6 @@ function(aNode) {
             return this.raise('TP.sig.InvalidNode',
                                 'Unable to determine node type.');
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1240,7 +1238,7 @@ function() {
     nativeNode = this.getNativeNode();
 
     return '[' + TP.tname(this) + ' (' + TP.tname(nativeNode) + ')' +
-                    ' :: ' + this.asString() + ']'
+                    ' :: ' + this.asString() + ']';
 });
 
 //  ------------------------------------------------------------------------
@@ -1363,15 +1361,15 @@ function() {
     nativeNode = this.getNativeNode();
 
     return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         TP.tname(nativeNode) +
-                    '<\/dd>' +
-                    '<dt class="pretty key">Content<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">Content</dt>' +
                     '<dd class="pretty value">' +
                         TP.pretty(nativeNode) +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -1521,7 +1519,7 @@ function() {
     try {
         str = '<instance type="' + TP.tname(this) + '">' +
                     TP.xmlstr(this.getNativeNode()) +
-                    '<\/instance>';
+                    '</instance>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -2925,7 +2923,7 @@ function(attributeName, attributeValue, shouldSignal) {
     try {
         model[attributeName] = TP.ifUndefined(attributeValue, null);
         if (model[attributeName] === attributeValue) {
-            //this.modelChanged(attributeName);
+            // this.modelChanged(attributeName);
 
             //  NB: Use this construct this way for better performance
             if (TP.notValid(flag = shouldSignal)) {
@@ -17572,8 +17570,6 @@ function(aNode) {
                                     node);
             }
 
-            break;
-
         case 'base64':
 
             if (TP.isNode(tagChild)) {
@@ -17589,8 +17585,6 @@ function(aNode) {
             } else {
                 return null;
             }
-
-            break;
 
         case 'boolean':
 
@@ -17659,8 +17653,6 @@ function(aNode) {
                 return TP.isNode(tagChild) ?
                             TP.str(tagChild.nodeValue) : null;
             }
-
-            break;
 
         default:
 

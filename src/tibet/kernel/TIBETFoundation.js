@@ -307,7 +307,7 @@ function(aName, shouldFault) {
         if (TP.regex.META_TYPENAME.test(tName)) {
             tName = tName.replace(/\.meta\./, '.');
             if (TP.isValid(entry = typeMetadata.at(tName))) {
-                type = entry; //.typeObj;
+                type = entry; // .typeObj;
             }
 
             if (TP.isType(type)) {
@@ -321,17 +321,17 @@ function(aName, shouldFault) {
             !TP.regex.APP_TYPENAME.test(tName)) {
             //  Type name has no prefix. We'll have to check both.
             if (TP.isValid(entry = typeMetadata.at('TP.' + tName))) {
-                type = entry; //.typeObj;
+                type = entry; // .typeObj;
             }
 
             if (!type) {
                 if (TP.isValid(entry = typeMetadata.at('APP.' + tName))) {
-                    type = entry; //.typeObj;
+                    type = entry; // .typeObj;
                 }
             }
         } else {
             if (TP.isValid(entry = typeMetadata.at(tName))) {
-                type = entry; //.typeObj;
+                type = entry; // .typeObj;
             }
         }
 
@@ -920,7 +920,7 @@ function() {
 
                 //  Ignore the opening and closing lines for a doc comment.
                 if (str.startsWith('/**') || str.startsWith('*/')) {
-                    return;
+                    return undefined;
                 }
 
                 //  If the line's starting text is @example turn off whitespace
@@ -1112,7 +1112,8 @@ function(newMethodText) {
     match = content.match(matcher);
     if (TP.notValid(match)) {
         TP.ifWarn() ?
-            TP.warn('Unable to generate method patch. Method index not found.'):
+            TP.warn('Unable to generate method patch.' +
+                        ' Method index not found.') :
             0;
         return null;
     }
@@ -2638,12 +2639,12 @@ function(aDescriptor, aHandler, isCapturing) {
     }
 
     desc = aDescriptor;
-    if (isCapturing)  {
+    if (isCapturing) {
         if (TP.isString(aDescriptor)) {
             desc = {
                 signal: aDescriptor,
                 phase: TP.CAPTURING
-            }
+            };
         } else {
             desc.phase = TP.CAPTURING;
         }
@@ -3066,7 +3067,7 @@ function(aFilter) {
         propScope;
 
         // TODO: why don't we use this value?
-        //proto;
+        // proto;
 
     //  shortcut for using this method to get all keys of any kind.
     if (aFilter === 'known' || aFilter === TP.SLOT_FILTERS.known) {
@@ -4303,13 +4304,13 @@ function() {
 
         for (i = 0; i < len; i++) {
             arr.push(
-                TP.join('<dt class="pretty key">', keys[i], '<\/dt>',
+                TP.join('<dt class="pretty key">', keys[i], '</dt>',
                         '<dd class="pretty value">',
                             TP.pretty(this[keys[i]]),
-                        '<\/dd>'));
+                        '</dd>'));
         }
 
-        str = '<dl class="pretty">' + arr.join(', ') + '<\/dl>';
+        str = '<dl class="pretty">' + arr.join(', ') + '</dl>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -5783,7 +5784,7 @@ function(objectA, objectB, aType) {
 
     /* jshint eqeqeq:false */
     /* eslint-disable eqeqeq */
-    //return objectA == objectB;
+    // return objectA == objectB;
     /* eslint-enable eqeqeq */
     /* jshint eqeqeq:true */
 });
@@ -8928,7 +8929,7 @@ function(aFunction, anObject) {
 
     //  only going to find one match if we're not global...but if we're
     //  global then we'd have to run it to see how many matches we get
-    //len = this.global ? NaN : 1;
+    // len = this.global ? NaN : 1;
 
     //  the replace call is what drives the actual iteration so we don't
     //  have to construct a loop here. what we do have to do is create a
@@ -9121,8 +9122,6 @@ function(anItem, aTest) {
 
             return TP.equal(val, anItem.last());
     }
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------

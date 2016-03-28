@@ -16,7 +16,7 @@
  *     package configuration property tags.
  */
 
-/*global TP:true*/
+/* global TP:true */
 
 (function(root) {
 
@@ -622,7 +622,7 @@
 
     //  path to the json file (which avoids x-domain security issues) with the
     //  latest TIBET release data for version checking the root library.
-    //TP.sys.setcfg('path.lib_version_file',
+    // TP.sys.setcfg('path.lib_version_file',
     //  'http://127.0.0.1:1234/tibet/latest.js');
     TP.sys.setcfg('path.lib_version_file',
         'http://www.technicalpursuit.com/tibet/latest.js');
@@ -1673,7 +1673,7 @@
 
 //  ----------------------------------------------------------------------------
 
-}(this||global));
+}(this || global));
 
 //  ----------------------------------------------------------------------------
 //  end

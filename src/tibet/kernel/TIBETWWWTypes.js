@@ -261,14 +261,14 @@ function() {
             TP.escapeTypeName(TP.tname(this)) + '">' +
                 '<span data-name="doctypename">' +
                     TP.htmlstr(this.get('docTypeName')) +
-                '<\/span>' +
+                '</span>' +
                 '<span data-name="publicID">' +
                     TP.htmlstr(this.get('publicID')) +
-                '<\/span>' +
+                '</span>' +
                 '<span data-name="systemID">' +
                     TP.htmlstr(this.get('systemID')) +
-                '<\/span>' +
-            '<\/span>';
+                '</span>' +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -312,23 +312,23 @@ function() {
      */
 
     return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">DOCTYPE:<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">DOCTYPE:</dt>' +
                     '<dd class="pretty value">' +
                         this.get('docTypeName') +
-                    '<\/dd>' +
-                    '<dt class="pretty key">PUBLIC:<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">PUBLIC:</dt>' +
                     '<dd class="pretty value">' +
                         this.get('publicID') +
-                    '<\/dd>' +
-                    '<dt class="pretty key">SYSTEM:<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">SYSTEM:</dt>' +
                     '<dd class="pretty value">' +
                         this.get('systemID') +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -395,14 +395,14 @@ function() {
     return '<instance type="' + TP.tname(this) + '">' +
                         '<doctypename>' +
                             TP.xmlstr(this.get('docTypeName')) +
-                        '<\/doctypename>' +
+                        '</doctypename>' +
                         '<publicID>' +
                             TP.xmlstr(this.get('publicID')) +
-                        '<\/publicID>' +
+                        '</publicID>' +
                         '<systemID>' +
                             TP.xmlstr(this.get('systemID')) +
-                        '<\/systemID>' +
-                    '<\/instance>';
+                        '</systemID>' +
+                    '</instance>';
 });
 
 //  ========================================================================

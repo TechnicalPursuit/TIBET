@@ -229,9 +229,9 @@ function() {
 
     try {
         str = '<span class="TP_core_Point">' +
-                    '<span data-name="x">' + data.x + '<\/span>' +
-                    '<span data-name="y">' + data.y + '<\/span>' +
-                '<\/span>';
+                    '<span data-name="x">' + data.x + '</span>' +
+                    '<span data-name="y">' + data.y + '</span>' +
+                '</span>';
     } catch (e) {
         str = this.toString();
     }
@@ -280,19 +280,19 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">x<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">x</dt>' +
                     '<dd class="pretty value">' +
                         data.x +
-                    '<\/dd>' +
-                    '<dt class="pretty key">y<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">y</dt>' +
                     '<dd class="pretty value">' +
                         data.y +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
     } catch (e) {
         str = this.toString();
     }
@@ -360,7 +360,7 @@ function() {
     try {
         str = '<instance type="' + TP.tname(this) + '"' +
                 ' x="' + data.x + '" y="' + data.y + '"' +
-                '\/>';
+                '/>';
     } catch (e) {
         str = this.toString();
     }
@@ -1155,11 +1155,11 @@ function() {
 
     try {
         str = '<span class="TP_core_Rect">' +
-                    '<span data-name="x">' + data.x + '<\/span>' +
-                    '<span data-name="y">' + data.y + '<\/span>' +
-                    '<span data-name="width">' + data.width + '<\/span>' +
-                    '<span data-name="height">' + data.height + '<\/span>' +
-                '<\/span>';
+                    '<span data-name="x">' + data.x + '</span>' +
+                    '<span data-name="y">' + data.y + '</span>' +
+                    '<span data-name="width">' + data.width + '</span>' +
+                    '<span data-name="height">' + data.height + '</span>' +
+                '</span>';
     } catch (e) {
         str = this.toString();
     }
@@ -1210,27 +1210,27 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">x<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">x</dt>' +
                     '<dd class="pretty value">' +
                         data.x +
-                    '<\/dd>' +
-                    '<dt class="pretty key">y<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">y</dt>' +
                     '<dd class="pretty value">' +
                         data.y +
-                    '<\/dd>' +
-                    '<dt class="pretty key">width<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">width</dt>' +
                     '<dd class="pretty value">' +
                         data.width +
-                    '<\/dd>' +
-                    '<dt class="pretty key">height<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">height</dt>' +
                     '<dd class="pretty value">' +
                         data.height +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
     } catch (e) {
         str = this.toString();
     }
@@ -1302,7 +1302,7 @@ function() {
         str = '<instance type="' + TP.tname(this) + '"' +
                 ' x="' + data.x + '" y="' + data.y + '"' +
                 ' width="' + data.width + '" height="' + data.height + '"' +
-                 '\/>';
+                 '/>';
     } catch (e) {
         str = this.toString();
     }
@@ -1393,8 +1393,6 @@ function(aPoint) {
             return TP.pc(0, 0);
         /* jshint +W086 */
     }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -3458,13 +3456,13 @@ function() {
 
     try {
         str = '<span class="TP_core_Matrix">' +
-                    '<span data-name="xx">' + data.xx + '<\/span>' +
-                    '<span data-name="xy">' + data.xy + '<\/span>' +
-                    '<span data-name="yx">' + data.yx + '<\/span>' +
-                    '<span data-name="yy">' + data.yy + '<\/span>' +
-                    '<span data-name="dx">' + data.dx + '<\/span>' +
-                    '<span data-name="dy">' + data.dy + '<\/span>' +
-                '<\/span>';
+                    '<span data-name="xx">' + data.xx + '</span>' +
+                    '<span data-name="xy">' + data.xy + '</span>' +
+                    '<span data-name="yx">' + data.yx + '</span>' +
+                    '<span data-name="yy">' + data.yy + '</span>' +
+                    '<span data-name="dx">' + data.dx + '</span>' +
+                    '<span data-name="dy">' + data.dy + '</span>' +
+                '</span>';
     } catch (e) {
         str = this.toString();
     }
@@ -3517,35 +3515,35 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">xx<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">xx</dt>' +
                     '<dd class="pretty value">' +
                         data.xx +
-                    '<\/dd>' +
-                    '<dt class="pretty key">xy<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">xy</dt>' +
                     '<dd class="pretty value">' +
                         data.xy +
-                    '<\/dd>' +
-                    '<dt class="pretty key">yx<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">yx</dt>' +
                     '<dd class="pretty value">' +
                         data.yx +
-                    '<\/dd>' +
-                    '<dt class="pretty key">yy<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">yy</dt>' +
                     '<dd class="pretty value">' +
                         data.yy +
-                    '<\/dd>' +
-                    '<dt class="pretty key">dx<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">dx</dt>' +
                     '<dd class="pretty value">' +
                         data.dx +
-                    '<\/dd>' +
-                    '<dt class="pretty key">dy<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">dy</dt>' +
                     '<dd class="pretty value">' +
                         data.dy +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
     } catch (e) {
         str = this.toString();
     }
@@ -3634,7 +3632,7 @@ function() {
                 ' xx="' + data.xx + '" xy="' + data.xy + '"' +
                 ' yx="' + data.yx + '" yy="' + data.yy + '"' +
                 ' dx="' + data.dx + '" dy="' + data.dy + '"' +
-                 '\/>';
+                 '/>';
     } catch (e) {
         str = this.toString();
     }
@@ -4240,11 +4238,11 @@ function() {
 
     try {
         str = '<span class="TP_core_Color">' +
-                    '<span data-name="r">' + data.r + '<\/span>' +
-                    '<span data-name="g">' + data.g + '<\/span>' +
-                    '<span data-name="b">' + data.b + '<\/span>' +
-                    '<span data-name="a">' + data.a + '<\/span>' +
-                '<\/span>';
+                    '<span data-name="r">' + data.r + '</span>' +
+                    '<span data-name="g">' + data.g + '</span>' +
+                    '<span data-name="b">' + data.b + '</span>' +
+                    '<span data-name="a">' + data.a + '</span>' +
+                '</span>';
     } catch (e) {
         str = this.toString();
     }
@@ -4387,27 +4385,27 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">R<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">R</dt>' +
                     '<dd class="pretty value">' +
                         data.r +
-                    '<\/dd>' +
-                    '<dt class="pretty key">G<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">G</dt>' +
                     '<dd class="pretty value">' +
                         data.g +
-                    '<\/dd>' +
-                    '<dt class="pretty key">B<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">B</dt>' +
                     '<dd class="pretty value">' +
                         data.b +
-                    '<\/dd>' +
-                    '<dt class="pretty key">A<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">A</dt>' +
                     '<dd class="pretty value">' +
                         data.a +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
     } catch (e) {
         str = this.toString();
     }
@@ -4435,7 +4433,7 @@ function() {
         str = '<instance type="' + TP.tname(this) + '"' +
                 ' r="' + data.r + '" g="' + data.g + '"' +
                 ' b="' + data.b + '" a="' + data.a + '"' +
-                 '\/>';
+                 '/>';
     } catch (e) {
         str = this.toString();
     }
@@ -5164,7 +5162,7 @@ function() {
 
     try {
         str = '<span class="TP_core_LinearGradient">' +
-                '<span data-name="angle">' + this.get('angle') + '<\/span>';
+                '<span data-name="angle">' + this.get('angle') + '</span>';
 
         if (TP.notEmpty(this.get('stops'))) {
 
@@ -5177,16 +5175,16 @@ function() {
                          '<span data-name="stop">' +
                             '<span data-name="value">' +
                                 aStopValue +
-                            '<\/span>' +
+                            '</span>' +
                             '<span data-name="color">' +
                                 TP.htmlstr(aColorValue) +
-                            '<\/span>' +
-                        '<\/span>';
+                            '</span>' +
+                        '</span>';
                 },
                 this.get('colors'));
         }
 
-        str += '<\/span>';
+        str += '</span>';
     } catch (e) {
         str = this.toString();
     }
@@ -5250,14 +5248,14 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">angle<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">angle</dt>' +
                     '<dd class="pretty value">' +
                         this.get('angle') +
-                    '<\/dd>';
+                    '</dd>';
 
         if (TP.notEmpty(this.get('stops'))) {
 
@@ -5267,22 +5265,22 @@ function() {
                 function(aStopValue, aColorValue) {
 
                     str +=
-                        '<dt class="pretty key">stop<\/dt>' +
+                        '<dt class="pretty key">stop</dt>' +
                         '<dd class="pretty value">' +
                         '<dl>' +
-                            '<dt class="pretty key">value<\/dt>' +
-                            '<dd class="pretty value">' + aStopValue + '<\/dd>' +
-                            '<dt class="pretty key">color<\/dt>' +
+                            '<dt class="pretty key">value</dt>' +
+                            '<dd class="pretty value">' + aStopValue + '</dd>' +
+                            '<dt class="pretty key">color</dt>' +
                             '<dd class="pretty value">' +
                                 TP.pretty(aColorValue) +
-                            '<\/dd>' +
-                        '<\/dl>' +
-                        '<\/dd>';
+                            '</dd>' +
+                        '</dl>' +
+                        '</dd>';
                 },
                 this.get('colors'));
         }
 
-        str += '<\/dl>';
+        str += '</dl>';
     } catch (e) {
         str = this.toString();
     }
@@ -5403,14 +5401,14 @@ function() {
 
                     str +=
                          '<stop>' +
-                            '<value>' + aStopValue + '<\/value>' +
-                            '<color>' + TP.xmlstr(aColorValue) + '<\/color>' +
-                        '<\/stop>';
+                            '<value>' + aStopValue + '</value>' +
+                            '<color>' + TP.xmlstr(aColorValue) + '</color>' +
+                        '</stop>';
                 },
                 this.get('colors'));
         }
 
-        str += '<\/instance>';
+        str += '</instance>';
     } catch (e) {
         str = this.toString();
     }
@@ -5711,8 +5709,8 @@ function() {
 
     try {
         str = '<span class="TP_core_RadialGradient">' +
-                '<span data-name="cx">' + this.get('cx') + '<\/span>' +
-                '<span data-name="cy">' + this.get('cy') + '<\/span>';
+                '<span data-name="cx">' + this.get('cx') + '</span>' +
+                '<span data-name="cy">' + this.get('cy') + '</span>';
 
         if (TP.notEmpty(this.get('stops'))) {
 
@@ -5725,16 +5723,16 @@ function() {
                          '<span data-name="stop">' +
                             '<span data-name="value">' +
                                 aStopValue +
-                            '<\/span>' +
+                            '</span>' +
                             '<span data-name="color">' +
                                 TP.htmlstr(aColorValue) +
-                            '<\/span>' +
-                        '<\/span>';
+                            '</span>' +
+                        '</span>';
                 },
                 this.get('colors'));
         }
 
-        str += '<\/span>';
+        str += '</span>';
     } catch (e) {
         str = this.toString();
     }
@@ -5773,18 +5771,18 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">cx<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">cx</dt>' +
                     '<dd class="pretty value">' +
                         this.get('cx') +
-                    '<\/dd>' +
-                    '<dt class="pretty key">cy<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">cy</dt>' +
                     '<dd class="pretty value">' +
                         this.get('cy') +
-                    '<\/dd>';
+                    '</dd>';
 
         if (TP.notEmpty(this.get('stops'))) {
 
@@ -5794,22 +5792,22 @@ function() {
                 function(aStopValue, aColorValue) {
 
                     str +=
-                        '<dt class="pretty key">stop<\/dt>' +
+                        '<dt class="pretty key">stop</dt>' +
                         '<dd class="pretty value">' +
                         '<dl>' +
-                            '<dt class="pretty key">value<\/dt>' +
-                            '<dd class="pretty value">' + aStopValue + '<\/dd>' +
-                            '<dt class="pretty key">color<\/dt>' +
+                            '<dt class="pretty key">value</dt>' +
+                            '<dd class="pretty value">' + aStopValue + '</dd>' +
+                            '<dt class="pretty key">color</dt>' +
                             '<dd class="pretty value">' +
                                 TP.pretty(aColorValue) +
-                            '<\/dd>' +
-                        '<\/dl>' +
-                        '<\/dd>';
+                            '</dd>' +
+                        '</dl>' +
+                        '</dd>';
                 },
                 this.get('colors'));
         }
 
-        str += '<\/dl>';
+        str += '</dl>';
     } catch (e) {
         str = this.toString();
     }
@@ -5906,14 +5904,14 @@ function() {
 
                     str +=
                          '<stop>' +
-                            '<value>' + aStopValue + '<\/value>' +
-                            '<color>' + TP.xmlstr(aColorValue) + '<\/color>' +
-                        '<\/stop>';
+                            '<value>' + aStopValue + '</value>' +
+                            '<color>' + TP.xmlstr(aColorValue) + '</color>' +
+                        '</stop>';
                 },
                 this.get('colors'));
         }
 
-        str += '<\/instance>';
+        str += '</instance>';
     } catch (e) {
         str = this.toString();
     }
@@ -6084,12 +6082,12 @@ function() {
 
     try {
         str = '<span class="TP_core_Pattern">' +
-                '<span data-name="x">' + this.get('x') + '<\/span>' +
-                '<span data-name="y">' + this.get('y') + '<\/span>' +
-                '<span data-name="width">' + this.get('width') + '<\/span>' +
-                '<span data-name="height">' + this.get('height') + '<\/span>' +
-                '<span data-name="url">' + this.get('url') + '<\/span>' +
-            '<\/span>';
+                '<span data-name="x">' + this.get('x') + '</span>' +
+                '<span data-name="y">' + this.get('y') + '</span>' +
+                '<span data-name="width">' + this.get('width') + '</span>' +
+                '<span data-name="height">' + this.get('height') + '</span>' +
+                '<span data-name="url">' + this.get('url') + '</span>' +
+            '</span>';
     } catch (e) {
         str = this.toString();
     }
@@ -6134,31 +6132,31 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">x<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">x</dt>' +
                     '<dd class="pretty value">' +
                         this.get('x') +
-                    '<\/dd>' +
-                    '<dt class="pretty key">y<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">y</dt>' +
                     '<dd class="pretty value">' +
                         this.get('y') +
-                    '<\/dd>' +
-                    '<dt class="pretty key">width<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">width</dt>' +
                     '<dd class="pretty value">' +
                         this.get('width') +
-                    '<\/dd>' +
-                    '<dt class="pretty key">height<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">height</dt>' +
                     '<dd class="pretty value">' +
                         this.get('height') +
-                    '<\/dd>' +
-                    '<dt class="pretty key">url<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">url</dt>' +
                     '<dd class="pretty value">' +
                         this.get('uri') +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
     } catch (e) {
         str = this.toString();
     }
@@ -6234,9 +6232,9 @@ function() {
                 '" height="' + this.get('height') + '"' +
                 '>';
 
-        str += '<url>' + TP.xmlstr(this.get('uri')) + '<\/url>';
+        str += '<url>' + TP.xmlstr(this.get('uri')) + '</url>';
 
-        str += '<\/instance>';
+        str += '</instance>';
     } catch (e) {
         str = this.toString();
     }
@@ -6519,7 +6517,7 @@ function() {
 
     return '<span class="TP_core_Pattern">' +
                 TP.htmlstr(this.get('pathSegments')) +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -6553,15 +6551,15 @@ function() {
      */
 
     return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">Segments<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">Segments</dt>' +
                     '<dd class="pretty value">' +
                         TP.pretty(this.asString()) +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -6604,7 +6602,7 @@ function() {
 
     return '<instance type="' + TP.tname(this) + '">' +
                     TP.xmlstr(this.asString()) +
-                    '<\/instance>';
+                    '</instance>';
 });
 
 //  ------------------------------------------------------------------------

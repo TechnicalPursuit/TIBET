@@ -862,7 +862,7 @@ TP.hc(
         if (TP.notEmpty(str = errorObj.stack)) {
             entries = str.
                 replace(/\[native code\]\n/m, '').
-                replace(/^(?=\w+Error\:).*$\n/m, '').
+                replace(/^(?=\w+Error:).*$\n/m, '').
                 replace(/^@/gm, '{anonymous}()@').
                 split('\n');
         }

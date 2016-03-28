@@ -2073,7 +2073,7 @@ function(anObject) {
     }
 
     if (TP.isString(anObject)) {
-        return str += anObject + ']'
+        return str += anObject + ']';
     }
 
     if (!TP.isMutable(anObject)) {
@@ -2235,9 +2235,9 @@ function(anObject) {
         rules;
 
     if (anObject === null) {
-        return '<dl class="pretty Null"><dt\/><dd>null<\/dd><\/dl>';
+        return '<dl class="pretty Null"><dt/><dd>null</dd></dl>';
     } else if (anObject === undefined) {
-        return '<dl class="pretty Undefined"><dt\/><dd>undefined<\/dd><\/dl>';
+        return '<dl class="pretty Undefined"><dt/><dd>undefined</dd></dl>';
     }
 
     //  XMLHttpRequest can have permission issues, so check early
@@ -2252,15 +2252,15 @@ function(anObject) {
 
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) +
                         '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' + TP.tname(anObject) +
-                        '<\/dd>' +
-                    '<dt class="pretty key">Status<\/dt>' +
-                    '<dd class="pretty value">' + xhrStatus + '<\/dd>' +
-                    '<dt class="pretty key">Response text<\/dt>' +
+                        '</dd>' +
+                    '<dt class="pretty key">Status</dt>' +
+                    '<dd class="pretty value">' + xhrStatus + '</dd>' +
+                    '<dt class="pretty key">Response text</dt>' +
                     '<dd class="pretty value">' +
                         TP.str(anObject.responseText).asEscapedXML() +
-                    '<\/dd>' +
+                    '</dd>' +
                 '</dl>';
     }
 
@@ -2269,28 +2269,28 @@ function(anObject) {
     if (TP.isNode(anObject)) {
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) +
                         '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' + TP.tname(anObject) +
-                        '<\/dd>' +
-                    '<dt class="pretty key">Content<\/dt>' +
+                        '</dd>' +
+                    '<dt class="pretty key">Content</dt>' +
                     '<dd class="pretty value">' +
                         TP.nodeAsString(anObject).asEscapedXML() +
-                    '<\/dd>' +
-                '<\/dl>';
+                    '</dd>' +
+                '</dl>';
     }
 
     //  got to check Errors next... they freak out if handed to TP.isString().
     if (TP.isError(anObject)) {
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) +
                         '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' + TP.tname(anObject) +
-                        '<\/dd>' +
-                    '<dt class="pretty key">Message<\/dt>' +
+                        '</dd>' +
+                    '<dt class="pretty key">Message</dt>' +
                     '<dd class="pretty value">' +
                         TP.str(anObject.message) +
-                    '<\/dd>' +
-                '<\/dl>';
+                    '</dd>' +
+                '</dl>';
     }
 
     //  Since these are all non-mutable, we must do this before the next check
@@ -2324,15 +2324,15 @@ function(anObject) {
 
         len = anObject.length;
         for (i = 0; i < len; i++) {
-            arr.push('<dt class="pretty key">', i, '<\/dt>',
-                        '<dd class="pretty value">', TP.nodeAsString(anObject[i]).asEscapedXML(), '<\/dd>');
+            arr.push('<dt class="pretty key">', i, '</dt>',
+                        '<dd class="pretty value">', TP.nodeAsString(anObject[i]).asEscapedXML(), '</dd>');
         }
 
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) + '">' +
-                    '<dt>Type name<\/dt>' +
-                    '<dd class="pretty typename">' + TP.tname(anObject) + '<\/dd>' +
+                    '<dt>Type name</dt>' +
+                    '<dd class="pretty typename">' + TP.tname(anObject) + '</dd>' +
                     arr.join('') +
-                '<\/dl>';
+                '</dl>';
     }
 
     //  NamedNodeMap objects
@@ -2341,15 +2341,15 @@ function(anObject) {
 
         len = anObject.length;
         for (i = 0; i < len; i++) {
-            arr.push('<dt class="pretty key">', TP.name(anObject.item(i)), '<\/dt>',
-                        '<dd class="pretty value">', TP.val(anObject.item(i)), '<\/dd>');
+            arr.push('<dt class="pretty key">', TP.name(anObject.item(i)), '</dt>',
+                        '<dd class="pretty value">', TP.val(anObject.item(i)), '</dd>');
         }
 
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) + '">' +
-                    '<dt>Type name<\/dt>' +
-                    '<dd class="pretty typename">' + TP.tname(anObject) + '<\/dd>' +
+                    '<dt>Type name</dt>' +
+                    '<dd class="pretty typename">' + TP.tname(anObject) + '</dd>' +
                     arr.join('') +
-                '<\/dl>';
+                '</dl>';
     }
 
     //  Stylesheet objects
@@ -2360,35 +2360,35 @@ function(anObject) {
 
         len = rules.length;
         for (i = 0; i < len; i++) {
-            arr.push('<dt class="pretty key">', i, '<\/dt>',
-                        '<dd class="pretty value">', rules[i].cssText, '<\/dd>');
+            arr.push('<dt class="pretty key">', i, '</dt>',
+                        '<dd class="pretty value">', rules[i].cssText, '</dd>');
         }
 
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) + '">' +
-                    '<dt>Type name<\/dt>' +
-                    '<dd class="pretty typename">' + TP.tname(anObject) + '<\/dd>' +
+                    '<dt>Type name</dt>' +
+                    '<dd class="pretty typename">' + TP.tname(anObject) + '</dd>' +
                     arr.join('') +
-                '<\/dl>';
+                '</dl>';
     }
 
     //  Style rule objects
     if (TP.isStyleRule(anObject)) {
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) + '">' +
-                    '<dt>Type name<\/dt>' +
-                    '<dd class="pretty typename">' + TP.tname(anObject) + '<\/dd>' +
-                    '<dt class="pretty key">Content<\/dt>' +
-                    '<dd class="pretty value">' + anObject.cssText + '<\/dd>' +
-                '<\/dl>';
+                    '<dt>Type name</dt>' +
+                    '<dd class="pretty typename">' + TP.tname(anObject) + '</dd>' +
+                    '<dt class="pretty key">Content</dt>' +
+                    '<dd class="pretty value">' + anObject.cssText + '</dd>' +
+                '</dl>';
     }
 
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
         return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(anObject)) + '">' +
-                    '<dt>Type name<\/dt>' +
-                    '<dd class="pretty typename">' + TP.tname(anObject) + '<\/dd>' +
-                    '<dt class="pretty key">Content<\/dt>' +
-                    '<dd class="pretty value">' + anObject.cssText + '<\/dd>' +
-                '<\/dl>';
+                    '<dt>Type name</dt>' +
+                    '<dd class="pretty typename">' + TP.tname(anObject) + '</dd>' +
+                    '<dt class="pretty key">Content</dt>' +
+                    '<dd class="pretty value">' + anObject.cssText + '</dd>' +
+                '</dl>';
     }
 
     if (TP.canInvoke(anObject, 'asPrettyString')) {
@@ -2428,7 +2428,7 @@ function(anObject, aKey) {
         delete anObject[aKey];
 
         //  Update our key to the original key name.
-        key = aKey.replace('\$\$recursive_', '');
+        key = aKey.replace('$$recursive_', '');
         gid = TP.gid(anObject);
 
         TP.warn('Circular reference(s) in ' + gid + ' (' + key + ')');

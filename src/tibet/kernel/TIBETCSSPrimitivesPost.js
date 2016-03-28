@@ -1526,8 +1526,6 @@ function(anElement, aProperty) {
     } else {
         return null;
     }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------

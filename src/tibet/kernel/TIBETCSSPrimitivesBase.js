@@ -13,8 +13,7 @@
 
 /* JSHint checking */
 
-/* global CSSRule:false,
-          CSSPrimitiveValue:false
+/* global CSSRule:false
 */
 
 //  ------------------------------------------------------------------------
@@ -1517,11 +1516,11 @@ function(aStyleRule, sourceASTs) {
 
     //  Compute a vendor prefix.
     if (TP.sys.isUA('GECKO')) {
-        vendorPrefix = '-moz-'
+        vendorPrefix = '-moz-';
     } else if (TP.sys.isUA('IE')) {
-        vendorPrefix = '-ms-'
+        vendorPrefix = '-ms-';
     } else if (TP.sys.isUA('WEBKIT')) {
-        vendorPrefix = '-webkit-'
+        vendorPrefix = '-webkit-';
     }
 
     //  Now iterate through all results in the AST, looking for the style rule

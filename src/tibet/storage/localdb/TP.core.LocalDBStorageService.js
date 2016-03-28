@@ -429,7 +429,7 @@ function(aRequest) {
     commObj.response = resultData;
     commObj.responseType = resultType;
     commObj.responseText = str;
-    commObj.responseXML = TP.isDocument(resultData) ? resultData : null,
+    commObj.responseXML = TP.isDocument(resultData) ? resultData : null;
 
     request.complete(resultData);
 

@@ -145,7 +145,7 @@ function(code, params) {
 
         //  (ss) bad idea to set a param to a value...and code isn't
         //  referenced anywhere below this.
-        //code = codestr;
+        // code = codestr;
 
         // Checksum
         checkstr = '';

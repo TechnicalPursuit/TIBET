@@ -2313,7 +2313,7 @@ function() {
     return '<span class="TP_core_AccessPath ' +
                     TP.escapeTypeName(TP.tname(this)) + '">' +
                 this.asString() +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -2353,15 +2353,15 @@ function() {
      */
 
     return '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
-                    '<dt class="pretty key">Path:<\/dt>' +
+                    '</dd>' +
+                    '<dt class="pretty key">Path:</dt>' +
                     '<dd class="pretty value">' +
                         this.asString() +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -2390,7 +2390,7 @@ function() {
      */
 
     return '<instance type="' + TP.tname(this) + '"' +
-                    ' path="' + this.asString() + '"\/>';
+                    ' path="' + this.asString() + '"/>';
 });
 
 //  ------------------------------------------------------------------------
@@ -3891,7 +3891,7 @@ function(targetObj, varargs) {
                 rootObj = {rootObj: dataObj};
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
-                if (TP.isKindOf(tpValueDoc), TP.core.DocumentNode) {
+                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
                     //  Locally program a reference to ourself on the generated
                     //  XML TP.core.Document.
                     tpValueDoc.defineAttribute('$$realData');
@@ -5948,9 +5948,6 @@ function(targetObj) {
     } else {
         return val;
     }
-
-    //  Had an access character, but we can't compute the path.
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -6088,9 +6085,6 @@ function(targetObj) {
     } else {
         return val;
     }
-
-    //  Had an access character, but we can't compute the path.
-    return;
 });
 
 //  ------------------------------------------------------------------------

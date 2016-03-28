@@ -148,8 +148,6 @@ function(anEvent) {
 
             return TP.DOM_EVENT_PROPERTIES;
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -562,8 +560,6 @@ function(anEvent) {
             } else {
                 return TP.MIDDLE;
             }
-
-            break;
 
         case 2:
             return TP.RIGHT;

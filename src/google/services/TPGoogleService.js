@@ -356,8 +356,6 @@ function(aRequest) {
             //  can be computed from the service uri or the request payload
             return;
     }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

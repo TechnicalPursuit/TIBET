@@ -29,9 +29,9 @@
 
 //  For Safari only...
 if (!self.Window) {
-    /* eslint-disable no-undef */
+    /* eslint-disable no-undef,no-native-reassign */
     Window = self.constructor; /* jshint ignore:line */
-    /* eslint-enable no-undef */
+    /* eslint-enable no-undef,no-native-reassign */
 }
 
 //  ------------------------------------------------------------------------
@@ -45,11 +45,11 @@ TP.boot.$isEvent = function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is an Event object.
      */
 
-    /* eslint-disable no-extra-parens */
+    /* eslint-disable no-extra-parens,eqeqeq */
     return (anObj != null &&
             anObj.clientX !== undefined &&
             anObj.clientY !== undefined);
-    /* eslint-enable no-extra-parens */
+    /* eslint-enable no-extra-parens,eqeqeq */
 };
 
 //  ------------------------------------------------------------------------
@@ -141,6 +141,8 @@ TP.boot.$$computeDispatchOrigin = function(orig, elem, args) {
     var tibetOrigin,
         origin;
 
+    /* eslint-disable eqeqeq */
+
     //  string origins are used without alteration so check that first
     if (typeof orig === 'string' && orig !== '') {
         return orig;
@@ -196,6 +198,8 @@ TP.boot.$$computeDispatchOrigin = function(orig, elem, args) {
         }
     }
 
+    /* eslint-enable eqeqeq */
+
     //  otherwise use the element
     return origin;
 };
@@ -227,6 +231,7 @@ TP.boot.$$displaySignalData = function(origin, signal, elem, args, policy) {
      */
 
     try {
+        /* eslint-disable eqeqeq */
         if (origin == null || typeof origin === 'string') {
             window.status = 'origin: ' + origin + '::' +
                             origin +
@@ -236,6 +241,7 @@ TP.boot.$$displaySignalData = function(origin, signal, elem, args, policy) {
                             origin.getAttribute('id') +
                             ' signal: ' + signal;
         }
+        /* eslint-enable eqeqeq */
     } catch (e) {
         //  empty
     }
@@ -985,7 +991,9 @@ TP.windowIsInstrumented = function(aWindow) {
 
     var win;
 
+    /* eslint-disable eqeqeq */
     win = aWindow != null ? aWindow : window;
+    /* eslint-enable eqeqeq */
 
     //  the things we'll use are the things we care about the most here
     /* eslint-disable no-extra-parens */

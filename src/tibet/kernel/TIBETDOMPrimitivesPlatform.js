@@ -1626,8 +1626,6 @@ TP.hc(
                     return str;
                 }
 
-                break;
-
             case Node.PROCESSING_INSTRUCTION_NODE:
 
                 return '<?' + node.target + ' ' + node.data + '?>';
@@ -1736,8 +1734,6 @@ TP.hc(
                 } else {
                     return str;
                 }
-
-                break;
         }
 
         return null;
@@ -1907,8 +1903,6 @@ TP.hc(
                     return str;
                 }
 
-                break;
-
             case Node.PROCESSING_INSTRUCTION_NODE:
 
                 return '<?' + node.target + ' ' + node.data + '?>';
@@ -2015,8 +2009,6 @@ TP.hc(
                 } else {
                     return str;
                 }
-
-                break;
         }
 
         return null;
@@ -2191,8 +2183,6 @@ TP.hc(
                     return str;
                 }
 
-                break;
-
             case Node.PROCESSING_INSTRUCTION_NODE:
 
                 return '<?' + node.target + ' ' + node.data + '?>';
@@ -2301,8 +2291,6 @@ TP.hc(
                 } else {
                     return str;
                 }
-
-                break;
         }
 
         return null;

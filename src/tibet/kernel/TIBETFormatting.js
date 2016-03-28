@@ -106,10 +106,10 @@ function() {
             key = keys.at(i);
             arr.push('<span data-name="', key, '">',
                           TP.htmlstr(this.at(key)),
-                        '<\/span>');
+                        '</span>');
         }
     } finally {
-        arr.push('<\/span>');
+        arr.push('</span>');
         try {
             delete this[marker];
         } catch (e) {
@@ -213,7 +213,7 @@ function(aFilterName) {
     try {
         for (i = 0; i < len; i++) {
             key = keys.at(i);
-            arr.push('<', key, '>', TP.xmlstr(this.at(key)), '<\/', key, '>');
+            arr.push('<', key, '>', TP.xmlstr(this.at(key)), '</', key, '>');
         }
     } finally {
         try {
@@ -315,10 +315,10 @@ function() {
             arr.push(
                 '<span data-name="', i, '">',
                     TP.htmlstr(this.at(i)),
-                '<\/span>');
+                '</span>');
         }
     } finally {
-        arr.push('<\/span>');
+        arr.push('</span>');
         delete this[marker];
     }
 
@@ -359,20 +359,20 @@ function() {
     try {
         for (i = 0; i < len; i++) {
             joinArr.push(
-                TP.join('<dt class="pretty key">', i, '<\/dt>',
+                TP.join('<dt class="pretty key">', i, '</dt>',
                         '<dd class="pretty value">',
                             TP.pretty(this.at(i)),
-                        '<\/dd>'));
+                        '</dd>'));
         }
 
         joinStr = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
                         '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
+                    '</dd>' +
                     joinArr.join('') +
-                    '<\/dl>';
+                    '</dl>';
     } catch (e) {
         joinStr = Object.prototype.toString.call(this);
     } finally {
@@ -416,7 +416,7 @@ function() {
             arr.push(
                 '<item index="', i, '">',
                     TP.xmlstr(this.at(i)),
-                '<\/item>');
+                '</item>');
         }
     } finally {
         delete this[marker];
@@ -454,9 +454,9 @@ function() {
      *     the receiver.
      */
 
-    return '<dl class="pretty Boolean"><dt\/><dd>' +
+    return '<dl class="pretty Boolean"><dt/><dd>' +
             TP.str(this) +
-            '<\/dd><\/dl>';
+            '</dd></dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -549,9 +549,9 @@ function() {
      */
 
     //  '.toISOString()' is an ECMA ed5 addition
-    return '<dl class="pretty Date"><dt\/><dd>' +
+    return '<dl class="pretty Date"><dt/><dd>' +
             TP.str(this) +
-            '<\/dd><\/dl>';
+            '</dd></dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -615,7 +615,7 @@ function() {
     if (TP.isNativeType(this)) {
         return '<span class="NativeType">' +
                 this.getName() +
-                '<\/span>';
+                '</span>';
     }
 
     return TP.str(this);
@@ -687,20 +687,20 @@ function() {
     //  native constructors (types) and a regular Function object.
     if (TP.isNativeType(this)) {
         return '<dl class="pretty NativeType">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         'NativeType.&lt;' + TP.name(this) + '&gt;' +
-                    '<\/dd>' +
-                    '<dt\/>' +
+                    '</dd>' +
+                    '<dt/>' +
                     '<dd class="pretty value">' +
                         this.getName() +
-                    '<\/dd>' +
-                    '<\/dl>';
+                    '</dd>' +
+                    '</dl>';
     }
 
-    return '<dl class="pretty Function"><dt\/><dd>' +
+    return '<dl class="pretty Function"><dt/><dd>' +
             TP.objectToString(this) +
-            '<\/dd><\/dl>';
+            '</dd></dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -719,7 +719,7 @@ function() {
     //  The only way to discern between Function objects that are one of the
     //  native constructors (types) and a regular Function object.
     if (TP.isNativeType(this)) {
-        return '<type>' + this.getName() + '<\/type>';
+        return '<type>' + this.getName() + '</type>';
     }
 
     return TP.str(this);
@@ -754,9 +754,9 @@ function() {
      *     the receiver.
      */
 
-    return '<dl class="pretty Number"><dt\/><dd>' +
+    return '<dl class="pretty Number"><dt/><dd>' +
             TP.str(this) +
-            '<\/dd><\/dl>';
+            '</dd></dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -838,9 +838,9 @@ function() {
      *     the receiver.
      */
 
-    return '<dl class="pretty RegExp"><dt\/><dd>' +
+    return '<dl class="pretty RegExp"><dt/><dd>' +
             this.toString() +
-            '<\/dd><\/dl>';
+            '</dd></dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -905,9 +905,9 @@ function() {
         str = str.asEscapedXML();
     }
 
-    return '<dl class="pretty String"><dt\/><dd>' +
+    return '<dl class="pretty String"><dt/><dd>' +
             str +
-            '<\/dd><\/dl>';
+            '</dd></dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -963,7 +963,7 @@ function() {
 
     return '<span class="TP.lang.RootObject">' +
             this.getName() +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -1003,15 +1003,15 @@ function() {
      */
 
     return '<dl class="pretty TP.lang.RootObject">' +
-                '<dt>Type name<\/dt>' +
+                '<dt>Type name</dt>' +
                 '<dd class="pretty typename">' +
                     'TP.lang.RootObject.&lt;' + TP.name(this) + '&gt;' +
-                '<\/dd>' +
-                '<dt\/>' +
+                '</dd>' +
+                '<dt/>' +
                 '<dd class="pretty value">' +
                     this.getName() +
-                '<\/dd>' +
-                '<\/dl>';
+                '</dd>' +
+                '</dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -1025,7 +1025,7 @@ function() {
      * @returns {String} The receiver in XML string format.
      */
 
-    return '<type>' + this.getName() + '<\/type>';
+    return '<type>' + this.getName() + '</type>';
 });
 
 //  ------------------------------------------------------------------------
@@ -1115,13 +1115,13 @@ function() {
             joinArr.push(
                     TP.join('<span data-name="', keys.at(i), '">',
                             TP.htmlstr(this.get(keys.at(i))),
-                            '<\/span>'));
+                            '</span>'));
         }
 
         joinStr = '<span class="TP_lang_Object ' +
                         TP.escapeTypeName(TP.tname(this)) + '">' +
                      joinArr.join('') +
-                     '<\/span>';
+                     '</span>';
     } catch (e) {
         joinStr = Object.prototype.toString.call(this);
     } finally {
@@ -1213,20 +1213,20 @@ function() {
     try {
         for (i = 0; i < len; i++) {
             joinArr.push(
-                TP.join('<dt class="pretty key">', keys.at(i), '<\/dt>',
+                TP.join('<dt class="pretty key">', keys.at(i), '</dt>',
                         '<dd class="pretty value">',
                             TP.pretty(this.at(keys.at(i))),
-                        '<\/dd>'));
+                        '</dd>'));
         }
 
         joinStr = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
                         '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
+                    '</dd>' +
                     joinArr.join('') +
-                    '<\/dl>';
+                    '</dl>';
     } catch (e) {
         joinStr = Object.prototype.toString.call(this);
     } finally {
@@ -1270,12 +1270,12 @@ function() {
             joinArr.push(
                     TP.join('<', keys.at(i), '>',
                             TP.xmlstr(this.get(keys.at(i))),
-                            '<\/', keys.at(i), '>'));
+                            '</', keys.at(i), '>'));
         }
 
         joinStr = '<instance type="' + TP.tname(this) + '">' +
                      joinArr.join('') +
-                     '<\/instance>';
+                     '</instance>';
     } catch (e) {
         joinStr = Object.prototype.toString.call(this);
     } finally {

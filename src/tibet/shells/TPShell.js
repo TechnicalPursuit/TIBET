@@ -791,7 +791,7 @@ function(aRequest) {
 
         //  NOTE that we rely on successful login to manage running state
         //  when we're in a login shell
-        //this.login(aRequest);
+        // this.login(aRequest);
     } else {
         this.isRunning(true);
     }
@@ -1645,8 +1645,8 @@ function(anObject, aRequest) {
         message = TP.str(anObject);
     }
 
-    //name = TP.ifKeyInvalid(aRequest, 'cmdNotifier', null);
-    //raw = TP.ifKeyInvalid(aRequest, 'cmdAsIs', false);
+    // name = TP.ifKeyInvalid(aRequest, 'cmdNotifier', null);
+    // raw = TP.ifKeyInvalid(aRequest, 'cmdAsIs', false);
 
     TP.boot.$alert(message);
 
@@ -2385,7 +2385,7 @@ function(aString) {
     }
 
     //  Don't expand variables being used as part of a dereferencing operation.
-    if (/\@\$/.test(str)) {
+    if (/@\$/.test(str)) {
         return str;
     }
 
@@ -2790,7 +2790,7 @@ function(aRequest, forms) {
                         part = {
                             name: partName,
                             value: argvPart
-                        }
+                        };
                     } else {
                         part = parts[0];
                     }

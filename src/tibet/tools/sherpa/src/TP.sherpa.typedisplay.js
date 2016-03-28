@@ -99,7 +99,7 @@ function() {
                     // return cell data as an array of prop values,
                     // ordered according to prop names in cols
                     return cols.map(function(prop) {
-                        //return d[prop];
+                        // return d[prop];
                         return d.at(prop);
                     });
                 });

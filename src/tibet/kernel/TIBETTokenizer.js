@@ -661,7 +661,7 @@ function(src, ops, tsh, exp, alias, args) {
                         if (startsURI) {
                             uriParenCount++;
                         }
-                        if (result.at(result.getSize() -1).value === '(') {
+                        if (result.at(result.getSize() - 1).value === '(') {
                             result.pop();
                         }
                     }
@@ -797,14 +797,16 @@ function(src, ops, tsh, exp, alias, args) {
                         //  One special case to check here is {}, which will
                         //  otherwise result in a single token value.
                         if (/^[{}]+$/.test(str)) {
-                            str.split('').forEach(function(char) {
-                                from = from;
-                                i = from + 1;
-                                result.push(new_token('operator', char));
-                                from += 1;
-                            });
+                            /* eslint-disable no-loop-func */
+                            str.split('').forEach(
+                                    function(char) {
+                                        i = from + 1;
+                                        result.push(
+                                                new_token('operator', char));
+                                        from += 1;
+                                    });
+                            /* eslint-enable no-loop-func */
                         } else if (/^\{[$_a-zA-Z]+/.test(str)) {
-                            from = from;
                             i = from + 1;
                             result.push(new_token('operator', '{'));
                             from += 1;
@@ -1622,7 +1624,7 @@ function(src, separators, ops, tsh, exp, alias, args) {
 
     tokens = TP.$tokenize(src, ops, tshell, exp, alias, tsargs);
 
-    return TP.$tokenizedJoin(tokens, seps)
+    return TP.$tokenizedJoin(tokens, seps);
 });
 
 //  ------------------------------------------------------------------------
@@ -1693,9 +1695,11 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
 
                 //  if newlines are defaulted, or set explicitly to false
                 //  then we don't remove them...except blank lines
+                /* eslint-disable eqeqeq */
                 /* jshint -W041, eqeqeq:false */
                 if (newlines == null || newlines === false) {
                 /* jshint +W041, eqeqeq:true */
+                /* eslint-enable eqeqeq */
                     if (!last || last.name === 'newline') {
                         continue;
                     }
@@ -1737,9 +1741,11 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
             case 'space':
 
                 //  if spaces is explicity false then we skip removal
+                /* eslint-disable eqeqeq */
                 /* jshint -W041, eqeqeq:false */
                 if (spaces != null && spaces === false) {
                 /* jshint +W041, eqeqeq:true */
+                /* eslint-enable eqeqeq */
                     result.push(tokens ? token : token.value);
                     last = token;
                     break;

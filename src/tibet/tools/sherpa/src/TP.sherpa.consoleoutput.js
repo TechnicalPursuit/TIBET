@@ -141,7 +141,7 @@ function() {
                                         $get('$editorObj');
     extraKeys = editorObj.getOption('extraKeys');
 
-    extraKeys['Space'] =
+    extraKeys.Space =
         function() {
             if (this.getAttribute('panes') === 'growl' &&
                 !this.hasAttribute('exposed')) {

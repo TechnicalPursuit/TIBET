@@ -153,9 +153,9 @@ if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 
 //  For Safari only...
 if (!self.Window) {
-    /* eslint-disable no-undef */
+    /* eslint-disable no-undef,no-native-reassign */
     Window = self.constructor; /* jshint ignore:line */
-    /* eslint-enable no-undef */
+    /* eslint-enable no-undef,no-native-reassign */
 }
 
 //  ========================================================================

@@ -263,8 +263,6 @@ function(aRequest) {
             aRequest.fail('Unrecognized action');
             return '';
     }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

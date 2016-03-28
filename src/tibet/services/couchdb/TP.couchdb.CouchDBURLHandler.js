@@ -184,7 +184,7 @@ function(aSignal) {
         TP.isValid(attachments = doc.at('_attachments'))) {
 
         //  Grab the '_rev' number
-        rawRev = data.at('doc').at('_rev')
+        rawRev = data.at('doc').at('_rev');
         rev = rawRev.slice(0, rawRev.indexOf('-')).asNumber();
 
         //  Iterate over all of the attachments and grab the one whose 'revpos'
@@ -194,7 +194,7 @@ function(aSignal) {
                         if (kvPair.last().at('revpos') === rev) {
                             return true;
                         }
-                        return false
+                        return false;
                     });
 
         //  If we successfully found one, then the first item in it's key/value

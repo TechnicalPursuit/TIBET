@@ -2365,7 +2365,7 @@ TP.core.Mouse.Type.defineAttribute(
 
                     var priorMove,
                         doc;
-                        //obs;
+                        // obs;
 
                     priorMove = TP.core.Mouse.$get('lastMove');
 
@@ -2382,11 +2382,11 @@ TP.core.Mouse.Type.defineAttribute(
                     //  TODO: This doesn't work with using 'on:mousehover' or
                     //  'on:draghover', so we comment it out for now. It's
                     //  doesn't seem to have a huge effect on performance.
-                    //obs = TP.core.Mouse.get('observers');
-                    //if (!obs.hasKey('TP.sig.DOMMouseHover') &&
+                    // obs = TP.core.Mouse.get('observers');
+                    // if (!obs.hasKey('TP.sig.DOMMouseHover') &&
                      //   !obs.hasKey('TP.sig.DOMDragHover')) {
                       //  return;
-                    //}
+                    // }
 
                     //  If the document doesn't itself have focus or doesn't
                     //  have an active element, then that probably means

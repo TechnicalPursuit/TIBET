@@ -358,7 +358,7 @@ TP.isDNU = function(anObj) {
 
     //  if the dnu slot is defined we can return its value, otherwise the
     //  proper response is false
-    //return TP.isFunction(anObj) && anObj.$$dnu === true;
+    // return TP.isFunction(anObj) && anObj.$$dnu === true;
     return anObj && anObj.$$dnu === true;
 };
 
@@ -1814,7 +1814,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
         itemkey;
 
     //  Need a name for metadata key.
-    //if (TP.notValid(iname = anItem[TP.NAME])) {
+    // if (TP.notValid(iname = anItem[TP.NAME])) {
     if (!(iname = anItem[TP.NAME])) {
         return;
     }
@@ -1830,12 +1830,9 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (/^handle/.test(iname)) {
-                // if (TP.notValid(TP.sys.$$meta_handlers.at(iname))) {
                 TP.sys.$$meta_handlers.atPut(iname, iname);
-                //}
             }
 
-            // if (TP.notValid(TP.sys.$$meta_methods.at(gname))) {
             TP.sys.$$meta_methods.atPut(gname, anItem);
 
             //  owners are keyed by name and point to a vertical-bar
@@ -1850,7 +1847,6 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                 TP.sys.$$meta_owners.atPut(iname,
                     owners += TP.JOIN + tname);
             }
-            //}
 
             break;
 
@@ -1859,7 +1855,6 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             tname = targetType.getName();
             gname = tname + '_' + itemTrack + '_' + iname;
 
-            //if (TP.notValid(TP.sys.$$meta_attributes.at(gname))) {
             TP.sys.$$meta_attributes.atPut(gname, anItem);
 
             //  If the item has a 'value' slot and the value there responds
@@ -1891,16 +1886,12 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
                 pathinfo[itemkey].push(iname);
             }
-            //}
 
             break;
 
         case TP.SUBTYPE:
 
-            //  don't overlay information we've already collected
-            //if (TP.notValid(TP.sys.$$meta_types.at(iname))) {
             TP.sys.$$meta_types.atPut(iname, anItem);
-            //}
 
             //  If the system has started we need to keep track of any types
             //  which load so we can ensure they get their initialize methods
@@ -1915,10 +1906,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
         case TP.NAMESPACE:
 
-            //  don't overlay information we've already collected
-            //if (TP.notValid(TP.sys.$$meta_namespaces.at(iname))) {
             TP.sys.$$meta_namespaces.atPut(iname, anItem);
-            //}
 
             break;
 
@@ -3143,8 +3131,10 @@ function() {
             function(c) {
                 var r, v;
 
+                /* eslint-disable no-sequences */
                 r = Math.random() * 16 | 0, v = c === 'x' ?
                     r : (r & 0x3 | 0x8);
+                /* eslint-enable no-sequences */
 
                 return v.toString(16);
             });
@@ -7227,8 +7217,6 @@ function(aCanvas) {
 
         return aCanvas;
     }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -7262,8 +7250,6 @@ function(aCanvas) {
 
         return aCanvas;
     }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -8148,8 +8134,6 @@ function(anObj, includeScannedGlobals) {
                         TP.sys.$globalexcludes.contains(anObj);
             }
 
-            break;
-
         case 'function':
             if (TP.isTrue(includeScannedGlobals)) {
                 /* eslint-disable no-extra-parens */
@@ -8159,8 +8143,6 @@ function(anObj, includeScannedGlobals) {
             } else {
                 return anObj[TP.TRACK] === 'Global';
             }
-
-            break;
 
         default:
             return false;
@@ -9283,7 +9265,7 @@ function(anObj) {
 
     //  if its a boolean, it can't be empty.
     if (type === 'boolean') {
-        return false
+        return false;
     }
 
     //  if its a number and its NaN, then it's empty - otherwise, it's not.

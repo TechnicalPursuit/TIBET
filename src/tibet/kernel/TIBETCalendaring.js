@@ -333,7 +333,7 @@ function(aString) {
 
     //  if the time portion is empty (no T), but we see a :, Z, +, or - then
     //  we're really looking at a time specification, not a date
-    if (TP.notValid(timeStr) && /[Z\:\+\-]/.test(dateStr)) {
+    if (TP.notValid(timeStr) && /[Z:\+\-]/.test(dateStr)) {
         timeStr = dateStr;
         dateStr = null;
     }

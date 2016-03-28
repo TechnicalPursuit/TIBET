@@ -74,7 +74,8 @@ function(aRequest) {
                         });
 
         aRequest.atPut('cmdAsIs', true);
-        output += '</dl>'
+        output += '</dl>';
+
         return aRequest.complete(output);
     }
 

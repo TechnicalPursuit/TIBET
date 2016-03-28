@@ -31,7 +31,7 @@
           $STATUS:true
 */
 
-/* eslint new-cap:0, no-alert:0, indent:0 */
+/* eslint new-cap:0, no-alert:0, indent:0, eqeqeq:0 */
 (function(root) {
 
     TP = root.TP || this.TP;
@@ -1963,8 +1963,8 @@ TP.boot.$httpConstruct = function() {
         //  NB: MSXML versions 4 and 5 are not recommended by Microsoft,
         //  so we don't create them and have them commented out here.
         versions = ['Msxml2.XMLHTTP.6.0',
-                        //'Msxml2.XMLHTTP.5.0',
-                        //'Msxml1.XMLHTTP.4.0',
+                        // 'Msxml2.XMLHTTP.5.0',
+                        // 'Msxml1.XMLHTTP.4.0',
                         'Msxml2.XMLHTTP.3.0',
                         'Msxml2.XMLHTTP',
                         'Microsoft.XMLHTTP'];
@@ -2049,7 +2049,9 @@ TP.boot.$parseURIParameters = function(uriParams) {
             key,
             value;
 
-        if (/\=/.test(item)) {
+        /* eslint-disable no-div-regex */
+        if (/=/.test(item)) {
+        /* eslint-enable no-div-regex */
             parts = item.split('=');
             key = parts[0];
             value = parts[1];
@@ -3276,10 +3278,6 @@ TP.boot.$uriCurrent = function(targetUrl, sourceUrl) {
         //  'more recent' in that case
         return true;
     }
-
-    TP.boot.$stderr('UnsupportedFeature: TP.boot.$uriCurrent()');
-
-    return false;
 };
 
 //  ============================================================================
@@ -3614,8 +3612,6 @@ TP.boot.$uriLoadIEFile = function(targetUrl, resultType) {
 
         return TP.boot.$uriResult(httpObj.responseText, returnType);
     }
-
-    return null;
 };
 
 //  ----------------------------------------------------------------------------
@@ -4245,8 +4241,8 @@ TP.boot.$activeXDocumentConstructIE = function(versionNumber) {
         //  NB: DOMDocument versions 4 and 5 are not recommended by
         //  Microsoft, so we don't create them.
         versions = ['Msxml2.DOMDocument.6.0',
-                        //'Msxml2.DOMDocument.5.0',
-                        //'Msxml2.DOMDocument.4.0',
+                        // 'Msxml2.DOMDocument.5.0',
+                        // 'Msxml2.DOMDocument.4.0',
                         'Msxml2.DOMDocument.3.0',
                         'Msxml2.DOMDocument'];
         len = versions.length;
@@ -4386,9 +4382,6 @@ TP.boot.$$nodeAppendError = function(errEvent) {
 
     //  NOTE the setTimeout here is to keep Chrome DevTools from crashing.
     setTimeout(function() {
-        var level;
-
-        level = TP.sys.hasLoaded() ? TP.ERROR : TP.FATAL;
         TP.boot.$stderr('Error locating ' + errEvent.target.src, TP.FATAL);
         $STATUS = TP.FAILED;
     }, 0);
@@ -5103,7 +5096,6 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             } else {
                 return str;
             }
-            break;
         case 'number':
             //  isNaN lies: isNaN({}) => true. Welcome to JavaScript.
             if (isNaN(anObject) && anObject.constructor === Number) {
@@ -5111,7 +5103,6 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             } else {
                 return '' + anObject;
             }
-            break;
         case 'boolean':
             return anObject;
         case 'function':
@@ -5128,7 +5119,6 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             } else {
                 return str;
             }
-            break;
         default:
             if (anObject === null) {
                 return 'null';
@@ -5623,19 +5613,19 @@ TP.boot.Annotation.prototype.asPrettyString = function() {
      */
 
     return '<dl class="pretty TP_boot_Annotation">' +
-                '<dt>Type name<\/dt>' +
+                '<dt>Type name</dt>' +
                 '<dd class="pretty typename">' +
                     'TP.boot.Annotation' +
-                '<\/dd>' +
-                '<dt class="pretty key">object<\/dt>' +
+                '</dd>' +
+                '<dt class="pretty key">object</dt>' +
                 '<dd class="pretty value">' +
                     TP.boot.$str(this.object) +
-                '<\/dd>' +
-                '<dt class="pretty key">message<\/dt>' +
+                '</dd>' +
+                '<dt class="pretty key">message</dt>' +
                 '<dd class="pretty value">' +
                     TP.boot.$str(this.message) +
-                '<\/dd>' +
-                '<\/dl>';
+                '</dd>' +
+                '</dl>';
 };
 
 //  ----------------------------------------------------------------------------
@@ -5681,7 +5671,7 @@ TP.boot.Annotation.prototype.asXMLString = function() {
 
     return TP.boot.$join('<instance type="TP.boot.Annotation"',
                             ' object="', TP.boot.$str(this.object), '"',
-                            ' message="', TP.boot.$str(this.message), '"\/>');
+                            ' message="', TP.boot.$str(this.message), '"/>');
 };
 
 //  ----------------------------------------------------------------------------
@@ -6510,15 +6500,15 @@ TP.boot.Log.prototype.asPrettyString = function() {
      */
 
     return '<dl class="pretty TP_boot_Log">' +
-                '<dt>Type name<\/dt>' +
+                '<dt>Type name</dt>' +
                 '<dd class="pretty typename">' +
                     'TP.boot.Log' +
-                '<\/dd>' +
-                '<dt class="pretty key">messages<\/dt>' +
+                '</dd>' +
+                '<dt class="pretty key">messages</dt>' +
                 '<dd class="pretty value">' +
                     TP.boot.$str(this.messages) +
-                '<\/dd>' +
-                '<\/dl>';
+                '</dd>' +
+                '</dl>';
 };
 
 //  ----------------------------------------------------------------------------
@@ -6549,8 +6539,8 @@ TP.boot.Log.prototype.asXMLString = function() {
 
     return TP.boot.$join(
                 '<instance type="TP.boot.Log">',
-                '<messages>', TP.xmlstr(this.messages), '<\/messages>',
-                '<\/instance>');
+                '<messages>', TP.xmlstr(this.messages), '</messages>',
+                '</instance>');
 };
 
 //  ----------------------------------------------------------------------------
@@ -7386,10 +7376,10 @@ TP.boot.$displayMessage = function(aString, flush) {
 
     //  If asked, flush the brand new message, even if it's now the only one in
     //  the buffer. (This is true for errors/system output by default).
-    //if (flush) {
+    // if (flush) {
         TP.boot.$flushUIBuffer(true);
         TP.boot.$scrollUIBuffer();
-    //}
+    // }
 
     return msgNode;
 };
@@ -7645,8 +7635,7 @@ TP.boot.showUIConsole = function() {
      *     application's main window.
      */
 
-    var boot,
-        doc,
+    var doc,
         elem;
 
     elem = TP.boot.getUIBoot();
@@ -8218,9 +8207,9 @@ TP.boot.$setStage = function(aStage, aReason) {
     }
 
     TP.boot.$stdout('', TP.SYSTEM);
-    //TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
+    // TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
     TP.boot.$stdout('--- ' + info.log, TP.SYSTEM);
-    //TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
+    // TP.boot.$stdout(TP.sys.cfg('boot.uisubsection'), TP.SYSTEM);
     TP.boot.$stdout('', TP.SYSTEM);
 
     //  Capture the time we reached this stage. this is key for reporting the
@@ -8264,8 +8253,8 @@ TP.boot.$setStage = function(aStage, aReason) {
                 TP.boot.$getStageTime('paused')) +
             ' ms: ' + TP.boot.$getBootStats(), TP.SYSTEM);
 
-        //TP.boot.$stdout('', TP.SYSTEM);
-        //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+        // TP.boot.$stdout('', TP.SYSTEM);
+        // TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
     } else if (TP.boot.$$stage === 'stopped') {
 
@@ -8275,8 +8264,8 @@ TP.boot.$setStage = function(aStage, aReason) {
             (TP.boot.$getStageTime('stopped', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
             ' ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
-        //TP.boot.$stdout('', TP.SYSTEM);
-        //TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
+        // TP.boot.$stdout('', TP.SYSTEM);
+        // TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
         TP.boot.showUIConsole();
     }

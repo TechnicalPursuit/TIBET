@@ -410,7 +410,7 @@ function(aRequest) {
                         resultStr = TP.sc(
                                 'Trying to retrieve information about the',
                                 ' database:', dbName, ' but had an error: ',
-                                TP.str(err)),
+                                TP.str(err));
 
                         commObj.responseType = '';
                         commObj.status = 500;

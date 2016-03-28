@@ -14,8 +14,7 @@ Platform-specific functionality related to DHTML operations.
 
 /* JSHint checking */
 
-/* global CSSPrimitiveValue:false,
-          WebKitPoint:false
+/* global WebKitPoint:false
 */
 
 /* jshint newcap:false,

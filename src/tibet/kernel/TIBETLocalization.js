@@ -226,7 +226,7 @@ TP.core.Locale.Type.defineAttribute('shortWeekdayNames',
 
 TP.core.Locale.Type.defineAttribute('dateFormat',
     '%{yyyy}-%{mm}-%{dd}T%{hhi}:%{mmn}:%{ss}Z');    //  iso UTC
-    //'%{dddd}, %{mmmm} %{dd}, %{yyyy} %{hhi}:%{mmn}:%{ss}'); // utc
+    // '%{dddd}, %{mmmm} %{dd}, %{yyyy} %{hhi}:%{mmn}:%{ss}'); // utc
 
 //  Number defaults
 TP.core.Locale.Type.defineAttribute('numberFormat', '#{#,###.##########}');

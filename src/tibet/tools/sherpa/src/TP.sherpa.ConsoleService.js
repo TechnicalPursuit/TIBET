@@ -223,7 +223,7 @@ function() {
         consoleGUI,
 
         normalResponder,
-        //evalMarkingResponder,
+        // evalMarkingResponder,
         autocompleteResponder;
 
     keyboardSM = TP.core.StateMachine.construct();
@@ -581,7 +581,7 @@ function(aRequest) {
     //  hide the input cell if the request was our current input request
     if (this.get('lastInputRequest') === req) {
         this.set('lastInputRequest', null);
-        //this.hideInputCell();
+        // this.hideInputCell();
     } else {
         this.get('requestQueue').remove(req);
     }
@@ -1541,6 +1541,8 @@ function(anObject, aRequest) {
 
     //  when a command is set as silent it means we don't do console output
     if (request.at('cmdSilent') || TP.sys.cfg('sherpa.silent')) {
+
+        //  TODO: FIXME
         if (request.atIfInvalid('messageLevel', 0) <= TP.ERROR) {
             return this;
         }
@@ -1760,7 +1762,7 @@ function(anObject, aRequest) {
                 //  (ss) We really shouldn't be doing the line below...the asIs
                 //  flag is here to say "what's coming through should not be
                 //  altered" so we shouldn't alter it.
-                //data = data.asEscapedXML();
+                // data = data.asEscapedXML();
             }
         }
 
@@ -2565,7 +2567,7 @@ function(cm, options) {
                     hintsElem, 'tibet:nomutationtracking', true, true);
             }
 
-        }.bind(this));
+        });
 
     TP.extern.CodeMirror.on(
         completions,
@@ -2736,7 +2738,7 @@ function(editor, options) {
                                         //  'innerHTML' seems to throw
                                         //  exceptions in XHTML documents on
                                         //  Firefox
-                                        //elem.innerHTML = data.displayText;
+                                        // elem.innerHTML = data.displayText;
                                         contentNode = TP.xhtmlnode(
                                                             data.displayText);
                                         TP.nodeAppendChild(

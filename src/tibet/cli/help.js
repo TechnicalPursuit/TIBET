@@ -12,7 +12,7 @@
  */
 //  ========================================================================
 
-/*eslint indent:0*/
+/* eslint indent:0 */
 
 (function() {
 
@@ -273,7 +273,7 @@ Cmd.prototype.executeForCommand = function(command) {
     child = proc.spawn('man', ['tibet-' + command], config);
     child.on('close', function() {
         return 0;
-    })
+    });
 
     return 0;
 };

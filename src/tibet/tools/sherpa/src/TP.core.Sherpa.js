@@ -280,11 +280,11 @@ function() {
 
         toggleKey;
 
-        //sherpaEastDrawer,
-        //tileDockTPElem,
+        // sherpaEastDrawer,
+        // tileDockTPElem,
 
-        //sherpaWestDrawer;
-        //snippetBarTPElem;
+        // sherpaWestDrawer;
+        // snippetBarTPElem;
 
     //  Set up the HUD
     this.setupHUD();

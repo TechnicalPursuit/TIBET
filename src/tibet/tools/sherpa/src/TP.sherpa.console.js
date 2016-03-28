@@ -98,7 +98,7 @@ function() {
     //  Note that we define the same key multiple times for expository purposes.
     //  CodeMirror doesn't seem to care.
 
-    /* eslint-disable no-dupe-keys,quote-props */
+    /* eslint-disable no-dupe-keys,quote-props,key-spacing */
     editorObj.setOption(
         'extraKeys',
         {
@@ -137,7 +137,7 @@ function() {
             'Ctrl-A'            : TP.RETURN_TRUE,   //  Enter mode
             'Esc'               : TP.RETURN_TRUE    //  Exit mode
         });
-    /* eslint-enable no-dupe-keys,quote-props */
+    /* eslint-enable no-dupe-keys,quote-props,key-spacing */
 
     consoleInputTPElem.setEditorEventHandler('viewportChange',
             function() {
@@ -146,7 +146,7 @@ function() {
 
     //  NB: We need to create the log view *before* we set up the console
     //  service.
-    //this.setupLogView();
+    // this.setupLogView();
 
     //  Grab the consoleOutput TP.core.Element and set it up. Note that we need
     //  to do this *after* we set up the console input above.
@@ -624,7 +624,7 @@ function(range, cssClass, promptText) {
 
 
     //  'innerHTML' seems to throw exceptions in XHTML documents on Firefox
-    //elem.innerHTML = content;
+    // elem.innerHTML = content;
     contentNode = TP.xhtmlnode(content);
     TP.nodeAppendChild(elem, contentNode, false);
 
@@ -790,7 +790,7 @@ function(aSignal, statusOutID) {
 
         timer,
 
-        //canvasWin,
+        // canvasWin,
 
         str,
         arr,
@@ -1015,7 +1015,8 @@ function() {
         //  Set the style String to whatever it is minus the 'transition: none'
         //  value that we put on it above.
         styleStr = TP.elementGetStyleString(drawerElement);
-        styleStr = styleStr.replace(/transition\:\s*none;\s*/,'');
+        styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
+
         TP.elementSetStyleString(drawerElement, styleStr);
     }).fork(5);
 
@@ -1278,7 +1279,8 @@ function() {
     end = consoleInput.getCursor();
 
     this.set('currentInputMarker',
-                this.generateInputMarkAt({anchor: {line: 0, ch:0}, head: end}));
+                this.generateInputMarkAt(
+                    {anchor: {line: 0, ch: 0}, head: end}));
 
     return this;
 });

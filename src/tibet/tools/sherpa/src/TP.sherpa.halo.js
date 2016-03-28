@@ -424,7 +424,7 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    //this.showHaloCorner(aSignal);
+    // this.showHaloCorner(aSignal);
 
     return this;
 });
@@ -441,7 +441,7 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    //this.hideHaloCorner();
+    // this.hideHaloCorner();
 
     return this;
 });

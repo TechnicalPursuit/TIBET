@@ -102,7 +102,7 @@ if (root === top) {
     } else {
         //  Karma will get worked up if we try to reset the location. NOTE
         //  we can't use TP.sys.cfg yet so have to hard-code the karma slot.
-        if (!root['__karma__']) {
+        if (!root.__karma__) {
 
             //  If we're not being loaded in TOP and TOP isn't running TIBET
             //  then we reset so we try to load into the top frame.
@@ -174,9 +174,9 @@ if (Object.defineProperty) {
 //  Turn off the JSHint warning - we know we're invoking the 'Function'
 //  constructor without 'new'... that's part of the trick.
 /* jshint ignore:start */
-/* eslint-disable new-cap */
+/* eslint-disable new-cap,no-eval */
 TP.global = Function('return this')() || (42, eval)('this');
-/* eslint-enable new-cap */
+/* eslint-enable new-cap,no-eval */
 /* jshint ignore:end */
 
 if (!TP.sys.$nativeglobals) {
@@ -220,9 +220,11 @@ if (!TP.sys.$nativeglobals) {
 
 //  define the tracking collection for TIBET's global symbols so any
 //  early-stage boot configs can leverage the TP.sys.defineGlobal call
+/* eslint-disable eqeqeq */
 if (TP.sys.$globals == null) {
     TP.sys.$globals = [];
 }
+/* eslint-enable eqeqeq */
 
 //  ---
 //  Simply polyfills/shims
@@ -414,7 +416,9 @@ TP.boot.REGEX_REGEX = /^\/.*\/$/;
 //  regex to validate property key form (qualified)
 TP.boot.$$PROP_KEY_REGEX = /\./;
 
-TP.boot.$$KV_REGEX = /\=/;
+/* eslint-disable no-div-regex */
+TP.boot.$$KV_REGEX = /=/;
+/* eslint-enable no-div-regex */
 
 //  TODO: update for Opera
 //  regex used for special case processing of if/unless conditionals
@@ -609,31 +613,31 @@ TP.boot.$$propertyQueries = {};
 TP.boot.$$styles = {};
 
 TP.boot.$$styles.browser = {
-    //styles
+    //  styles
     bold: ['<b>', '</b>'],
     italic: ['<i>', '</i>'],
     underline: ['<u>', '</u>'],
     inverse: ['<span style="background-color:black;color:white;">',
       '</span>'],
     strikethrough: ['<del>', '</del>'],
-    //text colors
-    //grayscale
+    //  text colors
+    //  grayscale
     white: ['<span style="color:white;">', '</span>'],
     grey: ['<span style="color:#aaa;">', '</span>'],
     black: ['<span style="color:black;">', '</span>'],
-    //colors
+    //  colors
     blue: ['<span style="color:blue;">', '</span>'],
     cyan: ['<span style="color:cyan;">', '</span>'],
     green: ['<span style="color:green;">', '</span>'],
     magenta: ['<span style="color:magenta;">', '</span>'],
     red: ['<span style="color:red;">', '</span>'],
     yellow: ['<span style="color:yellow;">', '</span>'],
-    //background colors
-    //grayscale
+    //  background colors
+    //  grayscale
     whiteBG: ['<span style="background-color:white;">', '</span>'],
     greyBG: ['<span style="background-color:#aaa;">', '</span>'],
     blackBG: ['<span style="background-color:black;">', '</span>'],
-    //colors
+    //  colors
     blueBG: ['<span style="background-color:blue;">', '</span>'],
     cyanBG: ['<span style="background-color:cyan;">', '</span>'],
     greenBG: ['<span style="background-color:green;">', '</span>'],
@@ -659,30 +663,30 @@ TP.boot.$$styles.console = (function() {
 }());
 
 TP.boot.$$styles.terminal = {
-    //styles
+    //  styles
     bold: ['\x1B[1m', '\x1B[22m'],
     italic: ['\x1B[3m', '\x1B[23m'],
     underline: ['\x1B[4m', '\x1B[24m'],
     inverse: ['\x1B[7m', '\x1B[27m'],
     strikethrough: ['\x1B[9m', '\x1B[29m'],
-    //text colors
-    //grayscale
+    //  text colors
+    //  grayscale
     white: ['\x1B[37m', '\x1B[39m'],
     grey: ['\x1B[90m', '\x1B[39m'],
     black: ['\x1B[30m', '\x1B[39m'],
-    //colors
+    //  colors
     blue: ['\x1B[34m', '\x1B[39m'],
     cyan: ['\x1B[36m', '\x1B[39m'],
     green: ['\x1B[32m', '\x1B[39m'],
     magenta: ['\x1B[35m', '\x1B[39m'],
     red: ['\x1B[31m', '\x1B[39m'],
     yellow: ['\x1B[33m', '\x1B[39m'],
-    //background colors
-    //grayscale
+    //  background colors
+    //  grayscale
     whiteBG: ['\x1B[47m', '\x1B[49m'],
     greyBG: ['\x1B[49;5;8m', '\x1B[49m'],
     blackBG: ['\x1B[40m', '\x1B[49m'],
-    //colors
+    //  colors
     blueBG: ['\x1B[44m', '\x1B[49m'],
     cyanBG: ['\x1B[46m', '\x1B[49m'],
     greenBG: ['\x1B[42m', '\x1B[49m'],
@@ -1159,9 +1163,11 @@ TP.boot.$isWindow = function(anObj) {
      * @returns {Boolean} True if the object is a window.
      */
 
+    /* eslint-disable eqeqeq */
     if (anObj != null && anObj.moveBy !== undefined) {
         return true;
     }
+    /* eslint-enable eqeqeq */
 
     return false;
 };
@@ -1511,9 +1517,11 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
         oldval,
         newval;
 
+    /* eslint-disable eqeqeq */
     if (aHash == null || aKey == null) {
         return;
     }
+    /* eslint-enable eqeqeq */
 
     //  we'll use "tmp" as the default category when none is provided
     if (TP.boot.$$PROP_KEY_REGEX.test(aKey) === false) {

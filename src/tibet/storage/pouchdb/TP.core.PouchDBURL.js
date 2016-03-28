@@ -137,7 +137,7 @@ TP.core.PouchDBURL.addTraits(TP.core.CommURL);
 //  This RegExp splits up the URL into the following components:
 //  pouchdb://dbName/(?id)
 TP.core.PouchDBURL.Type.defineConstant('POUCHDB_REGEX',
-    TP.rc('^pouchdb:\/\/([^\/]+)(\/([^?]+)(\\??(\\S*))?)?'));
+    TP.rc('^pouchdb://([^/]+)(/([^?]+)(\\??(\\S*))?)?'));
 
 TP.core.PouchDBURL.Type.defineConstant('SCHEME', 'pouchdb');
 

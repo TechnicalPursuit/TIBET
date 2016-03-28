@@ -4771,7 +4771,6 @@ function() {
         keys,
         len,
         i,
-        joinStr,
         str;
 
     //  Trap recursion around potentially nested object structures.
@@ -4849,12 +4848,12 @@ function() {
             joinArr.push(
                     TP.join('<span data-name="', keys.at(i), '">',
                             TP.htmlstr(this.at(keys.at(i))),
-                            '<\/span>'));
+                            '</span>'));
         }
 
         joinStr = '<span class="TP_core_Hash">' +
                      joinArr.join('') +
-                     '<\/span>';
+                     '</span>';
     } catch (e) {
         joinStr = this.toString();
     } finally {
@@ -5012,20 +5011,20 @@ function() {
 
         for (i = 0; i < len; i++) {
             joinArr.push(
-                TP.join('<dt class="pretty key">', keys.at(i), '<\/dt>',
+                TP.join('<dt class="pretty key">', keys.at(i), '</dt>',
                         '<dd class="pretty value">',
                             TP.pretty(this.at(keys.at(i))),
-                        '<\/dd>'));
+                        '</dd>'));
         }
 
         joinStr = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
                         '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
+                    '</dd>' +
                     joinArr.join('') +
-                    '<\/dl>';
+                    '</dl>';
     } catch (e) {
         joinStr = this.toString();
     } finally {
@@ -5168,12 +5167,12 @@ function() {
             joinArr.push(
                     TP.join('<', keys.at(i), '>',
                             TP.xmlstr(this.at(keys.at(i))),
-                            '<\/', keys.at(i), '>'));
+                            '</', keys.at(i), '>'));
         }
 
         joinStr = '<instance type="' + TP.tname(this) + '">' +
                      joinArr.join('') +
-                     '<\/instance>';
+                     '</instance>';
     } catch (e) {
         joinStr = this.toString();
     } finally {
@@ -6534,8 +6533,6 @@ function(anItem, aTest) {
     } else {
         return TP.identical(val, anItem.last());
     }
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -7962,7 +7959,7 @@ function(anIndex, aValue) {
         //  NB: Here, we cannot use the normal TP.hc(arguments...) form of the
         //  constructor or we'll loop endlessly back into this method. We must
         //  use lower-level constructs.
-        //this.changed(anIndex, op, TP.hc(TP.OLDVAL, val, TP.NEWVAL, aValue));
+        // this.changed(anIndex, op, TP.hc(TP.OLDVAL, val, TP.NEWVAL, aValue));
 
         changeRecord = TP.hc();
 
@@ -8097,8 +8094,6 @@ function(aValue, aTest) {
                 default:
                     return TP.equal(item.last(), aValue);
             }
-
-            return false;
         });
 
     if (TP.isValid(found)) {
@@ -8135,8 +8130,6 @@ function(aValue, aTest) {
                 default:
                     return TP.equal(item.last(), aValue);
             }
-
-            return false;
         });
 
     //  return the keys from our itemset, those are our 'indexes'

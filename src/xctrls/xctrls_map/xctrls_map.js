@@ -38,7 +38,7 @@ TP.xctrls.map.Type.defineConstant('HYBRID', 3);
 //  ------------------------------------------------------------------------
 
 //  Middle of USA
-//TP.xctrls.map.Type.defineAttribute('defaultLatLong',
+// TP.xctrls.map.Type.defineAttribute('defaultLatLong',
 //                      TP.llc(39.10662, -94.5728209));
 
 //  Lhasa, Tibet    :-)

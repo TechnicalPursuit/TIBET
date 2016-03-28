@@ -125,9 +125,6 @@ function(anObject) {
                 TP.isEmpty(m.at(Date.DURATION_SECOND_INDEX)));
     }
     /* eslint-enable no-extra-parens */
-
-    //  default to invalid
-    return false;
 });
 
 //  ------------------------------------------------------------------------

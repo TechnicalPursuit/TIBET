@@ -35,6 +35,7 @@ TP.regex.CSS_HEX =
 TP.regex.CSS_RGB =
         /rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/;
 
+/* eslint-disable no-useless-escape */
 //  A RegExp that matches CSS RGBA color values.
 TP.regex.CSS_RGBA =
         /rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\,\s*([\d.]+)\s*\)/;
@@ -59,6 +60,7 @@ TP.regex.CSS_COLOR =
 //  A global version of TP.CSS_COLOR used for value extraction.
 TP.regex.CSS_COLOR_GLOBAL =
         /(#?([A-F0-9]{3})?([A-F0-9]{3}){1})(\s+|$)|(rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\))|(rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\,\s*([\d.]+)\s*\))|(hsl\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\))|(hsla\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\,\s*([\d.]+)\s*\))|(?:^|\s+)[A-Z]+(?:\s+|$)/ig;   // needs reset
+/* eslint-enable no-useless-escape */
 
 TP.regex.CSS_TRANSFORM =
         /^(matrix|rotate|scale|skewX|skewY|translate)\s*\(.+?\)$/;
@@ -405,7 +407,7 @@ function(a, b) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('matrixTranslate',
-function(m/*, tx, ty, tz*/) {
+function(m/* , tx, ty, tz*/) {
 
     /**
      * @method matrixTranslate

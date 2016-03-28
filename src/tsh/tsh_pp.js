@@ -77,12 +77,12 @@ function(anObject, optFormat) {
 
         output.push('<span data-name="' + i + '">' +
             TP.boot.$stringify(anObject.at(i), '', true) +
-                    '<\/span>');
+                    '</span>');
 
         count++;
     }
 
-    output.push('<\/span><\/span>');
+    output.push('</span></span>');
 
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_tsh_pp;
@@ -151,7 +151,7 @@ function(anObject, optFormat) {
     return '<span class="tsh_pp">' +
                 anObject.message.asEscapedXML() +
                 stackStr +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -174,7 +174,7 @@ function(anObject, optFormat) {
     // NOTE the CDATA blocks here combined with <pre> to hold on to remaining
     // whitespace while ensuring we ignore any embedded < or > symbols etc.
     return '<span class="tsh_pp Function"><pre><![CDATA[' + str +
-        ']]></pre><\/span>';
+        ']]></pre></span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -201,14 +201,14 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         arr.push('<span data-name="key">' +
                     TP.name(anObject.item(i)) +
-                '<\/span>' + '\n' +
+                '</span>' + '\n' +
                 '<span data-name="value">' +
                     TP.val(anObject.item(i)) +
-                '<\/span>');
+                '</span>');
     }
-    arr.push('<\/span>');
+    arr.push('</span>');
 
-    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -225,7 +225,7 @@ function(anObject, optFormat) {
 
     return '<span class="tsh_pp">' +
             TP.str(anObject).asEscapedXML() +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -252,11 +252,11 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         arr.push('<span data-name="' + i + '">' +
             TP.str(anObject[i]).asEscapedXML() +
-        '<\/span>');
+        '</span>');
     }
-    arr.push('<\/span>');
+    arr.push('</span>');
 
-    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -297,7 +297,7 @@ function(anObject, optFormat) {
 
     if (TP.notValid(anObject)) {
         // 'null' or 'undefined', as you'd expect.
-        return '<span class="tsh_pp">' + anObject + '<\/span>';
+        return '<span class="tsh_pp">' + anObject + '</span>';
     }
 
     type = TP.name(TP.type(anObject)).replace(/\./g, '_');
@@ -315,10 +315,10 @@ function(anObject, optFormat) {
 
         output.push('<span data-name="' + key + '">' +
             TP.boot.$stringify(anObject[keys.at(i)], '\n', true) +
-                    '<\/span>');
+                    '</span>');
     }
 
-    output.push('<\/span><\/span>');
+    output.push('</span></span>');
 
     return output.join('\n');
     /*
@@ -370,7 +370,7 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span class="tsh_pp">' + TP.xhtmlstr(obj) + '<\/span>';
+    return '<span class="tsh_pp">' + TP.xhtmlstr(obj) + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -393,12 +393,12 @@ function(anObject, optFormat) {
                 '<span class="TP_boot_Annotation">' +
                     '<span data-name="object">' +
                         TP.xhtmlstr(anObject.object) +
-                    '<\/span>' +
+                    '</span>' +
                     '<span data-name="message">' +
                         TP.xhtmlstr(anObject.message) +
-                    '<\/span>' +
-                '<\/span>' +
-            '<\/span>';
+                    '</span>' +
+                '</span>' +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -427,24 +427,24 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         str += '<span class="Date" data-name="timestamp">' +
                     obj[i][TP.boot.LOG_ENTRY_DATE] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="String" data-name="log-name">' +
                     obj[i][TP.boot.LOG_ENTRY_NAME] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="Number" data-name="log-level">' +
                     obj[i][TP.boot.LOG_ENTRY_LEVEL] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="String" data-name="log-entry">' +
                     obj[i][TP.boot.LOG_ENTRY_PAYLOAD] +
-                '<\/span>' +
+                '</span>' +
                 '<span class="String" data-name="log-delta">' +
                     obj[i][TP.boot.LOG_ENTRY_DELTA] +
-                '<\/span>';
+                '</span>';
     }
 
     return '<span class="tsh_pp">' +
             str +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -454,7 +454,7 @@ function(anObject, optFormat) {
 
     return '<span class="tsh_pp">' +
         anObject.asString().asEscapedXML() +
-    '<\/span>';
+    '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -512,10 +512,10 @@ function(anObject, optFormat) {
 
         output.push('<span data-name="' + key + '">' +
             TP.boot.$stringify(anObject.at(keys.at(i)), '\n', true) +
-                    '<\/span>');
+                    '</span>');
     }
 
-    output.push('<\/span><\/span>');
+    output.push('</span></span>');
 
     //  We're done - we can remove the recursion flag.
     delete anObject.$$format_tsh_pp;
@@ -537,7 +537,7 @@ function(anObject, optFormat) {
 
     return '<span class="tsh_pp">' +
             TP.str(anObject.getNativeNode()).asEscapedXML() +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -560,7 +560,7 @@ function(anObject, optFormat) {
         data = anObject.at('cmd');
     }
 
-    return '<span class="tsh_pp">' + data + '<\/span>';
+    return '<span class="tsh_pp">' + data + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -597,22 +597,22 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
             arr.push('<span data-name="' + keys[i] + '">' +
-                TP.str(nativeWin.document).asEscapedXML() + '<\/span>');
+                TP.str(nativeWin.document).asEscapedXML() + '</span>');
             continue;
         }
 
         try {
             arr.push('<span data-name="' + keys[i] + '">' +
-                TP.xhtmlstr(nativeWin[keys[i]]) + '<\/span>');
+                TP.xhtmlstr(nativeWin[keys[i]]) + '</span>');
         } catch (e) {
             arr.push('<span data-name="' + keys[i] + '">' +
-                'undefined' + '<\/span>');
+                'undefined' + '</span>');
         }
     }
 
-    arr.push('<\/span><\/span>');
+    arr.push('</span></span>');
 
-    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -648,22 +648,22 @@ function(anObject, optFormat) {
     for (i = 0; i < len; i++) {
         if (keys[i] === 'document') {
             arr.push('<span data-name="' + keys[i] + '">' +
-                TP.str(anObject.document).asEscapedXML() + '<\/span>');
+                TP.str(anObject.document).asEscapedXML() + '</span>');
             continue;
         }
 
         try {
             arr.push('<span data-name="' + keys[i] + '">' +
-                TP.xhtmlstr(anObject[keys[i]]) + '<\/span>');
+                TP.xhtmlstr(anObject[keys[i]]) + '</span>');
         } catch (e) {
             arr.push('<span data-name="' + keys[i] + '">' +
-                'undefined' + '<\/span>');
+                'undefined' + '</span>');
         }
     }
 
-    arr.push('<\/span>');
+    arr.push('</span>');
 
-    return '<span class="tsh_pp">' + arr.join('\n') + '<\/span>';
+    return '<span class="tsh_pp">' + arr.join('\n') + '</span>';
 });
 
 //  ========================================================================
@@ -703,7 +703,7 @@ function(anObject, optFormat) {
 
     if (TP.notValid(anObject)) {
         // 'null' or 'undefined', as you'd expect.
-        return '<span class="tsh_pp">' + anObject + '<\/span>';
+        return '<span class="tsh_pp">' + anObject + '</span>';
     }
 
     if (TP.isValid(anObject)) {

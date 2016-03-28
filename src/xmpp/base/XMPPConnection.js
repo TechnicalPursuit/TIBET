@@ -383,7 +383,7 @@ function(aJID, aPassword) {
 
     serverNonce = challengePlainText.substring(
                     serverNonceIndex,
-                    challengePlainText.indexOf('\"', serverNonceIndex));
+                    challengePlainText.indexOf('"', serverNonceIndex));
 
     if (TP.isEmpty(serverNonce)) {
         this.raise('TP.sig.XMPPAuthException',
@@ -1053,7 +1053,7 @@ function(aSignal) {
         TP.sys.fireNextSignal();
     } catch (e) {
         //  'undo' the read, so we can get to the data
-        //stream.set('index', stream.get('index') - 1, false);
+        // stream.set('index', stream.get('index') - 1, false);
 
         this.raise('TP.sig.XMPPQueueingException', TP.ec(e));
     }

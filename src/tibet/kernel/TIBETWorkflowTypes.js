@@ -1241,7 +1241,6 @@ function(varargs) {
             } else {
                 return TP.sig.Request.construct(varargs);
             }
-            break;
 
         default:
             return TP.sig.Request.construct(TP.hc.apply(null, arguments));
@@ -7769,7 +7768,9 @@ function(name, body, async) {
     //  Use our 'eval' method to evaluate the code. This is *not* the regular JS
     //  'eval' global call - this method evaluates the code over in worker
     //  thread and returns a Promise that will resolve when that is done.
+    /* eslint-disable no-eval */
     promise = this.eval(methodSrc);
+    /* eslint-enable no-eval */
 
     //  Attach to the Promise that was returned from evaluating the code.
     promise.then(
@@ -7979,7 +7980,9 @@ function(srcText, options) {
         //  dependencies directory, then define a worker method that will
         //  'render' the LESSCSS code we hand to it (automagically sent over to
         //  the worker by this type).
+        /* eslint-disable no-eval */
         workerPromise = this.eval(this.getType().SETUP_STRING).then(
+        /* eslint-enable no-eval */
             function() {
 
                 //  Import the LESS library

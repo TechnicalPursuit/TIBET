@@ -55,7 +55,7 @@ function(anEntry) {
 
     //  Only pass along entries that are ok/not ok.
     if (TP.isHash(entry)) {
-        text = entry.at('statusText')
+        text = entry.at('statusText');
     } else {
         text = entry.get('statusText');
     }

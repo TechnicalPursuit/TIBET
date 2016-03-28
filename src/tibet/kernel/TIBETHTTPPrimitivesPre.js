@@ -266,8 +266,6 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                 return TP.js2json(data);
             }
 
-            break;
-
         case TP.URL_ENCODED:
 
             //  this format is typically used with GET requests, but it can
@@ -355,7 +353,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                                 '<input type="hidden" name="',
                                 el.tagName,
                                 '" value="',
-                                val.replace(/\"/g, '&quot;'),
+                                val.replace(/"/g, '&quot;'),
                                 '" />\n');
                         }
                     }
@@ -376,7 +374,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                                 TP.str(
                                     data.at(
                                         list.at(i)).at(j)).replace(
-                                                /\"/g, '&quot;'),
+                                                /"/g, '&quot;'),
                                 '" />\n');
                         }
                     } else {
@@ -384,7 +382,7 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
                             '<input type="hidden" name="',
                             list.at(i),
                             '" value="',
-                            TP.str(item).replace(/\"/g, '&quot;'),
+                            TP.str(item).replace(/"/g, '&quot;'),
                             '" />\n');
                     }
                 }
@@ -666,8 +664,6 @@ function(aPayload, aMIMEType, aSeparator, multipartMIMETypes, anEncoding) {
             //  nothing we can do but return the string version
             return TP.str(data);
     }
-
-    return data;
 });
 
 //  ------------------------------------------------------------------------

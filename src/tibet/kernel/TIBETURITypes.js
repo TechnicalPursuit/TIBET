@@ -562,7 +562,7 @@ function(aScheme) {
         //  Rewrite the TP.regex.URI_LIKELY so that it reflects the new
         //  scheme as well.
         TP.regex.URI_LIKELY =
-            TP.rc(TP.join('^~|^\/|^\\.\\/|^\\.\\.\\/',
+            TP.rc(TP.join('^~|^/|^\\.\\/|^\\.\\.\\/',
                             '|^',
                             TP.keys(TP.boot.$uriSchemes).join(':|^'),
                             ':',
@@ -829,7 +829,7 @@ function(aURI) {
         }
 
         return false;
-    })
+    });
 
     //  If the search found a pattern value that expanded to an exact file match
     //  that one "wins" and we need to return that configuration block.
@@ -1371,7 +1371,7 @@ function() {
     return '<span class="TP_core_URI ' +
                 TP.escapeTypeName(TP.tname(this)) + '">' +
             TP.htmlstr(this.asString()) +
-            '<\/span>';
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -1404,9 +1404,9 @@ function() {
 
     return '<dl class="pretty ' +
                 TP.escapeTypeName(TP.tname(this)) +
-            '"><dt\/><dd>' +
+            '"><dt/><dd>' +
             TP.pretty(this.asString()) +
-            '<\/dd><\/dl>';
+            '</dd></dl>';
 });
 
 //  ------------------------------------------------------------------------
@@ -1453,7 +1453,7 @@ function() {
 
     return '<instance type="' + TP.tname(this) + '">' +
                     TP.xmlstr(this.asString()) +
-                    '<\/instance>';
+                    '</instance>';
 });
 
 //  ------------------------------------------------------------------------
@@ -4767,7 +4767,7 @@ function(url) {
         path = path.slice(0, path.indexOf('?'));
     }
 
-    if (/\#/.test(path)) {
+    if (/#/.test(path)) {
         path = path.slice(0, path.indexOf('#'));
     }
 
@@ -4913,7 +4913,7 @@ function(aRequest, filterResult) {
 
                 //  TODO: if we set to a filtered value here we'll replace
                 //  the main resource value...commented out for testing.
-                //thisref.set('resource', result);
+                // thisref.set('resource', result);
 
                 if (TP.canInvoke(aRequest, 'complete')) {
                     aRequest.complete(result);
@@ -7824,8 +7824,6 @@ function(aRequest, filterResult) {
                                                     filter);
                 }
 
-                break;
-
             case 'true_false':
 
                 //  pointer references window.document subset without
@@ -9027,12 +9025,15 @@ function(pattern, signalOrProcessor, processor) {
     //  push the new pattern into place.
     processors = this.get('processors');
     index = TP.NOT_FOUND;
-    processors.some(function(item, i) {
-        if (TP.equal(item.at('pattern'), regex)) {
-            index = i;
-            return true;
-        }
-    });
+    processors.some(
+            function(item, i) {
+                if (TP.equal(item.at('pattern'), regex)) {
+                    index = i;
+                    return true;
+                }
+
+                return false;
+            });
 
     if (index !== TP.NOT_FOUND) {
         processors.atPut(index, entry);
@@ -9453,7 +9454,7 @@ function(aURIOrPushState, aDirection) {
         //  Find any boot-related key. We only need to find one to restart.
         bootParams = paramDiff.detect(function(pair) {
             return pair.first().startsWith('boot.');
-        })
+        });
 
         //  If a boot-related parameter changed restart, otherwise update.
         if (TP.notEmpty(bootParams)) {
@@ -10479,8 +10480,7 @@ function() {
                     //  Observe the source for the signal type.
                     signalTarget.observe(signalSource, signalType);
                 }
-
-            }.bind(this));
+            });
 
     TP.sys.setcfg('uri.process_remote_changes', true);
 
@@ -10525,8 +10525,7 @@ function() {
                     //  Ignore the source for the signal type.
                     signalTarget.ignore(signalSource, signalType);
                 }
-
-            }.bind(this));
+            });
 
     TP.sys.setcfg('uri.process_remote_changes', false);
 

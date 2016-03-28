@@ -372,7 +372,7 @@ function(aResourceID, aRequest) {
 
     this.$set('commandXMLNS', TP.sys.require(name));
 
-    //this.set('xpathVizController', TPXPathVizController.construct());
+    // this.set('xpathVizController', TPXPathVizController.construct());
 
     return this;
 });
@@ -1487,7 +1487,7 @@ function(aRequest) {
                     //  TODO: Can't do this here because of compile errors
                     //  around including templates multiple times... Need a
                     //  fix.
-                    //TP.elementRemoveAttribute(child, 'tibet:phase', true);
+                    // TP.elementRemoveAttribute(child, 'tibet:phase', true);
                 } else {
                     aRequest.atPut('cmdNode', child);
 
@@ -2087,7 +2087,9 @@ function(aRequest) {
 
     var arg,
         url,
-        obj;
+        obj,
+
+        aspectName;
 
     arg = this.getArgument(aRequest, 'ARG0');
 
@@ -2103,10 +2105,14 @@ function(aRequest) {
         obj = this.resolveObjectReference(arg, aRequest);
     }
 
-    //  Fire a 'FocusWorkbench' signal, supplying the target object to focus on.
+    aspectName = this.getArgument(aRequest, 'tsh:aspect', null, false);
+
+    //  Fire a 'FocusInspector' signal, supplying the target object to focus on.
     TP.signal(null,
-                'FocusWorkbench',
-                TP.hc('targetObject', obj, 'targetID', TP.id(obj)));
+                'FocusInspector',
+                TP.hc('targetObject', obj,
+                        'targetID', TP.id(obj),
+                        'targetAspect', aspectName));
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
@@ -3223,7 +3229,8 @@ function(aRequest) {
         if (TP.notDefined(obj)) {
             meta = TP.sys.getMetadata('methods');
 
-            // Query for owners, but just names. We don't want to ass_ume types.
+            //  Query for owners, but just names. We don't want to ass_ume
+            //  types.
             results = TP.sys.getMethodOwners(arg0, true);
             if (TP.notEmpty(results)) {
                 regex = RegExp.construct('/\.' + arg0 + '$/');
@@ -3270,6 +3277,8 @@ function(aRequest) {
                                     return true;
                                 }
                             }
+
+                            return false;
                         }));
                     } else if (types) {
                         results.addAll(TP.keys(obj).filter(function(key) {
@@ -3278,6 +3287,8 @@ function(aRequest) {
                                     return true;
                                 }
                             }
+
+                            return false;
                         }));
                     }
                 }
@@ -3302,6 +3313,8 @@ function(aRequest) {
                                         return true;
                                     }
                                 }
+
+                                return false;
                             }));
                         } else {
                             results.addAll(TP.keys(obj));
@@ -3386,6 +3399,8 @@ function(aRequest) {
                                         return true;
                                     }
                                 }
+
+                                return false;
                             }));
                         } else {
                             results.addAll(TP.keys(obj));

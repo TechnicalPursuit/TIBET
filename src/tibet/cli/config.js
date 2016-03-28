@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/*eslint indent:0*/
+/* eslint indent:0 */
 
 (function() {
 
@@ -90,7 +90,9 @@ Cmd.prototype.execute = function() {
         option = this.options._[1];
     }
 
-    if (/\=/.test(option)) {
+    /* eslint-disable no-div-regex */
+    if (/=/.test(option)) {
+    /* eslint-enable no-div-regex */
         return this.setConfig(option.slice(0, option.indexOf('=')),
             option.slice(option.indexOf('=') + 1));
     } else if (option === '~') {
@@ -107,7 +109,7 @@ Cmd.prototype.execute = function() {
         if (cfg === undefined) {
             cfg = CLI.getcfg();
             keys = Object.keys(cfg).filter(function(key) {
-                return key.indexOf(option) === 0; //option.replace(/\./g, '_')) === 0;
+                return key.indexOf(option) === 0; // option.replace(/\./g, '_')) === 0;
             });
             newcfg = {};
             keys.forEach(function(key) {

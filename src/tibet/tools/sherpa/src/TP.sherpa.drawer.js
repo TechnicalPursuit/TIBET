@@ -71,7 +71,7 @@ function(beClosed) {
                             TP.hc('drawerOriginID', originID),
                             TP.OBSERVER_FIRING);
 
-    }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+    }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
     hudTPElem.signal('DrawerCloseWillChange',
                         TP.hc('drawerOriginID', originID),

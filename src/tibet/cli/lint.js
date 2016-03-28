@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/*eslint no-process-exit:0, indent:0*/
+/* eslint no-process-exit:0, indent:0 */
 
 (function() {
 
@@ -856,7 +856,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
                     summary;
 
                 if (engine.isPathIgnored(file.replace(root, ''))) {
-                    return;
+                    return false;
                 }
 
                 result = engine.executeOnFiles([file]);

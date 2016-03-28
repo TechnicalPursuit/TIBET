@@ -2409,7 +2409,7 @@ TP.regex.HAS_COLON = /:/;
 TP.regex.HAS_HASH = /#/;
 TP.regex.HAS_HYPHEN = /\-/;
 TP.regex.HAS_PAREN = /\(|\)/;       //  moz won't parse without closing )
-TP.regex.HAS_PERCENT = /\%/;
+TP.regex.HAS_PERCENT = /%/;
 TP.regex.HAS_PERIOD = /\./;
 TP.regex.HAS_PIPE = /[^\\]?\|/;         //  not valid if escaped via backslash
 TP.regex.HAS_PIPE_SPLAT = /[^\\]?\|\*/; //  not valid if escaped via backslash
@@ -2886,7 +2886,7 @@ TP.regex.XML_PREFIX = /<\?xml (.*)\?>/;
 //  Moz has namespace resolution issues :)
 TP.regex.MOZ_XPATH_ERROR = /regard to namespaces/;
 
-TP.regex.NS_EXTRACTION = /.*?xmlns([:\w]*?)=\"(.*?)\"/g;    //  needs reset
+TP.regex.NS_EXTRACTION = /.*?xmlns([:\w]*?)="(.*?)"/g;      //  needs reset
 TP.regex.NS_PREFIXES = /<(\w+)*:/g;                         //  needs reset
 TP.regex.NS_QUALIFIED = /(.*):(.*)/;
 

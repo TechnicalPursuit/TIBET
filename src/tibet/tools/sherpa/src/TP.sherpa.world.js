@@ -96,7 +96,7 @@ function() {
         //  Hide all of the other iframes (1...N)
         allIFrames.slice(1).perform(
                             function(anIFrameElem) {
-                                //TP.elementHide(anIFrameElem);
+                                // TP.elementHide(anIFrameElem);
                                 TP.elementHide(anIFrameElem.parentNode);
                             });
 
@@ -268,8 +268,8 @@ function(screenRowNum, screenColNum) {
     screenWidth = this.get('screenWidth');
     screenHeight = this.get('screenHeight');
 
-    //gapWidth = this.get('gapWidth');
-    //gapHeight = this.get('gapHeight');
+    // gapWidth = this.get('gapWidth');
+    // gapHeight = this.get('gapHeight');
     gapWidth = 0;
     gapHeight = 0;
 

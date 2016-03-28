@@ -473,7 +473,7 @@ function(anObject, optFormat) {
             for (i = 0; i < len; i++) {
                 key = keys.at(i);
                 value = TP.format(anObject[key], TP.sherpa.pp.Type, format);
-                //value = value.asEscapedXML();
+                // value = value.asEscapedXML();
 
                 output.push(
                     '<span data-name="' + TP.str(key).asEscapedXML() + '">',

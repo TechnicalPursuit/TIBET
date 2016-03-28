@@ -1340,7 +1340,7 @@ function(aString) {
         return;
     }
 
-    return aString.replace(/\ /g, '_');
+    return aString.replace(/ /g, '_');
 });
 
 //  ------------------------------------------------------------------------
@@ -1361,7 +1361,7 @@ function(aString) {
         return;
     }
 
-    return aString.replace(/\_/g, ' ');
+    return aString.replace(/_/g, ' ');
 });
 
 //  ------------------------------------------------------------------------
@@ -1382,7 +1382,7 @@ function(aString) {
         return;
     }
 
-    return aString.replace(/\_/g, '.');
+    return aString.replace(/_/g, '.');
 });
 
 //  ------------------------------------------------------------------------
@@ -2564,11 +2564,11 @@ function(anObject) {
         return '<span class="XHR">' +
                     '<span data-name="status">' +
                         anObject.status +
-                    '<\/span>' +
+                    '</span>' +
                     '<span data-name="responseText">' +
                         TP.htmlstr(anObject.responseText) +
-                    '<\/span>' +
-                '<\/span>';
+                    '</span>' +
+                '</span>';
     }
 
     //  native nodes are the next-most likely object being passed to this
@@ -2581,7 +2581,7 @@ function(anObject) {
     if (TP.isError(anObject)) {
         return '<span class="Error" data-name="message">' +
                     TP.str(anObject.message) +
-                '<\/span>';
+                '</span>';
     }
 
     if (TP.isString(anObject)) {
@@ -2622,9 +2622,9 @@ function(anObject) {
             arr.push(
                     '<span data-name="', i, '">',
                         TP.htmlstr(anObject[i]),
-                    '<\/span>');
+                    '</span>');
         }
-        arr.push('<\/span>');
+        arr.push('</span>');
 
         return arr.join('');
     }
@@ -2639,12 +2639,12 @@ function(anObject) {
             arr.push(
                     '<span data-name="key">',
                         TP.name(anObject.item(i)),
-                    '<\/span>',
+                    '</span>',
                     '<span data-name="value">',
                         TP.val(anObject.item(i)),
-                    '<\/span>');
+                    '</span>');
         }
-        arr.push('<\/span>');
+        arr.push('</span>');
 
         return arr.join('');
     }
@@ -2660,18 +2660,18 @@ function(anObject) {
             arr.push(TP.htmlstr(rules[i]));
         }
 
-        return '<span class="CSSStyleSheet">' + arr.join(' ') + '<\/span>';
+        return '<span class="CSSStyleSheet">' + arr.join(' ') + '</span>';
     }
 
     //  Style rule objects
     if (TP.isStyleRule(anObject)) {
-        return '<span class="CSSStyleRule">' + anObject.cssText + '<\/span>';
+        return '<span class="CSSStyleRule">' + anObject.cssText + '</span>';
     }
 
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
         return '<span class="CSSStyleDeclaration">' +
-            anObject.cssText + '<\/span>';
+            anObject.cssText + '</span>';
     }
 
     //  we're usually calling this with a standard object so we can leverage
@@ -3824,9 +3824,9 @@ function(anObject) {
     //  XMLHttpRequest can have permission issues, so check early
     if (TP.isXHR(anObject)) {
         return '<xhr>' +
-                '<status>' + anObject.status + '<\/status>' +
-                '<content>' + TP.xmlstr(anObject.responseText) + '<\/content>' +
-                '<\/xhr>';
+                '<status>' + anObject.status + '</status>' +
+                '<content>' + TP.xmlstr(anObject.responseText) + '</content>' +
+                '</xhr>';
     }
 
     //  native nodes are the next-most likely object being passed to this
@@ -3838,9 +3838,9 @@ function(anObject) {
     //  got to check Errors next... they freak out if handed to TP.isString().
     if (TP.isError(anObject)) {
         return '<error>' +
-                '<type>' + TP.tname(anObject) + '<\/type>' +
-                '<message>' + TP.str(anObject.message) + '<\/message>' +
-                '<\/error>';
+                '<type>' + TP.tname(anObject) + '</type>' +
+                '<message>' + TP.str(anObject.message) + '</message>' +
+                '</error>';
     }
 
     if (TP.isString(anObject)) {
@@ -3879,7 +3879,7 @@ function(anObject) {
         for (i = 0; i < len; i++) {
             arr.push('<node index="', i, '">',
                         TP.xmlstr(anObject[i]),
-                        '<\/node>');
+                        '</node>');
         }
 
         return arr.join('');
@@ -3893,7 +3893,7 @@ function(anObject) {
         for (i = 0; i < len; i++) {
             arr.push('<', TP.name(anObject.item(i)), '>',
                          TP.val(anObject.item(i)),
-                        '<\/', TP.name(anObject.item(i)), '>');
+                        '</', TP.name(anObject.item(i)), '>');
         }
 
         return arr.join('');
@@ -3910,17 +3910,17 @@ function(anObject) {
             arr.push(TP.xmlstr(rules[i]));
         }
 
-        return '<sheet>' + arr.join(' ') + '<\/sheet>';
+        return '<sheet>' + arr.join(' ') + '</sheet>';
     }
 
     //  Style rule objects
     if (TP.isStyleRule(anObject)) {
-        return '<rule>' + anObject.cssText + '<\/rule>';
+        return '<rule>' + anObject.cssText + '</rule>';
     }
 
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
-        return '<declaration>' + anObject.cssText + '<\/declaration>';
+        return '<declaration>' + anObject.cssText + '</declaration>';
     }
 
     //  we're usually calling this with a standard object so we can leverage
@@ -3970,14 +3970,14 @@ function(windowObj) {
     for (i = 0; i < len; i++) {
         try {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(windowObj[keys[i]]), '<\/span>');
+                        TP.htmlstr(windowObj[keys[i]]), '</span>');
         } catch (e) {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(undefined), '<\/span>');
+                        TP.htmlstr(undefined), '</span>');
         }
     }
 
-    arr.push('<\/span>');
+    arr.push('</span>');
 
     return arr.join('').toString();
 });
@@ -4057,23 +4057,23 @@ function(windowObj) {
     len = keys.length;
 
     arr.push('<dl class="pretty ', TP.escapeTypeName(TP.tname(windowObj)), '">',
-                '<dt>Type name<\/dt>',
-                '<dd class="pretty typename">', TP.tname(windowObj), '<\/dd>');
+                '<dt>Type name</dt>',
+                '<dd class="pretty typename">', TP.tname(windowObj), '</dd>');
 
-    arr.push('<dt class="pretty key">Global ID<\/dt>',
-                '<dd>', TP.gid(windowObj), '<\/dd>');
+    arr.push('<dt class="pretty key">Global ID</dt>',
+                '<dd>', TP.gid(windowObj), '</dd>');
 
     for (i = 0; i < len; i++) {
         try {
-            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
-                        '<dd>', TP.pretty(windowObj[keys[i]]), '<\/dd>');
+            arr.push('<dt class="pretty key">', keys[i], '</dt>',
+                        '<dd>', TP.pretty(windowObj[keys[i]]), '</dd>');
         } catch (e) {
-            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
-                        '<dd>', TP.pretty(undefined), '<\/dd>');
+            arr.push('<dt class="pretty key">', keys[i], '</dt>',
+                        '<dd>', TP.pretty(undefined), '</dd>');
         }
     }
 
-    arr.push('<\/dl>');
+    arr.push('</dl>');
 
     return arr.join('').toString();
 });
@@ -4155,7 +4155,7 @@ function(windowObj) {
         }
     }
 
-    arr.push('\/>');
+    arr.push('/>');
 
     return arr.join('').toString();
 });
@@ -5777,14 +5777,14 @@ function(eventObj) {
     for (i = 0; i < len; i++) {
         try {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(eventObj[keys[i]]), '<\/span>');
+                        TP.htmlstr(eventObj[keys[i]]), '</span>');
         } catch (e) {
             arr.push('<span data-name="', keys[i], '">',
-                        TP.htmlstr(undefined), '<\/span>');
+                        TP.htmlstr(undefined), '</span>');
         }
     }
 
-    arr.push('<\/span>');
+    arr.push('</span>');
 
     return arr.join('').toString();
 });
@@ -5860,20 +5860,20 @@ function(eventObj) {
     len = keys.length;
 
     arr.push('<dl class="pretty ', TP.escapeTypeName(TP.tname(eventObj)), '">',
-                '<dt>Type name<\/dt>',
-                '<dd class="pretty typename">', TP.tname(eventObj), '<\/dd>');
+                '<dt>Type name</dt>',
+                '<dd class="pretty typename">', TP.tname(eventObj), '</dd>');
 
     for (i = 0; i < len; i++) {
         try {
-            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
-                        '<dd>', TP.pretty(eventObj[keys[i]]), '<\/dd>');
+            arr.push('<dt class="pretty key">', keys[i], '</dt>',
+                        '<dd>', TP.pretty(eventObj[keys[i]]), '</dd>');
         } catch (e) {
-            arr.push('<dt class="pretty key">', keys[i], '<\/dt>',
-                        '<dd>', TP.pretty(undefined), '<\/dd>');
+            arr.push('<dt class="pretty key">', keys[i], '</dt>',
+                        '<dd>', TP.pretty(undefined), '</dd>');
         }
     }
 
-    arr.push('<\/dl>');
+    arr.push('</dl>');
 
     return arr.join('').toString();
 });
@@ -6013,7 +6013,7 @@ function(eventObj) {
         }
     }
 
-    arr.push('\/>');
+    arr.push('/>');
 
     return arr.join('').toString();
 });
@@ -6117,17 +6117,17 @@ TP.boot.$simplePropertyRetriever = {
                         obj, true, true, this._enumerableAndNotEnumerable);
     },
     // Private static property checker callbacks
-    _enumerable : function(obj, prop) {
+    _enumerable: function(obj, prop) {
         return obj.propertyIsEnumerable(prop);
     },
-    _notEnumerable : function(obj, prop) {
+    _notEnumerable: function(obj, prop) {
         return !obj.propertyIsEnumerable(prop);
     },
-    _enumerableAndNotEnumerable : function(obj, prop) {
+    _enumerableAndNotEnumerable: function(obj, prop) {
         return true;
     },
     // Inspired by http://stackoverflow.com/a/8024294/271577
-    _getPropertyNames : function getAllPropertyNames(
+    _getPropertyNames: function getAllPropertyNames(
                                     obj, iterateSelfBool,
                                     iteratePrototypeBool, includePropCb) {
         var target,
@@ -6139,6 +6139,7 @@ TP.boot.$simplePropertyRetriever = {
         props = [];
         selfBool = iterateSelfBool;
 
+        /* eslint-disable no-loop-func */
         do {
             if (selfBool) {
                 Object.getOwnPropertyNames(target).forEach(
@@ -6153,6 +6154,7 @@ TP.boot.$simplePropertyRetriever = {
                 break;
             }
             selfBool = true;
+        /* eslint-enable no-loop-func */
         /* eslint-disable no-extra-parens */
         } while ((target = Object.getPrototypeOf(target)));
         /* eslint-enable no-extra-parens */

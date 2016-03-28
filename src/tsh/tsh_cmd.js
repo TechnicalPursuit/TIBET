@@ -249,8 +249,6 @@ function(aString, aShell, aRequest, asTokens) {
                 return;
             }
 
-            break;
-
         case 'function':
 
             inFunction = true;
@@ -414,7 +412,7 @@ function(aString, aShell, aRequest, asTokens) {
                         if (next && next.value === '=') {
                             if (TP.notDefined(TP.global[identValue])) {
                                 //  assignment, rewrite the identifier.
-                                //result.push('$SCOPE', '.');
+                                // result.push('$SCOPE', '.');
                                 rewrites.push(identValue);
                             }
                         }

@@ -984,7 +984,7 @@ function(details) {
     oldState = details.at('prior');
     newState = details.at('state');
 
-    //TP.info('TP.core.StateMachine :: transition -' +
+    // TP.info('TP.core.StateMachine :: transition -' +
     //          ' oldState: ' + oldState +
     //          ' newState: ' + newState +
     //          ' trigger: ' + TP.str(details.at('trigger')));
@@ -1252,7 +1252,7 @@ function(signalOrParams) {
     oldState = this.get('state');
     newState = oldState;
 
-    //TP.info('TP.core.StateMachine :: updateCurrentState -' +
+    // TP.info('TP.core.StateMachine :: updateCurrentState -' +
     //          ' oldState: ' + oldState +
     //          ' newState: ' + newState);
 
@@ -1448,6 +1448,8 @@ function(aSignal) {
      * @returns {TP.core.StateResponder} The receiver.
      */
 
+    // TP.info('entering: ' + aSignal.at('state') + ' from: ' + aSignal.at('prior'));
+
     if (aSignal.at('state') === this.get('mainState')) {
         this.observe(this.get('stateMachine'), TP.sig.StateInput);
         this.didEnter(aSignal);
@@ -1470,6 +1472,8 @@ function(aSignal) {
      *     from the state machine.
      * @returns {TP.core.StateResponder} The receiver.
      */
+
+    // TP.info('exiting: ' + aSignal.at('prior') + ' from: ' + aSignal.at('state'));
 
     if (aSignal.at('prior') === this.get('mainState')) {
         this.ignore(this.get('stateMachine'), TP.sig.StateInput);

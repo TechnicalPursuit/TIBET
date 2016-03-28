@@ -338,7 +338,7 @@ function(aString) {
 
     //  Because JSON doesn't allow for escaped single quotes, we have to make
     //  sure to replace them all here.
-    str = str.replace(/\\'/g,'\'');
+    str = str.replace(/\\'/g, '\'');
 
     return str;
 });
@@ -764,12 +764,12 @@ function(aNode) {
                 return;
             }
 
-            if (obj['$'] instanceof Array) {
-                obj['$'].push(node.nodeValue);
-            } else if (obj['$'] instanceof Object) {
-                obj['$'] = [obj['$'], node.nodeValue];
+            if (obj.$ instanceof Array) {
+                obj.$.push(node.nodeValue);
+            } else if (obj.$ instanceof Object) {
+                obj.$ = [obj.$, node.nodeValue];
             } else {
-                obj['$'] = node.nodeValue;
+                obj.$ = node.nodeValue;
             }
 
         } else if (node.nodeType === Node.ELEMENT_NODE) {
@@ -784,7 +784,7 @@ function(aNode) {
                 value = attr.nodeValue;
 
                 if (name === 'xmlns') {
-                    ns['$'] = value;
+                    ns.$ = value;
                 } else if (name.indexOf('xmlns:') === 0) {
                     ns[name.substr(name.indexOf(':') + 1)] = value;
                 } else {
@@ -934,13 +934,13 @@ function(aString) {
                 return (body !== '') ?
                 /* eslint-enable no-extra-parens */
                     el + attributes + '>' + body + '</' + lname + '>' :
-                    el + attributes + '/>'
+                    el + attributes + '/>';
             }
         };
 
         for (leafName in data) {
 
-            if (data.hasOwnProperty(leafName) && leafName.indexOf('@') == -1) {
+            if (data.hasOwnProperty(leafName) && leafName.indexOf('@') === -1) {
                 return processLeaf(leafName, data[leafName], {});
             }
         }

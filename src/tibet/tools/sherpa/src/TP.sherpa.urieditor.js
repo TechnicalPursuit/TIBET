@@ -119,8 +119,8 @@ function(aSignal) {
 
         //  An unpatchable URI
 
-        //newSourceText = this.get('localSourceContent');
-        //sourceLocation = sourceObject.getSourcePath();
+        // newSourceText = this.get('localSourceContent');
+        // sourceLocation = sourceObject.getSourcePath();
         TP.warn('not a patchable URI: ' + sourceLocation);
     }
 

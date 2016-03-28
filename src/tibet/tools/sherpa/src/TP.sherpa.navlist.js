@@ -90,10 +90,10 @@ function() {
     items.enter().append('xhtml:li');
 
     if (TP.isArray(data.first())) {
-        items.text(function(d) {return d[0]}).
-                attr('itemName', function(d) {return d[1]});
+        items.text(function(d) {return d[0]; }).
+                attr('itemName', function(d) {return d[1]; });
     } else {
-        items.text(function(d) {return d});
+        items.text(function(d) {return d; });
     }
 
     items.exit().remove();

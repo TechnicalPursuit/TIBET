@@ -114,10 +114,6 @@ TP.hc(
 
             return false;
         }
-
-        request.complete(false);
-
-        return false;
     },
     TP.DEFAULT,
     function(targetUrl, aRequest) {

@@ -264,7 +264,7 @@ function(aTypename) {
     }
 
     //  this will construct the true instance for us as normal
-    //type = this.callNextMethod();
+    // type = this.callNextMethod();
     /* jshint -W053 */
     /* eslint-disable no-new-wrappers */
     type = new String(aTypename);

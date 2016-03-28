@@ -2920,7 +2920,7 @@ function() {
     //  (ss) NOTE that we don't do this here, presuming that we can
     //  configure the defaults once and retain them for all individual runs
     //  update/default any parameters that might be missing
-    //this.$configure();
+    // this.$configure();
 
     //  do any pre-run setup before scheduling/running the job
     this.$setup();

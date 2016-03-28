@@ -137,7 +137,7 @@ TP.core.LocalDBURL.addTraits(TP.core.CommURL);
 //  This RegExp splits up the URL into the following components:
 //  local://dbName/(?id)
 TP.core.LocalDBURL.Type.defineConstant('LOCALDB_REGEX',
-    TP.rc('^localdb:\/\/([^\/]+)(\/([^?]+)(\\??(\\S*))?)?'));
+    TP.rc('^localdb://([^/]+)(/([^?]+)(\\??(\\S*))?)?'));
 
 TP.core.LocalDBURL.Type.defineConstant('SCHEME', 'localdb');
 

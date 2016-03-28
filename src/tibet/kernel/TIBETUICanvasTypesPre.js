@@ -1632,7 +1632,7 @@ function() {
         str = '<span class="TP_core_Window ' +
                     TP.escapeTypeName(TP.tname(this)) + '">' +
                 TP.htmlstr(this.getNativeWindow()) +
-                '<\/span>';
+                '</span>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -1667,12 +1667,12 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
+                    '</dd>' +
                     TP.pretty(this.getNativeWindow()) +
-                    '<\/dl>';
+                    '</dl>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -1764,7 +1764,7 @@ function() {
     try {
         str = '<instance type="' + TP.tname(this) + '">' +
                     TP.xmlstr(this.getNativeWindow()) +
-                    '<\/instance>';
+                    '</instance>';
     } catch (e) {
         str = this.toString();
     } finally {

@@ -142,10 +142,10 @@ function() {
     return TP.join(
             '<span class="TP_core_Annotation">',
             '<span data-name="object">',
-                TP.htmlstr(this.$get('object')), '<\/span>',
+                TP.htmlstr(this.$get('object')), '</span>',
             '<span data-name="message">',
-                TP.htmlstr(this.$get('message')), '<\/span>',
-            '<\/span>');
+                TP.htmlstr(this.$get('message')), '</span>',
+            '</span>');
 });
 
 //  ----------------------------------------------------------------------------
@@ -196,7 +196,7 @@ function() {
 
     return TP.join('<instance type="TP.core.Annotation"',
                             ' object="', TP.str(this.$get('object')), '"',
-                            ' message="', TP.str(this.$get('message')), '"\/>');
+                            ' message="', TP.str(this.$get('message')), '"/>');
 });
 
 //  ----------------------------------------------------------------------------
@@ -731,8 +731,8 @@ function() {
                 TP.escapeTypeName(TP.tname(this)) + '">' +
                     '<span data-name="payload">' +
                         TP.htmlstr(this.getPayload()) +
-                     '<\/span>' +
-                 '<\/span>';
+                     '</span>' +
+                 '</span>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -801,12 +801,12 @@ function() {
 
     try {
         str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) + '">' +
-                    '<dt>Type name<\/dt>' +
+                    '<dt>Type name</dt>' +
                     '<dd class="pretty typename">' +
                         this.getTypeName() +
-                    '<\/dd>' +
+                    '</dd>' +
                     TP.pretty(this.getPayload()) +
-                    '<\/dl>';
+                    '</dl>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -930,8 +930,8 @@ function() {
         str = '<instance type="' + TP.tname(this) + '">' +
                     '<payload>' +
                         TP.xmlstr(this.getPayload()) +
-                     '<\/payload>' +
-                 '<\/instance>';
+                     '</payload>' +
+                 '</instance>';
     } catch (e) {
         str = this.toString();
     } finally {
@@ -2475,9 +2475,9 @@ function() {
     str = '[' + this.getSignalName() + ' :: ';
 
     try {
-        str += '(' + msg + ')' + ']'
+        str += '(' + msg + ')' + ']';
     } catch (e) {
-        str += '(' + TP.str(this.getPayload()) + ')' + ']'
+        str += '(' + TP.str(this.getPayload()) + ')' + ']';
     } finally {
         delete this[marker];
     }
@@ -2521,15 +2521,15 @@ function() {
                     TP.escapeTypeName(TP.tname(this)) + '">' +
                         '<span data-name="payload">' +
                             TP.htmlstr(err) +
-                         '<\/span>' +
-                     '<\/span>';
+                         '</span>' +
+                     '</span>';
         } else {
             str = '<span class="TP_sig_Exception ' +
                     TP.escapeTypeName(TP.tname(this)) + '">' +
                         '<span data-name="payload"><span data-name="message">' +
                             TP.htmlstr(msg) +
-                         '<\/span><\/span>' +
-                     '<\/span>';
+                         '</span></span>' +
+                     '</span>';
         }
 
     } catch (e) {
@@ -2633,21 +2633,21 @@ function() {
         if (TP.isValid(err)) {
             str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
                             '">' +
-                        '<dt>Type name<\/dt>' +
+                        '<dt>Type name</dt>' +
                         '<dd class="pretty typename">' +
                             this.getTypeName() +
-                        '<\/dd>' +
+                        '</dd>' +
                         TP.pretty(err) +
-                        '<\/dl>';
+                        '</dl>';
         } else {
             str = '<dl class="pretty ' + TP.escapeTypeName(TP.tname(this)) +
                             '">' +
-                        '<dt>Type name<\/dt>' +
+                        '<dt>Type name</dt>' +
                         '<dd class="pretty typename">' +
                             this.getTypeName() +
-                        '<\/dd>' +
+                        '</dd>' +
                         TP.pretty(msg) +
-                        '<\/dl>';
+                        '</dl>';
         }
 
     } catch (e) {
@@ -2746,14 +2746,14 @@ function() {
             str = '<instance type="' + TP.tname(this) + '">' +
                         '<payload>' +
                             TP.xmlstr(err) +
-                         '<\/payload>' +
-                     '<\/instance>';
+                         '</payload>' +
+                     '</instance>';
         } else {
             str = '<instance type="' + TP.tname(this) + '">' +
                         '<payload><message>' +
                             TP.xmlstr(msg) +
-                         '<\/message><\/payload>' +
-                     '<\/instance>';
+                         '</message></payload>' +
+                     '</instance>';
         }
 
     } catch (e) {
@@ -5094,8 +5094,8 @@ function(originSet, aSignal, aPayload, aType) {
     if (!TP.isArray(originSet)) {
         //  TODO: this causes sherpa logging to recurse endlessly due to furing
         //  DOMContentLoaded without an origin array every time it appends.
-        //TP.ifWarn() ? TP.warn('DOM firing without origin array: ' +
-            //TP.ifEmpty(sig.getSignalName(), TP.ANY)) : 0;
+        // TP.ifWarn() ? TP.warn('DOM firing without origin array: ' +
+            // TP.ifEmpty(sig.getSignalName(), TP.ANY)) : 0;
         origins = TP.ac(originSet);
     } else {
         origins = originSet;
@@ -5105,7 +5105,7 @@ function(originSet, aSignal, aPayload, aType) {
     if (TP.isEmpty(signame = sig.getSignalName())) {
         //  TODO: this can potentially cause sherpa to recurse. commented out
         //  for now. see comments in earlier block.
-        //TP.ifWarn() ? TP.warn('DOM firing without signal name from: ' +
+        // TP.ifWarn() ? TP.warn('DOM firing without signal name from: ' +
         //    origins.join(', ')) : 0;
         signame = TP.ANY;
     }

@@ -982,7 +982,7 @@ function(aRequest) {
                 'default', 'existing',
                 'async', true));
 
-    //req.observe(req.getRequestID(), 'TP.sig.UserInput');
+    // req.observe(req.getRequestID(), 'TP.sig.UserInput');
 
     //  if the user hit 'Shift-Esc', then we need to make sure everything is
     //  closed out.

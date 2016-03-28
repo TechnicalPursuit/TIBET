@@ -5654,8 +5654,8 @@ function(aWidth, justified, forRendering, joinChar, splitMark) {
 
     if (TP.isTrue(forRendering)) {
         tmparr = TP.ac();
-        if (/\"([^\"])*<br([^\"])*\"/.test(this) ||
-            /\'([^\'])*<br([^\'])*\'/.test(this)) {
+        if (/"([^"])*<br([^"])*"/.test(this) ||
+            /'([^'])*<br([^'])*'/.test(this)) {
             //  quoted, so we'll need to ignore it
             tmparr.add(this);
         } else if (/<br.?>/.test(this)) {
@@ -5700,39 +5700,39 @@ function(aWidth, justified, forRendering, joinChar, splitMark) {
             for (j = 0; j < arr.length; j++) {
                 it = arr.at(j);
                 if (TP.notEmpty(it)) {
-                    //TP.alert('it: ' + it);
+                    // TP.alert('it: ' + it);
 
                     if (it.first() === '<' && it.last() === '>') {
-                        //TP.alert('ignoring markup: ' + it);
+                        // TP.alert('ignoring markup: ' + it);
                         resarr[resarr.length - 1] += it;
                     } else {
-                        //TP.alert('checking string: ' + it);
+                        // TP.alert('checking string: ' + it);
 
-                        size = it.replace(/\&.+?\;/g, ' ').getSize();
+                        size = it.replace(/&.+?;/g, ' ').getSize();
 
                         if (len + size <= width) {
-                            //TP.alert('appending: ' + it.getSize());
+                            // TP.alert('appending: ' + it.getSize());
 
                             len += size;
                             resarr[resarr.length - 1] += it;
 
-                            //TP.alert('chunk is: ' + resarr[resarr.length-1]);
+                            // TP.alert('chunk is: ' + resarr[resarr.length-1]);
                         } else {
-                            //TP.alert('inserting: ' + it.getSize());
+                            // TP.alert('inserting: ' + it.getSize());
 
                             len = size;
                             resarr.push(it);
 
-                            //TP.alert('chunk is: ' + resarr[resarr.length-1]);
+                            // TP.alert('chunk is: ' + resarr[resarr.length-1]);
                         }
                     }
                 }
             }
 
-            //TP.alert('resarr:\n' + resarr.join('\n'));
+            // TP.alert('resarr:\n' + resarr.join('\n'));
 
             tmparr[i] = resarr.join(ch);
-            //tmparr[i] = arr.join('');
+            // tmparr[i] = arr.join('');
         }
 
         return tmparr.join(ch);

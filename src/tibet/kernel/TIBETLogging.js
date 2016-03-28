@@ -78,8 +78,10 @@ function(aName) {
 
     var name;
 
+    /* eslint-disable no-extra-parens */
     name = (aName === TP.log.Manager.ROOT_LOGGER_NAME) ? aName :
         aName.toLowerCase();
+    /* eslint-enable no-extra-parens */
 
     return TP.isValid(this.loggers.at(name));
 });
@@ -105,8 +107,11 @@ function(aName) {
         return this.raise('InvalidName');
     }
 
+    /* eslint-disable no-extra-parens */
     name = (aName === TP.log.Manager.ROOT_LOGGER_NAME) ? aName :
         aName.toLowerCase();
+    /* eslint-enable no-extra-parens */
+
     logger = this.loggers.at(name);
 
     if (TP.isValid(logger)) {
@@ -199,8 +204,10 @@ function(aLogger) {
         return this.raise('DuplicateRegistration', name);
     }
 
+    /* eslint-disable no-extra-parens */
     name = (name === TP.log.Manager.ROOT_LOGGER_NAME) ? name :
         name.toLowerCase();
+    /* eslint-enable no-extra-parens */
 
     this.loggers.atPut(name, aLogger);
 
@@ -686,8 +693,10 @@ function(aName) {
         return this.raise('InvalidName');
     }
 
+    /* eslint-disable no-extra-parens */
     name = (aName === TP.log.Manager.ROOT_LOGGER_NAME) ? aName :
         aName.toLowerCase();
+    /* eslint-enable no-extra-parens */
 
     if (TP.log.Manager.exists(name)) {
         return TP.log.Manager.getLogger(name);

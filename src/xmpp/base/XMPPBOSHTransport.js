@@ -303,8 +303,6 @@ function(aStr) {
         //  Otherwise, we just return the empty String.
         return '';
     }
-
-    return aStr;
 });
 
 //  ------------------------------------------------------------------------

@@ -3256,7 +3256,7 @@ function(aSignal) {
     //  hit the element by mistake.
     TP.nodeDetach(dndElem);
 
-    //this.set('actionElement', this.get('$realActionElem'));
+    // this.set('actionElement', this.get('$realActionElem'));
 
     //  Since this is a shared responder, we need to teardown it's responder
     //  data.

@@ -270,7 +270,7 @@ function(aSignal) {
                 ));
 
         //  have to observe input signal to be able to respond
-        //uir.observe(null, 'TP.sig.UserInput');
+        // uir.observe(null, 'TP.sig.UserInput');
 
         uir.defineHandler('UserInput',
             function(sig) {

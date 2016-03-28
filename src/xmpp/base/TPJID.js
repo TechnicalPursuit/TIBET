@@ -126,10 +126,10 @@ function(aJID) {
     escapedJID = aJID.trim();
     escapedJID = escapedJID.replace(/@/g, '\\40').
                             replace(/ /g, '\\20').
-                            replace(/\'/g, '\\27').
-                            replace(/\"/g, '\\22').
+                            replace(/'/g, '\\27').
+                            replace(/"/g, '\\22').
                             replace(/:/g, '\\3a').
-                            replace(/\&/g, '\\26').
+                            replace(/&/g, '\\26').
                             replace(/\\/g, '\\5c').
                             replace(/\//g, '\\2f').
                             replace(/</g, '\\3c').

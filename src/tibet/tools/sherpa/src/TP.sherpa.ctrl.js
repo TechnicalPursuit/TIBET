@@ -14,12 +14,13 @@
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('TP.sherpa.ctrl')
+TP.lang.Object.defineSubtype('TP.sherpa.ctrl');
 
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ctrl.Inst.defineHandler('DOMDblClick',
 function(aSignal) {
+
     TP.info('i got a ' + aSignal.getSignalName());
 });
 

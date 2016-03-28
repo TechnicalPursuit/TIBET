@@ -49,7 +49,7 @@ TP.core.Unicode.Type.defineConstant('NameChar',
                     //  time to change it and test, but that needs to be done
                     //  and then these jshint switches can be removed.
                     /* jshint -W044 */
-                    '\\\.', '|',    //  . escaped
+                    '\\.', '|',    //  . escaped
                     /* jshint +W044 */
                     ':', '|',
                     '_', '|',

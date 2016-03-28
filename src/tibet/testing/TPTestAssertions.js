@@ -2248,7 +2248,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isActive(anObject), aComment,
+    //  this.assert(TP.isActive(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be active.');
 
     TP.todo();
@@ -2265,7 +2265,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isBusy(anObject), aComment,
+    //  this.assert(TP.isBusy(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be busy.');
 
     TP.todo();
@@ -2282,7 +2282,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isClosed(anObject), aComment,
+    //  this.assert(TP.isClosed(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be closed.');
 
     TP.todo();
@@ -2299,7 +2299,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isDisabled(anObject), aComment,
+    //  this.assert(TP.isDisabled(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be disabled.');
 
     TP.todo();
@@ -2345,7 +2345,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(!TP.isDisabled(anObject), aComment,
+    //  this.assert(!TP.isDisabled(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be enabled.');
 
     TP.todo();
@@ -2362,7 +2362,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isFocused(anObject), aComment,
+    //  this.assert(TP.isFocused(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be focused.');
 
     TP.todo();
@@ -2379,7 +2379,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(!TP.isActive(anObject), aComment,
+    //  this.assert(!TP.isActive(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be inactive.');
 
     TP.todo();
@@ -2396,7 +2396,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isInvisible(anObject), aComment,
+    //  this.assert(TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be invisible.');
 
     TP.todo();
@@ -2413,7 +2413,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(!TP.isClosed(anObject), aComment,
+    //  this.assert(!TP.isClosed(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be open.');
 
     TP.todo();
@@ -2430,7 +2430,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isReadonly(anObject), aComment,
+    //  this.assert(TP.isReadonly(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be readonly.');
 
     TP.todo();
@@ -2447,7 +2447,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isRelevant(anObject), aComment,
+    //  this.assert(TP.isRelevant(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be relevant.');
 
     TP.todo();
@@ -2464,7 +2464,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isRequired(anObject), aComment,
+    //  this.assert(TP.isRequired(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be required.');
 
     TP.todo();
@@ -2481,7 +2481,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.isSelected(anObject), aComment,
+    //  this.assert(TP.isSelected(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be selected.');
 
     TP.todo();
@@ -2498,7 +2498,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(!TP.isInvisible(anObject), aComment,
+    //  this.assert(!TP.isInvisible(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to be visible.');
 
     TP.todo();
@@ -2527,7 +2527,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(TP.notValid(anObject), aComment,
+    //  this.assert(TP.notValid(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to have invalid input.');
 
     TP.todo();
@@ -2554,7 +2554,7 @@ function(anObject, aComment) {
         return false;
     }
 
-    //this.assert(!TP.notValid(anObject), aComment,
+    //  this.assert(!TP.notValid(anObject), aComment,
     //  'Expected ' + TP.id(anObject) + ' to have valid input.');
 
     TP.todo();

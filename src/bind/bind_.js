@@ -294,7 +294,7 @@ function(anElement) {
     repeatElems = repeatElems.filter(
                     function(anElem) {
                         return anElement.contains(anElem);
-                    })
+                    });
 
     //  IMPORTANT: To avoid mutation events as register the repeat content will
     //  cause DOM modifications, we wrap all of the found 'bind:repeat' Elements

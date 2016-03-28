@@ -320,8 +320,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         return TP.xmlDocumentAddContent(aDocument, content,
                                             loadedFunction, shouldAwake);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -381,8 +379,6 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                                             positionOrPath,
                                             loadedFunction, shouldAwake);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -531,8 +527,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         return TP.xmlDocumentSetContent(aDocument, content,
                                         loadedFunction, shouldAwake);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1283,8 +1277,6 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
         return TP.xmlElementAddContent(anElement, content,
                                             loadedFunction, shouldAwake);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -2245,7 +2237,7 @@ function(anElement, attributeName, checkAttrNSURI) {
             //  to look up the registered URI for our prefix
             nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
             if (TP.isEmpty(nsURI)) {
-                TP.ifWarn() ?  TP.warn(
+                TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
             }
 
@@ -3390,7 +3382,7 @@ function(anElement, attributeName, checkAttrNSURI) {
             //  to look up the registered URI for our prefix
             nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
             if (TP.isEmpty(nsURI)) {
-                TP.ifWarn() ?  TP.warn(
+                TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
             }
 
@@ -3535,8 +3527,6 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
                                             positionOrPath,
                                             loadedFunction, shouldAwake);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3769,8 +3759,6 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
         return TP.xmlElementReplaceWith(anElement, content,
                                             loadedFunction, shouldAwake);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3896,7 +3884,7 @@ function(anElement, attributeName, checkAttrNSURI) {
             //  to look up the registered URI for our prefix
             nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
             if (TP.isEmpty(nsURI)) {
-                TP.ifWarn() ?  TP.warn(
+                TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
             }
 
@@ -4177,7 +4165,7 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
             //  to look up the registered URI for our prefix
             nsURI = TP.w3.Xmlns.getPrefixURI(parts.at(1));
             if (TP.isEmpty(nsURI)) {
-                TP.ifWarn() ?  TP.warn(
+                TP.ifWarn() ? TP.warn(
                 'Couldn\'t find namespace URI for prefix: ' + parts.at(1)) : 0;
             }
 
@@ -4314,8 +4302,6 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
         return TP.xmlElementSetContent(anElement, content,
                                             loadedFunction, shouldAwake);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -4573,7 +4559,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     var awakenContent,
 
         nodeContent,
-        //elemGID,
+        // elemGID,
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
@@ -4608,7 +4594,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Before we remove anElement from its parent, we capture its 'gid' for
     //  later use.
-    //elemGID = TP.gid(anElement);
+    // elemGID = TP.gid(anElement);
 
     //  Replace anElement in its parent with the new node.
 
@@ -5944,8 +5930,6 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                                                     shouldAwake);
             }
 
-            break;
-
         case Node.TEXT_NODE:
         case Node.CDATA_SECTION_NODE:
         case Node.PROCESSING_INSTRUCTION_NODE:
@@ -6026,8 +6010,6 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                                                     loadedFunction);
             }
 
-            break;
-
         case Node.ATTRIBUTE_NODE:
 
             switch (positionOrPath) {
@@ -6078,8 +6060,6 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
                                                     loadedFunction,
                                                     shouldAwake);
             }
-
-            break;
 
         case Node.ENTITY_REFERENCE_NODE:
         case Node.ENTITY_NODE:
@@ -6935,8 +6915,6 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
 
             return null;
     }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -11216,8 +11194,6 @@ function(aNode, aFunction, breadthFirst) {
         //  NOTE that we pass as push function only, so no content nodes
         return TP.nodeDepthTraversal(aNode, aFunction, null, null, false);
     }
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -12865,7 +12841,7 @@ function(aNode, aNamespaceURI, includeDescendants) {
         for (i = 0; i < len; i++) {
             attr = attrs[i];
             if (attr.value === aNamespaceURI) {
-                if (/xmlns\:/.test(attr.name)) {
+                if (/xmlns:/.test(attr.name)) {
                     arr.push(attr.name.slice(6));
                 }
             }
@@ -13786,8 +13762,6 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
                                                 shouldAwake);
             }
 
-            break;
-
         case Node.TEXT_NODE:
         case Node.CDATA_SECTION_NODE:
         case Node.PROCESSING_INSTRUCTION_NODE:
@@ -13808,8 +13782,6 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
                                                 content,
                                                 loadedFunction);
             }
-
-            break;
 
         case Node.ATTRIBUTE_NODE:
 
@@ -13832,8 +13804,6 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
                                                 loadedFunction,
                                                 shouldAwake);
             }
-
-            break;
 
         case Node.ENTITY_REFERENCE_NODE:
         case Node.ENTITY_NODE:

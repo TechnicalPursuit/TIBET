@@ -7550,7 +7550,7 @@ function(aString) {
     //  removal below since content of 'script' and 'style' blocks don't
     //  need to be entitified to reside in regular HTML.
     str = str.replace(/<(script|style)([^>]*)>\s*<!\[CDATA\[/g, '<$1$2>');
-    str = str.replace(/\]\]>\s*<\/(script|style)>/g, '<\/$1>');
+    str = str.replace(/\]\]>\s*<\/(script|style)>/g, '</$1>');
 
     //  Strip out CDATA sections outside of 'script' and 'style' blocks.
     str = str.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,
