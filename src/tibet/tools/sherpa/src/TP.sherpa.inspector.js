@@ -472,5 +472,65 @@ TP.sherpa.InspectorRoot.addTraits(TP.sherpa.ToolAPI);
 TP.core.UIElementNode.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary
+     * @returns
+     */
+
+    return TP.ac('Structure', 'Style', 'Tests');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary
+     * @returns
+     */
+
+
+    var triggerSignal,
+        targetID,
+        data,
+        dataURI,
+
+        uri,
+        uriEditorTPElem;
+
+    triggerSignal = options.at('triggerSignal');
+    targetID = triggerSignal.at('targetID');
+
+    if (targetID === this.getID()) {
+
+        data = this.getDataForInspector(options);
+
+        dataURI = TP.uc(options.at('bindLoc'));
+        dataURI.setResource(data);
+
+        return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
+    } else if (targetID === 'Structure') {
+        uri = this.getType().getResourceURI('template').asString();
+
+        uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
+                            'template',
+                            TP.ietf.Mime.XHTML);
+        uriEditorTPElem = uriEditorTPElem.clone();
+        uriEditorTPElem.setAttribute('src', uri);
+
+        return TP.unwrap(uriEditorTPElem);
+    }
+
+    return TP.xhtmlnode('<textarea>' + this.get(targetID) + '</textarea>');
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
