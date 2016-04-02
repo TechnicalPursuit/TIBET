@@ -11,7 +11,7 @@
 /**
  * @type {TP.core.Browser}
  * @summary A type containing common data and functions for the browser.
- * @summary TP.core.Browser is responsible for containing browser-specific
+ * @description TP.core.Browser is responsible for containing browser-specific
  *     features such as event registration and dispatch functions.
  *
  *     This type is also registered under the global 'browser' to make it
