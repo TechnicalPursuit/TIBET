@@ -5246,20 +5246,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('isSelected',
-function() {
-
-    /**
-     * @method isSelected
-     * @summary Returns true if the receiver is selected.
-     * @returns {Boolean} Whether or not the receiver is selected.
-     */
-
-    return this.$getVisualToggle();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
 function(aValue, elementProperty) {
 
@@ -5516,6 +5502,20 @@ function() {
      */
 
     return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
+     */
+
+    return this.$getVisualToggle();
 });
 
 //  ------------------------------------------------------------------------
