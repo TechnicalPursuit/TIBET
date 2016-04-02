@@ -60,42 +60,6 @@ TP.core.D3Tag.Inst.defineAttribute('selection');
 TP.core.D3Tag.Inst.defineAttribute('selectionRoot');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
-//  Tag Phase Support
-//  ------------------------------------------------------------------------
-
-TP.core.D3Tag.Type.defineMethod('tagAttachComplete',
-function(aRequest) {
-
-    /**
-     * @method tagAttachComplete
-     * @summary Processes the tag once it's been fully processed. Because
-     *     tibet:data tag content drives binds and we need to notify even
-     *     without a full page load we process through setContent once the
-     *     attachment is complete (instead of during tagAttachData).
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return this.raise('TP.sig.InvalidNode');
-    }
-
-    tpElem = TP.wrap(elem);
-
-    tpElem.render();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
