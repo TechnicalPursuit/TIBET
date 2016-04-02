@@ -16,6 +16,8 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('navlist');
 
+TP.sherpa.navlist.addTraits(TP.core.D3Tag);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -25,80 +27,97 @@ TP.sherpa.navlist.Inst.defineAttribute(
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.navlist.Type.defineMethod('tagAttachComplete',
-function(aRequest) {
-
-    /**
-     * @method tagAttachComplete
-     * @summary Processes the tag once it's been fully processed. Because
-     *     tibet:data tag content drives binds and we need to notify even
-     *     without a full page load we process through setContent once the
-     *     attachment is complete (instead of during tagAttachData).
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    tpElem.render();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.navlist.Inst.defineMethod('render',
+TP.sherpa.navlist.Inst.defineMethod('drawSelection',
+function(selection) {
+
+    /**
+     * @method drawSelection
+     * @summary Draws content by altering the content provided in the supplied
+     *     selection.
+     * @param {TP.extern.d3.selection} selection The d3.js selection that
+     *     content should be updated in.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var data;
+
+    data = this.get('data');
+
+    if (TP.isArray(data.first())) {
+        selection.text(function(d) {return d[0]; }).
+                        attr('itemName', function(d) {return d[1]; });
+    } else {
+        selection.text(function(d) {return d; });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('getKeyFunction',
 function() {
 
     /**
-     * @method render
+     * @method getKeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set.
+     * @description This Function should take a single argument, an individual
+     *     item from the receiver's data set, and return a value that will act
+     *     as that item's key in the overall data set. The default version
+     *     returns the item itself.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
      */
 
-    var targetList,
+    var data,
+        keyFunc;
 
-        dataSrcAttr,
-        dataURI,
-        data,
-
-        items;
-
-    dataSrcAttr = this.getAttribute('src');
-    dataURI = TP.uc(dataSrcAttr);
-
-    data = dataURI.getResource().get('result');
-
-    targetList = this.get('listcontent');
-
-    items = TP.extern.d3.
-                select(TP.unwrap(targetList)).
-                selectAll('xhtml:li').
-                data(data);
-
-    items.enter().append('xhtml:li');
+    data = this.get('data');
 
     if (TP.isArray(data.first())) {
-        items.text(function(d) {return d[0]; }).
-                attr('itemName', function(d) {return d[1]; });
+        keyFunc = function(d) {return d[0]; };
     } else {
-        items.text(function(d) {return d; });
+        keyFunc = function(d) {return d; };
     }
 
-    items.exit().remove();
+    return keyFunc;
+});
 
-    return this;
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('getRepeatingSelector',
+function() {
+
+    /**
+     * @method getRepeatingSelector
+     * @summary Returns the selector to both select and generate repeating items
+     *     under the receiver.
+     * @returns {String} The selector to use to select and/or generate repeating
+     *     items.
+     */
+
+    return 'li';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('getSelectionRoot',
+function() {
+
+    /**
+     * @method getSelectionRoot
+     * @summary Returns the Element that will be used as the 'root' to
+     *     add/update/remove content to/from using d3.js functionality. By
+     *     default, this returns the receiver's native Element.
+     * @returns {Element} The element to use as a root for d3.js
+     *     enter/update/exit selections.
+     */
+
+    return TP.unwrap(this.get('listcontent'));
 });
 
 //  ------------------------------------------------------------------------
