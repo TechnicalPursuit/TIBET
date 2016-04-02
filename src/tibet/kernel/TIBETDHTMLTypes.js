@@ -4970,7 +4970,7 @@ TP.core.SelectingUIElementNode.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
-function(aValue, elementProperty) {
+function(aValue, elementProperty, attributeName) {
 
     /**
      * @method addSelection
@@ -4985,10 +4985,14 @@ function(aValue, elementProperty) {
      *          'label'     ->  The label of the element
      *          'id'        ->  The id of the element
      *          'index'     ->  The numerical index of the element
+     *          'attr'      ->  The value of an attribute on the element.
      * @param {Object|Array} aValue The value to use when determining the
      *      elements to add to the selection. Note that this can be an Array.
      * @param {String} elementProperty The property of the elements to use to
      *      determine which elements should be selected.
+     * @param {String} attributeName The name of the attribute that should be
+     *      queried to determine which elements should be selected if the
+     *      'elementProperty' parameter is 'attr'.
      * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was added.
      */
@@ -5052,6 +5056,10 @@ function(aValue, elementProperty) {
 
             case 'index':
                 val = i;
+                break;
+
+            case 'attr':
+                val = item.getAttribute(attributeName);
                 break;
 
             case 'value':
@@ -5247,7 +5255,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
-function(aValue, elementProperty) {
+function(aValue, elementProperty, attributeName) {
 
     /**
      * @method removeSelection
@@ -5267,6 +5275,9 @@ function(aValue, elementProperty) {
      *      Array.
      * @param {String} elementProperty The property of the elements to use to
      *      determine which elements should be deselected.
+     * @param {String} attributeName The name of the attribute that should be
+     *      queried to determine which elements should be selected if the
+     *      'elementProperty' parameter is 'attr'.
      * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was removed.
      */
@@ -5321,7 +5332,6 @@ function(aValue, elementProperty) {
 
         switch (aspect) {
             case 'label':
-
                 val = item.getLabelText();
                 break;
 
@@ -5331,6 +5341,10 @@ function(aValue, elementProperty) {
 
             case 'index':
                 val = i;
+                break;
+
+            case 'attr':
+                val = item.getAttribute(attributeName);
                 break;
 
             case 'value':
