@@ -83,10 +83,10 @@ function(options) {
 
         data = this.getDataForInspector(options);
 
-        dataURI = TP.uc(options.at('bindURI'));
+        dataURI = TP.uc(options.at('bindLoc'));
         dataURI.setResource(data);
 
-        return TP.elem('<sherpa:navlist src="' + dataURI.asString() + '"/>');
+        return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
     }
 
     return TP.xhtmlnode('<textarea>' + this.get(targetID) + '</textarea>');

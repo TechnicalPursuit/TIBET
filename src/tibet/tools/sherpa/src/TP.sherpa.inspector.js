@@ -187,6 +187,8 @@ function(aSignal) {
         bayNum,
         newBayNum,
 
+        bindLoc,
+
         bayContent,
 
         existingItems;
@@ -224,10 +226,12 @@ function(aSignal) {
     newBayNum = bayNum + 1;
 
     if (TP.canInvoke(target, 'getContentForTool')) {
+        bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
+
         bayContent = target.getContentForTool(
-                                'inspector',
-                                TP.hc('bindURI', 'urn:tibet:sherpa_bay_' + newBayNum,
-                                        'triggerSignal', aSignal));
+                            'inspector',
+                            TP.hc('bindLoc', bindLoc,
+                                    'triggerSignal', aSignal));
     } else {
         //  TODO: Otherwise, run the pretty printer to produce something...
     }
@@ -241,6 +245,10 @@ function(aSignal) {
     } else {
         //  Add bay
         this.addItem(bayContent, bayConfig);
+    }
+
+    if (TP.notEmpty(bindLoc)) {
+        TP.uc(bindLoc).$changed();
     }
 
     return this;
@@ -267,6 +275,8 @@ function(aSignal) {
 
         bayContent,
         bayConfig,
+
+        bindLoc,
 
         existingItems;
 
@@ -297,13 +307,11 @@ function(aSignal) {
 
     bayConfig.atPut('resolver', target);
 
-    var bindURI;
-
     if (target === this) {
-        bindURI = 'urn:tibet:sherpa_bay_0';
+        bindLoc = 'urn:tibet:sherpa_bay_0';
         this.buildRootData();
     } else {
-        bindURI = 'urn:tibet:sherpa_bay_1';
+        bindLoc = 'urn:tibet:sherpa_bay_1';
 
         //  NB: Do this *before* we get content so that dynamic list updates are
         //  finished.
@@ -313,7 +321,7 @@ function(aSignal) {
     if (TP.canInvoke(target, 'getContentForTool')) {
         bayContent = target.getContentForTool(
                                 'inspector',
-                                TP.hc('bindURI', bindURI,
+                                TP.hc('bindLoc', bindLoc,
                                         'triggerSignal', aSignal));
     } else {
         //  TODO: Otherwise, run the pretty printer to produce something...
@@ -328,6 +336,9 @@ function(aSignal) {
         //  Add bay 0
         this.addItem(bayContent, bayConfig);
     }
+
+    TP.uc(bindLoc).$changed();
+
     return this;
 });
 
@@ -424,12 +435,12 @@ function(options) {
 
     var dataURI;
 
-    //data = TP.sys.cfg('sherpa.inspector_roots');
-    //data.sort();
+    // data = TP.sys.cfg('sherpa.inspector_roots');
+    // data.sort();
 
-    dataURI = TP.uc(options.at('bindURI'));
+    dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem('<sherpa:navlist src="' + dataURI.asString() + '"/>');
+    return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
 });
 
 //  ------------------------------------------------------------------------
