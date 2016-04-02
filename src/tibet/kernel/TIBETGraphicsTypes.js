@@ -13,6 +13,7 @@
 //  ========================================================================
 
 /**
+ * @type {TP.core.Point}
  * @summary A type that can manage point (x, y) values.
  */
 
@@ -936,6 +937,7 @@ function(aPoint) {
 //  ========================================================================
 
 /**
+ * @type {TP.core.Rect}
  * @summary A type that can manage rectangle (x, y, width, height) values.
  */
 
@@ -2460,6 +2462,7 @@ function(aPoint) {
 //  ========================================================================
 
 /**
+ * @type {TP.core.Matrix}
  * @summary A type that can manage matrix (xx, xy, yx, yy, dx, dy) values.
  */
 
@@ -3974,6 +3977,7 @@ function() {
 //  ========================================================================
 
 /**
+ * @type {TP.core.Color}
  * @summary A type that can manage color values. These values contain red,
  *     green, blue and alpha information.
  * @description This type can be produced by a String having one of the
@@ -4584,6 +4588,7 @@ function(aColor) {
 //  ========================================================================
 
 /**
+ * @type {TP.core.Gradient}
  * @summary A type which models a progression of color values along a vector,
  *     either linear or radial.
  */
@@ -5018,6 +5023,7 @@ function() {
 //  ========================================================================
 
 /**
+ * @type {TP.core.LinearGradient}
  * @summary A type that represents a 'linear gradient' - that is, a color
  *     transition that proceeds along an angle having one or more 'color stops'.
  */
@@ -5552,6 +5558,7 @@ function(anAngle) {
 //  ========================================================================
 
 /**
+ * @type {TP.core.RadialGradient}
  * @summary A type that represents a 'radial gradient' - that is, a color
  *     transition that radiates outward from a supplied center point along one
  *     or more 'color stops'.
@@ -5924,6 +5931,7 @@ function() {
 //  ========================================================================
 
 /**
+ * @type {TP.core.Pattern}
  * @summary A type that can manage patterns (i.e. a repeatable image within a
  *     particular boundary).
  */
@@ -6289,6 +6297,7 @@ function() {
 //  ========================================================================
 
 /**
+ * @type {TP.core.Path}
  * @summary A type that can manage an arbitrarily complex set of points.
  */
 
