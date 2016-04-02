@@ -41,7 +41,7 @@ TP.sherpa.inspector.Inst.defineMethod('addItem',
 function(itemContent, itemConfig) {
 
     /**
-     * @method addItemContent
+     * @method addItem
      * @summary
      * @param
      */
@@ -50,14 +50,19 @@ function(itemContent, itemConfig) {
 
     //  TODO: Grab bay flex value from config and configure the flex item
 
-    item = TP.elem('<sherpa:inspectoritem/>');
-    TP.nodeAppendChild(item, TP.unwrap(itemContent), false);
-    item = TP.wrap(item);
+    item = TP.tpelem('<sherpa:inspectoritem/>');
 
+    item.setContent(TP.wrap(itemContent));
+
+    //  Append the new inspector item to the container here.
+    //  Note the reassignment here
     item = this.get('container').addContent(item);
 
+    //  Awaken the content here.
     item.awaken();
 
+    //  TODO: This is a hack - we should not need setup logic separate from
+    //  awaken.
     this.configureItem(item, itemConfig);
 
     return this;
@@ -74,9 +79,18 @@ function(item, itemConfig) {
      * @param
      */
 
+    var firstItemChild;
+
     item.set('config', itemConfig);
 
     //  TODO: Do the rest
+
+    //  TODO: This is a hack - we should not need setup()
+    firstItemChild = item.getFirstChildElement();
+    if (TP.isValid(firstItemChild) && TP.canInvoke(firstItemChild, 'setup')) {
+        // firstItemChild.awaken();
+        firstItemChild.setup();
+    }
 
     return this;
 });
