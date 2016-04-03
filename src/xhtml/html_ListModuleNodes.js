@@ -270,6 +270,108 @@ theRequest) {
 
 TP.html.Attrs.defineSubtype('li');
 
+TP.html.li.addTraits(TP.core.SelectableItemUIElementNode);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  TP.core.SelectableItemUIElementNode Methods
+//  ------------------------------------------------------------------------
+
+TP.html.li.Inst.defineMethod('getLabelText',
+function() {
+
+    /**
+     * @method getLabelText
+     * @summary Returns the text of the label of the receiver.
+     * @returns {String} The receiver's label text.
+     */
+
+    return this.getTextContent();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.li.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return this.getTextContent();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.li.Inst.defineMethod('$getPrimitiveValue',
+function() {
+
+    /**
+     * @method $getPrimitiveValue
+     * @summary Returns the low-level primitive value stored by the receiver in
+     *     internal storage.
+     * @returns {String} The primitive value of the receiver.
+     */
+
+    return this.getTextContent();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.li.Inst.defineMethod('$getVisualToggle',
+function() {
+
+    /**
+     * @method $getVisualToggle
+     * @summary Returns the low-level primitive 'toggle value' used by the
+     *     receiver to display a 'selected' state.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
+     */
+
+    return this.getAttribute('selected');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.li.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
+     */
+
+    return this.hasAttribute('selected');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.li.Inst.defineMethod('$setVisualToggle',
+function(aToggleValue) {
+
+    /**
+     * @method $setVisualToggle
+     * @summary Sets the low-level primitive 'toggle value' used by the receiver
+     *     to display a 'selected' state.
+     * @param {Boolean} aToggleValue Whether or not to display the receiver's
+     *     'selected' state.
+     * @returns {TP.html.select} The receiver.
+     */
+
+    this.setAttribute('selected', aToggleValue);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
