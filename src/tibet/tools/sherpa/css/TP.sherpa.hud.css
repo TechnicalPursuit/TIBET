@@ -60,6 +60,10 @@ div#toggleLog {
 
 /* HUD edges */
 
+.framing.north.center {
+    text-align: initial;
+}
+
 .framing.v-edge.east, .framing.v-edge.west {
 
     /* This should match TIBET's HUD_V_EDGE_TIER constant */
