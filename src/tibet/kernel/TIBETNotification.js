@@ -7664,36 +7664,42 @@ function(aDocument) {
     //  Note that 'observer' and 'obs' are the same object here - we use 'obs'
     //  inside the callback to avoid a closure.
     observer = new MutationObserver(
-                    function(mutationRecords, obs) {
-                        var len,
-                            i,
-                            method,
-                            record;
+            function(mutationRecords, obs) {
+                var len,
+                    i,
+                    method,
+                    record;
 
-                        method = TP.composeHandlerName('MutationEvent');
-                        len = mutationRecords.length;
-                        for (i = 0; i < len; i++) {
-                            record = mutationRecords[i];
+                method = TP.composeHandlerName('MutationEvent');
+                len = mutationRecords.length;
+                for (i = 0; i < len; i++) {
+                    record = mutationRecords[i];
 
-                            //  For some reason, MutationObserver mutation
-                            //  records are *not* uniqued, at least in Webkit-
-                            //  based browsers. Therefore we mark them as such
-                            //  and don't process them again.
-                            //  https://bugs.webkit.org/show_bug.cgi?id=103916
-                            if (!record.handled) {
-                                record.handled = true;
+                    //  For some reason, MutationObserver mutation
+                    //  records are *not* uniqued, at least in Webkit-
+                    //  based browsers. Therefore we mark them as such
+                    //  and don't process them again.
+                    //  https://bugs.webkit.org/show_bug.cgi?id=103916
+                    if (!record.handled) {
+                        record.handled = true;
 
-                                if (TP.elementHasAttribute(
-                                    record.target,
-                                    'tibet:nomutationtracking',
-                                    true)) {
-                                    return;
-                                }
-
-                                this[method](record);
-                            }
+                        if (TP.elementHasAttribute(
+                            record.target,
+                            'tibet:nomutationtracking',
+                            true)) {
+                            return;
                         }
-                    }.bind(this));
+
+                        if (TP.nodeAncestorMatchesCSS(
+                                    record.target,
+                                    '*[tibet|nomutationtracking]')) {
+                            return;
+                        }
+
+                        this[method](record);
+                    }
+                }
+            }.bind(this));
 
     observer.observe(
         aDocument,
@@ -7772,8 +7778,6 @@ function(aMutationRecord) {
 
         args,
 
-        stopAncestor,
-
         addedNodes,
         removedNodes,
 
@@ -7839,19 +7843,6 @@ function(aMutationRecord) {
             if (!TP.isEmpty(aMutationRecord.addedNodes) &&
                 !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
 
-                stopAncestor = TP.nodeDetectAncestor(
-                    targetNode,
-                    function(anAncestor) {
-                        return TP.elementHasAttribute(
-                                anAncestor,
-                                'tibet:nomutationtracking',
-                                true);
-                    });
-
-                if (TP.isElement(stopAncestor)) {
-                    return this;
-                }
-
                 addedNodes = TP.ac(addedNodes);
 
                 //  Need to check the nodes individually for mutation tracking
@@ -7867,16 +7858,9 @@ function(aMutationRecord) {
                                 return false;
                             }
 
-                            stopAncestor = TP.nodeDetectAncestor(
-                                aNode,
-                                function(anAncestor) {
-                                    return TP.elementHasAttribute(
-                                            anAncestor,
-                                            'tibet:nomutationtracking',
-                                            true);
-                                });
-
-                            if (TP.isElement(stopAncestor)) {
+                            if (TP.nodeAncestorMatchesCSS(
+                                        aNode,
+                                        '*[tibet|nomutationtracking]')) {
                                 return false;
                             }
 
@@ -7895,19 +7879,6 @@ function(aMutationRecord) {
             if (!TP.isEmpty(aMutationRecord.removedNodes) &&
                 !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
 
-                stopAncestor = TP.nodeDetectAncestor(
-                    targetNode,
-                    function(anAncestor) {
-                        return TP.elementHasAttribute(
-                                anAncestor,
-                                'tibet:nomutationtracking',
-                                true);
-                    });
-
-                if (TP.isElement(stopAncestor)) {
-                    return this;
-                }
-
                 removedNodes = TP.ac(removedNodes);
 
                 //  Need to check the nodes individually for mutation tracking
@@ -7923,16 +7894,9 @@ function(aMutationRecord) {
                                 return false;
                             }
 
-                            stopAncestor = TP.nodeDetectAncestor(
-                                aNode,
-                                function(anAncestor) {
-                                    return TP.elementHasAttribute(
-                                            anAncestor,
-                                            'tibet:nomutationtracking',
-                                            true);
-                                });
-
-                            if (TP.isElement(stopAncestor)) {
+                            if (TP.nodeAncestorMatchesCSS(
+                                        aNode,
+                                        '*[tibet|nomutationtracking]')) {
                                 return false;
                             }
 
