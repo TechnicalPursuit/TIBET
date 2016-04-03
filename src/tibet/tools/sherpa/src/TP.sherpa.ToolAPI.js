@@ -117,7 +117,7 @@ function(options) {
      * @returns
      */
 
-    return TP.elem('<sherpa:haloMenu/>');
+    return TP.elem('<sherpa:haloMenuContent/>');
 });
 
 //  ------------------------------------------------------------------------

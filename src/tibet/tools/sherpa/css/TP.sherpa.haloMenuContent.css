@@ -2,7 +2,7 @@
 @namespace pclass url(urn:tibet:pseudoclass);
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-sherpa|haloMenu {
+sherpa|haloMenuContent {
     display: block;
     position: absolute;
     top: 0;
@@ -18,7 +18,7 @@ sherpa|haloMenu {
     overflow: hidden;
 }
 
-sherpa|haloMenu > ul {
+sherpa|haloMenuContent > ul {
     height: 100%;
     width: 100%;
     margin: 0;
@@ -26,7 +26,7 @@ sherpa|haloMenu > ul {
     line-height: 29px;
 }
 
-sherpa|haloMenu > ul > li {
+sherpa|haloMenuContent > ul > li {
     border: 0;
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
@@ -34,17 +34,17 @@ sherpa|haloMenu > ul > li {
     text-overflow: ellipsis;
 }
 
-sherpa|haloMenu > ul > li:hover {
+sherpa|haloMenuContent > ul > li:hover {
     background: #ddd;
     border-top: 1px solid #666;
     border-bottom: 1px solid #666;
 }
 
-sherpa|haloMenu > ul > li:first-child:hover {
+sherpa|haloMenuContent > ul > li:first-child:hover {
     border-top: 1px solid #ddd;
 }
 
-sherpa|haloMenu > ul > li:last-child:hover {
+sherpa|haloMenuContent > ul > li:last-child:hover {
     border-bottom: 1px solid #ddd;
 }
 
