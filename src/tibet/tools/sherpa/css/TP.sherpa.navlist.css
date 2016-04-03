@@ -52,7 +52,7 @@ sherpa|navlist > ul > li {
     cursor: pointer;
 }
 
-sherpa|navlist > ul > li.selected {
+sherpa|navlist > ul > li[pclass|selected] {
 
     background: gold;
 }
@@ -99,7 +99,7 @@ sherpa|navlist > ul > li > ul > li {
     text-overflow: ellipsis;
 }
 
-sherpa|navlist > ul > li > ul > li.selected {
+sherpa|navlist > ul > li > ul > li[pclass|selected] {
 
     background: gold;
 }

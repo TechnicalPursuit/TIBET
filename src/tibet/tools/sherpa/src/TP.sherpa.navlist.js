@@ -16,7 +16,10 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('navlist');
 
+TP.sherpa.navlist.addTraits(TP.core.SelectingUIElementNode);
 TP.sherpa.navlist.addTraits(TP.core.D3Tag);
+
+TP.sherpa.navlist.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -26,8 +29,42 @@ TP.sherpa.navlist.Inst.defineAttribute(
         'listcontent',
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
+TP.sherpa.navlist.Inst.defineAttribute('$currentValue');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineHandler('ItemSelected',
+function(aSignal) {
+
+    var wrappedDOMTarget,
+        value,
+        oldValue;
+
+    wrappedDOMTarget = TP.wrap(aSignal.getDOMTarget());
+
+    if (wrappedDOMTarget.hasAttribute('itemName')) {
+        value = wrappedDOMTarget.getAttribute('itemName');
+    } else {
+        value = wrappedDOMTarget.getTextContent();
+    }
+
+    if (TP.notEmpty(oldValue = this.get('$currentValue'))) {
+        this.deselect(oldValue);
+    }
+
+    this.select(value);
+    this.set('$currentValue', value);
+
+    this.signal('TraverseObject',
+                TP.hc('targetID', value, 'selectionSignal', aSignal));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.navlist.Inst.defineMethod('drawSelection',
@@ -121,57 +158,31 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  TP.core.SelectingUIElement Methods
+//  ------------------------------------------------------------------------
 
-TP.sherpa.navlist.Inst.defineMethod('setSelectedItem',
-function(itemLabel) {
+TP.sherpa.navlist.Inst.defineMethod('allowsMultiples',
+function() {
 
-    var listContentElem,
-        selectedItems,
-        listItem;
-
-    listContentElem = this.get('listcontent').getNativeNode();
-
-    selectedItems = TP.byCSSPath('.selected', listContentElem, false, false);
-
-    if (TP.notEmpty(selectedItems)) {
-        selectedItems.perform(
-                function(anElement) {
-                    TP.elementRemoveClass(anElement, 'selected');
-                });
-    }
-
-    listItem = TP.nodeEvaluateXPath(
-                    listContentElem,
-                    './/*[contains(., "' + itemLabel + '")]',
-                    TP.FIRST_NODE);
-
-    if (TP.isElement(listItem)) {
-        TP.elementAddClass(listItem, 'selected');
-    }
-
-    return this;
+    return false;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.navlist.Inst.defineHandler('ItemSelected',
-function(aSignal) {
+TP.sherpa.navlist.Inst.defineMethod('getValueElements',
+function() {
 
-    var wrappedDOMTarget,
-        itemName;
+    /**
+     * @method getValueElements
+     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     *     'value object' with the receiver. That is, a change to the 'value' of
+     *     the receiver will also change the value of one of these other
+     *     TP.core.UIElementNodes. By default, this method will return other
+     *     elements that are part of the same 'tibet:group'.
+     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     */
 
-    wrappedDOMTarget = TP.wrap(aSignal.getDOMTarget());
-
-    if (wrappedDOMTarget.hasAttribute('itemName')) {
-        itemName = wrappedDOMTarget.getAttribute('itemName');
-    } else {
-        itemName = wrappedDOMTarget.getTextContent();
-    }
-
-    this.signal('TraverseObject',
-                TP.hc('targetID', itemName, 'selectionSignal', aSignal));
-
-    return this;
+    return this.get('listcontent').getChildElements();
 });
 
 //  ------------------------------------------------------------------------
