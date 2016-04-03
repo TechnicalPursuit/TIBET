@@ -405,13 +405,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('FocusWorkbench',
+TP.core.Sherpa.Inst.defineHandler('FocusInspector',
 function(aSignal) {
 
     /**
-     * @method handleFocusWorkbench
+     * @method handleFocusInspector
      * @summary
-     * @param {TP.sig.FocusWorkbench} aSignal The TIBET signal which triggered
+     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
      *     this method.
      */
 
