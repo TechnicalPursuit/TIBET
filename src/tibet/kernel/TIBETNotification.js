@@ -7794,6 +7794,10 @@ function(aMutationRecord) {
         return this;
     }
 
+    if (!TP.isWindow(targetNode.ownerDocument.defaultView)) {
+        return;
+    }
+
     mutationType = aMutationRecord.type;
 
     switch (mutationType) {
