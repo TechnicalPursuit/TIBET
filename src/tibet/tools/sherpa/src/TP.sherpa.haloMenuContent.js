@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.haloMenu}
+ * @type {TP.sherpa.haloMenuContent}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('haloMenu');
+TP.sherpa.TemplatedTag.defineSubtype('haloMenuContent');
 
 //  ------------------------------------------------------------------------
 //  end

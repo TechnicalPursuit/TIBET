@@ -40,9 +40,9 @@
     <property name="path.TP.sherpa.halo.template" value="~ide_root/xhtml/TP.sherpa.halo.xhtml"/>
     <property name="path.TP.sherpa.halo.style" value="~ide_root/css/TP.sherpa.halo.css"/>
 
-    <script src="./src/TP.sherpa.haloMenu.js"/>
-    <property name="path.TP.sherpa.haloMenu.template" value="~ide_root/xhtml/TP.sherpa.haloMenu.xhtml"/>
-    <property name="path.TP.sherpa.haloMenu.style" value="~ide_root/css/TP.sherpa.haloMenu.css"/>
+    <script src="./src/TP.sherpa.haloMenuContent.js"/>
+    <property name="path.TP.sherpa.haloMenuContent.template" value="~ide_root/xhtml/TP.sherpa.haloMenuContent.xhtml"/>
+    <property name="path.TP.sherpa.haloMenuContent.style" value="~ide_root/css/TP.sherpa.haloMenuContent.css"/>
 
     <script src="./src/TP.sherpa.console.js"/>
     <property name="path.TP.sherpa.console.template" value="~ide_root/xhtml/TP.sherpa.console.xhtml"/>
