@@ -87,6 +87,39 @@ function(anElement, aSelector) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeAncestorMatchesCSS',
+function(aNode, aSelector) {
+
+    /**
+     * @method nodeAncestorMatchesCSS
+     * @summary Returns the first ancestor of aNode for which aSelector matches.
+     * @param {Node} aNode The DOM node to operate on.
+     * @param {String} aSelector The selector to match.
+     * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
+     *     the method.
+     */
+
+    var ancestor;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    ancestor = aNode.parentNode;
+    while (TP.isElement(ancestor)) {
+
+        if (TP.elementMatchesCSS(ancestor, aSelector)) {
+            return true;
+        }
+
+        ancestor = ancestor.parentNode;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeEvaluateCSS',
 function(aNode, aSelector, autoCollapse) {
 
