@@ -54,7 +54,7 @@ function(anElement, aSelector) {
         anElement.msMatchesSelector ||
         anElement.matches;
 
-    if (TP.isCallable(matchesSelector)) {
+    if (TP.isCallable(matchesSelector) && !TP.regex.HAS_PIPE.test(aSelector)) {
         return matchesSelector.call(anElement, aSelector);
     }
 

@@ -2416,6 +2416,7 @@ TP.regex.HAS_PIPE_SPLAT = /[^\\]?\|\*/; //  not valid if escaped via backslash
 TP.regex.HAS_SCHEME = /^([A-Za-z][-.+A-Za-z0-9]*):/;
 TP.regex.HAS_SLASH = /\//;
 TP.regex.HAS_TIMEZONE = /[Z\+\-]/;
+TP.regex.HAS_PIPE = /\|/;
 
 //  ---
 //  css support
