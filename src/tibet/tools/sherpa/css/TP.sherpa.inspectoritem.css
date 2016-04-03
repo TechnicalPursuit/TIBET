@@ -2,7 +2,14 @@
 
 sherpa|inspectoritem {
 
+    position: relative;
+
     overflow: auto;
+}
+
+sherpa|inspectoritem:last-child {
+
+    flex: 1;
 }
 
 sherpa|inspectoritem.flex-1 {
