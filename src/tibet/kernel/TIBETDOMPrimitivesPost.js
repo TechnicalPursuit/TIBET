@@ -7478,8 +7478,7 @@ function(aNode) {
     arr = TP.ac();
 
     ancestor = aNode.parentNode;
-    while (TP.isElement(ancestor) &&
-            ancestor.nodeType !== Node.DOCUMENT_NODE) {
+    while (TP.isElement(ancestor)) {
         arr.push(ancestor);
         ancestor = ancestor.parentNode;
     }
@@ -8430,8 +8429,7 @@ function(aNode) {
     //  cloned documents the child elements can get detached from their
     //  ownerDocument pointers...so we iterate just in case.
     ancestor = aNode.parentNode;
-    while (TP.isElement(ancestor) &&
-            ancestor.nodeType !== Node.DOCUMENT_NODE) {
+    while (TP.isElement(ancestor)) {
         //  NB: This assignment should *not* be moved into the looping logic. We
         //  want 'ancestor' to remain what it is if its parent node is null.
         //  This means it is the document itself and we want to use it below.
@@ -10755,8 +10753,7 @@ function(aNode, aFunction, shouldReverse) {
     count = 0;
     ancestor = aNode.parentNode;
 
-    while (TP.isElement(ancestor) &&
-            ancestor.nodeType !== Node.DOCUMENT_NODE) {
+    while (TP.isElement(ancestor)) {
         if (instrument) {
             //  update iteration edge flags so our function can tell when
             //  its at the start/end of the overall collection
