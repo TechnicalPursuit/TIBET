@@ -39,10 +39,13 @@ TP.sherpa.navlist.Inst.defineHandler('ItemSelected',
 function(aSignal) {
 
     var wrappedDOMTarget,
-        value,
-        oldValue;
+
+        label,
+        value;
 
     wrappedDOMTarget = TP.wrap(aSignal.getDOMTarget());
+
+    label = wrappedDOMTarget.getTextContent();
 
     if (wrappedDOMTarget.hasAttribute('itemName')) {
         value = wrappedDOMTarget.getAttribute('itemName');
@@ -50,12 +53,7 @@ function(aSignal) {
         value = wrappedDOMTarget.getTextContent();
     }
 
-    if (TP.notEmpty(oldValue = this.get('$currentValue'))) {
-        this.deselect(oldValue);
-    }
-
-    this.select(value);
-    this.set('$currentValue', value);
+    this.select(label);
 
     this.signal('TraverseObject',
                 TP.hc('targetID', value, 'selectionSignal', aSignal));
@@ -183,6 +181,23 @@ function() {
      */
 
     return this.get('listcontent').getChildElements();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('select',
+function(aValue) {
+
+    var oldValue;
+
+    if (TP.notEmpty(oldValue = this.get('$currentValue'))) {
+        this.deselect(oldValue);
+    }
+
+    this.callNextMethod();
+    this.set('$currentValue', aValue);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

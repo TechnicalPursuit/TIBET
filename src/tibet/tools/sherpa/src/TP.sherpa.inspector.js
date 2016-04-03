@@ -383,7 +383,8 @@ function(target) {
     //  part of the list (a LIFO queue with a 'sherpa.inspector.recent_max'
     //  count).
 
-    var item;
+    var items,
+        rootItem;
 
     //  NB: Do this *before* we get content so that dynamic list updates are
     //  finished.
@@ -391,8 +392,14 @@ function(target) {
 
     this.buildRootData();
 
-    item = TP.byCSSPath('sherpa|inspectoritem > *', this);
-    item.first().render();
+    if (TP.notEmpty(items = TP.byCSSPath('sherpa|inspectoritem > *', this))) {
+
+        rootItem = items.first();
+
+        //  This will have already been re-rendered because of data binding, but
+        //  we need to select what the new item will be.
+        rootItem.select(TP.name(target));
+    }
 
     return this;
 });
