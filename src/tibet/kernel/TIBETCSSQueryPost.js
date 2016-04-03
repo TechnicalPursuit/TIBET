@@ -58,15 +58,23 @@ function(anElement, aSelector) {
         return matchesSelector.call(anElement, aSelector);
     }
 
-    //  Make sure all of the known namespaces are defined (note this is
-    //  added to the 'xmlns' property of the 'extended jQuery' - see below -
-    //  but since Sizzle functions are just aliased over to jQuery
-    //  functions, we can use the original Sizzle function here).
-    TP.w3.Xmlns.get('prefixes').perform(
-                function(item) {
+    //  Cache the number of namespaces we've installed so that we don't do this
+    //  every time this method gets called.
+    if (TP.notDefined(TP.$$installedCSSNSCount) ||
+        TP.$$installedCSSNSCount !== TP.w3.Xmlns.get('prefixes').getSize()) {
 
-                    TP.extern.jQuery.xmlns[item.first()] = item.last();
-                });
+        //  Make sure all of the known namespaces are defined (note this is
+        //  added to the 'xmlns' property of the 'extended jQuery' - see below -
+        //  but since Sizzle functions are just aliased over to jQuery
+        //  functions, we can use the original Sizzle function here).
+        TP.w3.Xmlns.get('prefixes').perform(
+                    function(item) {
+
+                        TP.extern.jQuery.xmlns[item.first()] = item.last();
+                    });
+
+        TP.$$installedCSSNSCount = TP.w3.Xmlns.get('prefixes').getSize();
+    }
 
     //  Use the native Sizzle 'matches' call. It takes in a selector and an
     //  Array of pre-selected Elements and returns an Array with any of them
@@ -124,15 +132,21 @@ function(aNode, aSelector, autoCollapse) {
         return TP.isTrue(autoCollapse) ? null : TP.ac();
     }
 
-    //  Make sure all of the known namespaces are defined (note this is
-    //  added to the 'xmlns' property of the 'extended jQuery' - see below -
-    //  but since Sizzle functions are just aliased over to jQuery
-    //  functions, we can use the original Sizzle function here).
-    TP.w3.Xmlns.get('prefixes').perform(
-                function(item) {
+    //  Cache the number of namespaces we've installed so that we don't do this
+    //  every time this method gets called.
+    if (TP.notDefined(TP.$$installedCSSNSCount) ||
+        TP.$$installedCSSNSCount !== TP.w3.Xmlns.get('prefixes').getSize()) {
 
-                    TP.extern.jQuery.xmlns[item.first()] = item.last();
-                });
+        //  Make sure all of the known namespaces are defined (note this is
+        //  added to the 'xmlns' property of the 'extended jQuery' - see below -
+        //  but since Sizzle functions are just aliased over to jQuery
+        //  functions, we can use the original Sizzle function here).
+        TP.w3.Xmlns.get('prefixes').perform(
+                    function(item) {
+
+                        TP.extern.jQuery.xmlns[item.first()] = item.last();
+                    });
+    }
 
     try {
         /* eslint-disable new-cap */
