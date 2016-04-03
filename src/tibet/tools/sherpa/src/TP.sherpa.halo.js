@@ -48,8 +48,6 @@ function() {
         var signalGlobalPoint,
             haloGlobalRect,
 
-            hideFunc,
-
             contextMenuTPElem;
 
         if (aSignal.getShiftKey()) {
@@ -79,14 +77,8 @@ function() {
                 contextMenuTPElem = TP.byId('SherpaContextMenu', TP.win('UIROOT'));
 
                 contextMenuTPElem.setGlobalPosition(aSignal.getGlobalPoint());
-                contextMenuTPElem.setAttribute('hidden', false);
 
-                hideFunc = function(mouseUpSignal) {
-                    hideFunc.ignore(TP.core.Mouse, 'TP.sig.DOMMouseUp');
-                    contextMenuTPElem.setAttribute('hidden', true);
-                };
-
-                hideFunc.observe(TP.core.Mouse, 'TP.sig.DOMMouseUp');
+                contextMenuTPElem.activate();
             }
         }
     }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');

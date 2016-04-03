@@ -30,6 +30,38 @@ TP.sherpa.contextmenu.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.contextmenu.Inst.defineMethod('activate',
+function() {
+
+    /**
+     * @method activate
+     */
+
+    this.setAttribute('hidden', false);
+
+    this.observe(TP.core.Mouse, 'TP.sig.DOMClick');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.contextmenu.Inst.defineMethod('deactivate',
+function() {
+
+    /**
+     * @method deactivate
+     */
+
+    this.setAttribute('hidden', true);
+
+    this.ignore(TP.core.Mouse, 'TP.sig.DOMClick');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.contextmenu.Inst.defineMethod('setup',
 function() {
 
@@ -44,6 +76,24 @@ function() {
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.contextmenu.Inst.defineHandler('DOMClick',
+function(aSignal) {
+
+    /**
+     * @method handleDOMClick
+     * @summary
+     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    //  The user didn't select anything on the menu - deactivate it.
+    this.deactivate();
 
     return this;
 });
@@ -88,6 +138,8 @@ TP.sherpa.contextmenu.Inst.defineHandler('SelectMenuItem',
 function(aSignal) {
 
     var cmdVal;
+
+    this.deactivate();
 
     cmdVal = aSignal.getDOMTarget().getAttribute('data-cmd');
 
