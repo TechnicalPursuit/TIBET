@@ -32,7 +32,6 @@
     <script src="./src/TP.sherpa.popup.js"/>
 
     <script src="./src/UIElementNodeAdditions.js"/>
-    <script src="./src/CoreTagAdditions.js"/>
 
     <script src="./src/TP.sherpa.ToolAPI.js"/>
 

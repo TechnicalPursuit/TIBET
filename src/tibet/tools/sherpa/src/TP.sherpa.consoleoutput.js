@@ -533,16 +533,18 @@ function(cellElem, uniqueID, dataRecord) {
             aspectName = shell.getArgument(
                             dataRecord.at('request'), 'tsh:aspect', null, false);
             if (TP.notEmpty(aspectName)) {
-                targetObj = TP.getEditingAspectNamed(targetObj, aspectName);
+                targetObj = TP.getAspectObjectForEditorNamed(targetObj, aspectName);
             }
 
-            tileContentTPElem = TP.getEditorTPElement(targetObj);
+            tileContentTPElem = TP.wrap(TP.getContentForEditor(targetObj));
 
             if (TP.notValid(tileContentTPElem)) {
-                defaultAspectObj = TP.getDefaultEditingAspect(targetObj);
+
+                defaultAspectObj = TP.getDefaultAspectObjectForEditor(targetObj);
+
                 if (TP.isValid(defaultAspectObj)) {
                     operationTarget = defaultAspectObj;
-                    tileContentTPElem = TP.getEditorTPElement(defaultAspectObj);
+                    tileContentTPElem = TP.wrap(TP.getContentForEditor(targetObj));
                 }
             } else {
                 operationTarget = targetObj;
@@ -561,6 +563,7 @@ function(cellElem, uniqueID, dataRecord) {
     }
 
     if (TP.isValid(tileContentTPElem)) {
+
         tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
 
         tileContentTPElem.set('tileTPElem', tileTPElem);
@@ -992,89 +995,6 @@ function(uniqueID, dataRecord) {
     }
 
     return this;
-});
-
-//  ============================================================================
-//  Meta-methods to return common editor subtypes
-//  ============================================================================
-
-TP.definePrimitive('getAssistantTPElement',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getAssistantTPElement')) {
-        return anObject.getAssistantTPElement();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getDefaultEditingAspect',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getDefaultEditingAspect')) {
-        return anObject.getDefaultEditingAspect();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getEditingAspectNamed',
-function(anObject, anAspectName) {
-
-    if (TP.canInvoke(anObject, 'getEditingAspectNamed')) {
-        return anObject.getEditingAspectNamed(anAspectName);
-    }
-
-    return anObject;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getEditorTPElement',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getEditorTPElement')) {
-        return anObject.getEditorTPElement();
-    }
-
-    return null;
-});
-
-//  ---
-
-Function.Inst.defineMethod('getEditorTPElement',
-function() {
-
-    var methodEditorTPElem;
-
-    if (TP.isMethod(this)) {
-
-        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
-
-        return methodEditorTPElem;
-    }
-
-    return null;
-});
-
-//  ---
-
-TP.core.URI.Inst.defineMethod('getEditorTPElement',
-function() {
-
-    var uriEditorTPElem;
-
-    uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
-
-    return uriEditorTPElem;
 });
 
 //  ------------------------------------------------------------------------
