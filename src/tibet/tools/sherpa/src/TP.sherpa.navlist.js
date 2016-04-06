@@ -57,7 +57,7 @@ function(aSignal) {
 
     this.select(label);
 
-    this.signal('InspectObject',
+    this.signal('FocusInspectorForBrowsing',
                 TP.hc('targetID', value,
                         'domTarget', domTarget));
 

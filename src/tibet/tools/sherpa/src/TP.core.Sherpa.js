@@ -406,11 +406,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineHandler('FocusInspector',
+TP.core.Sherpa.Inst.defineHandler('EditObject',
 function(aSignal) {
 
     /**
-     * @method handleFocusInspector
+     * @method handleEditObject
      * @summary
      * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
      *     this method.
@@ -423,7 +423,31 @@ function(aSignal) {
     northDrawer.setAttribute('closed', false);
 
     TP.byId('SherpaInspector', this.get('vWin')).signal(
-                                'InspectObject', aSignal.getPayload());
+                            'FocusInspectorForEditing', aSignal.getPayload());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('InspectObject',
+function(aSignal) {
+
+    /**
+     * @method handleInspectObject
+     * @summary
+     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var northDrawer;
+
+    northDrawer = TP.byId('north', this.get('vWin'));
+
+    northDrawer.setAttribute('closed', false);
+
+    TP.byId('SherpaInspector', this.get('vWin')).signal(
+                            'FocusInspectorForBrowsing', aSignal.getPayload());
 
     return this;
 });

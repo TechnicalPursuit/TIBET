@@ -209,14 +209,36 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineHandler('InspectObject',
+TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForEditing',
 function(aSignal) {
 
     /**
-     * @method handleInspectObject
+     * @method handleFocusInspectorForEditing
      * @summary
-     * @param {TP.sig.InspectObject} aSignal The TIBET signal which triggered
-     *     this method.
+     * @param {TP.sig.FocusInspectorForEditing} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var payload;
+
+    payload = aSignal.getPayload();
+
+    debugger;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForBrowsing',
+function(aSignal) {
+
+    /**
+     * @method handleFocusInspectorForBrowsing
+     * @summary
+     * @param {TP.sig.FocusInspectorForBrowsing} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -627,7 +649,7 @@ function() {
     this.set('dynamicContentEntries', TP.ac());
     this.set('fixedContentEntries', fixedContentEntries);
 
-    this.signal('InspectObject', TP.hc('targetObject', this));
+    this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
 
     return this;
 });
