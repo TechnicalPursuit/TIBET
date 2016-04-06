@@ -17,29 +17,5 @@
 TP.sherpa.TemplatedTag.defineSubtype('pathfinder');
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.pathfinder.Inst.defineMethod('setup',
-function() {
-
-    var workbenchContent,
-        navlistTPElem;
-
-    // data = TP.hc('items', TP.ac(1,2,3,4,5));
-    // TP.uc('urn:tibet:pathfinder_data').setResource(data);
-
-    workbenchContent = TP.byCSSPath('#SherpaWorkbench > .content',
-                                    this.getNativeDocument(),
-                                    true);
-
-    navlistTPElem = TP.wrap(workbenchContent).addContent(
-                    TP.sherpa.navlist.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
-
-    navlistTPElem.setup();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

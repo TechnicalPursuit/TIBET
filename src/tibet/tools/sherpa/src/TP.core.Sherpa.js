@@ -485,7 +485,6 @@ function(anID, tileParent) {
 
     tileTPElem.setID(anID);
     tileTPElem.awaken();
-    tileTPElem.setup();
 
     return tileTPElem;
 });
