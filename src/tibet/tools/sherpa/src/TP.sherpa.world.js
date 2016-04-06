@@ -17,27 +17,23 @@
 TP.sherpa.Element.defineSubtype('world');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineAttribute('screenWidth');
-TP.sherpa.world.Inst.defineAttribute('screenHeight');
-
-TP.sherpa.world.Inst.defineAttribute('viewRect');
-TP.sherpa.world.Inst.defineAttribute('currentFocus');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.world.Inst.defineMethod('setup',
-function() {
+TP.sherpa.world.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
 
     /**
-     * @method setup
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
-    var initialScreenWidth,
+    var elem,
+        tpElem,
+
+        initialScreenWidth,
         initialScreenHeight,
 
         allIFrames,
@@ -46,6 +42,17 @@ function() {
         defaultURL,
         loadRequest;
 
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
     //  TODO: This should match the actual width & height of the entry in the
     //  'sherpa|screen' rule.
     initialScreenWidth =
@@ -53,11 +60,11 @@ function() {
     initialScreenHeight =
         TP.ifInvalid(768, TP.sys.cfg('sherpa.initial_screen_width'));
 
-    this.set('screenWidth', initialScreenWidth);
-    this.set('screenHeight', initialScreenHeight);
+    tpElem.set('screenWidth', initialScreenWidth);
+    tpElem.set('screenHeight', initialScreenHeight);
 
     allIFrames = TP.byCSSPath('sherpa|screen > iframe',
-                            this.getNativeWindow(),
+                            tpElem.getNativeWindow(),
                             false,
                             false);
 
@@ -107,15 +114,27 @@ function() {
 
     /*
      * TODO: BILL
-    TP.nodeGetWindow(this.getNativeDocument()).onresize =
+    TP.nodeGetWindow(tpElem.getNativeDocument()).onresize =
         function() {
-            this.setView(this.get('viewRect'));
+            tpElem.setView(tpElem.get('viewRect'));
         };
     */
 
     return;
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineAttribute('screenWidth');
+TP.sherpa.world.Inst.defineAttribute('screenHeight');
+
+TP.sherpa.world.Inst.defineAttribute('viewRect');
+TP.sherpa.world.Inst.defineAttribute('currentFocus');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('createScreenElement',

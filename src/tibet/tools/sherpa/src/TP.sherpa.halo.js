@@ -32,16 +32,32 @@ TP.sherpa.halo.Inst.defineAttribute('haloRect');
 TP.sherpa.halo.Inst.defineAttribute('lastCorner');
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('setup',
-function() {
+TP.sherpa.halo.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
 
     /**
-     * @method setup
-     * @returns {TP.sherpa.halo} The receiver.
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
 
     (function(aSignal) {
 
@@ -81,7 +97,7 @@ function() {
                 contextMenuTPElem.activate();
             }
         }
-    }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
+    }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
 
     (function(aSignal) {
         if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
@@ -94,11 +110,18 @@ function() {
         } else if (this.contains(aSignal.getTarget())) {
             this[TP.composeHandlerName('HaloClick')](aSignal);
         }
-    }).bind(this).observe(TP.core.Mouse, 'TP.sig.DOMClick');
+    }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMClick');
 
-    return this;
+    tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
+                    TP.ac('HiddenChange',
+                            'DrawerCloseWillChange',
+                            'DrawerCloseDidChange'));
+
+    return;
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineMethod('setAttrHidden',

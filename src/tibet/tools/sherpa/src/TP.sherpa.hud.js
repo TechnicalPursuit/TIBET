@@ -40,32 +40,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.hud.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     */
-
-    /*
-    var toolbarElem;
-
-    //  Set up the console output toolbar
-    toolbarElem = TP.byId('SherpaConsoleOutputToolbar', this.getNativeWindow());
-    this.observe(toolbarElem,
-        'TP.sig.DOMClick',
-        function(aSignal) {
-            TP.byId('SherpaConsole', this.getNativeWindow()).
-                    toggleOutputMode(
-                        TP.elementGetAttribute(aSignal.getTarget(), 'mode'));
-        }.bind(this));
-    */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.hud.Inst.defineMethod('setAttrHidden',
 function(beHidden) {
 

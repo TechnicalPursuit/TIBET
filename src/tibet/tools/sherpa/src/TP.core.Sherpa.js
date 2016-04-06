@@ -286,7 +286,8 @@ function() {
         // sherpaWestDrawer;
         // snippetBarTPElem;
 
-    //  Set up the HUD
+    //  Set up the HUD. NOTE: This *must* be set up first - other components
+    //  will rely on finding it when they awaken.
     this.setupHUD();
 
     viewDoc = this.get('vWin').document;
@@ -554,16 +555,13 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupContextMenu',
 function() {
 
-    var uiDoc,
-        contextMenuTPElem;
+    var uiDoc;
 
     uiDoc = this.get('vWin').document;
 
-    contextMenuTPElem = TP.byId('center', uiDoc).addContent(
+    TP.byId('center', uiDoc).addContent(
                     TP.sherpa.contextmenu.getResourceElement('template',
                         TP.ietf.Mime.XHTML));
-
-    contextMenuTPElem.setup();
 
     return this;
 });
@@ -573,20 +571,13 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHalo',
 function() {
 
-    var uiDoc,
-        haloTPElem;
+    var uiDoc;
 
     uiDoc = this.get('vWin').document;
 
-    haloTPElem = TP.byId('center', uiDoc).addContent(
+    TP.byId('center', uiDoc).addContent(
                     TP.sherpa.halo.getResourceElement('template',
                         TP.ietf.Mime.XHTML));
-
-    haloTPElem.setup();
-    haloTPElem.observe(TP.byId('SherpaHUD', this.get('vWin')),
-                        TP.ac('HiddenChange',
-                                'DrawerCloseWillChange',
-                                'DrawerCloseDidChange'));
 
     return this;
 });
@@ -596,16 +587,13 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHUD',
 function() {
 
-    var sherpaFrameBody,
-        hudTPElem;
+    var uiDoc;
 
-    sherpaFrameBody = TP.documentGetBody(this.get('vWin').document);
+    uiDoc = this.get('vWin').document;
 
-    hudTPElem = TP.wrap(sherpaFrameBody).addContent(
+    TP.wrap(TP.documentGetBody(uiDoc)).addContent(
                     TP.sherpa.hud.getResourceElement('template',
                         TP.ietf.Mime.XHTML));
-
-    hudTPElem.setup();
 
     return this;
 });
@@ -697,9 +685,9 @@ function() {
         }
     }
 
-    //  Grab the <sherpa:world> tag and set it up.
+    //  Grab the <sherpa:world> tag and awaken it.
     worldTPElem = TP.byId('SherpaWorld', uiScreensWin);
-    worldTPElem.setup();
+    worldTPElem.awaken();
 
     //  Hide the 'content' div
     TP.elementHide(TP.byId('content', uiScreensWin, false));

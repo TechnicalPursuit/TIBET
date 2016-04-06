@@ -27,6 +27,43 @@ TP.sherpa.contextmenu.Inst.defineAttribute(
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.contextmenu.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    tpElem.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidFocus');
+
+    tpElem.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidBlur');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -56,26 +93,6 @@ function() {
     this.setAttribute('hidden', true);
 
     this.ignore(TP.core.Mouse, 'TP.sig.DOMClick');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.contextmenu.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     */
-
-    //  observe the halo for focus/blur
-
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidFocus');
-
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidBlur');
 
     return this;
 });
