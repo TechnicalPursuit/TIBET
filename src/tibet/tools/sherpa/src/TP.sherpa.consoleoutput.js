@@ -211,6 +211,8 @@ function() {
 
     centerHeight = TP.byId('center', this.getDocument()).getHeight();
 
+    //  TODO: This is cheesy - make these computed.
+
     offset =
         20 +    //  sherpa:consoleoutput top & bottom values
         4 +     //  sherpa:consoleoutputitem top & bottom margin values

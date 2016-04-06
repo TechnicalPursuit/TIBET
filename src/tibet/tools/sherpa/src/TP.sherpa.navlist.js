@@ -38,25 +38,28 @@ TP.sherpa.navlist.Inst.defineAttribute('$currentValue');
 TP.sherpa.navlist.Inst.defineHandler('ItemSelected',
 function(aSignal) {
 
-    var wrappedDOMTarget,
+    var domTarget,
+        wrappedDOMTarget,
 
         label,
         value;
 
-    wrappedDOMTarget = TP.wrap(aSignal.getDOMTarget());
+    domTarget = aSignal.getDOMTarget();
+    wrappedDOMTarget = TP.wrap(domTarget);
 
     label = wrappedDOMTarget.getTextContent();
 
     if (wrappedDOMTarget.hasAttribute('itemName')) {
         value = wrappedDOMTarget.getAttribute('itemName');
     } else {
-        value = wrappedDOMTarget.getTextContent();
+        value = label;
     }
 
     this.select(label);
 
-    this.signal('TraverseObject',
-                TP.hc('targetID', value, 'selectionSignal', aSignal));
+    this.signal('InspectObject',
+                TP.hc('targetID', value,
+                        'domTarget', domTarget));
 
     return this;
 });

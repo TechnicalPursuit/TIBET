@@ -2089,7 +2089,8 @@ function(aRequest) {
         url,
         obj,
 
-        aspectName;
+        pathName,
+        addTargetAsRoot;
 
     arg = this.getArgument(aRequest, 'ARG0');
 
@@ -2105,14 +2106,19 @@ function(aRequest) {
         obj = this.resolveObjectReference(arg, aRequest);
     }
 
-    aspectName = this.getArgument(aRequest, 'tsh:aspect', null, false);
+    pathName = this.getArgument(aRequest, 'tsh:path', null, false);
+    addTargetAsRoot = TP.bc(this.getArgument(aRequest,
+                                                'tsh:addroot',
+                                                null,
+                                                false));
 
     //  Fire a 'FocusInspector' signal, supplying the target object to focus on.
     TP.signal(null,
                 'FocusInspector',
                 TP.hc('targetObject', obj,
                         'targetID', TP.id(obj),
-                        'targetAspect', aspectName));
+                        'targetPath', pathName,
+                        'addTargetAsRoot', addTargetAsRoot));
 
     aRequest.complete(TP.TSH_NO_VALUE);
 

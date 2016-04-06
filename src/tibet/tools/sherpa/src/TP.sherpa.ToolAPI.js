@@ -109,11 +109,9 @@ function(options) {
      * @returns
      */
 
-    var triggerSignal,
-        targetID;
+    var targetID;
 
-    triggerSignal = options.at('triggerSignal');
-    targetID = triggerSignal.at('targetID');
+    targetID = options.at('targetID');
 
     return TP.xhtmlnode('<textarea>' + this.get(targetID) + '</textarea>');
 });
@@ -145,13 +143,13 @@ function(options) {
      * @returns
      */
 
-    var triggerSignal,
-        targetID,
+    var targetID,
         data,
-        dataURI;
+        dataURI,
 
-    triggerSignal = options.at('triggerSignal');
-    targetID = triggerSignal.at('targetID');
+        contentElem;
+
+    targetID = options.at('targetID');
 
     if (targetID === this.getID()) {
 
@@ -163,7 +161,23 @@ function(options) {
         return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
     }
 
-    return TP.xhtmlnode('<textarea>' + this.get(targetID) + '</textarea>');
+    contentElem = TP.xhtmlnode(
+                '<div>' +
+                '<textarea><![CDATA[' + this.get(targetID) + ']]></textarea>' +
+                '</div>');
+
+    if (!TP.isElement(contentElem)) {
+
+        contentElem = TP.xhtmlnode(
+                '<div>' +
+                    '<textarea>' +
+                        TP.xmlLiteralsToEntities(this.get(targetID)) +
+                    '</textarea>' +
+                '</div>');
+
+    }
+
+    return contentElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -260,14 +274,14 @@ function(options) {
 });
 
 //  ========================================================================
-//  TP.core.UIElementNode Additions
+//  TP.core.CustomTag Additions
 //  ========================================================================
 
-TP.core.UIElementNode.addTraits(TP.sherpa.ToolAPI);
+TP.core.CustomTag.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getDataForInspector',
+TP.core.CustomTag.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -276,53 +290,65 @@ function(options) {
      * @returns
      */
 
-    return TP.ac('Structure', 'Style', 'Tests');
+    var targetID;
+
+    targetID = options.at('targetID');
+
+    if (targetID === this.getID()) {
+
+        return TP.ac('Structure', 'Style', 'Tests');
+
+    } else if (targetID === 'Structure') {
+
+        //  NB: We're returning the TP.core.URI instance itself here.
+        return this.getType().getResourceURI('template');
+
+    } else if (targetID === 'Style') {
+
+        //  NB: We're returning the TP.core.URI instance itself here.
+        return this.getType().getResourceURI('style');
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('getContentForInspector',
+TP.core.CustomTag.Inst.defineMethod('getContentForInspector',
 function(options) {
 
-    /**
-     * @method getContentForInspector
-     * @summary
-     * @returns
-     */
-
-
-    var triggerSignal,
-        targetID,
+    var targetID,
         data,
         dataURI,
 
-        uri,
         uriEditorTPElem;
 
-    triggerSignal = options.at('triggerSignal');
-    targetID = triggerSignal.at('targetID');
+    targetID = options.at('targetID');
+
+    data = this.getDataForInspector(options);
+
+    dataURI = TP.uc(options.at('bindLoc'));
+    dataURI.setResource(data);
 
     if (targetID === this.getID()) {
 
-        data = this.getDataForInspector(options);
-
-        dataURI = TP.uc(options.at('bindLoc'));
-        dataURI.setResource(data);
-
         return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
-    } else if (targetID === 'Structure') {
-        uri = this.getType().getResourceURI('template').asString();
+
+    } else if (targetID === 'Structure' || targetID === 'Style') {
 
         uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
                             'template',
                             TP.ietf.Mime.XHTML);
         uriEditorTPElem = uriEditorTPElem.clone();
-        uriEditorTPElem.setAttribute('src', uri);
+
+        uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
         return TP.unwrap(uriEditorTPElem);
     }
 
-    return TP.xhtmlnode('<textarea>' + this.get(targetID) + '</textarea>');
+    return TP.xhtmlnode('<div>' +
+                        '<textarea>' + this.get(targetID) + '</textarea>' +
+                        '</div>');
 });
 
 //  ========================================================================
@@ -370,6 +396,34 @@ function(anAspectName) {
 //  ========================================================================
 //  TP.core.CompiledTag Additions
 //  ========================================================================
+
+TP.core.CompiledTag.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary
+     * @returns
+     */
+
+    var targetID,
+        ourType;
+
+    targetID = options.at('targetID');
+
+    if (targetID === 'Structure') {
+
+        ourType = this.getType();
+
+        if (TP.owns(ourType, 'tagCompile')) {
+            return ourType.tagCompile;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 
 TP.core.CompiledTag.Inst.defineMethod('getDefaultAspectObjectForEditor',
 function() {

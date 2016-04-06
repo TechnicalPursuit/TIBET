@@ -602,11 +602,6 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupInspector',
 function() {
 
-    var inspectorTPElem;
-
-    inspectorTPElem = TP.byId('SherpaInspector', this.get('vWin'));
-    inspectorTPElem.setup();
-
     return this;
 });
 

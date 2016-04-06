@@ -19,6 +19,39 @@ TP.sherpa.TemplatedTag.defineSubtype('inspector');
 TP.sherpa.inspector.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    tpElem.setupRoots();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -26,15 +59,44 @@ TP.sherpa.inspector.Inst.defineAttribute(
         'container',
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
 TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
 TP.sherpa.inspector.Inst.defineAttribute('fixedContentEntries');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('addDynamicRoot',
+function(target) {
+
+    /**
+     * @method addDynamicRoot
+     * @summary
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    //  TODO: Update root with label config - look for it in the current list.
+    //  If it's there, we should highlight it. Otherwise, add to the 'recents'
+    //  part of the list (a LIFO queue with a 'sherpa.inspector.recent_max'
+    //  count).
+
+    var dynamicEntries;
+
+    dynamicEntries = this.get('dynamicContentEntries');
+
+    //  Make sure that we don't already have the target in our list of dynamic
+    //  entries.
+    if (!dynamicEntries.contains(target)) {
+
+        //  Wasn't found - add it and rebuild the root data.
+        dynamicEntries.unshift(target);
+        this.buildRootData();
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineMethod('addItem',
@@ -44,6 +106,8 @@ function(itemContent, itemConfig) {
      * @method addItem
      * @summary
      * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var item;
@@ -61,9 +125,47 @@ function(itemContent, itemConfig) {
     //  Awaken the content here.
     item.awaken();
 
-    //  TODO: This is a hack - we should not need setup logic separate from
-    //  awaken.
     this.configureItem(item, itemConfig);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('buildRootData',
+function() {
+
+    /**
+     * @method buildRootData
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var entries,
+        data,
+        hash,
+
+        dataURI;
+
+    entries = this.get('dynamicContentEntries');
+
+    data = entries.collect(
+                function(entry) {
+
+                    //  TODO: or a label
+                    //  Can be set by edit command to be foo[TP.DISPLAY]
+                    return TP.ac(TP.name(entry), TP.id(entry));
+                });
+
+    hash = this.get('fixedContentEntries');
+
+    hash.getKeys().sort().perform(
+                function(aKey) {
+                    data.add(TP.ac(aKey, TP.id(hash.at(aKey))));
+                });
+
+    dataURI = TP.uc('urn:tibet:sherpa_bay_0');
+    dataURI.setResource(data);
 
     return this;
 });
@@ -77,19 +179,147 @@ function(item, itemConfig) {
      * @method configureItem
      * @summary
      * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
      */
-
-    var firstItemChild;
 
     item.set('config', itemConfig);
 
-    //  TODO: Do the rest
+    return this;
+});
 
-    //  TODO: This is a hack - we should not need setup()
-    firstItemChild = item.getFirstChildElement();
-    if (TP.isValid(firstItemChild) && TP.canInvoke(firstItemChild, 'setup')) {
-        // firstItemChild.awaken();
-        firstItemChild.setup();
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method configureItem
+     * @summary
+     * @param
+     * @returns {Element}
+     */
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('InspectObject',
+function(aSignal) {
+
+    /**
+     * @method handleInspectObject
+     * @summary
+     * @param {TP.sig.InspectObject} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var payload,
+
+        currentBayIndex,
+
+        domTarget,
+        inspectorItem,
+        inspectorItems,
+
+        target,
+        targetID,
+
+        resolver,
+
+        info,
+
+        targetPath,
+        pathSegments,
+
+        i;
+
+    payload = aSignal.getPayload();
+
+    currentBayIndex = payload.at('bayIndex');
+    domTarget = payload.at('domTarget');
+
+    if (!TP.isNumber(currentBayIndex) && TP.isNode(domTarget)) {
+
+        inspectorItem = TP.nodeGetFirstAncestorByTagName(
+                                domTarget, 'sherpa:inspectoritem');
+
+        inspectorItem = TP.wrap(inspectorItem);
+
+        currentBayIndex = inspectorItem.getBayIndex();
+    }
+
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    targetID = payload.at('targetID');
+    target = payload.at('targetObject');
+
+    if (TP.notValid(target) && TP.isNumber(currentBayIndex)) {
+        inspectorItem = inspectorItems.at(currentBayIndex);
+        resolver = inspectorItem.get('config').at('resolver');
+
+        target = resolver.resolveIDForInspector(targetID);
+    }
+
+    info = TP.hc('targetObject', target, 'targetID', targetID);
+
+    if (target === this) {
+
+        this.buildRootData();
+        this.selectItemNamedInBay(TP.name(target), 0);
+
+        info.atPut('bayIndex', 0);
+
+        this.traverseUsing(info);
+
+        return this;
+    }
+
+    if (TP.isTrue(payload.at('addTargetAsRoot'))) {
+
+        //  NB: Do this *before* we get content so that dynamic list updates are
+        //  finished.
+        this.addDynamicRoot(target);
+        this.selectItemNamedInBay(TP.name(target), 0);
+
+        info.atPut('bayIndex', 1);
+
+        this.traverseUsing(info);
+    }
+
+    if (TP.notEmpty(payload.at('targetPath'))) {
+
+        targetPath = payload.at('targetPath');
+        pathSegments = targetPath.split('.');
+
+        for (i = 0; i < pathSegments.getSize(); i++) {
+
+            resolver = inspectorItems.at(i + 1).get('config').at('resolver');
+            targetID = pathSegments.at(i);
+            target = resolver.resolveIDForInspector(targetID);
+
+            this.selectItemNamedInBay(targetID, i + 1);
+
+            info = TP.hc('targetObject', target,
+                            'targetID', targetID,
+                            'bayIndex', i + 2);
+
+            this.traverseUsing(info);
+        }
+
+        return this;
+    } else {
+        if (TP.isNumber(currentBayIndex)) {
+            info.atPut('bayIndex', currentBayIndex + 1);
+        }
+
+        this.traverseUsing(info);
     }
 
     return this;
@@ -97,23 +327,22 @@ function(item, itemConfig) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('replaceItemContent',
-function(item, itemContent, itemConfig) {
+TP.sherpa.inspector.Inst.defineMethod('removeItem',
+function(anItem) {
 
     /**
-     * @method replaceItemContent
+     * @method removeItem
      * @summary
      * @param
+     * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var content;
+    var natItem;
 
-    this.removeItemsAfter(item);
+    natItem = anItem.getNativeNode();
+    TP.nodeDetach(natItem);
 
-    content = item.setContent(itemContent);
-    content.awaken();
-
-    this.configureItem(item, itemConfig);
+    //  TODO: Update inspector's bay / resolver data to remove bay data for item.
 
     return this;
 });
@@ -127,6 +356,7 @@ function(startItem) {
      * @method removeItemsAfter
      * @summary
      * @param
+     * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var existingItems,
@@ -150,256 +380,26 @@ function(startItem) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('removeItem',
-function(anItem) {
+TP.sherpa.inspector.Inst.defineMethod('replaceItemContent',
+function(item, itemContent, itemConfig) {
 
     /**
-     * @method removeItem
+     * @method replaceItemContent
      * @summary
      * @param
+     * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var natItem;
+    var content;
 
-    natItem = anItem.getNativeNode();
-    TP.nodeDetach(natItem);
+    this.removeItemsAfter(item);
 
-    //  TODO: Update inspector's bay / resolver data to remove bay data for item.
+    content = item.setContent(itemContent);
+    content.awaken();
 
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineHandler('TraverseObject',
-function(aSignal) {
-
-    var domTarget,
-        inspectorItem,
-
-        resolver,
-        id,
-
-        target,
-
-        bayConfig,
-
-        bayNum,
-        newBayNum,
-
-        bindLoc,
-
-        bayContent,
-
-        existingItems;
-
-    domTarget = aSignal.at('selectionSignal').getDOMTarget();
-
-    inspectorItem = TP.nodeGetFirstAncestorByTagName(
-                                    domTarget, 'sherpa:inspectoritem');
-
-    inspectorItem = TP.wrap(inspectorItem);
-
-    resolver = inspectorItem.get('config').at('resolver');
-
-    id = aSignal.at('targetID');
-
-    target = resolver.resolveIDForInspector(
-                                id, TP.hc('triggerSignal', aSignal));
-
-    if (TP.notValid(target)) {
-        TP.error('Invalid inspector target: ' + id);
-
-        return this;
-    }
-
-    if (TP.canInvoke(target, 'getConfigForTool')) {
-        bayConfig = target.getConfigForTool(
-                                'inspector', TP.hc('triggerSignal', aSignal));
-    } else {
-        bayConfig = TP.hc();
-    }
-
-    bayConfig.atPutIfAbsent('resolver', target);
-
-    bayNum = inspectorItem.getBayIndex();
-    newBayNum = bayNum + 1;
-
-    if (TP.canInvoke(target, 'getContentForTool')) {
-        bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
-
-        bayContent = target.getContentForTool(
-                            'inspector',
-                            TP.hc('bindLoc', bindLoc,
-                                    'triggerSignal', aSignal));
-    } else {
-        //  TODO: Otherwise, run the pretty printer to produce something...
-    }
-
-    existingItems = TP.byCSSPath('sherpa|inspectoritem', this);
-    if (existingItems.getSize() > newBayNum) {
-
-        this.replaceItemContent(
-                    existingItems.at(newBayNum), bayContent, bayConfig);
-
-    } else {
-        //  Add bay
-        this.addItem(bayContent, bayConfig);
-    }
-
-    if (TP.notEmpty(bindLoc)) {
-        TP.uc(bindLoc).$changed();
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineHandler('InspectObject',
-function(aSignal) {
-
-    /**
-     * @method handleInspectObject
-     * @summary
-     * @param {TP.sig.InspectObject} aSignal The TIBET signal which triggered
-     *     this method.
-     */
-
-    var payload,
-
-        obj,
-        id,
-
-        target,
-
-        bayContent,
-        bayConfig,
-
-        bindLoc,
-
-        existingItems;
-
-    payload = aSignal.getPayload();
-
-    obj = payload.at('targetObject');
-    id = payload.at('targetID');
-
-    if (TP.isValid(obj)) {
-        target = obj;
-    } else {
-        target = this.resolveIDForInspector(
-                                id, TP.hc('triggerSignal', aSignal));
-    }
-
-    if (TP.notValid(target)) {
-        TP.error('Invalid inspector target: ' + id);
-
-        return this;
-    }
-
-    if (TP.canInvoke(target, 'getConfigForTool')) {
-        bayConfig = target.getConfigForTool(
-                                'inspector', TP.hc('triggerSignal', aSignal));
-    } else {
-        bayConfig = TP.hc();
-    }
-
-    bayConfig.atPut('resolver', target);
-
-    if (target === this) {
-        bindLoc = 'urn:tibet:sherpa_bay_0';
-        this.buildRootData();
-    } else {
-        bindLoc = 'urn:tibet:sherpa_bay_1';
-
-        //  NB: Do this *before* we get content so that dynamic list updates are
-        //  finished.
-        this.updateRootBay(target);
-    }
-
-    if (TP.canInvoke(target, 'getContentForTool')) {
-        bayContent = target.getContentForTool(
-                                'inspector',
-                                TP.hc('bindLoc', bindLoc,
-                                        'triggerSignal', aSignal));
-    } else {
-        //  TODO: Otherwise, run the pretty printer to produce something...
-    }
-
-    existingItems = TP.byCSSPath('sherpa|inspectoritem', this);
-    if (existingItems.getSize() > 1) {
-
-        this.replaceItemContent(existingItems.at(1), bayContent, bayConfig);
-
-    } else {
-        //  Add bay 0
-        this.addItem(bayContent, bayConfig);
-    }
-
-    TP.uc(bindLoc).$changed();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('buildRootData',
-function() {
-
-    var entries,
-        data,
-        hash,
-
-        dataURI;
-
-    entries = this.get('dynamicContentEntries');
-
-    data = entries.collect(
-                function(entry) {
-                    return TP.ac(TP.name(entry), TP.id(entry));
-                });
-
-    hash = this.get('fixedContentEntries');
-
-    hash.getKeys().sort().perform(
-                function(aKey) {
-                    data.add(TP.ac(aKey, TP.id(hash.at(aKey))));
-                });
-
-    dataURI = TP.uc('urn:tibet:sherpa_bay_0');
-    dataURI.setResource(data);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('updateRootBay',
-function(target) {
-
-    //  TODO: Update root with label config - look for it in the current list.
-    //  If it's there, we should highlight it. Otherwise, add to the 'recents'
-    //  part of the list (a LIFO queue with a 'sherpa.inspector.recent_max'
-    //  count).
-
-    var items,
-        rootItem;
-
-    //  NB: Do this *before* we get content so that dynamic list updates are
-    //  finished.
-    this.get('dynamicContentEntries').unshift(target);
-
-    this.buildRootData();
-
-    if (TP.notEmpty(items = TP.byCSSPath('sherpa|inspectoritem > *', this))) {
-
-        rootItem = items.first();
-
-        //  This will have already been re-rendered because of data binding, but
-        //  we need to select what the new item will be.
-        rootItem.select(TP.name(target));
-    }
+    this.configureItem(item, itemConfig);
 
     return this;
 });
@@ -408,6 +408,14 @@ function(target) {
 
 TP.sherpa.inspector.Inst.defineMethod('resolveIDForInspector',
 function(anID, options) {
+
+    /**
+     * @method resolveIDForInspector
+     * @summary
+     * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
 
     var target,
         dynamicContentEntries,
@@ -437,23 +445,40 @@ function(anID, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getContentForInspector',
-function(options) {
+TP.sherpa.inspector.Inst.defineMethod('selectItemNamedInBay',
+function(itemName, bayNum) {
 
-    var dataURI;
+    /**
+     * @method selectItemNamedInBay
+     * @summary
+     * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
 
-    // data = TP.sys.cfg('sherpa.inspector_roots');
-    // data.sort();
+    var inspectorItems;
 
-    dataURI = TP.uc(options.at('bindLoc'));
+    if (TP.notEmpty(inspectorItems =
+                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
 
-    return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
+        //  This will have already been re-rendered because of data binding,
+        //  but we need to select what the new item will be.
+        inspectorItems.at(bayNum).select(itemName);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('setup',
+TP.sherpa.inspector.Inst.defineMethod('setupRoots',
 function() {
+
+    /**
+     * @method setupRoots
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
 
     var rootObj,
 
@@ -485,6 +510,120 @@ function() {
 
     //  ---
 
+    rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('Local Storage');
+
+    rootObj.defineMethod(
+            'get',
+            function(aProperty) {
+                return TP.str(top.localStorage[aProperty]);
+            });
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                return TP.keys(top.localStorage);
+            });
+    rootObj.defineMethod(
+            'resolveIDForInspector',
+            function(anID, options) {
+                return this;
+            });
+    fixedContentEntries.atPut('Local Storage', rootObj);
+
+    //  ---
+
+    rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('Session Storage');
+
+    rootObj.defineMethod(
+            'get',
+            function(aProperty) {
+                return TP.str(top.sessionStorage[aProperty]);
+            });
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                return TP.keys(top.sessionStorage);
+            });
+    rootObj.defineMethod(
+            'resolveIDForInspector',
+            function(anID, options) {
+                return this;
+            });
+    fixedContentEntries.atPut('Session Storage', rootObj);
+
+    //  ---
+
+    rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('Signal Map');
+
+    rootObj.defineMethod(
+            'get',
+            function(aProperty) {
+                return TP.json(TP.sig.SignalMap.INTERESTS[aProperty]);
+            });
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                return TP.keys(TP.sig.SignalMap.INTERESTS);
+            });
+    rootObj.defineMethod(
+            'resolveIDForInspector',
+            function(anID, options) {
+                return this;
+            });
+    fixedContentEntries.atPut('Signal Map', rootObj);
+
+    //  ---
+
+    rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('TSH History');
+
+    rootObj.defineMethod(
+            'get',
+            function(aProperty) {
+                return null;
+            });
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                return TP.bySystemId('TSH').getHistory().collect(
+                                function(item) {
+                                    return item.at('cmd');
+                                });
+            });
+    rootObj.defineMethod(
+            'resolveIDForInspector',
+            function(anID, options) {
+                return this;
+            });
+    fixedContentEntries.atPut('TSH History', rootObj);
+
+    //  ---
+
+    rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('URIs');
+
+    rootObj.defineMethod(
+            'get',
+            function(aProperty) {
+                return TP.str(TP.core.URI.get('instances').
+                                at(aProperty).getResource().get('result'));
+            });
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                return TP.keys(TP.core.URI.get('instances'));
+            });
+    rootObj.defineMethod(
+            'resolveIDForInspector',
+            function(anID, options) {
+                return this;
+            });
+    fixedContentEntries.atPut('URIs', rootObj);
+
+    //  ---
+
     this.set('dynamicContentEntries', TP.ac());
     this.set('fixedContentEntries', fixedContentEntries);
 
@@ -495,73 +634,89 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('traverseUsing',
+function(info) {
+
+    /**
+     * @method traverseUsing
+     * @summary
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var target,
+        id,
+
+        bayConfig,
+
+        bayNum,
+        newBayNum,
+
+        bindLoc,
+
+        bayContent,
+
+        existingItems;
+
+    target = info.at('targetObject');
+    id = info.at('targetID');
+
+    if (TP.notValid(target)) {
+        TP.error('Invalid inspector target: ' + id);
+
+        return this;
+    }
+
+    if (TP.canInvoke(target, 'getConfigForTool')) {
+        bayConfig = target.getConfigForTool(
+                            'inspector',
+                            TP.hc('targetID', id));
+    } else {
+        bayConfig = TP.hc();
+    }
+
+    bayConfig.atPutIfAbsent('resolver', target);
+
+    bayNum = info.at('bayIndex');
+
+    newBayNum = bayNum;
+
+    if (TP.canInvoke(target, 'getContentForTool')) {
+        bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
+
+        bayContent = target.getContentForTool(
+                            'inspector',
+                            TP.hc('bindLoc', bindLoc,
+                                    'targetID', id));
+    } else {
+        //  TODO: Otherwise, run the pretty printer to produce something...
+    }
+
+    existingItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    if (existingItems.getSize() > newBayNum) {
+
+        this.replaceItemContent(
+                    existingItems.at(newBayNum), bayContent, bayConfig);
+
+    } else {
+        //  Add bay
+        this.addItem(bayContent, bayConfig);
+    }
+
+    //  Signal changed on the URI that we're using as our data source. The bay
+    //  content should've configured itself to observe this data when awoken.
+    if (TP.notEmpty(bindLoc)) {
+        TP.uc(bindLoc).$changed();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.Object.defineSubtype('sherpa.InspectorRoot');
 
 TP.sherpa.InspectorRoot.addTraits(TP.sherpa.ToolAPI);
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.addTraits(TP.sherpa.ToolAPI);
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('getDataForInspector',
-function(options) {
-
-    /**
-     * @method getDataForInspector
-     * @summary
-     * @returns
-     */
-
-    return TP.ac('Structure', 'Style', 'Tests');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('getContentForInspector',
-function(options) {
-
-    /**
-     * @method getContentForInspector
-     * @summary
-     * @returns
-     */
-
-
-    var triggerSignal,
-        targetID,
-        data,
-        dataURI,
-
-        uri,
-        uriEditorTPElem;
-
-    triggerSignal = options.at('triggerSignal');
-    targetID = triggerSignal.at('targetID');
-
-    if (targetID === this.getID()) {
-
-        data = this.getDataForInspector(options);
-
-        dataURI = TP.uc(options.at('bindLoc'));
-        dataURI.setResource(data);
-
-        return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
-    } else if (targetID === 'Structure') {
-        uri = this.getType().getResourceURI('template').asString();
-
-        uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
-        uriEditorTPElem = uriEditorTPElem.clone();
-        uriEditorTPElem.setAttribute('src', uri);
-
-        return TP.unwrap(uriEditorTPElem);
-    }
-
-    return TP.xhtmlnode('<textarea>' + this.get(targetID) + '</textarea>');
-});
 
 //  ------------------------------------------------------------------------
 //  end

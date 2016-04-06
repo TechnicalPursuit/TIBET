@@ -2,10 +2,10 @@
 
 <sherpa:haloMenuContent>
     <ul on:mouseup="SelectMenuItem">
-        <li data-cmd=":inspect $HALO">Inspect</li>
-        <li data-cmd=":edit $HALO --aspect='structure'">Edit Structure</li>
-        <li data-cmd=":edit $HALO --aspect='style'">Edit Style</li>
-        <li data-cmd=":edit $HALO --aspect='tests'">Edit Tests</li>
+        <li data-cmd=":inspect $HALO --addroot='true'">Inspect</li>
+        <li data-cmd=":inspect $HALO --addroot='true' --path='Structure'">Inspect Structure</li>
+        <li data-cmd=":inspect $HALO --addroot='true' --path='Style'">Inspect Style</li>
+        <li data-cmd=":inspect $HALO --addroot='true' --path='Tests'">Inspect Tests</li>
         <li data-cmd=":test $HALO">Run Tests</li>
     </ul>
 </sherpa:haloMenuContent>
