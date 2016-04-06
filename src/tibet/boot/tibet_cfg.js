@@ -1248,16 +1248,6 @@
     //  machinery to manually replace 'tibet:root' with the app's app tag.
     TP.sys.setcfg('path.sherpa_screen_0', '~boot_xhtml/home.xhtml');
 
-    //  the root list of resources browseable by the Sherpa inspector
-    TP.sys.setcfg('sherpa.inspector_roots', [
-        'Metadata', 'Config', '$HALO', 'Responders', 'URIs',
-        'Signal Map', 'TDS routes', 'TIBET manifest', 'Logs',
-        'Tests', 'Search', 'Local Storage', 'Session storage',
-        'Jobs', 'Worker Threads', 'Strings', 'TSH history',
-        'vCards', 'JSON schemas', 'XML schemas', 'Keyboard maps',
-        'Widget bindings', 'Tag Store', 'Github', 'TODOs'
-    ]);
-
 
     //  ---
     //  SSE support
