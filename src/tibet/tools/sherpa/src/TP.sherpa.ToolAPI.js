@@ -64,42 +64,6 @@ function(anObject) {
 //  Editor
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getAspectObjectForEditorNamed',
-function(anObject, anAspectName) {
-
-    if (TP.canInvoke(anObject, 'getAspectObjectForEditorNamed')) {
-        return anObject.getAspectObjectForEditorNamed(anAspectName);
-    }
-
-    return anObject;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getDefaultAspectObjectForEditor',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getDefaultAspectObjectForEditor')) {
-        return anObject.getDefaultAspectObjectForEditor();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getContentForEditor',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getContentForEditor')) {
-        return anObject.getContentForEditor();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.ToolAPI.Inst.defineMethod('getContentForEditor',
 function(options) {
 
@@ -109,11 +73,27 @@ function(options) {
      * @returns
      */
 
-    var targetID;
+    var targetID,
+        contentElem;
 
     targetID = options.at('targetID');
 
-    return TP.xhtmlnode('<textarea>' + this.get(targetID) + '</textarea>');
+    contentElem = TP.xhtmlnode(
+                '<div>' +
+                '<textarea><![CDATA[' + this.get(targetID) + ']]></textarea>' +
+                '</div>');
+
+    if (!TP.isElement(contentElem)) {
+
+        contentElem = TP.xhtmlnode(
+                '<div>' +
+                    '<textarea>' +
+                        TP.xmlLiteralsToEntities(this.get(targetID)) +
+                    '</textarea>' +
+                '</div>');
+    }
+
+    return contentElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -145,9 +125,7 @@ function(options) {
 
     var targetID,
         data,
-        dataURI,
-
-        contentElem;
+        dataURI;
 
     targetID = options.at('targetID');
 
@@ -156,28 +134,13 @@ function(options) {
         data = this.getDataForInspector(options);
 
         dataURI = TP.uc(options.at('bindLoc'));
-        dataURI.setResource(data);
+        dataURI.setResource(data,
+                            TP.request('signalChange', false));
 
         return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
     }
 
-    contentElem = TP.xhtmlnode(
-                '<div>' +
-                '<textarea><![CDATA[' + this.get(targetID) + ']]></textarea>' +
-                '</div>');
-
-    if (!TP.isElement(contentElem)) {
-
-        contentElem = TP.xhtmlnode(
-                '<div>' +
-                    '<textarea>' +
-                        TP.xmlLiteralsToEntities(this.get(targetID)) +
-                    '</textarea>' +
-                '</div>');
-
-    }
-
-    return contentElem;
+    return this.getContentForEditor(options);
 });
 
 //  ------------------------------------------------------------------------
@@ -237,18 +200,61 @@ function(options) {
      * @returns
      */
 
-    var methodEditorTPElem;
+    var dataURI,
+        methodEditorTPElem;
 
     if (TP.isMethod(this)) {
+
+        dataURI = TP.uc(options.at('bindLoc'));
+        dataURI.setResource(options.at('target'),
+                            TP.request('signalChange', false));
 
         methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
                                 'template',
                                 TP.ietf.Mime.XHTML);
+        methodEditorTPElem = methodEditorTPElem.clone();
+
+        methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
         return TP.unwrap(methodEditorTPElem);
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.getContentForEditor(options);
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
 });
 
 //  ========================================================================
@@ -273,44 +279,25 @@ function(options) {
     return TP.unwrap(uriEditorTPElem);
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.getContentForEditor(options);
+});
+
 //  ========================================================================
 //  TP.core.CustomTag Additions
 //  ========================================================================
 
 TP.core.CustomTag.addTraits(TP.sherpa.ToolAPI);
-
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Inst.defineMethod('getDataForInspector',
-function(options) {
-
-    /**
-     * @method getDataForInspector
-     * @summary
-     * @returns
-     */
-
-    var targetID;
-
-    targetID = options.at('targetID');
-
-    if (targetID === this.getID()) {
-
-        return TP.ac('Structure', 'Style', 'Tests');
-
-    } else if (targetID === 'Structure') {
-
-        //  NB: We're returning the TP.core.URI instance itself here.
-        return this.getType().getResourceURI('template');
-
-    } else if (targetID === 'Style') {
-
-        //  NB: We're returning the TP.core.URI instance itself here.
-        return this.getType().getResourceURI('style');
-    }
-
-    return null;
-});
 
 //  ------------------------------------------------------------------------
 
@@ -328,7 +315,8 @@ function(options) {
     data = this.getDataForInspector(options);
 
     dataURI = TP.uc(options.at('bindLoc'));
-    dataURI.setResource(data);
+    dataURI.setResource(data,
+                        TP.request('signalChange', false));
 
     if (targetID === this.getID()) {
 
@@ -351,12 +339,49 @@ function(options) {
                         '</div>');
 });
 
-//  ========================================================================
-//  TP.core.TemplatedTag Additions
-//  ========================================================================
+//  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.Inst.defineMethod('getDefaultAspectObjectForEditor',
-function() {
+TP.core.CustomTag.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary
+     * @returns
+     */
+
+    var targetID;
+
+    targetID = options.at('targetID');
+
+    if (targetID === this.getID()) {
+
+        return TP.ac('Structure', 'Style', 'Tests');
+
+    } else {
+
+        return this.getObjectForAspect(targetID);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CustomTag.Inst.defineMethod('getDefaultEditingAspect',
+function(options) {
+
+    /**
+     * @method getDefaultEditingAspect
+     * @summary
+     * @returns
+     */
+
+    return 'structure';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CustomTag.Inst.defineMethod('getObjectForAspect',
+function(anAspectName) {
 
     /**
      * @method
@@ -364,12 +389,14 @@ function() {
      * @returns
      */
 
-    return this.getType().getResourceURI('template', TP.ietf.Mime.XHTML);
+    return null;
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TP.core.TemplatedTag Additions
+//  ========================================================================
 
-TP.core.TemplatedTag.Inst.defineMethod('getAspectObjectForEditorNamed',
+TP.core.TemplatedTag.Inst.defineMethod('getObjectForAspect',
 function(anAspectName) {
 
     /**
@@ -381,9 +408,11 @@ function(anAspectName) {
     switch (anAspectName) {
 
         case 'structure':
+            //  NB: We're returning the TP.core.URI instance itself here.
             return this.getType().getResourceURI('template', TP.ietf.Mime.XHTML);
 
         case 'style':
+            //  NB: We're returning the TP.core.URI instance itself here.
             return this.getType().getResourceURI('style', TP.ietf.Mime.CSS);
 
         default:
@@ -425,29 +454,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.Inst.defineMethod('getDefaultAspectObjectForEditor',
-function() {
-
-    /**
-     * @method
-     * @summary
-     * @returns
-     */
-
-    var ourType;
-
-    ourType = this.getType();
-
-    if (TP.owns(ourType, 'tagCompile')) {
-        return ourType.tagCompile;
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CompiledTag.Inst.defineMethod('getAspectObjectForEditorNamed',
+TP.core.CompiledTag.Inst.defineMethod('getObjectForAspect',
 function(anAspectName) {
 
     /**
@@ -456,40 +463,25 @@ function(anAspectName) {
      * @returns
      */
 
+    var ourType;
+
     switch (anAspectName) {
 
         case 'structure':
-            return this.getDefaultAspectObjectForEditor();
+
+            ourType = this.getType();
+
+            if (TP.owns(ourType, 'tagCompile')) {
+                return ourType.tagCompile;
+            }
+
+            break;
 
         case 'style':
             return this.getType().getResourceURI('template', TP.ietf.Mime.CSS);
 
         default:
             break;
-    }
-
-    return null;
-});
-
-//  ========================================================================
-//  TP.tsh.Element Additions
-//  ========================================================================
-
-TP.tsh.Element.Inst.defineMethod('getDefaultAspectObjectForEditor',
-function() {
-
-    /**
-     * @method
-     * @summary
-     * @returns
-     */
-
-    var ourType;
-
-    ourType = this.getType();
-
-    if (TP.owns(ourType, 'tshExecute')) {
-        return ourType.tshExecute;
     }
 
     return null;
