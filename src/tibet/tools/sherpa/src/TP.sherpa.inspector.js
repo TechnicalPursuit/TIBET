@@ -364,6 +364,27 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('hasDynamicRoot',
+function(target) {
+
+    /**
+     * @method hasDynamicRoot
+     * @summary
+     * @param
+     * @returns {Boolean}
+     */
+
+    var dynamicEntries;
+
+    dynamicEntries = this.get('dynamicContentEntries');
+
+    //  Make sure that we don't already have the target in our list of dynamic
+    //  entries.
+    return dynamicEntries.contains(target, TP.IDENTITY);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('removeItem',
 function(anItem) {
 
