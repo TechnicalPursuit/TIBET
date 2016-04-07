@@ -199,8 +199,6 @@ function(aValue, shouldSignal) {
 
     this.setSourceObject(aValue);
 
-    this.render();
-
     //  By forking this, we give the console a chance to focus the input cell
     //  (which it really wants to do after executing a command) and then we can
     //  shift the focus back to us.
