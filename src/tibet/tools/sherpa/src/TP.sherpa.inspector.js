@@ -707,7 +707,6 @@ function(info) {
 
         bayConfig,
 
-        bayNum,
         newBayNum,
 
         bindLoc,
@@ -728,16 +727,15 @@ function(info) {
     if (TP.canInvoke(target, 'getConfigForTool')) {
         bayConfig = target.getConfigForTool(
                             'inspector',
-                            TP.hc('targetID', id));
+                            TP.hc('targetID', id,
+                                    'target', target));
     } else {
         bayConfig = TP.hc();
     }
 
     bayConfig.atPutIfAbsent('resolver', target);
 
-    bayNum = info.at('bayIndex');
-
-    newBayNum = bayNum;
+    newBayNum = info.at('bayIndex');
 
     if (TP.canInvoke(target, 'getContentForTool')) {
         bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
@@ -745,9 +743,14 @@ function(info) {
         bayContent = target.getContentForTool(
                             'inspector',
                             TP.hc('bindLoc', bindLoc,
-                                    'targetID', id));
+                                    'targetID', id,
+                                    'target', target));
     } else {
         //  TODO: Otherwise, run the pretty printer to produce something...
+    }
+
+    if (!TP.isElement(bayContent)) {
+        return this;
     }
 
     existingItems = TP.byCSSPath('sherpa|inspectoritem', this);
