@@ -838,14 +838,6 @@ function(aTargetObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('get',
-function(aProperty) {
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.inspector.Inst.defineMethod('getDataForInspector',
 function(options) {
 
