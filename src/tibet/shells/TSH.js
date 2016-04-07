@@ -2112,9 +2112,9 @@ function(aRequest) {
                                                 null,
                                                 false));
 
-    //  Fire a 'FocusInspector' signal, supplying the target object to focus on.
+    //  Fire a 'InspectObject' signal, supplying the target object to focus on.
     TP.signal(null,
-                'FocusInspector',
+                'InspectObject',
                 TP.hc('targetObject', obj,
                         'targetID', TP.id(obj),
                         'targetPath', pathName,
@@ -2122,7 +2122,7 @@ function(aRequest) {
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
-    return aRequest.complete();
+    return;
 });
 
 //  ------------------------------------------------------------------------
