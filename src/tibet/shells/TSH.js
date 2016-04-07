@@ -2053,9 +2053,16 @@ function(aRequest) {
         obj = this.resolveObjectReference(arg, aRequest);
     }
 
-    aRequest.atPut('tiledOutput', true);
-    aRequest.atPut('tiledOperation', TP.EDIT);
-    aRequest.atPut('tiledTarget', obj);
+    //aRequest.atPut('tiledOutput', true);
+    //aRequest.atPut('tiledOperation', TP.EDIT);
+    //aRequest.atPut('tiledTarget', obj);
+
+    //  Fire a 'EditObject' signal, supplying the target object to focus on.
+    TP.signal(null,
+                'EditObject',
+                TP.hc('targetObject', obj,
+                        'targetID', TP.id(obj),
+                        'addTargetAsRoot', true));
 
     aRequest.complete(TP.TSH_NO_VALUE);
 

@@ -237,11 +237,60 @@ function(aSignal) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var payload;
+    var payload,
+
+        target,
+        targetID,
+
+        info,
+
+        hash,
+        root,
+        path;
 
     payload = aSignal.getPayload();
 
-    debugger;
+    target = payload.at('targetObject');
+    targetID = payload.at('targetID');
+
+    info = TP.hc('targetObject', target, 'targetID', targetID);
+
+    if (this.hasDynamicRoot(target)) {
+
+        this.selectItemNamedInBay(this.getItemLabel(target), 0);
+
+        info.atPut('bayIndex', 0);
+
+        this.traverseUsing(info);
+
+    } else if (TP.isTrue(payload.at('addTargetAsRoot'))) {
+
+        this.addDynamicRoot(target);
+        this.selectItemNamedInBay(this.getItemLabel(target), 0);
+
+        info.atPut('bayIndex', 1);
+
+        this.traverseUsing(info);
+    } else {
+        //  We're not going to add as dynamic root, but try to traverse to
+        //  instead
+
+        //  The first thing to do is to query all of the existing static roots
+        //  and see if any of them can handle the target object
+        hash = this.get('fixedContentEntries');
+
+        root = hash.detect(
+                        function(kvPair) {
+                            return kvPair.last().canHandle(target);
+                        });
+
+        //  If so, then we query that object to see if it can produce a path.
+        if (TP.isValid(root)) {
+            if (TP.notEmpty(path = root.getPathTo(target))) {
+                //  If so, then navigate that path.
+            }
+        }
+    }
 
     return this;
 });
@@ -778,6 +827,46 @@ function(info) {
 TP.lang.Object.defineSubtype('sherpa.InspectorRoot');
 
 TP.sherpa.InspectorRoot.addTraits(TP.sherpa.ToolAPI);
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('canHandle',
+function(aTargetObject) {
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('get',
+function(aProperty) {
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getPathTo',
+function(aTargetObject) {
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('resolveIDForInspector',
+function(anID, options) {
+
+    return null;
+});
 
 //  ------------------------------------------------------------------------
 //  end
