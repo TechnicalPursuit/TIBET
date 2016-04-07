@@ -152,10 +152,8 @@ function() {
     data = entries.collect(
                 function(entry) {
 
-                    //  TODO: or a label
-                    //  Can be set by edit command to be foo[TP.DISPLAY]
-                    return TP.ac(TP.name(entry), TP.id(entry));
-                });
+                    return TP.ac(this.getItemLabel(entry), TP.id(entry));
+                }.bind(this));
 
     hash = this.get('fixedContentEntries');
 
@@ -205,6 +203,25 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
 
     return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getItemLabel',
+function(anItem) {
+
+    /**
+     * @method getLabel
+     * @summary
+     * @param
+     * @returns {String}
+     */
+
+    if (TP.isMethod(anItem)) {
+        return anItem[TP.DISPLAY];
+    }
+
+    return TP.name(anItem);
 });
 
 //  ------------------------------------------------------------------------
@@ -294,7 +311,7 @@ function(aSignal) {
     if (target === this) {
 
         this.buildRootData();
-        this.selectItemNamedInBay(TP.name(target), 0);
+        this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
         info.atPut('bayIndex', 0);
 
@@ -305,10 +322,8 @@ function(aSignal) {
 
     if (TP.isTrue(payload.at('addTargetAsRoot'))) {
 
-        //  NB: Do this *before* we get content so that dynamic list updates are
-        //  finished.
         this.addDynamicRoot(target);
-        this.selectItemNamedInBay(TP.name(target), 0);
+        this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
         info.atPut('bayIndex', 1);
 
