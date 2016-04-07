@@ -87,7 +87,7 @@ function(target) {
 
     //  Make sure that we don't already have the target in our list of dynamic
     //  entries.
-    if (!dynamicEntries.contains(target)) {
+    if (!dynamicEntries.contains(target, TP.IDENTITY)) {
 
         //  Wasn't found - add it and rebuild the root data.
         dynamicEntries.unshift(target);
