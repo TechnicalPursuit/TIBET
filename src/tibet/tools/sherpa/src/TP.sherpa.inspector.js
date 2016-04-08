@@ -830,7 +830,7 @@ TP.sherpa.InspectorRoot.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('canHandle',
+TP.sherpa.InspectorRoot.Inst.defineMethod('canHandle',
 function(aTargetObject) {
 
     return false;
@@ -838,7 +838,7 @@ function(aTargetObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getDataForInspector',
+TP.sherpa.InspectorRoot.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     return TP.ac();
@@ -846,7 +846,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getPathTo',
+TP.sherpa.InspectorRoot.Inst.defineMethod('getPathTo',
 function(aTargetObject) {
 
     return null;
@@ -854,7 +854,7 @@ function(aTargetObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('resolveIDForInspector',
+TP.sherpa.InspectorRoot.Inst.defineMethod('resolveIDForInspector',
 function(anID, options) {
 
     return null;
