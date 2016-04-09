@@ -73,7 +73,7 @@ function(aRequest) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
-            this.changeHaloFocus(aSignal);
+            this.changeHaloFocusOnClick(aSignal);
         } else {
 
             //  NB: We use global coordinates here as the halo and the signal
@@ -104,7 +104,7 @@ function(aRequest) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
 
-            this.changeHaloFocus(aSignal);
+            this.changeHaloFocusOnClick(aSignal);
 
             return;
         } else if (this.contains(aSignal.getTarget())) {
@@ -188,6 +188,111 @@ function() {
 
     this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem),
                 TP.OBSERVER_FIRING);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('changeHaloFocusOnClick',
+function(aSignal) {
+
+    /**
+     * @method changeHaloFocusOnClick
+     * @param {TP.sig.DOMSignal} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var sigTarget,
+
+        handledSignal,
+
+        currentTargetTPElem,
+        newTargetTPElem,
+
+        canFocus;
+
+    sigTarget = aSignal.getTarget();
+
+    handledSignal = false;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    //  If:
+    //      a) We have an existing target
+    //      b) AND: The user clicked the LEFT button
+    //      c) AND: the existing target can blur
+    if (TP.isValid(currentTargetTPElem) &&
+        aSignal.getButton() === TP.LEFT &&
+        currentTargetTPElem.haloCanBlur(this, aSignal)) {
+
+        this.blur();
+        this.setAttribute('hidden', true);
+
+        handledSignal = true;
+    } else if (aSignal.getButton() === TP.RIGHT) {
+
+        //  If there is an existing target and it's either identical to the
+        //  signal target or it contains the signal target, then we want to
+        //  traverse 'up' the parent hierarchy.
+        if (TP.isValid(currentTargetTPElem) &&
+                (currentTargetTPElem.identicalTo(sigTarget) ||
+                    currentTargetTPElem.contains(sigTarget))) {
+
+            newTargetTPElem = currentTargetTPElem.getHaloParent(this);
+
+            //  If the parent wasn't the same as the currently focused element,
+            //  and it can be focused by the halo, then blur the existing
+            //  element and focus the parent.
+            if (!newTargetTPElem.identicalTo(currentTargetTPElem) &&
+                newTargetTPElem.haloCanFocus(this, aSignal)) {
+
+                this.blur();
+                this.focusOn(newTargetTPElem);
+
+                handledSignal = true;
+            }
+        } else {
+            newTargetTPElem = TP.wrap(sigTarget);
+
+            canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
+
+            if (canFocus === TP.ANCESTOR) {
+
+                while (TP.isValid(newTargetTPElem =
+                                    newTargetTPElem.getHaloParent(this))) {
+
+                    canFocus = newTargetTPElem.haloCanFocus();
+
+                    if (canFocus && canFocus !== TP.ANCESTOR) {
+                        break;
+                    }
+                }
+            }
+
+            //  Couldn't find one to focus on? Clear the target.
+            if (!canFocus) {
+                newTargetTPElem = null;
+            }
+        }
+
+        if (TP.isValid(newTargetTPElem)) {
+
+            this.blur();
+            this.focusOn(newTargetTPElem);
+
+            this.setAttribute('hidden', false);
+
+            handledSignal = true;
+        }
+    }
+
+    if (handledSignal) {
+        if (TP.isValid(newTargetTPElem)) {
+            TP.documentClearSelection(newTargetTPElem.getNativeDocument());
+        }
+    }
 
     return this;
 });
@@ -673,111 +778,6 @@ function(aSignal) {
     }
 
     this.set('lastCorner', corner);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineMethod('changeHaloFocus',
-function(aSignal) {
-
-    /**
-     * @method changeHaloFocus
-     * @param {TP.sig.DOMSignal} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var sigTarget,
-
-        handledSignal,
-
-        currentTargetTPElem,
-        newTargetTPElem,
-
-        canFocus;
-
-    sigTarget = aSignal.getTarget();
-
-    handledSignal = false;
-
-    currentTargetTPElem = this.get('currentTargetTPElem');
-
-    //  If:
-    //      a) We have an existing target
-    //      b) AND: The user clicked the LEFT button
-    //      c) AND: the existing target can blur
-    if (TP.isValid(currentTargetTPElem) &&
-        aSignal.getButton() === TP.LEFT &&
-        currentTargetTPElem.haloCanBlur(this, aSignal)) {
-
-        this.blur();
-        this.setAttribute('hidden', true);
-
-        handledSignal = true;
-    } else if (aSignal.getButton() === TP.RIGHT) {
-
-        //  If there is an existing target and it's either identical to the
-        //  signal target or it contains the signal target, then we want to
-        //  traverse 'up' the parent hierarchy.
-        if (TP.isValid(currentTargetTPElem) &&
-                (currentTargetTPElem.identicalTo(sigTarget) ||
-                    currentTargetTPElem.contains(sigTarget))) {
-
-            newTargetTPElem = currentTargetTPElem.getHaloParent(this);
-
-            //  If the parent wasn't the same as the currently focused element,
-            //  and it can be focused by the halo, then blur the existing
-            //  element and focus the parent.
-            if (!newTargetTPElem.identicalTo(currentTargetTPElem) &&
-                newTargetTPElem.haloCanFocus(this, aSignal)) {
-
-                this.blur();
-                this.focusOn(newTargetTPElem);
-
-                handledSignal = true;
-            }
-        } else {
-            newTargetTPElem = TP.wrap(sigTarget);
-
-            canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
-
-            if (canFocus === TP.ANCESTOR) {
-
-                while (TP.isValid(newTargetTPElem =
-                                    newTargetTPElem.getHaloParent(this))) {
-
-                    canFocus = newTargetTPElem.haloCanFocus();
-
-                    if (canFocus && canFocus !== TP.ANCESTOR) {
-                        break;
-                    }
-                }
-            }
-
-            //  Couldn't find one to focus on? Clear the target.
-            if (!canFocus) {
-                newTargetTPElem = null;
-            }
-        }
-
-        if (TP.isValid(newTargetTPElem)) {
-
-            this.blur();
-            this.focusOn(newTargetTPElem);
-
-            this.setAttribute('hidden', false);
-
-            handledSignal = true;
-        }
-    }
-
-    if (handledSignal) {
-        if (TP.isValid(newTargetTPElem)) {
-            TP.documentClearSelection(newTargetTPElem.getNativeDocument());
-        }
-    }
 
     return this;
 });
