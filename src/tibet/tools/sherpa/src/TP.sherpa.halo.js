@@ -474,7 +474,9 @@ function(aSignal) {
      */
 
     var currentTargetTPElem,
-        newTargetTPElem;
+        newTargetTPElem,
+
+        canFocus;
 
     if (aSignal.getShiftKey()) {
 
@@ -490,6 +492,32 @@ function(aSignal) {
                                                                 this, aSignal);
             }
 
+            //  Couldn't find a new target... exit.
+            if (TP.notValid(newTargetTPElem)) {
+                return;
+            }
+
+            canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
+
+            if (canFocus === TP.ANCESTOR) {
+
+                while (TP.isValid(newTargetTPElem =
+                                    newTargetTPElem.getHaloParent(this))) {
+
+                    canFocus = newTargetTPElem.haloCanFocus();
+
+                    if (canFocus && canFocus !== TP.ANCESTOR) {
+                        break;
+                    }
+                }
+            }
+
+            //  Couldn't find one to focus on? Clear the target.
+            if (!canFocus) {
+                newTargetTPElem = null;
+            }
+
+            //  Couldn't find a new target... exit.
             if (TP.notValid(newTargetTPElem)) {
                 return;
             }
@@ -666,7 +694,7 @@ function(aSignal) {
         handledSignal,
 
         currentTargetTPElem,
-        targetTPElem,
+        newTargetTPElem,
 
         canFocus;
 
@@ -697,40 +725,47 @@ function(aSignal) {
                 (currentTargetTPElem.identicalTo(sigTarget) ||
                     currentTargetTPElem.contains(sigTarget))) {
 
-            targetTPElem = currentTargetTPElem.getHaloParent(this);
+            newTargetTPElem = currentTargetTPElem.getHaloParent(this);
 
             //  If the parent wasn't the same as the currently focused element,
             //  and it can be focused by the halo, then blur the existing
             //  element and focus the parent.
-            if (!targetTPElem.identicalTo(currentTargetTPElem) &&
-                targetTPElem.haloCanFocus(this, aSignal)) {
+            if (!newTargetTPElem.identicalTo(currentTargetTPElem) &&
+                newTargetTPElem.haloCanFocus(this, aSignal)) {
 
                 this.blur();
-                this.focusOn(targetTPElem);
+                this.focusOn(newTargetTPElem);
 
                 handledSignal = true;
             }
         } else {
-            targetTPElem = TP.wrap(sigTarget);
+            newTargetTPElem = TP.wrap(sigTarget);
 
-            canFocus = targetTPElem.haloCanFocus(this, aSignal);
+            canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
 
             if (canFocus === TP.ANCESTOR) {
-                while (TP.isValid(
-                            targetTPElem = targetTPElem.getHaloParent(this))) {
-                    canFocus = targetTPElem.haloCanFocus();
+
+                while (TP.isValid(newTargetTPElem =
+                                    newTargetTPElem.getHaloParent(this))) {
+
+                    canFocus = newTargetTPElem.haloCanFocus();
 
                     if (canFocus && canFocus !== TP.ANCESTOR) {
                         break;
                     }
                 }
             }
+
+            //  Couldn't find one to focus on? Clear the target.
+            if (!canFocus) {
+                newTargetTPElem = null;
+            }
         }
 
-        if (TP.isValid(targetTPElem)) {
+        if (TP.isValid(newTargetTPElem)) {
 
             this.blur();
-            this.focusOn(targetTPElem);
+            this.focusOn(newTargetTPElem);
 
             this.setAttribute('hidden', false);
 
@@ -739,8 +774,8 @@ function(aSignal) {
     }
 
     if (handledSignal) {
-        if (TP.isValid(targetTPElem)) {
-            TP.documentClearSelection(targetTPElem.getNativeDocument());
+        if (TP.isValid(newTargetTPElem)) {
+            TP.documentClearSelection(newTargetTPElem.getNativeDocument());
         }
     }
 
