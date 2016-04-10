@@ -8,86 +8,79 @@
  */
 //  ========================================================================
 
-/*
-The elements of this file are focused on code and content import. Of
-particular interest are the elements that support TIBET's type and method
-"autoloader" capability which allows code to be dynamically loaded without
-programmer intervention. This is a powerful feature since it means you can
-tune your load packages to create a smaller startup footprint, migrating
-features among various packages without having to alter source code that
-consumes those resources. Mention a type or method and TIBET will autoload
-it if it's not yet available. All that's required is current metadata so
-TIBET knows where to find the various types/methods you will want to load.
-This metadata is constructed automatically during application execution, you
-simply save it from the development environment and you're ready to go.
-*/
-
-//  ------------------------------------------------------------------------
-//  AUTOLOADING METHODS
-//  ------------------------------------------------------------------------
-
 TP.sys.defineMethod('importPackage',
-function(aPackageName, aTarget, aBaseDir, shouldReload, loadSync) {
+function(packageName, configName) {
 
     /**
      * @method importPackage
-     * @summary Optionally imports a package and target by name. No attempt to
-     *     manage inter-package dependencies is made. Using the shouldReload
-     *     flag allows you to force reloading of package content when a
-     *     particular package has already been loaded. NOTE that you can not
-     *     reload the Kernel package.
-     * @summary This method is a useful way to load code from a package
-     *     target. To assist with determining whether a particular target has
-     *     already been loaded the target will default to 'base' during the test
-     *     phase. This is the typical core target and using base also avoids
-     *     issues with nested target references which are common with the full
-     *     target. If the full target is found in the load record it is assumed
-     *     that all other targets have been loaded. If no target was specified
-     *     and neither the base or full target appear to have been loaded the
-     *     package will be imported using whatever target was specified, or the
-     *     package's default target.
-     * @param {String} aPackageName The package name to locate and import as
-     *     needed. The package's XML configuration file is presumed to live in
-     *     the TIBET configuration directory or in the boot dir of the
-     *     application itself. Prefix this name with an appropriate ~ path as
-     *     needed to ensure app vs. lib resolution. Default is
-     *     ~lib_cfg/[aPackageName].xml.
-     * @param {String} aTarget The target name to load. Default is whatever is
+     * @summary Imports a specific package/config file's script resources. Note
+     *     that when dealing with rollups this also includes the package's
+     *     rolled up resources in the form of TP.uc() content.
+     * @param {String} packageName The package name to locate and import.
+     * @param {String} configName The config to load. Default is whatever is
      *     listed as the default for that package (usually base).
-     * @param {String|TP.core.URI} aBaseDir The base directory to use for
-     *     resolving file paths. Normally you should leave this null.
-     * @param {Boolean} shouldReload True if the package should be reloaded if
-     *     already loaded. The default is false. Note that when you force reload
-     *     of a package that package's script elements are reloaded as well.
-     * @param {Boolean} loadSync Should the load be done synchronously? Default
-     *     is true.
-     * @returns {Number} The number of unique nodes loaded from the package
-     *     during the import process.
+     * @return {TP.extern.Promise} A promise which resolved based on success.
      */
 
-    TP.todo('Implement TP.sys.importPackage');
-});
+    var uri,
+        newScripts,
+        loadedScripts,
+        missingScripts,
+        phaseOne,
+        phaseTwo;
 
-//  ------------------------------------------------------------------------
+    //  Normalize the incoming package name to produce a viable config file.
+    uri = TP.uriExpandPath(packageName);
+    if (!TP.isURIString(uri)) {
+        uri = TP.uriJoinPaths('~app_cfg', uri);
+    }
 
-TP.sys.defineMethod('importNamespace',
-function(aNamespaceURI, aPackageName) {
+    if (TP.isEmpty(TP.uriExtension(uri))) {
+        uri += '.xml';
+    }
 
-    /**
-     * @method importNamespace
-     * @summary Loads the canonically prefixed target for the specified
-     *     namespace provided that the namespace's canonical prefix is mentioned
-     *     as a target in either the TNS.xml configuration file or in the XMLNS
-     *     'info' hash.
-     * @param {String} aNamespaceURI The registered URI for the desired
-     *     namespace.
-     * @param {String} aPackageName The package name to locate the namespace
-     *     prefix in.
-     * @returns {Number} The number of unique nodes loaded from the package
-     *     during the import process.
-     */
+    //  Get the full list of package script files. This defines the list of
+    //  scripts the system will accept for importing.
+    try {
+        phaseOne = TP.sys.cfg('boot.phase_one');
+        phaseTwo = TP.sys.cfg('boot.phase_two');
+        TP.sys.setcfg('boot.phase_one', true);
+        TP.sys.setcfg('boot.phase_two', true);
+        newScripts = TP.boot.$listPackageAssets(uri, configName);
+    } catch (e) {
+        void 0;
+    } finally {
+        TP.sys.setcfg('boot.phase_one', phaseOne);
+        TP.sys.setcfg('boot.phase_two', phaseTwo);
+    }
 
-    TP.todo('Implement TP.sys.importNamespace');
+    //  Normalize the list of scripts.
+    newScripts = newScripts.map(
+                    function(node) {
+                        return TP.uriExpandPath(node.getAttribute('src'));
+                    });
+    TP.compact(newScripts, TP.isEmpty);
+
+    //  Determine which scripts haven't already been loaded.
+    loadedScripts = TP.boot.$$loadpaths;
+    missingScripts = newScripts.difference(loadedScripts);
+
+    //  Since importScript returns a promise we want to create a collection
+    //  which we'll then resolve once all promises have completed in some form.
+    promises = missingScripts.map(function(path) {
+        return TP.sys.importScript(path);
+    });
+
+    return Promise.all(promises.map(function(promise) {
+        return promise.reflect();
+    })).each(function(inspection) {
+        if (inspection.isFulfilled()) {
+            console.log("A promise in the array was fulfilled with", inspection.value());
+        } else {
+            console.error("A promise in the array was rejected with", inspection.reason());
+        }
+    });
+
 });
 
 //  ------------------------------------------------------------------------
@@ -106,17 +99,17 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
-     * @returns {TP.html.script} The HTML Script node holding the script.
+     * @return {TP.extern.Promise} A promise which resolved based on success.
      */
 
     var url,
-
-        reqCallbackFunc,
-        callbackFunc;
+        callback;
 
     url = TP.uc(aURI);
     if (TP.notValid(url)) {
-        return this.raise('TP.sig.InvalidURI');
+        this.raise('TP.sig.InvalidURI');
+
+        return TP.extern.Promise.reject(new Error('InvalidURI'));
     }
 
     //  Adjust the path per any rewrite rules in place for the URI. Note
@@ -125,34 +118,83 @@ function(aURI, aRequest) {
         url = url.rewrite();
     }
 
+    TP.info('Importing script: ' + TP.str(url));
+
     //  Grab any callback that was defined by the request
-    reqCallbackFunc = TP.ifKeyInvalid(aRequest, 'callback', null);
+    callback = TP.ifKeyInvalid(aRequest, 'callback', null);
 
-    //  Define a callback function that will call TP.html.script's
-    //  'tagAttachDOM' method to register the script for any changes to its
-    //  remote resource (if watching remote resources is turned on).
-    callbackFunc =
+    return TP.sys.importSource(url.getLocation(), true, false).then(
         function(scriptNode) {
-
             var req;
-
-            if (TP.isCallable(reqCallbackFunc)) {
-                reqCallbackFunc(scriptNode);
+            if (TP.isCallable(callback)) {
+                callback(scriptNode);
             }
 
+            //  Activate any "awakening logic" specific to the script.
             req = TP.request();
-
-            //  Manually call 'tagAttachDOM' with a manually constructed
-            //  request.
             req.atPut('node', scriptNode);
             TP.html.script.tagAttachDOM(req);
-        };
 
-    return TP.boot.$uriImport(url.getLocation(),
-                                callbackFunc,
-                                true,
-                                false);
+            return scriptNode;
+        }
+    ).then(function(result) {
+        if (TP.isValid(aRequest)) {
+            aRequest.complete(result);
+        }
+    }).catch(function(err) {
+        if (TP.isValid(aRequest)) {
+            aRequest.fail(err);
+        }
+
+        if (TP.isValid(err)) {
+            TP.error(err);
+
+            //  Be sure to throw here or invoking items like importPackage won't
+            //  see the error, it's being caught here.
+            throw err;
+        }
+    });
 });
+
+//  ----------------------------------------------------------------------------
+
+TP.sys.defineMethod('importSource', function(targetUrl) {
+
+    /**
+     * @method importSource
+     * @summary Imports a target script which loads and integrates JS with the
+     *     currently running "image".
+     * @param {String} targetUrl URL of the target resource.
+     * @return {TP.extern.Promise} A promise which resolved based on success.
+     */
+
+    var src,
+        msg,
+        err,
+        result;
+
+    if (TP.notValid(targetUrl)) {
+        return TP.extern.Promise.reject(new Error('InvalidURI'));
+    }
+
+    //  we pass actual responsibility for locating the source text to the
+    //  uriLoad call, but we need to tell it that we're looking for source
+    src = TP.boot.$uriLoad(targetUrl, TP.TEXT, 'source');
+    if (TP.notValid(src)) {
+        msg = 'Requested source URL not found: ';
+        err = new Error(msg + targetUrl + '.');
+        return TP.extern.Promise.reject(err);
+    }
+
+    result = TP.boot.$sourceImport(src, null, targetUrl);
+    if (TP.notValid(result) || TP.isError(result)) {
+        return TP.extern.Promise.reject(result);
+    }
+
+    return TP.extern.Promise.resolve(result);
+});
+
+//  ------------------------------------------------------------------------
 
 //  ------------------------------------------------------------------------
 
@@ -161,16 +203,13 @@ function(aTypeName, shouldReload, isProxy) {
 
     /**
      * @method importType
-     * @summary Optionally imports a type by name. Note that this method makes
-     *     no attempt to load supertypes, use TP.sys.require for that behavior.
-     *     This method is leveraged by the require() function to load single
-     *     types, reloading them if forced via the shouldReload flag.
+     * @summary Imports a type by name. If the type is already loaded the
+     *     current type is returned unless shouldReload is set to true.
      * @param {String} aTypeName The type name to locate and import as needed.
      * @param {Boolean} shouldReload True if the type should be reloaded if
      *     already found in the system.
      * @param {Boolean} isProxy Is this call being done in support of a type
-     *     proxy? If true then certain registration-related tasks are performed
-     *     to properly fault in the type. Default is false.
+     *     proxy? Default is false.
      * @returns {TP.lang.RootObject} A Type object.
      */
 
@@ -213,8 +252,6 @@ function(aTypeName, shouldReload, isProxy) {
 
     return null;
 });
-
-//  ------------------------------------------------------------------------
 
 //  simple alias that doesn't change the actual method name/owner info.
 TP.sys.require = TP.sys.importType;

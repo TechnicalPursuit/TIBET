@@ -359,9 +359,10 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
         case 2:
             //  object/string + either an annotation/context or log level
             /* eslint-disable no-extra-parens */
-            if (TP.boot.$isNumber(obj) ||
-                    (TP.boot.$isString(obj) &&
-                    TP.boot.LOG_NAMES.indexOf(obj) !== -1)) {
+            if (TP.boot.$isNumber(obj) && obj <= TP.boot.LOG_NAMES.length) {
+                lvl = obj;
+            } else if (TP.boot.$isString(obj) &&
+                    TP.boot.LOG_NAMES.indexOf(obj) !== -1) {
                 lvl = TP.boot[obj];
             } else {
                 ann = obj;
@@ -2947,7 +2948,7 @@ system or the net and produce XML documents which can be manipulated.
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
+TP.boot.$uriLoad = function(targetUrl, resultType, targetType) {
 
     /**
      * @method $uriLoad
@@ -2957,8 +2958,6 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
      * @param {String} targetType The nature of the target, 'source' or
      *     'manifest' are common values here.
-     * @param {Boolean} isPackage True if the resource being imported is a
-     *     package-level resource.
      * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      */
@@ -2987,11 +2986,7 @@ TP.boot.$uriLoad = function(targetUrl, resultType, targetType, isPackage) {
             result = TP.boot.$uriLoadCommonFile(targetUrl, returnType);
         }
     } else {
-        result = TP.boot.$uriLoadCommonHttp(
-                targetUrl,
-                returnType,
-                null,
-                isPackage);
+        result = TP.boot.$uriLoadCommonHttp(targetUrl, returnType);
     }
 
     return result;
@@ -3195,44 +3190,24 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType, lastModified,
-                                        isPackage) {
+TP.boot.$uriLoadCommonHttp = function(targetUrl, resultType) {
 
     /**
      * @method $uriLoadCommonHttp
      * @summary Loads (reads and produces an XML document for) targetUrl.
      * @param {String} targetUrl URL of the target resource.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
-     * @param {String} lastModified An optional Last-Modified header value used
-     *     along with 304 checking to minimize overhead for HTTP calls whose
-     *     content is cached but needs to be refreshed.
-     * @param {Boolean} isPackage True if the resource being imported is a
-     *     package-level resource.
      * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      */
 
     var returnType,
-
-        httpObj,
-        headers;
+        httpObj;
 
     returnType = TP.boot.$uriResultType(targetUrl, resultType);
 
     try {
-        //  if we got a valid lastModified value then we're being asked to
-        //  load for a "synchronized" update and need to use 304-aware code
-        if (lastModified) {
-            //  the httpCall routine accepts an array of key/value pairs as
-            //  header content (to avoid issues with for/in etc) so build
-            //  that here and pass along an If-Modified-Since header.
-            headers = [];
-            headers.push('If-Modified-Since', lastModified);
-
-            httpObj = TP.boot.$httpCall(targetUrl, TP.HTTP_GET, headers);
-        } else {
-            httpObj = TP.boot.$httpCall(targetUrl, TP.HTTP_GET);
-        }
+        httpObj = TP.boot.$httpCall(targetUrl, TP.HTTP_GET);
 
         if (httpObj.status === 200) {
             return TP.boot.$uriResult(httpObj.responseText, returnType);
@@ -8338,7 +8313,7 @@ TP.boot.$$configureOverrides = function(options, activate) {
      *     allowing them to override certain boot properties. Common overrides
      *     include debug, verbose, and display. The args for environment
      *     setting are processed individually by the
-     *     TP.boot.$configureBootstrap() function prior to loading the
+     *     TP.boot.$configureBootstrap function prior to loading the
      *     environment-specific configuration.
      * @param {Object} options An object containing option values.
      * @param {Boolean} [activate=false] Whether or not to activate override
@@ -8797,8 +8772,7 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 //  IMPORT FUNCTIONS
 //  ============================================================================
 
-TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
-                                    shouldThrow) {
+TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
     /**
      * @method $sourceImport
      * @summary Imports a script text which loads and integrates JS. This
@@ -8811,7 +8785,6 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
      * @param {String} srcUrl The source URL that the script came from (useful
      *     for debugging purposes). This defaults to 'inline' if its not
      *     supplied.
-     * @param {Function} aCallback A function to invoke when done.
      * @param {Boolean} shouldThrow True to cause errors to throw a native Error
      *     so outer catch blocks will trigger.
      * @returns {HTMLElement} The new 'script' element that was created to
@@ -8946,26 +8919,9 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
         TP.boot.$$onerrorURL = null;
     }
 
-    //  if we were successful then invoke the callback function
-    if (typeof aCallback === 'function') {
-        try {
-            aCallback(result, $STATUS !== 0);
-        } catch (e) {
-            if (shouldThrow === true) {
-                throw new Error('Import callback failed for: ' + scriptUrl);
-            } else {
-                TP.boot.$stderr('Import callback failed for: ' + scriptUrl);
-            }
-        } finally {
-            TP.boot.$$loadNode = null;
-            TP.boot.$$srcPath = null;
-            TP.boot.$$loadPath = null;
-        }
-    } else {
-        TP.boot.$$loadNode = null;
-        TP.boot.$$srcPath = null;
-        TP.boot.$$loadPath = null;
-    }
+    TP.boot.$$loadNode = null;
+    TP.boot.$$srcPath = null;
+    TP.boot.$$loadPath = null;
 
     //  if the system is already running we need to initialize any types that
     //  haven't had that done (invoking it on an previous type won't matter).
@@ -8999,50 +8955,6 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, aCallback,
     }
 
     return result;
-};
-
-//  ----------------------------------------------------------------------------
-
-TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
-
-    /**
-     * @method $uriImport
-     * @summary Imports a target script which loads and integrates JS with the
-     *     currently running "image".
-     * @param {String} targetUrl URL of the target resource.
-     * @param {Function} aCallback A function to invoke when done.
-     * @param {Boolean} shouldThrow True to cause errors to throw a native Error
-     *     so outer catch blocks will trigger.
-     * @param {Boolean} isPackage True if the resource being imported is a
-     *     package-level resource.
-     * @returns {HTMLElement} The new 'script' element that was created to
-     *     import the code.
-     */
-
-    var src,
-        msg;
-
-    if (targetUrl == null) {
-        TP.boot.$stderr('InvalidURI');
-
-        return null;
-    }
-
-    msg = 'Requested source URL not found: ';
-
-    //  we pass actual responsibility for locating the source text to the
-    //  uriLoad call, but we need to tell it that we're looking for source
-    //  code.
-    src = TP.boot.$uriLoad(targetUrl, TP.TEXT, 'source', isPackage);
-    if (src == null) {
-        TP.boot.$stderr(msg + targetUrl + '.');
-        if (shouldThrow === true) {
-            throw new Error(msg + targetUrl + '.');
-        }
-        return null;
-    }
-
-    return TP.boot.$sourceImport(src, null, targetUrl, aCallback, shouldThrow);
 };
 
 //  ----------------------------------------------------------------------------
@@ -10207,11 +10119,13 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$importPackageUpdates = function(uri, importScripts) {
+TP.boot.$importMissingScripts = function(uri) {
 
     /**
-     * @method $importPackageUpdates
-     * @summary Re-imports package definitions.
+     * @method $importMissingScripts
+     * @summary Imports any scripts found in the current bootfile/bootconfig
+     *     which were not loaded with the system. This is usually called after
+     *     refreshing package data in response to server-side edit notification.
      * @param {String} [uri] An optional URI to specifically process rather than
      *     reprocessing all the manifest files.
      * @param {Boolean} [importScripts=true] Whether or not to import any *new*
@@ -10226,41 +10140,79 @@ TP.boot.$importPackageUpdates = function(uri, importScripts) {
         phaseOne,
         phaseTwo;
 
-    TP.boot.$refreshPackages(uri);
+    try {
+        phaseOne = TP.sys.cfg('boot.phase_one');
+        phaseTwo = TP.sys.cfg('boot.phase_two');
+        TP.sys.setcfg('boot.phase_one', true);
+        TP.sys.setcfg('boot.phase_two', true);
 
-    if (importScripts !== false) {
-
-        try {
-            phaseOne = TP.sys.cfg('boot.phase_one');
-            phaseTwo = TP.sys.cfg('boot.phase_two');
-            TP.sys.setcfg('boot.phase_one', true);
-            TP.sys.setcfg('boot.phase_two', true);
-            newScripts = TP.boot.$listPackageAssets(
-                            TP.boot.$$bootfile, TP.boot.$$bootconfig);
-        } catch (e) {
-            void 0;
-        } finally {
-            TP.sys.setcfg('boot.phase_one', phaseOne);
-            TP.sys.setcfg('boot.phase_two', phaseTwo);
-        }
-
-        newScripts = newScripts.map(
-                        function(node) {
-                            return TP.uriExpandPath(node.getAttribute('src'));
-                        });
-
-        TP.compact(newScripts, TP.isEmpty);
-
-        loadedScripts = TP.boot.$$loadpaths;
-
-        missingScripts = newScripts.difference(loadedScripts);
-
-        missingScripts.forEach(
-                function(path) {
-                    TP.info('Loading new script file: ' + TP.str(path));
-                    TP.sys.importScript(path);
-                });
+        //  NOTE that we're working only with the bootfile/bootconfig here. We
+        //  only want to load things that would have loaded based on the current
+        //  package content.
+        newScripts = TP.boot.$listPackageAssets(
+                        TP.boot.$$bootfile, TP.boot.$$bootconfig);
+    } catch (e) {
+        void 0;
+    } finally {
+        TP.sys.setcfg('boot.phase_one', phaseOne);
+        TP.sys.setcfg('boot.phase_two', phaseTwo);
     }
+
+    newScripts = newScripts.map(
+                    function(node) {
+                        return TP.uriExpandPath(node.getAttribute('src'));
+                    });
+
+    TP.compact(newScripts, TP.isEmpty);
+
+    loadedScripts = TP.boot.$$loadpaths;
+
+    missingScripts = newScripts.difference(loadedScripts);
+
+    missingScripts.forEach(
+            function(path) {
+                TP.info('Loading new script file: ' + TP.str(path));
+                TP.sys.importScript(path);
+            });
+};
+
+//  ----------------------------------------------------------------------------
+
+TP.boot.$isLoadableScript = function(aURI) {
+
+    /**
+     * @method $isLoadableScript
+     * @summary Returns true if the URI provided is a script loaded as part of
+     *     the current application's package#config settings.
+     * @return {Array} The array of loaded scripts.
+     */
+
+    var uri,
+        phaseOne,
+        phaseTwo,
+        loadables;
+
+    uri = TP.boot.$uriExpandPath(aURI);
+
+    try {
+        phaseOne = TP.sys.cfg('boot.phase_one');
+        phaseTwo = TP.sys.cfg('boot.phase_two');
+        TP.sys.setcfg('boot.phase_one', true);
+        TP.sys.setcfg('boot.phase_two', true);
+        loadables = TP.boot.$listPackageAssets(
+            TP.boot.$$bootfile, TP.boot.$$bootconfig);
+    } catch (e) {
+        void 0;
+    } finally {
+        TP.sys.setcfg('boot.phase_one', phaseOne);
+        TP.sys.setcfg('boot.phase_two', phaseTwo);
+    }
+
+    loadables = loadables.map(function(node) {
+        return TP.uriExpandPath(node.getAttribute('src'));
+    });
+
+    return loadables.indexOf(uri) !== -1;
 };
 
 //  ----------------------------------------------------------------------------

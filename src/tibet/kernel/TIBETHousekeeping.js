@@ -106,7 +106,6 @@ TP.boot.defineMethod('$uriLoadMozFile', TP.boot.$uriLoadMozFile);
 TP.boot.defineMethod('$uriLoadCommonHttp', TP.boot.$uriLoadCommonHttp);
 
 TP.boot.defineMethod('$sourceImport', TP.boot.$sourceImport);
-TP.boot.defineMethod('$uriImport', TP.boot.$uriImport);
 
 TP.boot.defineMethod('$documentConstruct', TP.boot.$documentConstruct);
 TP.boot.defineMethod('$activeXDocumentConstructIE',

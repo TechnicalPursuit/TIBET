@@ -178,7 +178,7 @@ function(aSource) {
             //  Do the job of importing the source. Note that this uses the
             //  actual supplied source code in the src argument for eval'ing
             //  purposes. The location is provided for source code tracking.
-            TP.boot.$sourceImport(src, null, srcURL.getLocation(), null, true);
+            TP.boot.$sourceImport(src, null, srcURL.getLocation(), true);
         } finally {
             TP.sys.definingTypename = defining;
         }

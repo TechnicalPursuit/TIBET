@@ -3669,7 +3669,7 @@ function(aRequest) {
 
             debug = TP.sys.shouldUseDebugger();
             TP.sys.shouldUseDebugger(false);
-            TP.boot.$sourceImport(src, null, TP.str(url), null, true);
+            TP.boot.$sourceImport(src, null, TP.str(url), true);
 
             //  Grab the location of the URL, trim it down so that its only
             //  the name of the file with no extension and see if there's
@@ -3801,7 +3801,7 @@ function(aRequest) {
 
                 debug = TP.sys.shouldUseDebugger();
                 TP.sys.shouldUseDebugger(false);
-                TP.boot.$sourceImport(src, null, file, null, true);
+                TP.boot.$sourceImport(src, null, file, true);
 
                 //  may need to re-initialize the type
                 if (TP.isType($$inst)) {

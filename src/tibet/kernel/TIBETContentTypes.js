@@ -8356,9 +8356,11 @@ function() {
 
     if (TP.notValid(parser = this.$get('$tpParser'))) {
         if (TP.notValid(TP.extern.XPathParser)) {
-            //  NOTE the dependency here because TP.extern.XPathParser isn't
-            //  a true TIBET type and has no load node information
-            TP.sys.importScript(TP.sys.cfg('path.xpath_parser'));
+            TP.ifWarn() ?
+                TP.warn(TP.annotate(
+                            this,
+                            'Unable to obtain valid XPath parser')) : 0;
+            return;
         }
 
         parser = new TP.extern.XPathParser();

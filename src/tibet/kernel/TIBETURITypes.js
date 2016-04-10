@@ -972,29 +972,46 @@ function(aURI) {
      *     can then be used to force these to refresh.
      * @param {TP.core.URI|String} aURI The URI that had its remote resource
      *     changed.
-     * @returns {TP.meta.core.URI} The receiver.
+     * @returns {TP.extern.Promise} A promise which resolves based on success.
      */
 
     var resourceHash,
+        loc,
+        packages,
         count;
 
     resourceHash = TP.core.URI.get('changedResources');
+    loc = aURI.getLocation();
 
     if (aURI.get('autoRefresh')) {
-        aURI.refreshFromRemoteResource();
-    } else {
-        if (!resourceHash.containsKey(aURI.getLocation())) {
-            resourceHash.atPut(aURI.getLocation(),
-                                TP.hc('count', 1, 'targetURI', aURI));
+        //  Confirm the URI in question should be loaded (either it already has
+        //  loaded or it's in the list of "should have loaded" based on config.)
+        if (TP.boot.$isLoadableScript(loc)) {
+            return aURI.refreshFromRemoteResource();
         } else {
-            count = resourceHash.at(aURI.getLocation()).at('count');
-            resourceHash.at(aURI.getLocation()).atPut('count', count + 1);
+            //  Could be a package...
+            packages = TP.keys(TP.boot.$$packages);
+            if (packages.contains(loc)) {
+                return aURI.refreshFromRemoteResource().then(function() {
+                    //  Once we load a package update we need to tell the system
+                    //  to refresh it's package cache for potential file
+                    //  updates.
+                    TP.boot.$refreshPackages(loc);
+                });
+            }
+        }
+    } else {
+        if (!resourceHash.containsKey(loc)) {
+            resourceHash.atPut(loc, TP.hc('count', 1, 'targetURI', aURI));
+        } else {
+            count = resourceHash.at(loc).at('count');
+            resourceHash.at(loc).atPut('count', count + 1);
 
             resourceHash.changed();
         }
     }
 
-    return this;
+    return TP.extern.Promise.resolve();
 });
 
 //  ------------------------------------------------------------------------
@@ -5503,7 +5520,7 @@ function() {
      * @method refreshFromRemoteResource
      * @summary Refreshes the receiver from the remote resource it's
      *     representing.
-     * @returns {TP.core.URI} The receiver.
+     * @return {TP.extern.Promise} A promise which resolves on completion.
      */
 
     var uri,
@@ -5551,21 +5568,25 @@ function() {
         //  observer.
         virtualURI = TP.uriInTIBETFormat(path);
         if (virtualURI.indexOf('~app_cfg') !== TP.NOT_FOUND) {
-            TP.boot.$importPackageUpdates(virtualURI);
+
+            //  Force refresh of any package data, particularly related to the
+            //  URI we're referencing.
+            TP.boot.$refreshPackages(virtualURI);
+
+            //  Import any new scripts that would have booted with the system.
+            TP.boot.$importMissingScripts();
         }
     };
 
     //  If the receiver refers to a file that was loaded (meaning it's mentioned
     //  in a TIBET package config) we source it back in rather than just
     //  loading via simple XHR.
-    if (TP.boot.$isLoadedScript(path)) {
+    if (TP.boot.$isLoadableScript(path)) {
         TP.debug('Sourcing in updates to ' + path);
-        TP.boot.$uriImport(path, callback);
+        return TP.sys.importSource(path).then(callback, callback);
     } else {
-        this.getResource().then(callback, callback);
+        return this.getResource().then(callback, callback);
     }
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
