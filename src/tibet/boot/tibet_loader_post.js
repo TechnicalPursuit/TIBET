@@ -559,7 +559,8 @@ TP.boot.installPatches = function(aWindow) {
                     //  matrix computation if the receiver is transformed.
                     myTop = this.getBoundingClientRect().top;
 
-                    offsetParentTop = this.offsetParent.offsetTop;
+                    offsetParentTop =
+                        this.offsetParent.getBoundingClientRect().top;
 
                     //  We round() since offset* properties always return whole
                     //  numbers.
@@ -587,7 +588,8 @@ TP.boot.installPatches = function(aWindow) {
                     //  transformed.
                     myLeft = this.getBoundingClientRect().left;
 
-                    offsetParentLeft = this.offsetParent.offsetLeft;
+                    offsetParentLeft =
+                        this.offsetParent.getBoundingClientRect().left;
 
                     //  We round() since offset* properties always return whole
                     //  numbers.
