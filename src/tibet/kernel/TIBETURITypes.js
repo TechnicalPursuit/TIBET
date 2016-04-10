@@ -5533,8 +5533,13 @@ function() {
     //  Force a reload. Note that we approach this two ways depending on the
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
-    callback = function() {
+    callback = function(result) {
         var virtualURI;
+
+        if (TP.isError(result)) {
+            TP.error(result);
+            return;
+        }
 
         //  Notify observers of the URI (elements, etc.) that the
         //  resource has been refreshed with potentially new content.
@@ -5557,7 +5562,7 @@ function() {
         TP.debug('Sourcing in updates to ' + path);
         TP.boot.$uriImport(path, callback);
     } else {
-        this.getResource().then(callback);
+        this.getResource().then(callback, callback);
     }
 
     return this;

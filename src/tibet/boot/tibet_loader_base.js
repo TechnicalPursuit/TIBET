@@ -9035,16 +9035,10 @@ TP.boot.$uriImport = function(targetUrl, aCallback, shouldThrow, isPackage) {
     //  code.
     src = TP.boot.$uriLoad(targetUrl, TP.TEXT, 'source', isPackage);
     if (src == null) {
+        TP.boot.$stderr(msg + targetUrl + '.');
         if (shouldThrow === true) {
             throw new Error(msg + targetUrl + '.');
-        } else if (shouldThrow === false) {
-            //  if throw flag is explicitly false then we don't consider
-            //  this to be an error, we just report it.
-            TP.boot.$stdout(msg + targetUrl + '.', TP.DEBUG);
-        } else {
-            TP.boot.$stderr(msg + targetUrl + '.');
         }
-
         return null;
     }
 

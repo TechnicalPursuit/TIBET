@@ -3654,9 +3654,15 @@ function(onFulfilled, onRejected) {
                 try {
                     result = onFulfilled(result);
                 } catch (e) {
-                    //  If the fulfillment handler threw an Error, then return a
-                    //  rejected Promise with the error object for chainability.
-                    return TP.extern.Promise.reject(e);
+                    if (TP.isCallable(onRejected)) {
+                        try {
+                            result = onRejected(e);
+                        } catch (e2) {
+                            return TP.extern.Promise.reject(e2);
+                        }
+                    } else {
+                        return TP.extern.Promise.reject(e);
+                    }
                 }
             }
 
