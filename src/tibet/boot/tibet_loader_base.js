@@ -10119,65 +10119,6 @@ TP.boot.$ifAssetPassed = function(anElement) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$importMissingScripts = function(uri) {
-
-    /**
-     * @method $importMissingScripts
-     * @summary Imports any scripts found in the current bootfile/bootconfig
-     *     which were not loaded with the system. This is usually called after
-     *     refreshing package data in response to server-side edit notification.
-     * @param {String} [uri] An optional URI to specifically process rather than
-     *     reprocessing all the manifest files.
-     * @param {Boolean} [importScripts=true] Whether or not to import any *new*
-     *     scripts that were referenced in the updated package definitions. This
-     *     method will *not* re-import any scripts that are already present via
-     *     existing package entries whether this flag is present or not.
-     */
-
-    var newScripts,
-        loadedScripts,
-        missingScripts,
-        phaseOne,
-        phaseTwo;
-
-    try {
-        phaseOne = TP.sys.cfg('boot.phase_one');
-        phaseTwo = TP.sys.cfg('boot.phase_two');
-        TP.sys.setcfg('boot.phase_one', true);
-        TP.sys.setcfg('boot.phase_two', true);
-
-        //  NOTE that we're working only with the bootfile/bootconfig here. We
-        //  only want to load things that would have loaded based on the current
-        //  package content.
-        newScripts = TP.boot.$listPackageAssets(
-                        TP.boot.$$bootfile, TP.boot.$$bootconfig);
-    } catch (e) {
-        void 0;
-    } finally {
-        TP.sys.setcfg('boot.phase_one', phaseOne);
-        TP.sys.setcfg('boot.phase_two', phaseTwo);
-    }
-
-    newScripts = newScripts.map(
-                    function(node) {
-                        return TP.uriExpandPath(node.getAttribute('src'));
-                    });
-
-    TP.compact(newScripts, TP.isEmpty);
-
-    loadedScripts = TP.boot.$$loadpaths;
-
-    missingScripts = newScripts.difference(loadedScripts);
-
-    missingScripts.forEach(
-            function(path) {
-                TP.info('Loading new script file: ' + TP.str(path));
-                TP.sys.importScript(path);
-            });
-};
-
-//  ----------------------------------------------------------------------------
-
 TP.boot.$isLoadableScript = function(aURI) {
 
     /**

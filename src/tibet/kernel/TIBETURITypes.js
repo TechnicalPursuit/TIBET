@@ -5574,7 +5574,7 @@ function() {
             TP.boot.$refreshPackages(virtualURI);
 
             //  Import any new scripts that would have booted with the system.
-            TP.boot.$importMissingScripts();
+            TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
         }
     };
 
