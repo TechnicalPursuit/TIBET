@@ -2363,7 +2363,7 @@ function(aNode) {
     otherNode = TP.unwrap(aNode);
 
     if (!TP.isNode(otherNode)) {
-        return this.raise('TP.sig.InvalidNode', otherNode);
+        return false;
     }
 
     return this.getNativeNode() === otherNode;
