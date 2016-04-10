@@ -5241,6 +5241,14 @@ function(originSet, aSignal, aPayload, aType) {
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
+
+            //  reset the signal's phase to the original setting - null
+            sig.setPhase(null);
+
+            //  reset the signal's origin so we don't confuse things in the
+            //  final notification process by making it the original target ID
+            sig.setOrigin(target);
+
             return sig;
         }
 
@@ -5399,6 +5407,14 @@ function(originSet, aSignal, aPayload, aType) {
         //  if any of the handlers at this origin "level" said to stop then
         //  we stop now before traversing to a new level in the DOM
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
+
+            //  reset the signal's phase to the original setting - null
+            sig.setPhase(null);
+
+            //  reset the signal's origin so we don't confuse things in the
+            //  final notification process by making it the original target ID
+            sig.setOrigin(target);
+
             return sig;
         }
 
@@ -5419,6 +5435,9 @@ function(originSet, aSignal, aPayload, aType) {
             sig.setPhase(TP.BUBBLING);
         }
     }
+
+    //  reset the signal's phase to the original setting - null
+    sig.setPhase(null);
 
     //  reset the signal's origin so we don't confuse things in the final
     //  notification process by making it the original target ID
