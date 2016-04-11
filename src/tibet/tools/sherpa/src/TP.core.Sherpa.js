@@ -278,7 +278,9 @@ function() {
 
         worldTPElem,
 
-        toggleKey;
+        toggleKey,
+
+        dockHash;
 
         // sherpaEastDrawer,
         // tileDockTPElem,
@@ -308,6 +310,12 @@ function() {
 
     //  Set up the inspector
     this.setupInspector();
+
+    //  Set up the tile dock
+    dockHash = TP.hc();
+    TP.uc('urn:tibet:sherpa_tiledock').setResource(
+                                        dockHash,
+                                        TP.hc('observeResource', true));
 
     //  Configure a toggle so we can always get back to just showing the app.
     toggleKey = TP.sys.cfg('sherpa.toggle_key');
