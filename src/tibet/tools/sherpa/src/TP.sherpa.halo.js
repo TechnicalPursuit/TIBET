@@ -24,6 +24,10 @@ TP.sherpa.Element.defineSubtype('halo');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineAttribute(
+        'breadcrumb',
+        {value: TP.cpc('> sherpa|breadcrumb', TP.hc('shouldCollapse', true))});
+
 TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
 
 TP.sherpa.halo.Inst.defineAttribute('currentTargetTPElem');
@@ -46,7 +50,11 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem;
+        tpElem,
+
+        breadcrumbData,
+
+        breadcrumbTPElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -117,6 +125,27 @@ function(aRequest) {
                             'DrawerCloseWillChange',
                             'DrawerCloseDidChange'));
 
+    //  Set up the breadcrumb data
+    breadcrumbData = TP.hc();
+    TP.uc('urn:tibet:sherpa_halo_breadcrumb').setResource(
+                                            breadcrumbData,
+                                            TP.hc('observeResource', true));
+
+    breadcrumbTPElem = tpElem.get('breadcrumb');
+    breadcrumbTPElem.defineMethod(
+                    'getLabel',
+                    function(anItem) {
+
+                        var val,
+                            id;
+
+                        val = anItem.getLocalName();
+                        if (TP.notEmpty(id = anItem.getAttribute('id'))) {
+                            val += '#' + id;
+                        }
+
+                        return val;
+                    });
     return;
 });
 
@@ -156,6 +185,8 @@ function(beHidden) {
 
         this.observe(TP.ANY, 'TP.sig.DetachComplete');
     }
+
+    this.get('breadcrumb').setAttrHidden(beHidden);
 
     return this.callNextMethod();
 });
@@ -322,11 +353,85 @@ function(target) {
         this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
                     TP.OBSERVER_FIRING);
 
+        TP.uc('urn:tibet:sherpa_halo_breadcrumb').setResource(target);
+
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
     } else {
         //  No existing target
         void 0;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('BreadcrumbClick',
+function(aSignal) {
+
+    var newTargetTPElem,
+        targetElem,
+
+        outlineVal;
+
+    newTargetTPElem = aSignal.at('item');
+
+    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
+        this.focusOn(newTargetTPElem);
+
+        targetElem = TP.unwrap(newTargetTPElem);
+
+        outlineVal = TP.elementPopStyleProperty(targetElem, 'outline');
+
+        TP.elementSetStyleProperty(targetElem, 'outline', outlineVal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('BreadcrumbOver',
+function(aSignal) {
+
+    var newTargetTPElem,
+        targetElem,
+
+        outlineVal;
+
+    newTargetTPElem = aSignal.at('item');
+
+    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
+        targetElem = TP.unwrap(newTargetTPElem);
+
+        outlineVal = TP.elementGetStyleProperty(targetElem, 'outline');
+        TP.elementPushStyleProperty(targetElem, 'outline', outlineVal);
+
+        TP.elementSetStyleProperty(targetElem, 'outline', 'dotted 1px red');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('BreadcrumbOut',
+function(aSignal) {
+
+    var newTargetTPElem,
+        targetElem,
+
+        outlineVal;
+
+    newTargetTPElem = aSignal.at('item');
+
+    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
+        targetElem = TP.unwrap(newTargetTPElem);
+
+        outlineVal = TP.elementPopStyleProperty(targetElem, 'outline');
+
+        TP.elementSetStyleProperty(targetElem, 'outline', outlineVal);
     }
 
     return this;

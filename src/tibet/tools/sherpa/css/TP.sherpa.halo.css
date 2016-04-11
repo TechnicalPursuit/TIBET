@@ -107,3 +107,12 @@ sherpa|halo > div {
 	right: -7px;
 }
 
+/* Halo breadcrumb */
+sherpa|halo > sherpa|breadcrumb {
+
+    top: -18px;
+
+    /* Turn pointer events back on for the breadcrumb */
+    pointer-events: auto;
+}
+
