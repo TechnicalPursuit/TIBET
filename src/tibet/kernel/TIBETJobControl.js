@@ -399,6 +399,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JobStatus.Inst.defineMethod('isSucceeding',
+function() {
+
+    /**
+     * @method isSucceeding
+     * @summary Returns true if the receiver is in the process of being failed
+     *     due to an explicit error/exception.
+     * @returns {Boolean} The current activity status.
+     */
+
+    return this.get('statusCode') === TP.SUCCEEDING;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JobStatus.Inst.defineMethod('cancel',
 function(aFaultString, aFaultCode, aFaultInfo) {
 

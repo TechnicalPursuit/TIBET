@@ -2190,7 +2190,7 @@ function(aRequest, aState) {
     ands.push(TP.ac(aRequest, state));
 
     //  tell the prerequisite about us so it can notify on state
-    aRequest.$wrapupJoin(this, state);
+    aRequest.$wrapupJoin(this, TP.AND, state);
 
     return this;
 });
@@ -2214,10 +2214,10 @@ function(aChildRequest) {
 
     //  tell ourselves, the "waiting request", about our child
     ands = this.getChildJoins(TP.AND);
-    ands.push(aChildRequest);
+    ands.push(TP.ac(aChildRequest, TP.COMPLETED));
 
     //  tell the child about us so it can notify on completion
-    aChildRequest.$wrapupJoin(this, TP.COMPLETED, true);
+    aChildRequest.$wrapupJoin(this, TP.AND, TP.COMPLETED, true);
 
     return this;
 });
@@ -2309,6 +2309,41 @@ function() {
     }
 
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.Inst.defineMethod('canJoinStates',
+function(targetState, testState) {
+
+    /**
+     * @method canJoinStates
+     * @summary Compares a test state to a target state and returns true if the
+     *     test state is a reasonable match for the target state.
+     * @param {Number} targetState The target state, usually TP.FAILED,
+     *     TP.CANCELLED, TP.COMPLETED, TP.SUCCEEDED, etc.
+     * @param {Number} testState The job control state, usually TP.FAILING,
+     *     TP.CANCELLING, or TP.SUCCEEDING.
+     * @return {Boolean} True if the receiving request
+     */
+
+    var absTarget,
+        absTest;
+
+    absTarget = Math.abs(targetState);
+    absTest = Math.abs(testState);
+
+    if (absTarget === absTest) {
+        return true;
+    }
+
+    if (absTarget === TP.COMPLETED) {
+        return absTest === TP.SUCCEEDED ||
+            absTest === TP.FAILED ||
+            absTest === TP.CANCELLED;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -2457,7 +2492,7 @@ function(aJoinKey) {
         for (i = 0; i < len; i++) {
             result = result.concat(
                         childJoins.at(i),
-                        childJoins.at(i).getDescendantJoins(aJoinKey));
+                        childJoins.at(i).first().getDescendantJoins(aJoinKey));
         }
     }
 
@@ -2467,7 +2502,7 @@ function(aJoinKey) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('getJoins',
-function(aJoinKey, aRequest) {
+function(aJoinKey) {
 
     /**
      * @method getJoins
@@ -2475,8 +2510,6 @@ function(aJoinKey, aRequest) {
      *     processing to see if the receiver 'hasJoined'.
      * @param {String} aJoinKey The key to look up, which should be either the
      *     TP.AND or TP.OR constant, or a specific wrapup state code.
-     * @param {TP.sig.Request} aRequest An optional request used when looking
-     *     for joins specific to that request's completion.
      * @returns {Array} The current and-joined or or-joined requests.
      */
 
@@ -2561,21 +2594,22 @@ function(aRequest, childJoin) {
     var list,
         len,
         i,
-        item;
+        item,
+        request;
 
     list = TP.isTrue(childJoin) ? this.getChildJoins(TP.OR) :
                                 this.getJoins(TP.OR);
     len = list.getSize();
     for (i = 0; i < len; i++) {
         item = list.at(i);
+        request = item.first();
         if (childJoin) {
-            return item.didComplete();
+            return request.didComplete();
         } else {
             //  NOTE we take the absolute value here because when we're
             //  checking a state we may be "pending" or "final" and those
             //  values are +/- of each other.
-            if (Math.abs(item.first().get('statusCode')) ===
-                Math.abs(item.last())) {
+            if (Math.abs(request.get('statusCode')) === Math.abs(item.last())) {
                 return true;
             }
         }
@@ -2586,16 +2620,16 @@ function(aRequest, childJoin) {
     len = list.getSize();
     for (i = 0; i < len; i++) {
         item = list.at(i);
+        request = item.first();
         if (childJoin) {
-            if (item.didFail() || item.didCancel()) {
+            if (request.didFail() || request.didCancel()) {
                 return false;
             }
         } else {
             //  NOTE we take the absolute value here because when we're
             //  checking a state we may be "pending" or "final" and those
             //  values are +/- of each other.
-            if (Math.abs(item.first().get('statusCode')) ===
-                Math.abs(item.last())) {
+            if (Math.abs(request.get('statusCode')) === Math.abs(item.last())) {
                 return false;
             }
         }
@@ -2664,7 +2698,7 @@ function(aRequest, aState) {
     ors.push(TP.ac(aRequest, state));
 
     //  tell the prerequisite about us so it can notify on state
-    aRequest.$wrapupJoin(this, state);
+    aRequest.$wrapupJoin(this, TP.OR, state);
 
     return this;
 });
@@ -2688,10 +2722,10 @@ function(aChildRequest) {
 
     //  tell ourselves, the "waiting request", about our child
     ors = this.getChildJoins(TP.OR);
-    ors.push(aChildRequest);
+    ors.push(TP.ac(aChildRequest, TP.COMPLETED));
 
     //  tell the child about us so it can notify on completion
-    aChildRequest.$wrapupJoin(this, TP.COMPLETED, true);
+    aChildRequest.$wrapupJoin(this, TP.OR, TP.COMPLETED, true);
 
     return this;
 });
@@ -2699,7 +2733,7 @@ function(aChildRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Request.Inst.defineMethod('$wrapupJoin',
-function(aRequest, aState, childJoin) {
+function(aRequest, aJoinKey, aState, childJoin) {
 
     /**
      * @method $wrapupJoin
@@ -2707,6 +2741,8 @@ function(aRequest, aState, childJoin) {
      *     testing during job wrapup processing.
      * @param {TP.sig.Request} aRequest A request instance to observe as a
      *     trigger.
+     * @param {String} aJoinKey The key to look up, which should be either the
+     *     TP.AND or TP.OR constant.
      * @param {Number|String} aState A job control state or suffix such as
      *     TP.SUCCEEDED or "Succeeded" (the default).
      * @param {Boolean} childJoin True to signify that this join is a child
@@ -2724,9 +2760,9 @@ function(aRequest, aState, childJoin) {
     //  should be notified.
     //  TODO: These calls normally take TP.AND or TP.OR... is 'state' correct
     //  here?
-    list = TP.isTrue(childJoin) ? this.getParentJoins(state) :
-                                this.getJoins(state);
-    list.push(aRequest);
+    list = TP.isTrue(childJoin) ? this.getParentJoins(aJoinKey) :
+                                this.getJoins(aJoinKey);
+    list.push(TP.ac(aRequest, state));
 
     return this;
 });
@@ -2755,14 +2791,13 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         i;
 
     //  if we've got child requests then cancel them...we're terminated
-    joins = this.getChildJoins(TP.AND).addAll(
-                        this.getChildJoins(TP.OR)).unique();
+    joins = this.getChildJoins(TP.AND).addAll(this.getChildJoins(TP.OR));
 
     len = joins.getSize();
     for (i = 0; i < len; i++) {
         //  NOTE that this won't do anything if the job already cancelled so
         //  we shouldn't see looping or extra overhead here.
-        joins.at(i).cancel(aFaultString, aFaultCode, aFaultInfo);
+        joins.at(i).first().cancel(aFaultString, aFaultCode, aFaultInfo);
     }
 
     //  don't push empty values into the argument list or we risk creating
@@ -2830,14 +2865,13 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         i;
 
     //  if we've got child requests then cancel them...we're terminated
-    joins = this.getChildJoins(TP.AND).addAll(
-                        this.getChildJoins(TP.OR)).unique();
+    joins = this.getChildJoins(TP.AND).addAll(this.getChildJoins(TP.OR));
 
     len = joins.getSize();
     for (i = 0; i < len; i++) {
         //  NOTE that this won't do anything if the job already cancelled so
         //  we shouldn't see looping or extra overhead here.
-        joins.at(i).cancel(aFaultString, aFaultCode, aFaultInfo);
+        joins.at(i).first().cancel(aFaultString, aFaultCode, aFaultInfo);
     }
 
     //  don't push empty values into the argument list or we risk creating
@@ -2889,6 +2923,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
         request,
         responder,
         requestor,
+        result,
 
         id,
         suffixes,
@@ -2904,11 +2939,13 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
 
         handlerName,
 
+        state,
         joins,
         ancestor,
         join,
         arglen,
 
+        err,
         deferred;
 
     //  consider this to be "end of processing" time since what follows is
@@ -2934,6 +2971,8 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     requestor = requestor === responder ? null : requestor;
 
     id = this.getRequestID();
+
+    result = TP.ifUndefined(aResultOrFault, this.getResult());
 
     //  TODO: move this logic to a TP.sig.Request-specific method that can
     //  cache the result value for all instances of the request type.
@@ -3007,16 +3046,39 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     //  once all standard processing of the request has been completed we
     //  look for any joined requests and see which we should activate as
     //  members of a downstream pipeline.
-    joins = this.getJoins(TP.ifInvalid(aState, this.get('statusCode')),
-                            this);
+    state = TP.ifInvalid(aState, this.get('statusCode'));
+    if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
+        //  If we're succeeding we can include 'AND' joins since they rely on
+        //  us being successful.
+        joins = this.getJoins(TP.AND).addAll(this.getJoins(TP.OR));
+    } else {
+        //  If we're not succeeding we can only invoke our OR joins and we
+        //  should be cancelling the AND joins.
+        joins = this.getJoins(TP.AND);
+        joins.forEach(function(item) {
+            item.first().cancel(
+                request.get('faultString'),
+                request.get('faultCode'),
+                request.get('faultInfo'));
+        });
+
+        joins = this.getJoins(TP.OR);
+    }
+
+    joins = joins.filter(function(item) {
+        //  If the state for the join is identical, or one that represents
+        //  completing/completed and we're doing that in some form it matches.
+        return request.canJoinStates(item.last(), state);
+    });
+
     if (TP.notEmpty(joins)) {
         leni = joins.getSize();
         for (i = 0; i < leni; i++) {
-            join = joins.at(i);
+            join = joins.at(i).first();
             if (join.hasJoined(this)) {
                 //  Patch STDIO
                 if (arglen > 2) {
-                    join.atPut(TP.STDIN, TP.ac(aResultOrFault));
+                    join.atPut(TP.STDIN, TP.ac(result));
                 }
                 joins.at(i).fire();
             }
@@ -3031,30 +3093,49 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     //  requests which care about either our exact status code (success vs.
     //  failure), or which care simply that we're done processing.
 
-    //  TODO: These calls normally take TP.AND or TP.OR... is 'state' correct
-    //  here?
-    joins = this.getParentJoins(
-                    TP.ifInvalid(aState, this.get('statusCode'))).addAll(
-                            this.getParentJoins(TP.COMPLETED)).unique();
+    state = TP.ifInvalid(aState, this.get('statusCode'));
+    if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
+        //  If we're succeeding we can include 'AND' joins since they rely on
+        //  us being successful.
+        joins = this.getParentJoins(TP.AND).addAll(this.getParentJoins(TP.OR));
+    } else {
+        //  If we're not succeeding we can only invoke our OR joins and we
+        //  should be cancelling the AND joins.
+        joins = this.getParentJoins(TP.AND);
+        joins.forEach(function(item) {
+            item.first().cancel(
+                request.get('faultString'),
+                request.get('faultCode'),
+                request.get('faultInfo'));
+        });
+
+        joins = this.getParentJoins(TP.OR);
+    }
+
+    joins = joins.filter(function(item) {
+        //  If the state for the join is identical, or one that represents
+        //  completing/completed and we're doing that in some form it matches.
+        return request.canJoinStates(item.last(), state);
+    });
 
     if (TP.notEmpty(joins)) {
         leni = joins.getSize();
         for (i = 0; i < leni; i++) {
-            ancestor = joins.at(i);
+            ancestor = joins.at(i).first();
 
             //  whether the parent thinks it has joined or not, if we failed
             //  or cancelled the parent should be told directly
             if (this.isFailing() || this.didFail()) {
                 switch (arglen) {
                     case 3:
-                        ancestor.$failJoin(this, aResultOrFault);
+                        ancestor.$failJoin(this, result);
                         break;
                     case 4:
-                        ancestor.$failJoin(this, aResultOrFault,
+                        ancestor.$failJoin(this, result,
                                                 aFaultCode);
                         break;
                     case 5:
-                        ancestor.$failJoin(this, aResultOrFault,
+                        ancestor.$failJoin(this, result,
                                                 aFaultCode,
                                                 aFaultInfo);
                         break;
@@ -3065,14 +3146,14 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
             } else if (this.isCancelling() || this.didCancel()) {
                 switch (arglen) {
                     case 3:
-                        ancestor.$cancelJoin(this, aResultOrFault);
+                        ancestor.$cancelJoin(this, result);
                         break;
                     case 4:
-                        ancestor.$cancelJoin(this, aResultOrFault,
+                        ancestor.$cancelJoin(this, result,
                                                     aFaultCode);
                         break;
                     case 5:
-                        ancestor.$cancelJoin(this, aResultOrFault,
+                        ancestor.$cancelJoin(this, result,
                                                     aFaultCode,
                                                     aFaultInfo);
                         break;
@@ -3082,7 +3163,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 }
             } else if (ancestor.hasJoined(this, true)) {
                 if (arglen > 2) {
-                    ancestor.$completeJoin(this, aResultOrFault);
+                    ancestor.$completeJoin(this, result);
                 } else {
                     ancestor.$completeJoin(this);
                 }
@@ -3095,11 +3176,16 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     deferred = this.get('$deferredPromise');
     if (TP.isValid(deferred)) {
         if (aState === TP.SUCCEEDED) {
-            deferred.resolve(aResultOrFault);
+            deferred.resolve(result);
         } else {
-            deferred.reject(TP.hc('faultText', response.getFaultText(),
-                                    'faultCode', response.getFaultCode(),
-                                    'faultInfo', response.getFaultInfo()));
+            if (TP.isValid(aFaultInfo)) {
+                err = aFaultInfo.at('error');
+            }
+            err = TP.ifInvalid(err, new Error(
+                //  NOTE this isn't 'result' since that may default to the
+                //  result value from the request. We only want failure data.
+                TP.ifInvalid(aResultOrFault, 'UnknownRequestFault')));
+            deferred.reject(err);
         }
     }
 
@@ -3630,96 +3716,39 @@ function(onFulfilled, onRejected) {
      *     step' in a chain of promises.
      */
 
-    var myReq,
-
-        result,
-
+    var request,
         deferred,
-        promise;
+        promise,
+        fault,
+        err;
 
-    myReq = this.getRequest();
-
-    //  If the request already completed (possibly it's a synchronous call),
-    //  then test for success or failure
-    if (myReq.didComplete()) {
-
-        //  If the request succeeded, then grab the result and call the
-        //  fulfillment handler (if its defined).
-        if (this.didSucceed()) {
-            result = this.get('result');
-
-            //  If a callable fulfillment handler was supplied, then try to call
-            //  it.
-            if (TP.isCallable(onFulfilled)) {
-                try {
-                    result = onFulfilled(result);
-                } catch (e) {
-                    if (TP.isCallable(onRejected)) {
-                        try {
-                            result = onRejected(e);
-                        } catch (e2) {
-                            return TP.extern.Promise.reject(e2);
-                        }
-                    } else {
-                        return TP.extern.Promise.reject(e);
-                    }
-                }
-            }
-
-            //  If the result (either the original result or the result after
-            //  the fulfillment handler was invoked) is a 'then()able' object,
-            //  then return it.
-            if (TP.canInvoke(result, 'then')) {
-                return result;
-            } else {
-                //  Otherwise, return a resolved Promise with the result for
-                //  chainability.
-                return TP.extern.Promise.resolve(result);
-            }
-        } else {
-
-            //  The 'result' data will be the fault text, fault code and fault
-            //  info from the receiver.
-            result = TP.hc('faultText', this.getFaultText(),
-                            'faultCode', this.getFaultCode(),
-                            'faultInfo', this.getFaultInfo());
-
-            //  If a callable rejection handler was supplied, then try to call
-            //  it.
-            if (TP.isCallable(onRejected)) {
-                try {
-                    result = onRejected(result);
-                } catch (e) {
-                    //  If the rejection handler threw an Error, then return a
-                    //  rejected Promise with the error object for chainability.
-                    return TP.extern.Promise.reject(e);
-                }
-            }
-
-            //  If the result (either the original result or the result after
-            //  the rejection handler was invoked) is a 'then()able' object,
-            //  then return it.
-            if (TP.canInvoke(result, 'then')) {
-                return result;
-            } else {
-                //  Otherwise, return a rejected Promise with the result for
-                //  chainability.
-                return TP.extern.Promise.reject(new Error(result));
-            }
-        }
-    }
+    request = this.getRequest();
 
     //  Stash away a reference to the *deferred* (not its Promise). We'll need
     //  to resolve() or reject() this later then the request completes.
     deferred = TP.extern.Promise.pending();
-    myReq.set('$deferredPromise', deferred);
-
-    //  Grab the Promise from the deferred and hook up the supplied
-    //  fulfillment/rejection Functions.
     promise = deferred.promise;
-    promise.then(onFulfilled, onRejected);
+    request.set('$deferredPromise', deferred);
 
-    //  Return the Promise for chainability.
+    if (TP.isCallable(onRejected)) {
+        promise = promise.then(onFulfilled, onRejected);
+    } else {
+        promise = promise.then(onFulfilled);
+    }
+
+    if (request.didComplete()) {
+        if (request.didSucceed()) {
+            promise.resolve(request.getResult());
+        } else {
+            fault = request.get('faultInfo');
+            if (TP.isValid(fault)) {
+                err = fault.at('error');
+            }
+            err = TP.ifInvalid(err, new Error('UnknownRequestFault'));
+            promise.reject(err);
+        }
+    }
+
     return promise;
 });
 

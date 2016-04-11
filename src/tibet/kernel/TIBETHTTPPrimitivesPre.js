@@ -716,7 +716,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('httpError',
-function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
+function(targetUrl, aSignal, aRequest, shouldSignal) {
 
     /**
      * @method httpError
@@ -744,8 +744,6 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
      * @param {TP.core.Hash|TP.sig.Request} aRequest A request/hash with keys.
      * @param {Boolean} [shouldSignal=true] Whether to signal failure/completed
      *     which will close out the request properly.
-     * @param {Boolean} [shouldThrow=TP.sys.shouldThrowExceptions] Whether or
-     *     not errors should be thrown.
      * @exception HTTPException
      * @throws Error Throws an Error containing aString.
      */
@@ -812,11 +810,6 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
         return;
     }
 
-    throwExceptions = TP.sys.shouldThrowExceptions();
-    if (TP.isFalse(shouldThrow)) {
-        TP.sys.shouldThrowExceptions(false);
-    }
-
     if (args && TP.notTrue(args.get('logged'))) {
         if (TP.ifError()) {
             args.set('logged', true);
@@ -824,30 +817,19 @@ function(targetUrl, aSignal, aRequest, shouldSignal, shouldThrow) {
         }
     }
 
-    //  If we're not throwing errors, then make sure that we log some
-    if (TP.isFalse(shouldThrow)) {
+    //  If we're already logging errors, then configure raising to not log -
+    //  otherwise, we see things twice.
+    logRaise = TP.sys.shouldLogRaise();
+    if (args.get('logged') === true) {
+        TP.sys.shouldLogRaise(false);
+    }
 
-        //  If we're already logging errors, then configure raising to not log -
-        //  otherwise, we see things twice.
-        logRaise = TP.sys.shouldLogRaise();
-        if (args.get('logged') === true) {
-            TP.sys.shouldLogRaise(false);
-        }
-
+    try {
         TP.raise(targetUrl, signal, args);
-
+    } catch (e) {
+        throw e;
+    } finally {
         TP.sys.shouldLogRaise(logRaise);
-
-        TP.sys.shouldThrowExceptions(throwExceptions);
-
-    } else {
-        //  Otherwise, we're throwing, so just let the rest of the logging
-        //  system around exception handling handle things.
-        try {
-            throw error;
-        } finally {
-            TP.sys.shouldThrowExceptions(throwExceptions);
-        }
     }
 
     return;
@@ -1070,7 +1052,7 @@ function(targetUrl, aRequest, httpObj) {
     request.atPut('message', 'HTTP request failed: Timeout');
 
     //  log it consistently with any other error
-    TP.httpError(targetUrl, 'HTTPSendException', request, false, false);
+    TP.httpError(targetUrl, 'HTTPSendException', request, false);
 
     //  get a response object for the request that we can use to convey the
     //  bad news in a consistent fashion with normal success processing.
@@ -1105,7 +1087,7 @@ function(targetUrl, aRequest, httpObj) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$httpWrapup',
-function(targetUrl, aRequest, httpObj, shouldThrow) {
+function(targetUrl, aRequest, httpObj) {
 
     /**
      * @method $httpWrapup
@@ -1118,8 +1100,6 @@ function(targetUrl, aRequest, httpObj, shouldThrow) {
      *     data.
      * @param {XMLHttpRequest} httpObj The native XMLHttpRequest object used to
      *     service the request.
-     * @param {Boolean} [shouldThrow] Whether or not errors should be thrown.
-     *     Passed to TP.$httpError.
      */
 
     var request,
@@ -1185,7 +1165,7 @@ function(targetUrl, aRequest, httpObj, shouldThrow) {
 
     //  with/without redirect, did we succeed?
     if (!TP.httpDidSucceed(xhr)) {
-        TP.httpError(url, 'HTTPException', request, false, shouldThrow);
+        TP.httpError(url, 'HTTPException', request, false);
         sig.setSignalName('TP.sig.IOFailed');
         sig.fire(id);
     } else {
