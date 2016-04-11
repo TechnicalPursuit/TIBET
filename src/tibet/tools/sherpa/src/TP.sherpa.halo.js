@@ -240,9 +240,7 @@ function(aSignal) {
         handledSignal,
 
         currentTargetTPElem,
-        newTargetTPElem,
-
-        canFocus;
+        newTargetTPElem;
 
     sigTarget = aSignal.getTarget();
 
@@ -271,13 +269,20 @@ function(aSignal) {
                 (currentTargetTPElem.identicalTo(sigTarget) ||
                     currentTargetTPElem.contains(sigTarget))) {
 
-            newTargetTPElem = currentTargetTPElem.getHaloParent(this);
+            newTargetTPElem = TP.wrap(sigTarget);
 
-            //  If the parent wasn't the same as the currently focused element,
-            //  and it can be focused by the halo, then blur the existing
-            //  element and focus the parent.
-            if (!newTargetTPElem.identicalTo(currentTargetTPElem) &&
-                newTargetTPElem.haloCanFocus(this, aSignal)) {
+            //  If the target element wasn't the same as the currently focused
+            //  element, and a focusable element can be computed, then blur the
+            //  existing element and focus the parent.
+            if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+                newTargetTPElem = this.getNearestFocusable(
+                                            newTargetTPElem, aSignal);
+
+                //  Couldn't find a new target... exit.
+                if (TP.notValid(newTargetTPElem)) {
+                    return;
+                }
 
                 this.blur();
                 this.focusOn(newTargetTPElem);
@@ -287,25 +292,8 @@ function(aSignal) {
         } else {
             newTargetTPElem = TP.wrap(sigTarget);
 
-            canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
-
-            if (canFocus === TP.ANCESTOR) {
-
-                while (TP.isValid(newTargetTPElem =
-                                    newTargetTPElem.getHaloParent(this))) {
-
-                    canFocus = newTargetTPElem.haloCanFocus();
-
-                    if (canFocus && canFocus !== TP.ANCESTOR) {
-                        break;
-                    }
-                }
-            }
-
-            //  Couldn't find one to focus on? Clear the target.
-            if (!canFocus) {
-                newTargetTPElem = null;
-            }
+            newTargetTPElem = this.getNearestFocusable(
+                                            newTargetTPElem, aSignal);
         }
 
         if (TP.isValid(newTargetTPElem)) {
@@ -378,13 +366,21 @@ function(aSignal) {
     newTargetTPElem = aSignal.at('item');
 
     if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
-        this.focusOn(newTargetTPElem);
+
+        newTargetTPElem = this.getNearestFocusable(
+                                    newTargetTPElem, aSignal);
+
+        //  Couldn't find a new target... exit.
+        if (TP.notValid(newTargetTPElem)) {
+            return;
+        }
 
         targetElem = TP.unwrap(newTargetTPElem);
-
         outlineVal = TP.elementPopStyleProperty(targetElem, 'outline');
-
         TP.elementSetStyleProperty(targetElem, 'outline', outlineVal);
+
+        this.blur();
+        this.focusOn(newTargetTPElem);
     }
 
     return this;
@@ -684,9 +680,7 @@ function(aSignal) {
      */
 
     var currentTargetTPElem,
-        newTargetTPElem,
-
-        canFocus;
+        newTargetTPElem;
 
     if (aSignal.getShiftKey()) {
 
@@ -702,30 +696,8 @@ function(aSignal) {
                                                                 this, aSignal);
             }
 
-            //  Couldn't find a new target... exit.
-            if (TP.notValid(newTargetTPElem)) {
-                return;
-            }
-
-            canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
-
-            if (canFocus === TP.ANCESTOR) {
-
-                while (TP.isValid(newTargetTPElem =
-                                    newTargetTPElem.getHaloParent(this))) {
-
-                    canFocus = newTargetTPElem.haloCanFocus();
-
-                    if (canFocus && canFocus !== TP.ANCESTOR) {
-                        break;
-                    }
-                }
-            }
-
-            //  Couldn't find one to focus on? Clear the target.
-            if (!canFocus) {
-                newTargetTPElem = null;
-            }
+            newTargetTPElem = this.getNearestFocusable(
+                                            newTargetTPElem, aSignal);
 
             //  Couldn't find a new target... exit.
             if (TP.notValid(newTargetTPElem)) {
@@ -742,6 +714,45 @@ function(aSignal) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('getNearestFocusable',
+function(newTargetTPElem, aSignal) {
+
+    var canFocus,
+
+        focusableTPElem;
+
+    //  Couldn't find a new target... exit.
+    if (TP.notValid(newTargetTPElem)) {
+        return null;
+    }
+
+    focusableTPElem = newTargetTPElem;
+
+    canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
+
+    if (canFocus === TP.ANCESTOR) {
+
+        while (TP.isValid(focusableTPElem =
+                            focusableTPElem.getHaloParent(this))) {
+
+            canFocus = focusableTPElem.haloCanFocus(this, aSignal);
+
+            if (canFocus && canFocus !== TP.ANCESTOR) {
+                break;
+            }
+        }
+    }
+
+    //  Couldn't find one to focus on? Return null.
+    if (!canFocus) {
+        return null;
+    }
+
+    return focusableTPElem;
 });
 
 //  ------------------------------------------------------------------------
