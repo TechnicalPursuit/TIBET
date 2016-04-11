@@ -69,7 +69,6 @@ function(packageName, configName) {
     //  Since importScript returns a promise we want to create a collection
     //  which we'll then resolve once all promises have completed in some form.
     promises = missingScripts.map(function(path) {
-        console.log('importPackage triggering importScript for: ' + path);
         return TP.sys.importScript(path);
     });
 
@@ -124,7 +123,6 @@ function(aURI, aRequest) {
         function(scriptNode) {
             var req;
 
-console.log('importScript then: ' + url.getLocation());
             if (TP.isCallable(callback)) {
                 callback(scriptNode);
             }
@@ -137,10 +135,8 @@ console.log('importScript then: ' + url.getLocation());
             return scriptNode;
         }
     ).then(function(result) {
-console.log('importScript then 2: ' + url.getLocation());
         request.complete(result);
     }).catch(function(err) {
-console.log('importScript catch: ' + url.getLocation());
         request.fail(err);
 
         //  Be sure to throw here or invoking items like importPackage won't
@@ -176,7 +172,6 @@ TP.sys.defineMethod('importSource', function(targetUrl) {
     return TP.uc(targetUrl).getResource(request).then(function(result) {
         var node;
 
-console.log('importSource then: ' + targetUrl);
         node = TP.boot.$sourceImport(result, null, targetUrl);
         if (TP.notValid(node) || TP.isError(node)) {
             throw new Error('Error importing source: ' + targetUrl);
@@ -185,7 +180,6 @@ console.log('importSource then: ' + targetUrl);
         return node;
 
     }).catch(function(err) {
-console.log('importSource catch: ' + targetUrl);
 
         //  Make sure to fail our request in case it didn't get properly failed.
         //  If it's already completed this will be a no-op.

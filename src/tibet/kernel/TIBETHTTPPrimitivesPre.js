@@ -754,7 +754,6 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
         type,
         sig,
         id,
-        throwExceptions,
         logRaise;
 
     //  make sure we've got at least a basic TP.core.Request to work with
