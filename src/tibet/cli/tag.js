@@ -22,9 +22,12 @@
 
 var CLI,
     Parent,
-    Cmd;
+    Cmd,
+    path;
 
 CLI = require('./_cli');
+
+path = require('path');
 
 //  ---
 //  Type Construction
@@ -194,6 +197,8 @@ Cmd.prototype.configure = function() {
 
     if (!(opts.dirname = this.options.dir)) {
         opts.dirname = inProj ? '~app_src/tags' : '~lib_src/' + opts.nsname;
+        opts.dirname = path.join(opts.dirname,
+            opts.nsname + '.' + opts.tagname);
     } else {
         delete opts.dir;
     }
@@ -216,7 +221,6 @@ Cmd.prototype.execute = function() {
     var fs,         // The file system module.
         hb,         // The handlebars module. Used to inject data in dna files.
         find,       // The findit module. Used to traverse and process files.
-        path,       // The path utilities module.
         sh,         // The shelljs module. Used for cloning dna etc.
         cmd,        // Closure'd variable for this references.
 
@@ -236,7 +240,6 @@ Cmd.prototype.execute = function() {
     opts = this.options;
 
     fs = require('fs');
-    path = require('path');
     sh = require('shelljs');
 
     if (opts.compiled) {
