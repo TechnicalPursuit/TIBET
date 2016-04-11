@@ -605,27 +605,6 @@ function(cellElem, uniqueID, dataRecord) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineHandler('DetachCard',
-function(aSignal) {
-
-    var ourWindow,
-        testTile;
-
-    return this;
-
-    ourWindow = this.get('wrapper').getNativeWindow();
-
-    testTile = TP.bySystemId('Sherpa').makeTile(
-                        'detailTile',
-                        TP.documentGetBody(ourWindow.document));
-
-    testTile.toggle('hidden');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.consoleoutput.Inst.defineHandler('ShowTile',
 function(aSignal) {
 
