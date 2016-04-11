@@ -3626,8 +3626,8 @@ function(onFulfilled, onRejected) {
      *     promise reaches it's fulfilled state.
      * @param {Function} onRejected A Function that will be executed if the
      *     promise reaches it's rejected state.
-     * @returns {Promise} A promise that can be used to be the 'next step' in a
-     *     chain of promises.
+     * @returns {TP.extern.Promise} A promise that can be used to be the 'next
+     *     step' in a chain of promises.
      */
 
     var myReq,
@@ -3654,9 +3654,15 @@ function(onFulfilled, onRejected) {
                 try {
                     result = onFulfilled(result);
                 } catch (e) {
-                    //  If the fulfillment handler threw an Error, then return a
-                    //  rejected Promise with the error object for chainability.
-                    return TP.extern.Promise.reject(e);
+                    if (TP.isCallable(onRejected)) {
+                        try {
+                            result = onRejected(e);
+                        } catch (e2) {
+                            return TP.extern.Promise.reject(e2);
+                        }
+                    } else {
+                        return TP.extern.Promise.reject(e);
+                    }
                 }
             }
 

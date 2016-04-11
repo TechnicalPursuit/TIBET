@@ -577,13 +577,6 @@
     //  certain cases to allow debuggers (like Firebuggy) to work properly.
     TP.sys.setcfg('import.use_dom', true);
 
-    //  should we verify file existence prior to injecting script nodes. the
-    //  browser will often fail to report 404 issues so during development it
-    //  can be nice to set this flag, or conditionally prior to trying to inject
-    //  a potentially non-existent url reference. Note it does have a
-    //  performance impact.
-    TP.sys.setcfg('import.check_404', 'false');
-
     // TODO: remove this and all related kernel logic
     //  should autoloader metadata be imported (usually yes for production)
     TP.sys.setcfg('import.metadata', false);

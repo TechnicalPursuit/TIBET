@@ -99,24 +99,6 @@ TP.boot.defineMethod('$uriResultType', TP.boot.$uriResultType);
 
 TP.boot.defineMethod('$uriWithRoot', TP.boot.$uriWithRoot);
 
-TP.boot.defineMethod('$uriLocation', TP.boot.$uriLocation);
-TP.boot.defineMethod('$uriLocationFile', TP.boot.$uriLocationFile);
-TP.boot.defineMethod('$uriLocationHttp', TP.boot.$uriLocationHttp);
-
-TP.boot.defineMethod('$uriLastModified', TP.boot.$uriLastModified);
-TP.boot.defineMethod('$uriLastModifiedIEFile',
-                                        TP.boot.$uriLastModifiedIEFile);
-TP.boot.defineMethod('$uriLastModifiedMozFile',
-                                        TP.boot.$uriLastModifiedMozFile);
-TP.boot.defineMethod('$uriLastModifiedHttp',
-                                        TP.boot.$uriLastModifiedHttp);
-
-TP.boot.defineMethod('$uriCurrent', TP.boot.$uriCurrent);
-
-TP.boot.defineMethod('$uriExists', TP.boot.$uriExists);
-TP.boot.defineMethod('$uriExistsFile', TP.boot.$uriExistsFile);
-TP.boot.defineMethod('$uriExistsHttp', TP.boot.$uriExistsHttp);
-
 TP.boot.defineMethod('$uriLoad', TP.boot.$uriLoad);
 TP.boot.defineMethod('$uriLoadCommonFile', TP.boot.$uriLoadCommonFile);
 TP.boot.defineMethod('$uriLoadIEFile', TP.boot.$uriLoadIEFile);
@@ -124,13 +106,6 @@ TP.boot.defineMethod('$uriLoadMozFile', TP.boot.$uriLoadMozFile);
 TP.boot.defineMethod('$uriLoadCommonHttp', TP.boot.$uriLoadCommonHttp);
 
 TP.boot.defineMethod('$sourceImport', TP.boot.$sourceImport);
-TP.boot.defineMethod('$uriImport', TP.boot.$uriImport);
-
-TP.boot.defineMethod('$uriSave', TP.boot.$uriSave);
-TP.boot.defineMethod('$uriSaveIEFile', TP.boot.$uriSaveIEFile);
-TP.boot.defineMethod('$uriSaveMozFile', TP.boot.$uriSaveMozFile);
-TP.boot.defineMethod('$uriSaveWebkitFile', TP.boot.$uriSaveWebkitFile);
-TP.boot.defineMethod('$uriSaveHttp', TP.boot.$uriSaveHttp);
 
 TP.boot.defineMethod('$documentConstruct', TP.boot.$documentConstruct);
 TP.boot.defineMethod('$activeXDocumentConstructIE',
