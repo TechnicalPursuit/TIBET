@@ -55,8 +55,6 @@ function(aSignal) {
 
     this.setAttribute('hidden', true);
 
-    this.teardown();
-
     return this;
 });
 
