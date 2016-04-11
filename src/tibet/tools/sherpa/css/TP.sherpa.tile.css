@@ -100,6 +100,9 @@ sherpa|tile > .header > .minimize_mark {
 
     background-size: 14px 14px;
     background-image: url(../media/exit13.svg);
+
+    /* The tile dock is to the left */
+    transform: rotate(180deg);
 }
 
 sherpa|tile[class~="modal"] > .header > .minimize_mark {
