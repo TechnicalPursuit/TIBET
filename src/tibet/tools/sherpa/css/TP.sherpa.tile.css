@@ -44,6 +44,8 @@ sherpa|tile:not([class~="modal"]) {
 
 sherpa|tile > .header {
 
+    position: absolute;
+
     top: 0;
     left: 0;
     right: 0;
@@ -148,6 +150,8 @@ sherpa|tile > .body {
 }
 
 sherpa|tile > .footer {
+
+    position: absolute;
 
     bottom: 0;
     left: 0;
