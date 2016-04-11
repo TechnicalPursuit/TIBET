@@ -166,6 +166,7 @@ function(aHalo, aSignal) {
     return false;
     */
 
+    //  We can always blur
     return true;
 });
 

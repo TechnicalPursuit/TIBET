@@ -53,6 +53,7 @@ function(aHalo, aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.TemplatedTag.defineSubtype('sherpa.TemplatedTag');
+
 TP.sherpa.TemplatedTag.addTraits(TP.sherpa.Element);
 
 //  ------------------------------------------------------------------------
