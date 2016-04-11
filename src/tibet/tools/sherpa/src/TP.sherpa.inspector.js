@@ -377,6 +377,8 @@ function(aSignal) {
         info.atPut('bayIndex', 1);
 
         this.traverseUsing(info);
+
+        inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
     }
 
     if (TP.notEmpty(payload.at('targetPath'))) {
