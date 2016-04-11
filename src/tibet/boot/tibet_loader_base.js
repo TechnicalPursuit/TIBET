@@ -9469,7 +9469,7 @@ TP.boot.$config = function() {
      */
 
     TP.boot.$setStage('configuring');
-
+/*
     //  loads the tibet.json file which typically contains profile and lib_root
     //  data. with those two values the system can find the primary package and
     //  configuration that will ultimately drive what we load.
@@ -9478,7 +9478,7 @@ TP.boot.$config = function() {
     //  Update any cached variable content. We do this each time we've read in
     //  new configuration values regardless of their source.
     TP.boot.$updateDependentVars();
-
+*/
     //  find and initially process the boot package/config we'll be booting.
     TP.boot.$configurePackage();
 
