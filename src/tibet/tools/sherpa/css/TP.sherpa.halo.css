@@ -15,7 +15,9 @@ sherpa|halo {
     border: dashed 1px #666;
     border-radius: 5px;
 
-    /*pointer-events: none;*/
+    /* Turn off pointer events so that elements *under* the halo can receive
+        events */
+    pointer-events: none;
 
     box-shadow: 3px 3px 3px #AAA;
 }
