@@ -12,7 +12,7 @@ sherpa|breadcrumb {
     height: 18px;
 }
 
-sherpa|breadcrumb > .crumblist {
+sherpa|breadcrumb > .content {
 
     font-size: 10px;
     line-height: 1.5em;
@@ -23,12 +23,12 @@ sherpa|breadcrumb > .crumblist {
     margin: 0px;
 }
 
-sherpa|breadcrumb > .crumblist li {
+sherpa|breadcrumb > .content li {
 
     float: left;
 }
 
-sherpa|breadcrumb > .crumblist li a {
+sherpa|breadcrumb > .content li a {
 
     position: relative;
     display: block;
@@ -43,7 +43,7 @@ sherpa|breadcrumb > .crumblist li a {
     background: hsla(34,85%,35%,1);
 }
 
-sherpa|breadcrumb > .crumblist li a:after {
+sherpa|breadcrumb > .content li a:after {
 
     content: " ";
 
@@ -54,8 +54,9 @@ sherpa|breadcrumb > .crumblist li a:after {
     height: 0px;
 
     top: 50%;
-    margin-top: -12px;
     left: 100%;
+
+    margin-top: -12px;
 
     border-top: 12px solid transparent;
     border-bottom: 12px solid transparent;
@@ -64,7 +65,7 @@ sherpa|breadcrumb > .crumblist li a:after {
     z-index: 2;
 }
 
-sherpa|breadcrumb > .crumblist li a:before {
+sherpa|breadcrumb > .content li a:before {
 
     content: " ";
 
@@ -75,9 +76,10 @@ sherpa|breadcrumb > .crumblist li a:before {
     height: 0px;
 
     top: 50%;
+    left: 100%;
+
     margin-top: -12px;
     margin-left: 1px;
-    left: 100%;
 
     border-top: 12px solid transparent;
     border-bottom: 12px solid transparent;
@@ -86,26 +88,26 @@ sherpa|breadcrumb > .crumblist li a:before {
     z-index: 1;
 }
 
-sherpa|breadcrumb > .crumblist li:first-child a {
+sherpa|breadcrumb > .content li:first-child a {
     padding-left: 2px;
 }
-sherpa|breadcrumb > .crumblist li:nth-child(2) a       { background:        hsla(34,85%,45%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(2) a:after { border-left-color: hsla(34,85%,45%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(3) a       { background:        hsla(34,85%,50%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(3) a:after { border-left-color: hsla(34,85%,50%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(4) a       { background:        hsla(34,85%,55%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(4) a:after { border-left-color: hsla(34,85%,55%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(5) a       { background:        hsla(34,85%,60%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(5) a:after { border-left-color: hsla(34,85%,60%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(6) a       { background:        hsla(34,85%,65%,1); }
-sherpa|breadcrumb > .crumblist li:nth-child(6) a:after { border-left-color: hsla(34,85%,65%,1); }
-sherpa|breadcrumb > .crumblist li:last-child a {
+sherpa|breadcrumb > .content li:nth-child(2) a       { background:        hsla(34,85%,45%,1); }
+sherpa|breadcrumb > .content li:nth-child(2) a:after { border-left-color: hsla(34,85%,45%,1); }
+sherpa|breadcrumb > .content li:nth-child(3) a       { background:        hsla(34,85%,50%,1); }
+sherpa|breadcrumb > .content li:nth-child(3) a:after { border-left-color: hsla(34,85%,50%,1); }
+sherpa|breadcrumb > .content li:nth-child(4) a       { background:        hsla(34,85%,55%,1); }
+sherpa|breadcrumb > .content li:nth-child(4) a:after { border-left-color: hsla(34,85%,55%,1); }
+sherpa|breadcrumb > .content li:nth-child(5) a       { background:        hsla(34,85%,60%,1); }
+sherpa|breadcrumb > .content li:nth-child(5) a:after { border-left-color: hsla(34,85%,60%,1); }
+sherpa|breadcrumb > .content li:nth-child(6) a       { background:        hsla(34,85%,65%,1); }
+sherpa|breadcrumb > .content li:nth-child(6) a:after { border-left-color: hsla(34,85%,65%,1); }
+sherpa|breadcrumb > .content li:last-child a {
     color: black;
     pointer-events: none;
     cursor: default;
 }
 
-sherpa|breadcrumb > .crumblist li a:hover { background: hsla(34,85%,25%,1); }
-sherpa|breadcrumb > .crumblist li a:hover:after { border-left-color: hsla(34,85%,25%,1) !important; }
+sherpa|breadcrumb > .content li a:hover { background: hsla(34,85%,25%,1); }
+sherpa|breadcrumb > .content li a:hover:after { border-left-color: hsla(34,85%,25%,1) !important; }
 
 

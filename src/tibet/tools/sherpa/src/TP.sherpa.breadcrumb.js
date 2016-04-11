@@ -14,192 +14,274 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('breadcrumb');
+TP.sherpa.TemplatedTag.defineSubtype('breadcrumb');
 
-TP.sherpa.breadcrumb.Inst.defineAttribute('sourceID');
-TP.sherpa.breadcrumb.Inst.defineAttribute('sourceObject');
+TP.sherpa.breadcrumb.addTraits(TP.core.D3Tag);
 
 TP.sherpa.breadcrumb.Inst.defineAttribute(
-        'list',
-        {value: TP.cpc('> .crumblist', TP.hc('shouldCollapse', true))});
+        'listcontent',
+        {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.breadcrumb.Inst.defineMethod('render',
+//  ------------------------------------------------------------------------
+//  TP.core.D3Tag Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineMethod('computeSelectionData',
 function() {
 
-    var sourceObj,
-        info,
+    /**
+     * @method computeSelectionData
+     * @summary Returns the data that will actually be used for binding into the
+     *     d3.js selection.
+     * @description The selection data may very well be different than the bound
+     *     data that uses TIBET data binding to bind data to this control. This
+     *     method allows the receiver to transform it's 'data binding data' into
+     *     data appropriate for d3.js selections.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
 
-        lines,
+    return TP.getDataForTool(this.get('data'), 'breadcrumb');
+});
 
-        thisArg;
+//  ------------------------------------------------------------------------
 
-    sourceObj = this.get('sourceObject');
+TP.sherpa.breadcrumb.Inst.defineMethod('drawSelection',
+function(selection) {
 
-    info = TP.getSherpaHierarchyInfo(sourceObj);
+    /**
+     * @method drawSelection
+     * @summary Draws content by altering the content provided in the supplied
+     *     selection.
+     * @param {TP.extern.d3.selection} selection The d3.js selection that
+     *     content should be updated in.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
 
-    lines = TP.extern.d3.select(
-            TP.unwrap(this.get('list'))).selectAll('li').data(info);
+    var thisArg;
 
     thisArg = this;
 
-    lines.enter().append('li');
-    lines.html(function(entry) {return thisArg.generateItem(entry); });
-    lines.exit().remove();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineMethod('generateItem',
-function(anEntry) {
-
-    var srcID,
-        str;
-
-    srcID = this.get('sourceID');
-
-    str = '<a href="#" onclick="TP.bySystemId(\'' + srcID + '\').setSourceObject(';
-
-    switch (anEntry.first()) {
-
-        case 'type':
-            str += 'TP.sys.getTypeByName(\'' + anEntry.last() + '\')';
-            break;
-
-        default:
-            str += 'null';
-    }
-
-    str += ')">' + anEntry.last() + '</a>';
-
-    return str;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineMethod('setup',
-function(anObject) {
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineMethod('setSourceObject',
-function(anObj) {
-
-    this.$set('sourceObject', anObj);
-
-    this.render();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getSherpaHierarchyInfo',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getSherpaHierarchyInfo')) {
-        return anObject.getSherpaHierarchyInfo();
-    }
-
-    return TP.ac(TP.ac());
-});
-
-//  ---
-
-Function.Inst.defineMethod('getSherpaHierarchyInfo',
-function() {
-
-    var info,
-
-        owner,
-        superNames;
-
-    info = TP.ac();
-
-    if (TP.isMethod(this)) {
-
-        if (!TP.isNamespace(owner = this[TP.OWNER])) {
-            superNames = owner.getSupertypeNames().copy();
-            superNames.reverse().perform(
-                function(item) {
-                    info.push(TP.ac('type', item));
-                });
-        }
-
-        info.push(TP.ac('type', owner.getName()));
-        info.push(TP.ac('method', this[TP.DISPLAY]));
-    }
-
-    return info;
-});
-
-//  ---
-
-TP.lang.RootObject.Type.defineMethod('getSherpaHierarchyInfo',
-function() {
-
-    var superNames,
-        info;
-
-    info = TP.ac();
-
-    superNames = this.getSupertypeNames().copy();
-    superNames.reverse().perform(
-        function(item) {
-            info.push(TP.ac('type', item));
+    selection.html(
+        function(d, i) {
+            return '<a href="#" itemNum="' + i + '">' +
+                        thisArg.getLabel(d[1]) +
+                    '</a>';
         });
 
-    info.push(TP.ac('type', this.getName()));
-
-    return info;
+    return this;
 });
 
-//  ---
+//  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Inst.defineMethod('getSherpaHierarchyInfo',
+TP.sherpa.breadcrumb.Inst.defineMethod('getKeyFunction',
 function() {
 
-    var info,
-        val,
-        id;
+    /**
+     * @method getKeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set.
+     * @description This Function should take a single argument, an individual
+     *     item from the receiver's data set, and return a value that will act
+     *     as that item's key in the overall data set. The default version
+     *     returns the item itself.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
+     */
 
-    info = TP.ac();
+    var keyFunc;
 
-    this.ancestorsPerform(
-            function(aNode) {
-                var tpElem;
+    keyFunc = function(d) {return TP.id(d[1]); };
 
-                if (TP.isDocument(aNode)) {
-                    info.push(TP.ac('path', '#document'));
-                } else {
-                    tpElem = TP.wrap(aNode);
+    return keyFunc;
+});
 
-                    val = tpElem.getLocalName();
-                    if (TP.notEmpty(id = tpElem.getAttribute('id'))) {
-                        val += '#' + id;
-                    }
+//  ------------------------------------------------------------------------
 
-                    info.push(TP.ac('path', val));
-                }
-            },
-            true);
+TP.sherpa.breadcrumb.Inst.defineMethod('getLabel',
+function(anItem) {
 
-    val = this.getLocalName();
-    if (TP.notEmpty(id = this.getAttribute('id'))) {
-        val += '#' + id;
+    /**
+     * @method getLabel
+     * @summary
+     * @param
+     * @returns {String}
+     */
+
+    return TP.name(anItem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineMethod('getRepeatingSelector',
+function() {
+
+    /**
+     * @method getRepeatingSelector
+     * @summary Returns the selector to both select and generate repeating items
+     *     under the receiver.
+     * @returns {String} The selector to use to select and/or generate repeating
+     *     items.
+     */
+
+    return 'li';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineMethod('getSelectionRoot',
+function() {
+
+    /**
+     * @method getSelectionRoot
+     * @summary Returns the Element that will be used as the 'root' to
+     *     add/update/remove content to/from using d3.js functionality. By
+     *     default, this returns the receiver's native Element.
+     * @returns {Element} The element to use as a root for d3.js
+     *     enter/update/exit selections.
+     */
+
+    return TP.unwrap(this.get('listcontent'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineHandler('DOMClick',
+function(aSignal) {
+
+    /**
+     * @method handleDOMClick
+     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.breadcrumb} The receiver.
+     */
+
+    var target,
+        itemNumber,
+
+        hierarchyData,
+        item;
+
+    target = aSignal.getTarget();
+
+    if (TP.isElement(target)) {
+        itemNumber = TP.elementGetAttribute(target, 'itemNum', true);
+        itemNumber = itemNumber.asNumber();
+
+        if (TP.isNumber(itemNumber)) {
+
+            hierarchyData = TP.getDataForTool(this.get('data'), 'breadcrumb');
+            item = hierarchyData.at(itemNumber).last();
+
+            this.signal('BreadcrumbClick', TP.hc('item', item));
+        }
     }
 
-    info.push(TP.ac('path', val));
+    return this;
+});
 
-    return info;
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineHandler('DOMMouseOver',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseOver
+     * @param {TP.sig.DOMMouseOver} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.breadcrumb} The receiver.
+     */
+
+    var target,
+        itemNumber,
+
+        hierarchyData,
+        item;
+
+    target = aSignal.getTarget();
+
+    if (TP.isElement(target)) {
+        itemNumber = TP.elementGetAttribute(target, 'itemNum', true);
+        itemNumber = itemNumber.asNumber();
+
+        if (TP.isNumber(itemNumber)) {
+
+            hierarchyData = TP.getDataForTool(this.get('data'), 'breadcrumb');
+            item = hierarchyData.at(itemNumber).last();
+
+            this.signal('BreadcrumbOver', TP.hc('item', item));
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineHandler('DOMMouseOut',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseOut
+     * @param {TP.sig.DOMMouseOut} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.breadcrumb} The receiver.
+     */
+
+    var target,
+        itemNumber,
+
+        hierarchyData,
+        item;
+
+    target = aSignal.getTarget();
+
+    if (TP.isElement(target)) {
+        itemNumber = TP.elementGetAttribute(target, 'itemNum', true);
+        itemNumber = itemNumber.asNumber();
+
+        if (TP.isNumber(itemNumber)) {
+
+            hierarchyData = TP.getDataForTool(this.get('data'), 'breadcrumb');
+            item = hierarchyData.at(itemNumber).last();
+
+            this.signal('BreadcrumbOut', TP.hc('item', item));
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.breadcrumb.Inst.defineMethod('setAttrHidden',
+function(beHidden) {
+
+    /**
+     * @method setAttrHidden
+     * @param {Boolean} beHidden
+     * @returns {TP.sherpa.breadcrumb} The receiver.
+     */
+
+    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
+        return this;
+    }
+
+    if (TP.isTrue(beHidden)) {
+        this.ignore(this, 'TP.sig.DOMClick');
+        this.ignore(this, 'TP.sig.DOMMouseOver');
+        this.ignore(this, 'TP.sig.DOMMouseOut');
+
+    } else {
+        this.observe(this, 'TP.sig.DOMClick');
+        this.observe(this, 'TP.sig.DOMMouseOver');
+        this.observe(this, 'TP.sig.DOMMouseOut');
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
